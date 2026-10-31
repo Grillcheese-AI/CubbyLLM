@@ -1,0 +1,11 @@
+[0015] No local path in the ingestion code or its committed log
+
+worlds_ingest.py named the rights tracker and the Gutenberg catalog by local drive paths and defaulted --root to
+one; exp_worlds_bench.py defaulted --root the same way (both since 8ce7eab). Now: the tracker comes from
+CUBBY_RIGHTS_TRACKER (absent: none), the catalog sits under the root (<root>/_catalog/pg_catalog.csv), and
+--root is CUBBY_WORLDS or required. public() (the committed report) keeps a dataset's manifest row, status,
+time and entries only: no tree (a drive), no reason (the manifest's reasons name collections), and every store
+path cut to its last two parts. test_worlds.py 6 green.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

@@ -1,0 +1,16 @@
+[0031] fix: the step loop's default VM lives in the package; cubbyllm/ edits sys.path nowhere
+
+cubbyllm/reasoning/step_loop.py (in the package before 0031) put validation/ and standin/ on sys.path
+to import validation/exp_he18_ab.vm_run, the only crossing left in cubbyllm/. vm_run (a program run on
+the VM with the harvest's ISolver shim and answer function) moves verbatim into
+cubbyllm/emit/format.py beside the two it uses; the experiment imports it back and default_vm returns
+it. No cubbyllm/ module edits sys.path or imports standin/, cubby_serve/ or validation/ now.
+
+step_loop.py stays over 300 lines (385, four shorter). Its missing __wiring__ is order 0002's red and
+is left to that order.
+
+Tests: test_step_loop, test_exp_he18_ab, test_exp_he19_gate_a, test_exp_he19_memory, test_guards:
+23 passed, 1 failed (the known red of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

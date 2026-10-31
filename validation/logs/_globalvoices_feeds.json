@@ -1,0 +1,327 @@
+[
+ {
+  "url": "https://globalvoices.org/feed/",
+  "items": 15,
+  "newest": "2026-10-22",
+  "current": true,
+  "main": true
+ },
+ {
+  "url": "https://am.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2020-09-01",
+  "current": false
+ },
+ {
+  "url": "https://ar.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2026-10-11",
+  "current": true
+ },
+ {
+  "url": "https://aym.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2026-09-19",
+  "current": true
+ },
+ {
+  "url": "https://bg.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2025-09-01",
+  "current": false
+ },
+ {
+  "url": "https://bn.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2026-10-18",
+  "current": true
+ },
+ {
+  "url": "https://ca.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2026-10-05",
+  "current": true
+ },
+ {
+  "url": "https://cs.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2022-02-16",
+  "current": false
+ },
+ {
+  "url": "https://da.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2023-03-11",
+  "current": false
+ },
+ {
+  "url": "https://de.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2025-07-15",
+  "current": false
+ },
+ {
+  "url": "https://el.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2026-10-16",
+  "current": true
+ },
+ {
+  "url": "https://eo.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2026-09-13",
+  "current": true
+ },
+ {
+  "url": "https://es.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2026-10-22",
+  "current": true
+ },
+ {
+  "url": "https://fa.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2024-12-20",
+  "current": false
+ },
+ {
+  "url": "https://fil.globalvoices.org/feed/",
+  "items": 1,
+  "newest": "2025-04-09",
+  "current": false
+ },
+ {
+  "url": "https://fr.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2026-10-19",
+  "current": true
+ },
+ {
+  "url": "https://he.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2016-11-27",
+  "current": false
+ },
+ {
+  "url": "https://hi.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2025-12-14",
+  "current": false
+ },
+ {
+  "url": "https://hr.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2026-09-06",
+  "current": true
+ },
+ {
+  "url": "https://hu.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2023-05-26",
+  "current": false
+ },
+ {
+  "url": "https://id.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2025-09-30",
+  "current": false
+ },
+ {
+  "url": "https://ig.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2026-10-21",
+  "current": true
+ },
+ {
+  "url": "https://it.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2026-10-22",
+  "current": true
+ },
+ {
+  "url": "https://jp.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2026-10-15",
+  "current": true
+ },
+ {
+  "url": "https://kk.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2026-02-21",
+  "current": false
+ },
+ {
+  "url": "https://km.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2013-12-13",
+  "current": false
+ },
+ {
+  "url": "https://ko.globalvoices.org/feed/",
+  "items": 7,
+  "newest": "2024-08-29",
+  "current": false
+ },
+ {
+  "url": "https://ku.globalvoices.org/feed/",
+  "items": 4,
+  "newest": "2018-04-29",
+  "current": false
+ },
+ {
+  "url": "https://mg.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2026-10-20",
+  "current": true
+ },
+ {
+  "url": "https://mk.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2026-09-23",
+  "current": true
+ },
+ {
+  "url": "https://my.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2018-11-06",
+  "current": false
+ },
+ {
+  "url": "https://ne.globalvoices.org/feed/",
+  "items": 12,
+  "newest": "2026-10-14",
+  "current": true
+ },
+ {
+  "url": "https://nl.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2026-10-11",
+  "current": true
+ },
+ {
+  "url": "https://or.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2023-02-20",
+  "current": false
+ },
+ {
+  "url": "https://pa.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2025-03-18",
+  "current": false
+ },
+ {
+  "url": "https://pl.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2023-05-24",
+  "current": false
+ },
+ {
+  "url": "https://prs.globalvoices.org/feed/",
+  "items": 1,
+  "newest": "2025-03-14",
+  "current": false
+ },
+ {
+  "url": "https://pt.globalvoices.org/feed/",
+  "items": 15,
+  "newest": "2026-10-16",
+  "current": true
+ },
+ {
+  "url": "https://ro.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2026-09-24",
+  "current": true
+ },
+ {
+  "url": "https://ru.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2026-10-22",
+  "current": true
+ },
+ {
+  "url": "https://sat.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2026-09-12",
+  "current": true
+ },
+ {
+  "url": "https://sq.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2025-01-23",
+  "current": false
+ },
+ {
+  "url": "https://sr.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2026-10-20",
+  "current": true
+ },
+ {
+  "url": "https://sv.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2020-06-12",
+  "current": false
+ },
+ {
+  "url": "https://sw.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2022-10-14",
+  "current": false
+ },
+ {
+  "url": "https://tet.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2017-03-01",
+  "current": false
+ },
+ {
+  "url": "https://tr.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2021-04-18",
+  "current": false
+ },
+ {
+  "url": "https://uk.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2026-09-28",
+  "current": true
+ },
+ {
+  "url": "https://ur.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2023-05-20",
+  "current": false
+ },
+ {
+  "url": "https://uz.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2021-02-17",
+  "current": false
+ },
+ {
+  "url": "https://yo.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2026-10-15",
+  "current": true
+ },
+ {
+  "url": "https://yua.globalvoices.org/feed/",
+  "items": 8,
+  "newest": "2026-09-30",
+  "current": true
+ },
+ {
+  "url": "https://zhs.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2024-10-03",
+  "current": false
+ },
+ {
+  "url": "https://zht.globalvoices.org/feed/",
+  "items": 10,
+  "newest": "2026-05-15",
+  "current": false
+ }
+]

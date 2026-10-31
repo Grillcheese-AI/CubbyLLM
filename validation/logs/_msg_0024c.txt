@@ -1,0 +1,15 @@
+[0024] GDELT's events and mentions, every 15-minute file, filtered on ingest
+
+- standin/news_gdelt.py (new): catches up every 15-minute file since the last one taken (a day at most), en and
+  translingual streams, up to the newest stamp both have published (the translingual one lags a file). Keeps an
+  event when it touches Canada (an actor CAN, a place in CA; Quebec is CA10) or when an actor is a person or an
+  organisation the hdc world holds (instance of human / business / company / party / organization). Any subject
+  would do worse: "United Kingdom", "Supreme Court" and "Prime Minister" are subjects too, and kept 445 of 1,790
+  events in one file; the kinds rule keeps 38 (36 Canadian). Mentions follow kept events. Never GKG, never a
+  source URL followed.
+- news_archive.poll_all runs it when the manifest's gdelt.status is active (now: en + translation).
+- First live poll, 2026-10-22: 2,736 events read, 66 kept, 67 mentions.
+- Tests: standin/tests/test_news_gdelt.py (4).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

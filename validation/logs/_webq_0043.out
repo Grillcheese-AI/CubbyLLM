@@ -1,0 +1,46 @@
+loaded in 24s; 187 questions
+  50/187: spoken 20, match 16, mismatch 4
+  100/187: spoken 41, match 30, mismatch 11
+  150/187: spoken 56, match 42, mismatch 14
+{
+ "what": "exp_everyday_webq",
+ "everyday": "on",
+ "emitter": "none",
+ "online": true,
+ "source": "cache",
+ "tense": "on",
+ "namesake_relation": true,
+ "source_over_snapshot": true,
+ "namesake_tier": false,
+ "questions": "webq_na_eu.csv",
+ "parsed_only": true,
+ "counts": {
+  "asked": 187,
+  "spoken": 68,
+  "spoken_by_form": 68,
+  "match": 52,
+  "mismatch": 16,
+  "refused:retrieval_exhausted": 57,
+  "refused:ambiguous_hop": 47,
+  "refused:ambiguous_entity": 8,
+  "refused:time_mismatch": 2,
+  "refused:ambiguous_relation": 1,
+  "refused:unknown_relation": 4
+ },
+ "by_form": {
+  "country of citizenship": 2,
+  "country": 3,
+  "currency": 15,
+  "located in time zone": 8,
+  "official language": 13,
+  "capital": 9,
+  "cause of death": 2,
+  "applies to jurisdiction": 1,
+  "place of birth": 6,
+  "place of death": 7,
+  "basic form of government": 1,
+  "continent": 1
+ },
+ "emitter_calls": null,
+ "wall_s": 165.6
+}

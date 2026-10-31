@@ -1,0 +1,24 @@
+[0031] the guards: the three homes' rules, each pinned by a scan; the fetch seams pinned
+
+tests/test_package_rules.py (6), each an AST scan of the source, lazy imports included:
+- cubbyllm/ imports nothing from cubby_serve/, standin/ or validation/, flat names included (a shim's
+  name such as `import ask` is a crossing);
+- cubbyllm/ imports no socket, urllib.request, http.client or requests (Nick's rule);
+- cubbyllm/ edits no sys.path;
+- cubby_serve/ reaches the stand-in only through emitter_llama, lfm_source and pacman, and only
+  lazily (the review's question 3, exactly those);
+- standin/ holds only what the move map keeps there, and the one-cycle shims;
+- `import cubbyllm` in a fresh interpreter loads neither torch nor grilly.
+Checked that each bites: probe files planting one violation each made five of them fail with the
+file and line, and were then moved out of the repo.
+
+tests/test_offline_seams.py (6): the wiki world fetches a missing export only with the fetch it is
+handed (and names the command otherwise); an online Wikidata source without a fetch says so, offline
+needs none; the web source has no transport of its own; a news source without a fetch treats its
+feeds as down and says why; a news archive without one keeps its files and fetches nothing; the vault
+writes its key only where it is told.
+
+New files, so every existing file's test count is unchanged. Tests: the two files, 12 passed.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

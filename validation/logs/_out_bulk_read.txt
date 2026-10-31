@@ -1,0 +1,127 @@
+  100 books read, 29 reads [163s]
+  200 books read, 45 reads [270s]
+  300 books read, 68 reads [384s]
+  400 books read, 155 reads [612s]
+  500 books read, 233 reads [793s]
+  600 books read, 412 reads [1028s]
+  700 books read, 461 reads [1229s]
+  800 books read, 509 reads [1409s]
+  900 books read, 594 reads [1624s]
+  1,000 books read, 678 reads [1828s]
+  1,100 books read, 731 reads [1981s]
+  1,200 books read, 875 reads [2274s]
+  1,300 books read, 940 reads [2380s]
+  1,400 books read, 1,039 reads [2540s]
+  1,500 books read, 1,128 reads [2664s]
+  1,600 books read, 1,167 reads [2787s]
+  1,700 books read, 1,274 reads [3060s]
+  1,800 books read, 1,410 reads [3331s]
+  1,900 books read, 1,462 reads [3534s]
+  2,000 books read, 1,502 reads [3731s]
+  2,100 books read, 1,569 reads [3991s]
+  2,200 books read, 1,660 reads [4287s]
+  2,300 books read, 1,738 reads [4515s]
+  2,400 books read, 1,837 reads [4743s]
+  2,500 books read, 1,973 reads [5005s]
+  2,600 books read, 2,053 reads [5231s]
+  2,700 books read, 2,159 reads [5460s]
+  2,800 books read, 2,295 reads [5750s]
+  2,900 books read, 2,375 reads [6006s]
+  3,000 books read, 2,440 reads [6207s]
+  3,100 books read, 2,505 reads [6419s]
+  3,200 books read, 2,571 reads [6620s]
+  3,300 books read, 2,632 reads [6782s]
+  3,400 books read, 2,750 reads [7000s]
+  3,500 books read, 2,878 reads [7276s]
+  3,600 books read, 2,996 reads [7505s]
+  3,700 books read, 3,163 reads [7863s]
+  3,800 books read, 3,344 reads [8223s]
+  3,900 books read, 3,456 reads [8437s]
+  4,000 books read, 3,535 reads [8619s]
+  4,100 books read, 3,689 reads [8883s]
+  4,200 books read, 3,793 reads [9124s]
+  4,300 books read, 3,852 reads [9351s]
+  4,400 books read, 3,932 reads [9526s]
+  4,500 books read, 4,120 reads [9825s]
+  4,600 books read, 4,227 reads [10030s]
+  4,700 books read, 4,350 reads [10290s]
+  4,800 books read, 4,497 reads [10662s]
+  4,900 books read, 4,654 reads [10987s]
+  5,000 books read, 4,817 reads [11360s]
+  5,100 books read, 4,934 reads [11674s]
+  5,200 books read, 5,072 reads [11990s]
+{
+ "reader": "frames",
+ "books_read_now": 5217,
+ "reads_now": 5134,
+ "books_done": 5217,
+ "reads": 5134,
+ "triples": 3281,
+ "facts_written": 3281,
+ "tiers": {
+  "attributed": 1943,
+  "held": 1041,
+  "corroborated": 297
+ },
+ "corroborated_share": 0.133,
+ "per_era": {
+  "AncientClassical": 991,
+  "MiddleAges": 851,
+  "Prehistory": 47,
+  "unknown": 350,
+  "EarlyModern": 1
+ },
+ "per_era_tier": {
+  "AncientClassical": {
+   "attributed": 835,
+   "held": 541,
+   "corroborated": 156
+  },
+  "EarlyModern": {
+   "attributed": 1
+  },
+  "MiddleAges": {
+   "attributed": 746,
+   "held": 399,
+   "corroborated": 105
+  },
+  "Prehistory": {
+   "attributed": 44,
+   "held": 13,
+   "corroborated": 3
+  },
+  "unknown": {
+   "attributed": 317,
+   "held": 88,
+   "corroborated": 33
+  }
+ },
+ "per_relation": {
+  "date of death": 768,
+  "place of birth": 521,
+  "date of birth": 496,
+  "capital": 342,
+  "point in time": 253,
+  "inception": 220,
+  "place of death": 217,
+  "founded by": 194,
+  "part of": 131,
+  "location": 77,
+  "place of burial": 50,
+  "reign": 7,
+  "head of state": 5
+ },
+ "entities": 1786,
+ "by_reader": {
+  "frames": 3281
+ },
+ "files": {
+  "AncientClassical": "892aaef765d8bfba",
+  "EarlyModern": "487809e62081979a",
+  "MiddleAges": "0ffa7afcc7b27256",
+  "Prehistory": "99848c07d490a988",
+  "_held": "d0d67adb4ed58cd8",
+  "unknown": "ea43b433695f5524"
+ },
+ "seconds": 12049.6
+}

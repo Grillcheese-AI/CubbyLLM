@@ -1,0 +1,18 @@
+[0022] Copy or refuse in the model: an answer copied whole from the read, or refused; the trunk never speaks a fact
+
+cubbyllm/model/spatial_refuse.py (new): at the first asking position of an answer (a run of consecutive
+asking tokens) the reads of every piece are taken ahead -- askers write nothing, so the scene is the one
+each piece will read -- and the answer is decided once from each piece's best match: >= theta a piece
+(copy alone, lambda 1), < theta_end the end (the trunk speaks it), between them, no piece, or no end in
+the lookahead: refused, refuse_id at every position of the answer. Reads ahead by address kind: hashed
+places step up (meta step, 6 cells up z as make_fact_shard writes), text keys advance the piece slot, the
+pointer's query is rebound P_{j+k} P_j^-1 (unit spectra; nothing of the pointer recomputed). Decode keeps
+the run's decision in its state (cr_prev / cr_L / cr_off).
+Flag: meta spatial.copy_refuse = {theta, theta_end, refuse_id, step, lookahead}; absent = today's mix, bit
+for bit (SpatialCopy.set_refuse sets it on a loaded model). spatial.py 285 lines, assembly.py 298.
+tests/model/test_spatial_refuse.py (8): off identical, decide, runs, whole copy + trunk end, one unsure
+piece refuses all with no fact token, empty address refused, decode = forward in both, the pointer rebind
+equals the later piece's key. tests/model 136 passed, 5 skipped.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

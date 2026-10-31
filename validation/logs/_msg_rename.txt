@@ -1,0 +1,10 @@
+Rename H-K10's unit to loci tokens (Nick, 2026-10-22), with the two prior uses of "hypertoken" cited and the difference stated; order 0004 for the code's prose
+
+"Hypertoken" is taken twice: zip2zip (Geng et al. 2025, arXiv 2506.01084; LZW-merged tokens, the sense
+H-C1/C2/C6 already use) and Augeri 2025 (arXiv 2507.00002; error-correcting codes in an unmodified
+model's prompt). A loci token is the trunk's own embedding bound to a place at the input and read back
+by unbinding inside the trunk, exact by the algebra -- the method of loci. Renamed in the hypotheses,
+CLAUDE.md and the architecture diagram; file and log names keep the old word so every link resolves.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

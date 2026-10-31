@@ -1,0 +1,29 @@
+[0027] review: the scrub matches whole internal words; Home/System built in the background; run ages; Mood built; checked on the real stack
+
+- board_api.internal_names: source names, feeds and their sites, the worlds registry's dataset
+  names, internal plugins; no longer the generic world keys ("facts", "wiki", "self").
+  scrub matches whole words: "I don't have facts about that" survives, "wikidata5m" does not.
+- board_api.start_refresh (started by --board): Home, System (both audiences) and the name list
+  rebuilt every 5 s in a daemon thread; requests read the last build. Real stack: 3.2 ms worst of
+  10, against 205.6 ms cold before (validation/logs/board_real_stack_2026-10-22.json).
+- board_data.training: "as of HH:MM, N min ago", stale after 60 min.
+- Mood built (/board/mood, mood.js): /state, the heartbeat at 40 + 55 x arousal (a display
+  mapping), the cube point and its corner ("at rest" at the centre, where no corner is nearer),
+  the levels; arcs "not built yet (0020)".
+- On the real serve stack (450M on grilly2, wiki + hdc worlds, the ask loop, plugins):
+  - 0 internal names in 11 public routes, in the page files and in a public /ask record;
+    the audit view carries 134.
+  - Fixed: the poller tile now reads the server's --news-archive; the copy-or-refuse tile now
+    includes 0022's end-token rerun.
+- The turntable, driven in Chrome: a nearer item's transparent square took clicks meant for the
+  item behind it; only an oval over the art and the name take clicks now.
+- news_reply.outlet_words (found by the full test run): "the Daily Planet" spelled the outlet
+  dailyplanet across two words, and each word reached a reply. Adjacent capitalised words that
+  spell an outlet now count as the outlet.
+
+Tests: 52 passed (test_board_review, test_board, test_plugins_serve, test_audience,
+test_news_reply, test_ask). serve_api.py was already over 300 lines (566 -> 569): 3 lines at
+the --board mount.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

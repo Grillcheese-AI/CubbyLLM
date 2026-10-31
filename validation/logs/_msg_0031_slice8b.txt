@@ -1,0 +1,9 @@
+[0031] slice 8, the brain: the old name as a shim
+
+standin/serve.py is a shim for one cycle. Importing `serve` gives cubbyllm.brain itself, so
+test_serve's monkeypatch of `pipeline_answer` still patches the brain; running
+`python standin/serve.py ...` runs cubby_serve/build.py (the REPL and --selftest). build_serve is not
+on the old name any more; its three users import it from cubby_serve.build (previous commit).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

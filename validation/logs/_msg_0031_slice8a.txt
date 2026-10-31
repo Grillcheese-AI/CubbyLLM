@@ -1,0 +1,19 @@
+[0031] slice 8, the brain: serve.py from standin/ to cubbyllm/brain.py (git mv; paths and imports only)
+
+CubbyBrain, its reasoning and memory cortices and the turn move into the package, with history; its
+test goes to tests/brain/. The chat, the worlds' store and routing, the audience guard and the wiki
+world are package imports; the sys.path edits go.
+
+For one commit build_serve, the selftest and the CLI still sit in brain.py with their lazy imports of
+the stand-in and the game (standin.emitter, pacman, exp_m3_domain_routing's word encoder): the next
+commit splits them out to cubby_serve/build.py, as the map has it. brain.py stays over 300 lines
+here (807); the cortices are split out later.
+
+validation/bench_loci_learn.py and plugins_routing.py read test_serve's fixtures from tests/brain now.
+
+Tests: tests/brain, test_pacman, test_verse, tests/plugins, test_plugins_serve, test_board,
+test_harness_wiring, test_guards: 128 passed, 1 failed (test_every_module_declares_wiring, the known
+red of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

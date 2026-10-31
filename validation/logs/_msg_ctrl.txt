@@ -1,0 +1,20 @@
+[0001] The controls (seeds 1-2), the vocabulary-form copy, and run 3 with the read-aware ring at step 0: B's language line holds on all three seeds; the table copy misses (0.357); run 3 + ring reads 0.258 exact untrained
+
+Combination arm, step 999, exact / first / later / end / language:
+  no copy, seed 1          0.000 / 0 / 0 / 1.000 / 2.222   (ring + read-aware, seed 1: 0.908, 2.218)
+  no copy, seed 2          0.000 / 0 / 0 / 1.000 / 2.228   (ring + read-aware, seed 2: 0.895, 2.223)
+  table + read-aware, s0   0.357 / 0.812 / 0.400 / 0.998 / 2.224
+B line for the ring + read-aware gate: exact >= 0.80 on 3 of 3 seeds (0.930 / 0.908 / 0.895), the
+filler language within 0.02 of the no-copy arm on each (-0.004 / -0.004 / -0.005). The vocabulary
+as the candidate set (8,192 there) misses it: the copy distribution is flat over thousands of
+candidates and the trunk's EOS takes the later pieces (610 of 613 missed); below the 0.50 kill
+line as a fix -- A0's point (0.457 whole answers by cleanup on run 3) measured in training.
+
+validation/diag_copy_step0.py: CB_SPATIAL_COPY_BETA and CB_ARMS. Run 3 with the ring and the
+read-aware gate (tau 3.04, beta 0.115) ADDED, nothing trained, 24 held-out documents:
+  as trained 0.250 first / 0.000 exact; ring (order's gate) 0.525 / 0.058; ring + read-aware gate
+  0.800 / 0.258; villages 0.982 in all three; lam 0.234 at the asking tokens.
+Logs: exp_k10_far_facts_{combo_s1,combo_s2,combo_tableb_s0}_2026-10-21, diag_copy_step0_run3_ringb_2026-10-21.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

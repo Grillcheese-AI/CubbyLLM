@@ -1,0 +1,22 @@
+[0035] C: the space form (" coal" written and answered), where the trunk alone says "nothing"; C trains in it
+
+Copy off, in the far facts' bare form (render(lead=True)), run 5's trunk answers empty cells with
+village words ("rock", "house"): "nothing" 0.018 of 391 (exp_s12_copy_villages_run5_copy_off). The
+copy copies only written tokens and "nothing" is never written, so a gate that learns to shut on
+empty cells could not make them right in that form.
+
+render(lead="space") keeps Cowork's four points (the lead asks at the cell, the answer in the form
+its name was written in, a name's pieces at their own addresses, balanced answers) with every name
+in its space form, in the listing and the answer, and the ":" of "Answer:" asking. There the trunk
+alone says " nothing" for 0.987 of empty cells, and nothing else (it cannot read things alone):
+  copy on (run5_space):        things 0.818, names 0.775, "nothing" 0.609 exact; lambda 0.40 on empty
+  copy off (run5_space_copy_off): things 0.000, names 0.000, "nothing" 0.987
+So the work splits: the copy gives things, the trunk gives "nothing", and the gate has to learn to
+shut on an empty cell. C's shard is in this form (make_scene_shard --shape space): 67 villages from
+24 seeds outside 0034's (1000-1129), 3,350 documents of 512, 92,103 questions (9,222 names, 36,850
+other things, 46,031 "nothing"); the shard stays in BlockWorld's run folder.
+
+Off (lead=False), the render is byte for byte as before 0035 (800 documents against 9bc861b's).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

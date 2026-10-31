@@ -1,0 +1,4 @@
+[0015] reuse the existing topic map (gbooks / wikibooks -> 83 topics) to route domain worlds; the Gutenberg catalog (on Nick's yes) names the numeric ids, confirms public domain, marks fiction
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

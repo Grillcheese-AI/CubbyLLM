@@ -1,0 +1,39 @@
+[0037] Done: the rule on by default, the KATA guard, the source's value over the snapshot's
+
+Cowork's three items (2026-10-27), each measured on this machine:
+
+1. The namesake rule is on by default (hops and how the answer reads); CB_NAMESAKE_RELATION=0
+   turns it off. Three tests that assumed it off now set the flag to 0.
+
+2. The KATA guard (hdc_relation.PLACING: country, located in, located in the administrative
+   territorial entity): for a place relation every item that holds a fact that places it
+   competes, whatever its kind. Not only an item of no kind: a kind's share of "country" says
+   nothing, and with the narrower guard "country of Eiffel Tower" read the replica in the US
+   alone (lattice tower does not carry country by share). Asked a capital, France's bare item
+   still does not compete.
+   The audit, seed 1 (validation/logs/audit_namesake_relation_2026-10-27.md): the same counts
+   (6 one item, 1 labelled, 43 asked back); KATA asks back; Calhoun Township (country) now
+   answers "United States of America" with the disambiguation page offered -- for Cowork's
+   reading; four notes change wording. The cue probe: 3 picks, 17 ask back, 0 wrong, unchanged.
+   0033's probe: 0 mixed; the Eiffel Tower hop withholds both items.
+
+3. Wikidata wins (Nick): cubbyllm/reasoning/ask_source_first.py and cubbyllm/worlds/aside.py,
+   on by default, CB_SOURCE_OVER_SNAPSHOT=0 off. Before a snapshot's changing value is said
+   "as of", the same walk runs once more with that world's rows on the relation set aside: it
+   stalls there and asks the source; a verified value is said as any source's value is, none
+   and the snapshot's value stands.
+   The stack's 20, the source's cache (0037_stack_source_cache_2026-10-27.json): France and
+   Canada say "Paris" and "Ottawa" flat; 11 of 20 spoken, the same 11 as with both flags off
+   and as a live run (0037_stack_source_live_2026-10-27.json). The source off
+   (--source off, 0037_stack_source_off_2026-10-27.json): "As of 2019, Paris. ...",
+   "As of 2019, Ottawa."; 4 of 20 spoken.
+
+Found on the way: the offline source's label chunks make an offline run path-dependent
+(Florence for Italy's capital, the WWII date refused, in some runs) until a live run fills
+them; arms must run one after another. Recorded in the order. A question for 0044: the
+source's newer value beside the snapshot's older one is a contradiction on the next ask.
+
+Tests: 1112 passed, 1 failed (test_every_module_declares_wiring, the known red of order 0002).
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

@@ -1,0 +1,40 @@
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+{
+ "checkpoint": "spatial_link_5_final.pt",
+ "probe": "facts_far1k_v2_absent",
+ "theta": 0.11699999868869781,
+ "theta_end": 0.08500000089406967,
+ "end_said_by_the_contract": true,
+ "docs": {
+  "test": 200
+ },
+ "test_model": {
+  "exact": 0.6535626535626535,
+  "present_refused": 0.32923832923832924,
+  "present_wrong": 0.01719901719901723,
+  "absent_answered": 0.0,
+  "n_present": 814,
+  "n_absent": 183,
+  "max_logit_change_off_the_askers": 0.0
+ },
+ "wall_s": 1527.1
+}

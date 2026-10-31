@@ -1,0 +1,4 @@
+Ideas from empirical_grilly_next into the orders: the WordNet/WOLF lexicon + intent rules + a grammar gate (0018), 88-domain regex routing (0015), hypernym density for analogies (0008), best-of-N under the claim check (0010), pattern separation if text keys collide (0006)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

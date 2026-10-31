@@ -1,0 +1,15 @@
+[0001] Addendum from the literature search: a distance step on the ladder, read supervision (B5), an answer-token weight under B3, and a gated distance curriculum (B7)
+
+Acceptance is unchanged; new steps are judged by the A lines, new fixes by the B lines.
+- A step 6 (--gap): Boesch & Wee 2026 (arXiv 2609.16183) see fixed-state recall cells fall to
+  chance in a distractor haystack from interference under sparse supervision, and a distance
+  curriculum gated on accuracy fix it (0.021 -> 1.000); dense supervision added nothing there.
+- B5: a CE on the copy logits alone at ASK positions, so the copy path learns to decode before
+  its gate opens (the gate starts closed, so the main loss barely reaches tau).
+- Not built here: an o-init sweep (zero-init o is not a cold start; villages learned from it)
+  and entity-level storage (its own order if --pieces is what breaks it).
+- Citation fixed: the search's kNN-LM link (2102.02557) is Yogatama et al. 2021; kNN-LM is
+  Khandelwal et al. 1911.00172.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

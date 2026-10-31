@@ -1,0 +1,33 @@
+flags {'CB_SOURCE_OVER_SNAPSHOT': None, 'CB_NAMESAKE_RELATION': None}
+    What is the capital of France? -> Paris. If you meant something else, there is also a constituency of the european parliament named France. Want to know about it? None calls 1
+    Where was Ada Lovelace born? -> London None calls 1
+    Who wrote Pride and Prejudice? -> Jane Austen None calls 1
+    When was the Eiffel Tower built? -> None no_plan calls 0
+    What is the capital of Canada? -> Ottawa None calls 1
+    Who is the father of Queen Elizabeth II? -> None retrieval_exhausted calls 1
+    What is the population of Toronto? -> None no_plan calls 0
+    Who painted the Mona Lisa? -> Leonardo da Vinci None calls 1
+    Where is the Globe Theatre? -> None no_plan calls 0
+    What language is spoken in Brazil? -> None ambiguous_hop calls 1
+    Who discovered penicillin? -> Alexander Fleming None calls 1
+    What is the currency of Japan? -> Japanese yen. If you meant something else, there is also a manga named Japan (2 of them). Want to know about one of them? None calls 0
+### Quelle est la capitale de l'Italie ? -> Florence None None
+   seed Italie plan ['capital'] entities ['Italie'] aliased []
+   hdc label None namesakes [] decision null withheld []
+   learned [('Florence is the capital of Italie', 'accepted'), ('247 is the maritime identification digits of Italie', 'accepted')]
+   trace ['Florence is the capital of Italie'] over None None candidates None
+   source call ["Italie", ["capital"], null, 300, {"entity": "Italie", "qid": "Q38", "label": "Italy", "alias": true, "n_claims": 1054, "how": "relation: capital"}, ["Triple(obj='Florence', rel='capital', subj='Italie')", "Triple(obj='247', rel='maritime identification digits', subj='Italie')"]]
+   known end time? False capital? True
+    Qui a écrit Les Misérables ? -> Victor Hugo None calls 1
+    What river flows through Cairo? -> Nile. If you meant something else, there is also an operating system named Cairo and a village in the united states named Cairo. Want to know about one of them? None calls 0
+    Who was the first president of the United States? -> None entity_unresolved calls 1
+    How tall is Mount Everest? -> None retrieval_exhausted calls 1
+    What is the speed of light? -> None no_plan calls 0
+    Who is the mayor of Montreal? -> None no_plan calls 0
+### What year did World War II end? -> None unknown_relation {'covers': True, 'unknown_relations': ['end time'], 'tail_relation': None, 'paraphrased': []}
+   seed World War II plan ['end time'] entities ['World War II'] aliased []
+   hdc label World War II namesakes [] decision null withheld []
+   learned []
+   trace [] over None None candidates None
+   source call ["World War II", ["end time"], null, 31, {"entity": "World War II", "qid": "Q362", "label": "World War II", "alias": false, "n_claims": 329, "how": "relation: end time"}, []]
+   known end time? False capital? True

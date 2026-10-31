@@ -1,0 +1,27 @@
+[0038] Name matching (CB_NAME_MATCH=1, off), one retry of a failed call, and the siblings step keeps the seed as written
+
+Items 4 and 5 of Cowork's sorting of the 76 refusals.
+
+- wikidata_resolve.name_key / bare_key (CB_NAME_MATCH=1, off by default):
+  - accents are folded and "st" is read as "saint", on both sides;
+  - a leading honorific (saint, dr, doctor) is dropped only when nothing carries the whole name, so "saint
+    louis" stays St. Louis.
+  - Live: "st elizabeth ann seton" -> Elizabeth Ann Seton (born in New York City). "diego velazquez" now
+    matches, and four people share that name (the painter, two actors, a performer): asked which.
+  - "Quelle est la capitale de l'Italie ?" -> Rome on the stack's 20.
+- WikidataSource._get tries a failed call once more, after RETRY_S = 2 s. Live, one label call had failed and
+  dropped all of Stephen Breyer's facts.
+- learn.resolve_siblings rebuilt the plan's tail from the normalized seed. After 79 questions the store held
+  `birthplace`, the plan was translated to it, and "stephen g. breyer" became "stephen g breyer", which
+  Wikidata's search does not find. The tail now keeps the seed as the question wrote it.
+
+Tests: name matching (accents, saint, a second search only when the first finds no exact hit), a call that fails
+once, the siblings step's tail. Whole suite: 1110 passed; the one failure is the known red (order 0002).
+
+Live, the table on, tense on, both name flags on, every changed row read by hand:
+- WebQ: 65 spoken, 0 wrong (validation/logs/everyday_webq_on_live_tense_names2_2026-10-24.json).
+- The stack's 20: 11 spoken, 0 wrong (everyday_stack_on_live_tense_names2_2026-10-24.json).
+0038's record carries the table of all four steps: 47 -> 54 -> 63 -> 65.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

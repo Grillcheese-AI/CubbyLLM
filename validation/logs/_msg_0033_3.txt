@@ -1,0 +1,22 @@
+[0033] The local-path guard reads run logs and doubly escaped paths; the three files it then found are scrubbed
+
+0030's review found two leftovers the guard missed:
+- a .stdout log (the guard read no captured output);
+- a JSON file with a Drive path escaped twice (four backslashes; the guard's separator took one or two).
+
+The guard (tools/scrub_local_paths.py) now:
+- reads .stdout / .stderr / .out / .err files;
+- takes one to four backslashes as a separator, in the named rules and in the any-drive rule.
+
+tests/test_local_paths.py plants both forms: a doubly escaped Drive path, a doubly escaped path under another
+root, and a .stdout log under a user folder. The guard fails on each.
+
+On git ls-files it then found three files, rewritten with --write:
+- docs/model-competition-for-cubby-finalconsensus.json;
+- validation/logs/exp_m3_cot_pipeline_rb1.stdout;
+- validation/logs/exp_he19_cvl_train_v1.out (newly read as .out).
+
+It finds 0 now (16 passed).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

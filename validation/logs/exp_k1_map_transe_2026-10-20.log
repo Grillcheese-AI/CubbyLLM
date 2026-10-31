@@ -1,0 +1,17 @@
+wiki world: 374,975 entities, 2,902 relations, 345,106 train triples, 3,371 held out (3,000 scored), 2,000 two-hop paths over training hops
+--- transe: 193.5M parameters, width 512, lr 0.01 (entities) / 0.01 (relations)
+  epoch 1/10: loss 17.337 (255s)
+  epoch 2/10: loss 10.595 (267s)
+  epoch 3/10: loss 1.895 (241s)
+  epoch 4/10: loss 0.151 (216s)
+  epoch 5/10: loss 0.142 (234s)
+  epoch 6/10: loss 0.148 (251s)
+  epoch 7/10: loss 0.141 (257s)
+  epoch 8/10: loss 0.141 (177s)
+  epoch 9/10: loss 0.134 (283s)
+  epoch 10/10: loss 0.133 (285s)
+  one_hop   MRR 0.185  Hits@1 0.091  Hits@3 0.258  Hits@10 0.328  (n=3000)
+  relation  MRR 0.037  Hits@1 0.030  Hits@3 0.041  Hits@10 0.048  (n=3000)
+  two_hop   MRR 0.594  Hits@1 0.404  Hits@3 0.732  Hits@10 0.956  (n=2000)
+  two-hop / one-hop Hits@10: 2.92
+wrote validation\logs\exp_k1_map_transe_2026-10-20.json

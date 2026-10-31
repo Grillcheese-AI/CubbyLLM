@@ -1,0 +1,35 @@
+[0028] Plugins: the folder format, an index of front matter, a router, the pin and the review, a loader, the CLI, four plugins
+
+- standin/plugins_index.py: discover(dirs) reads each <plugin>/PLUGIN.md's YAML front matter and nothing else
+  (no code imported, no data opened); a folder that breaks a rule is left out with its reason.
+- standin/plugins_route.py: each plugin's description and examples as lines in a worlds.FactStore (the brain's
+  encoder when there is one, word overlap otherwise); a plugin wakes at tau. Tuned on the plugins' examples /
+  not lines, written first (validation/plugins_routing.py): 0.4 with the serve stack's fastword encoder, 0.475
+  with word overlap alone (started at Worlds.TAU 0.35, where not-lines leaked: 3 for alerts with the encoder).
+  In-sample, every plugin wakes on 10/10 examples and 0/10 not-lines at 0.4; leave-one-out (an example scored
+  without its own line) 10, 2, 4 and 2 of 10 (alerts, plays, talk, units): new phrasings of a need often miss.
+  Logs: plugins_routing_enc_2026-10-22.json, plugins_routing_2026-10-22.json.
+- standin/plugins_guard.py: approve() pins every file's SHA-256 and the permissions in a local, git-ignored lock;
+  a change blocks the plugin with the file named; check() fails code importing network, process or shell
+  modules or calling os.system / __import__; Ctx.fetch reaches only declared hosts, through the news archive's
+  polite fetcher (robots, Crawl-delay, CubbyLLM/0.1). Review plus a pin, not a sandbox (the docstring says so).
+- standin/plugins_load.py: Loader.wake(question) loads what scores >= tau (and the pinned), once, by kind:
+  source (Knows -> its own Worlds router; facts() kept), tool (schema-checked call), world (a pack ingested by
+  0015's fiction route into the plugin's folder, answering only a question naming its work; "who is X's
+  mother?" read exactly: the fact held, or nothing), adapter (Cubby450mTrunk.add_role), panel (panel.json).
+  Adapters idle for --plugin-idle minutes unload; pin / disable kept beside the lock.
+- standin/emitter.py: Cubby450mTrunk.layout / base_hash / add_role / remove_role: a plugin role refused when its
+  LoRA layout or base hash differs; the base and the other roles' weights never move. +55 lines on a file
+  already over 300: the trunk owns its weights, so the role methods sit with use().
+- standin/plugins.py: python -m standin.plugins list | check | approve | new.
+- plugins/: units (tool), envcanada-alerts (source + panel; the Datamart's CAP alerts, dd.weather.gc.ca only),
+  gutenberg-plays (world; the texts named by CUBBY_PLAYS, never in the repo), talk (adapter; its files named by
+  CUBBY_TALK_ADAPTER).
+- Tests: standin/tests/test_plugins.py (7): front matter only at startup; a changed file blocks; urllib /
+  subprocess / os.system fail review; ctx.fetch refuses an undeclared host; a tool wakes and checks its
+  arguments; an adapter of another layout or base is refused and unloading one restores the other role bit for
+  bit; a world plugin answers its work, refuses what it does not hold and unloads cleanly; an internal plugin is
+  absent from the public description.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

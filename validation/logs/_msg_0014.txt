@@ -1,0 +1,8 @@
+[0014] The hdc set's 4.3M Wikidata facts as a world -- open (Nick)
+
+The local hdc folder (hypernet-scaling-law-data, Apache-2.0, Wikidata5M) is used today only for talk SFT
+and experiments, never mounted: 4,294,788 unique triples (551 relations, 3,489,229 entities), ~12x the
+wikikg world. Disk-backed, labelled, cited; time-sensitive relations carry their snapshot date.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

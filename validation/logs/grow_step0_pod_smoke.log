@@ -1,0 +1,12 @@
+grow_base step 0 | start.pt (step 2) -> width x1, depth x2, ffn x2, exit zero
+  base  D16 L4 heads 2 ffn_mult 2: 0.2M parameters
+  grown D16 L8 heads 2 ffn_mult 4: 0.2M parameters  (built and filled in 0s)
+  episodic memory on 4 layers (one per 2, top-8, key 64), exits zeroed; it reads the past beyond the 4-token window
+  layers: 8, of which 4 copies (zero exit); attention at 4
+  fineweb_edu    base 4.85141  grown 4.85141  diff +0.00e+00  max |logit diff| 0.00e+00  (0s)
+  books          base 4.83123  grown 4.83123  diff +0.00e+00  max |logit diff| 0.00e+00  (0s)
+  mean over 2 sources x 1 windows x 64 tokens: base 4.84132  grown 4.84132  diff +0.00e+00  max |logit diff| 0.00e+00
+verdict: EXACT (bar: |loss diff| <= 1e-4 per source, max |logit diff| <= 1e-2, float32)
+saved C:\Users\grill\AppData\Local\Temp\pytest-of-grill\pytest-1084\test_every_phase_runs_and_writ0\work2\runs\grown\grow_step0.pt (0.00 GB)
+  reloaded through train_base.load_base: fineweb_edu loss 4.85141 (before saving 4.85141)
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\grow_step0_pod_smoke.json / .log  (0s total)

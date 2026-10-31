@@ -1,0 +1,18 @@
+[0031] slice 1, worlds: 21 modules from standin/ to cubbyllm/worlds/ (git mv; paths and imports only)
+
+worlds.py -> base.py; worlds_adapters / _fiction / _ingest / _manifest / _store -> adapters, fiction, ingest,
+manifest, store; hdc_store, books, book_frames, book_source, book_reader, encyclopedia, wikitext,
+history_graph, history_lookup, time_rule, capsules, self_source; standin/data/world_hygiene -> hygiene,
+standin/data/wikikg, standin/data/hdc_world. Their 15 tests -> tests/worlds/.
+
+tools/move_slice.py did the move. In each moved file:
+- imports of moved modules became relative package imports;
+- every __file__ path was rewritten to the same place from the new location (the data stays where
+  it was: standin/data/out, the repo root);
+- statements that only edited sys.path are gone.
+Every moved module imports in a fresh interpreter with only the repo root on the path. Not-yet-moved
+standin modules are imported only lazily (lfm_source, question_forms), and go with their slices.
+The old names come back in the next commit (shims), so this commit alone does not run.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

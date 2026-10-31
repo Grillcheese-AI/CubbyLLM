@@ -1,0 +1,9 @@
+[0020] Addendum 2: scripts make character arcs possible
+
+The drama folder holds 25 screenplays and TV pilots and 78 Gutenberg plays. Scripts mark the
+speaker of every line (125 to 1,497 speaker cues per script) and every scene, so arcs per
+character need no attribution model. Report only; the gold set stays on novels. Works about real
+people stay fiction worlds.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

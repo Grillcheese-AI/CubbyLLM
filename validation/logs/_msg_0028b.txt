@@ -1,0 +1,30 @@
+[0028] Plugins in the server and on the board; the measured checks; two fixes found running them
+
+- standin/plugins_serve.py (new): mount() (the index, a Loader routing with the brain's fact-store encoder and
+  adding adapters to its 450M trunk when one is mounted), on_question() (a question wakes its plugins; the
+  record notes them and the facts their askable worlds returned, as internal fields), the board's Plugins
+  payloads and the Approve / Pin / Disable actions (audit audience only).
+- serve_api.py: --plugins DIR[,DIR] (default CUBBY_PLUGINS; off when unset) and --plugin-idle; /ask and /turn
+  wake plugins first (the talk role must be loaded before a turn speaks); POST /board/plugins/<name>/<action>.
+  +25 lines on a file already over 300: the dispatch only; the logic is in plugins_serve.
+- audience.py: plugins / plugin_facts are internal fields (for_user drops them); board_api scrubs internal
+  plugins' names from public responses.
+- dashboard/board/plugins.js + a Plugins nav entry: the plugins with kinds, status, permissions and audience,
+  "which plugin would wake?", the selected PLUGIN.md, the loaded plugins' panels, and the actions in the audit
+  view. Checked in Chrome: Pin loads envcanada-alerts live and its panel lists the alerts in effect.
+- plugins_guard: text files hashed with LF line endings (a CRLF checkout must not block an approved plugin);
+  binary files byte for byte.
+- envcanada-alerts: an alert whose headline says it ended was counted as in effect ("yellow advisory - fog -
+  ended"): now dropped; headlines said plainly ("A yellow wind warning is in effect for ... until ... UTC").
+- validation/plugins_checks.py -> validation/logs/plugins_checks_2026-10-22.json: 50 dummy plugins add 69.8 ms
+  median (108.2 max; 44.6 ms on an idle CPU in an earlier run), none imported; units 10/10 exact;
+  envcanada-alerts live: 53 alerts in effect, refreshed in 4.7 s, a held place answered, an invented one
+  refused; gutenberg-plays on the 78 local plays: 1 in-fiction fact read (the 0015 reader looks for "X's
+  father, Y" prose, which these Folio texts rarely contain; only 4 plays state a relation in a persons list),
+  so its examples are refused, not answered -- 0 wrong.
+- Tests: test_plugins_serve.py (3): off changes nothing the server answers; an internal plugin's name and
+  facts are absent from every public board response and the public /ask record, present for the audit
+  audience; actions answer the audit audience only.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

@@ -1,0 +1,7 @@
+[0015] Everything in the datasets into worlds (Nick): docs/WORLDS.md (kinds, tiers, routes, exclusions, rights), a git-ignored per-dataset manifest, and one manifest-driven, incremental ingestion tool -- open
+
+Pretraining teaches language; a world learns a fact in one sighting, exact and cited. Fiction gets one
+world per work and never answers about reality; eval, synthetic and dialogue sets are excluded.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

@@ -1,0 +1,31 @@
+[0033] One data root: every data place the packages keep resolves under data_dir() ($CUBBY_DATA, default standin/data/out)
+
+0031's review, answer 6: one data root named by the server, defaulting to today's place; the caches move,
+nothing is fetched again.
+
+What changed:
+- cubbyllm.local_paths.data_dir(*parts): $CUBBY_DATA (the environment, then the git-ignored paths.local.json),
+  else standin/data/out.
+- The 16 places now read it: the web, Wikidata and news caches, the property table, the audit token, the
+  lexicon, the hdc world, hygiene's and hdc_world's out folder, the wikikg export, the plugins' lock and data,
+  the host key, the ledger, and the server's history / learned / skills defaults and build's two files.
+- The server names it: python -m cubby_serve --data-root <dir>, read before the package loads (cubby_serve.api).
+- tools/move_data_root.py --to <dir> [--write] [--remember] moves what is there. An entry already at the
+  destination is left in place and listed: nothing is overwritten or deleted.
+- Unset, every path is today's, so nothing moved on this machine.
+
+The name is $CUBBY_DATA, not the answer's $CUBBY_DATA_ROOT. Since 0030's scrub, $CUBBY_DATA_ROOT already means
+"any other drive root": 23 committed files use it that way, and code defaults resolve through it
+(cubbyllm/worlds/fact_pool.py's parquet; validation's). On this machine paths.local.json sets it to a drive
+root, so pointing that name at standin/data/out would break them. Said in the order's report.
+
+tests/test_data_root.py:
+- the default, and $CUBBY_DATA's override;
+- in a fresh process with $CUBBY_DATA set, all 16 places land under it;
+- no module of cubbyllm/ or cubby_serve/ spells standin/data/out in its code;
+- the mover moves and never overwrites.
+
+Four modules lost the pathlib import this left unused.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

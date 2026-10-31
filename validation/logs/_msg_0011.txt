@@ -1,0 +1,4 @@
+[0011] proposed: fact shards in readable words -- event ids (FortPeckDam_ConstructionBegan1933) lose their spaces and case in make_fact_shard.words(), and relation names ending in a preposition give "of of"
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

@@ -1,0 +1,531 @@
+{
+ "bench": "exp_s10_branches: the conditional mind over possibility-world branches, hdc 2/3-hop chains with a planted candidate",
+ "date": "2026-10-16",
+ "n": 60,
+ "planted": {
+  "planted branch impossible": 35,
+  "planted branch not caught": 2
+ },
+ "plant_rate": 0.8,
+ "vm": "cubelang",
+ "policies": {
+  "habit": {
+   "wrong": 0.3,
+   "correct": 0.683,
+   "refused": 0.017,
+   "n": 60
+  },
+  "ask": {
+   "refused": 0.7,
+   "correct": 0.3,
+   "n": 60
+  },
+  "conditional": {
+   "correct": 0.867,
+   "refused": 0.133,
+   "n": 60
+  }
+ },
+ "per_hop": {
+  "habit": {
+   "2-hop forked": {
+    "wrong": 0.448,
+    "correct": 0.552,
+    "n": 29
+   },
+   "2-hop plain": {
+    "wrong": 0.25,
+    "correct": 0.667,
+    "refused": 0.083,
+    "n": 12
+   },
+   "3-hop forked": {
+    "correct": 0.8,
+    "wrong": 0.2,
+    "n": 10
+   },
+   "3-hop plain": {
+    "correct": 1.0,
+    "n": 9
+   }
+  },
+  "ask": {
+   "2-hop forked": {
+    "refused": 0.966,
+    "correct": 0.034,
+    "n": 29
+   },
+   "2-hop plain": {
+    "refused": 0.333,
+    "correct": 0.667,
+    "n": 12
+   },
+   "3-hop forked": {
+    "refused": 0.9,
+    "correct": 0.1,
+    "n": 10
+   },
+   "3-hop plain": {
+    "correct": 0.889,
+    "refused": 0.111,
+    "n": 9
+   }
+  },
+  "conditional": {
+   "2-hop forked": {
+    "correct": 0.862,
+    "refused": 0.138,
+    "n": 29
+   },
+   "2-hop plain": {
+    "correct": 0.917,
+    "refused": 0.083,
+    "n": 12
+   },
+   "3-hop forked": {
+    "correct": 0.8,
+    "refused": 0.2,
+    "n": 10
+   },
+   "3-hop plain": {
+    "correct": 0.889,
+    "refused": 0.111,
+    "n": 9
+   }
+  }
+ },
+ "value": {
+  "habit": 0.383,
+  "ask": 0.3,
+  "conditional": 0.867
+ },
+ "kill_line_0_wrong": {
+  "habit": false,
+  "ask": true,
+  "conditional": true
+ },
+ "branches_per_fork": 2.44,
+ "refusals": {
+  "walk refused: vm_verify_failed": 1
+ },
+ "ms": {
+  "walk_mean": 3.98,
+  "walk_p99": 12.47,
+  "oracle_per_fork_mean": 32.71
+ },
+ "examples": [
+  {
+   "q": "Which country is the country of the headquarters location of Creative Programs, Inc. (CPI)?",
+   "truth": "",
+   "planted": "reading, pa is the headquarters location of Creative Programs, Inc. (CPI)",
+   "branches": [
+    {
+     "answer": "🇵🇭",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ]
+    },
+    {
+     "answer": "united stated",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ]
+    }
+   ],
+   "verdict": {
+    "habit": "wrong",
+    "ask": "refused",
+    "conditional": "correct"
+   }
+  },
+  {
+   "q": "What is the language of work or name of the language of work or name of the source that describes the instance of Omidcheh, East Azerbaijan?",
+   "truth": "swedishlanguage",
+   "planted": "krugosvet is the described by source of village",
+   "branches": [
+    {
+     "answer": "swedishlanguage",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ]
+    },
+    {
+     "answer": "ruckii",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ]
+    }
+   ],
+   "verdict": {
+    "habit": "correct",
+    "ask": "refused",
+    "conditional": "correct"
+   }
+  },
+  {
+   "q": "Which is the name day of the given name of david carr (phenomenology scholar)?",
+   "truth": "june 25",
+   "planted": "11th of may is the name day of Davut",
+   "branches": [
+    {
+     "answer": "june 25",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ]
+    },
+    {
+     "answer": "11th of may",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ]
+    }
+   ],
+   "verdict": {
+    "habit": "correct",
+    "ask": "refused",
+    "conditional": "correct"
+   }
+  },
+  {
+   "q": "What is the component of the instance of megachile congruens?",
+   "truth": "books organism",
+   "planted": "regional anatomy is the has part of Taxxon",
+   "branches": [
+    {
+     "answer": "Books/Organism",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ]
+    },
+    {
+     "answer": "regional anatomy",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ]
+    },
+    {
+     "answer": "funeral plot",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ]
+    }
+   ],
+   "verdict": {
+    "habit": "wrong",
+    "ask": "refused",
+    "conditional": "correct"
+   }
+  },
+  {
+   "q": "What is the component of the instance of rhyssinae?",
+   "truth": "books organism",
+   "planted": null,
+   "branches": [
+    {
+     "answer": "Books/Organism",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ]
+    },
+    {
+     "answer": "regional anatomy",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ]
+    },
+    {
+     "answer": "funeral plot",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ]
+    }
+   ],
+   "verdict": {
+    "habit": "wrong",
+    "ask": "refused",
+    "conditional": "correct"
+   }
+  },
+  {
+   "q": "What is the work that based on the source that describes the instance of jhonatan restrepo valencia?",
+   "truth": "collier s new encyclopedia",
+   "planted": "city (kentucky) is the instance of of jhonatan restrepo valencia",
+   "branches": [
+    {
+     "answer": "collier's new encyclopedia",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ]
+    },
+    {
+     "answer": "conversations-lexikon mit vorzueglicher ruecksicht auf die gegenwaertigen zeiten",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ]
+    },
+    {
+     "answer": "collier's new encyclopedia",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ]
+    },
+    {
+     "answer": "conversations-lexikon mit vorzueglicher ruecksicht auf die gegenwaertigen zeiten",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ]
+    },
+    {
+     "answer": "collier's new encyclopedia",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ]
+    }
+   ],
+   "verdict": {
+    "habit": "correct",
+    "ask": "refused",
+    "conditional": "refused"
+   }
+  },
+  {
+   "q": "What is the instance of the administrative territorial entity contained within the country of Papakura, New Zealand?",
+   "truth": "regions of nz",
+   "planted": "province (south africa) is the instance of of Manawatu-Whanganui",
+   "branches": [
+    {
+     "answer": "regions of nz",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ]
+    },
+    {
+     "answer": "province (south africa)",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ]
+    }
+   ],
+   "verdict": {
+    "habit": "correct",
+    "ask": "refused",
+    "conditional": "correct"
+   }
+  },
+  {
+   "q": "What is the continent of the country of citizenship of Marcos J. Reyes?",
+   "truth": "oceania portal",
+   "planted": "Commonwealth Australia is the country of citizenship of Marcos J. Reyes",
+   "branches": [
+    {
+     "answer": "oceania portal",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ]
+    },
+    {
+     "answer": "oceania portal",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ]
+    },
+    {
+     "answer": "Continent of Africa",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ]
+    }
+   ],
+   "verdict": {
+    "habit": "correct",
+    "ask": "refused",
+    "conditional": "refused"
+   }
+  },
+  {
+   "q": "Which is the political party of the head of government of the country of Dargai Pal Dam?",
+   "truth": "pakistan muslim league",
+   "planted": "🇦🇼 is the country of Dargai Pal Dam",
+   "branches": [
+    {
+     "answer": "Pakistan Muslim League",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ]
+    },
+    {
+     "answer": "aruban people's party",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ]
+    },
+    {
+     "answer": "Pakistan Muslim League",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ]
+    }
+   ],
+   "verdict": {
+    "habit": "correct",
+    "ask": "refused",
+    "conditional": "correct"
+   }
+  },
+  {
+   "q": "Which is the water body located near the administrative territorial entity of matanzas pass bridge?",
+   "truth": "mexico gulf",
+   "planted": "pennsylvania is the located in the administrative territorial entity of matanzas pass bridge",
+   "branches": [
+    {
+     "answer": "Mexico Gulf",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ]
+    },
+    {
+     "answer": "lake erie",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ]
+    }
+   ],
+   "verdict": {
+    "habit": "wrong",
+    "ask": "refused",
+    "conditional": "correct"
+   }
+  },
+  {
+   "q": "What is the instance of the noble title of Heyman, Henry?",
+   "truth": "coparcener",
+   "planted": "archcount is the noble title of Heyman, Henry",
+   "branches": [
+    {
+     "answer": "titles of nobility",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ]
+    },
+    {
+     "answer": "Coparcener",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ]
+    },
+    {
+     "answer": "Chivalric Orders",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ]
+    }
+   ],
+   "verdict": {
+    "habit": "wrong",
+    "ask": "refused",
+    "conditional": "refused"
+   }
+  },
+  {
+   "q": "What is the continent of the country of Hertz Global Holdings, Inc.?",
+   "truth": "oceania portal",
+   "planted": "Continent of Africa is the continent of united stated",
+   "branches": [
+    {
+     "answer": "oceania portal",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ]
+    },
+    {
+     "answer": "Continent of Africa",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ]
+    }
+   ],
+   "verdict": {
+    "habit": "correct",
+    "ask": "refused",
+    "conditional": "correct"
+   }
+  }
+ ],
+ "secs": 4.6
+}

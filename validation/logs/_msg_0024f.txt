@@ -1,0 +1,16 @@
+[0024] Events by day: news items grouped across outlets by their names and key words (no model)
+
+standin/news_events.py (new, STANDALONE until the bench): one item through several feeds is one item (by
+link); only kind news is grouped (the manifest's kind wins over a row's); two items are one event when
+dated within 2 days and they share two names at Jaccard >= 0.15 over names and key words, or one name at
+0.3; groups merge by average linkage (half the cross pairs linked); a name carried by more than 2% of the
+items (Canada, Quebec, the UN) is not a name in common; a feed whose house style is title case gives no
+names from its headlines (judged per feed: one name-dense headline is not a style). Each fix answers a
+mistake seen on the first day's archive (a state visit chained to an election dispute by "Canada"; Nepal's
+floods joined to Venezuela's earthquake by capitals). Constants were set by eye on that day, before any
+judging: the 0.90 bar is for the judged sample of 100 groups after the week.
+First day (2026-10-22 archive): 450 news items -> 418 groups, 30 of 2+ (62 items), 25 across outlets.
+--sample N writes the judging file locally (it holds headlines). Tests: test_news_events.py (6).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

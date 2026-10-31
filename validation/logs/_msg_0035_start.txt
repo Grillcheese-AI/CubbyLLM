@@ -1,0 +1,4 @@
+[0035] in progress: A (the host's three routes) and B (why the copy did not fire) first
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

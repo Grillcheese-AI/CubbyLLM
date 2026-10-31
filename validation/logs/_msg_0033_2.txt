@@ -1,0 +1,12 @@
+[0033] The Brave rate test on a fake clock: 20 of 20 (was 3 to 5 failures in 20)
+
+The test timed five calls with time.monotonic and asserted at least four gaps of 1/20 s. On Windows a
+time.sleep can return a timer tick early, so it failed 3 to 5 runs in 20 (0031's report).
+
+BraveBackend now takes the limiter's clock and sleep (default time.monotonic and time.sleep: the server's
+behaviour is unchanged), and the test hands it a fake one. It asserts the four sleeps of 1/20 s exactly, and
+that a call after a pause waits for nothing. 20 of 20 runs passed, each in a fresh pytest process
+(validation/logs/0033_brave_20runs_2026-10-22.json).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

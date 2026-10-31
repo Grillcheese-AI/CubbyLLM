@@ -1,0 +1,45 @@
+[0033] Namesakes never merge: a name the hdc world shares between items gives none of them until something decides
+
+"Where is the Globe Theatre?" was answered from three items at once: "country: United Kingdom; located in:
+London Borough of Southwark, Boston". HdcWorld._query read a label's facts by the label alone, so every item with
+that label merged into one subject. An alias went through the same path: an alias of one item read every
+namesake of that item's label.
+
+The fix is in the hdc world's lookup (cubbyllm/worlds/hdc_namesakes.py, a mixin of HdcWorld and Stores):
+- a name stands for its items, by tier (label, else alias or Q-id);
+- one item: its facts, as before;
+- two or more: none, until the asker (a clarify choice, pinned for one walk) or the question decides.
+
+What the question can decide with:
+- A qualifier it carries ("Bambi (film)"; "the Globe Theatre in Boston", where only the values that say where
+  an item is count).
+- For a relation question, the relation the hop reads. This is the online source's rule, under three guards
+  this sparse snapshot needs: the item that holds the relation is of a known kind; no other item shares that
+  kind; no other item is of a kind that carries the relation anywhere in the world.
+  - Without the third, "Where is Wantage?" went to the New Jersey township, because the English civil
+    parish's location is not in the snapshot.
+  - With the guards, "What is the capital of France?" still reads Q142: the other Frances are a constituency
+    and an item of no known kind.
+
+Otherwise the reply is ambiguous_entity with the items named (cubbyllm/reasoning/ask_namesakes.py), the same
+clarify "what is Ottawa?" gets online. Profile asks name no relation, so for them only the asker or a qualifier
+decides. A walk's refusal is overwritten only when the world withheld facts its hop would have read.
+
+Measured (all on the hdc world here; no model in the probe or the bench):
+- The probe, 50 labels the hdc world shares, asked "where is X?" and "what is X?": 74 mixed answers in 100
+  before, 0 after. 94 now ask which; 6 are relation-shaped and go to the emitter (no_plan), as before.
+  Globe Theatre: asks which of 3 (with "Q5571005" chosen, or "in Boston": "located in: Boston"; "in London":
+  asks, since no item's value is London). Logs: validation/logs/namesake_probe_2026-10-22_before.json,
+  namesake_probe_2026-10-22_after.json, which also records 11 relation hops on real shared names.
+- 0014's bench: 179 of 179 spoken correct, 0 wrong (was 177 of 177). The two gained are aliases of one item
+  whose label's namesakes had made the hop multi-valued; every earlier answer is unchanged
+  (validation/logs/exp_hdc_bench_2026-10-22_0033.json).
+- The real stack (the 450M seats on grilly2, wiki + hdc, offline; python -m cubby_serve): 19 of the 20 fixed
+  answers identical. The Globe Theatre now asks which of its 3 items. The board differs only by the order
+  queue, that question's counts, and the talk adapter's one paraphrase call
+  (validation/logs/0033_stack_2026-10-22.json).
+
+hdc_store.py: 272 -> 288 lines. ask.py 274 -> 278, ask_profile.py 263 -> 271.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

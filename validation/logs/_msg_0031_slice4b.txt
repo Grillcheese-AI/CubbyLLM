@@ -1,0 +1,9 @@
+[0031] slice 4, reasoning: the old names as shims
+
+standin/ask.py, question_forms.py, context_graph.py and loci_reader.py are shims for one cycle:
+importing the old name gives the moved module itself (sys.modules) with a DeprecationWarning, and
+running the old file runs the new home. The server (serve_cli `from ask import AskLoop`), the SFT
+builders (`from ask import grounded_prose`) and the validation benches go through them unchanged.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

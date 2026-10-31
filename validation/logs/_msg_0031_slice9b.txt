@@ -1,0 +1,14 @@
+[0031] slice 9, cubby_serve: the old names as shims; `python -m cubby_serve` starts the server
+
+standin/serve_api.py, serve_cli.py, serve_events.py, serve_get.py, serve_post.py, board_api.py,
+board_data.py, plugins_serve.py, harness.py, harness_wiring.py and ledger.py are shims for one cycle:
+`python standin/serve_api.py ...` still starts the server (it runs cubby_serve.api). The new entry point
+is `python -m cubby_serve ...` (cubby_serve/__main__.py), with the same arguments.
+cubby_serve/board/__init__.py starts the board package. api, cli, events, get and post say WIRED: they
+are the server. The harness and the ledger keep their STANDALONE: what they said is still true.
+
+Checked: python standin/serve_api.py --help and python -m cubby_serve --help both reach the server's
+arguments. Tests: tests/serve, tests/brain, test_guards: 88 passed, 1 failed (the known red of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

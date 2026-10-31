@@ -1,0 +1,1984 @@
+[
+ {
+  "name": "uk",
+  "relation": "located in time zone",
+  "pids": [
+   "P421"
+  ],
+  "resolved": null,
+  "how": null,
+  "ambiguous": [
+   [
+    "Q1499",
+    "Uttarakhand",
+    "state in northern India"
+   ],
+   [
+    "Q145",
+    "United Kingdom",
+    "island country in north-west Europe"
+   ]
+  ],
+  "unresolved": false,
+  "hits": [
+   {
+    "id": "Q8798",
+    "label": "Ukrainian",
+    "desc": "East Slavic language",
+    "match": "Ukrainian",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "natural language",
+     "modern language"
+    ],
+    "carries": false,
+    "n_claims": 132
+   },
+   {
+    "id": "Q1499",
+    "label": "Uttarakhand",
+    "desc": "state in northern India",
+    "match": "UK",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "state of India"
+    ],
+    "carries": true,
+    "n_claims": 120
+   },
+   {
+    "id": "Q145",
+    "label": "United Kingdom",
+    "desc": "island country in north-west Europe",
+    "match": "UK",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "sovereign state",
+     "country",
+     "colonial power",
+     "island country"
+    ],
+    "carries": true,
+    "n_claims": 380
+   },
+   {
+    "id": "Q5412157",
+    "label": "Europe PubMed Central",
+    "desc": "database of biomedical research",
+    "match": "UKPMhC",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "bibliographic database",
+     "medical database",
+     "biological database",
+     "open-access repository"
+    ],
+    "carries": false,
+    "n_claims": 20
+   },
+   {
+    "id": "Q212",
+    "label": "Ukraine",
+    "desc": "country in Eastern Europe",
+    "match": "Ukraine",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "sovereign state",
+     "country",
+     "unitary state",
+     "republic",
+     "social state",
+     "Rechtsstaat",
+     "territory"
+    ],
+    "carries": true,
+    "n_claims": 378
+   }
+  ]
+ },
+ {
+  "name": "uk",
+  "relation": "currency",
+  "pids": [
+   "P38"
+  ],
+  "resolved": null,
+  "how": null,
+  "ambiguous": [
+   [
+    "Q1499",
+    "Uttarakhand",
+    "state in northern India"
+   ],
+   [
+    "Q145",
+    "United Kingdom",
+    "island country in north-west Europe"
+   ]
+  ],
+  "unresolved": false,
+  "hits": [
+   {
+    "id": "Q8798",
+    "label": "Ukrainian",
+    "desc": "East Slavic language",
+    "match": "Ukrainian",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "natural language",
+     "modern language"
+    ],
+    "carries": false,
+    "n_claims": 132
+   },
+   {
+    "id": "Q1499",
+    "label": "Uttarakhand",
+    "desc": "state in northern India",
+    "match": "UK",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "state of India"
+    ],
+    "carries": true,
+    "n_claims": 120
+   },
+   {
+    "id": "Q145",
+    "label": "United Kingdom",
+    "desc": "island country in north-west Europe",
+    "match": "UK",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "sovereign state",
+     "country",
+     "colonial power",
+     "island country"
+    ],
+    "carries": true,
+    "n_claims": 380
+   },
+   {
+    "id": "Q5412157",
+    "label": "Europe PubMed Central",
+    "desc": "database of biomedical research",
+    "match": "UKPMhC",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "bibliographic database",
+     "medical database",
+     "biological database",
+     "open-access repository"
+    ],
+    "carries": false,
+    "n_claims": 20
+   },
+   {
+    "id": "Q212",
+    "label": "Ukraine",
+    "desc": "country in Eastern Europe",
+    "match": "Ukraine",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "sovereign state",
+     "country",
+     "unitary state",
+     "republic",
+     "social state",
+     "Rechtsstaat",
+     "territory"
+    ],
+    "carries": true,
+    "n_claims": 378
+   }
+  ]
+ },
+ {
+  "name": "uk",
+  "relation": "official language",
+  "pids": [
+   "P37"
+  ],
+  "resolved": null,
+  "how": null,
+  "ambiguous": [
+   [
+    "Q1499",
+    "Uttarakhand",
+    "state in northern India"
+   ],
+   [
+    "Q145",
+    "United Kingdom",
+    "island country in north-west Europe"
+   ]
+  ],
+  "unresolved": false,
+  "hits": [
+   {
+    "id": "Q8798",
+    "label": "Ukrainian",
+    "desc": "East Slavic language",
+    "match": "Ukrainian",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "natural language",
+     "modern language"
+    ],
+    "carries": false,
+    "n_claims": 132
+   },
+   {
+    "id": "Q1499",
+    "label": "Uttarakhand",
+    "desc": "state in northern India",
+    "match": "UK",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "state of India"
+    ],
+    "carries": true,
+    "n_claims": 120
+   },
+   {
+    "id": "Q145",
+    "label": "United Kingdom",
+    "desc": "island country in north-west Europe",
+    "match": "UK",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "sovereign state",
+     "country",
+     "colonial power",
+     "island country"
+    ],
+    "carries": true,
+    "n_claims": 380
+   },
+   {
+    "id": "Q5412157",
+    "label": "Europe PubMed Central",
+    "desc": "database of biomedical research",
+    "match": "UKPMhC",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "bibliographic database",
+     "medical database",
+     "biological database",
+     "open-access repository"
+    ],
+    "carries": false,
+    "n_claims": 20
+   },
+   {
+    "id": "Q212",
+    "label": "Ukraine",
+    "desc": "country in Eastern Europe",
+    "match": "Ukraine",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "sovereign state",
+     "country",
+     "unitary state",
+     "republic",
+     "social state",
+     "Rechtsstaat",
+     "territory"
+    ],
+    "carries": true,
+    "n_claims": 378
+   }
+  ]
+ },
+ {
+  "name": "georgia",
+  "relation": "capital",
+  "pids": [
+   "P36",
+   "P1376"
+  ],
+  "resolved": null,
+  "how": null,
+  "ambiguous": [
+   [
+    "Q1428",
+    "Georgia",
+    "state of the United States of America"
+   ],
+   [
+    "Q230",
+    "Georgia",
+    "country in the Caucasus region of Europe and Asia"
+   ],
+   [
+    "Q785035",
+    "Province of Georgia",
+    "former British province in North America"
+   ]
+  ],
+  "unresolved": false,
+  "hits": [
+   {
+    "id": "Q1428",
+    "label": "Georgia",
+    "desc": "state of the United States of America",
+    "match": "Georgia",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "U.S. state"
+    ],
+    "carries": true,
+    "n_claims": 246
+   },
+   {
+    "id": "Q378694",
+    "label": "Georgia",
+    "desc": "female given name",
+    "match": "Georgia",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "female given name"
+    ],
+    "carries": false,
+    "n_claims": 17
+   },
+   {
+    "id": "Q230",
+    "label": "Georgia",
+    "desc": "country in the Caucasus region of Europe and Asia",
+    "match": "Georgia",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "country",
+     "sovereign state",
+     "unitary state",
+     "republic",
+     "Rechtsstaat",
+     "republic of the Soviet Union",
+     "country sometimes considered transcontinental"
+    ],
+    "carries": true,
+    "n_claims": 331
+   },
+   {
+    "id": "Q785035",
+    "label": "Province of Georgia",
+    "desc": "former British province in North America",
+    "match": "Georgia",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "former administrative territorial entity",
+     "province"
+    ],
+    "carries": true,
+    "n_claims": 29
+   },
+   {
+    "id": "Q761534",
+    "label": "University of Georgia",
+    "desc": "public university located in Athens, Georgia, United States",
+    "match": "Georgia",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "university",
+     "historic district in the United States",
+     "land-grant university",
+     "public educational institution of the United States",
+     "public research university",
+     "publishing house"
+    ],
+    "carries": false,
+    "n_claims": 95
+   }
+  ]
+ },
+ {
+  "name": "cyprus",
+  "relation": "currency",
+  "pids": [
+   "P38"
+  ],
+  "resolved": null,
+  "how": null,
+  "ambiguous": [
+   [
+    "Q229",
+    "Cyprus",
+    "country in the Mediterranean Sea"
+   ],
+   [
+    "Q644636",
+    "Cyprus",
+    "island in the Eastern Basin of the Mediterranean Sea"
+   ]
+  ],
+  "unresolved": false,
+  "hits": [
+   {
+    "id": "Q229",
+    "label": "Cyprus",
+    "desc": "country in the Mediterranean Sea",
+    "match": "Cyprus",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "sovereign state",
+     "island country",
+     "Mediterranean country",
+     "divided territory",
+     "state",
+     "country",
+     "disputed territory"
+    ],
+    "carries": true,
+    "n_claims": 296
+   },
+   {
+    "id": "Q599724",
+    "label": "Cyprus",
+    "desc": "Docklands Light Railway station",
+    "match": "Cyprus",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "Docklands Light Railway station",
+     "station located in a cut"
+    ],
+    "carries": false,
+    "n_claims": 26
+   },
+   {
+    "id": "Q10262778",
+    "label": "Cyprus",
+    "desc": "genus of insects",
+    "match": "Cyprus",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "taxon"
+    ],
+    "carries": false,
+    "n_claims": 11
+   },
+   {
+    "id": "Q644636",
+    "label": "Cyprus",
+    "desc": "island in the Eastern Basin of the Mediterranean Sea",
+    "match": "Cyprus",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "island"
+    ],
+    "carries": true,
+    "n_claims": 71
+   },
+   {
+    "id": "Q156050",
+    "label": "brucellosis",
+    "desc": "Human and animal disease",
+    "match": "Cyprus fever",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "type of disease"
+    ],
+    "carries": false,
+    "n_claims": 80
+   }
+  ]
+ },
+ {
+  "name": "obama",
+  "relation": "place of birth",
+  "pids": [
+   "P19"
+  ],
+  "resolved": null,
+  "how": null,
+  "ambiguous": [
+   [
+    "Q41773",
+    "Obama",
+    "city in Fukui prefecture, Japan"
+   ],
+   [
+    "Q18355807",
+    "Obama",
+    "genus of worms"
+   ],
+   [
+    "Q124706956",
+    "Obama",
+    "Italian drag performer"
+   ],
+   [
+    "Q122348649",
+    "Obama",
+    "2022 video game"
+   ]
+  ],
+  "unresolved": false,
+  "hits": [
+   {
+    "id": "Q41773",
+    "label": "Obama",
+    "desc": "city in Fukui prefecture, Japan",
+    "match": "Obama",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "city of Japan"
+    ],
+    "carries": false,
+    "n_claims": 51
+   },
+   {
+    "id": "Q18355807",
+    "label": "Obama",
+    "desc": "genus of worms",
+    "match": "Obama",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "taxon"
+    ],
+    "carries": false,
+    "n_claims": 19
+   },
+   {
+    "id": "Q124706956",
+    "label": "Obama",
+    "desc": "Italian drag performer",
+    "match": "Obama",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "human"
+    ],
+    "carries": false,
+    "n_claims": 3
+   },
+   {
+    "id": "Q122348649",
+    "label": "Obama",
+    "desc": "2022 video game",
+    "match": "Obama",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "video game"
+    ],
+    "carries": false,
+    "n_claims": 17
+   },
+   {
+    "id": "Q59661289",
+    "label": "Barack Obama Presidential Library",
+    "desc": "reference unit of the National Archives and Records Administration",
+    "match": "Obama Presidential Library",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "library",
+     "archives"
+    ],
+    "carries": false,
+    "n_claims": 13
+   }
+  ]
+ },
+ {
+  "name": "king henry viii",
+  "relation": "religion",
+  "pids": [
+   "P140"
+  ],
+  "resolved": null,
+  "how": null,
+  "ambiguous": [
+   [
+    "Q28043044",
+    "King Henry VIII",
+    "painting by anonymous painter (NPG NPG 4980(14))"
+   ],
+   [
+    "Q28042058",
+    "King Henry VIII",
+    "painting by Unknown Anglo-Netherlandish artist (NPG NPG 3638)"
+   ],
+   [
+    "Q28042065",
+    "King Henry VIII",
+    "painting by anonymous after Hans Holbein the Younger"
+   ],
+   [
+    "Q28041996",
+    "King Henry VIII",
+    "painting by Unknown Anglo-Netherlandish artist"
+   ],
+   [
+    "Q28042069",
+    "King Henry VIII",
+    "painting after Hans Holbein the Younger (NPG NPG 324)"
+   ]
+  ],
+  "unresolved": false,
+  "hits": [
+   {
+    "id": "Q28043044",
+    "label": "King Henry VIII",
+    "desc": "painting by anonymous painter (NPG NPG 4980(14))",
+    "match": "King Henry VIII",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "painting"
+    ],
+    "carries": false,
+    "n_claims": 16
+   },
+   {
+    "id": "Q28042058",
+    "label": "King Henry VIII",
+    "desc": "painting by Unknown Anglo-Netherlandish artist (NPG NPG 3638)",
+    "match": "King Henry VIII",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "painting"
+    ],
+    "carries": false,
+    "n_claims": 17
+   },
+   {
+    "id": "Q28042065",
+    "label": "King Henry VIII",
+    "desc": "painting by anonymous after Hans Holbein the Younger",
+    "match": "King Henry VIII",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "painting"
+    ],
+    "carries": false,
+    "n_claims": 20
+   },
+   {
+    "id": "Q28041996",
+    "label": "King Henry VIII",
+    "desc": "painting by Unknown Anglo-Netherlandish artist",
+    "match": "King Henry VIII",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "painting"
+    ],
+    "carries": false,
+    "n_claims": 17
+   },
+   {
+    "id": "Q28042069",
+    "label": "King Henry VIII",
+    "desc": "painting after Hans Holbein the Younger (NPG NPG 324)",
+    "match": "King Henry VIII",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "painting"
+    ],
+    "carries": false,
+    "n_claims": 15
+   }
+  ]
+ },
+ {
+  "name": "queen isabella",
+  "relation": "mother",
+  "pids": [
+   "P25"
+  ],
+  "resolved": null,
+  "how": null,
+  "ambiguous": [
+   [
+    "Q112200547",
+    "Queen Isabella",
+    "painting by Julie Buffalohead"
+   ],
+   [
+    "Q61008231",
+    "Queen Isabella",
+    "theatrical character in the play \"Edward II\""
+   ]
+  ],
+  "unresolved": false,
+  "hits": [
+   {
+    "id": "Q45859",
+    "label": "Isabella I of Castile",
+    "desc": "queen of the Crown of Castile, from 1474 to 1504; first queen of a dynastically-united Spain, from 1479 to 1504 (1451–1504)",
+    "match": "Queen Isabella of Spain",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "human"
+    ],
+    "carries": true,
+    "n_claims": 204
+   },
+   {
+    "id": "Q7270407",
+    "label": "Queen Isabella",
+    "desc": "Wikimedia disambiguation page",
+    "match": "Queen Isabella",
+    "exact": true,
+    "meta": true,
+    "kinds": [
+     "Wikimedia human name disambiguation page"
+    ],
+    "carries": false,
+    "n_claims": 1
+   },
+   {
+    "id": "Q112200547",
+    "label": "Queen Isabella",
+    "desc": "painting by Julie Buffalohead",
+    "match": "Queen Isabella",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "painting"
+    ],
+    "carries": false,
+    "n_claims": 8
+   },
+   {
+    "id": "Q61008231",
+    "label": "Queen Isabella",
+    "desc": "theatrical character in the play \"Edward II\"",
+    "match": "Queen Isabella",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "theatrical character"
+    ],
+    "carries": false,
+    "n_claims": 5
+   },
+   {
+    "id": "Q4924",
+    "label": "Isabella I, Queen of Armenia",
+    "desc": "queen regnant of Cilician Armenia",
+    "match": "Queen Isabella of Armenia",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "human"
+    ],
+    "carries": true,
+    "n_claims": 35
+   }
+  ]
+ },
+ {
+  "name": "ben franklin",
+  "relation": "place of birth",
+  "pids": [
+   "P19"
+  ],
+  "resolved": null,
+  "how": null,
+  "ambiguous": [
+   [
+    "Q34969",
+    "Benjamin Franklin",
+    "American polymath and statesman (1706–1790)"
+   ],
+   [
+    "Q131374896",
+    "Ben Franklin",
+    "21st century American politician"
+   ]
+  ],
+  "unresolved": false,
+  "hits": [
+   {
+    "id": "Q34969",
+    "label": "Benjamin Franklin",
+    "desc": "American polymath and statesman (1706–1790)",
+    "match": "Ben Franklin",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "human"
+    ],
+    "carries": true,
+    "n_claims": 327
+   },
+   {
+    "id": "Q131374896",
+    "label": "Ben Franklin",
+    "desc": "21st century American politician",
+    "match": "Ben Franklin",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "human"
+    ],
+    "carries": true,
+    "n_claims": 10
+   },
+   {
+    "id": "Q19873536",
+    "label": "Ben Franklin",
+    "desc": "Australian politician",
+    "match": "Ben Franklin",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "human"
+    ],
+    "carries": false,
+    "n_claims": 16
+   },
+   {
+    "id": "Q4885670",
+    "label": "Ben Franklin",
+    "desc": "episode of The Office (S3 E15)",
+    "match": "Ben Franklin",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "television series episode"
+    ],
+    "carries": false,
+    "n_claims": 29
+   },
+   {
+    "id": "Q4885668",
+    "label": "Ben Franklin",
+    "desc": "unincorporated community in Delta County, Texas, United States",
+    "match": "Ben Franklin",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "unincorporated community"
+    ],
+    "carries": false,
+    "n_claims": 14
+   }
+  ]
+ },
+ {
+  "name": "anne hathaway",
+  "relation": "place of birth",
+  "pids": [
+   "P19"
+  ],
+  "resolved": null,
+  "how": null,
+  "ambiguous": [
+   [
+    "Q237251",
+    "Anne Hathaway",
+    "wife of William Shakespeare (1556-1623)"
+   ],
+   [
+    "Q36301",
+    "Anne Hathaway",
+    "American actress (born 1982)"
+   ],
+   [
+    "Q41705947",
+    "Mary Bigelow Ingham",
+    "American writer, educator, religious worker"
+   ]
+  ],
+  "unresolved": false,
+  "hits": [
+   {
+    "id": "Q237251",
+    "label": "Anne Hathaway",
+    "desc": "wife of William Shakespeare (1556-1623)",
+    "match": "Anne Hathaway",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "human"
+    ],
+    "carries": true,
+    "n_claims": 64
+   },
+   {
+    "id": "Q36301",
+    "label": "Anne Hathaway",
+    "desc": "American actress (born 1982)",
+    "match": "Anne Hathaway",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "human"
+    ],
+    "carries": true,
+    "n_claims": 351
+   },
+   {
+    "id": "Q404918",
+    "label": "Anne Hathaway",
+    "desc": "Wikimedia disambiguation page",
+    "match": "Anne Hathaway",
+    "exact": true,
+    "meta": true,
+    "kinds": [
+     "Wikimedia human name disambiguation page"
+    ],
+    "carries": false,
+    "n_claims": 3
+   },
+   {
+    "id": "Q41705947",
+    "label": "Mary Bigelow Ingham",
+    "desc": "American writer, educator, religious worker",
+    "match": "Anne Hathaway",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "human"
+    ],
+    "carries": true,
+    "n_claims": 23
+   },
+   {
+    "id": "Q4768428",
+    "label": "Anne Hathaway",
+    "desc": "1999 poem by Duffy",
+    "match": "Anne Hathaway",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "literary work"
+    ],
+    "carries": false,
+    "n_claims": 6
+   }
+  ]
+ },
+ {
+  "name": "steve nash",
+  "relation": "country of citizenship",
+  "pids": [
+   "P27"
+  ],
+  "resolved": null,
+  "how": null,
+  "ambiguous": [
+   [
+    "Q48851147",
+    "Steve Nash",
+    "Polish dj"
+   ],
+   [
+    "Q192955",
+    "Steve Nash",
+    "Canadian basketball player and coach"
+   ],
+   [
+    "Q42316961",
+    "Steve Nash",
+    "actor"
+   ],
+   [
+    "Q16137022",
+    "Steve Nash",
+    "English rugby league footballer and coach"
+   ],
+   [
+    "Q136639966",
+    "Steve Nash",
+    null
+   ]
+  ],
+  "unresolved": false,
+  "hits": [
+   {
+    "id": "Q48851147",
+    "label": "Steve Nash",
+    "desc": "Polish dj",
+    "match": "Steve Nash",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "human"
+    ],
+    "carries": true,
+    "n_claims": 10
+   },
+   {
+    "id": "Q192955",
+    "label": "Steve Nash",
+    "desc": "Canadian basketball player and coach",
+    "match": "Steve Nash",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "human"
+    ],
+    "carries": true,
+    "n_claims": 86
+   },
+   {
+    "id": "Q42316961",
+    "label": "Steve Nash",
+    "desc": "actor",
+    "match": "Steve Nash",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "human"
+    ],
+    "carries": false,
+    "n_claims": 8
+   },
+   {
+    "id": "Q16137022",
+    "label": "Steve Nash",
+    "desc": "English rugby league footballer and coach",
+    "match": "Steve Nash",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "human"
+    ],
+    "carries": true,
+    "n_claims": 14
+   },
+   {
+    "id": "Q136639966",
+    "label": "Steve Nash",
+    "desc": null,
+    "match": "Steve Nash",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "human"
+    ],
+    "carries": false,
+    "n_claims": 7
+   }
+  ]
+ },
+ {
+  "name": "london",
+  "relation": "located in time zone",
+  "pids": [
+   "P421"
+  ],
+  "resolved": null,
+  "how": null,
+  "ambiguous": [
+   [
+    "Q84",
+    "London",
+    "capital and largest city of England and the United Kingdom"
+   ],
+   [
+    "Q92561",
+    "London",
+    "city in Ontario, Canada"
+   ],
+   [
+    "Q1001456",
+    "London",
+    "city in Madison County, Ohio, United States"
+   ]
+  ],
+  "unresolved": false,
+  "hits": [
+   {
+    "id": "Q84",
+    "label": "London",
+    "desc": "capital and largest city of England and the United Kingdom",
+    "match": "London",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "metropolis",
+     "financial center",
+     "city",
+     "global city",
+     "megacity",
+     "largest city",
+     "national capital",
+     "political territorial entity"
+    ],
+    "carries": false,
+    "n_claims": 254
+   },
+   {
+    "id": "Q92561",
+    "label": "London",
+    "desc": "city in Ontario, Canada",
+    "match": "London",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "separated municipality in Ontario",
+     "single-tier municipality",
+     "city",
+     "big city"
+    ],
+    "carries": false,
+    "n_claims": 75
+   },
+   {
+    "id": "Q1137581",
+    "label": "The London Gazette",
+    "desc": "journal of record of the British government",
+    "match": "London Gazette",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "daily newspaper",
+     "government gazette"
+    ],
+    "carries": false,
+    "n_claims": 35
+   },
+   {
+    "id": "Q935090",
+    "label": "London Records",
+    "desc": "UK multi-national record label",
+    "match": "London Records",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "record label"
+    ],
+    "carries": false,
+    "n_claims": 27
+   },
+   {
+    "id": "Q1001456",
+    "label": "London",
+    "desc": "city in Madison County, Ohio, United States",
+    "match": "London",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "city in the United States",
+     "county seat"
+    ],
+    "carries": false,
+    "n_claims": 42
+   }
+  ]
+ },
+ {
+  "name": "chicago",
+  "relation": "located in time zone",
+  "pids": [
+   "P421"
+  ],
+  "resolved": null,
+  "how": null,
+  "ambiguous": [
+   [
+    "Q1297",
+    "Chicago",
+    "city and county seat of Cook County, and largest city in State of Illinois, United States of America"
+   ],
+   [
+    "Q371938",
+    "Chicago",
+    "American rock band"
+   ],
+   [
+    "Q656285",
+    "Chicago",
+    "1975 musical by John Kander and Fred Ebb"
+   ]
+  ],
+  "unresolved": false,
+  "hits": [
+   {
+    "id": "Q1297",
+    "label": "Chicago",
+    "desc": "city and county seat of Cook County, and largest city in State of Illinois, United States of America",
+    "match": "Chicago",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "city of Illinois",
+     "global city",
+     "big city"
+    ],
+    "carries": false,
+    "n_claims": 236
+   },
+   {
+    "id": "Q131252",
+    "label": "University of Chicago",
+    "desc": "private university in Chicago, Illinois",
+    "match": "Chicago University",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "private university",
+     "private not-for-profit educational institution",
+     "research university"
+    ],
+    "carries": false,
+    "n_claims": 174
+   },
+   {
+    "id": "Q371938",
+    "label": "Chicago",
+    "desc": "American rock band",
+    "match": "Chicago",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "musical group"
+    ],
+    "carries": false,
+    "n_claims": 103
+   },
+   {
+    "id": "Q656285",
+    "label": "Chicago",
+    "desc": "1975 musical by John Kander and Fred Ebb",
+    "match": "Chicago",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "dramatico-musical work"
+    ],
+    "carries": false,
+    "n_claims": 33
+   },
+   {
+    "id": "Q205033",
+    "label": "Chicago Bears",
+    "desc": "American football team",
+    "match": "Chicago Bears",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "American football team"
+    ],
+    "carries": false,
+    "n_claims": 44
+   }
+  ]
+ },
+ {
+  "name": "toronto",
+  "relation": "located in time zone",
+  "pids": [
+   "P421"
+  ],
+  "resolved": null,
+  "how": null,
+  "ambiguous": [
+   [
+    "Q172",
+    "Toronto",
+    "capital and largest city of the province of Ontario, Canada"
+   ],
+   [
+    "Q117037112",
+    "Toronto",
+    "oil tanker built in 2005"
+   ]
+  ],
+  "unresolved": false,
+  "hits": [
+   {
+    "id": "Q172",
+    "label": "Toronto",
+    "desc": "capital and largest city of the province of Ontario, Canada",
+    "match": "Toronto",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "city",
+     "provincial or territorial capital city in Canada",
+     "single-tier municipality",
+     "big city",
+     "largest city",
+     "financial center",
+     "census division of Canada"
+    ],
+    "carries": false,
+    "n_claims": 225
+   },
+   {
+    "id": "Q203384",
+    "label": "Toronto Maple Leafs",
+    "desc": "National Hockey League franchise in Toronto, Ontario, Canada",
+    "match": "Toronto Maple Leafs",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "ice hockey team"
+    ],
+    "carries": false,
+    "n_claims": 38
+   },
+   {
+    "id": "Q132880",
+    "label": "Toronto Raptors",
+    "desc": "National Basketball Association team in Toronto, Ontario",
+    "match": "Toronto Raptors",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "basketball team"
+    ],
+    "carries": false,
+    "n_claims": 47
+   },
+   {
+    "id": "Q327238",
+    "label": "Toronto FC",
+    "desc": "soccer club in Toronto, Ontario, Canada",
+    "match": "Toronto FC",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "association football club",
+     "association football team"
+    ],
+    "carries": false,
+    "n_claims": 42
+   },
+   {
+    "id": "Q117037112",
+    "label": "Toronto",
+    "desc": "oil tanker built in 2005",
+    "match": "Toronto",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "oil tanker"
+    ],
+    "carries": false,
+    "n_claims": 11
+   }
+  ]
+ },
+ {
+  "name": "oregon",
+  "relation": "capital",
+  "pids": [
+   "P36",
+   "P1376"
+  ],
+  "resolved": null,
+  "how": null,
+  "ambiguous": [
+   [
+    "Q824",
+    "Oregon",
+    "state of the United States of America"
+   ],
+   [
+    "Q576244",
+    "Oregon",
+    "city in Ogle County, Illinois, United States"
+   ]
+  ],
+  "unresolved": false,
+  "hits": [
+   {
+    "id": "Q824",
+    "label": "Oregon",
+    "desc": "state of the United States of America",
+    "match": "Oregon",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "U.S. state"
+    ],
+    "carries": true,
+    "n_claims": 227
+   },
+   {
+    "id": "Q576244",
+    "label": "Oregon",
+    "desc": "city in Ogle County, Illinois, United States",
+    "match": "Oregon",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "city in the United States"
+    ],
+    "carries": true,
+    "n_claims": 39
+   },
+   {
+    "id": "Q766145",
+    "label": "University of Oregon",
+    "desc": "public research university in Eugene, Oregon, USA",
+    "match": "Oregon",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "public university",
+     "research university",
+     "public educational institution of the United States"
+    ],
+    "carries": false,
+    "n_claims": 106
+   },
+   {
+    "id": "Q861888",
+    "label": "Oregon State University",
+    "desc": "public research university in Corvallis, Oregon, United States",
+    "match": "Oregon State University",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "public university",
+     "research university",
+     "sun grant institution",
+     "land-grant university",
+     "public educational institution of the United States",
+     "public research university",
+     "sea grant institution",
+     "space grant institution"
+    ],
+    "carries": false,
+    "n_claims": 132
+   },
+   {
+    "id": "Q37204869",
+    "label": "Oregon",
+    "desc": "family name",
+    "match": "Oregon",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "family name"
+    ],
+    "carries": false,
+    "n_claims": 11
+   }
+  ]
+ },
+ {
+  "name": "iceland",
+  "relation": "country",
+  "pids": [
+   "P17",
+   "P27",
+   "P495",
+   "P3005"
+  ],
+  "resolved": null,
+  "how": null,
+  "ambiguous": [
+   [
+    "Q189",
+    "Iceland",
+    "Nordic island country in the North Atlantic Ocean"
+   ],
+   [
+    "Q3740828",
+    "Iceland",
+    "main island of the Republic of Iceland"
+   ]
+  ],
+  "unresolved": false,
+  "hits": [
+   {
+    "id": "Q189",
+    "label": "Iceland",
+    "desc": "Nordic island country in the North Atlantic Ocean",
+    "match": "Iceland",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "island country",
+     "sovereign state",
+     "country",
+     "country sometimes considered transcontinental"
+    ],
+    "carries": true,
+    "n_claims": 321
+   },
+   {
+    "id": "Q294",
+    "label": "Icelandic",
+    "desc": "North Germanic language mainly spoken in Iceland",
+    "match": "Icelandic",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "natural language",
+     "modern language"
+    ],
+    "carries": true,
+    "n_claims": 100
+   },
+   {
+    "id": "Q718394",
+    "label": "Icelandic Wikipedia",
+    "desc": "Icelandic-language edition of Wikipedia",
+    "match": "Icelandic Wikipedia",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "Wikipedia language edition"
+    ],
+    "carries": false,
+    "n_claims": 23
+   },
+   {
+    "id": "Q3740828",
+    "label": "Iceland",
+    "desc": "main island of the Republic of Iceland",
+    "match": "Iceland",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "island"
+    ],
+    "carries": true,
+    "n_claims": 24
+   },
+   {
+    "id": "Q191356",
+    "label": "Icelanders",
+    "desc": "ethnic group native to Iceland; citizens or residents of Iceland",
+    "match": "Icelanders",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "human population",
+     "nation",
+     "ethnic group"
+    ],
+    "carries": true,
+    "n_claims": 36
+   }
+  ]
+ },
+ {
+  "name": "george wilson",
+  "relation": "occupation",
+  "pids": [
+   "P106"
+  ],
+  "resolved": null,
+  "how": null,
+  "ambiguous": [
+   [
+    "Q651203",
+    "George Wilson",
+    "basketball player from the United States born in 1942"
+   ],
+   [
+    "Q108162598",
+    "George Wilson",
+    "British Royal Navy officer, commander in 1834"
+   ],
+   [
+    "Q108162600",
+    "George Wilson",
+    "British Royal Navy officer, lieutenant in 1815"
+   ],
+   [
+    "Q5546405",
+    "George Wilson",
+    "English footballer (1892-1961)"
+   ],
+   [
+    "Q102348311",
+    "George Wilson",
+    "Ph.D. University of Oxford 1971"
+   ]
+  ],
+  "unresolved": false,
+  "hits": [
+   {
+    "id": "Q651203",
+    "label": "George Wilson",
+    "desc": "basketball player from the United States born in 1942",
+    "match": "George Wilson",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "human"
+    ],
+    "carries": true,
+    "n_claims": 44
+   },
+   {
+    "id": "Q108162598",
+    "label": "George Wilson",
+    "desc": "British Royal Navy officer, commander in 1834",
+    "match": "George Wilson",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "human"
+    ],
+    "carries": true,
+    "n_claims": 11
+   },
+   {
+    "id": "Q108162600",
+    "label": "George Wilson",
+    "desc": "British Royal Navy officer, lieutenant in 1815",
+    "match": "George Wilson",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "human"
+    ],
+    "carries": true,
+    "n_claims": 11
+   },
+   {
+    "id": "Q5546405",
+    "label": "George Wilson",
+    "desc": "English footballer (1892-1961)",
+    "match": "George Wilson",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "human"
+    ],
+    "carries": true,
+    "n_claims": 27
+   },
+   {
+    "id": "Q102348311",
+    "label": "George Wilson",
+    "desc": "Ph.D. University of Oxford 1971",
+    "match": "George Wilson",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "human"
+    ],
+    "carries": false,
+    "n_claims": 9
+   }
+  ]
+ },
+ {
+  "name": "jack london",
+  "relation": "occupation",
+  "pids": [
+   "P106"
+  ],
+  "resolved": null,
+  "how": null,
+  "ambiguous": [
+   [
+    "Q45765",
+    "Jack London",
+    "American author, journalist and social activist (1876–1916)"
+   ],
+   [
+    "Q109982296",
+    "Jack London",
+    "person identified in the Museu da Pessoa collection"
+   ],
+   [
+    "Q1384076",
+    "Jack London",
+    "British athlete (1905–1966)"
+   ]
+  ],
+  "unresolved": false,
+  "hits": [
+   {
+    "id": "Q45765",
+    "label": "Jack London",
+    "desc": "American author, journalist and social activist (1876–1916)",
+    "match": "Jack London",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "human"
+    ],
+    "carries": true,
+    "n_claims": 306
+   },
+   {
+    "id": "Q109982296",
+    "label": "Jack London",
+    "desc": "person identified in the Museu da Pessoa collection",
+    "match": "Jack London",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "human"
+    ],
+    "carries": true,
+    "n_claims": 8
+   },
+   {
+    "id": "Q744313",
+    "label": "2625 Jack London",
+    "desc": "asteroid",
+    "match": "Jack London",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "asteroid"
+    ],
+    "carries": false,
+    "n_claims": 29
+   },
+   {
+    "id": "Q1384076",
+    "label": "Jack London",
+    "desc": "British athlete (1905–1966)",
+    "match": "Jack London",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "human"
+    ],
+    "carries": true,
+    "n_claims": 39
+   },
+   {
+    "id": "Q3213588",
+    "label": "Jack London",
+    "desc": "1943 film by Alfred Santell",
+    "match": "Jack London",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "film"
+    ],
+    "carries": false,
+    "n_claims": 59
+   }
+  ]
+ },
+ {
+  "name": "petershausen",
+  "relation": "country",
+  "pids": [
+   "P17",
+   "P27",
+   "P495",
+   "P3005"
+  ],
+  "resolved": null,
+  "how": null,
+  "ambiguous": [
+   [
+    "Q533046",
+    "Petershausen",
+    "municipality of Germany"
+   ],
+   [
+    "Q32221839",
+    "Petershausen",
+    null
+   ],
+   [
+    "Q592306",
+    "Petershausen",
+    "quarter of Konstanz, Baden-Württemberg, Germany"
+   ]
+  ],
+  "unresolved": false,
+  "hits": [
+   {
+    "id": "Q533046",
+    "label": "Petershausen",
+    "desc": "municipality of Germany",
+    "match": "Petershausen",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "municipality without town privileges in Germany"
+    ],
+    "carries": true,
+    "n_claims": 42
+   },
+   {
+    "id": "Q32221839",
+    "label": "Petershausen",
+    "desc": null,
+    "match": "Petershausen",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "municipality seat",
+     "parish village",
+     "Ortsteil"
+    ],
+    "carries": true,
+    "n_claims": 13
+   },
+   {
+    "id": "Q457309",
+    "label": "Petershausen Abbey",
+    "desc": "monastery",
+    "match": "Petershausen Abbey",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "monastery",
+     "former administrative territorial entity",
+     "religious community"
+    ],
+    "carries": true,
+    "n_claims": 28
+   },
+   {
+    "id": "Q592306",
+    "label": "Petershausen",
+    "desc": "quarter of Konstanz, Baden-Württemberg, Germany",
+    "match": "Petershausen",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "quarter",
+     "Ortsteil"
+    ],
+    "carries": true,
+    "n_claims": 20
+   },
+   {
+    "id": "Q50675411",
+    "label": "Petershausen (Oberbay)",
+    "desc": "railway halt in Bavaria",
+    "match": "Petershausen (Oberbay)",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "railway station",
+     "S-Bahn station"
+    ],
+    "carries": true,
+    "n_claims": 33
+   }
+  ]
+ },
+ {
+  "name": "notojima",
+  "relation": "country",
+  "pids": [
+   "P17",
+   "P27",
+   "P495",
+   "P3005"
+  ],
+  "resolved": null,
+  "how": null,
+  "ambiguous": [
+   [
+    "Q11612025",
+    "Notojima",
+    "island in Ishikawa, Japan"
+   ],
+   [
+    "Q7063204",
+    "Notojima",
+    "dissolved municipality in Kashima district, Ishikawa prefecture, Japan"
+   ]
+  ],
+  "unresolved": false,
+  "hits": [
+   {
+    "id": "Q11612025",
+    "label": "Notojima",
+    "desc": "island in Ishikawa, Japan",
+    "match": "Notojima",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "island"
+    ],
+    "carries": true,
+    "n_claims": 21
+   },
+   {
+    "id": "Q7063204",
+    "label": "Notojima",
+    "desc": "dissolved municipality in Kashima district, Ishikawa prefecture, Japan",
+    "match": "Notojima",
+    "exact": true,
+    "meta": false,
+    "kinds": [
+     "dissolved municipality of Japan"
+    ],
+    "carries": true,
+    "n_claims": 17
+   },
+   {
+    "id": "Q11275197",
+    "label": "Notojima Aquarium",
+    "desc": "aquarium in Ishikawa, Japan",
+    "match": "Notojima Aquarium",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "public aquarium"
+    ],
+    "carries": true,
+    "n_claims": 19
+   },
+   {
+    "id": "Q11416021",
+    "label": "Kōda no Himatsuri",
+    "desc": null,
+    "match": "Notojima Kōda Fire Festival",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "Himatsuri",
+     "Noto Kiriko Matsuri"
+    ],
+    "carries": true,
+    "n_claims": 9
+   },
+   {
+    "id": "Q11612028",
+    "label": "Notojima Bridge",
+    "desc": "bridge in Japan",
+    "match": "Notojima Bridge",
+    "exact": false,
+    "meta": false,
+    "kinds": [
+     "road bridge",
+     "prestressed concrete bridge",
+     "cross-sea bridge"
+    ],
+    "carries": true,
+    "n_claims": 13
+   }
+  ]
+ }
+]

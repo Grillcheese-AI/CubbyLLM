@@ -1,0 +1,2 @@
+200/525 spoken {'books': 61, 'profile': 37, 'store': 88, 'lookup': 14}; source names 0, urls 0, 8-word quotes 0, provenance fields 0; audit 200/200; guard changed 0 [60.1s]
+wrote validation/logs/exp_leak_scan_v2_2026-10-22.json

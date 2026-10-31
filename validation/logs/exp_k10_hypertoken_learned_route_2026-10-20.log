@@ -1,0 +1,33 @@
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+--- hypertoken (learned query): 3.36M params, D=256, window 64, 8 facts/doc, filler 120, route loss 1.0
+  step     0  loss 7.981  held-out answers 0.00  language 6.976  gate bias +0.00  route 1.003   [5s]
+  step   100  loss 3.806  held-out answers 0.00  language 2.628  gate bias -0.08  route 0.812   [130s]
+  step   200  loss 3.397  held-out answers 0.01  language 2.325  gate bias -0.18  route 0.647   [266s]
+  step   300  loss 3.201  held-out answers 0.14  language 2.260  gate bias -0.19  route 0.569   [392s]
+  step   400  loss 3.069  held-out answers 0.42  language 2.210  gate bias -0.21  route 0.523   [522s]
+  step   500  loss 2.967  held-out answers 0.58  language 2.179  gate bias -0.23  route 0.501   [655s]
+  step   600  loss 2.916  held-out answers 0.67  language 2.149  gate bias -0.25  route 0.490   [788s]
+  step   700  loss 2.873  held-out answers 0.73  language 2.120  gate bias -0.28  route 0.477   [920s]
+  step   800  loss 2.837  held-out answers 0.77  language 2.098  gate bias -0.29  route 0.465   [1052s]
+  step   900  loss 2.806  held-out answers 0.79  language 2.082  gate bias -0.30  route 0.464   [1183s]
+  step   999  loss 2.796  held-out answers 0.82  language 2.076  gate bias -0.30  route 0.461   [1318s]
+wrote validation\logs\exp_k10_hypertoken_learned_route_2026-10-20.json

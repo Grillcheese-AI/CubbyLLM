@@ -1,0 +1,10 @@
+[0005] done: run 5 reads far facts 0.946 exact (run 3: 0.021), villages 0.953, every text source within 0.005 of run 3 (worst 0.0000), 0 trunk tensors moved -- 1,027 trained parameters on a frozen 450M
+
+Run 5 (G4, 674 steps, 0.17 h): only the copy trains. Probe split: first 0.997, later 0.978, end 0.938;
+lam 0.80 where the address holds a piece, 0.056 where it is empty. The readout cell crashes after its
+verdict for RUN >= 5 (a run-3-era block): folded into order 0003. H-K10 and CLAUDE.md updated.
+Logs: hypertoken_recall_spatial_run5_link, spatial_run5_link_metrics, speed_check_spatial_run5_g4,
+diag_frozen_check_run5.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

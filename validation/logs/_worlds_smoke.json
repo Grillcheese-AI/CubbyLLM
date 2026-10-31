@@ -1,0 +1,30 @@
+{
+ "datasets": [
+  {
+   "row": 75,
+   "tree": "E",
+   "status": "ingest",
+   "reason": null,
+   "seconds": 69.1,
+   "entries": [
+    {
+     "world": "fiction",
+     "route": "fiction",
+     "tier": "in-fiction only",
+     "rows": 121707,
+     "entities": 3,
+     "files_added": 103,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null,
+     "facts_read_now": 3
+    }
+   ]
+  }
+ ],
+ "counts": {
+  "ingest": 1,
+  "excluded": 0,
+  "queued": 0
+ }
+}

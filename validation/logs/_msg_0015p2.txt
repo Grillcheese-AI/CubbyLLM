@@ -1,0 +1,9 @@
+[0015] The rest of the local paths out: the books index, the eval sets, the hdc source, the bulk worlds
+
+build_same_place.py and worlds_adapters.py read the books index from CUBBY_BOOKS_INDEX (no default path);
+exp_worlds_bench.py reads the evaluation sets from CUBBY_EVAL_SETS, the hdc source from CUBBY_HDC_SRC, and
+finds the bulk worlds beside the books index. The values live in the local notes. test_worlds.py and
+test_books.py green (18).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

@@ -1,0 +1,15 @@
+[0004] review: "hypertoken" -> "loci token" in the code's prose (H-K10's sense); file, module, log, flag and key names kept
+
+Prose only, 20 lines in 10 files: spatial.py (with the one "were called hypertokens until 2026-10-22;
+see H-K10's Name" line at first use), exp_hypertoken_recall.py, exp_k10_hypertoken.py, make_fact_shard.py,
+make_spatial_shard.py, train_base.py, both spatial/grow_mem notebook builders and their regenerated
+notebooks. Every edited .py has the same syntax tree once string text is ignored. The zip2zip-sense files
+(exp_c2_lzw.py, VALIDATION_REPORT.md, README.md, validation/README.md) are untouched.
+
+Kept, as the order says: exp_k10_hypertoken.py's arm key "hypertoken" (the --only value, and the key in
+its JSON report). The notebooks change one markdown sentence plus two comments and one assert message in
+code cells; no executable token differs. pytest tests: 406 passed, 5 skipped, 1 failed (the known wiring
+guard, order 0002), as before.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

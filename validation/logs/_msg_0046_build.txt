@@ -1,0 +1,30 @@
+[0046] The sets, the frozen lexicon, the fame set, the name index and the R0/R1 harness (runs in progress)
+
+Built so far for order 0046 (nothing on the serving path changes):
+- validation/retrieval_sets/: downloads (eight sets plus Wikidata5M's names and triples, 366 MB,
+  each file under the 1 GB line, through cubby_serve.sources.http.download; archives unpacked with
+  a path guard; CronQuestions' pickles through an unpickler that builds plain containers only),
+  builders into one schema (off-repo under $CUBBY_DATA_ROOT/retrieval), splits and samples fixed
+  by seed 0, the relation lexicon frozen before any held-out row was read, and the fame set.
+- The fame set (fame_set.jsonl, committed; sha256 in frozen.json): 500 names drawn by seed 0 from
+  34,773 that two or more Wikidata5M items of one kind share, 1,910 rows (bare EN/FR, qualified
+  EN/FR). Three hand spot checks of 50 rows each: the first found 3 ambiguous rows and 2 doubtful,
+  the second 7 ambiguous; each led to a rule (a label shared or held whole tells nothing apart; a
+  place another item is not ruled out of, by its chain or a homonym, tells nothing apart; nothing
+  recorded rules nothing out; birthplace over citizenship). The third, fresh: 50 of 50 hold.
+- validation/retrieval_bench/: the local name index (12.4M names, 4.8M items: exact, normalized,
+  trigram blocking with the capsules' code, BM25), mentions located by the gold item's own names,
+  store membership (Wikidata5M, DBpedia's titles, the routed Wikipedia's titles), R1 (finding) and
+  R0 (the denominator).
+
+Found: Wikidata5M's entity file gives no labels (names unordered); the local Wikipedia text keeps
+no links or redirects; Wikidata's title lookup answers 503 for a redirect (titles go through
+Wikipedia's API); Wikimedia answers 503 under load (every lookup retries with backoff).
+
+.gitattributes: the frozen fame set keeps its bytes (no end-of-line conversion).
+cubby_serve/sources/http.py: a streaming download helper for the sets.
+
+Tests: 1147 passed, 1 failed (test_every_module_declares_wiring, the known red of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

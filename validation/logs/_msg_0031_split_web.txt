@@ -1,0 +1,22 @@
+[0031] split: the web source (1,021 lines) into seven modules under 300, verbatim
+
+cubbyllm/sources/web.py keeps WebSource's core (__init__, the wordings, facts; 272 lines); the rest
+moves verbatim:
+  web_search.py   (148) the backends (Brave, SearXNG) and their keys, the hit, the absent transport
+  web_pages.py    (178) a URL's site, a page's text and JSON-LD, the schema.org facts
+  web_frames.py   (193) sentences as facts: the frames, mentions, passages, dates EN/FR, plausible values
+  web_cache.py    (100) WebCache: the day's cache, the sites' tally, robots before a page
+  web_wikidata.py (197) WebWikidata: the hand-off, containment of places, claims, the lead
+  web_witness.py   (72) WebWitness: independent witnesses and the queries that find them
+WebSource(WebWitness, WebWikidata, WebCache). web.py re-exports every moved name.
+
+Checked: every name reachable through the module before is reachable after with the same source (127
+names; three sets compared by their source lines, a set's print order varying by run).
+tests/sources/test_web_source.py's key test patches ENV_FILES where env_key now reads it
+(cubbyllm.sources.web_search); same test, same assertion.
+
+Tests: the full suite, every existing file as before but that one test (fixed here); tests/sources,
+tests/serve, test_offline_seams after the fix: 154 passed.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

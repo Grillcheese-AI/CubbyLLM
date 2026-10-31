@@ -1,0 +1,29 @@
+[0015] One manifest-driven ingestion into worlds: routes, a registry, fiction worlds by work, one store interface; the wiki world's debris dropped at the mount
+
+- standin/worlds_manifest.py: the local manifest and a local path map joined; every row a decision -- ingest, excluded
+  (the manifest's words: EXCLUDED, pretraining, SFT, an order's test set ...), or queued (a later tranche). On
+  today's manifest: 23 ingest, 42 excluded, 11 queued.
+- standin/worlds_ingest.py: the registry (datasets, files by hash, worlds) beside the stores; incremental by file hash;
+  --frames runs order 0013's bulk pass over a passage world whose route says frames; --release keeps the works the
+  rights tracker clears (status, else its suggestion: owned / licensed / public domain) and counts what it leaves out;
+  classify rows by the tracker's fiction mark, else the text (dialogue, 'said', digits). The committed report names
+  a dataset by its manifest row, never its name.
+- standin/worlds_adapters.py: passages (books.BookIndex per world), events (to the year's world), quotes (speaker ->
+  quote, attributed), tables (the UCI columns named), mounts (hdc, the books index, the self world).
+- standin/worlds_fiction.py: one passage index for fiction, each work its own world; a work's facts read over its own
+  names (capitalised spans it repeats, not words it also writes in lowercase): frames, and kin, which novels state
+  and frames do not ("Paul's father, Leto"; 0 facts from frames on 40 novels, 5 from kin); a router that sends a
+  question to a fiction world only when it names the work. Each read once compiled its frames per name: a prefilter
+  (a cue within reach) cut a play from 8.9 s to 0.8 s.
+- standin/worlds_store.py: the store interface -- the reality stack (wiki, then hdc), passage indexes by world, a
+  lookup across worlds with a world filter, the ask router.
+- standin/question_forms.py: kin forms (father, mother, spouse, sibling, child).
+- standin/data/wikikg.py (already 335 lines; +23, the mount is where it applies): hygiene -- a fact whose end is a
+  Python repr or a bare '_' is dropped (315 triples), SP0USE_OF is SPOUSE_OF (1); the store keeps the counts.
+- validation/exp_worlds_bench.py: coverage, fiction isolation (50), the exclusion check (registry, eval questions and
+  the repo's bench questions as FTS phrases), no regression of 0012 / 0014 through the registry's stores.
+
+Tests: standin/tests/test_worlds.py (5, synthetic fixtures). The first tranche is ingesting on the data disk.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

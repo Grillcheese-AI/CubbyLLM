@@ -1,0 +1,22 @@
+[0031] pre-move: the ask loop names no stand-in source; emitted_plan moves into cubbyllm/reasoning
+
+Three fixes before ask moves to cubbyllm/reasoning (slice 4), no path moves:
+
+- emitted_plan (the emitter's program read as a plan: SEED + HOPk, or Hk_<RELATION> roles) and its
+  three patterns move verbatim from validation/exp_r9_matched_pairs.py to cubbyllm/reasoning/emitted.py.
+  The script re-exports them, so the r-series experiments that import it from there are unchanged.
+  Checked: both plan shapes read the same as before.
+- The LFM source is built by the server (serve_cli, `--ask lfm`), with the same GGUF, and passed to
+  AskLoop(source=...). The loop keeps resolving the names it owns ('wikidata', 'wikidata-offline'); its
+  `lfm_gguf` argument goes (nothing passed it). The review's answer to question 3: cubby_serve may import
+  lfm_source lazily behind --ask lfm.
+- ask declares __wiring__ = "WIRED" (the server mounts it behind POST /ask).
+
+ask.py stays at 1,694 lines here; its split comes after the move.
+
+Tests: test_ask, test_ask_branching, test_ask_relation, test_loci_reader, test_sleep_loop,
+test_lfm_source, test_serve, test_question_forms, test_context_graph, test_guards: 99 passed, 1 failed
+(test_every_module_declares_wiring, the known red of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

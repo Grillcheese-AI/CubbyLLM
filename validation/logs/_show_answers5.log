@@ -1,0 +1,30 @@
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+{"question": "Question: What is the variant of of Spanish Dancer? here\nAnswer:", "gold": "Hexabranchus Sanguineus", "run 3 (no copy)": "Spanish Dancer", "run 5": "Hexabranchus Sanguineus"} [52s]
+{"question": "Question: What is the timeline event of Fort Peck Dam? here\nAnswer:", "gold": "fortpeckdam highrelease2011", "run 3 (no copy)": "fortpeckdam constructionperiod", "run 5": "fortpeckdam highrelease2011"} [121s]
+{"question": "Question: What is the caused by of Wash Load? here\nAnswer:", "gold": "Sediment Transportation", "run 3 (no copy)": "Diesel Locomotives", "run 5": "Sediment Transportation"} [161s]
+{"question": "Question: What is the mentioned by of Agrippa D Aubigne? here\nAnswer:", "gold": "Romantics", "run 3 (no copy)": "Jean Bodin", "run 5": "Romantics"} [191s]
+{"question": "Question: What is the instance of of Eugenie Archipelago? here\nAnswer:", "gold": "Archipelago", "run 3 (no copy)": "Elasmobranchii", "run 5": "Archipelago"} [232s]
+{"question": "Question: What is the also known as of Bicon Lal Pandey? here\nAnswer:", "gold": "Lakshmi Narayan Thakur", "run 3 (no copy)": "Bhojpuri", "run 5": "Lakshmi Narayan"} [283s]
+{"question": "Question: What is the timeline event of Major League Gaming? here\nAnswer:", "gold": "majorleaguegaming acquisitionbyactivisionblizzard", "run 3 (no copy)": "majorleaguegaming firstmajorleague", "run 5": "majorleaguegaming acquisitionbyactivisionblizzard"} [365s]
+{"question": "Question: What is the timeline event of Rocket? here\nAnswer:", "gold": "rocket useinchina13thcentury", "run 3 (no copy)": "rocket firstflight", "run 5": "rocket useinchina13thcentury"} [418s]
+{"question": "Question: What is the rival of of Sydney Roosters? here\nAnswer:", "gold": "St George Dragons", "run 3 (no copy)": "Sydney Roosters", "run 5": "St George Dragons"} [453s]
+{"question": "Question: What is the timeline event of Caresse Crosby? here\nAnswer:", "gold": "caressecrosby blacksunpressfounded", "run 3 (no copy)": "chesiescoofcrs Crosby birth", "run 5": "caressecrosby blacksunpressfounded"} [538s]

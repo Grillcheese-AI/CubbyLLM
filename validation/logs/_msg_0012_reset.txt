@@ -1,0 +1,16 @@
+[0012] learn: the walk goes back to the proposed wording after a fetch whenever any resolver could have moved it (not only the source's own table)
+
+Found by the books bench's smoke run on the real wiki world. The lexicon (a resolver) rewrote "place of
+birth" to the world's own wording "birthplace"; the books then brought "Ajaccio is the place of birth of
+Napoleon Bonaparte"; the reset to the proposed wording (the 2026-10-16 fix, Marie Curie) was gated on the
+SOURCE having a wording table, and the source below the books (offline, no table) had none, so the walk
+kept asking for "birthplace" and ended retrieval_exhausted. The gate now asks whether any of the loop's
+resolvers could translate a wording, as the rewrite itself does. Serving (Wikidata has a table) is
+unchanged; a loop with neither a table nor resolvers is unchanged.
+
+Test: standin/tests/test_books.py::test_a_book_fact_is_walked_under_its_own_label_when_a_resolver_had_moved_the_plan_to_the_worlds
+fails on the old gate and passes now. validation/exp_books_bench.py asks the frames only of subjects the books
+mention. learn.py 741 -> 743 lines (the fix is one condition where the reset is).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

@@ -1,0 +1,37 @@
+pointer head | train 21803 rows, dev 1147, held 1161 | d=1024 hidden=256 | 0.86M params | 8 epochs
+  epoch 1: train nll 2.437 | dev nll 1.793 top-1 0.544 (123s)
+  epoch 2: train nll 1.679 | dev nll 1.614 top-1 0.593 (250s)
+  epoch 3: train nll 1.473 | dev nll 1.500 top-1 0.610 (372s)
+  epoch 4: train nll 1.329 | dev nll 1.453 top-1 0.608 (496s)
+  epoch 5: train nll 1.186 | dev nll 1.391 top-1 0.628 (630s)
+  epoch 6: train nll 1.029 | dev nll 1.380 top-1 0.632 (764s)
+  epoch 7: train nll 0.887 | dev nll 1.413 top-1 0.631 (901s)
+  epoch 8: train nll 0.803 | dev nll 1.423 top-1 0.627 (1037s)
+
+held-out (he19_ptr_held.npz), head alone, nll 1.832
+  all          n=1161 top-1 0.539  top-3 0.742  top-5 0.809
+  stop rows    n=236  top-1 0.966  top-3 1.000  top-5 1.000
+  step rows    n=925  top-1 0.430  top-3 0.677  top-5 0.760
+    step 0     n=236  top-1 0.555  top-3 0.839  top-5 0.890
+    step 1     n=236  top-1 0.398  top-3 0.627  top-5 0.742
+    step 2     n=236  top-1 0.470  top-3 0.691  top-5 0.754
+    step 3+    n=217  top-1 0.286  top-3 0.539  top-5 0.645
+
+the same 400 rows as the adapter's ranking read: head
+  all          n=400  top-1 0.542  top-3 0.720  top-5 0.818
+  stop rows    n=80   top-1 0.988  top-3 1.000  top-5 1.000
+  step rows    n=320  top-1 0.431  top-3 0.650  top-5 0.772
+    step 0     n=76   top-1 0.526  top-3 0.829  top-5 0.895
+    step 1     n=88   top-1 0.352  top-3 0.580  top-5 0.739
+    step 2     n=85   top-1 0.529  top-3 0.694  top-5 0.776
+    step 3+    n=71   top-1 0.310  top-3 0.493  top-5 0.676
+
+the same 400 rows: the adapter's own ranking
+  all          n=400  top-1 0.693  top-3 0.890  top-5 0.927
+  stop rows    n=80   top-1 0.988  top-3 1.000  top-5 1.000
+  step rows    n=320  top-1 0.619  top-3 0.863  top-5 0.909
+    step 0     n=76   top-1 0.803  top-3 0.934  top-5 0.947
+    step 1     n=88   top-1 0.580  top-3 0.852  top-5 0.943
+    step 2     n=85   top-1 0.576  top-3 0.812  top-5 0.847
+    step 3+    n=71   top-1 0.521  top-3 0.859  top-5 0.901
+  -> head C:\Users\grill\Documents\GitHub\CubbyLLM\standin\data\out\he19_pointer\pointer_head.pt

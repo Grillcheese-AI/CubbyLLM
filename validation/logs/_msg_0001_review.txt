@@ -1,0 +1,13 @@
+[0001] Cowork's review: B passes (3 seeds), the read-aware gate kept, run 4's budget 0.5 h pending Nick's yes; H-K10 records the CPU results; order 0003 proposed (the probe import's CB_NO_FLEX side effect)
+
+Checked the report against the logs and the code; the copy and spatial tests pass (27), and the full
+suite matches the report (406 passed, 5 skipped, the known guard). The order stays in review until
+run 4 and the GPU-only checks (compile, bf16, the probe's cost).
+
+H-K10: the read carries the far facts on the 450M (0.992 per piece / 0.965 whole answers among the
+document's writers, offline; the 128k-way decode sits on the random-code ceiling, 0.758 vs 0.765);
+the villages' 0.953 never tested copying; the ring copy with the read-aware gate takes the 450M-like
+toy from 0.000 to 0.930 / 0.908 / 0.895 (3 seeds) and lifts run 3 untrained from 0.000 to 0.258.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

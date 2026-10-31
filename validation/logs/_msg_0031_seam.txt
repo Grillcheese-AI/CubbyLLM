@@ -1,0 +1,18 @@
+[0031] fix: the 450M trunk keeps its grilly handle, and passes it to the ops seam
+
+b315242 moved the trunk's grilly calls into cubbyllm/ops/grilly_seats.py and dropped the trunk's
+`_grilly`, the handle test_plugins fakes (no_grad, from_numpy) to check that a plugin adapter of
+another layout or base is refused and that unloading restores the role. The test failed from then on;
+the targeted run before b315242 did not include it.
+
+grilly_seats.copy_pair and generate now take the grilly module (`g`, default grilly() = the real one);
+the trunk keeps `_grilly` (set at load from grilly_seats.grilly()) and passes it. Same calls on the
+card: checked on grilly2 from the moved module (cubbyllm.emit.seats_450m), byte-identical to the
+recording made before b315242, same 3 swaps, 25.5 s
+(validation/logs/0031_seats_grilly2_2026-10-22.json, "after_move").
+
+Tests: test_plugins (33), tests/emit, test_serve, test_plugins_serve, test_guards: 68 passed, 1 failed
+(test_every_module_declares_wiring, the known red of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

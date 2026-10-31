@@ -1,0 +1,16 @@
+[0024] Crisis Group, UN Geneva, UN News, ONU Info, Chatham House, Global Issues; intervals, kinds, gzip
+
+- standin/data/news_feeds.json: 34 feeds, 28 active. New: Crisis Group's global feed and 7 regions (every 6 h,
+  kind analysis; its robots.txt answers 403), UN Geneva's press releases, briefings and press items (kind
+  statement), UN News (gzip), ONU Info by its 5 regions (its all-news French feed answers an empty channel),
+  Chatham House releases (daily, kind statement), Global Issues (Atom). Each checked live from this machine on
+  2026-10-22: all 200, no AI agent named, no refusal. Every feed now carries kind (news / statement / analysis;
+  only news is read as events) and every_h.
+- standin/news_archive.py: per-feed intervals from the poll log; a gzip body is decompressed (Content-Encoding or
+  the magic bytes); rows carry the feed's kind.
+- standin/news_parse.py (new, split out of the archive at 298 lines): the item parser, and dates in the long form
+  Crisis Group writes, in English, Spanish, Portuguese and French ("Viernes, Agosto 7, 2026 - 14:45").
+- Tests: test_news_archive.py 9 (interval, dates, gzip added).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

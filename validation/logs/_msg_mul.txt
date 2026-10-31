@@ -1,0 +1,24 @@
+[0038] Wikidata's mul labels: a value named only in every language at once still gives its fact
+
+Wikidata now keeps a name that is the same in every language under the code `mul`, and editors delete the
+redundant English label. Checked live on 2026-10-24: the euro (Q4916) and Juneau (Q29445) return no labels for
+languages=en, and "euro" / "Juneau" for languages=mul. Search already matches mul labels, and descriptions stay
+in English.
+
+WikidataSource._labels_for asks for English first, as before, so today's cache keys hold and an offline run
+reads what it read before. The ids still unnamed are then asked once more for `mul`.
+Test: test_a_value_named_only_under_mul_still_gives_its_fact (a fake that honours `languages`). It fails without
+the fix.
+
+Live scoreboard, the table on, tense on (validation/logs/everyday_webq_on_live_tense_mul_2026-10-24.json,
+everyday_stack_on_live_tense_mul_2026-10-24.json), every changed row read by hand:
+- WebQ: 54 spoken, up from 47; 0 wrong. The 8 mismatches are the 9 read as right before, less the Bahamas.
+  - New, all right: the euro for Spain (2), Germany (3, one "in 2010"), Greece and Italy; Juneau for Alaska.
+    Juneau is said "at one point": the time rule hedges an undated capital.
+  - The time check's refusals fell from 7 to 1: the euro now stands beside the ended currencies.
+  - One right answer is now a refusal: the Bahamas' time zone. A second zone value now has a name, so the hop
+    has two values (ambiguous_hop). A cost, not a wrong answer.
+- The stack's 20: 10 spoken, up from 9, 0 wrong. New: "Qui a écrit Les Misérables ?" -> Victor Hugo.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

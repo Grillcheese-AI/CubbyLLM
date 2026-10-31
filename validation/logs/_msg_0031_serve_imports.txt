@@ -1,0 +1,13 @@
+[0031] pre-move: serve's module-level imports name the package's modules
+
+serve.py (the brain, bound for cubbyllm/brain.py) imported answer_fn / shim_isolver /
+wrap_role_prompt from the SFT builder, ContextualEmitter from the stand-in's facade and six identity
+names from the identity records' module, which re-export them. It now imports each from where it
+lives: cubbyllm.emit.format, cubbyllm.emit.talk, cubbyllm.speech.identity (the same objects;
+checked). No path moves.
+
+Tests: test_serve, test_pacman, test_verse, test_plugins_check, test_plugins_serve, test_guards:
+81 passed, 1 failed (test_every_module_declares_wiring, the known red of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

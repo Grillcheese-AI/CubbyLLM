@@ -1,0 +1,8 @@
+[0010] Casual prose from Cubby's own 450M: a talk adapter taught by human dialogue (Topical-Chat, OASST2, Claire; licenses first), no external model in the data or the serving path -- open (Nick)
+
+The 450M already holds the talk seat with nothing third-party (H-E15) but answers like a form (H-E10);
+the LFM stand-in still does the casual wording. Pre-registered: 0 wrong spoken, spoken-and-correct
+within 0.02 of talk_v2_2, Nick's blind A/B casual-or-more >= 50% against the stand-in.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

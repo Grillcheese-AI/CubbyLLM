@@ -1,0 +1,15 @@
+[0031] report: step 2 done, for review; the real stack answers the same through both entry points
+
+The order's report: the slices and their commits, each acceptance line with its evidence, the review's
+changes done, cubbyllm/ offline, the splits, what the models measured, what was found on the way, and
+seven questions. Status: review.
+
+The final real-stack check (validation/logs/0031_stack_final_2026-10-22.json), at 7f3b26a, booted as
+the baseline was (the 450M seats on grilly2, wiki + hdc, the ask loop offline, plugins, the board):
+  python standin/serve_api.py   20 fixed questions, byte-identical replies; 11 of 13 board routes equal
+  python -m cubby_serve         the same
+/board/home and /board/system differ only in the order queue (0028 set to review in e7cd011; the
+board reads docs/orders/).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

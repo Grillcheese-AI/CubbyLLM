@@ -1,0 +1,8 @@
+﻿...................s.....................................s.............. [ 59%]
+.................................................                        [100%]
+============================== warnings summary ===============================
+tests/model/backbone/test_hybrid_memory.py::test_grad_checkpoint_with_memory_flows_grads_to_memory_params
+  C:\Users\grill\Documents\GitHub\CubbyLLM\.venv-dml\Lib\site-packages\torch\utils\checkpoint.py:1399: FutureWarning: `torch.cpu.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cpu', args...)` instead.
+    with device_autocast_ctx, torch.cpu.amp.autocast(**cpu_autocast_kwargs), recompute_context:  # type: ignore[attr-defined]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html

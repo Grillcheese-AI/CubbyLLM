@@ -1,0 +1,4 @@
+WORLDS.md: internal builds use everything (all books); a public release is rebuilt from cleared sources -- stores filtered, trunk retrained (preferred) or ablated with a measured check, book-derived adapters retrained (Nick)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

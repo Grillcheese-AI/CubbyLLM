@@ -1,0 +1,4 @@
+Rights: legal copies before going public (Nick) -- a local rights tracker (one row per work), a public build from owned / licensed / public-domain works only (WORLDS.md; 0015 gets --public)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

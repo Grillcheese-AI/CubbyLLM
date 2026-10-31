@@ -1,0 +1,7 @@
+[0012][0013] The books as a source: a passage finder (FTS5 + entity mentions), facts read by frames, attributed until corroborated (Nick), first among the lookup fallbacks; then a Cubby-native reader adapter by distant supervision and the bulk pass into the worlds -- open (Nick)
+
+~4,700 history books (~3.7 GB), already in the corpus as verified_facts, with no fact in the store.
+Book text stays off-repo; users see a citation and at most a short quote.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

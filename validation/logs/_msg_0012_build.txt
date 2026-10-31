@@ -1,0 +1,41 @@
+[0012] The books as a source: passage index, frames, BookSource (attributed until corroborated), natural questions with tense and year
+
+Built (CPU, no model, no network; the index and the books stay off-repo, tests use synthetic paragraphs):
+- standin/books.py: SQLite FTS5 over the books' paragraphs (author / title from the file name, era / region /
+  topic from the folders), a mention table of a world's names (a capitalised match; one-word names the books
+  mostly write in lowercase are not mentions), incremental by file hash, twins read once, a cleaned mirror's
+  copy before the original, historical_facts.jsonl as one book per era; passages(entity, words, era, k).
+- standin/book_frames.py: facts read only where the sentence names the entity as the frame verb's subject
+  (full name, or the last name with no capitalised word running into it; never a pronoun), with Wikidata's
+  labels and the dates read beside them: birth / death date and place, burial, founded by, inception,
+  location, part of, capital, point in time (a battle), reign and head of state (start-end).
+- standin/book_source.py: BookSource (a learn.Source). One author -> attributed; two independent authors
+  (credited people, none shared) -> plain; two values for a one-valued relation -> both held. citations
+  (book, author, era, offset, sentence) kept for the record, times for the store.
+- standin/question_forms.py (Nick's shape {wh} {tense} {verb form} {subject} [in {year}]?): forms per relation
+  in three tenses, the hdc templates extended to three tenses, a parser back to (entity, relation, tense)
+  (the most specific form wins; a tie between relations refuses), time_check (an ended fact asked in the
+  present, a year outside its dates, a past event asked in the present: not answered), TemplateEmitter.
+- cubbyllm/reasoning/learn.py: learn_and_answer(before=) asks sources ahead of `source` (the books before
+  Wikidata); a source's `attributed` facts are stored "(attributed)"; a chain resting on one is refused
+  attributed_only while the sources below are asked, a second, independent witness lifts it to plain, and
+  with none the answer is returned verified with LearnResult.attributed (spoken hedged). Off (no before, no
+  attributed): unchanged -- the existing loop tests pass as they were.
+- standin/ask.py: AskLoop(books=, tense=): the books mounted ahead of the source, rec["tier"]="attributed"
+  and rec["reply"]="One account says <answer>." (no source named), rec["evidence"] (internal, 0016's audit
+  view), the question forms as a resolver and before the profile path, the time check (reason
+  time_mismatch; on with the books, off without them unless tense=True). serve_api: --books, --tense.
+- cubbyllm/reasoning/sleep.py: attributed_only -> latent_audit, time_mismatch -> clarify (the routing guard).
+- standin/data/build_books_index.py, validation/exp_books_bench.py: the build and the acceptance bench.
+
+Tests: standin/tests/test_books.py (9), test_question_forms.py (5), the routing guard updated for the new
+reasons; suite 1049 passed, the failures are outside this order: test_build_chat_sft.py (24) and test_chat.py (1)
+import GOEMOTIONS / MULTI_PROMPT, which build_chat_sft.py at HEAD does not define (test_goemotions_cube.py too),
+and the known wiring guard.
+
+Files over 300 lines that grow: learn.py 717 -> 741, ask.py 1507 -> 1555, serve_api.py 473 -> 476, sleep.py
+576 -> 578. The tier and the time check change the loop and the record where they are made; moving them out
+is a refactor of its own (order 0002's kind), not this order's.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

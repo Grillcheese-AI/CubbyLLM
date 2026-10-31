@@ -1,0 +1,23 @@
+[0012][0014] review: the bench re-run after Cowork's review (0 wrong flat), frames over every book; the hdc world (177/200 one-hop, 0 wrong)
+
+0012 (validation/logs/exp_books_bench_final_2026-10-22.json, the full hdc gazetteer):
+- bench: 30/76 spoken (1 flat, 29 hedged); wrong flat 0 (1 as scored before review: Gaiseric's Carthage, Cowork's
+  verdict, kept in REVIEWED); wrong hedged 3 (Stukeley's 1694 and London, Alcuin's 732); Kerma "at one point",
+  unconfirmed; citations 29/29; replies naming a source 0; the wrong tense said flat 0/76.
+- frames: ranked passages 79 comparable at 0.821; over every book 180 comparable at 0.744 (0.882 without the
+  capitals, a kingdom's earlier capital against Wikidata's current one); the other contradictions are all held.
+  Short of 200 and of 0.95: Wikidata5M has no births, deaths, burials, founders or dates to compare.
+
+0014 (validation/logs/hdc_world_2026-10-22.json, exp_hdc_bench_2026-10-22.json):
+- 3,384,594 facts over 2,458,891 entities; English labels 0.989 (31,995 API requests); 1.02 GB.
+- lookup p95 0.39 ms; 0.9 GB mounted; one-hop 177/200 spoken, 177 correct, 0 wrong; time-sensitive 0/50 flat
+  (22 "as of 2019").
+- question_forms.TemplateEmitter binds the label when the question's word is the label without its own 'of'
+  ("What is the instance of X?" asks 'instance of', not the wiki world's 'instance'): 44 -> 177 spoken. A
+  store-side version ("R of" serving "R") was tried and reverted: 'capital of' reads opposite to 'capital'.
+
+pytest tests: 432 passed, 5 skipped, 1 failed (the wiring guard, order 0002). pytest standin/tests: 621 passed;
+the 25 failures and 1 error are test_build_chat_sft / test_chat / test_goemotions_cube (data missing at HEAD).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

@@ -1,0 +1,26 @@
+[0031] slice 4, reasoning: ask, question_forms, context_graph, loci_reader from standin/ to cubbyllm/reasoning/ (git mv; paths and imports only)
+
+The ask loop and its three helpers move into the package; their tests move to tests/reasoning/.
+Imports of moved modules become package imports, the sys.path edits go, and __file__ paths point
+where they pointed before. book_source (moved in slice 1) now imports question_forms from the package.
+
+ask.py (1,694 lines) and context_graph.py (319) stay over 300 lines here; they are split in
+later commits.
+
+Two test-side changes, no behaviour change:
+- tests/conftest.py also puts tests/reasoning on the path: it is a package, and the ask loop's tests
+  share helpers by file name (`from test_ask import FakeEmitter`).
+- tests/reasoning/test_sleep.py scans the reasons the loop writes in cubbyllm/reasoning/*.py, which now
+  holds loci_reader. loci_reader was never scanned, and two of its reasons (loci_mismatch, loci_miss)
+  have no route in sleep.ROUTES. The scan keeps its old coverage (loci_reader left out) and the
+  finding goes to the 0031 report: routing them is a decision.
+
+Two transitional lazy imports remain in ask, both in the emit slice (next): `emitter.clean_reply` and
+`eval_emitter_vm.strip_fences`.
+
+Tests, full suite against the baseline (validation/logs/0031_baseline_tests_2026-10-22.json, with the
+moved files mapped): same counts in every file; 1,189 passed, 6 skipped, 1 failed (test_guards'
+test_every_module_declares_wiring, the known red of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

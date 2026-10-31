@@ -1,0 +1,16 @@
+[0035] Report C: the copy alone, taught on a private village shard, passes its four lines; D is not needed
+
+Run 5c: run 5's trunk frozen (CB_TRAIN_ONLY=copy, 1,027 parameters), 410 steps of 8,192 tokens (3.36M), the far
+facts and C's space-form village shard at equal tokens, 4.99 h on this CPU at low priority.
+
+On 0034's 60 held-out villages, space form (exp_s12_copy_villages_run5c_2026-10-23.json):
+  things 0.818 -> 0.845 (line 0.75), names 0.775 -> 0.817 (line 0.60), "nothing" 0.609 -> 0.910;
+  the gate's mean on empty cells 0.402 -> 0.094.
+Far facts (exp_hypertoken_recall_run5c_cpu_2026-10-23.json against the run 5 CPU baseline, added here):
+  0.9456 -> 0.9271 exact, 2,002 questions: a drop of 0.0185, inside the 0.02 line by 0.0015.
+Trunk frozen (diag_frozen_check_run5c_2026-10-23.json): 0 of 326 tensors and 0 of 5 router tensors moved.
+The misses that name a neighbour (31 on empty cells) and those that deny a thing (48) are wrong answers spoken:
+the host's A routes stay the speaking path. Status review.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

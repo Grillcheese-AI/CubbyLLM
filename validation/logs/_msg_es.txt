@@ -1,0 +1,4 @@
+[0018] note: Spanish is the next language -- keep the lexicon per-variety and pluggable (Nick)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

@@ -1,0 +1,9 @@
+[0036] Report, strict; status review
+
+The tier is strict as pre-registered (551a1a3). The real stack: France's capital and Japan's
+currency ask back, the other 18 unchanged. 0014's bench on the final code: 178 of 178 spoken right,
+0 wrong, Terry White asks back. Found on the way: a no-break space hid 145 facts from their world's
+held_by (fixed, tested); the bench's time-sensitive draw is unseeded (question 1).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

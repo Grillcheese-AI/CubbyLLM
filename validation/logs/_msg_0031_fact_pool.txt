@@ -1,0 +1,13 @@
+[0031] pre-move: the serve stack's fact pool moves into cubbyllm/worlds/fact_pool.py
+
+build_serve (bound for cubby_serve/build.py) built its first world from
+validation/exp_m3_cot_pipeline's load_sample and V4_TABLE. They move verbatim, with PQ_FILE, into
+cubbyllm/worlds/fact_pool.py; the experiment re-exports them and serve imports them from the package.
+Checked: the same object by both names, and load_sample(200, seed=0) gives 200 questions over 315
+facts as before. exp_m3_cot_pipeline stays over 300 lines (1,509), as it was.
+
+The fast-word encoder build_serve loads by file path from the mowm checkout (question 8) stays as it
+is until question 8 is answered.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

@@ -1,0 +1,35 @@
+[0043] Namesakes at the source: 0037's rule on the Wikidata side, and namesakes that agree (review)
+
+Behind CB_SOURCE_NAMESAKES=1 (off until Cowork's reading).
+
+The source (cubbyllm/sources/wikidata_namesakes.py, a mixin of WikidataSource; the hook in
+wikidata_resolve.py): among several exact hits, the kind that carries the relation -- its own claims
+(holds), or the property's subject-type constraint one subclass step up (may); a kind that only may
+yields to a different kind that holds (the novel over its editions; the painting over two people
+named Mona Lisa), never within a kind (the James Young rule); the KATA guard for a place relation;
+cue words only rule out; the label over an alias among different kinds, kept (Spain over the Second
+Spanish Republic). One fits: the item, the others named by kind. Several: the loop answers each.
+
+The loop (cubbyllm/reasoning/ask_source_namesakes.py): each item walked apart with the source pinned
+(no ledger write), on a scratch first world so no item's facts land under the other's name, labelled
+by one of its own facts; namesakes that agree are said once (also for the worlds: Ann Lee). The
+source's branch runs after the worlds' and no longer behind the first-world guard.
+
+Measured, live, 2026-10-27 (validation/logs/):
+- the audit, 50 shared names from the scoreboard and the stack (audit_source_namesakes_2026-10-27.md):
+  11 one fits, 4 several fit, 1 agree, 3 asking back; 0 wrong picks and 0 values tied to the wrong
+  item by my reading; decision p50 9.3 ms warm (543 ms live, the network);
+- the scoreboard: 82 spoken (74 with the flag off the same day; 65 on 2026-10-24), 0 wrong, every
+  changed row read by hand;
+- the stack's 20: the same 11 as 0037's live run, 0 wrong; 0014's bench 192 correct, 0 wrong;
+  0033's probe 0 mixed.
+
+Found on the way: without the label tier the source refused Germany as several fit and the hdc
+snapshot's undated "Bonn is the capital of Germany" was spoken as of 2019 -- the stale value is still
+in the snapshot (for 0044). Obama and King Henry VIII are search gaps, not the rule.
+
+wikidata.py grows by one import line (it was over 300 already).
+Tests: 1125 passed, 1 failed (test_every_module_declares_wiring, the known red of order 0002).
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

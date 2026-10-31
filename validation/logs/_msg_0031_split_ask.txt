@@ -1,0 +1,30 @@
+[0031] split: ask.py (1,691 lines) into eight modules under 300, verbatim
+
+The order's first split after the move. cubbyllm/reasoning/ask.py keeps AskLoop's core (__init__,
+ask, _ask; 274 lines); the rest moves verbatim:
+  ask_forms.py    (236) the question shapes and the programs written for them, the thresholds by hops
+  ask_words.py    (215) how the loop words what it found: SAY, hedges, dates, grounded prose, value checks
+  ask_claims.py   (239) a claim checked against the store, the talk reply, the branch clarification
+  ask_memory.py   (194) AskMemory: held and learned facts, snapshots, life spans, the time checks
+  ask_relation.py (256) AskRelation: "how is B related to A?", family facts, feedback, the fetch
+  ask_profile.py  (263) AskProfile: who / what / where is X, the self profile, the paraphrase
+  ask_dated.py    (190) AskDated: what happened on a date, too broad, no events
+AskLoop(AskDated, AskProfile, AskRelation, AskMemory): the methods are the mixins', nothing overrides
+anything. ask.py re-exports every moved name, so `from ...ask import grounded_prose` and the old
+`ask` name work as before.
+
+Checked: every name reachable through ask before (module attributes and AskLoop's methods) is
+reachable after with the same source text (inspect.getsource, 103 names); the one name gone is _re,
+an alias of re nothing used once its patterns moved. The commentary on the profile ask moved to sit
+above the patterns it explains.
+
+New: tools/split_module.py, the splitter (cuts top-level names, or methods and class constants as a
+mixin, verbatim; writes each new module's imports from what its code uses; refuses a name that would
+need the source imported back, a cycle among the new modules, or a double-underscore attribute).
+
+Tests, full suite against the baseline with the moved files mapped: every existing file the same;
+1,201 passed (1,189 + the 12 of the two new guard files), 6 skipped, 1 failed (the known red of order
+0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

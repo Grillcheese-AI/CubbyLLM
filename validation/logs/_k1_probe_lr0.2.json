@@ -1,0 +1,58 @@
+{
+ "args": {
+  "freq": 256,
+  "epochs": 2,
+  "neg": 8191,
+  "batch": 1024,
+  "lr": 0.2,
+  "lr_rel": 0.02,
+  "lr_transe": 0.01,
+  "eval": 500,
+  "paths": 300,
+  "seed": 0,
+  "only": [
+   "map"
+  ],
+  "threads": 2,
+  "out": "validation\\logs\\_k1_probe_lr0.2.json"
+ },
+ "entities": 374975,
+ "relations": 2902,
+ "train": 347627,
+ "held": 3590,
+ "map": {
+  "one_hop": {
+   "n": 500,
+   "mrr": 0.18713274940855484,
+   "hits1": 0.042,
+   "hits3": 0.258,
+   "hits10": 0.494
+  },
+  "relation": {
+   "n": 500,
+   "mrr": 0.04053528770162043,
+   "hits1": 0.03,
+   "hits3": 0.036,
+   "hits10": 0.062
+  },
+  "two_hop": {
+   "n": 300,
+   "mrr": 0.12936941912189862,
+   "hits1": 0.0,
+   "hits3": 0.17333333333333334,
+   "hits10": 0.43333333333333335
+  },
+  "train_s": 562.4,
+  "composition_ratio": 0.8771929824561404
+ },
+ "log": [
+  "wiki world: 374,975 entities, 2,902 relations, 347,627 train triples, 3,590 held out (500 scored), 300 two-hop paths over training hops",
+  "--- map: 96.7M parameters, width 512, lr 0.2 (entities) / 0.02 (relations)",
+  "  epoch 1/2: loss 17.733 (271s)",
+  "  epoch 2/2: loss 13.554 (276s)",
+  "  one_hop   MRR 0.187  Hits@1 0.042  Hits@3 0.258  Hits@10 0.494  (n=500)",
+  "  relation  MRR 0.041  Hits@1 0.030  Hits@3 0.036  Hits@10 0.062  (n=500)",
+  "  two_hop   MRR 0.129  Hits@1 0.000  Hits@3 0.173  Hits@10 0.433  (n=300)",
+  "  two-hop / one-hop Hits@10: 0.88"
+ ]
+}

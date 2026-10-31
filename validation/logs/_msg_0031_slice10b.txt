@@ -1,0 +1,9 @@
+[0031] slice 10, the builders: the old names as shims
+
+The 35 builders' old paths in standin/data/ are shims for one cycle: `python standin/data/<builder>.py`
+runs the moved builder, and `import <builder>` with standin/data on the path gives the moved module
+(the identity records too: standin/data/identity is validation.sft.identity, which re-exports the
+runtime half from cubbyllm.speech.identity).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

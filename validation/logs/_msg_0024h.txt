@@ -1,0 +1,14 @@
+[0024] Crawl-delay honoured; Global Voices' history ingested by guid; the pairs file
+
+- robots_rules.crawl_delay and Archive.polite: a host's feeds are never fetched sooner after its last
+  request (the robots.txt read counts) than its Crawl-delay asks (Global Voices: 10 s).
+- standin/news_backfill.py (new): Cowork's saved history pages (en, fr) read like a live page under the
+  live feed's id, so an item already held or repeated by a neighbouring page is kept once; rows by
+  published year under backfill/<feed>/ (the live day files keep "first seen"); a page read once, and only
+  after it has settled a minute. The hourly poll ingests new pages when CUBBY_GV_BACKFILL names the folder.
+  pairs(): a translation and its source story, both archived, by their links.
+- First pass, 2026-10-22: 41 pages, 485 items kept, 25 repeats skipped; 218 pairs.
+- Tests: test_news_backfill.py (2); news tests green.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

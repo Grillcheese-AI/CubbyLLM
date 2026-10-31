@@ -1,0 +1,72 @@
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+{
+ "checkpoint": "spatial_link_5_final.pt",
+ "probe": "facts_far1k_v2_absent",
+ "docs_calibration": 200,
+ "theta": 0.11699999868869781,
+ "reproduces_0022_calibration": {
+  "here": {
+   "exact": 0.6958,
+   "present_refused": 0.2843,
+   "present_wrong": 0.02,
+   "absent_answered": 0.0
+  },
+  "0022": {
+   "exact": 0.6958,
+   "present_refused": 0.2843,
+   "present_wrong": 0.02,
+   "absent_answered": 0.0
+  }
+ },
+ "theta_end": 0.08500000089406967,
+ "n_present": 802,
+ "n_absent": 175,
+ "outcomes_present": {
+  "exact": 558,
+  "refused": 228,
+  "wrong: cut short": 13,
+  "wrong: run on": 3
+ },
+ "outcomes_absent": {
+  "refused": 175
+ },
+ "refusals_by_why": {
+  "nothing read (the first read already ends)": 5,
+  "a true piece read below theta": 171,
+  "the end read above theta_end": 50,
+  "no end within K": 2
+ },
+ "refusal_at_piece": {
+  "0": 45,
+  "2": 42,
+  "3": 33,
+  "4": 25,
+  "1": 45,
+  "5": 16,
+  "6": 7,
+  "9": 2,
+  "7": 5,
+  "10": 1
+ },
+ "wall_s": 1414.2
+}
+-> C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\refuse_diag_450m_2026-10-22.json

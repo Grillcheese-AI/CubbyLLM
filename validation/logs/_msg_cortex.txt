@@ -1,0 +1,14 @@
+design: the advisor loop (G, P, H -> options, pros and cons, a pick or a question) (H-S11)
+
+What the whole brain is for (Nick): given a goal G, past trials P and a
+history of choices H, list the options that reach G with pros and cons,
+pick the best by the user's criteria, or ask the one question whose
+answer changes the pick. Mapped onto the design: options are branches
+the forward model plays out, P is the postmortem memory, H reveals the
+user's criteria, and a question is asked when the top branches swap on
+an unweighted criterion. Learned in the sandbox, where every option and
+claim is checked in a fork. H-S11: A1-A5 against the no-branching trunk
+and a general language model.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

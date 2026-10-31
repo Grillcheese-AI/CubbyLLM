@@ -1,0 +1,26 @@
+[0001] A0: the answer is in the read -- 0.758 per piece over the 128k vocabulary, 0.992 among the document's own writers
+
+validation/diag_fact_cleanup.py (no training): on the run-3 checkpoint and 400 held-out
+facts_far1k_lead documents, the scene the trunk was given is unbound at each asking token's
+address (SpatialLink.lookup, before the gate and o) and cleaned up by argmax cosine against
+the embedding table the scene stored (build_model's HybridEmbedding has no tail generator,
+so embed(ids, ctx) is the core row: the table is exactly what was stored).
+
+facts_far1k_lead, 9,451 piece reads (37.5 writers a document):
+  the stored piece top-1 0.758, top-5 0.864 over all 128k (first piece 0.790, later 0.750);
+  dot product the same (0.749); cos to the stored piece 0.165 vs the best wrong 0.138,
+  absent reads' best 0.139 (a 1.19x margin, the qFHRR paper's was 17x);
+  whole answers by cleanup 0.457 -- and among the document's writers only (a pointer over
+  what was written) 0.992 per piece, 0.965 whole answers. The trunk reads 0.021.
+spatial_here: 0.821 top-1 (0.947 among writers); 2,757 of 3,610 village questions are
+  "nothing" (absent reads), and a village answers " pond" for a stored "pond": the trunk there
+  maps one closed set to another, it never copies a token.
+
+The cosine to the target is what 37.5 random codes in 1,024 dimensions give (1/sqrt(37.5) =
+0.163): the learned table behaves like random codes, so identity codes (B4) should not move
+it; the margin against 128k candidates is the limit, against ~30 it is not.
+
+Logs: validation/logs/diag_fact_cleanup_run3_2026-10-21.{json,log}
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

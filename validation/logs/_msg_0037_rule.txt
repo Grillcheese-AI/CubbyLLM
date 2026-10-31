@@ -1,0 +1,38 @@
+[0037] A shared name decided by the question's relation and its cue words (behind CB_NAMESAKE_RELATION=1, off)
+
+The rule, built and tested. With the flag off, the hop is strict, as order 0036 left it.
+
+- Kinds table (hdc_kinds): a kind carries a relation by its share. Its members' share must be at least
+  LIFT=2 x the typed items' base rate, with NMIN=3 members.
+  - The base comes from typed items only: untyped people dominate the snapshot, and an all-items base made
+    humans carry nothing.
+  - An item with no instance of is read from its specific relations: those at most SPREAD=50 kinds carry.
+    Take the intersection of their kinds, else the union.
+- Cue words (hdc_cues, new): a word-to-kinds table built once from the world's values. A cue word only
+  rules out; a word the world never uses rules out nothing.
+- The decision (hdc_relation, new; hdc_namesakes.hop_rows):
+  - one item fits: the hop reads it;
+  - several fit: they are noted, and none is read.
+- The answer (ask_namesake_answer, new; ask_namesakes):
+  - One fits: the answer, then at most two other namesakes named by their kind, with an offer.
+  - A value the question's own description rules out is not said. "What Nobel Prize ...", with another
+    award held, gives the new reason not_what_was_asked, routed to source_gaps in sleep.ROUTES.
+    sleep.py is already over 300 lines; this is one line in its table.
+  - Several fit, with a fact that tells them apart: each is walked pinned and labelled, in id order.
+  - No such fact, or more than three: asked which, as before.
+- ask.py: two hooks. seed_for gets the question and the plan's relations (for the cue words); after_walk gets
+  the walk (to answer each).
+
+Tests: test_hdc_relation (6) and test_ask_namesake_answer (4) pass. Whole suite: 1083 passed; the one
+failure is the known red, test_every_module_declares_wiring (order 0002).
+
+On the real hdc world, world-level, the decisions take 10-46 ms:
+- capital of France -> Q142 Paris
+- currency of Japan -> Q17 Japanese yen
+- capital of Italy -> Q38 Rome
+- Steve Mills -> both (two of a kind)
+
+The audit, the probes and the report follow.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

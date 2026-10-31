@@ -1,0 +1,630 @@
+[
+ {
+  "region": "Europe",
+  "lang": "en",
+  "outlet": "BBC World",
+  "kind": "public",
+  "url": "https://feeds.bbci.co.uk/news/world/rss.xml",
+  "status": 200,
+  "items": 38,
+  "ai_blocked": [],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Europe",
+  "lang": "en",
+  "outlet": "The Guardian World",
+  "kind": "private",
+  "url": "https://www.theguardian.com/world/rss",
+  "status": 200,
+  "items": 45,
+  "ai_blocked": [
+   "Bytespider",
+   "CCBot",
+   "ClaudeBot",
+   "PerplexityBot",
+   "anthropic-ai"
+  ],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Europe",
+  "lang": "en",
+  "outlet": "Deutsche Welle (EN)",
+  "kind": "public",
+  "url": "https://rss.dw.com/rdf/rss-en-all",
+  "status": 200,
+  "items": 134,
+  "ai_blocked": [],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Europe",
+  "lang": "fr",
+  "outlet": "France 24 (FR)",
+  "kind": "public",
+  "url": "https://www.france24.com/fr/rss",
+  "status": 200,
+  "items": 24,
+  "ai_blocked": [
+   "CCBot",
+   "ChatGPT-User",
+   "Claude-Web",
+   "ClaudeBot",
+   "GPTBot",
+   "Google-Extended",
+   "OAI-SearchBot",
+   "Perplexity-User",
+   "PerplexityBot",
+   "anthropic-ai",
+   "cohere-ai"
+  ],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Europe",
+  "lang": "en",
+  "outlet": "France 24 (EN)",
+  "kind": "public",
+  "url": "https://www.france24.com/en/rss",
+  "status": 200,
+  "items": 24,
+  "ai_blocked": [
+   "CCBot",
+   "ChatGPT-User",
+   "Claude-Web",
+   "ClaudeBot",
+   "GPTBot",
+   "Google-Extended",
+   "OAI-SearchBot",
+   "Perplexity-User",
+   "PerplexityBot",
+   "anthropic-ai",
+   "cohere-ai"
+  ],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Europe",
+  "lang": "fr",
+  "outlet": "RFI (FR)",
+  "kind": "public",
+  "url": "https://www.rfi.fr/fr/rss",
+  "status": 200,
+  "items": 24,
+  "ai_blocked": [
+   "CCBot",
+   "ChatGPT-User",
+   "Claude-Web",
+   "ClaudeBot",
+   "GPTBot",
+   "Google-Extended",
+   "OAI-SearchBot",
+   "Perplexity-User",
+   "PerplexityBot",
+   "anthropic-ai",
+   "cohere-ai"
+  ],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Europe",
+  "lang": "fr",
+  "outlet": "Le Monde (une)",
+  "kind": "private",
+  "url": "https://www.lemonde.fr/rss/une.xml",
+  "status": 200,
+  "items": 16,
+  "ai_blocked": [
+   "Bytespider",
+   "CCBot",
+   "Claude-Web",
+   "ClaudeBot",
+   "Google-Extended",
+   "anthropic-ai",
+   "cohere-ai"
+  ],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Europe",
+  "lang": "en",
+  "outlet": "Euronews",
+  "kind": "private",
+  "url": "https://www.euronews.com/rss",
+  "status": 200,
+  "items": 50,
+  "ai_blocked": [
+   "CCBot",
+   "GPTBot"
+  ],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Europe",
+  "lang": "es",
+  "outlet": "El País (portada)",
+  "kind": "private",
+  "url": "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada",
+  "status": 200,
+  "items": 152,
+  "ai_blocked": "robots:HTTPError"
+ },
+ {
+  "region": "Europe",
+  "lang": "de",
+  "outlet": "Tagesschau",
+  "kind": "public",
+  "url": "https://www.tagesschau.de/xml/rss2/",
+  "status": 200,
+  "items": 40,
+  "ai_blocked": [
+   "bytespider",
+   "ccbot",
+   "claudebot",
+   "google-extended",
+   "gptbot"
+  ],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Europe",
+  "lang": "en",
+  "outlet": "Kyiv Independent",
+  "kind": "private",
+  "url": "https://kyivindependent.com/news-archive/rss/",
+  "status": 200,
+  "items": 15,
+  "ai_blocked": [],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Europe",
+  "lang": "en",
+  "outlet": "Meduza (EN)",
+  "kind": "private",
+  "url": "https://meduza.io/rss/en/all",
+  "status": 200,
+  "items": 30,
+  "ai_blocked": [],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Europe",
+  "lang": "en",
+  "outlet": "TASS (EN)",
+  "kind": "state",
+  "url": "https://tass.com/rss/v2.xml",
+  "status": 200,
+  "items": 100,
+  "ai_blocked": [],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Middle East",
+  "lang": "en",
+  "outlet": "Al Jazeera (EN)",
+  "kind": "state-funded",
+  "url": "https://www.aljazeera.com/xml/rss/all.xml",
+  "status": 200,
+  "items": 25,
+  "ai_blocked": [
+   "Bytespider",
+   "ChatGPT-User",
+   "Claude-Web",
+   "ClaudeBot",
+   "GPTBot",
+   "PerplexityBot",
+   "anthropic-ai",
+   "cohere-ai"
+  ],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Middle East",
+  "lang": "en",
+  "outlet": "Times of Israel",
+  "kind": "private",
+  "url": "https://www.timesofisrael.com/feed/",
+  "status": 200,
+  "items": 11,
+  "ai_blocked": [],
+  "generic_may_fetch": false
+ },
+ {
+  "region": "Middle East",
+  "lang": "en",
+  "outlet": "Middle East Eye",
+  "kind": "private",
+  "url": "https://www.middleeasteye.net/rss",
+  "status": 200,
+  "items": 20,
+  "ai_blocked": [],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Middle East",
+  "lang": "en",
+  "outlet": "Anadolu Agency (EN)",
+  "kind": "state",
+  "url": "https://www.aa.com.tr/en/rss/default?cat=guncel",
+  "status": 200,
+  "items": 30,
+  "ai_blocked": [],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Middle East",
+  "lang": "en",
+  "outlet": "Arab News",
+  "kind": "private",
+  "url": "https://www.arabnews.com/rss.xml",
+  "status": "FAIL HTTPError HTTP Error 403: Forbidden",
+  "items": 0,
+  "ai_blocked": "robots:HTTPError"
+ },
+ {
+  "region": "Africa",
+  "lang": "en",
+  "outlet": "Africanews (EN)",
+  "kind": "private",
+  "url": "https://www.africanews.com/feed/rss",
+  "status": 200,
+  "items": 50,
+  "ai_blocked": [],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Africa",
+  "lang": "en",
+  "outlet": "AllAfrica (latest)",
+  "kind": "aggregator",
+  "url": "https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf",
+  "status": 200,
+  "items": 33,
+  "ai_blocked": [],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Africa",
+  "lang": "en",
+  "outlet": "Premium Times (Nigeria)",
+  "kind": "private",
+  "url": "https://www.premiumtimesng.com/feed",
+  "status": 200,
+  "items": 15,
+  "ai_blocked": [],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Africa",
+  "lang": "en",
+  "outlet": "Daily Maverick (South Africa)",
+  "kind": "private",
+  "url": "https://www.dailymaverick.co.za/dmrss/",
+  "status": 200,
+  "items": 50,
+  "ai_blocked": [],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Africa",
+  "lang": "fr",
+  "outlet": "Jeune Afrique",
+  "kind": "private",
+  "url": "https://www.jeuneafrique.com/feed/",
+  "status": 200,
+  "items": 30,
+  "ai_blocked": [
+   "Anthropic-ai",
+   "Bytespider",
+   "CCBot",
+   "Claude-Web",
+   "ClaudeBot",
+   "GPTBot",
+   "Google-Extended",
+   "OAI-SearchBot",
+   "Perplexity-User",
+   "PerplexityBot"
+  ],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Asia",
+  "lang": "en",
+  "outlet": "NHK World (EN)",
+  "kind": "public",
+  "url": "https://www3.nhk.or.jp/nhkworld/en/news/rss.xml",
+  "status": "FAIL HTTPError HTTP Error 404: Not Found",
+  "items": 0,
+  "ai_blocked": [
+   "Bytespider",
+   "CCBot",
+   "ChatGPT-User",
+   "ClaudeBot",
+   "GPTBot",
+   "Google-Extended",
+   "OAI-SearchBot",
+   "PerplexityBot",
+   "anthropic-ai",
+   "cohere-ai"
+  ],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Asia",
+  "lang": "en",
+  "outlet": "Japan Times",
+  "kind": "private",
+  "url": "https://www.japantimes.co.jp/feed/",
+  "status": 200,
+  "items": 30,
+  "ai_blocked": "robots:HTTPError"
+ },
+ {
+  "region": "Asia",
+  "lang": "en",
+  "outlet": "Yonhap (EN)",
+  "kind": "state-funded",
+  "url": "https://en.yna.co.kr/RSS/news.xml",
+  "status": 200,
+  "items": 101,
+  "ai_blocked": [
+   "Bytespider",
+   "CCBot",
+   "ChatGPT-User",
+   "Claude-Web",
+   "ClaudeBot",
+   "GPTBot",
+   "Google-Extended",
+   "OAI-SearchBot",
+   "PerplexityBot",
+   "anthropic-ai",
+   "cohere-ai"
+  ],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Asia",
+  "lang": "en",
+  "outlet": "South China Morning Post (world)",
+  "kind": "private",
+  "url": "https://www.scmp.com/rss/91/feed",
+  "status": 200,
+  "items": 50,
+  "ai_blocked": [],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Asia",
+  "lang": "en",
+  "outlet": "Xinhua (EN)",
+  "kind": "state",
+  "url": "https://english.news.cn/rss/worldrss.xml",
+  "status": "FAIL URLError <urlopen error [SSL: CERTIFICATE_VERIFY_",
+  "items": 0,
+  "ai_blocked": "robots:URLError"
+ },
+ {
+  "region": "Asia",
+  "lang": "en",
+  "outlet": "The Hindu (international)",
+  "kind": "private",
+  "url": "https://www.thehindu.com/news/international/feeder/default.rss",
+  "status": 200,
+  "items": 60,
+  "ai_blocked": [
+   "Anthropic-ai",
+   "Bytespider",
+   "CCBot",
+   "ChatGPT-User",
+   "Claude-Web",
+   "ClaudeBot",
+   "GPTBot",
+   "OAI-SearchBot",
+   "PerplexityBot"
+  ],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Asia",
+  "lang": "en",
+  "outlet": "Dawn (Pakistan)",
+  "kind": "private",
+  "url": "https://www.dawn.com/feeds/home",
+  "status": 200,
+  "items": 26,
+  "ai_blocked": [],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Asia",
+  "lang": "en",
+  "outlet": "CNA (Singapore)",
+  "kind": "state-funded",
+  "url": "https://www.channelnewsasia.com/rssfeeds/8395986",
+  "status": 200,
+  "items": 20,
+  "ai_blocked": [],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Asia",
+  "lang": "en",
+  "outlet": "The Diplomat",
+  "kind": "private",
+  "url": "https://thediplomat.com/feed/",
+  "status": 200,
+  "items": 96,
+  "ai_blocked": [
+   "CCBot",
+   "GPTBot",
+   "Google-Extended",
+   "anthropic-ai"
+  ],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Oceania",
+  "lang": "en",
+  "outlet": "ABC News (Australia)",
+  "kind": "public",
+  "url": "https://www.abc.net.au/news/feed/51120/rss.xml",
+  "status": 200,
+  "items": 25,
+  "ai_blocked": [
+   "Bytespider",
+   "CCBot",
+   "ChatGPT-User",
+   "Claude-Web",
+   "ClaudeBot",
+   "GPTBot",
+   "Google-Extended",
+   "PerplexityBot",
+   "anthropic-ai",
+   "cohere-ai"
+  ],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Oceania",
+  "lang": "en",
+  "outlet": "RNZ World",
+  "kind": "public",
+  "url": "https://www.rnz.co.nz/rss/world.xml",
+  "status": 200,
+  "items": 2,
+  "ai_blocked": [
+   "Bytespider",
+   "CCBot",
+   "ChatGPT-User",
+   "Claude-Web",
+   "ClaudeBot",
+   "GPTBot",
+   "Google-Extended",
+   "OAI-SearchBot",
+   "Perplexity-User",
+   "PerplexityBot",
+   "anthropic-ai",
+   "cohere-ai"
+  ],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Americas",
+  "lang": "en",
+  "outlet": "NPR News",
+  "kind": "public",
+  "url": "https://feeds.npr.org/1001/rss.xml",
+  "status": 200,
+  "items": 10,
+  "ai_blocked": "robots:HTTPError"
+ },
+ {
+  "region": "Americas",
+  "lang": "en",
+  "outlet": "CBS News World",
+  "kind": "private",
+  "url": "https://www.cbsnews.com/latest/rss/world",
+  "status": 200,
+  "items": 30,
+  "ai_blocked": [
+   "GPTBot"
+  ],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Americas",
+  "lang": "es",
+  "outlet": "Infobae (América)",
+  "kind": "private",
+  "url": "https://www.infobae.com/arc/outboundfeeds/rss/?outputType=xml",
+  "status": 200,
+  "items": 100,
+  "ai_blocked": [],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Americas",
+  "lang": "pt",
+  "outlet": "Folha de S.Paulo (mundo)",
+  "kind": "private",
+  "url": "https://feeds.folha.uol.com.br/mundo/rss091.xml",
+  "status": 200,
+  "items": 100,
+  "ai_blocked": [
+   "Bytespider",
+   "CCBot",
+   "Claude-Web",
+   "ClaudeBot",
+   "Perplexity-User",
+   "PerplexityBot",
+   "anthropic-ai",
+   "cohere-ai"
+  ],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Americas",
+  "lang": "en",
+  "outlet": "MercoPress",
+  "kind": "private",
+  "url": "https://en.mercopress.com/rss/",
+  "status": 200,
+  "items": 10,
+  "ai_blocked": [],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Americas",
+  "lang": "en",
+  "outlet": "Buenos Aires Times",
+  "kind": "private",
+  "url": "https://www.batimes.com.ar/feed",
+  "status": 200,
+  "items": 100,
+  "ai_blocked": [],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "Americas",
+  "lang": "en",
+  "outlet": "Global News (Canada)",
+  "kind": "private",
+  "url": "https://globalnews.ca/feed/",
+  "status": 200,
+  "items": 10,
+  "ai_blocked": [],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "World",
+  "lang": "en",
+  "outlet": "Reuters (no public feed expected)",
+  "kind": "private",
+  "url": "https://www.reutersagency.com/feed/",
+  "status": "FAIL HTTPError HTTP Error 404: Not Found",
+  "items": 0,
+  "ai_blocked": [],
+  "generic_may_fetch": true
+ },
+ {
+  "region": "World",
+  "lang": "en",
+  "outlet": "Associated Press via Google News (aggregator)",
+  "kind": "aggregator",
+  "url": "https://news.google.com/rss/search?q=when:1d+source:Associated+Press&hl=en-US&gl=US&ceid=US:en",
+  "status": 200,
+  "items": 7,
+  "ai_blocked": [
+   "CCBot",
+   "ChatGPT-User",
+   "Claude-Web",
+   "ClaudeBot",
+   "GPTBot",
+   "PerplexityBot",
+   "anthropic-ai"
+  ],
+  "generic_may_fetch": false
+ }
+]

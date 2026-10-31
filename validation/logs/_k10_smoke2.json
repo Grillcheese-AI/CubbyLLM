@@ -1,0 +1,48 @@
+{
+ "args": {
+  "steps": 3,
+  "d": 256,
+  "batch": 4,
+  "seq": 256,
+  "facts_per_doc": 8,
+  "filler": 120,
+  "lr": 0.002,
+  "gate_bias": null,
+  "gate_warmup": 2,
+  "route_loss": 1.0,
+  "query": "learned",
+  "seed": 0,
+  "only": [
+   "hypertoken"
+  ],
+  "threads": 2,
+  "out": "validation\\logs\\_k10_smoke2.json"
+ },
+ "hypertoken": {
+  "name": "hypertoken (learned query)",
+  "params": 3360785,
+  "final_answers": 0.001953125,
+  "final_language": 6.965888500213623,
+  "curve": [
+   {
+    "step": 0,
+    "loss": 7.981720447540283,
+    "answers": 0.001953125,
+    "language": 6.9776692390441895,
+    "route": 0.9977022409439087
+   },
+   {
+    "step": 2,
+    "loss": 7.940935134887695,
+    "answers": 0.001953125,
+    "language": 6.965888500213623,
+    "route": 1.0118910074234009
+   }
+  ]
+ },
+ "log": [
+  "--- hypertoken (learned query): 3.36M params, D=256, window 64, 8 facts/doc, filler 120, gate warmup 2, route loss 1.0",
+  "  step     0  loss 7.982  held-out answers 0.00  language 6.978  gate bias +2.00  route 0.998   [3s]",
+  "  step     2  loss 7.941  held-out answers 0.00  language 6.966  gate bias +0.00  route 1.012   [6s]"
+ ]
+}

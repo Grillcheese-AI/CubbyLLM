@@ -1,0 +1,32 @@
+[0013] The reader's data by distant supervision, its contract, and the bulk pass over every book (frames); the labels' own precision
+
+- standin/data/build_reader_sft.py (new): a book sentence naming a subject and an object the wiki world relates
+  is a positive (every such relation a line, the value as the sentence writes it); a sentence naming the subject
+  and another name it is not related to is NONE; held out by book hash. A pair counts only where the sentence
+  could state it: the relation's verb for births, deaths, burials, founders, authors, spouses, parents ... (CUED),
+  the two names at most 8 words apart, never a reference or an index line (JUNK). The records stay off-repo,
+  beside the index, in the talk trainer's form. --audit writes random positives for a hand check of the labels.
+- standin/book_reader.py (new): the prompt, the answer form (RELATION | value, or NONE), the parse (a relation of
+  the set, a value the sentence writes), dates to the store's form, and one store sentence per fact whoever read it.
+- validation/books_bulk_read.py (new): every paragraph read once, streamed a book at a time, incremental by book
+  hash; frames (and a trained reader, when one exists) per mentioned name; 0012's tiers over every read, the
+  same-name guard, a world file per era, the held apart.
+
+Measured:
+- The labels (validation/logs/build_reader_sft_2026-10-22.json): 416,134 sentences seen, 7,219 positives over 48
+  relations (6,567 train / 652 test, as many negatives), 4,216 train books, 481 test books.
+- The labels' precision (validation/logs/build_reader_sft_audit_2026-10-22.json): of 100 random train positives,
+  45 state the relation they are labelled with (Claude Code's reading, to be confirmed by hand). Before the
+  cue / gap / junk rules: about 7 of 25. Distant supervision on these books and this wiki world gives labels
+  mostly of co-occurrence; a reader trained on them would learn that.
+- The bulk pass (validation/logs/books_bulk_read_2026-10-22.json, ..._rerun_2026-10-22.json): 5,217 books read
+  (74 more are empty files) in 12,050 s on 3 workers; 5,134 frame reads; 3,279 facts about 1,786 entities after
+  the same-name guard: 297 corroborated, 1,943 attributed, 1,039 held (two values of a one-valued relation);
+  corroborated share 0.133. A re-run with no new book reads 0 books and writes the same files (24 s).
+
+Tests: standin/tests/test_book_reader.py (4), test_books_bulk.py (4: tiers and eras, a re-run changes nothing and
+a new book is the only one read, the loop speaks one author's fact hedged, an undated capital "at one point", a
+book whose person does not fit set aside).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

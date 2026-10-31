@@ -1,0 +1,21 @@
+[0024] The news archive: a feed manifest, an append-only poller, robots read by group
+
+- standin/news_archive.py (new): polls the manifest's active feeds, appends each item once (key = feed + guid/link)
+  to one file a day (the day first seen), headline and summary only (summary cut at 400 characters), never an
+  article page. Robots are read every poll at the feed host and the publisher's site: a rule refusing CubbyLLM
+  (or *) the feed path skips it, an AI-agent block the manifest has not recorded holds it. A poll log, a lock,
+  --once / --every / --stats.
+- standin/data/news_feeds.json (new): 15 feeds. 9 active: Government of Canada en/fr releases (Open Government
+  Licence), Quebec government releases, La Presse x2, Le Devoir x2, Radio-Canada, L'actualite. 6 held: BBC, NYT,
+  Guardian, NPR, Al Jazeera (their robots shut out AI agents by name), Politico (robots unreadable, HTTP 403).
+  The third-party AP mirror is dropped.
+- standin/robots_rules.py (new): the group-aware reader (RFC 9309). The old one gave a group's Disallow to its
+  last name only, so La Presse, Le Devoir and the Guardian read as naming no AI agent. news_source.py now
+  imports it (389 lines, down from 413; it was already over 300 and only shrinks here).
+- standin/serve_api.py: --news-archive <dir> (default CUBBY_NEWS_ARCHIVE; off when unset) runs the hourly poll
+  in a thread (Nick's choice). +7 lines on a file already over 300: the flag belongs with the other mounts.
+- First poll, 2026-10-22: 283 items from the 9 active feeds, 0 duplicates.
+- Tests: standin/tests/test_news_archive.py (6), test_news_source.py still green.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

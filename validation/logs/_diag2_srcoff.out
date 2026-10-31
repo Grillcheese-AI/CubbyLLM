@@ -1,0 +1,31 @@
+flags {'CB_SOURCE_OVER_SNAPSHOT': '0', 'CB_NAMESAKE_RELATION': None}
+    What is the capital of France? -> As of 2019, Paris. If you meant something else, there is also a constituency of the european parliament named France. Want to know about it? None calls 0
+    Where was Ada Lovelace born? -> None retrieval_exhausted calls 1
+    Who wrote Pride and Prejudice? -> None retrieval_exhausted calls 1
+    When was the Eiffel Tower built? -> None no_plan calls 0
+    What is the capital of Canada? -> As of 2019, Ottawa. None calls 0
+    Who is the father of Queen Elizabeth II? -> None retrieval_exhausted calls 1
+    What is the population of Toronto? -> None no_plan calls 0
+    Who painted the Mona Lisa? -> None ambiguous_entity calls 1
+    Where is the Globe Theatre? -> None no_plan calls 0
+    What language is spoken in Brazil? -> None ambiguous_entity calls 3
+    Who discovered penicillin? -> None retrieval_exhausted calls 1
+    What is the currency of Japan? -> Japanese yen. If you meant something else, there is also a manga named Japan (2 of them). Want to know about one of them? None calls 0
+### Quelle est la capitale de l'Italie ? -> None retrieval_exhausted None
+   seed Italie plan ['capital'] entities ['Italie'] aliased []
+   hdc label None namesakes [] decision null withheld []
+   learned []
+   source call ["Italie", {}, 0, {"entity": "Italie", "qid": null, "label": null, "alias": false, "n_claims": 0, "how": null, "offered": ["Q38", "Q106402947", "Q3155865", "Q3155863"], "ambiguous": [["Q38", "Italy", "country in southern Europe"], ["Q106402947", "Italie", "family name"], ["Q3155865", "Italie", "metro station in Rennes, France"], ["Q3155863", "Italie", "paddle steamer on Lake Geneva, based in Sous-Gare/Ouchy in the canton of Vaud, Switzerland"]], "unresolved": false}, []]
+   known end time? False capital? True
+    Qui a écrit Les Misérables ? -> None retrieval_exhausted calls 1
+    What river flows through Cairo? -> Nile. If you meant something else, there is also an operating system named Cairo and a village in the united states named Cairo. Want to know about one of them? None calls 0
+    Who was the first president of the United States? -> None entity_unresolved calls 1
+    How tall is Mount Everest? -> None retrieval_exhausted calls 1
+    What is the speed of light? -> None no_plan calls 0
+    Who is the mayor of Montreal? -> None no_plan calls 0
+### What year did World War II end? -> None unknown_relation {'covers': True, 'unknown_relations': ['end time'], 'tail_relation': None, 'paraphrased': []}
+   seed World War II plan ['end time'] entities ['World War II'] aliased []
+   hdc label World War II namesakes [] decision null withheld []
+   learned []
+   source call ["World War II", {}, 0, {"entity": "World War II", "qid": null, "label": null, "alias": false, "n_claims": 0, "how": null, "offered": ["Q362", "Q15053459", "Q140236316", "Q139684990"], "ambiguous": [["Q362", "World War II", "1939–1945 global conflict"], ["Q15053459", "World War II", "1995 edition by the Military Book Club"], ["Q140236316", "World War II", "book chapter in The Elgar Companion to John Maynard Keynes (2019)"], ["Q139684990", "World War II", null]], "unresolved": false}, []]
+   known end time? False capital? True

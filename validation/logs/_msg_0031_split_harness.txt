@@ -1,0 +1,17 @@
+[0031] split: the harness (870 lines) into four modules under 300, verbatim
+
+cubby_serve/harness.py keeps Harness's core (boot, recover, the frame, turn, speak; 295 lines), the
+refusal and the current frame; the rest moves verbatim:
+  harness_rules.py (247) the effects and grants, what is never live, the budget, statuses and
+                         postconditions; hashing and signing a config; Budget, TaskFrame, Fact, Tool, Refused
+  harness_tools.py (281) the ToolRegistry, the Preflight, the Generations
+  harness_night.py (123) HarnessNight: the night, a replay, the hormone gate, the deny probe
+Harness(HarnessNight). harness.py re-exports every moved name.
+
+Checked: every name reachable before is reachable after with the same source (95 names; GRANTS is a
+dict of sets, compared by source, and _current a thread-local, whose address differs by run).
+Tests: the full suite against the previous run, every file the same (1,201 passed, 6 skipped, 1
+failed: the known red of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

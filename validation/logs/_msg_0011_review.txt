@@ -1,0 +1,10 @@
+[0011] review: run 5 reads facts_far1k_v2 at 0.931 exact (first token 0.988) against 0.941 on the same 64 documents of facts_far1k_lead -- the copy carries over to the readable names (drop 0.010, line 0.05)
+
+Report filled in (docs/orders/0011-fact-names-prose.md): the three renderings, the subject-first question for
+the 646 relations ending in "of" (dropping the doubled "of" would ask the inverse), facts_far1k_v2 checked
+from its bytes (same addresses and questions in all 20,000 documents; 0 doubled words outside names), the
+probe. Log: validation/logs/hypertoken_recall_spatial_run5_on_far1k_v2_2026-10-21.json (the checkpoint's
+path replaced by <runs>).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

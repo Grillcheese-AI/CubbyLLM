@@ -1,0 +1,16 @@
+[0013] review: the bulk store on 0012's bench (58/76 spoken, 0 wrong flat), the held as a veto; the reader's labels do not hold
+
+- ask.AskLoop.load_held: the facts a bulk pass held (two values of a relation that has one) as a veto -- an answer
+  on a held (subject, relation) is refused `contested`, whoever states it. The first bulk-store run said
+  Stesichorus's Himera flat (the live books reader saw one value in its passages; the bulk pass had held it against
+  Metauros). sleep routes `contested` to latent_audit. exp_books_bench --bulk loads the held file too.
+- The bench with the bulk store (validation/logs/exp_books_bench_bulk_2026-10-22.json): 2,228 facts and 1,033 held
+  loaded; 58/76 spoken (46 flat, 12 hedged), 0 wrong flat, 1 wrong hedged (Alcuin's 732 against "c. 735"), 14
+  refused contested, replies naming a source 0, the wrong tense said flat 0/76 (the live run: 30/76).
+- The bulk pass after the place cleanup (books_bulk_read_rerun_2026-10-22.json): 3,263 facts about 1,780 entities,
+  298 corroborated / 1,932 attributed / 1,033 held; a re-run with no new book reads 0 and writes the same files.
+- The report's finding: 45 of 100 distant-supervision labels state their relation; no reader adapter was built, and
+  frames stay the reader. Tests: test_books_bulk.py 6 (the veto added).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

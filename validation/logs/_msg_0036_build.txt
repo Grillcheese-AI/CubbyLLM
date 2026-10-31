@@ -1,0 +1,28 @@
+[0036] Namesakes, the rest: the object guard, a chosen item kept as itself, the kinds table, the audit list
+
+1. Inverse questions: HdcWorld's object index reads a label shared by several items (by the
+   item pointed at) as none of them, as 0033's rule does for subjects (hdc_namesakes.object_items).
+   The probe (50 shared object labels, seed 0): 0 mixed; the index reads a shared label 0 times.
+   But every one of the 50 got no plan: no serving path reads the object index, so the ask loop
+   has no inverse route (the 0 is the guard's in the index, not a decision in the loop).
+2. A chosen item kept as itself: facts a source fetched for the asker's clarify choice are stored
+   under the item's id (ask_relation._fetch), and the profile reads them there (ask_profile), so a
+   bare question later still asks which (tests/reasoning/test_chosen_item.py).
+3. The kinds table (cubbyllm/worlds/hdc_kinds.py): which relations each kind's members carry,
+   built once beside the world (2,399,127 items, 20,113 pairs, 7.0 s, 1.7 MB); HdcWorld reads it
+   when it was built from this state of the world (its size stamp), else scans as before. On 0033's
+   11 hops: the same decisions, 34.5 ms in all against the scan's 616 ms (Japan's currency 4.6 ms
+   against 521 ms).
+4. The audit: 50 of the tier's decisions drawn by seed (370 shared labels tried), each with its
+   items and the one chosen, written for a reading by hand (audit_namesake_tier_2026-10-23.md).
+
+0014's bench: 179 of 179, 0 wrong, rows identical to 0033's. The real stack's 20 answers: the same
+20 records as after 0033 (ids, times and timings aside). Suite: 1,238 passed (0034's 1,232 + 6 new:
+2 namesakes, 1 chosen item, 3 of 0035 A's), 6 skipped; the one red is 0002's known guard.
+
+Logs: validation/logs/namesake_inverse_probe_2026-10-23.json, hdc_kinds_check_2026-10-23.json,
+audit_namesake_tier_2026-10-23.{json,md}, exp_hdc_bench_2026-10-23_0036.json,
+0036_stack_2026-10-23.json, 0036_tests_2026-10-23.json.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

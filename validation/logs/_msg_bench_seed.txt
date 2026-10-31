@@ -1,0 +1,8 @@
+[0036] The bench's time-sensitive draw is seeded (--seed), so its counts compare across runs
+
+Cowork's review of 0036: the 50 time-sensitive questions were drawn with SQL ORDER BY RANDOM(), so
+every run asked a different set. They are now drawn by --seed from the 155,749 time-sensitive facts
+(the same seed gives the same 50); the next run sets the new reference.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

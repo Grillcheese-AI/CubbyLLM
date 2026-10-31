@@ -1,0 +1,16 @@
+[0028] review 3: the held-out v3 set run once: alerts 8 of 10 woken, 0 of 10 near misses after the check (the line met)
+
+On c8435c4 (the stricter covers), as v2 was run: MiniLM, logistic heads, tau 0.675, --second-check.
+- envcanada-alerts: the router woke 8 of 10 should-wake questions and 7 of 10 near misses.
+- After the plugin's own covers: 8 of 10 woken, 0 of 10 near misses; covers declined all 7.
+- The line (at least 8 woken, at most 1 near miss) is met.
+(validation/logs/plugins_routing_minilm_logistic_heldout_v3_2026-10-23.json; counts only, the set not read.)
+
+validation/plugins_routing.py: --heldout-plugin reads a one-plugin set with no "## <plugin>" heading. The v3 file is
+one, and a first attempt read no question and scored nothing (its empty log moved to scratch). A run that reads no
+question now stops instead of logging.
+
+0028 -> review.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

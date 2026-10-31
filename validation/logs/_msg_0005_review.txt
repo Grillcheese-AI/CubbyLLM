@@ -1,0 +1,4 @@
+[0005] Cowork review: code and tests checked (25 passed); run 5 budget 0.15 h (only the two asking shards: ~10x the questions a step of run 4); CB_COPY_LR 3e-3 and run 4's micro kept; notebook regenerated
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

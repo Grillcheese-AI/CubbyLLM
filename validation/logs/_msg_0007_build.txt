@@ -1,0 +1,26 @@
+[0007] in progress: the 450M's loci path as the ask loop's reader -- the trunk reads first, a miss is looked up once, next time the trunk answers
+
+- standin/loci_reader.py (new): LociReader -- run 5's checkpoint (CUBBY_LOCI_CKPT; no path in the repo) on the
+  CPU; for an (entity, relation) and the store's facts about the entity, the scene in the shard's own layout
+  (`make_fact_shard --lead`: the objects' pieces written at their addresses, the question's `here` and the token
+  before the answer asking), the answer decoded greedily, each piece asking for the next. A miss: a relation the
+  shard never addressed, nothing written about the entity, the read-aware gate shut at the first piece (lam <
+  0.5), or the newline first. through_loci: a reading the host can check against the store's value is spoken
+  when equal and refused when not; a miss (or a reading with nothing stored to check against) goes to the lookup
+  (learn_and_answer, as today), and the trunk reads again under the same check; the record says which path
+  answered and how many source calls it took.
+- standin/ask.py: AskLoop(loci=) -- absent = today's loop. serve_api --loci (CUBBY_LOCI_CKPT).
+- validation/bench_loci_learn.py: the battery (100 one-hop questions about entities outside the wiki world,
+  phase 1 learns from Wikidata only, phase 2 in a new process with the persisted store; 30 creative asks).
+- Smoke (CPU, 2 threads, ~7 s a read): Girard Desargues' birth date read "1591-02-21" exact through the copy;
+  his death date "1661-09-1661" (the name runs past its end); an occupation nothing wrote read junk with the gate
+  open (run 5's beta fell to 0.009: the gate opens on almost any crosstalk), so the host's check against the
+  stored value is what keeps a misreading unspoken; an entity with nothing written: a miss.
+
+Tests: standin/tests/test_loci_reader.py (5: equal -> spoken with no source call; different -> refused; a miss
+looked up once then read; the reader off -> unchanged; the scene token for token the shard's layout);
+267 passed across the serve, ask, books, forms, audience, hdc, reasoning suites.
+ask.py 1584 -> 1598 lines, serve_api.py 506 -> 508: the reader joins where the plan is made.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

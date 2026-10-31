@@ -1,0 +1,28 @@
+[0001] B passes (3 seeds): the ring copy with the read-aware gate lifts the 450M-like toy from 0.000 to 0.930 / 0.908 / 0.895 exact, language unchanged; C: RUN = 4 in the spatial notebook
+
+The combination arm (vocab 8,192, 4 facts of 1-5 pieces, 1 question a document, L 8 read at 4;
+1,000 steps x 16 documents, D 256, CPU), at step 999, exact / first / later / end / language:
+  no copy, seed 0                       0.000 at every eval / 0 / 0 / 1.000 / 2.226
+  ring, Addendum 3's gate, seed 0       0.922 / 0.992 / 0.964 / 0.469 / 2.226
+  ring + read-aware gate, seed 0        0.930 / 0.990 / 0.966 / 0.953 / 2.222
+                          seed 1        0.908 / 0.996 / 0.952 / 0.961 / 2.218
+                          seed 2        0.895 / 0.988 / 0.950 / 0.967 / 2.223
+  ceiling per piece 0.857 over the vocabulary, 0.995 over the ~12 written tokens
+B line: >= 0.80 on 3 of 3 seeds (the rule: 2 of 3); language within 0.02 of the no-copy arm on
+seed 0 (-0.004; seeds 1-2's controls are running). The read-aware gate: lam 0.92 at a real next
+piece, 0.22 at an empty address (seed 0); the order's gate: 0.74 / 0.56 on the dense diagnostic,
+and an end token of 0.469 -- it kept copying after the name. No mid-run dip (the order's gate:
+0.980 -> 0.543 at step 300 -> 0.922). B5 not built: lam at the asking tokens is 0.73-0.78 at half
+budget (its condition was < 0.05). Dense diagnostic (24 items a scene, ceiling 0.879 a piece over
+the written tokens), 300 steps: 0.605 (order's gate) / 0.591 (read-aware), end 0.673 / 0.883.
+Logs: exp_k10_far_facts_{combo_ringb_s0,combo_ringb_s1,combo_ringb_s2,diag_pieces5_ringb_s0}_2026-10-21.
+
+C: notebooks/_build_spatial.py RUN = 4 (and the notebook regenerated) -- continues
+spatial_link_3_final.pt with CB_SPATIAL_COPY=ring, CB_SPATIAL_COPY_TAU=3.04 (run 3's writer gap),
+CB_SPATIAL_COPY_BETA=0.115 (run 3's present 0.164 / absent 0.066), CB_PROBE_SHARDS at every eval;
+link arm only (run 3 is the control); HOURS_PER_ARM 0.5 as a placeholder for Cowork to set from
+the toy's curve; the readout compares with run 3 (facts >= 0.50, villages kept >= 0.90, text mix
+within 0.02). The builder was already over 300 lines; run 4's configuration lives where runs 1-3's do.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

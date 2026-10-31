@@ -1,0 +1,11 @@
+H-S10 G7 read (conditional: -78% harms+deaths), harness fix and re-runs
+
+validation/logs/g7_conditional_2026-10-15.json: weighing a never-tried floor
+by the agent's own record with the unknown cuts harms+deaths 5.29 -> 1.19 per
+run over 48 seeds (95% CI 59-91%), meals not worse, same decision time; the
+calibration clause fails (AUC 0.46). The local driver dropped events when the
+agent was driven one tick at a time: S1/S2, S1'/S6, S3 and P1 re-run with
+events delivered (*_2026-10-15_events.json); their readings hold.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

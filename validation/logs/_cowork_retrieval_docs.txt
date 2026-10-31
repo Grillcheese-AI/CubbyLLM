@@ -1,0 +1,703 @@
+======== cubbyllm/reasoning/retriever.py 163 lines
+Retrieval for the chain walk: lookup first, search second, acceptance always.
+
+Wired: WIRED — `pipeline._walk`'s retrieval seam. The scorer is INJECTED, so
+this module has no dependency on any encoder, table or corpus: the validation
+scripts pass a fastword cosine closure, the tests pass a table of fixed scores,
+and the component under test is the same object in both cases.
+
+Why this exists (it did not, until now)
+---------------------------------------
+`TripleIndex` was the only retrieval component in the package. Retrieval-as-
+search lived inside `validation/exp_m3_cot_pipeline.py` as a per-run closure
+(`make_retriever`), and `validation/exp_m4_triple_lookup.py` carried a SECOND
+copy of the index — so the numbers everything rests on were measured by code
+the shipped walk does not call. (The two index copies were checked equivalent
+on 1,041 hops over a 78% store, 0 divergences — `docs/research/
+2026-09-11-index-duplication.md` — but equivalence today is not a guarantee.)
+
+What the measurements say this has to do
+----------------------------------------
+  ENTRY IS THE PRODUCT.  61% of the failures that survive lookup-first never
+  produce a hop-0 seed at all (`exp_r4_index_walk`). Later-hop traversal is
+  comparatively healthy and the index already serves 83.8% of hops. So hop 0
+  gets the fallback ladder; later hops mostly do not need it.
+
+  NO THRESHOLD AT THE ENTRY.  Lookup-first beat cosine 0.710 vs 0.646, +51
+  verified and 0 lost, *because* the index applies no threshold — it absorbed
+  34 of the 36 `threshold_bound` failures (`exp_r1_gate_diagnostics` Q5). So
+  `tau` defaults to None and a caller has to opt in to losing those again.
+
+  SCORE NEVER GATES.  On the threshold_bound cases where a margin was
+  computable, BOTH had a distractor outranking the gold — 0.2876 against
+  0.9445 (`exp_r1_gate_diagnostics` Q2). Acceptance decides WHAT is eligible;
+  score only orders what acceptance already allowed.
+
+  A MISS MUST EXPLAIN ITSELF.  `candidates_topk` was empty for 152 of 246
+  failures, so the diagnostic for why retrieval failed was missing for 62% of
+  the cases where it failed (`exp_r1_gate_diagnostics` Q1). Every `HopResult`
+  carries its candidates and a `reason`, hit or miss.
+
+Contract: `validation/test_retriever_contract.py` (16 pins, mutation-checked).
+
+======== cubbyllm/reasoning/index.py 165 lines
+The triple index: retrieval as LOOKUP for template facts.
+
+Wired: WIRED — `pipeline._walk` looks up here first and searches (cosine +
+tau_ret) only for the hops the index misses; the stand-in `FactStore`
+maintains one at every `add()`.
+
+Why (validation/exp_m4_triple_lookup.py, 2026-09-04): the walk's acceptance
+test is EXACT on the parsed triple — the tail string at hop 0, relation +
+subject afterwards — but its candidates came from cosine top-3 above tau_ret.
+On the 800-question harvest 95.7% of the store parses as triples; the same
+acceptance run as an index lookup serves 83.8% of hops (= the search ceiling,
+cosine@50) where the live cosine@3>=tau served 78.7%; end to end 581/800 vs
+517 verified, ambiguity (>1 candidate) on 0.8% of hops. The remaining misses
+are the planner rejecting the gold fact, not retrieval.
+
+Cosine keeps its jobs: paraphrase (questions the grammar does not parse),
+world routing, the flat fallback, and the tie-break when a lookup is
+ambiguous. Facts that do not parse as triples are counted, not indexed —
+they stay reachable by search.
+
+======== cubbyllm/reasoning/pipeline.py 582 lines
+The chain-of-thought walk: retrieve, verify in the VM, answer or refuse.
+
+Retrieval walks the chain; the VM holds it, verifies it, and reads the
+answer out (spec section 3). `verified=True` is impossible with any hop
+below tau_vm — asserted at every return site that sets it (the greedy chain,
+and the branches of an ambiguous hop when every one of them agrees).
+
+======== cubbyllm/reasoning/learn.py 758 lines
+learn -- search-and-learn: a refusal becomes a fetch, a gate, a store write and a second walk.
+
+Wired: WIRED (2026-09-11, coverage lever 3; the host side of the 2026-09-04 design note
+"I don't know yet -- but I can look it up for you", standin/README.md).
+
+The loop, and what it may and may not do:
+
+    answer(question)                         -> refused / failed with a reason
+      -> the entity the walk stalled on      (the seed at hop 0, or the last object reached)
+      -> source.facts(entity)                -> candidate template facts, DATA, never a judgement
+      -> gate(fact, store): parse, duplicate, sibling recorded  (multi-valued relations are admitted; a
+                                             conflict is refused at ANSWER time as an ambiguous hop)
+      -> store.add(fact) + known.add(fact)   with PROVENANCE: source, entity queried, time, the
+                                             store's snapshot hash before the write, git-free
+      -> answer(question) again, once        -> verified by the VM, or refused with a reason
+
+Invariants kept: the VM is the only truth gate (a fetched fact is looked up and verified like any
+other; nothing is spoken because a source said so); the model proposes, the host disposes (the
+source is chosen and called by the host, its output is gated by the host); the don't-know
+contract (a refusal stays a refusal until a verified chain exists); retire, never delete (every
+accepted fact carries a provenance record; a later retirement is a record, not a deletion). At
+most `max_entities` rounds per question, each one entity, each followed by one walk, and a round
+that admits nothing ends it: the loop is bounded by construction.
+
+`Source` is a protocol: `facts(entity) -> list[str]` of template facts ('OBJ is the REL of SUBJ').
+A held-out store (validation/exp_r11_search_learn.py) measures the mechanism; a Wikidata-backed
+source is the same call with the network behind it.
+
+======== cubbyllm/reasoning/hippocampus.py 264 lines
+hippocampus -- the episodic side cortex: certified chains, recalled as plan candidates.
+
+Wired: WIRED (2026-09-12; the GrillCheese hippocampal design brought over as a SIDE cortex).
+
+What it is. An explicit episode store with one sparse binary code per episode. An
+episode is what the reasoning loop already produces and the harvest already records:
+the question, the plan that covered it, the chain the VM certified, the answer, and
+the provenance (which store, which source, when). Recall is pattern completion from a
+partial cue -- a new question, in any surface form -- to the episodes whose content
+words it shares, and what comes back is a PLAN CANDIDATE: it goes through the
+disposer (`covers()`), the walk and the VM exactly as an emitter's plan does. Memory
+proposes; the host disposes; the VM is the only truth gate. Nothing is spoken because
+memory remembered it.
+
+The parts, named after what they do in the hippocampus:
+  DG   `encode`: the content words of the question, the plan's relation labels and its
+       seed (frame words out), each hashed to a 256-bit bipolar vector, bundled by
+       majority and binarised -- SimHash over a bag of words, so two questions that
+       differ only in their frame land at Hamming distance ~0 and two chains about
+       different entities land apart (pattern separation by the words that differ).
+  CA3  `recall`: the cue's code against every live episode's code, nearest first
+       (a Hamming scan; 552k codes as Python ints is ~50 ms). `propose` completes the
+       pattern into plans: the episode's own plan, and the episode's relation shape
+       REBOUND to the entity the new question names (the chain shape remembered, the
+       entity the question's) -- analogical transfer, and the disposer decides.
+  consolidation  `consolidate(keep)`: the episode's FACTS live in the world store (they
+       went through the gate); the hippocampus keeps the code, the plan, the
+       provenance and a utility count, and retires the low-utility episodes beyond
+       `keep` to the cold list. Retire, never delete.
+
+Why an explicit store and not a weight memory: exp_a_forgetting, exp_a5_sparse and
+exp_g2_nyt (2026-07-23) measured Hebbian, NLMS, SDM and DG-sparse storage at
+D=1024..2048 -- every one loses recall between 512 and 1,024 associations, and the
+world holds 552,297 facts. Codes are cheap and do not forget: 256 bits per episode,
+18 MB for the whole world, inside the serve budget.
+
+======== cubbyllm/reasoning/ask_memory.py 234 lines
+cubbyllm/reasoning/ask_memory.py -- what the ask loop keeps between questions: the facts held and learned (from the
+sleep cycle's log), the store's snapshot and changes, a subject's life span, and the time checks on undated values.
+Split out of ask.py (order 0031) as a mixin of AskLoop, verbatim.
+
+Wired: WIRED (AskLoop).
+
+======== cubbyllm/reasoning/context_graph.py 262 lines
+context_graph -- the host's memory of one conversation, joined by ids to what it knows and to why it said what it said.
+
+Wired: STANDALONE (read by validation/exp_e9_context_followups.py; next, the ask loop's session).
+
+Three layers, kept apart and linked (Nick, 2026-09-25: "we need a context graph too" -- long-term, short-term and
+reasoning memory around the task):
+
+  long-term   what the host knows before the conversation starts: the history graph (standin/history_graph.py),
+              held by reference -- an event id, never a copy
+  short-term  the conversation: its turns, the ask each turn made (the kind, the event it resolved to and how), the
+              events each ask brought into focus, the clarification still open, the branch a "what if" opened
+  reasoning   per ask, the trace from question to decision: how the kind was read, the candidates and their scores,
+              where the event came from, the lines served and their source, the draft, the host's verdict and why
+
+What it is for. A follow-up -- "why did it happen?", "who else was there?", "what did the battle lead to?" -- is
+resolved against the events the conversation is about before any search of the whole graph; the answer to "which
+one did you mean?" binds to one of the offered candidates; "why did you say that?" is a lookup of the trace. An
+event's salience is the hippocampal-formation scoring (a match, times a decay with the turns since it was last in
+focus, times a strength: 1.0 for the event asked about, 0.6 for an event the answer brought in).
+
+Resolution, in order: an open clarification the reply picks from (by ordinal, year or name words) -> the kind read
+off the question (history_lookup.KINDS, or a bare follow-up: "why?", "and then what?", "who else?") -> if the
+question names no event (only "it", "that", "the battle") the most salient event whose name holds every word it
+does use -> else the whole graph (HistoryLookup.resolve, its floor, margin and same-event rule). A follow-up with
+nothing in focus is not guessed: the host says it needs the event.
+
+User text is held in memory only; `save` writes the session through the vault (standin/vault.py) -- user chats are
+never stored unencrypted.
+
+======== cubbyllm/reasoning/ask.py 278 lines
+The verified-program loop on ONE natural question, live -- what exp_r11 runs per row, as a service.
+
+Wired: WIRED (the server mounts it behind `POST /ask` when started with `--ask`); every step it takes
+is an event on `/loop/stream`,
+so the control panel (dashboard/control_panel.html, served at /panel) draws the tree as it grows:
+question -> plan (the emitter's proposal, the host's aliases) -> walk -> hops -> facts; the fetch
+from the source and the gate's verdict on each fact; the answer or the refusal.
+
+The seven invariants hold here exactly as in the benches: the emitter proposes a plan, the host
+disposes (covers, lever 4/6/7), the VM verifies, the source's facts pass the gate with provenance,
+and the answer is spoken only when a VM-verified chain reaches it -- never from the model.
+
+======== cubbyllm/reasoning/ask_namesakes.py 154 lines
+cubbyllm/reasoning/ask_namesakes.py -- a question about a name several items share (order 0033).
+
+A world that holds a name only as several items' (the hdc world: three items are labelled "Globe Theatre") gives none
+of their facts by the name alone (`worlds.hdc_namesakes`). Two things decide which item:
+
+1. the asker: a clarify choice comes back with its item;
+2. the question's own context, a qualifier the name carries. "Bambi (film)" names a value of the item; "Paris, Texas"
+   and "the Globe Theatre in Boston" name where it is, and only the values that say where count. A qualifier
+   decides when exactly one of the items has it.
+
+Nothing else decides; the question's relations do not, in this snapshot (`worlds.hdc_namesakes` says why). Otherwise
+the reply is `ambiguous_entity`, with the items named and a choice for each: the same clarify that "what is Ottawa?"
+already gets from the online source.
+
+A world that holds the name as one thing (the wiki world: one article per title) answers as before. A profile ask
+comes here only when the stores hold no profile fact about the name.
+
+Wired: WIRED (`ask_profile.AskProfile.profile`, `ask.AskLoop._ask`).
+
+======== cubbyllm/reasoning/ask_profile.py 272 lines
+cubbyllm/reasoning/ask_profile.py -- "who / what / where is X?": the profile program the host runs, the self
+profile (what the loop knows of itself), and the paraphrase a talk adapter may give it, kept only when grounded.
+Split out of ask.py (order 0031) as a mixin of AskLoop, verbatim.
+
+Wired: WIRED (AskLoop).
+
+======== cubbyllm/worlds/base.py 272 lines
+worlds — incremental fact stores, world routing, and the plugin surface.
+
+Wired: WIRED (stand-in serve path; nothing in cubbyllm/ imports this).
+
+`FactStore` is the incremental successor to exp_m3's `make_retriever` closure
+(same math: unit-cosine over `enc.encode(text)` rows) with `add()` so the
+serve loop can LEARN — a fact accepted at turn N is retrievable at turn N+1.
+Without an encoder it falls back to IDF-weighted token overlap (pure python),
+so tests and encoder-less hosts still get a working store.
+
+`CubbyPlugin` is the mount contract — MindForge style: a plugin sits ON TOP
+of the trunk and specializes it; the trunk never imports the plugin.
+cubbyverse implements this in its own repo (its world models become mounted
+worlds; its web brain reads /state) and `CubbyServe.mount()` attaches it.
+A plugin contributes named worlds and may observe finished turns; it never
+gets to inject replies — every spoken reply still goes through CubbyTalk's
+ASK and the voice rules, whatever is mounted.
+
+======== cubbyllm/worlds/store.py 81 lines
+standin/worlds_store.py -- one store interface over every world the ingestion wrote (order 0015).
+
+`WorldsStore(root)` reads the registry (`worlds_ingest`) and gives:
+- `reality()`: the ask loop's store -- the wiki world first, then the hdc world (`hdc_store.Stores`); the passage worlds
+  are sources a loop reads through `book_source.BookSource`, by `passage_index(world)`;
+- `fiction`: the fiction worlds (`worlds_fiction.FictionWorlds`), consulted only when a question names its work;
+- `lookup(entity, relation, worlds=None)`: facts about an entity across the worlds that hold facts as rows (the hdc
+  world, the fiction worlds, the events and quotes worlds), filtered by world -- reality ones unless a fiction world
+  is named in `worlds`;
+- `ask(question, loop_for)`: a question that names a fiction work to that work's world, every other to reality.
+
+Wired: STANDALONE (`validation/exp_worlds_bench.py`; the serve stack keeps its own mounts until a world is promoted).
+
+======== cubbyllm/worlds/capsules.py 265 lines
+capsules -- the store's facts as capsules: where each came from, how it has been used, and a binary code
+to find it by resemblance.
+
+Wired: STANDALONE (a `FactStore` subclass; nothing on the serve path builds one yet).
+
+A capsule is one fact plus what the host knows about it:
+
+    world, source   which store holds it and who stated it (the store's `provenance` keeps the full string)
+    time            when the fact was true (the store's `times`, unchanged)
+    uses, verified  how often a walk used it, and how often that use was verified by the VM
+    added, last     when it arrived and when it was last used
+    code            `dim` bits: a majority vote over hashed features of its text -- the words and their
+                    letter triples -- so two facts that share names share bits, and a misspelt name
+                    ("Haslem") still lands next to the right one ("Haslam")
+
+Exact lookup is untouched: `lookup` is FactStore's TripleIndex, and it is what a walk trusts. The code is
+only for resemblance -- "facts about things like X", aliases, near-miss names -- and what it returns is a
+fact and a score, never a vector: the symbolic boundary holds.
+
+With an `oracle` (`cubbyllm.bridges.possibility.PossibilityOracle`: MoWM's adapter, or `StorePossibility`
+over the mounted stores) every `add` is first put to the worlds (2026-09-29): a fact a world finds
+IMPOSSIBLE is refused and written to `ledger` with the world and the member it clashed with; one no world
+covers is kept as LATENT (`meta.latent` = the world it waits in, provenance '(latent)': learn.py's tier, not
+spoken until a source attests it -- `attest`); a POSSIBLE one is kept with its `support`. What each brings:
+the ledger is the anti-poisoning gate made auditable, and the latent tier is how the store can take a fact
+it cannot yet place without either trusting it or losing it.
+
+The code is computed with stdlib BLAKE2b under a fixed key, not with grilly2's hashing, which switches
+digests when `blake3` is missing; a store written in one environment must read the same in every other.
+grilly2 does the arithmetic: with it (`grilly.vsa.packed`), Hamming distance and top-k run on the GPU;
+without it, numpy computes the same integers. Tested equal.
+
+Kept from grilly v1's CapsuleMemory: the record and its use counters (its consolidation priority and
+stability, here `uses`, `verified` and `priority`). Not kept: its 384->32 projection (a Linear, grilly2's
+migration found) and its injection into transformer layers, which would put memory into the model's
+hidden state without passing the gate.
+
+======== cubbyllm/worlds/fast_words.py 139 lines
+cubbyllm/worlds/fast_words.py -- the fast word-table encoder, ported from MoWM (order 0033; Cowork's answer 3 in
+0031's review). Before the port the server loaded it by file path from a mowm checkout beside this one
+(``validation/exp_m3_domain_routing._load_semantic_words``); now it is the package's own.
+
+The source is ``mowm/encoding/semantic_words.py`` (Nick's MoWM repo), and the code is that file's, unchanged except
+for one thing. The offline teacher's default (a sentence-transformer that ``build`` loaded when no ``embed_fn`` was
+given) is left out: ``build`` takes the teacher as an argument, so this module imports only numpy. The tables in
+``$CUBBY_MODELS`` load as before (``from_npz``), and ``tests/worlds/test_fast_words.py`` pins the port against mowm's
+module while mowm is there; ``validation/pin_fast_words.py`` does so on the production table.
+
+Serving is model-free: text -> words -> table lookup -> IDF-weighted bundle of (k, l) block codes. Recipe (built
+offline): unit teacher vectors per WORD, minus the anisotropy direction (mean + top principal component), projected
+through an orthonormal map into (k, l) block space (cosine-exact), then 0.5/0.5-blended with each word's seeded
+one-hot SIGNAL code, so that exact surface overlap keeps contributing. An unseen word falls back to its signal code,
+so out-of-table text still routes on surface identity.
+
+Wired: WIRED (``cubby_serve.build`` loads the server's table with it; ``worlds.base.FactStore`` and
+``reasoning.hippocampus`` read its codes).
+
+======== cubbyllm/worlds/hdc_store.py 289 lines
+standin/hdc_store.py -- the hdc world on disk (order 0014), and the one store that puts it behind the wiki world.
+
+`HdcWorld`: read-only over `standin/data/hdc_world.py`'s SQLite. A subject's facts come back by its normalized label,
+any of its aliases or its Q-id (the names table), as `(fact, Triple)` the way `TripleIndex` holds them -- one item's,
+never a merge of a name's several (`hdc_namesakes`, order 0033); `hop` answers
+a walk's hop as `TripleIndex.hop` does (the exact tier, then the paraphrase tier for a relation stated twice or
+more, `planner.accepts` on both); `relations()` counts. Nothing is held in memory but an LRU of the subjects asked
+about, so 4.3M facts cost the index file, not RAM.
+
+`Stores`: the ask loop's one world made of several -- the wiki world first (in memory: where the loop writes what
+it learns, its provenance and its dates), then the hdc world. `index.hop` asks each in order and keeps the first
+world's facts first; `_by_subj` / `_by_obj` merge; `paths` walks the merged graph; `relations()` sums. A hdc fact's
+provenance is the snapshot's ("wikidata (Wikidata5M ..., ~2019)"); its relation may be one whose value changes
+(`time_sensitive`): the loop speaks it "as of 2019" (`ask.AskLoop`).
+
+Wired: WIRED (`serve_api --world hdc`; `CUBBY_HDC_WORLD` names the file).
+
+======== cubbyllm/worlds/hdc_world.py 262 lines
+hdc_world -- the hdc set's Wikidata5M facts as a world on disk (order 0014): nace-ai's hypernet-scaling-law-data
+(Apache-2.0), every triplet column of every file and the `facts` sentences of the multi-hop rows, deduplicated,
+named by their exact English Wikidata labels, in SQLite.
+
+- Q-id rows (`Q.. P.. Q..`): the entities' labels from `hdc_names.tsv.gz` and `hdc_labels_api.tsv`
+  (`fetch_hdc_labels.py`), the property's from `wikidata_properties_en_fr.json`;
+- alias rows (`alias, edited label, alias`, the preservation files) and the `facts` sentences
+  (`build_hdc_sft.Templates`): each alias to its Q-id through the label table, the edited label to the
+  property's own (`relation_template_mapping.csv`);
+- a fact with an end that has no usable label (a Wikimedia list, a disambiguation page, no English label, an
+  alias the table cannot place) is dropped, and counted by reason.
+
+Each fact is stored as the Wikidata source states it, `O is the <property label> of S`, with both Q-ids, so a live
+refetch of the same claim gates as a duplicate. Names (labels and aliases, normalized) lead to Q-ids. Relations
+whose value changes over time (heads of state and government, officeholders, populations, teams, employers,
+CEOs: `TIME_SENSITIVE`) are marked; the snapshot is ~2019 (Wikidata5M). Also counted: the facts the wiki world
+states about the same subject and relation, agreeing or not.
+
+    python standin/data/hdc_world.py --src <hdc folder> [--db standin/data/out/hdc_world.sqlite]
+
+Writes validation/logs/hdc_world_<date>.json (counts only).
+
+======== cubbyllm/worlds/hdc_namesakes.py 290 lines
+cubbyllm/worlds/hdc_namesakes.py -- one name, several items, in the hdc world (order 0033).
+
+Wikidata5M labels are not unique. Three items are labelled "Globe Theatre": the theatre in Southwark, one in Boston, and
+one whose only fact is its country. Seven are labelled "William Owen", three "France", eight "Japan". Before 0033 a
+label's facts were read by the label alone, so "Where is the Globe Theatre?" was answered from all three at once
+("London Borough of Southwark, Boston"): two items merged into one, and a wrong answer spoken.
+
+Here a name stands for its items, by tier: the items whose label it is; else the items that carry it as an alias or a
+Q-id. A name that stands for two or more items gives none of their facts until something decides which one:
+
+- the asker (a clarify choice names the item: `item_facts`, `pinned`);
+- the question's own context, a qualifier it carries ("Bambi (film)", "the Globe Theatre in Boston"):
+  `qualifier_pick`, read by `reasoning.ask_namesakes`;
+- for a walk's hop, the relation the hop reads (`hop_pick`): the online source's rule (`sources.wikidata_resolve`:
+  of the book, the ferry and the physicist named Marie Curie, one has a date of birth), under three guards this
+  snapshot needs. That rule reads a missing claim as a claim the item cannot have; with full claims that holds, but
+  here most items carry one to three facts. So the one item that holds the relation is taken only when (1) its kind
+  (`instance of`) is known, (2) no other item shares a kind with it (two of a kind: the James Young incident), and
+  (3) no other item is of a kind that carries the relation anywhere in this world (`applies`): then its absence there
+  is what the kind is, not what the snapshot kept. Without (3), "Where is Wantage?" went to the New Jersey township,
+  because the English civil parish's location is simply not in the snapshot. With them, "What is the capital of
+  France?" still reads Q142: the other two Frances are a constituency (a kind with no capital) and an item of no
+  known kind.
+
+A "where / what is X?" ask names no relation, so the third does not apply to it (`reasoning.ask_namesakes`).
+
+**Strict since order 0036** (its audit: 21 of 50 of the tier's decisions were the item a person asking means, against
+a pre-registered 49; 29 could not be told from the question, mostly because a namesake with no known kind is plainly
+of the chosen one's kind). A hop on a shared name now reads nothing unless the asker or a qualifier decided, and its
+holders are noted, so the loop asks which. ``CB_NAMESAKE_TIER=1`` turns the relation tier back on (``hop_pick`` as
+above), for an order that audits a better guard; it is off by default.
+
+Nothing is ranked. An item never wins for being famous, or for being more completely described.
+
+Wired: WIRED (`hdc_store.HdcWorld` takes `Namesakes` as a mixin, `hdc_store.Stores` takes `StoresNamesakes`).
+
+======== cubbyllm/worlds/hdc_relation.py 116 lines
+cubbyllm/worlds/hdc_relation.py -- a shared name decided by the question's relation and its cue words (order 0037).
+
+Nick: "a capital is usually in a country so it should pick the country France (there is only one)". A hop on a name
+several items share reads ONE item when:
+- that item's kind carries the hop's relation (``hdc_kinds.Table.carries``: a share well over the typed items' base,
+  not "any member"), and goes with each of the question's cue words (``hdc_cues``: "Nobel" goes with people);
+- no other namesake's kind does.
+
+A namesake's kind is its recorded one (``instance of``), else the one read from its own facts (``Table.read``: a
+citizenship and an occupation read as a person). An item whose facts say nothing of its kind does not compete (France's
+Q49644, whose only fact is "country: France", asked a capital). For a place relation (``PLACING``: an item's country,
+what it is located in) every item that holds such a fact competes, whatever its kind: a thing with a country is
+somewhere, and a kind's share of "country" says nothing, since nearly every typed item holds one (Cowork's reading of
+the audit, 2026-10-27: KATA, a village in Estonia picked over a village in Iran whose one fact was its country; and
+the Eiffel Tower's replica in the United States, read alone when the tower's own kind did not carry "country"). Two or
+more that fit are two of a kind: each is answered, labelled by one of its own facts (``reasoning.ask_namesakes``). None
+that fits: the loop asks which, as since 0036.
+
+Nothing is ranked: an item never wins for being famous or more completely described (Q142's 197 facts count for
+nothing), and the order the items are named in is their ids'.
+
+Wired: WIRED (``hdc_namesakes.Namesakes.hop_rows``; on by default since 2026-10-27, the audit read by Cowork at the
+line -- 1 wrong pick in 50; ``CB_NAMESAKE_RELATION=0`` turns it off).
+
+======== cubbyllm/worlds/hdc_kinds.py 169 lines
+cubbyllm/worlds/hdc_kinds.py -- which relations each kind's members carry in the hdc world (order 0036, item 3), built
+once from the world's own facts, in place of the scan the relation tier ran per question.
+
+The namesake rule's third guard (``hdc_namesakes.hop_pick``) asks: does any item of this kind carry this relation
+anywhere in the world? Order 0033 answered it by reading up to 2,000 of the kind's members per question (cached),
+which can miss a relation only a few of a large kind carry, and cost up to a second the first time. This table answers
+it completely and at once: ``kind_rels(kind, rel, n)``, the number of items of that kind (``instance of``) that carry
+that relation, over every fact.
+
+It lives next to the world's file (``<world>.kinds.sqlite``), built from it:
+
+    python -m cubbyllm.worlds.hdc_kinds --db <hdc_world.sqlite>        (once; seconds: 7 s for Wikidata5M's world)
+
+``HdcWorld`` reads it when it is there and was built from this state of the world (``for_world``); else it scans as
+before.
+
+Order 0037 reads more from the same counts (``Table.carries``, ``Table.read``): whether a kind CARRIES a relation, as a
+share against the base of the world's typed items (LIFT, NMIN: "any member" let a town carry a capital), and an item's
+kinds read from its own relations when it records none (SPREAD keeps generic relations, "country", out of it). The
+base is the typed items', not all items': most people in this snapshot record no kind, so against all items even
+"human" did not hold a citizenship twice as often as the average.
+
+Wired: WIRED (``hdc_store.HdcWorld`` reads it through ``Namesakes.applies``).
+
+======== cubbyllm/worlds/hdc_cues.py 138 lines
+cubbyllm/worlds/hdc_cues.py -- which kinds of things each word of the hdc world's values goes with (order 0037, item 3),
+built once from the world, beside the kinds table.
+
+Nick: "a building cannot have a Nobel Prize, only a person". A question's own words narrow a shared name past what its
+relation can: "award received" fits films and buildings too, "Nobel" goes only with people (and a few organisations).
+This table records, for every content word in the world's values, the kinds of the subjects that carry a value with
+that word: their recorded kind, or the kind read from their own facts (``hdc_kinds.Table.read``; the snapshot's Nobel
+physicists record none). No word list is kept by hand.
+
+A cue word only rules out: a namesake none of whose kinds ever goes with the word does not compete
+(``hdc_relation.decide``). It never ranks, and a word the world never uses rules out nothing.
+
+    python -m cubbyllm.worlds.hdc_cues --db <hdc_world.sqlite>     (once, after the kinds table; about a minute)
+
+Wired: WIRED (``hdc_store.HdcWorld`` reads it for ``hdc_relation.decide``, through ``Namesakes.hop_rows``).
+
+======== cubbyllm/worlds/wikitext.py 198 lines
+wikitext — an OFFLINE Source for search-and-learn: Wikipedia-style articles (title + text) read
+through a fixed table of sentence frames into template facts with provenance.
+
+Wired: WIRED (stand-in serve stack; implements `cubbyllm.reasoning.learn.Source`). No model, no
+network: a frame is a regular expression over the article's opening, and a fact it yields names
+the corpus, the article and the sentence it came from. What the frames do not say, the source
+does not say -- exp_r12 (2026-09-12) measured the ceiling on DBpedia's 4.6M abstracts: 72% open
+with 'X is a/an ...', 2.9% carry '(born DATE)'. The frames below are the ones whose relation is a
+property label the emitter names (date of birth / death, place of birth, inception, located in
+the administrative territorial entity, ...), in English and in French.
+
+Corpora: a BeIR-style parquet (`_id`, `title`, `text`) and/or jsonl files (`title`, `text`,
+optional `lang`). A title index (normalized title -> where the article is) is built once per
+corpus and cached beside the data as `<name>.titles.json`; DBpedia's 4.6M titles index in ~10 s
+from the parquet's title column and load in ~3 s.
+
+======== cubbyllm/worlds/books.py 296 lines
+standin/books.py -- the history books as evidence (order 0012): a SQLite FTS5 index over their
+paragraphs, an entity-mention table, and the passage finder.
+
+Each paragraph is a row carrying its book (author and title from the file name, era / region / topic
+from the folders below the root) and its character offset in the book. The mention table holds,
+for each paragraph, the names of a world's `SpanIndex` it mentions (a capitalised match: a name that
+is also a word, 'war' or 'time', is not a mention when lowercase), so an entity's paragraphs come
+back without a text search. The build is incremental by file hash: a re-run adds the books it has
+not seen and skips the rest; nothing is ever deleted. Per root, twins (one book as .epub.txt and
+.pdf.txt in one folder) are read once, and where the root has a cleaned mirror (the same tree, the
+format marker dropped from the name) the mirror's copy is read instead. `historical_facts.jsonl`'s
+dated events join as one book per era.
+
+The index and the books stay off-repo; their paths come from the environment (`CUBBY_BOOKS_INDEX`,
+`CUBBY_BOOKS`: roots separated by os.pathsep, each `folder` or `folder|mirror`). The text is internal
+evidence: it never reaches a reply (order 0016).
+
+Wired: WIRED (`book_source.BookSource` reads it; the ask loop takes the source with `--books`).
+
+======== cubbyllm/worlds/self_source.py 144 lines
+Wired: WIRED (stand-in serve stack; implements `cubbyllm.reasoning.learn.Source`).
+
+`SelfSource`: the loop's own record, as facts -- so the model can ask about its surroundings
+with the same programs it uses to ask about the world. Nick, 2026-09-14: "the model needs to be
+able to use the vm on its own so it can reason at all time and be concious of its surroundings
+by analysing it via its own 'power vm'."
+
+The whole thing rests on one observation: **the loop is the only subject it can witness
+directly.** Every other fact in this system needs a source, a gate and a provenance, because
+the loop is taking somebody's word for it. Its own history it does not take anybody's word for
+-- it was there. So a self fact needs no external source, and `provenance` says `self`.
+
+That is a privilege, and it is fenced accordingly:
+
+1. **A self fact is never a world fact.** They live in different stores and a question reaches
+   this one only by asking for it (`bind frame, WORLD, "self"`). "What do you know about Quebec
+   City" and "what is Quebec City" are different questions with different answers, and letting
+   the second be answered by the first is how a system starts mistaking its notes for the world.
+2. **It reports, it does not judge.** `refused 3 times` is a fact. `is unreliable` is an opinion,
+   and there is no relation here that carries one.
+3. **It is derived, never stored.** The facts are rebuilt from the loop's history on every ask,
+   so they cannot go stale and cannot be edited into something the loop did not do.
+
+======== cubbyllm/worlds/fact_pool.py 63 lines
+cubbyllm/worlds/fact_pool.py -- the serve stack's fact pool: the deduplicated facts of a seeded sample of the
+scaling-law questions (``valid_scaling_law_with_facts.pq`` under ``$CUBBY_DATA_ROOT``), each question's chain as
+indices into it; and where the fast-word table the facts world encodes with lives (``$CUBBY_MODELS``). Order 0031
+moved them here, verbatim, from ``validation/exp_m3_cot_pipeline.py`` (which re-exports them), since the server
+builds its first world from them.
+
+Wired: WIRED (the server's ``build_serve``).
+
+======== cubbyllm/worlds/ingest.py 175 lines
+standin/worlds_ingest.py -- everything in the datasets into worlds, one tool driven by the manifest (order 0015).
+
+    python validation/builders/ingest_worlds.py [--root <worlds dir>] [--only <dataset substring>] [--frames] [--release]
+    (``python standin/worlds_ingest.py`` runs the same)
+
+`worlds_manifest.plan` gives every manifest row a decision (ingest / excluded / queued); this runs the ingests through
+`worlds_adapters` (passages, events, quotes, table, mount) and `worlds_fiction`, and records every decision in the
+registry (`<root>/registry.sqlite`): datasets (status, reason, counts, time), files (hash -> dataset, world, release),
+worlds. A re-run reads only files whose hash is new; nothing is deleted. `classify` rows read each book as fiction or
+reality (the rights tracker's mark first, else `looks_like_fiction`) and send it on, keeping the reason. `--frames`
+runs order 0013's bulk pass over each passage world whose manifest route says "frames": its facts, tiers and eras
+beside the index. `--release` writes a separate store under `<root>/release` from the works the rights tracker
+clears (owned, licensed, public domain) and reports what it left out.
+
+Writes `validation/logs/worlds_ingest_<date>.json`: one row a dataset -- status, reason, world, rows, entities, files,
+as-of, time. No paths, titles or text.
+
+Wired: STANDALONE (a build tool; the ask loop mounts what it writes through `worlds_store`).
+
+======== cubbyllm/worlds/manifest.py 82 lines
+standin/worlds_manifest.py -- the datasets' manifest, read for ingestion (order 0015).
+
+Two local files, both git-ignored (the per-dataset list names local folders and private sets):
+- `docs/worlds_manifest.local.tsv` (Cowork's inventory): one row a dataset -- tree, dataset, files, GB, kind, route
+  (in words: "passages + frames", "EXCLUDED (eval)", "order 0014", ...), tier, world, notes;
+- `docs/worlds_paths.local.tsv` (Claude Code's): for the datasets this pass ingests, each folder or file with its
+  route (passages | fiction | events | quotes | table | classify | mount), world, tier and note.
+
+`plan(manifest, paths)` joins them: every manifest row becomes one decision -- **ingest** (its paths and route),
+**excluded** (the manifest says so, or it names a use that is not a world: pretraining, an SFT set, an order's test
+data, an external model; the reason is the manifest's own words), or **queued** (a later tranche). Nothing is left
+without a decision, which is the order's coverage line.
+
+Wired: STANDALONE (`worlds_ingest`).
+
+======== cubbyllm/sources/wikidata.py 305 lines
+sources — where a fact the store lacks can be fetched from (search-and-learn, lever 3).
+
+Wired: WIRED (stand-in serve stack; implements `cubbyllm.reasoning.learn.Source`, which is
+`facts(entity) -> list[str]` of template facts). The network lives HERE, not in cubbyllm/:
+the package chooses and gates, the serve stack fetches under policy.
+
+`WikidataSource`: one entity label -> the item's claims, rendered as `OBJ is the <property
+label> of <entity>` — the property labels are the vocabulary the eval store's relations came
+from ('country of citizenship', 'award received', 'place of birth'), which is the vocabulary the
+emitter already names. Item values render as their English label, times as ISO dates (year when
+that is all the precision there is), quantities as the amount, strings as themselves. Every value
+of a multi-valued property becomes its own fact — the walk's tie-break, not this source, decides
+between them, and a question that needs a qualifier the store cannot hold is the disposer's to
+refuse. Responses are cached as JSON under `data/out/wikidata_cache/` so a rerun is offline and
+byte-identical, and `last` records the QID, the label and whether the hit came through an alias.
+
+======== cubbyllm/sources/wikidata_resolve.py 254 lines
+cubbyllm/sources/wikidata_resolve.py -- which item a name means: the askers' choices learned, the preferred item,
+the links a served claim made, the resolution tiers (the item a claim pointed at, one exact hit, the next hop, label
+over alias). Split out of wikidata.py (order 0031) as a mixin of WikidataSource, verbatim.
+
+Wired: WIRED (WikidataSource).
+
+======== cubbyllm/sources/wikidata_namesakes.py 211 lines
+cubbyllm/sources/wikidata_namesakes.py -- a shared name at the source decided by the question's relation (order
+0043: order 0037's rule on the Wikidata side; the world's side is ``worlds.hdc_relation``).
+
+Several exact hits for a name ("uk": Uttarakhand and the United Kingdom; "Georgia": a state, a country, a given name).
+Which of them fit the hop asked:
+- **its kind** is its ``instance of`` (P31); a candidate with none is of no kind;
+- **the kind carries the relation** when the candidate's own claims carry the property ("holds"); otherwise when the
+  property's subject-type constraint (P2302 of kind Q21503250, its classes P2308) names a class the candidate's kind is
+  or is one ``subclass of`` step under ("may"); otherwise it does not. The constraints are the property's own claims,
+  read through the source's cache like any item's;
+  A kind that only may carry it yields to a different kind whose item holds it (the novel over its editions); of one
+  kind it competes all the same (the James Young rule);
+- **placed** (0037's KATA guard): for a place relation (``PLACE``: the country, located in, location) every candidate
+  whose claims place it competes, whatever its kind;
+- **the label over an alias** (the source's own tier, kept): among several that fit and are of different kinds, the
+  one labelled with the name over those that only carry it as an alias ("Spain" over "Second Spanish Republic");
+  never between two of a kind, never between two labelled alike (Georgia, Georgia);
+- **cue words** (0037 item 4): the question's capitalised words that are words of some candidate's kind only rule out
+  (a candidate of no kind is never ruled out by one).
+
+The outcome: one fits, the source resolves to it and names the others by kind (the loop's offer line); two or more
+fit, the loop answers each with the source pinned to one item at a time (``reasoning.ask_source_namesakes``); none, the
+strict refusal stands. The asker's ledger and a qualifier come first (``wikidata_resolve``). Nothing is ranked: fame,
+sitelinks, search order and how completely an item is described decide nothing; two of a kind are never separated by
+which is better described (the James Young rule), they are answered each.
+
+Behind ``CB_SOURCE_NAMESAKES=1`` (off until Cowork's reading of the audit, ``validation/audit_source_namesakes.py``).
+
+Wired: WIRED (a mixin of ``WikidataSource``; ``wikidata_resolve.WikiResolve.resolve``).
+
+======== cubbyllm/sources/wikidata_aliases.py 136 lines
+cubbyllm/sources/wikidata_aliases.py -- Wikidata's property labels and aliases as a local table (so serving makes
+no call per wording): its inflections, the table, the loader. Split out of wikidata.py (order 0031), verbatim;
+wikidata.py re-exports every name.
+
+Wired: WIRED (the Wikidata source).
+
+======== cubbyllm/sources/wikidata_place.py 100 lines
+cubbyllm/sources/wikidata_place.py -- a name that carries where it is ("cleveland ohio", "denver co", "texas san
+antonio", "london england"), read as a name and a place qualifier, as the hdc world reads "Paris, Texas" (order 0033).
+
+Cowork's sorting of the scoreboard's 76 "couldn't find it" refusals (2026-10-24): 26 were names with a place left on
+them, and no item carries "cleveland ohio" as its label or an alias.
+
+- **A reading** splits the words into a name and a qualifier: the last one to three words, or the first one or two
+  ("texas san antonio"). The qualifier's abbreviations are spelled out: a U.S. state's postal code, "usa", "uk".
+- **The name's exact hits** (label or alias, meta-pages dropped) are kept when a place they are in names the
+  qualifier. The places: located in (P131, up three steps), the country (P17), the continent (P30).
+- **One item across every reading:** resolved. Several: refused, named, as any shared name is. None: no resolution.
+- **Nothing is ranked,** and nothing is stripped blindly: "new england usa" reads "new england", in "usa".
+
+It runs only when no item carries the whole name (``wikidata_resolve.WikiResolve.resolve``). Every place is a claim
+the source states, so this is still the source reading its own values.
+
+Wired: WIRED (``wikidata_resolve.WikiResolve.resolve``, on by default since Nick's word on 2026-10-24;
+``CB_PLACE_QUALIFIER=0`` turns it off).
+
+======== cubbyllm/sources/web.py 273 lines
+standin/web_source.py -- the web as the Source of last resort: search, read, corroborate.
+
+Wired: WIRED (stand-in serve stack; `standin/ask.py` hands it to `learn_and_answer` as a fallback
+behind Wikidata; `serve_api --web`). Implements `cubbyllm.reasoning.learn.Source`.
+
+WHAT IT IS FOR. The ask loop fills the store from Wikidata. When Wikidata has no claim the walk
+needs -- a recent event, a niche entity, a property nobody entered -- the loop refused, correctly,
+and stopped there. This is where it goes next, for the one entity and relation the walk stalled on.
+
+THE RULE: a page is a witness, not a fact. A triple read off the web is HELD -- the latent tier,
+exactly as an LFM fact is: a certified chain resting on it is refused `latent_only`, the would-be
+answer on record -- until TWO INDEPENDENT SITES state it (Nick, 2026-09-24). Agreement lifts the
+hold and both sites stay in the provenance. One page, however confident, never makes the loop speak.
+
+The readers, most structured first:
+  wikidata  a Wikipedia hit names its Wikidata item; the item's claims come through `WikidataSource`,
+            attested by Wikidata itself (not held). Taken only when ONE item among the hits carries
+            the relation the walk needs -- the question decides which item, never the ranking.
+  jsonld    schema.org JSON-LD a page publishes about the entity (birthDate, foundingDate, ...).
+  frames    `wikitext.py`'s sentence frames (+ day-first dates) over the snippets and the page
+            text, on sentences that OPEN with the entity -- 'X's friend was born in Ulm' is not
+            about X.
+  lfm       the local model (`LfmReader`) reads a passage for the relation the walk needs; a value
+            that does not occur in the passage is dropped before it is ever counted.
+Each read is credited to its site. Sites are registrable domains (eTLD+1, approximated), with the
+Wikipedia family and its mirrors folded into one -- en.wikipedia.org and wikiwand.com are one witness.
+Archives are not witnesses at all (they repeat another site).
+
+Politeness: page fetches honour robots.txt (snippets come from the search API); pages are capped in
+count and size; search results and pages are cached on disk with a TTL, so a rerun inside the window
+is offline. The tally of which sites stated which fact persists beside the cache, so a second site
+found tomorrow completes a fact first seen today.
+
+Backends: Brave (`BRAVE_SEARCH_API_KEY`, metered) and SearXNG (a self-hosted instance with JSON output
+enabled, `CUBBY_SEARXNG_URL`), one interface. No search engine's answer box or generated summary is
+ever read -- only its links and snippets.
+
+======== cubbyllm/sources/web_wikidata.py 197 lines
+cubbyllm/sources/web_wikidata.py -- the web source's hand-off to Wikidata: a Wikipedia hit's item, the places that
+contain a place (so a finer value is not a disagreement), the item's claims, the article's lead. Split out of web.py
+(order 0031) as a mixin of WebSource, verbatim.
+
+Wired: WIRED (WebSource).
+
+======== cubbyllm/brain_route.py 143 lines
+cubbyllm/brain_route.py -- the brain's thalamus: does a turn need facts, which cortex takes it, a world looked up,
+the help line. Split out of brain.py (order 0031) as a mixin of CubbyBrain, verbatim, with the patterns it reads.
+
+Wired: WIRED (CubbyBrain).
+
+======== cubbyllm/brain_memory.py 134 lines
+cubbyllm/brain_memory.py -- the brain's memory cortex: "remember that ..." (or a bare template fact) gated (parse,
+contradiction, dedup), added to the world and written through the VM, retrievable next turn. Split out of brain.py
+(order 0031), verbatim; brain.py re-exports every name.
+
+Wired: WIRED (CubbyBrain).
+
+======== cubbyllm/brain_reasoning.py 196 lines
+cubbyllm/brain_reasoning.py -- the brain's reasoning cortex: plan and walk the routed world, the Facts block, the
+emitter's program (the CotChain opening prefilled), the VM, the ground check and the consistency gate; a generation
+cleaned, a tail matched. Split out of brain.py (order 0031), verbatim; brain.py re-exports every name.
+
+Wired: WIRED (CubbyBrain).
+

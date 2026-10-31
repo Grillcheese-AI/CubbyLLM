@@ -1,0 +1,41 @@
+{
+ "args": {
+  "n": 200,
+  "ts": 50,
+  "lookups": 1000,
+  "seed": 0
+ },
+ "lookup_ms": {
+  "p50": 0.17,
+  "p95": 0.31,
+  "n": 1000
+ },
+ "rss_gb_mounted": 0.9,
+ "facts": 3384594,
+ "one_hop": {
+  "asked": 200,
+  "not_one_hop_skipped": 88,
+  "spoken": 177,
+  "correct": 177,
+  "wrong": 0,
+  "as_of": 5,
+  "refused": {
+   "ambiguous_relation": 6,
+   "ambiguous_hop": 4,
+   "no_plan": 1,
+   "retrieval_exhausted": 7,
+   "entity_unresolved": 5
+  }
+ },
+ "time_sensitive": {
+  "asked": 50,
+  "said_flat": 0,
+  "as_of": 21,
+  "refused": {
+   "retrieval_exhausted": 2,
+   "plan_does_not_cover_question": 13,
+   "entity_unresolved": 14
+  }
+ },
+ "wall_s": 288.2
+}

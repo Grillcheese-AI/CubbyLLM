@@ -1,0 +1,12 @@
+H-S11: advisor benchmark built, baselines measured
+
+validation/logs/advisor_bench_2026-10-15.json: 72 held-out sandbox
+scenarios (criteria given / H only / neither), every listed option checked
+in a fork. Forks on the truth pass every gate (the gates are reachable; H
+is worth 0.96 vs 0.58 on the pick); a no-fork prior is within 1-3 points on
+A1/A3 and loses on picks; LFM2.5 1.2B fails every gate (A1 0.17, P lifts it
+from 0.02). Reading: the worlds need more that only playing out shows
+before Cubby's arm can separate from the trunk without branching.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

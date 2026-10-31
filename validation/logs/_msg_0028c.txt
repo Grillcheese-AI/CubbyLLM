@@ -1,0 +1,21 @@
+[0028] The plays pack: Gutenberg's modern-spelling plays and a reader for their lists of persons
+
+Nick's answer (relayed): use the modern-spelling editions that carry a persons list, read the list's relations as
+in-fiction facts, check it against the speaker tags; not Folger's texts (CC BY-NC).
+- standin/worlds_fiction.persons_facts: a play's list of persons read as stated, in three forms ("JULIET,
+  daughter to Capulet", "GERTRUDE, ... Hamlet's mother", "MALCOLM, his Son." after the line before), names with a
+  place kept ("Antipholus of Ephesus": the play has two); the speakers the list misses reported (the licence
+  after the end marker is not read). read_facts adds them before the prose's kin.
+- standin/plugins_world.FictionWorld (moved out of plugins_load, 297 -> 270 lines): a relation answered as stated;
+  asked the other way only when the stated fact entails it (a wife's spouse is her husband). A parent or a sibling
+  asked the other way is refused: run on the real pack, "who is Juliet's mother?" came back as "Juliet is the
+  daughter of Capulet", which reads as Capulet being her mother -- a wrong answer spoken; the list never says which
+  parent.
+- On the 38 plays (ids 1500-1541, local): 150 in-fiction facts across 34 works (29 relation words: son 36,
+  daughter 24, wife 20, ...); 638 speakers not in the lists, almost all numbered or group roles (FIRST CITIZEN,
+  ALL). The plugin's ten examples: 7 name a play the pack holds, 1 answered ("Adriana is the wife of Antipholus
+  of Ephesus"), 9 refused, 0 wrong; its not-lines: 0 answered. (validation/logs/plugins_checks_2026-10-22.json)
+- plugins/gutenberg-plays/PLUGIN.md: the pack described. Tests: standin/tests/test_persons_list.py (2).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

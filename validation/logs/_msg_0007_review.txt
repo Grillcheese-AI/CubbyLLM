@@ -1,0 +1,25 @@
+[0007] review: the 450M reads back what was learned (34/47, 0 mismatches, 0 wrong); five fixes the battery found
+
+validation/logs/bench_loci_learn_2026-10-22.json (run 5's final checkpoint on CPU, 100 seeded questions):
+- ask 1: the reader misses 95/100 (line >= 95%); 34 spoken, 0 wrong; 766 facts learned for 47 entities; 203
+  Wikidata calls on the first run (cached since); 0.7 s a question.
+- ask 2 (a new process, the persisted store): the reader equals the stored value on 34/47 = 0.723 (line 0.80:
+  fails; 34/38 = 0.89 on single-valued facts); 9 multi-valued deferred to the walk, refused ambiguous with no fetch;
+  0 mismatches, 0 wrong; source calls on the learned facts 3 (line 0: fails narrowly -- relations ask 1 never got).
+- creative: 30 asks, the reader read 0 times.
+
+The first full battery spoke 0 and matched 0 of 49. Fixed, each with a test (test_loci_reader.py, 9):
+1. the address hashes the name as written: the loop's normalized seed read another address -- ask with the
+   store's spelling;
+2. one address holds one value: several superimpose ('lawyerician') -- a miss, the walk's to choose, with no fetch
+   (ask.learn(src), loci_reader.NoSource);
+3. pieces only while the gate stays open ('Spain American Footballer');
+4. the question's own word: the emitter binds the label when the forms cannot name the wording back
+   (question_forms.TemplateEmitter), and through_loci resolves a wording through the loop's resolvers;
+5. the battery's unseeded ORDER BY RANDOM(): ask 2 asked other questions -- seeded now.
+
+0014's report updated to the final hdc bench on that emitter (validation/logs/exp_hdc_bench_2026-10-22.json): 177/200
+one-hop spoken and correct, 0 wrong; time-sensitive 0/50 flat (21 "as of"); p95 0.31 ms.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

@@ -1,0 +1,19 @@
+[0006] review: the copy path alone vs the mix (Cowork's check), arm A, and the report
+
+exp_k10_free_text.py: arm A (today's hashed places with the address given: U's own ceiling on these documents),
+and per present fact the copy path's argmax alone, the trunk's alone and a hard switch on the gate (lam >= 0.5),
+before the mix.
+
+The copy alone is near 0.96 in every arm, the mix ~0.85: the trained language model outvotes the copy, the read
+is fine, and the fix is the mixing switch (order 0005's route), not the read.
+  A s0: mixed 0.857, copy alone 0.974, LM alone 0.000
+  U s0: mixed 0.846, copy alone 0.956
+  P s0: mixed 0.855, copy alone 0.955, switch 0.875
+Logs: validation/logs/exp_k10_free_text_{A,U,P}_s0_alone_2026-10-22.{json,log}.
+
+Acceptance (in the order's report): U >= 0.90 fails (0.848; A reads 0.857 here); P >= 0.80 unseen x held-out on
+2 of 3 seeds fails (0.816 / 0.694 / 0.785); absent non-NONE <= 5% fails (0.087 / 0.099 / 0.053); language
+passes; H's hash wall holds (0.000); not killed (unseen subjects, seen templates 0.854 / 0.899 / 0.870).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

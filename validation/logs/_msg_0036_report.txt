@@ -1,0 +1,14 @@
+[0036] Report; status review (the audit, by my reading, misses its line: Cowork reads it)
+
+Items 1-4 built and measured (eac843e). Inverse probe: 0 mixed of 50, but all 50 got no plan (no
+serving path reads the object index). The kinds table: the same decisions as the scan on 0033's 11
+hops, 34.5 ms against 616. 0014's bench 179/179, 0 wrong; the real stack's 20 records as after 0033.
+
+The audit's 50 decisions: by my reading at least 9 cannot be settled by the question (several people
+or several films share the name, one chosen). The cause: the tier counts a namesake with no kind as
+unable to carry the relation, and 46 of the 50 decisions have one. The pre-registered rule says
+strict; not switched (Cowork's reading decides). Also found: the board's counts in a stack check move
+with its 5-second page cache, not with the code.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

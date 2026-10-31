@@ -1,0 +1,4 @@
+Ten free-running far-fact answers (greedy, held-out): run 3 alone 0 of 10, run 3's trunk with run 4's copy 7 of 10 exact (one more cut by the script's 9-token cap)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

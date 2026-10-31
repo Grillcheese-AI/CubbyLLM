@@ -1,0 +1,19 @@
+[0012] The question forms name a wording before the lexicon; the finder also reports the book-covered selection
+
+The first resolver to name a wording decides (learn.resolve_relations). With the books on, the lexicon came
+first and named "die" -> "dice" and "born" -> "max born": the plan kept the question's own word, the books'
+"date of death" fact was learned and then never walked. The books bench refused 67 of 76 as unknown_relation.
+The forms now come first (ask.AskLoop); a test pins the order and the answer with a lexicon that reads those words
+wrongly (test_books.test_the_question_forms_name_a_wording_before_the_lexicon; it fails without the fix).
+
+Bench with the fix (scratch run, the partial hdc gazetteer): 31/76 spoken (29 hedged, 2 flat), was 7/76.
+Wrong as scored: 2 flat (Gaiseric died in Carthage, the gold says the Vandal Kingdom -- a finer place; the
+capital of Kush is Kerma, the gold says Meroe -- Kush's earlier capital, two independent authors), 4 hedged.
+Wrong tense answered flat: 0/76.
+
+exp_books_bench.finder(covered=True): only the relations a history book states (births, deaths, founders,
+capitals, burials), subjects in 10+ paragraphs; with each selection's ceiling (the gold anywhere in the top
+200) and per era. Uniform 10/100 (ceiling 19); covered 29/100 (ceiling 43).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

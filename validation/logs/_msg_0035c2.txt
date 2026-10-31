@@ -1,0 +1,15 @@
+[0035] C2, the far facts at twice the villages' share: 0.9341, below the 0.94 to keep it; 5c stands
+
+Cowork's review asked for one more C run with the far facts at twice the share. It was kept only if the far
+facts hold at 0.94 or more with the villages above their lines.
+
+- The run: 410 steps, the copy alone, from run 5's final checkpoint. The trunk is frozen: 0 of 326 tensors and 0
+  of 5 router tensors moved (diag_frozen_check_run5c2_2026-10-24.json; train_spatial_link_5c2_2026-10-24.log).
+- Far facts (exp_hypertoken_recall_run5c2_cpu_2026-10-24.json, 400 held-out documents a shard):
+  facts_far1k_lead 0.9341 exact, 132 wrong (5c 0.9271, 146; run 5 0.9456, 109); spatial_here 0.9526, unchanged.
+- 0034's 60 villages, space form (exp_s12_copy_villages_run5c2_2026-10-24.json): things 0.845, names 0.825,
+  "nothing" 0.908 (5c: 0.845, 0.817, 0.910).
+- Below 0.94, so run 5c stands. The numbers are in H-S12, with no status change.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

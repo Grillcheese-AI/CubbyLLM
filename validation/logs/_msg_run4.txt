@@ -1,0 +1,12 @@
+[0001] Run 4 read: far facts 0.761 exact (run 3: 0.021), villages 0.953; the text mix +0.037 is the re-warmed schedule, and run 3's trunk with run 4's copy reads 0.844 with its text unchanged -- order 0001 done, order 0005 (train the copy alone) proposed
+
+Run 4 (G4, 846 steps, 0.5 h): run 3 continued with the copy path over the ring. Probe curve: 0.383 at
+step 100, 0.636 at 200, ~0.70 from 500. The text mix rose with every pure-text source by the same amount
+once the learning rate re-warmed (fresh optimizer, 3e-4 on a decayed checkpoint); those sources have no
+asking token, so the copy does not touch them. validation/diag_swap_copy.py puts run 4's trained copy
+(1,027 parameters) on run 3's trunk: 0.844 exact on 64 held-out documents, against 0.738 for run 4 as
+trained, villages 0.958 -- the gain is the copy's, the drift only cost. Logs: hypertoken_recall_spatial_
+run4_link, spatial_run4_link_metrics, speed_check_spatial_run4_g4, diag_swap_copy_run4 (2026-10-21).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

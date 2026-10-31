@@ -1,0 +1,21 @@
+he19 beam | cubby450m_v12e_w_step_cont | mode loop | chunk 128 | steps scored to the end of the plan line
+
+loop | width 1 (menu argmax) | 2 pf questions (0 on seen templates)
+    depth 0 menu 85 (48 groups) 1.3s [encode 0.0s] top 'create s0 : quantity;   # step 0: $N3 * $N1'
+    depth 1 menu 124 (69 groups) 2.0s [encode 0.0s] top 'create s1 : quantity;   # step 1: $N1 + $S1'
+    depth 2 menu 170 (96 groups) 2.8s [encode 0.0s] top 'create s2 : quantity;   # step 2: $S2 + $N5'
+    depth 3 menu 223 (127 groups) 2.7s [encode 0.0s] top 'return $S3;'
+    depth 0 menu 168 (85 groups) 2.3s [encode 0.0s] top 'create s0 : quantity;   # step 0: $N1 - $N2'
+    depth 1 menu 221 (108 groups) 2.8s [encode 0.0s] top 'create s1 : quantity;   # step 1: $S1 * $N4'
+    depth 2 menu 281 (130 groups) 5.2s [encode 0.0s] top 'create s2 : quantity;   # step 2: $N3 * $N4'
+    depth 3 menu 348 (158 groups) 4.9s [encode 0.0s] top 'create s3 : quantity;   # step 3: $S2 + $S3'
+    depth 4 menu 422 (200 groups) 6.8s [encode 0.0s] top 'create s4 : quantity;   # step 4: $S4 + $N6'
+    depth 5 menu 503 (236 groups) 6.5s [encode 0.0s] top 'create s5 : quantity;   # step 5: $S5 + $N7'
+    depth 6 menu 591 (287 groups) 7.0s [encode 0.1s] top 'return $S6;'
+  2/2 (44s) sum 0.000  mean 0.000  min-margin 0.000  oracle 0.000  menus scored/question 5.5
+  ranker          all   seen  unseen
+  sum           0.000  0.000   0.000
+  mean          0.000  0.000   0.000
+  min-margin    0.000  0.000   0.000
+  oracle        0.000  0.000   0.000
+  -> validation\logs\exp_he19_beam_loop_smoke.{log,json}

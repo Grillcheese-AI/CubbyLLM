@@ -1,0 +1,18 @@
+[0031] slice 9, cubby_serve: the server from standin/ to cubby_serve/ (git mv; paths and imports only)
+
+  serve_api -> api, serve_cli -> cli, serve_events -> events, serve_get -> get, serve_post -> post,
+  board_api -> board/api, board_data -> board/data, plugins_serve -> plugins, harness, harness_wiring,
+  ledger; their six tests -> tests/serve/.
+
+Imports of moved modules become package imports (cubbyllm.* and cubby_serve.*, absolute), the sys.path
+edits go, and __file__ paths keep pointing where they did (the pages beside the old serve_api, the
+board's repo root, standin/data/out). What cubby_serve/ still imports from the stand-in is exactly the
+review's question 3, all lazy: emitter_llama (--gguf), lfm_source (--web-reader, --ask lfm) and pacman
+(--pacman), plus build.py's word-encoder link (question 8). build.py keeps the stand-in on sys.path
+for those, as serve.py did. harness.py (873 lines) and harness_wiring.py (332) stay over 300 here.
+
+Tests, full suite against the baseline with the moved files mapped: same counts in every file;
+1,189 passed, 6 skipped, 1 failed (test_every_module_declares_wiring, the known red of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

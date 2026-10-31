@@ -1,0 +1,14 @@
+[0031] slice 5, emit: the old names as shims; cubbyllm.emit declares its wiring
+
+standin/emitter_base.py, emitter_450m.py and emitter_talk.py are shims for one cycle (the moved module
+itself, with a DeprecationWarning). standin/emitter.py stays the facade its importers use.
+cubbyllm/emit/base, seats_450m and talk now say WIRED: the ask loop and the chat turn clean replies with
+base; the server's 450M seats and its ContextualEmitter are seats_450m and talk.
+
+`import cubbyllm, cubbyllm.emit` in a fresh interpreter loads neither torch nor grilly.
+
+Tests: tests/emit, test_build_emitter_sft, test_plugins, test_serve, test_guards: 83 passed, 1 failed
+(test_every_module_declares_wiring, the known red of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

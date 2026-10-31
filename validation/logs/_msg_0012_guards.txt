@@ -1,0 +1,25 @@
+[0012] Frames: the subject must be the clause's, a place must be a place; the bench scores coarser places and spellings apart; the books read the walk's own wording
+
+From the first run on the real books (agreement 0.55 on 51 triples; logged rows read one by one):
+- book_frames: a name governed by a preposition is not the subject ("a second house of the Poor Clares was founded
+  by", "named after Martha Washington, died"); a capitalised word running into the name is a longer name unless
+  a title or a sentence opener ("SAMUEL JOHN MILLS" is not John Mills; "King Henry", "The Battle of" are fine);
+  "died" takes a who-clause only (born keeps its participle apposition); a city in an apposition needs an
+  indefinite article ("the Island of Rhodes, the city of Thrace" is a list); a place after a preposition is not
+  the apposition's ("south of the Dead Sea, capital of"); a place followed by a noun is an adjective ("the Greek
+  national narrative"); a place with a digit glued in is text run together ("Egypt216Lorenzo").
+- book_source.labels: the walk asks with the question's words ("born"); the books read the frames those words name
+  (date and place of birth) instead of every frame at once.
+- exp_books_bench: a reading is 'agree' (a year; one name in the other; a spelling: Wiewerd/Wieuwerd,
+  Germaniceia/Germanicia, Borgo San Sepolcro/Sansepolcro), 'coarser' (a place holding the world's, by the wiki and
+  hdc worlds' location facts), 'other' (another value of a many-valued relation: a co-founder) or 'contradict';
+  agreement is reported strict and with 'coarser'; a spoken 'other' is unconfirmed, not wrong. The frames step stops
+  at 200 comparable triples or 30,000 subjects. These definitions were set after reading the first run's
+  disagreements in both halves: the second run is not a held-out number.
+
+Second run (frames as above, gazetteer from the partial hdc world): agreement 0.821 with coarser, 0.795 strict, on
+78 comparable triples (every mentioned subject asked; the line is >= 200 and >= 0.95: both still fail). The run
+and the report follow.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

@@ -1,0 +1,90 @@
+{
+ "what": "order 0035 B: run 5's copy at every asking token (lambda, best match, what it points at), on 0034's villages as written and with the answer's lead token asking, beside the far facts and the shard's villages",
+ "date": "smoke",
+ "copy": {
+  "scale": 2.0,
+  "seed": 0,
+  "at": 16,
+  "query": "placed",
+  "bind": "writes",
+  "copy": "ring",
+  "copy_tau": 3.04,
+  "copy_beta": 0.115
+ },
+ "questions_sha256": "80b60cc3a9f4f9aa70fb0f0cd43a36209b93a8c24162e8fcdb68085a59b08e7c",
+ "arms": {
+  "village_as_written": {
+   "kind": {
+    "n": 5,
+    "lambda_mean": 0.0,
+    "lambda_over_half": 0,
+    "best_median": 0.2379,
+    "points_at_next_token": 0,
+    "points_at_answer_first_token": 0
+   },
+   "name": {
+    "n": 6,
+    "lambda_mean": 0.0,
+    "lambda_over_half": 0,
+    "best_median": 0.2696,
+    "points_at_next_token": 0,
+    "points_at_answer_first_token": 0
+   },
+   "nothing": {
+    "n": 17,
+    "lambda_mean": 0.0,
+    "lambda_over_half": 0,
+    "best_median": 0.0742,
+    "points_at_next_token": 0,
+    "points_at_answer_first_token": 0
+   }
+  },
+  "village_lead": {
+   "kind": {
+    "n": 5,
+    "lambda_mean": 0.9973,
+    "lambda_over_half": 5,
+    "best_median": 0.2379,
+    "points_at_next_token": 0,
+    "points_at_answer_first_token": 0,
+    "first_token_right": 0
+   },
+   "name": {
+    "n": 6,
+    "lambda_mean": 1.0,
+    "lambda_over_half": 6,
+    "best_median": 0.2696,
+    "points_at_next_token": 0,
+    "points_at_answer_first_token": 0,
+    "first_token_right": 0
+   },
+   "nothing": {
+    "n": 17,
+    "lambda_mean": 0.3167,
+    "lambda_over_half": 5,
+    "best_median": 0.0742,
+    "points_at_next_token": 0,
+    "points_at_answer_first_token": 0,
+    "first_token_right": 12
+   }
+  },
+  "far_facts_lead": {
+   "all": {
+    "n": 85,
+    "lambda_mean": 0.7079,
+    "lambda_over_half": 61,
+    "best_median": 0.1579,
+    "points_at_next_token": 60
+   }
+  },
+  "shard_villages": {
+   "all": {
+    "n": 19,
+    "lambda_mean": 0.0,
+    "lambda_over_half": 0,
+    "best_median": 0.1125,
+    "points_at_next_token": 0
+   }
+  }
+ }
+}

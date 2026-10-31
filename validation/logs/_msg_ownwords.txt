@@ -1,0 +1,4 @@
+Own words (Nick): Cubby paraphrases what it learned in its own words and voice -- no 8-word runs from any stored passage, no named-author style -- in WORLDS.md, CLAUDE.md, orders 0016 (the scan covers the whole passage index) and 0008 (art)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

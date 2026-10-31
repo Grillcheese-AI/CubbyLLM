@@ -1,0 +1,10 @@
+H-S10 first G6 read (postmortem passes the second-encounter half), H-S11 level 2
+
+validation/logs/g6_postmortem_2026-10-15.json: second-encounter error 0.36 vs
+0.79 for plain replay (-55%, gate 50%), no spill on control blocks; the
+no-flip clause on noise fails (14% of predictions during chance runs reach
+0.8) while calibration improves. validation/logs/advisor_bench_l2_2026-10-15.json:
+detours widen the forks-prior gap on true claims to 8 points.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

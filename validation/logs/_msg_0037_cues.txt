@@ -1,0 +1,33 @@
+[0037] Cue words: the question's capitalised words, a kind's own name, and none from words the world rarely uses
+
+The real stack, with the rule on, lost "What river flows through Cairo?" (the Nile, with the rule off).
+The cue words were "river", "flows" and "through". "flows" occurs in the world's values only in one album's
+title, so it ruled out the city of Cairo (Q85), and the loop asked which.
+
+- cue_words: the question's capitalised words after the first, less the name's and the relation's ("Nobel"
+  in "What Nobel Prize did Marie Curie win?"). Not its verbs or prepositions. Not its head noun either: a
+  head noun names the answer's class, which the subject's own values seldom use ("currency" is in no
+  country's values).
+- hdc_cues.CUE_MIN = 100: a word rules out only when that many of the world's subjects use it ("nobel": 711;
+  "flows": 1). A word the world rarely uses rules out nothing, as a word it never uses already did.
+- The cue table now also reads a kind's own name ("State" goes with U.S. states, "taxon" with taxa). The
+  probe drew "taxon" from an item's instance of and ruled that same item out. The table only gains kinds, so
+  a cue rules out less, never more.
+
+The rebuilt table is standin/data/out/hdc_world.cues.new.sqlite (142,289 words; data, not committed). It
+replaces hdc_world.cues.sqlite once the two stack servers holding the old one are stopped.
+validation/audit_namesake_relation.py --cues reads a table not yet swapped in.
+
+Audit rerun on the new table (validation/logs/audit_namesake_relation_2026-10-24.json, .md):
+- the fixed checks as before;
+- audit: 6 one item, 1 each labelled, 43 asked back;
+- probe: 3 pick the target, 17 ask back, 0 wrong picks;
+- decision p50 4.5 ms, max 40.9 ms.
+Through the loop (wiki + hdc, offline, no model):
+- Cairo -> "Nile.", and the two namesakes the world can name;
+- Italy -> "As of 2019, Rome."; France and Japan as before.
+
+Whole suite: 1105 passed; the one failure is the known red (order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

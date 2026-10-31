@@ -1,0 +1,975 @@
+{
+ "publisher": "International Crisis Group",
+ "listed_at": "https://www.crisisgroup.org/rss-0",
+ "checked": "2026-10-22",
+ "kind": "analysis (reports, briefings, commentary), not events",
+ "notes": "From Nick's machine with CubbyLLM/0.1: /rss and the numbered feeds answer 200 (10 items each); /rss/crisiswatch answers 403 and is left out; the listing page itself answers 403 to the poller and was read from Cowork's side.",
+ "poll": "the global feed and the 7 region feeds every 6 hours; country and project feeds only on demand (their items repeat in the regions)",
+ "feeds": [
+  {
+   "group": "General",
+   "name": "Global Feed",
+   "url": "https://www.crisisgroup.org/rss"
+  },
+  {
+   "group": "General",
+   "name": "CrisisWatch",
+   "url": "https://www.crisisgroup.org/rss/crisiswatch"
+  },
+  {
+   "group": "Regions",
+   "name": "Global",
+   "url": "https://www.crisisgroup.org/rss/139"
+  },
+  {
+   "group": "Regions",
+   "name": "Africa",
+   "url": "https://www.crisisgroup.org/rss/1"
+  },
+  {
+   "group": "Regions",
+   "name": "Asia-Pacific",
+   "url": "https://www.crisisgroup.org/rss/30"
+  },
+  {
+   "group": "Regions",
+   "name": "Europe",
+   "url": "https://www.crisisgroup.org/rss/56"
+  },
+  {
+   "group": "Regions",
+   "name": "Latin America & Caribbean",
+   "url": "https://www.crisisgroup.org/rss/73"
+  },
+  {
+   "group": "Regions",
+   "name": "Middle East & North Africa",
+   "url": "https://www.crisisgroup.org/rss/81"
+  },
+  {
+   "group": "Regions",
+   "name": "United States",
+   "url": "https://www.crisisgroup.org/rss/4697"
+  },
+  {
+   "group": "Africa: Projects",
+   "name": "Sahel",
+   "url": "https://www.crisisgroup.org/rss/2900"
+  },
+  {
+   "group": "Africa: Projects",
+   "name": "Central Africa",
+   "url": "https://www.crisisgroup.org/rss/2"
+  },
+  {
+   "group": "Africa: Projects",
+   "name": "East and Southern Africa",
+   "url": "https://www.crisisgroup.org/rss/4683"
+  },
+  {
+   "group": "Africa: Projects",
+   "name": "Great Lakes",
+   "url": "https://www.crisisgroup.org/rss/4657"
+  },
+  {
+   "group": "Africa: Projects",
+   "name": "Horn of Africa",
+   "url": "https://www.crisisgroup.org/rss/9"
+  },
+  {
+   "group": "Africa: Projects",
+   "name": "West Africa",
+   "url": "https://www.crisisgroup.org/rss/20"
+  },
+  {
+   "group": "Africa: Projects",
+   "name": "African Union & Regional Bodies",
+   "url": "https://www.crisisgroup.org/rss/3645"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Burkina Faso",
+   "url": "https://www.crisisgroup.org/rss/21"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Mali",
+   "url": "https://www.crisisgroup.org/rss/26"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Niger",
+   "url": "https://www.crisisgroup.org/rss/27"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Cameroon",
+   "url": "https://www.crisisgroup.org/rss/4"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Central African Republic",
+   "url": "https://www.crisisgroup.org/rss/5"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Chad",
+   "url": "https://www.crisisgroup.org/rss/6"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Equatorial Guinea",
+   "url": "https://www.crisisgroup.org/rss/171"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Republic of Congo",
+   "url": "https://www.crisisgroup.org/rss/115"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Gabon",
+   "url": "https://www.crisisgroup.org/rss/134"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Angola",
+   "url": "https://www.crisisgroup.org/rss/17"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Comoros Islands",
+   "url": "https://www.crisisgroup.org/rss/174"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Eswatini",
+   "url": "https://www.crisisgroup.org/rss/150"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Kenya",
+   "url": "https://www.crisisgroup.org/rss/11"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Lesotho",
+   "url": "https://www.crisisgroup.org/rss/162"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Madagascar",
+   "url": "https://www.crisisgroup.org/rss/18"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Malawi",
+   "url": "https://www.crisisgroup.org/rss/161"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Mozambique",
+   "url": "https://www.crisisgroup.org/rss/118"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "South Africa",
+   "url": "https://www.crisisgroup.org/rss/119"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Tanzania",
+   "url": "https://www.crisisgroup.org/rss/149"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Zambia",
+   "url": "https://www.crisisgroup.org/rss/144"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Zimbabwe",
+   "url": "https://www.crisisgroup.org/rss/19"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Burundi",
+   "url": "https://www.crisisgroup.org/rss/3"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Democratic Republic of Congo",
+   "url": "https://www.crisisgroup.org/rss/7"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Rwanda",
+   "url": "https://www.crisisgroup.org/rss/8"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Uganda",
+   "url": "https://www.crisisgroup.org/rss/15"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Djibouti",
+   "url": "https://www.crisisgroup.org/rss/172"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Ethiopia/Eritrea",
+   "url": "https://www.crisisgroup.org/rss/203"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Eritrea",
+   "url": "https://www.crisisgroup.org/rss/10"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Ethiopia",
+   "url": "https://www.crisisgroup.org/rss/116"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Nile Waters",
+   "url": "https://www.crisisgroup.org/rss/3986"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Somalia",
+   "url": "https://www.crisisgroup.org/rss/12"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Somaliland",
+   "url": "https://www.crisisgroup.org/rss/117"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "South Sudan",
+   "url": "https://www.crisisgroup.org/rss/13"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Sudan",
+   "url": "https://www.crisisgroup.org/rss/14"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Benin",
+   "url": "https://www.crisisgroup.org/rss/177"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Côte d’Ivoire",
+   "url": "https://www.crisisgroup.org/rss/22"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Gambia",
+   "url": "https://www.crisisgroup.org/rss/120"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Ghana",
+   "url": "https://www.crisisgroup.org/rss/168"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Guinea",
+   "url": "https://www.crisisgroup.org/rss/23"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Guinea-Bissau",
+   "url": "https://www.crisisgroup.org/rss/24"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Liberia",
+   "url": "https://www.crisisgroup.org/rss/25"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Nigeria",
+   "url": "https://www.crisisgroup.org/rss/28"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Sao Tome and Principe",
+   "url": "https://www.crisisgroup.org/rss/154"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Senegal",
+   "url": "https://www.crisisgroup.org/rss/153"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Sierra Leone",
+   "url": "https://www.crisisgroup.org/rss/29"
+  },
+  {
+   "group": "Africa: Countries",
+   "name": "Togo",
+   "url": "https://www.crisisgroup.org/rss/148"
+  },
+  {
+   "group": "Asia-Pacific: Projects",
+   "name": "North East Asia",
+   "url": "https://www.crisisgroup.org/rss/31"
+  },
+  {
+   "group": "Asia-Pacific: Projects",
+   "name": "South Asia",
+   "url": "https://www.crisisgroup.org/rss/35"
+  },
+  {
+   "group": "Asia-Pacific: Projects",
+   "name": "South East Asia",
+   "url": "https://www.crisisgroup.org/rss/42"
+  },
+  {
+   "group": "Asia-Pacific: Projects",
+   "name": "Pacific",
+   "url": "https://www.crisisgroup.org/rss/125"
+  },
+  {
+   "group": "Asia-Pacific: Projects",
+   "name": "China-U.S.",
+   "url": "https://www.crisisgroup.org/rss/4708"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "China",
+   "url": "https://www.crisisgroup.org/rss/32"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Japan",
+   "url": "https://www.crisisgroup.org/rss/4707"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "China (internal)",
+   "url": "https://www.crisisgroup.org/rss/121"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "China/Japan",
+   "url": "https://www.crisisgroup.org/rss/122"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Korean Peninsula",
+   "url": "https://www.crisisgroup.org/rss/33"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Kuril Islands/Northern Territories (Russia/Japan)",
+   "url": "https://www.crisisgroup.org/rss/164"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Mongolia",
+   "url": "https://www.crisisgroup.org/rss/159"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Taiwan Strait",
+   "url": "https://www.crisisgroup.org/rss/34"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Afghanistan",
+   "url": "https://www.crisisgroup.org/rss/36"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Bangladesh",
+   "url": "https://www.crisisgroup.org/rss/37"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "India",
+   "url": "https://www.crisisgroup.org/rss/123"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "India-Pakistan (Kashmir)",
+   "url": "https://www.crisisgroup.org/rss/38"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Maldives",
+   "url": "https://www.crisisgroup.org/rss/160"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Nepal",
+   "url": "https://www.crisisgroup.org/rss/39"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Pakistan",
+   "url": "https://www.crisisgroup.org/rss/40"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Sri Lanka",
+   "url": "https://www.crisisgroup.org/rss/41"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Cambodia",
+   "url": "https://www.crisisgroup.org/rss/43"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Indonesia",
+   "url": "https://www.crisisgroup.org/rss/44"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Malaysia",
+   "url": "https://www.crisisgroup.org/rss/47"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Myanmar",
+   "url": "https://www.crisisgroup.org/rss/45"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Philippines",
+   "url": "https://www.crisisgroup.org/rss/46"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "South China Sea",
+   "url": "https://www.crisisgroup.org/rss/124"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Thailand",
+   "url": "https://www.crisisgroup.org/rss/48"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Timor-Leste",
+   "url": "https://www.crisisgroup.org/rss/49"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Cook Islands",
+   "url": "https://www.crisisgroup.org/rss/4699"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Fiji",
+   "url": "https://www.crisisgroup.org/rss/170"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Tasman Sea",
+   "url": "https://www.crisisgroup.org/rss/4700"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "New Caledonia (France)",
+   "url": "https://www.crisisgroup.org/rss/4694"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "New Zealand",
+   "url": "https://www.crisisgroup.org/rss/3267"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Papua New Guinea",
+   "url": "https://www.crisisgroup.org/rss/126"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Solomon Islands",
+   "url": "https://www.crisisgroup.org/rss/152"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Tonga",
+   "url": "https://www.crisisgroup.org/rss/147"
+  },
+  {
+   "group": "Asia-Pacific: Countries",
+   "name": "Vanuatu",
+   "url": "https://www.crisisgroup.org/rss/145"
+  },
+  {
+   "group": "Europe: Projects",
+   "name": "European Union",
+   "url": "https://www.crisisgroup.org/rss/4720"
+  },
+  {
+   "group": "Europe: Projects",
+   "name": "Balkans",
+   "url": "https://www.crisisgroup.org/rss/64"
+  },
+  {
+   "group": "Europe: Projects",
+   "name": "Caucasus",
+   "url": "https://www.crisisgroup.org/rss/59"
+  },
+  {
+   "group": "Europe: Projects",
+   "name": "Eastern Europe",
+   "url": "https://www.crisisgroup.org/rss/128"
+  },
+  {
+   "group": "Europe: Projects",
+   "name": "Western Europe/Mediterranean",
+   "url": "https://www.crisisgroup.org/rss/129"
+  },
+  {
+   "group": "Europe: Projects",
+   "name": "Central Asia",
+   "url": "https://www.crisisgroup.org/rss/50"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Eastern Mediterranean",
+   "url": "https://www.crisisgroup.org/rss/4178"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Albania",
+   "url": "https://www.crisisgroup.org/rss/65"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Bosnia And Herzegovina",
+   "url": "https://www.crisisgroup.org/rss/66"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Croatia",
+   "url": "https://www.crisisgroup.org/rss/67"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Kosovo",
+   "url": "https://www.crisisgroup.org/rss/68"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "North Macedonia",
+   "url": "https://www.crisisgroup.org/rss/69"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Montenegro",
+   "url": "https://www.crisisgroup.org/rss/70"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Serbia",
+   "url": "https://www.crisisgroup.org/rss/71"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Abkhazia (Georgia)",
+   "url": "https://www.crisisgroup.org/rss/181"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Armenia",
+   "url": "https://www.crisisgroup.org/rss/60"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Armenia/Türkiye",
+   "url": "https://www.crisisgroup.org/rss/180"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Azerbaijan",
+   "url": "https://www.crisisgroup.org/rss/61"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Chechnya (Russia)",
+   "url": "https://www.crisisgroup.org/rss/1202"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Georgia",
+   "url": "https://www.crisisgroup.org/rss/62"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Armenian-Azerbaijani Conflict",
+   "url": "https://www.crisisgroup.org/rss/127"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Russia",
+   "url": "https://www.crisisgroup.org/rss/143"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Russia/U.S.",
+   "url": "https://www.crisisgroup.org/rss/3215"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Belarus",
+   "url": "https://www.crisisgroup.org/rss/131"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Moldova",
+   "url": "https://www.crisisgroup.org/rss/63"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Ukraine",
+   "url": "https://www.crisisgroup.org/rss/72"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Belgium",
+   "url": "https://www.crisisgroup.org/rss/178"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Basque Country (Spain)",
+   "url": "https://www.crisisgroup.org/rss/179"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Corsica",
+   "url": "https://www.crisisgroup.org/rss/173"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Cyprus",
+   "url": "https://www.crisisgroup.org/rss/57"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "France",
+   "url": "https://www.crisisgroup.org/rss/169"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Germany",
+   "url": "https://www.crisisgroup.org/rss/202"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Northern Ireland (UK)",
+   "url": "https://www.crisisgroup.org/rss/130"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Spain",
+   "url": "https://www.crisisgroup.org/rss/151"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Türkiye",
+   "url": "https://www.crisisgroup.org/rss/58"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "UK",
+   "url": "https://www.crisisgroup.org/rss/146"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Kazakhstan",
+   "url": "https://www.crisisgroup.org/rss/51"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Kyrgyzstan",
+   "url": "https://www.crisisgroup.org/rss/52"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Tajikistan",
+   "url": "https://www.crisisgroup.org/rss/53"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Turkmenistan",
+   "url": "https://www.crisisgroup.org/rss/54"
+  },
+  {
+   "group": "Europe: Countries",
+   "name": "Uzbekistan",
+   "url": "https://www.crisisgroup.org/rss/55"
+  },
+  {
+   "group": "Latin America & Caribbean: Projects",
+   "name": "Andes",
+   "url": "https://www.crisisgroup.org/rss/183"
+  },
+  {
+   "group": "Latin America & Caribbean: Projects",
+   "name": "Caribbean",
+   "url": "https://www.crisisgroup.org/rss/4695"
+  },
+  {
+   "group": "Latin America & Caribbean: Projects",
+   "name": "Central America",
+   "url": "https://www.crisisgroup.org/rss/184"
+  },
+  {
+   "group": "Latin America & Caribbean: Projects",
+   "name": "South America",
+   "url": "https://www.crisisgroup.org/rss/4696"
+  },
+  {
+   "group": "Latin America & Caribbean: Projects",
+   "name": "Amazon",
+   "url": "https://www.crisisgroup.org/rss/4714"
+  },
+  {
+   "group": "Latin America & Caribbean: Countries",
+   "name": "Argentina",
+   "url": "https://www.crisisgroup.org/rss/4687"
+  },
+  {
+   "group": "Latin America & Caribbean: Countries",
+   "name": "Bolivia",
+   "url": "https://www.crisisgroup.org/rss/75"
+  },
+  {
+   "group": "Latin America & Caribbean: Countries",
+   "name": "Chile",
+   "url": "https://www.crisisgroup.org/rss/3705"
+  },
+  {
+   "group": "Latin America & Caribbean: Countries",
+   "name": "Colombia",
+   "url": "https://www.crisisgroup.org/rss/76"
+  },
+  {
+   "group": "Latin America & Caribbean: Countries",
+   "name": "Colombia/Venezuela",
+   "url": "https://www.crisisgroup.org/rss/175"
+  },
+  {
+   "group": "Latin America & Caribbean: Countries",
+   "name": "Ecuador",
+   "url": "https://www.crisisgroup.org/rss/77"
+  },
+  {
+   "group": "Latin America & Caribbean: Countries",
+   "name": "Peru",
+   "url": "https://www.crisisgroup.org/rss/155"
+  },
+  {
+   "group": "Latin America & Caribbean: Countries",
+   "name": "Venezuela",
+   "url": "https://www.crisisgroup.org/rss/78"
+  },
+  {
+   "group": "Latin America & Caribbean: Countries",
+   "name": "Cuba",
+   "url": "https://www.crisisgroup.org/rss/135"
+  },
+  {
+   "group": "Latin America & Caribbean: Countries",
+   "name": "Dominican Republic",
+   "url": "https://www.crisisgroup.org/rss/1198"
+  },
+  {
+   "group": "Latin America & Caribbean: Countries",
+   "name": "Guyana",
+   "url": "https://www.crisisgroup.org/rss/167"
+  },
+  {
+   "group": "Latin America & Caribbean: Countries",
+   "name": "Haiti",
+   "url": "https://www.crisisgroup.org/rss/80"
+  },
+  {
+   "group": "Latin America & Caribbean: Countries",
+   "name": "Jamaica",
+   "url": "https://www.crisisgroup.org/rss/165"
+  },
+  {
+   "group": "Latin America & Caribbean: Countries",
+   "name": "Trinidad and Tobago",
+   "url": "https://www.crisisgroup.org/rss/4685"
+  },
+  {
+   "group": "Latin America & Caribbean: Countries",
+   "name": "Guatemala",
+   "url": "https://www.crisisgroup.org/rss/79"
+  },
+  {
+   "group": "Latin America & Caribbean: Countries",
+   "name": "Honduras",
+   "url": "https://www.crisisgroup.org/rss/166"
+  },
+  {
+   "group": "Latin America & Caribbean: Countries",
+   "name": "El Salvador",
+   "url": "https://www.crisisgroup.org/rss/1318"
+  },
+  {
+   "group": "Latin America & Caribbean: Countries",
+   "name": "Mexico",
+   "url": "https://www.crisisgroup.org/rss/74"
+  },
+  {
+   "group": "Latin America & Caribbean: Countries",
+   "name": "Nicaragua",
+   "url": "https://www.crisisgroup.org/rss/158"
+  },
+  {
+   "group": "Latin America & Caribbean: Countries",
+   "name": "Brazil",
+   "url": "https://www.crisisgroup.org/rss/176"
+  },
+  {
+   "group": "Latin America & Caribbean: Countries",
+   "name": "Paraguay",
+   "url": "https://www.crisisgroup.org/rss/156"
+  },
+  {
+   "group": "Middle East & North Africa: Projects",
+   "name": "East Mediterranean (MENA)",
+   "url": "https://www.crisisgroup.org/rss/132"
+  },
+  {
+   "group": "Middle East & North Africa: Projects",
+   "name": "Gulf and Arabian Peninsula",
+   "url": "https://www.crisisgroup.org/rss/84"
+  },
+  {
+   "group": "Middle East & North Africa: Projects",
+   "name": "North Africa",
+   "url": "https://www.crisisgroup.org/rss/92"
+  },
+  {
+   "group": "Middle East & North Africa: Countries",
+   "name": "Israel/Palestine",
+   "url": "https://www.crisisgroup.org/rss/91"
+  },
+  {
+   "group": "Middle East & North Africa: Countries",
+   "name": "Jordan",
+   "url": "https://www.crisisgroup.org/rss/88"
+  },
+  {
+   "group": "Middle East & North Africa: Countries",
+   "name": "Lebanon",
+   "url": "https://www.crisisgroup.org/rss/82"
+  },
+  {
+   "group": "Middle East & North Africa: Countries",
+   "name": "Syria",
+   "url": "https://www.crisisgroup.org/rss/83"
+  },
+  {
+   "group": "Middle East & North Africa: Countries",
+   "name": "Bahrain",
+   "url": "https://www.crisisgroup.org/rss/86"
+  },
+  {
+   "group": "Middle East & North Africa: Countries",
+   "name": "Iran",
+   "url": "https://www.crisisgroup.org/rss/85"
+  },
+  {
+   "group": "Middle East & North Africa: Countries",
+   "name": "Iraq",
+   "url": "https://www.crisisgroup.org/rss/87"
+  },
+  {
+   "group": "Middle East & North Africa: Countries",
+   "name": "Kuwait",
+   "url": "https://www.crisisgroup.org/rss/163"
+  },
+  {
+   "group": "Middle East & North Africa: Countries",
+   "name": "Oman",
+   "url": "https://www.crisisgroup.org/rss/157"
+  },
+  {
+   "group": "Middle East & North Africa: Countries",
+   "name": "Qatar",
+   "url": "https://www.crisisgroup.org/rss/1674"
+  },
+  {
+   "group": "Middle East & North Africa: Countries",
+   "name": "Saudi Arabia",
+   "url": "https://www.crisisgroup.org/rss/89"
+  },
+  {
+   "group": "Middle East & North Africa: Countries",
+   "name": "Yemen",
+   "url": "https://www.crisisgroup.org/rss/90"
+  },
+  {
+   "group": "Middle East & North Africa: Countries",
+   "name": "United Arab Emirates",
+   "url": "https://www.crisisgroup.org/rss/2545"
+  },
+  {
+   "group": "Middle East & North Africa: Countries",
+   "name": "Algeria",
+   "url": "https://www.crisisgroup.org/rss/93"
+  },
+  {
+   "group": "Middle East & North Africa: Countries",
+   "name": "Egypt",
+   "url": "https://www.crisisgroup.org/rss/94"
+  },
+  {
+   "group": "Middle East & North Africa: Countries",
+   "name": "Libya",
+   "url": "https://www.crisisgroup.org/rss/95"
+  },
+  {
+   "group": "Middle East & North Africa: Countries",
+   "name": "Mauritania",
+   "url": "https://www.crisisgroup.org/rss/96"
+  },
+  {
+   "group": "Middle East & North Africa: Countries",
+   "name": "Morocco",
+   "url": "https://www.crisisgroup.org/rss/133"
+  },
+  {
+   "group": "Middle East & North Africa: Countries",
+   "name": "Tunisia",
+   "url": "https://www.crisisgroup.org/rss/97"
+  },
+  {
+   "group": "Middle East & North Africa: Countries",
+   "name": "Western Sahara",
+   "url": "https://www.crisisgroup.org/rss/98"
+  },
+  {
+   "group": "United States",
+   "name": "United States (Projects)",
+   "url": "https://www.crisisgroup.org/rss/2413"
+  },
+  {
+   "group": "United States",
+   "name": "U.S./Russia",
+   "url": "https://www.crisisgroup.org/rss/3214"
+  },
+  {
+   "group": "United States",
+   "name": "United States (Internal)",
+   "url": "https://www.crisisgroup.org/rss/3985"
+  }
+ ]
+}

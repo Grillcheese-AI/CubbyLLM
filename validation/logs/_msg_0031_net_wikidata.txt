@@ -1,0 +1,20 @@
+[0031] network split: Wikidata's HTTP call moves to cubby_serve/sources/http.py; the source takes a fetch
+
+cubbyllm/sources/wikidata.py no longer imports urllib.request. WikidataSource(..., fetch=None): its
+cached transport is unchanged, and on a request it does not hold it calls fetch(url) for the body,
+where it used to open the URL itself. Offline (cache only) needs no fetch. Online with none, it raises
+a RuntimeError that says what to hand in, at its first network need: never silently offline. The GET
+is cubby_serve.sources.http.get, with fetcher(ua, timeout); http.wikidata() is the source's own (its
+User-Agent, 30 s, as before).
+
+Who hands it in:
+- the server: `--ask wikidata` builds WikidataSource(offline=False, use_choices=True, fetch=...) and
+  passes it to the ask loop, as with the LFM source (the loop still resolves 'wikidata-offline');
+- the seven online sources in validation/ (bench_loci_learn phase 1, exp_r11, r14, r16, r24, r33 x4,
+  one through an alias): fetch=_wikidata_fetch(). The order lets validation/ import cubby_serve.
+
+Tests: tests/sources (the fake transport overrides _get, as before), tests/reasoning, tests/serve,
+test_guards: 359 passed, 1 failed (the known red of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

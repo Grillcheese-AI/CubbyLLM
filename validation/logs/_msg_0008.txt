@@ -1,0 +1,8 @@
+[0007][0008] Creativity guarded and planned: 0007 keeps creative asks out of the miss/lookup path (with a regression bench); 0008 proposed -- mix known facts into hypotheses, test them, keep the confirmed as derived facts, art stays free
+
+Nick: the creativity cortex must keep working -- Cubby tests what it knows and creates new facts by
+mixing them, if confirmed (hypotheses), and makes art. 0008 joins hypothesis.py (frame, test, verdict;
+an open hypothesis is never a fact), the skill library and verse.py on top of the loci path.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

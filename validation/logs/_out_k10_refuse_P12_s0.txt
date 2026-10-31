@@ -1,0 +1,89 @@
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+{
+ "arm": "P",
+ "seed": 0,
+ "lines": {
+  "present_wrong": 0.02,
+  "absent_answered": 0.05
+ },
+ "lookahead": 8,
+ "calibration_docs": 1024,
+ "theta": 0.19499999284744263,
+ "theta_end": 0.13500000536441803,
+ "calibration": {
+  "exact": 0.6400966183574879,
+  "present_refused": 0.34057971014492755,
+  "present_wrong": 0.01932367149758457,
+  "absent_answered": 0.0,
+  "n_present": 828,
+  "n_absent": 196
+ },
+ "test_simulated": {
+  "exact": 0.6259168704156479,
+  "present_refused": 0.3410757946210269,
+  "present_wrong": 0.0330073349633252,
+  "absent_answered": 0.019417475728155338,
+  "n_present": 818,
+  "n_absent": 206
+ },
+ "test_cells": {
+  "seen/train": {
+   "exact": 0.6563876651982379,
+   "present_refused": 0.2907488986784141,
+   "present_wrong": 0.05286343612334804,
+   "absent_answered": 0.02040816326530612,
+   "n_present": 227,
+   "n_absent": 49
+  },
+  "seen/held": {
+   "exact": 0.6869158878504673,
+   "present_refused": 0.2803738317757009,
+   "present_wrong": 0.03271028037383178,
+   "absent_answered": 0.018867924528301886,
+   "n_present": 214,
+   "n_absent": 53
+  },
+  "unseen/train": {
+   "exact": 0.6041666666666666,
+   "present_refused": 0.3802083333333333,
+   "present_wrong": 0.015625000000000056,
+   "absent_answered": 0.01818181818181818,
+   "n_present": 192,
+   "n_absent": 55
+  },
+  "unseen/held": {
+   "exact": 0.5405405405405406,
+   "present_refused": 0.43243243243243246,
+   "present_wrong": 0.027027027027026973,
+   "absent_answered": 0.02040816326530612,
+   "n_present": 185,
+   "n_absent": 49
+  }
+ },
+ "test_model": {
+  "exact": 0.6259168704156479,
+  "present_refused": 0.3410757946210269,
+  "present_wrong": 0.0330073349633252,
+  "absent_answered": 0.019417475728155338
+ },
+ "wall_s": 221.9
+}

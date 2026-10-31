@@ -1,0 +1,23 @@
+[0031] Step 2 begins: the review's changes in the map, the rescan's crossings, and the baselines (nothing moved)
+
+The map (docs/0031_move_map.md, its JSON) takes the review:
+- builders Apache in validation/;
+- cubbyllm/ offline (the fetching to cubby_serve/sources/, a fetch callable handed in; sources,
+  web_source, news_archive, news_source split along that line);
+- vault -> cubbyllm/speech/;
+- lexicon -> cubbyllm/affect/word_affect.py;
+- grilly only through a new cubbyllm/ops/grilly_seats.py.
+The rescan (function-level imports, validation/ scripts, sys.path edits, grilly, network) adds:
+emitted_plan, load_grilly, emitter_data's prompt format, train_base.build_model, make_fact_shard's
+address, books_bulk_read, the serve stack's fact pool and word table; 21 sys.path edits; question 8
+(the serve stack loads mowm's encoder by path).
+
+Baselines, before the first git mv:
+- validation/logs/0031_baseline_tests_2026-10-22.json: 1,189 passed, 6 skipped, red only
+  tests/test_guards.py, per file (validation/test_counts.py).
+- validation/logs/0031_stack_before_2026-10-22.json: the real stack on 20 fixed questions and 13 board
+  routes in both audiences, recorded on two boots and identical (validation/stack_answers.py
+  --compare). The full recordings stay local: the audit view carries internal names.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

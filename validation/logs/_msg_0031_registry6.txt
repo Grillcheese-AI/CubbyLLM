@@ -1,0 +1,7 @@
+[0031] slice 6: the plugins' moves in tools/moves_0031.json
+
+The registry move_slice reads so later slices rewrite imports of earlier ones; the slice's move
+commit (5e30232) left it out.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

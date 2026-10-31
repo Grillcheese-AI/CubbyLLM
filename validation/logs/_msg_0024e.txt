@@ -1,0 +1,9 @@
+[0024] Global Issues by topic: 38 current topic feeds, each item labelled with its feeds' topics
+
+The 53 topic feeds (/news/topic/<id>/feed, Atom) from Nick's list: the 38 whose newest item is from 2026 are
+polled every 6 hours; the 15 dormant since 2011-2017 are skipped. A row carries its feed's topic, and
+news_archive.topics() gives each item (by link) the topics of every feed that carried it. Manifest: 72 feeds,
+66 active. Test added (test_news_archive.py, 10).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

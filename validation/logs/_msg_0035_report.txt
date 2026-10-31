@@ -1,0 +1,8 @@
+[0035] Report for A and B; status review (C waits on its shard's shape)
+
+A: 0034's questions all routed (1,800 of 1,800 per view), 0 wrong. B: the copy's gate stays shut on village
+documents (run 5's own included); in the far facts' shape it would give things 0.73 and names 0.36 with no training.
+C as written cannot move which token the read points at: two questions in the report.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

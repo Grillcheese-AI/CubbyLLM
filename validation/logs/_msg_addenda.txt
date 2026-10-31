@@ -1,0 +1,10 @@
+[0010][0019][0020] Addenda: MELD, ESConv and ExTES
+
+Nick named three emotion and emotional-support sets. MELD (Friends, 13,708 utterances, human
+labels) and ESConv (1,053 human conversations, self-reported intensity before and after) become
+human tests for the affect readers (0019) and the conversation tracker (0020); ESConv's supporter
+turns become a candidate supportive family for the talk adapter (0010), non-commercial licence,
+with a crisis route required before serving. ExTES is model-written: not used.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

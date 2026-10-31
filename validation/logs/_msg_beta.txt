@@ -1,0 +1,28 @@
+[0001] The copy's read-aware gate (copy_beta): lam also sees how well the read matches -- the order's gate, from h alone, cannot tell an empty address and loses the later pieces to the trunk's EOS
+
+Measured on the toy (validation/exp_k10_far_facts.py, dense 5-piece names, L4, V 1,024, 300
+steps, seed 0; logs exp_k10_far_facts_diag_pieces5_ring_s0_2026-10-21.{json,log}): with the
+ring and the gate of Addendum 3 (lam = sigmoid(g . rms(h) + b)) exact goes 0.673 (step 0) ->
+0.507 (100) -> 0.605 (299). The gate learns HERE (lam 0.998) but parts a real next piece (0.74)
+from an empty address -- the last piece asks for the one after it -- only weakly (0.56): h does
+not see the read. The missed later pieces are the trunk's EOS (162 of 237 at step 299; 308 of
+359 at step 100). The 450M has the same layout (the last piece asks before the newline).
+
+cubbyllm/model/spatial_copy.py: SpatialCopy(beta=...) / meta["spatial"]["copy_beta"] (absent =
+the gate from h alone, as before): lam = sigmoid(g . rms(h) + b + exp(tau) (m - beta)), m the best
+candidate's cosine, beta a learned threshold started between the present and the absent reads'
+best cosines -- the pointer-sentinel's point (the gate is decided with the pointer's scores),
+compared by the best match rather than a softmax sum, so many weak crosstalk candidates do not
+add up to one strong one. At init on the toy: lam 0.31 where a piece is, 0.054 where none is.
+Also: the ring's scores masked after the temperature, not before (tau's gradient was 0 * inf =
+NaN -- caught by test_the_gate_and_the_temperature_get_gradient).
+SpatialLink(copy_beta=), train_base: spatial_link passes it, CB_SPATIAL_COPY_BETA into the meta.
+exp_k10_far_facts: --copy-beta <cos>|auto (auto: the midpoint of the medians, at init, over the
+copy's candidates); eval logs lam by asker (HERE / a piece / the last piece), tau, and what a
+missed later piece became (EOS / a written token / other).
+Tests: the read-aware gate opens where the address holds something, not where it holds nothing
+(both modes); decode = forward with it; the meta key. Full suite: 406 passed, 5 skipped, 1
+failed (the known wiring guard, 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

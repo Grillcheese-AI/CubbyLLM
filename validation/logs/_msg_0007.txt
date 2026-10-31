@@ -1,0 +1,10 @@
+[0007] Learn on a miss through the loci path: a question the trunk cannot answer triggers one verified lookup, and next time the trunk answers it from the store -- open (Nick)
+
+The ask loop already learns on a miss (Wikidata, then the web with two-site corroboration, the memory
+gate, provenance, a persistent store); the loci path now recalls a fact written once (0.844 on the
+450M with the copy) and its read-aware gate signals an empty address. This order wires them.
+Pre-registered: ask 1 misses on >= 95%, 0 wrong spoken; ask 2 (new process) 0 source calls, the
+loci answer equals the store on >= 0.80, every mismatch refused.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

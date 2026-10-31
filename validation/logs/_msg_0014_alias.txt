@@ -1,0 +1,16 @@
+[0014] The hdc world answers a hop asked by an entity's alias; exp_hdc_bench (lookup cost, 200 one-hop, 50 time-sensitive)
+
+- hdc_store.HdcWorld.hop: the set writes every entity by one of its aliases ("rurtania"); a tail that names it so is
+  accepted as the tail with the entity's label (the facts come back by alias already; `accepts` compared the alias
+  with the label's subject and refused every one).
+- validation/exp_hdc_bench.py: the set's own questions (its templates, all 278 properties, three tenses) through the
+  ask loop with the world mounted, no model, no network; one-hop only (the prompt names the row's own subject and
+  asks its own property: the set's "instance of the architect of X" prompts nest a second hop, and a one-hop plan
+  over them let the paraphrase tier take X's own "instance of" -- a wrong answer from the index's Jaccard tolerance,
+  found on the smoke run); 50 present-tense questions on time-sensitive properties; p50/p95 lookup, RSS.
+- Smoke on the partial world (labels 38%): lookup p95 0.35 ms, 0.9 GB mounted; time-sensitive said flat 0/10.
+
+Tests: test_hdc_store.py (the alias case added), 4 passed.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

@@ -1,0 +1,48 @@
+[0030] Repo hygiene: the red tests made true, local paths out of committed files, emitter.py and serve_api.py split
+
+Red tests: all 25 failures and the import error came from one rewrite of build_chat_sft.py (b647ebc), which
+dropped the v6 builder's GOEMOTIONS*, MULTI_PROMPT, history_ok and affect_ok. Live code still imported them
+(goemotions_cube, eval_emitter_vm, the feel notebook, test_chat). They are back word for word in
+standin/data/chat_sft_v6.py, re-exported. The 23 tests of removed builder steps are archived in
+docs/archive/; 3 new tests cover the current builder.
+pytest tests standin/tests: 1,185 passed, 1 failed (0002's wiring test, as CLAUDE.md says); before:
+26 failed, 1 file not collected.
+
+Local paths: 13,052 in 350 committed text files -> 0. tools/scrub_local_paths.py rewrote each to a name
+($CUBBY_MODELS, $CUBBY_DATASETS, $CUBBY_DRIVE, ...); in code the path is wrapped in
+cubbyllm.local_paths.expand, which resolves it from the environment, then the git-ignored
+paths.local.json, so defaults keep resolving. tests/test_local_paths.py (13 tests, 4 s) fails on five
+planted forms and passes six ordinary strings.
+
+Splits (no behaviour change):
+- emitter.py 750 -> 37 (a facade): emitter_base 213, emitter_llama 125, emitter_450m 230, emitter_talk 208.
+- serve_api.py 567 -> 130: serve_events 57, serve_get 168, serve_post 86, serve_cli 211.
+Checked by the full suite, the talk plugin on the 450M (same digests and replies;
+plugins_talk_e2e_split_2026-10-22.json), and the real stack booted through serve_cli (every route;
+/ask -> Paris, verified).
+
+Files already over 300 lines touched here: their paths named, and at most the five-line import of
+cubbyllm.local_paths added, no other change:
+  cubbyllm/model/backbone/hybrid.py (517)
+  cubbyllm/training/data.py (350)
+  standin/data/build_emitter_sft.py (477)
+  standin/data/build_program_first.py (1005)
+  standin/data/convert_books.py (302)
+  standin/data/gap_families.py (1228)
+  standin/pacman.py (771)
+  tools/brain_render.py (331)
+  validation/cube_vs_va.py (302)
+  validation/exp_a7_learning_gate.py (492)
+  validation/exp_b5_grilly_3way.py (305)
+  validation/exp_f2m2_semantic_routing.py (2087)
+  validation/exp_he19_cvl.py (652)
+  validation/exp_m3_cot_pipeline.py (1549)
+  validation/exp_m3_domain_routing.py (433)
+  validation/exp_m3_temporal_causal.py (483)
+  validation/exp_r18_hdc_rephrased.py (353)
+  validation/exp_v9_es.py (425)
+  validation/make_fact_shard.py (304)
+  validation/train_colab.py (598)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

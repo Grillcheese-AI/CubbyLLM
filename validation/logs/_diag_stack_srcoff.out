@@ -1,0 +1,21 @@
+flags {'CB_SOURCE_OVER_SNAPSHOT': '0', 'CB_NAMESAKE_RELATION': None}
+### What is the capital of France? {"answer": "Paris", "verified": true, "reason": null, "tier": "as_of", "reply": "As of 2019, Paris. If you meant something else, there is also a constituency of the european parliament named France. Want to know about it?", "trace": ["Paris is the capital of France"], "refused": null, "plan": ["capital"], "seed": "France", "over_snapshot": null, "snapshot_stood": null, "namesakes": {"rule": "one fits", "item": "Q142", "others": [{"item": "Q5478259", "label": "France", "kind": "constituency of the european parliament"}], "kinds": {"Q142": [["member state of the european union", "member states of the council of europe", "member states of the united nations", "permanent members of the united nations security council", "sovereign state"], "recorded"], "Q49644": [[], "none"], "Q5478259": [["constituency of the european parliament"], "recorded"]}, "cues": [], "also": "If you meant something else, there is also a constituency of the european parliament named France. Want to know about it?"}, "aliased": [], "entities": [], "candidates": null, "learned": []}
+    Where was Ada Lovelace born? -> London None
+    Who wrote Pride and Prejudice? -> Jane Austen None
+    When was the Eiffel Tower built? -> None no_plan
+### What is the capital of Canada? {"answer": "Ottawa", "verified": true, "reason": null, "tier": "as_of", "reply": "As of 2019, Ottawa.", "trace": ["Ottawa is the capital of Canada"], "refused": null, "plan": ["capital"], "seed": "Canada", "over_snapshot": null, "snapshot_stood": null, "namesakes": {"rule": "one fits", "item": "Q16", "others": [], "kinds": {"Q16": [["commonwealth realm", "dominion of the british empire", "member states of the united nations", "sovereign state"], "recorded"], "Q1031917": [[], "none"], "Q5029289": [["business", "musical group", "railway company", "record label", "television station", "video game developer"], "read"], "Q13265795": [["book", "play", "song"], "read"]}, "cues": []}, "aliased": [], "entities": [], "candidates": null, "learned": []}
+    Who is the father of Queen Elizabeth II? -> None retrieval_exhausted
+    What is the population of Toronto? -> None no_plan
+    Who painted the Mona Lisa? -> Leonardo da Vinci None
+    Where is the Globe Theatre? -> None no_plan
+    What language is spoken in Brazil? -> None ambiguous_hop
+    Who discovered penicillin? -> Alexander Fleming None
+    What is the currency of Japan? -> Japanese yen. If you meant something else, there is also a manga named Japan (2 of them). Want to know about one of them? None
+### Quelle est la capitale de l'Italie ? {"answer": "Florence", "verified": true, "reason": null, "tier": null, "reply": null, "trace": ["Florence is the capital of Italie"], "refused": null, "plan": ["capital"], "seed": "Italie", "over_snapshot": null, "snapshot_stood": null, "namesakes": null, "aliased": [], "entities": ["Italie"], "candidates": null, "learned": [["Florence is the capital of Italie", "accepted"], ["247 is the maritime identification digits of Italie", "accepted"]]}
+    Qui a écrit Les Misérables ? -> Victor Hugo None
+    What river flows through Cairo? -> Nile. If you meant something else, there is also an operating system named Cairo and a village in the united states named Cairo. Want to know about one of them? None
+    Who was the first president of the United States? -> None entity_unresolved
+    How tall is Mount Everest? -> None retrieval_exhausted
+    What is the speed of light? -> None no_plan
+    Who is the mayor of Montreal? -> None no_plan
+### What year did World War II end? {"answer": "1945-09-02", "verified": true, "reason": null, "tier": null, "reply": null, "trace": ["1945-09-02 is the end time of World War II"], "refused": null, "plan": ["end time"], "seed": "World War II", "over_snapshot": null, "snapshot_stood": null, "namesakes": null, "aliased": [], "entities": ["World War II"], "candidates": null, "learned": [["1945-09-02 is the end time of World War II", "accepted"], ["1939-09-01 is the start time of World War II", "accepted"], ["timeline of World War II is the history of topic of World War II", "accepted"], ["newest history is the time period of World War II", "accepted"], ["late modern period is the time period of World War II", "accepted"]]}

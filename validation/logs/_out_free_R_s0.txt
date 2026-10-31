@@ -1,0 +1,36 @@
+env: 2026-10-21 22:32 python 3.12.10 torch 2.4.1+cpu numpy 2.5.1 Intel64 Family 6 Model 151 Stepping 5, GenuineIntel (CPU, 2 threads)
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+--- R: 9.53M params, meta {'kind': 'cubby_base', 'D': 256, 'L': 8, 'heads': 4, 'window': 64, 'attn_every': 2, 'ctx': 32, 'slots': 8, 'gen_basis': 16, 'gen_rank': 8, 'vocab': 8192, 'vocab_real': 8192, 'mem_every': 0, 'tied': False, 'causal_ctx': True, 'spatial': {'scale': 2.0, 'seed': 0, 'at': 4, 'bind': 'writes', 'copy': 'ring', 'copy_beta': 0.0, 'key': 'text', 'pointer_window': 16}}, 7676 entities (1535 never in training), 1024 held-out documents
+  copy ring: tau 2.418 (writer gap 0.178), read-aware gate beta 0.194 (present 0.283 / absent 0.104); text keys |cos| at init: mean 0.050 p90 0.102 p99 0.161 max 0.297, 89.2% below 0.1
+  step     0  loss 10.106 (lm 9.108, route 0.998)  exact 0.021  seen/train 0.013  seen/held 0.009  unseen/train 0.016  unseen/held 0.049  absent not NONE 1.000  refused 0.000  language 9.116  lam here 0.043 empty 0.043  [75s]
+  step   100  loss 4.172 (lm 3.180, route 0.992)  exact 0.018  seen/train 0.018  seen/held 0.009  unseen/train 0.016  unseen/held 0.032  absent not NONE 0.908  refused 0.054  language 2.738  lam here 0.810 empty 0.652  [465s]
+  step   200  loss 3.933 (lm 2.932, route 1.001)  exact 0.004  seen/train 0.004  seen/held 0.000  unseen/train 0.005  unseen/held 0.005  absent not NONE 0.136  refused 0.875  language 2.508  lam here 0.662 empty 0.478  [859s]
+  step   300  loss 3.841 (lm 2.834, route 1.007)  exact 0.000  seen/train 0.000  seen/held 0.000  unseen/train 0.000  unseen/held 0.000  absent not NONE 0.058  refused 0.944  language 2.470  lam here 0.694 empty 0.489  [1244s]
+  step   400  loss 3.776 (lm 2.788, route 0.988)  exact 0.001  seen/train 0.004  seen/held 0.000  unseen/train 0.000  unseen/held 0.000  absent not NONE 0.029  refused 0.961  language 2.420  lam here 0.691 empty 0.477  [1633s]
+  step   500  loss 3.760 (lm 2.767, route 0.993)  exact 0.004  seen/train 0.000  seen/held 0.000  unseen/train 0.005  unseen/held 0.011  absent not NONE 0.102  refused 0.889  language 2.378  lam here 0.751 empty 0.516  [2019s]
+  step   600  loss 3.709 (lm 2.712, route 0.998)  exact 0.006  seen/train 0.004  seen/held 0.005  unseen/train 0.010  unseen/held 0.005  absent not NONE 0.131  refused 0.886  language 2.339  lam here 0.739 empty 0.499  [2416s]
+  step   700  loss 3.639 (lm 2.649, route 0.990)  exact 0.004  seen/train 0.004  seen/held 0.005  unseen/train 0.005  unseen/held 0.000  absent not NONE 0.092  refused 0.935  language 2.313  lam here 0.725 empty 0.486  [2819s]
+  step   800  loss 3.676 (lm 2.676, route 1.000)  exact 0.001  seen/train 0.004  seen/held 0.000  unseen/train 0.000  unseen/held 0.000  absent not NONE 0.034  refused 0.977  language 2.293  lam here 0.726 empty 0.486  [3242s]
+  step   900  loss 3.616 (lm 2.623, route 0.993)  exact 0.005  seen/train 0.009  seen/held 0.000  unseen/train 0.010  unseen/held 0.000  absent not NONE 0.073  refused 0.940  language 2.276  lam here 0.759 empty 0.511  [3645s]
+  step   999  loss 3.672 (lm 2.672, route 1.001)  exact 0.006  seen/train 0.013  seen/held 0.000  unseen/train 0.010  unseen/held 0.000  absent not NONE 0.107  refused 0.903  language 2.266  lam here 0.753 empty 0.499  [4043s]
+  text keys |cos| at the end: mean 0.050 p90 0.102 p99 0.161 max 0.293, 89.2% below 0.1
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_k10_free_text_R_s0_2026-10-21.json

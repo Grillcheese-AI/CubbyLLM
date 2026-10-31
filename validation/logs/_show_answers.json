@@ -1,0 +1,62 @@
+[
+ {
+  "question": "Question: What is the variant of of Spanish Dancer? here\nAnswer:",
+  "gold": "Hexabranchus Sanguineus",
+  "run 3 (no copy)": "Spanish Dancer",
+  "run 3 + copy": "Hexabranchus Sanguineus"
+ },
+ {
+  "question": "Question: What is the timeline event of Fort Peck Dam? here\nAnswer:",
+  "gold": "fortpeckdam highrelease2011",
+  "run 3 (no copy)": "fortpeckdam constructionperiod",
+  "run 3 + copy": "fortpeckdam highrelease2011"
+ },
+ {
+  "question": "Question: What is the caused by of Wash Load? here\nAnswer:",
+  "gold": "Sediment Transportation",
+  "run 3 (no copy)": "Diesel Locomotives",
+  "run 3 + copy": "Sediment Transportation"
+ },
+ {
+  "question": "Question: What is the mentioned by of Agrippa D Aubigne? here\nAnswer:",
+  "gold": "Romantics",
+  "run 3 (no copy)": "Jean Bodin",
+  "run 3 + copy": "Romantics"
+ },
+ {
+  "question": "Question: What is the instance of of Eugenie Archipelago? here\nAnswer:",
+  "gold": "Archipelago",
+  "run 3 (no copy)": "Elasmobranchii",
+  "run 3 + copy": "Archipelago"
+ },
+ {
+  "question": "Question: What is the also known as of Bicon Lal Pandey? here\nAnswer:",
+  "gold": "Lakshmi Narayan Thakur",
+  "run 3 (no copy)": "Bhojpuri",
+  "run 3 + copy": "Lakshmi Narayan"
+ },
+ {
+  "question": "Question: What is the timeline event of Major League Gaming? here\nAnswer:",
+  "gold": "majorleaguegaming acquisitionbyactivisionblizzard",
+  "run 3 (no copy)": "majorleaguegaming firstmajorleague",
+  "run 3 + copy": "majorleaguegaming acquisitionbyactivisionbl"
+ },
+ {
+  "question": "Question: What is the timeline event of Rocket? here\nAnswer:",
+  "gold": "rocket useinchina13thcentury",
+  "run 3 (no copy)": "rocket firstflight",
+  "run 3 + copy": "rocket useinchina13thcentury"
+ },
+ {
+  "question": "Question: What is the rival of of Sydney Roosters? here\nAnswer:",
+  "gold": "St George Dragons",
+  "run 3 (no copy)": "Sydney Roosters",
+  "run 3 + copy": "St George Dragons"
+ },
+ {
+  "question": "Question: What is the timeline event of Caresse Crosby? here\nAnswer:",
+  "gold": "caressecrosby blacksunpressfounded",
+  "run 3 (no copy)": "chesiescoofcrs Crosby birth",
+  "run 3 + copy": "chesiescrosby blacksunpressfounded"
+ }
+]

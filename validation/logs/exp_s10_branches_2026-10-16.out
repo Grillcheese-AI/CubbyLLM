@@ -1,0 +1,64 @@
+hdc: 10,000 rows, 3,999 chains ({'row:chain_broken': 679, 'row:unparsed_fact': 322}), 1500 questions, 896 planted; trusted 6,944 facts, walk world 7,840 | 3s
+  100/1500: habit {'correct': 50, 'wrong': 47, 'refused': 3} | ask {'refused': 78, 'correct': 22} | conditional {'correct': 84, 'refused': 16} | walk 8 ms
+  200/1500: habit {'correct': 97, 'wrong': 99, 'refused': 4} | ask {'refused': 155, 'correct': 45} | conditional {'correct': 165, 'refused': 35} | walk 7 ms
+  300/1500: habit {'correct': 147, 'wrong': 148, 'refused': 5} | ask {'refused': 237, 'correct': 63} | conditional {'correct': 251, 'refused': 49} | walk 7 ms
+  400/1500: habit {'correct': 199, 'wrong': 196, 'refused': 5} | ask {'refused': 317, 'correct': 83} | conditional {'correct': 332, 'refused': 67, 'wrong': 1} | walk 7 ms
+  500/1500: habit {'correct': 243, 'wrong': 249, 'refused': 8} | ask {'refused': 401, 'correct': 99} | conditional {'correct': 413, 'refused': 86, 'wrong': 1} | walk 7 ms
+  600/1500: habit {'correct': 287, 'wrong': 305, 'refused': 8} | ask {'refused': 483, 'correct': 117} | conditional {'correct': 497, 'refused': 101, 'wrong': 2} | walk 7 ms
+  700/1500: habit {'correct': 328, 'wrong': 363, 'refused': 9} | ask {'refused': 572, 'correct': 128} | conditional {'correct': 570, 'refused': 128, 'wrong': 2} | walk 7 ms
+  800/1500: habit {'correct': 365, 'wrong': 424, 'refused': 11} | ask {'refused': 657, 'correct': 143} | conditional {'correct': 647, 'refused': 147, 'wrong': 6} | walk 7 ms
+  900/1500: habit {'correct': 424, 'wrong': 465, 'refused': 11} | ask {'refused': 732, 'correct': 168} | conditional {'correct': 733, 'refused': 161, 'wrong': 6} | walk 7 ms
+  1000/1500: habit {'correct': 472, 'wrong': 516, 'refused': 12} | ask {'refused': 818, 'correct': 182} | conditional {'correct': 813, 'refused': 181, 'wrong': 6} | walk 7 ms
+  1100/1500: habit {'correct': 517, 'wrong': 568, 'refused': 15} | ask {'refused': 895, 'correct': 205} | conditional {'correct': 890, 'refused': 204, 'wrong': 6} | walk 7 ms
+  1200/1500: habit {'correct': 568, 'wrong': 614, 'refused': 18} | ask {'refused': 972, 'correct': 228} | conditional {'correct': 970, 'refused': 224, 'wrong': 6} | walk 7 ms
+  1300/1500: habit {'correct': 611, 'wrong': 669, 'refused': 20} | ask {'refused': 1059, 'correct': 241} | conditional {'correct': 1052, 'refused': 240, 'wrong': 8} | walk 7 ms
+  1400/1500: habit {'correct': 657, 'wrong': 721, 'refused': 22} | ask {'refused': 1140, 'correct': 260} | conditional {'correct': 1129, 'refused': 262, 'wrong': 9} | walk 7 ms
+  1500/1500: habit {'correct': 698, 'wrong': 777, 'refused': 25} | ask {'refused': 1229, 'correct': 271} | conditional {'correct': 1211, 'refused': 280, 'wrong': 9} | walk 7 ms
+{
+ "policies": {
+  "habit": {
+   "correct": 0.465,
+   "wrong": 0.518,
+   "refused": 0.017,
+   "n": 1500
+  },
+  "ask": {
+   "refused": 0.819,
+   "correct": 0.181,
+   "n": 1500
+  },
+  "conditional": {
+   "correct": 0.807,
+   "refused": 0.187,
+   "wrong": 0.006,
+   "n": 1500
+  }
+ },
+ "value": {
+  "habit": -0.053,
+  "ask": 0.181,
+  "conditional": 0.801
+ },
+ "kill_line_0_wrong": {
+  "habit": false,
+  "ask": true,
+  "conditional": false
+ },
+ "branches_per_fork": 4.69,
+ "planted": {
+  "planted branch impossible": 656,
+  "planted branch not caught": 177
+ },
+ "refusals": {
+  "walk refused: vm_verify_failed": 8,
+  "fork:none finished": 11,
+  "walk refused: retrieval_exhausted": 6
+ },
+ "ms": {
+  "walk_mean": 6.84,
+  "walk_p99": 25.74,
+  "oracle_per_fork_mean": 65.43
+ },
+ "vm": "cubelang"
+}
+log: C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_s10_branches_2026-10-16.json

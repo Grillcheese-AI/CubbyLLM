@@ -1,0 +1,24 @@
+[0033] The shim counter: 338 in-repo imports of shimmed standin/ names, 1 in a notebook
+
+0031's review, answer 7: the shims go when a test counting in-repo imports of shimmed names reads 0 and the Colab
+notebooks are updated (target: 0032's report).
+
+tools/shim_count.py:
+- A shim is a module under standin/ that says it moved (_NEW = "...") -- 116 of them.
+- Its names are flat (standin/ or standin/data/ on sys.path) and dotted (standin.x); a package's include its
+  submodules.
+- It counts every absolute import of them in .py files (lazy ones too) and in notebooks' code cells.
+- It leaves out a flat name another folder's module also owns, and relative imports.
+- --by file|name reports them.
+
+Today: 338 in code (ask 37, sources 29, wikikg 28, neurochem 23, worlds 16, ...), 1 in a notebook; mostly
+tests/ and validation/.
+
+tests/test_shim_count.py:
+- prints the count by name;
+- fails only if it grows past CEILING (338 / 1; lower it as it falls);
+- a planted shim and two imports of it (flat and dotted, one lazy) are found, and imports of the new home
+  and relative ones are not.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

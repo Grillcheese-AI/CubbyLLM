@@ -1,0 +1,20 @@
+[0046] R0 and R1 measured; review before R2
+
+R0 (validation/logs/retrieval_R0_2026-10-28.json): today's ask loop, no model in the programs
+seat, on 2,650 dev questions (EN 2,100, FR 550). Reading stops 86%; no candidate 223; several 52.
+Every spoken answer read by hand: 68 spoken, 62 right, 6 wrong -- 5 because the everyday table's
+restatement drops a leading "The" ("The Last Dragon" -> "Last Dragon") and the source then resolves
+another item labelled exactly that; 1 a hospital for "which city". Not fixed here (0046 changes
+nothing on the serving path). The local Wikipedia text keeps no links or redirects. The dump line
+(decision 4's recommended one, written before counting): 17 of 312 seed-miss mentions absent from
+every local store, 5.5% against 20%: under the line.
+
+R1 (retrieval_R1_dev/test_2026-10-28.json): the local name index against Wikidata's search,
+recall@20 on test: Mintaka EN 0.864 local vs 0.862 API; Mintaka FR 0.738 vs 0.971; above the API
+on WebQSP_EL, GraphQ_EL, ShadowLink; below on AmbER, QALD, SimpleQuestions, CronQuestions. The gate
+(0.90 EN, 0.85 FR, above the API everywhere) is not met; the trigram arm adds 33-76 points on typos
+(pass); BM25 adds nothing at @20. The French gap is coverage: 130 of 267 French misses are items
+the index holds under no French name.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

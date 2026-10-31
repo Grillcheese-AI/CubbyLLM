@@ -1,0 +1,16 @@
+[0031] pre-move: the program format the seats and the brain share moves into cubbyllm/emit/format.py
+
+The 450M seats (bound for cubbyllm/emit) read the prompt frame and the decode from
+validation/emitter_data.py, and the brain (bound for cubbyllm/brain.py) reads the ISolver shim, the
+answer function and the role-binding wrap from standin/data/build_emitter_sft.py. Neither may stay a
+dependency of the package, so they move, verbatim, into cubbyllm/emit/format.py: PROMPT_HEAD,
+PROMPT_TAIL, CONTROL_TOKENS, decode_program; ROLE_WRAP (STANDIN_ROLE_WRAP, read where it was),
+SHIM, shim_isolver, answer_fn, wrap_role_prompt. Both old homes re-export them; emitter_450m imports
+the frame from the package. cubbyllm/emit/__init__.py starts the package.
+
+Tests: test_build_emitter_sft, test_build_program_first, test_emitter_450m, test_emitter_decode,
+test_exp_he19_memory, test_import_tinygsm, test_plugins, test_serve, test_guards: 120 passed, 1 failed
+(test_every_module_declares_wiring, the known red of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

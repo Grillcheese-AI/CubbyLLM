@@ -1,0 +1,29 @@
+{
+ "added": 0,
+ "skipped": 5516,
+ "seconds": 62.0,
+ "books": 5291,
+ "paragraphs": 5639095,
+ "names_mentioned": 76740,
+ "mentions": 19536055,
+ "bytes": 7958654976,
+ "world_names": 373393,
+ "mention_names": 357519,
+ "common_words": 12833,
+ "eras": {
+  "": 404,
+  "A Sacred Union of Citizens_ George Washington's Farewelltthew Spalding & Patrick J. Garrity & Daniel J. Boorstin": 1,
+  "A Writer at War_ Vasily Grossman With the Red Armasily Grossman & Antony Beevor & Luba Vinogradova": 1,
+  "Affection and Trust - Harry S. Truman & Dean Aelbracht & David C. Acheson & David Mccullough": 1,
+  "AncientClassical": 3034,
+  "EarlyModern": 1,
+  "Lone Survivor_ The Eyewitness Account of Operation Redwing Heroes of SEAL Team 10 - Marcus Luttrell & Patrick Robinson": 1,
+  "MiddleAges": 1508,
+  "Modern": 1,
+  "Prehistory": 337,
+  "Red Capitalism_ The Fragile Financial Foundation of ChinExtraordinary Rise - Carl E. Walter & Fraser J. T. Howie": 1,
+  "The Mental Floss History of the United States_ The (Almost) Cry of America - Erik Sass & Will Pearson & Mangesh Hattikudur": 1
+ },
+ "roots": 2,
+ "wall_s": 91.2
+}

@@ -1,0 +1,12 @@
+[0034] The act line counted: a world's act log summed to counts that name no cell and no thing
+
+validation/s12_act.py reads the act arm's log (BlockWorld's, private). It counts:
+- plans drawn placeable that were placed on the cell the host computed, where that cell is the one the test
+  expected; a lamp standing on a wrong cell is a defect, not a placement;
+- markers standing anywhere else;
+- plans drawn unplaceable that were refused before an order was sent.
+exp_s12_scene_files adds the counts to its public log. The test pins that a wrong cell counts as neither a
+placement nor a refusal.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

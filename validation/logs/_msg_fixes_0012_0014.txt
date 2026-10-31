@@ -1,0 +1,17 @@
+[0012][0013][0014] Frames join a PDF-broken place and refuse a heading run into one; profile_ask without a head; frames over every book
+
+Found while reading the bulk pass's capitals against the hdc world (labels now complete):
+- book_frames.clean_place: a word the PDF broke at a line end is joined ('Mem-phis', 'The-bes'); a heading in
+  capitals run into a name is no place ('BICULTURAL KINGDOMAlexandria'); a name hyphenated on purpose keeps its
+  capital after the hyphen ('Horn-Bad Meinberg'). The bulk pass applies it to the reads it stored before the rule
+  (books_bulk_read.PLACES): 3,279 -> 3,263 facts after re-aggregating (298 corroborated, 1,932 attributed, 1,033 held).
+- ask.profile_ask: an entity ending in 'of' passed the padded ' of ' test and found no head -- an IndexError that
+  stopped exp_hdc_bench on its first time-sensitive question. No head: not a profile (test_ask).
+- time_rule: hdc's own labels for the time-sensitive properties (chairman, position holder, league or
+  competition, parent organization or unit).
+- exp_books_bench --frames-bulk <worlds>: 0012's frames line measured on everything frames read in every book
+  (0013's bulk worlds, after the same-name guard), against the wiki world's values and the hdc world's capitals,
+  parts and locations -- the ranked-passage sample found 79 comparable triples, short of the 200 the line needs.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

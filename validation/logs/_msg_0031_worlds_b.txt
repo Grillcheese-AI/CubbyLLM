@@ -1,0 +1,19 @@
+[0031] slice 1, worlds: the old names as shims; cubbyllm.worlds re-exports its base; tests find helpers wherever they live
+
+- standin/<name>.py for each of the 21 moved modules: importing it gives the moved module itself
+  (sys.modules), with a DeprecationWarning; running it runs the new home (runpy). Old flat imports,
+  private names and monkeypatches keep working for one cycle.
+- cubbyllm/worlds/__init__.py re-exports FactStore, Worlds, Knows, CubbyPlugin, route_world.
+- tests/conftest.py puts every plain test folder (and standin/tests while it exists) on the path, so a
+  test that imports a helper from another test file (from test_ask import FakeEmitter) finds it as
+  the files move.
+- validation/test_counts.py --compare keys renamed test files by path (it did not match them before).
+
+Measured against the baseline (validation/logs/0031_baseline_tests_2026-10-22.json): every test
+file has the same counts, the 15 moved ones under their new names, except
+standin/tests/test_web_source.py::test_brave_keeps_under_the_plan_s_rate, a timing test that
+already flakes on Windows' 15.6 ms clock: 5/20 failed before this slice, 3/20 after (run alone,
+20 times each). 1,188 passed + that one, 6 skipped; red otherwise only 0002's wiring test.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

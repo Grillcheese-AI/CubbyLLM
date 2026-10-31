@@ -1,0 +1,4 @@
+[0034] in progress: villages in BlockWorld (the scene files and the runner here; the exporter and the act arm in the private repo)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

@@ -1,0 +1,13 @@
+[0001] Addendum 3: B1 becomes a pointer over a fixed ring of the last 256 written ids (Nick's call), mixed at ASK tokens with an open gate; B4 dropped; the ladder narrowed; 3 seeds on the deciding arms
+
+A0 (f3033a9) put the answer in the read: 0.758 per piece over 128k (the random-code ceiling is
+0.765, so B4's identity codes cannot help), 0.992 per piece / 0.965 whole answers among the
+document's writers; the trunk reads 0.021 and has never learned to copy (villages map one closed
+set to another). Nick allowed a fixed-size ring of written ids (decode state stays fixed), so B1
+scores the read against the ring, mixed like pointer-sentinel / pointer-generator / kNN-LM with the
+gate starting at 0.1 (kNN-Adapter's init as reported). B5 only if the gate stays shut; B8 measured
+offline first. Boesch & Wee's lock-in is bimodal over seeds, so the failing toy arm and the fix run
+3 seeds (2 of 3 pass). RUN 4 continues from run 3 with the copy path: only the gate and tau are new.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

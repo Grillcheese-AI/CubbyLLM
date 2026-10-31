@@ -1,0 +1,67 @@
+{
+ "args": {
+  "steps": 2,
+  "d": 256,
+  "batch": 4,
+  "seq": 256,
+  "facts_per_doc": 8,
+  "filler": 120,
+  "lr": 0.002,
+  "gate_bias": null,
+  "seed": 0,
+  "only": [
+   "hypertoken",
+   "control"
+  ],
+  "threads": 2,
+  "out": "validation\\logs\\_k10_smoke.json"
+ },
+ "hypertoken": {
+  "name": "hypertoken",
+  "params": 3360785,
+  "final_answers": 0.001953125,
+  "final_language": 6.971820831298828,
+  "curve": [
+   {
+    "step": 0,
+    "loss": 6.984018325805664,
+    "answers": 0.001953125,
+    "language": 6.977355480194092
+   },
+   {
+    "step": 1,
+    "loss": 6.99868631362915,
+    "answers": 0.001953125,
+    "language": 6.971820831298828
+   }
+  ]
+ },
+ "control": {
+  "name": "text control",
+  "params": 3229200,
+  "final_answers": 0.001953125,
+  "final_language": 6.977715492248535,
+  "curve": [
+   {
+    "step": 0,
+    "loss": 6.989638805389404,
+    "answers": 0.001953125,
+    "language": 6.983536720275879
+   },
+   {
+    "step": 1,
+    "loss": 7.007469177246094,
+    "answers": 0.001953125,
+    "language": 6.977715492248535
+   }
+  ]
+ },
+ "log": [
+  "--- hypertoken: 3.36M params, D=256, window 64, 8 facts/doc, filler 120",
+  "  step     0  loss 6.984  held-out answers 0.00  language 6.977  gate bias -4.00   [6s]",
+  "  step     1  loss 6.999  held-out answers 0.00  language 6.972  gate bias -4.00   [12s]",
+  "--- text control: 3.23M params, D=256, window 64, 8 facts/doc, filler 120",
+  "  step     0  loss 6.990  held-out answers 0.00  language 6.984   [5s]",
+  "  step     1  loss 7.007  held-out answers 0.00  language 6.978   [11s]"
+ ]
+}

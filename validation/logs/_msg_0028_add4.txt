@@ -1,0 +1,33 @@
+[0028] review addition 4: logistic heads on a question encoder route new phrasings; the held-out set once; the talk plugin end to end
+
+Routing. Each plugin now has 30 examples and 30 near-miss not-lines (English and French), written before any
+run. Tuning on the order's in-sample line was the problem: an example finds itself at 1.0, so tau
+drifted to whatever silenced the not-lines and new phrasings stopped waking anything (2-7/30 per
+plugin; plugins_routing_n30_2026-10-22.json). The bench now chooses tau on leave-one-out, not-lines
+included where they are training data.
+Leave one out (120 examples; not-lines <= 10% per plugin):
+- nearest line: overlap 17, fastword 15, MiniLM 20; potion: no tau keeps not-lines <= 10%
+- logistic heads: potion 82, paraphrase-MiniLM-L6-v2 103, 0 cross-wakes
+  (plugins_routing_minilm_logistic_2026-10-22.json)
+Held-out set (Cowork's, counts only, scored once):
+- as committed (fastword nearest, 0.4): woken 35/40, near misses 11/40
+- MiniLM heads (0.675): woken 36/40, near misses 8/40
+- No router meets 1-in-10 near misses on that set (alerts 3/10, talk 4/10).
+
+standin/question_encoder.py: the MiniLM encoder from the HF cache with torch + tokenizers (no
+transformers, nothing downloaded). standin/plugins_route.py: LogisticRouter (Newton L2 logistic,
+matches sklearn's balanced fit to 1e-4) behind CUBBY_PLUGINS_ROUTER=minilm. It fits in a background
+thread from mount (1.4 s for 244 lines), then takes ~5 ms a question. Off (the default) = the
+nearest-line router exactly as before. plugins_load builds its router through make_router.
+ear_lexicon.Lexicon.encode for the potion arm.
+
+The talk plugin on the real 450M (grilly2; validation/plugins_talk_e2e.py; plugins_talk_e2e_2026-10-22.json):
+- the plugin role says exactly what the flag path says (same digest);
+- the other role is unchanged before, during and after;
+- on base450m_cont it is refused before any weight moves.
+plugins/talk/PLUGIN.md pinned base: null before; it now pins base450m's export hash.
+
+Tests: 79 passed (plugins, plugins_serve, plugins_route, persons_list, board, audience, ask).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

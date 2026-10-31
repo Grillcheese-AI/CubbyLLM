@@ -1,0 +1,20 @@
+[0031] network split: the wiki world's Hub download moves to cubby_serve/sources/hub.py
+
+Nick, 2026-10-22: cubbyllm/ stays offline; what fetches is the server's, handed in as a fetch.
+wikikg.ensure_data(cfgs, fetch=None) fetches a missing export file only with the fetch(url, dst) it is
+given; without one, a missing file is a FileNotFoundError that names the command to fetch it. The
+download (the same request, User-Agent and 1 MB streaming loop) is cubby_serve.sources.hub.download,
+and `python -m cubby_serve.sources.hub wikikg [triplets] [paths]` fetches the export deliberately.
+build_serve hands it in for `--wiki auto`.
+
+Unchanged where the export is cached (here: it is; the command reports the cache and fetches
+nothing). Changed where it is not: a validation script, or the ask loop's default world, no longer
+downloads 8 to 189 MB as a side effect; it says how to fetch.
+
+New: cubby_serve/sources/ (BSL), the package's fetchers, one at a time.
+
+Tests: test_wikikg, test_worlds, tests/brain, test_guards: 42 passed, 1 failed (the known red of
+order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

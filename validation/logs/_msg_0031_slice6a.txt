@@ -1,0 +1,19 @@
+[0031] slice 6, plugins: the plugin system from standin/ to cubbyllm/plugins/ (git mv; paths and imports only)
+
+  plugins.py -> __main__.py (python -m cubbyllm.plugins), plugins_check -> check, plugins_guard -> guard,
+  plugins_index -> index, plugins_load -> load, plugins_route -> route, plugins_world -> world,
+  question_encoder -> question_encoder; test_plugins, test_plugins_check, test_plugins_route -> tests/plugins/.
+
+Imports of moved modules become package imports, the sys.path edits go, and __file__ paths keep
+pointing where they did: the plugins folder, the lock (standin/data/out/plugins.lock.json) and the
+plugins' data root. The server's part (plugins_serve) stays in standin/ until the cubby_serve slice.
+load.py (295 lines) and guard.py (288) stay under 300.
+
+Still to do for this package (the network split): guard.Ctx.fetch defaults to the news archive's
+fetcher, which opens a socket; it gets its fetch handed in by the server with the sources' split.
+
+Tests, full suite against the baseline with the moved files mapped: same counts in every file;
+1,189 passed, 6 skipped, 1 failed (test_every_module_declares_wiring, the known red of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

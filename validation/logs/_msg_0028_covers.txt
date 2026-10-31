@@ -1,0 +1,29 @@
+[0028] review 3: the alerts plugin's covers claims a warning's status now, for a place in Canada or none
+
+Review 2's covers claimed any alert word (0.8), or any hazard word next to a time word (0.6). On the fresh held-out
+set the alerts plugin woke on 3 of 10 near misses, and its own covers claimed all 3.
+
+Per review 3, covers now claims a question only when it asks all three of:
+- about a warning, watch, advisory or statement (an alert; their French);
+- about its status now: a yes/no "is there / any / y a-t-il / est-ce qu'il y a ..." question, or now, tonight,
+  today, in effect ...;
+- for a place in Canada: one a gazetteer names (provinces, territories, cities, Quebec's regions) or one the feed's
+  own regions name once read. A question that names no place ("here", "my area") counts too.
+
+These are not its own:
+- what a warning means;
+- how warnings are issued;
+- how many there were (or anything about the past);
+- any place outside Canada;
+- weather in general.
+
+covers still fetches nothing.
+
+Its own PLUGIN.md examples: 30 of 30 claimed, 0 of its "not" examples. The test is now on review 3's rule: "is there
+heavy snow in Ottawa right now?" is weather now, not a warning, so it moved to the declined side. The dead patterns
+(WORDS, ALERT) are removed. The held-out v3 set has not been opened; it is run once next, on this commit.
+
+The plugin's code changed, so its approval in the lock no longer matches: it needs Nick's approve again on the board.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

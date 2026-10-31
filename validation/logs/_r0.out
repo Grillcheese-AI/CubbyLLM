@@ -1,0 +1,129 @@
+{
+ "summary": {
+  "amber/en": {
+   "questions": 300,
+   "stages": {
+    "reading": 210,
+    "no candidate": 54,
+    "spoken: right": 18,
+    "several": 15,
+    "spoken: wrong": 2,
+    "wrong candidate": 1
+   }
+  },
+  "cronquestions/en": {
+   "questions": 300,
+   "stages": {
+    "reading": 280,
+    "no candidate": 18,
+    "several values": 1,
+    "time": 1
+   }
+  },
+  "graphq_el/en": {
+   "questions": 300,
+   "stages": {
+    "reading": 289,
+    "no candidate": 10,
+    "spoken: unscored": 1
+   }
+  },
+  "mintaka/en": {
+   "questions": 300,
+   "stages": {
+    "reading": 262,
+    "no candidate": 26,
+    "several": 6,
+    "relation": 4,
+    "spoken: wrong": 1,
+    "other": 1
+   }
+  },
+  "mintaka/fr": {
+   "questions": 300,
+   "stages": {
+    "reading": 294,
+    "no candidate": 5,
+    "several": 1
+   }
+  },
+  "qald9plus/en": {
+   "questions": 300,
+   "stages": {
+    "reading": 239,
+    "no candidate": 38,
+    "spoken: right": 10,
+    "several": 6,
+    "wrong candidate": 2,
+    "other": 1,
+    "spoken: wrong": 1,
+    "several values": 1,
+    "value missing": 1,
+    "spoken: unscored": 1
+   }
+  },
+  "qald9plus/fr": {
+   "questions": 250,
+   "stages": {
+    "reading": 239,
+    "no candidate": 4,
+    "several": 3,
+    "spoken: right": 2,
+    "spoken: wrong": 1,
+    "wrong candidate": 1
+   }
+  },
+  "simplequestions_wd/en": {
+   "questions": 300,
+   "stages": {
+    "reading": 230,
+    "no candidate": 28,
+    "spoken: right": 19,
+    "several": 17,
+    "several values": 3,
+    "value missing": 2,
+    "spoken: wrong": 1
+   }
+  },
+  "webqsp_el/en": {
+   "questions": 300,
+   "stages": {
+    "reading": 229,
+    "no candidate": 40,
+    "spoken: unscored": 11,
+    "other": 5,
+    "value missing": 4,
+    "several values": 4,
+    "several": 4,
+    "wrong candidate": 2,
+    "relation": 1
+   }
+  }
+ },
+ "dump": {
+  "line": {
+   "share": 0.2,
+   "min_mentions": 1000,
+   "stages": [
+    "no candidate",
+    "several",
+    "wrong candidate"
+   ],
+   "status": "the recommended line of docs/RETRIEVAL.md decision 4, written before counting; Nick's decision is open"
+  },
+  "mentions_in_sample": 3347,
+  "seed_miss_mentions": 312,
+  "absent_among_them": 17,
+  "share": 0.0545,
+  "verdict": "under the line: the misses are not items the local stores lack"
+ },
+ "items": {
+  "distinct": 1975,
+  "held_by": {
+   "wikidata5m": 1805,
+   "dbpedia": 1631,
+   "wikipedia": 29
+  }
+ }
+}
+-> C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\retrieval_R0_2026-10-28.json

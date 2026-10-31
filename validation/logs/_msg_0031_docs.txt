@@ -1,0 +1,17 @@
+[0031] packaging, licences and docs point at the three homes
+
+- pyproject.toml installs cubbyllm and cubby_serve (with cubby_serve/LICENSE as package data); its
+  licence text names both: Apache-2.0 (cubbyllm/) AND BUSL-1.1 (cubby_serve/). standin/ is not installed.
+- README: the run commands (`python -m cubby_serve`, `python -m cubby_serve.build`), the layout (the three
+  homes, each subpackage, the rules the guards pin) and the licensing section (cubbyllm/ and validation/
+  Apache-2.0; cubby_serve/ and standin/ BSL 1.1). The results table keeps the paths it was measured at,
+  as history, like the orders.
+- CLAUDE.md: "Where to look" rows for the new homes; the serve-stack line; the "where code goes" rule
+  points at tests/test_package_rules.py and at tools/moves_0031.json for an older order's standin/ path.
+- PACKAGE_LAYOUT.md: the layout today, above the proposal of 2026-07-23 (kept as written).
+- docs/WORLDS.md: where the worlds' code and the ingest command live.
+
+Tests: test_local_paths, test_package, test_package_rules: 21 passed.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

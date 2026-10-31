@@ -1,0 +1,8 @@
+[0023] Part C, the live as-of: on by default (Nick)
+
+Nick's decision, an exception to the off-by-default rule: a present-tense question on a
+time-sensitive relation fetches the current value (0007's lookup, cached) and says it as of the
+fetch date. A switch turns it off exactly; offline or on a failed fetch the snapshot rule stands.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

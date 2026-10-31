@@ -1,0 +1,12 @@
+[0031] slice 6, plugins: the old names as shims; cubbyllm.plugins declares its wiring
+
+standin/plugins*.py and question_encoder.py are shims for one cycle. cubbyllm/plugins/__init__.py
+says what the package holds and that it is WIRED (the server mounts the loader with --plugins).
+The command is `python -m cubbyllm.plugins` (its help and usage say so); `python standin/plugins.py`
+still runs it.
+
+Tests: tests/plugins, test_plugins_serve, test_board, test_guards: 51 passed, 1 failed
+(test_every_module_declares_wiring, the known red of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

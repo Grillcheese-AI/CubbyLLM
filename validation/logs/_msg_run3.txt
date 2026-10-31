@@ -1,0 +1,17 @@
+Run 3 of the spatial notebook read: villages 0.953 (the binding fix), far facts 0.021 (the read does not yet carry an open-vocabulary token); 40.6% MFU on the G4
+
+spatial_link_3 (G4, 3,418 steps = 0.45B tokens; CB_SPATIAL_BIND=writes, facts_far1k_lead):
+villages 0.953 exact (first token 0.960, route alone 0.748; runs 1-2: 0.793 / 0.776);
+facts_far1k_lead 0.021 exact (first token 0.229, route alone 0.014). diag_fact_read on 24
+held-out documents: first piece 0.250 with the places / 0.233 without; later pieces 0.309 /
+0.300 -- run 2's scrambling (0.096 / 0.213) is gone, the read adds ~0.01-0.02. Text arm not run
+(gate 4 fails on the link's number); the G4 disconnected. Recorded under H-K10 and H-S12, with
+the next step named: a gated copy path from the read to the logits, or the read nearer the head.
+
+Speed (speed_check on the G4, under the profiler): torch 57.1k tok/s, + fused MinGRU 63.7k,
++ fused MinGRU + flex at 99 KB tiles 71.8k (chosen); in the run ~75.0k tok/s, 40.6% MFU (run 2:
+59.6k, 32.2%). validation/logs: the probes, both metrics files (the run was stopped and resumed
+for the speed fixes at steps 149, 344 and 353), speed.json, the profile, the diag.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

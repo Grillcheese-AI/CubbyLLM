@@ -1,0 +1,4 @@
+[0016] The leak scan counts a profile as spoken (sleep's rule) and asks until 200 answers
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

@@ -1,0 +1,21 @@
+[0036] Strict: a shared name is decided by the asker or a qualifier only; a no-break space no longer hides a fact
+
+Cowork's reading of the tier's audit: 21 of 50 right against a pre-registered 49 (29 cannot be told
+from the question), so the tier goes strict as pre-registered. A hop on a shared name now reads nothing
+unless the asker or a qualifier decided, and its holders are noted, so the loop asks which (the holder
+first). CB_NAMESAKE_TIER=1 turns the relation tier back on, for the order that would audit a better
+guard; off by default.
+
+The real stack's 20 (0036_stack_strict_2026-10-23.json): 18 unchanged; France's capital (Q142 first)
+and Japan's currency (Q17 first) now ask back. 0014's bench (exp_hdc_bench_2026-10-23_0036_strict.json):
+one hop 178 of 178 spoken right, 0 wrong; "What is the instance of Terry White?" asks back (two items),
+the other 199 rows as before.
+
+Found on the way: HdcWorld.__contains__ normalized the asked fact's spaces but not the stored one's, so
+a fact with a no-break space ("Washington University in St.<nbsp>Louis is the employer of Juan Rosai")
+was answered but not found held, and its time-sensitive value was said flat (an earlier draw of the
+bench's unseeded time-sensitive block). 145 facts carry one. Both sides are normalized now; the new
+test fails on the old line. Suite: 1,244 passed, 6 skipped, the one red 0002's known guard.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

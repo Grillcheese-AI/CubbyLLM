@@ -1,0 +1,14 @@
+[0031] report: step 2's progress (eight slices moved); the real stack after slice 8 answers the same
+
+The 0031 order's report gains "Step 2: the moves (in progress)": the eight slices and their commits,
+the pre-move fixes, the checks after each slice, what the models measured, what was found on the way
+(loci_reader's two unrouted reasons; a regression of mine, caught and fixed; the data places the
+package still names in standin/data/out; step_loop's validation import), and what is next.
+
+The real stack after slice 8 (d8b4311), booted as the baseline was: the 20 fixed questions give
+byte-identical replies; 11 of 13 board routes are equal, and /board/home and /board/system differ only
+in the order queue (0028 set to review in e7cd011; the board reads docs/orders/).
+validation/logs/0031_stack_after_s8_2026-10-22.json
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

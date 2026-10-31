@@ -1,0 +1,17 @@
+[0031] network split: the web source's transport moves to cubby_serve/sources/http.web
+
+cubbyllm/sources/web.py already took its transport as `http=` (the search backends and WebSource);
+its default was the urllib GET. That GET moves verbatim to cubby_serve.sources.http.web (the web
+source's User-Agent, the page cap, never raising: a site that is down is not an answer), and the
+package's default is _no_http, which raises a RuntimeError saying what to hand in. web.py no longer
+imports urllib.request; the robots parser stays (it parses the bytes it is handed and fetches nothing).
+backend_from_env takes `http` for the backends it builds.
+
+Who hands it in: the server's build_web (backend and source), and validation/exp_r33_web_heldout.
+The tests always handed in their own transport and are unchanged.
+
+Tests: tests/sources, tests/serve, tests/reasoning, test_guards: 359 passed, 1 failed (the known red
+of order 0002). web.py stays over 300 lines (1,021); its split comes later.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

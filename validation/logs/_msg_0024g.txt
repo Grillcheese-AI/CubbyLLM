@@ -1,0 +1,17 @@
+[0024] International feeds and Global Voices (full text, by Nick's decision for this publisher only)
+
+- news_feeds.json: 132 feeds, 128 active. The 38 international feeds Cowork tested (35 new; Guardian, NPR,
+  Al Jazeera now active under Nick's rule), each with region, language and outlet_kind (public / private /
+  state / state-funded / aggregator); AI-agent names read live from each publisher's own site. Times of
+  Israel held: its robots.txt refuses the feed path to every agent. Global Voices: the main feed hourly and
+  the 24 current translation sites daily, licence cc-by-3.0, full_text.
+- standin/news_globalvoices.py (new): the story's plain text (its own paragraphs and translated quotes;
+  no images, captions, embedded posts, iframes, donation boxes, "originally published" line or footer),
+  the writer and translator from the credits, the source story from span.source-link; categories minus the
+  language tag; pairs(rows) = translation and source both archived.
+- news_parse.parse(full=True) keeps content:encoded and categories; the archive reads them only for a
+  full_text feed. news_archive --stats adds items per region and per language.
+- Tests: test_news_globalvoices.py (4); news tests 28 green.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

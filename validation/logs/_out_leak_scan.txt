@@ -1,0 +1,2 @@
+138/359 spoken {'books': 39, 'store': 94, 'lookup': 5}; source names 0, urls 0, 8-word quotes 0, provenance fields 0; audit 138/138; guard changed 0 [53.1s]
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_leak_scan_2026-10-22.json

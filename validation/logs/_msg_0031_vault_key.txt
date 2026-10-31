@@ -1,0 +1,18 @@
+[0031] the vault's key and the place it writes come from the server (the review's answer 4)
+
+cubbyllm/speech/vault.py named standin/data/out/host.key and created it there on first use. It now
+names no place: KEY_FILE is None until the server says where (vault.use_key_file(path)); CB_HOST_KEY
+still wins; asked for a key with neither, it raises a RuntimeError instead of writing a file of its
+own choosing. The serve stack's place, standin/data/out/host.key as before, is cubby_serve/keys.py
+(use_host_key, idempotent), called by the server at boot, the ledger, the harness wiring, and the
+stand-in's two vault users (gap_families, talk_probe). The vault says WIRED now (the server uses it).
+
+Same key, same file, same ciphertexts: nothing re-encrypted. Checked: without CB_HOST_KEY and before
+use_host_key the vault refuses; after it, it reads the existing key file.
+
+Tests: tests/serve (the vault, the ledger, the harness: they set CB_HOST_KEY, as before),
+tests/speech, test_context_graph, standin/tests, test_guards: 265 + 88 passed, 1 failed (the known red
+of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

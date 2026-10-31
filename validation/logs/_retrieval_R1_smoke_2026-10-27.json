@@ -1,0 +1,4432 @@
+{
+ "what": "order 0046 R1: finding",
+ "split": "dev",
+ "date": "2026-10-27",
+ "n": 20,
+ "n_mintaka": 20,
+ "located": {
+  "mintaka/en": {
+   "had_text": 26,
+   "located": 0,
+   "not_located": 0
+  },
+  "mintaka/fr": {
+   "had_text": 0,
+   "located": 17,
+   "not_located": 9
+  },
+  "qald9plus/en": {
+   "had_text": 0,
+   "located": 19,
+   "not_located": 5
+  },
+  "qald9plus/fr": {
+   "had_text": 0,
+   "located": 17,
+   "not_located": 11
+  },
+  "webqsp_el/en": {
+   "had_text": 21,
+   "located": 0,
+   "not_located": 0
+  },
+  "graphq_el/en": {
+   "had_text": 21,
+   "located": 0,
+   "not_located": 0
+  },
+  "simplequestions_wd/en": {
+   "had_text": 0,
+   "located": 20,
+   "not_located": 0
+  },
+  "shadowlink/en": {
+   "had_text": 20,
+   "located": 0,
+   "not_located": 0
+  },
+  "amber/en": {
+   "had_text": 20,
+   "located": 0,
+   "not_located": 0
+  },
+  "cronquestions/en": {
+   "had_text": 0,
+   "located": 25,
+   "not_located": 4
+  }
+ },
+ "summary": {
+  "amber/en": {
+   "mentions": 20,
+   "in_index": 18,
+   "typo": 6,
+   "api": {
+    "@5": 0.9,
+    "@20": 1.0,
+    "@100": 1.0
+   },
+   "api_in_index": {
+    "@5": 1.0,
+    "@20": 1.0,
+    "@100": 1.0
+   },
+   "api_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "exact": {
+    "@5": 0.75,
+    "@20": 0.75,
+    "@100": 0.75
+   },
+   "exact_in_index": {
+    "@5": 0.8333,
+    "@20": 0.8333,
+    "@100": 0.8333
+   },
+   "exact_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "normalized": {
+    "@5": 0.75,
+    "@20": 0.75,
+    "@100": 0.75
+   },
+   "normalized_in_index": {
+    "@5": 0.8333,
+    "@20": 0.8333,
+    "@100": 0.8333
+   },
+   "normalized_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "trigram": {
+    "@5": 0.8,
+    "@20": 0.85,
+    "@100": 0.85
+   },
+   "trigram_in_index": {
+    "@5": 0.8889,
+    "@20": 0.9444,
+    "@100": 0.9444
+   },
+   "trigram_typo": {
+    "@5": 0.6667,
+    "@20": 0.6667,
+    "@100": 0.8333
+   },
+   "bm25": {
+    "@5": 0.8,
+    "@20": 0.85,
+    "@100": 0.85
+   },
+   "bm25_in_index": {
+    "@5": 0.8889,
+    "@20": 0.9444,
+    "@100": 0.9444
+   },
+   "bm25_typo": {
+    "@5": 0.6667,
+    "@20": 0.6667,
+    "@100": 0.8333
+   },
+   "exact_set_size": {
+    "p50": 2,
+    "over_20": 0
+   }
+  },
+  "cronquestions/en": {
+   "mentions": 25,
+   "in_index": 18,
+   "typo": 7,
+   "api": {
+    "@5": 0.96,
+    "@20": 0.96,
+    "@100": 0.96
+   },
+   "api_in_index": {
+    "@5": 1.0,
+    "@20": 1.0,
+    "@100": 1.0
+   },
+   "api_typo": {
+    "@5": 0.1429,
+    "@20": 0.1429,
+    "@100": 0.1429
+   },
+   "exact": {
+    "@5": 0.68,
+    "@20": 0.68,
+    "@100": 0.68
+   },
+   "exact_in_index": {
+    "@5": 0.9444,
+    "@20": 0.9444,
+    "@100": 0.9444
+   },
+   "exact_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "normalized": {
+    "@5": 0.68,
+    "@20": 0.68,
+    "@100": 0.68
+   },
+   "normalized_in_index": {
+    "@5": 0.9444,
+    "@20": 0.9444,
+    "@100": 0.9444
+   },
+   "normalized_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "trigram": {
+    "@5": 0.72,
+    "@20": 0.72,
+    "@100": 0.72
+   },
+   "trigram_in_index": {
+    "@5": 1.0,
+    "@20": 1.0,
+    "@100": 1.0
+   },
+   "trigram_typo": {
+    "@5": 0.4286,
+    "@20": 0.5714,
+    "@100": 0.5714
+   },
+   "bm25": {
+    "@5": 0.72,
+    "@20": 0.72,
+    "@100": 0.72
+   },
+   "bm25_in_index": {
+    "@5": 1.0,
+    "@20": 1.0,
+    "@100": 1.0
+   },
+   "bm25_typo": {
+    "@5": 0.4286,
+    "@20": 0.5714,
+    "@100": 0.5714
+   },
+   "exact_set_size": {
+    "p50": 1,
+    "over_20": 0
+   }
+  },
+  "graphq_el/en": {
+   "mentions": 21,
+   "in_index": 19,
+   "typo": 6,
+   "api": {
+    "@5": 0.5714,
+    "@20": 0.7619,
+    "@100": 0.8095
+   },
+   "api_in_index": {
+    "@5": 0.6316,
+    "@20": 0.7895,
+    "@100": 0.8421
+   },
+   "api_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "exact": {
+    "@5": 0.6667,
+    "@20": 0.7619,
+    "@100": 0.7619
+   },
+   "exact_in_index": {
+    "@5": 0.7368,
+    "@20": 0.8421,
+    "@100": 0.8421
+   },
+   "exact_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "normalized": {
+    "@5": 0.6667,
+    "@20": 0.7619,
+    "@100": 0.7619
+   },
+   "normalized_in_index": {
+    "@5": 0.7368,
+    "@20": 0.8421,
+    "@100": 0.8421
+   },
+   "normalized_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "trigram": {
+    "@5": 0.6667,
+    "@20": 0.8095,
+    "@100": 0.8571
+   },
+   "trigram_in_index": {
+    "@5": 0.7368,
+    "@20": 0.8947,
+    "@100": 0.9474
+   },
+   "trigram_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.3333
+   },
+   "bm25": {
+    "@5": 0.6667,
+    "@20": 0.8095,
+    "@100": 0.8571
+   },
+   "bm25_in_index": {
+    "@5": 0.7368,
+    "@20": 0.8947,
+    "@100": 0.9474
+   },
+   "bm25_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.3333
+   },
+   "exact_set_size": {
+    "p50": 2,
+    "over_20": 1
+   }
+  },
+  "mintaka/en": {
+   "mentions": 26,
+   "in_index": 25,
+   "typo": 1,
+   "api": {
+    "@5": 0.7692,
+    "@20": 0.7692,
+    "@100": 0.7692
+   },
+   "api_in_index": {
+    "@5": 0.76,
+    "@20": 0.76,
+    "@100": 0.76
+   },
+   "api_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "exact": {
+    "@5": 0.5385,
+    "@20": 0.6923,
+    "@100": 0.6923
+   },
+   "exact_in_index": {
+    "@5": 0.56,
+    "@20": 0.72,
+    "@100": 0.72
+   },
+   "exact_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "normalized": {
+    "@5": 0.5385,
+    "@20": 0.6923,
+    "@100": 0.6923
+   },
+   "normalized_in_index": {
+    "@5": 0.56,
+    "@20": 0.72,
+    "@100": 0.72
+   },
+   "normalized_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "trigram": {
+    "@5": 0.6923,
+    "@20": 0.8846,
+    "@100": 0.9615
+   },
+   "trigram_in_index": {
+    "@5": 0.72,
+    "@20": 0.92,
+    "@100": 1.0
+   },
+   "trigram_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 1.0
+   },
+   "bm25": {
+    "@5": 0.6923,
+    "@20": 0.8846,
+    "@100": 0.9615
+   },
+   "bm25_in_index": {
+    "@5": 0.72,
+    "@20": 0.92,
+    "@100": 1.0
+   },
+   "bm25_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 1.0
+   },
+   "exact_set_size": {
+    "p50": 1,
+    "over_20": 0
+   }
+  },
+  "mintaka/fr": {
+   "mentions": 17,
+   "in_index": 16,
+   "typo": 3,
+   "api": {
+    "@5": 1.0,
+    "@20": 1.0,
+    "@100": 1.0
+   },
+   "api_in_index": {
+    "@5": 1.0,
+    "@20": 1.0,
+    "@100": 1.0
+   },
+   "api_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "exact": {
+    "@5": 0.4118,
+    "@20": 0.4706,
+    "@100": 0.4706
+   },
+   "exact_in_index": {
+    "@5": 0.4375,
+    "@20": 0.5,
+    "@100": 0.5
+   },
+   "exact_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "normalized": {
+    "@5": 0.4706,
+    "@20": 0.5294,
+    "@100": 0.5294
+   },
+   "normalized_in_index": {
+    "@5": 0.5,
+    "@20": 0.5625,
+    "@100": 0.5625
+   },
+   "normalized_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "trigram": {
+    "@5": 0.4706,
+    "@20": 0.6471,
+    "@100": 0.7059
+   },
+   "trigram_in_index": {
+    "@5": 0.5,
+    "@20": 0.6875,
+    "@100": 0.75
+   },
+   "trigram_typo": {
+    "@5": 0.3333,
+    "@20": 0.3333,
+    "@100": 0.3333
+   },
+   "bm25": {
+    "@5": 0.4706,
+    "@20": 0.6471,
+    "@100": 0.7059
+   },
+   "bm25_in_index": {
+    "@5": 0.5,
+    "@20": 0.6875,
+    "@100": 0.75
+   },
+   "bm25_typo": {
+    "@5": 0.3333,
+    "@20": 0.3333,
+    "@100": 0.3333
+   },
+   "exact_set_size": {
+    "p50": 1,
+    "over_20": 0
+   }
+  },
+  "qald9plus/en": {
+   "mentions": 19,
+   "in_index": 17,
+   "typo": 2,
+   "api": {
+    "@5": 0.8947,
+    "@20": 0.9474,
+    "@100": 0.9474
+   },
+   "api_in_index": {
+    "@5": 0.9412,
+    "@20": 1.0,
+    "@100": 1.0
+   },
+   "api_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "exact": {
+    "@5": 0.6316,
+    "@20": 0.7895,
+    "@100": 0.8421
+   },
+   "exact_in_index": {
+    "@5": 0.7059,
+    "@20": 0.8824,
+    "@100": 0.9412
+   },
+   "exact_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "normalized": {
+    "@5": 0.6316,
+    "@20": 0.7895,
+    "@100": 0.8421
+   },
+   "normalized_in_index": {
+    "@5": 0.7059,
+    "@20": 0.8824,
+    "@100": 0.9412
+   },
+   "normalized_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "trigram": {
+    "@5": 0.6842,
+    "@20": 0.8421,
+    "@100": 0.8947
+   },
+   "trigram_in_index": {
+    "@5": 0.7647,
+    "@20": 0.9412,
+    "@100": 1.0
+   },
+   "trigram_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.5
+   },
+   "bm25": {
+    "@5": 0.6842,
+    "@20": 0.8421,
+    "@100": 0.8947
+   },
+   "bm25_in_index": {
+    "@5": 0.7647,
+    "@20": 0.9412,
+    "@100": 1.0
+   },
+   "bm25_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.5
+   },
+   "exact_set_size": {
+    "p50": 2,
+    "over_20": 1
+   }
+  },
+  "qald9plus/fr": {
+   "mentions": 17,
+   "in_index": 17,
+   "typo": 0,
+   "api": {
+    "@5": 1.0,
+    "@20": 1.0,
+    "@100": 1.0
+   },
+   "api_in_index": {
+    "@5": 1.0,
+    "@20": 1.0,
+    "@100": 1.0
+   },
+   "api_typo": {
+    "@5": null,
+    "@20": null,
+    "@100": null
+   },
+   "exact": {
+    "@5": 0.4706,
+    "@20": 0.5882,
+    "@100": 0.6471
+   },
+   "exact_in_index": {
+    "@5": 0.4706,
+    "@20": 0.5882,
+    "@100": 0.6471
+   },
+   "exact_typo": {
+    "@5": null,
+    "@20": null,
+    "@100": null
+   },
+   "normalized": {
+    "@5": 0.4706,
+    "@20": 0.5882,
+    "@100": 0.6471
+   },
+   "normalized_in_index": {
+    "@5": 0.4706,
+    "@20": 0.5882,
+    "@100": 0.6471
+   },
+   "normalized_typo": {
+    "@5": null,
+    "@20": null,
+    "@100": null
+   },
+   "trigram": {
+    "@5": 0.5294,
+    "@20": 0.7059,
+    "@100": 0.7647
+   },
+   "trigram_in_index": {
+    "@5": 0.5294,
+    "@20": 0.7059,
+    "@100": 0.7647
+   },
+   "trigram_typo": {
+    "@5": null,
+    "@20": null,
+    "@100": null
+   },
+   "bm25": {
+    "@5": 0.5294,
+    "@20": 0.7059,
+    "@100": 0.7647
+   },
+   "bm25_in_index": {
+    "@5": 0.5294,
+    "@20": 0.7059,
+    "@100": 0.7647
+   },
+   "bm25_typo": {
+    "@5": null,
+    "@20": null,
+    "@100": null
+   },
+   "exact_set_size": {
+    "p50": 1,
+    "over_20": 1
+   }
+  },
+  "shadowlink/en": {
+   "mentions": 20,
+   "in_index": 18,
+   "typo": 4,
+   "api": {
+    "@5": 0.65,
+    "@20": 0.65,
+    "@100": 0.65
+   },
+   "api_in_index": {
+    "@5": 0.6667,
+    "@20": 0.6667,
+    "@100": 0.6667
+   },
+   "api_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "exact": {
+    "@5": 0.45,
+    "@20": 0.55,
+    "@100": 0.55
+   },
+   "exact_in_index": {
+    "@5": 0.5,
+    "@20": 0.6111,
+    "@100": 0.6111
+   },
+   "exact_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "normalized": {
+    "@5": 0.45,
+    "@20": 0.55,
+    "@100": 0.55
+   },
+   "normalized_in_index": {
+    "@5": 0.5,
+    "@20": 0.6111,
+    "@100": 0.6111
+   },
+   "normalized_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "trigram": {
+    "@5": 0.6,
+    "@20": 0.75,
+    "@100": 0.8
+   },
+   "trigram_in_index": {
+    "@5": 0.6667,
+    "@20": 0.8333,
+    "@100": 0.8889
+   },
+   "trigram_typo": {
+    "@5": 0.5,
+    "@20": 0.5,
+    "@100": 0.75
+   },
+   "bm25": {
+    "@5": 0.6,
+    "@20": 0.75,
+    "@100": 0.8
+   },
+   "bm25_in_index": {
+    "@5": 0.6667,
+    "@20": 0.8333,
+    "@100": 0.8889
+   },
+   "bm25_typo": {
+    "@5": 0.5,
+    "@20": 0.5,
+    "@100": 0.75
+   },
+   "exact_set_size": {
+    "p50": 1,
+    "over_20": 0
+   }
+  },
+  "simplequestions_wd/en": {
+   "mentions": 20,
+   "in_index": 19,
+   "typo": 1,
+   "api": {
+    "@5": 0.9,
+    "@20": 0.95,
+    "@100": 0.95
+   },
+   "api_in_index": {
+    "@5": 0.8947,
+    "@20": 0.9474,
+    "@100": 0.9474
+   },
+   "api_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "exact": {
+    "@5": 0.7,
+    "@20": 0.75,
+    "@100": 0.8
+   },
+   "exact_in_index": {
+    "@5": 0.7368,
+    "@20": 0.7895,
+    "@100": 0.8421
+   },
+   "exact_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "normalized": {
+    "@5": 0.75,
+    "@20": 0.8,
+    "@100": 0.85
+   },
+   "normalized_in_index": {
+    "@5": 0.7895,
+    "@20": 0.8421,
+    "@100": 0.8947
+   },
+   "normalized_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "trigram": {
+    "@5": 0.8,
+    "@20": 0.85,
+    "@100": 0.9
+   },
+   "trigram_in_index": {
+    "@5": 0.8421,
+    "@20": 0.8947,
+    "@100": 0.9474
+   },
+   "trigram_typo": {
+    "@5": 0.0,
+    "@20": 1.0,
+    "@100": 1.0
+   },
+   "bm25": {
+    "@5": 0.8,
+    "@20": 0.85,
+    "@100": 0.9
+   },
+   "bm25_in_index": {
+    "@5": 0.8421,
+    "@20": 0.8947,
+    "@100": 0.9474
+   },
+   "bm25_typo": {
+    "@5": 0.0,
+    "@20": 1.0,
+    "@100": 1.0
+   },
+   "exact_set_size": {
+    "p50": 1,
+    "over_20": 1
+   }
+  },
+  "webqsp_el/en": {
+   "mentions": 21,
+   "in_index": 21,
+   "typo": 7,
+   "api": {
+    "@5": 0.8095,
+    "@20": 0.8095,
+    "@100": 0.8095
+   },
+   "api_in_index": {
+    "@5": 0.8095,
+    "@20": 0.8095,
+    "@100": 0.8095
+   },
+   "api_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "exact": {
+    "@5": 0.8095,
+    "@20": 0.9048,
+    "@100": 0.9048
+   },
+   "exact_in_index": {
+    "@5": 0.8095,
+    "@20": 0.9048,
+    "@100": 0.9048
+   },
+   "exact_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "normalized": {
+    "@5": 0.8571,
+    "@20": 0.9524,
+    "@100": 0.9524
+   },
+   "normalized_in_index": {
+    "@5": 0.8571,
+    "@20": 0.9524,
+    "@100": 0.9524
+   },
+   "normalized_typo": {
+    "@5": 0.0,
+    "@20": 0.0,
+    "@100": 0.0
+   },
+   "trigram": {
+    "@5": 0.8571,
+    "@20": 0.9524,
+    "@100": 0.9524
+   },
+   "trigram_in_index": {
+    "@5": 0.8571,
+    "@20": 0.9524,
+    "@100": 0.9524
+   },
+   "trigram_typo": {
+    "@5": 0.5714,
+    "@20": 0.7143,
+    "@100": 0.7143
+   },
+   "bm25": {
+    "@5": 0.8571,
+    "@20": 0.9524,
+    "@100": 0.9524
+   },
+   "bm25_in_index": {
+    "@5": 0.8571,
+    "@20": 0.9524,
+    "@100": 0.9524
+   },
+   "bm25_typo": {
+    "@5": 0.5714,
+    "@20": 0.7143,
+    "@100": 0.7143
+   },
+   "exact_set_size": {
+    "p50": 2,
+    "over_20": 0
+   }
+  }
+ },
+ "gates": {
+  "best local recall@20 >= 0.9 on mintaka/en": false,
+  "best local recall@20 >= 0.85 on mintaka/fr": false,
+  "the best local arm above the API at @20 on every set": false,
+  "trigram adds >= 5 points on the typo set (mean over sets)": true,
+  "KILL: no local arm beats the API at @20 on Mintaka": false
+ },
+ "wall_s": 175,
+ "mentions": [
+  {
+   "key": "mintaka:0ab93de4:en#0",
+   "gold": "Q148",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 41,
+    "bm25": 41
+   },
+   "api_rank": null,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:427dc89d:en#0",
+   "gold": "Q2",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 23,
+    "bm25": 23
+   },
+   "api_rank": null,
+   "in_index": true,
+   "n_exact": 0,
+   "n_norm": 0,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:4e056cb6:en#0",
+   "gold": "Q198",
+   "pos": {
+    "exact": 11,
+    "normalized": 11,
+    "trigram": 11,
+    "bm25": 11
+   },
+   "api_rank": 3,
+   "in_index": true,
+   "n_exact": 11,
+   "n_norm": 12,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:59cd0c81:en#0",
+   "gold": "Q47690",
+   "pos": {
+    "exact": 3,
+    "normalized": 3,
+    "trigram": 3,
+    "bm25": 3
+   },
+   "api_rank": 3,
+   "in_index": true,
+   "n_exact": 3,
+   "n_norm": 4,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:607c7b28:en#0",
+   "gold": "Q7712845",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": null,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:670d3e31:en#0",
+   "gold": "Q1215892",
+   "pos": {
+    "exact": 2,
+    "normalized": 2,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:670d3e31:en#1",
+   "gold": "Q211872",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": null,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:6a750d5e:en#0",
+   "gold": "Q1370",
+   "pos": {
+    "exact": 12,
+    "normalized": 12,
+    "trigram": 12,
+    "bm25": 12
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 12,
+   "n_norm": 13,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:6a750d5e:en#1",
+   "gold": "Q1371",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:79ba29da:en#0",
+   "gold": "Q1163715",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:79ba29da:en#1",
+   "gold": "Q3079152",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:7c139d71:en#0",
+   "gold": "Q23",
+   "pos": {
+    "exact": 13,
+    "normalized": 13,
+    "trigram": 13,
+    "bm25": 13
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 13,
+   "n_norm": 14,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:83b1edf0:en#0",
+   "gold": "Q2263",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:83b1edf0:en#1",
+   "gold": "Q39476",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:958da9ab:en#0",
+   "gold": "Q1339580",
+   "pos": {
+    "exact": 4,
+    "normalized": 4,
+    "trigram": 4,
+    "bm25": 4
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 4,
+   "n_norm": 4,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:c3838e3f:en#0",
+   "gold": "Q36153",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": null,
+   "in_index": true,
+   "n_exact": 0,
+   "n_norm": 0,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:c9b9541f:en#0",
+   "gold": "Q29552",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 0,
+   "n_norm": 0,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:d7012a77:en#0",
+   "gold": "Q483412",
+   "pos": {
+    "exact": 2,
+    "normalized": 2,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:db319851:en#0",
+   "gold": "Q15228",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 4,
+    "bm25": 4
+   },
+   "api_rank": null,
+   "in_index": true,
+   "n_exact": 0,
+   "n_norm": 0,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:ea0584f9:en#0",
+   "gold": "Q6256",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": 2,
+   "in_index": false,
+   "n_exact": 2,
+   "n_norm": 4,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:ea0584f9:en#1",
+   "gold": "Q515",
+   "pos": {
+    "exact": 13,
+    "normalized": 13,
+    "trigram": 13,
+    "bm25": 13
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 13,
+   "n_norm": 13,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:ea30fd31:en#0",
+   "gold": "Q32096",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:ea30fd31:en#1",
+   "gold": "Q213837",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 17,
+    "bm25": 17
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 9,
+   "n_norm": 9,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:f00a32e3:en#0",
+   "gold": "Q30",
+   "pos": {
+    "exact": 2,
+    "normalized": 2,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:fcf04097:en#0",
+   "gold": "Q8337",
+   "pos": {
+    "exact": 3,
+    "normalized": 3,
+    "trigram": 3,
+    "bm25": 3
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 3,
+   "n_norm": 3,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:fd3972cd:en#0",
+   "gold": "Q362",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 55,
+    "bm25": 55
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:427dc89d:fr#0",
+   "gold": "Q2",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 5,
+   "n_norm": 5,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:4e056cb6:fr#0",
+   "gold": "Q198",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": 2,
+   "in_index": true,
+   "n_exact": 0,
+   "n_norm": 0,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:59cd0c81:fr#0",
+   "gold": "Q47690",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 38,
+    "bm25": 38
+   },
+   "api_rank": 2,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:6a750d5e:fr#0",
+   "gold": "Q1370",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": 2,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:6a750d5e:fr#1",
+   "gold": "Q1371",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:79ba29da:fr#0",
+   "gold": "Q1163715",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:79ba29da:fr#1",
+   "gold": "Q3079152",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:7c139d71:fr#0",
+   "gold": "Q23",
+   "pos": {
+    "exact": 13,
+    "normalized": 13,
+    "trigram": 13,
+    "bm25": 13
+   },
+   "api_rank": 2,
+   "in_index": true,
+   "n_exact": 13,
+   "n_norm": 14,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:83b1edf0:fr#0",
+   "gold": "Q2263",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:83b1edf0:fr#1",
+   "gold": "Q39476",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:958da9ab:fr#0",
+   "gold": "Q1339580",
+   "pos": {
+    "exact": null,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 0,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:d7012a77:fr#0",
+   "gold": "Q483412",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:ea0584f9:fr#0",
+   "gold": "Q6256",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": 2,
+   "in_index": false,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:ea0584f9:fr#1",
+   "gold": "Q515",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": 4,
+   "in_index": true,
+   "n_exact": 3,
+   "n_norm": 4,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:ea30fd31:fr#1",
+   "gold": "Q213837",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 17,
+    "bm25": 17
+   },
+   "api_rank": 2,
+   "in_index": true,
+   "n_exact": 9,
+   "n_norm": 9,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:f00a32e3:fr#0",
+   "gold": "Q30",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "mintaka:fd3972cd:fr#0",
+   "gold": "Q362",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 8,
+    "bm25": 8
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 0,
+   "n_norm": 0,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-120:en#0",
+   "gold": "Q8502",
+   "pos": {
+    "exact": 10,
+    "normalized": 10,
+    "trigram": 10,
+    "bm25": 10
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 10,
+   "n_norm": 10,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-148:en#0",
+   "gold": "Q1445650",
+   "pos": {
+    "exact": 2,
+    "normalized": 2,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-16:en#0",
+   "gold": "Q35657",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 0,
+   "n_norm": 0,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-206:en#0",
+   "gold": "Q739627",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-206:en#1",
+   "gold": "Q106458883",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": null,
+   "in_index": false,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-222:en#0",
+   "gold": "Q18574233",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": 1,
+   "in_index": false,
+   "n_exact": 0,
+   "n_norm": 0,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-226:en#0",
+   "gold": "Q79784",
+   "pos": {
+    "exact": 23,
+    "normalized": 23,
+    "trigram": 23,
+    "bm25": 23
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 23,
+   "n_norm": 24,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-238:en#0",
+   "gold": "Q726382",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-251:en#0",
+   "gold": "Q4022",
+   "pos": {
+    "exact": 8,
+    "normalized": 8,
+    "trigram": 8,
+    "bm25": 8
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 8,
+   "n_norm": 8,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-281:en#0",
+   "gold": "Q170645",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-305:en#0",
+   "gold": "Q1445650",
+   "pos": {
+    "exact": 2,
+    "normalized": 2,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 21,
+    "bm25": 21
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-313:en#0",
+   "gold": "Q40912",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-345:en#1",
+   "gold": "Q193668",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-349:en#0",
+   "gold": "Q5503",
+   "pos": {
+    "exact": 15,
+    "normalized": 15,
+    "trigram": 15,
+    "bm25": 15
+   },
+   "api_rank": 7,
+   "in_index": true,
+   "n_exact": 15,
+   "n_norm": 18,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-362:en#0",
+   "gold": "Q34969",
+   "pos": {
+    "exact": 4,
+    "normalized": 4,
+    "trigram": 4,
+    "bm25": 4
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 4,
+   "n_norm": 4,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-375:en#0",
+   "gold": "Q303",
+   "pos": {
+    "exact": 2,
+    "normalized": 2,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-39:en#0",
+   "gold": "Q219512",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-44:en#0",
+   "gold": "Q189080",
+   "pos": {
+    "exact": 3,
+    "normalized": 3,
+    "trigram": 3,
+    "bm25": 3
+   },
+   "api_rank": 2,
+   "in_index": true,
+   "n_exact": 3,
+   "n_norm": 3,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-90:en#0",
+   "gold": "Q207329",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-12:fr#1",
+   "gold": "Q35332",
+   "pos": {
+    "exact": 2,
+    "normalized": 2,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-12:fr#2",
+   "gold": "Q192990",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-185:fr#0",
+   "gold": "Q38280",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 0,
+   "n_norm": 0,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-196:fr#0",
+   "gold": "Q1480118",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-209:fr#0",
+   "gold": "Q145",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-215:fr#0",
+   "gold": "Q62408",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 0,
+   "n_norm": 0,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-21:fr#0",
+   "gold": "Q1163227",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 0,
+   "n_norm": 0,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-223:fr#1",
+   "gold": "Q349",
+   "pos": {
+    "exact": 8,
+    "normalized": 8,
+    "trigram": 8,
+    "bm25": 8
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 8,
+   "n_norm": 8,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-238:fr#0",
+   "gold": "Q726382",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 7,
+    "bm25": 7
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 0,
+   "n_norm": 0,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-23:fr#0",
+   "gold": "Q177477",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 3,
+    "bm25": 3
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 0,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-248:fr#2",
+   "gold": "Q567",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-267:fr#0",
+   "gold": "Q2009573",
+   "pos": {
+    "exact": 7,
+    "normalized": 7,
+    "trigram": 7,
+    "bm25": 7
+   },
+   "api_rank": 2,
+   "in_index": true,
+   "n_exact": 7,
+   "n_norm": 7,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-50:fr#0",
+   "gold": "Q72792",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-61:fr#0",
+   "gold": "Q178871",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-65:fr#0",
+   "gold": "Q35600",
+   "pos": {
+    "exact": 4,
+    "normalized": 4,
+    "trigram": 4,
+    "bm25": 4
+   },
+   "api_rank": 2,
+   "in_index": true,
+   "n_exact": 4,
+   "n_norm": 4,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-82:fr#1",
+   "gold": "Q183",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 0,
+   "n_norm": 0,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "qald9plus:train-86:fr#1",
+   "gold": "Q64",
+   "pos": {
+    "exact": 30,
+    "normalized": 30,
+    "trigram": 30,
+    "bm25": 30
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 30,
+   "n_norm": 32,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "webqsp_el:WebQTrn-1235#0",
+   "gold": "Q43196",
+   "pos": {
+    "exact": 5,
+    "normalized": 5,
+    "trigram": 5,
+    "bm25": 5
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 5,
+   "n_norm": 5,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "webqsp_el:WebQTrn-1580#0",
+   "gold": "Q36322",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "webqsp_el:WebQTrn-1804#0",
+   "gold": "Q7184",
+   "pos": {
+    "exact": 3,
+    "normalized": 3,
+    "trigram": 3,
+    "bm25": 3
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 3,
+   "n_norm": 4,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "webqsp_el:WebQTrn-1805#0",
+   "gold": "Q131412",
+   "pos": {
+    "exact": 3,
+    "normalized": 3,
+    "trigram": 3,
+    "bm25": 3
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 3,
+   "n_norm": 5,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "webqsp_el:WebQTrn-1827#0",
+   "gold": "Q786",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": null,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "webqsp_el:WebQTrn-2265#0",
+   "gold": "Q36517",
+   "pos": {
+    "exact": 2,
+    "normalized": 2,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "webqsp_el:WebQTrn-246#0",
+   "gold": "Q18",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": null,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "webqsp_el:WebQTrn-2510#0",
+   "gold": "Q11613",
+   "pos": {
+    "exact": 6,
+    "normalized": 6,
+    "trigram": 6,
+    "bm25": 6
+   },
+   "api_rank": 3,
+   "in_index": true,
+   "n_exact": 6,
+   "n_norm": 6,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "webqsp_el:WebQTrn-2650#0",
+   "gold": "Q215868",
+   "pos": {
+    "exact": 2,
+    "normalized": 2,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 3,
+    "bm25": 3
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "webqsp_el:WebQTrn-2781#0",
+   "gold": "Q575457",
+   "pos": {
+    "exact": null,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": null,
+   "in_index": true,
+   "n_exact": 0,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "webqsp_el:WebQTrn-2820#0",
+   "gold": "Q354721",
+   "pos": {
+    "exact": 3,
+    "normalized": 3,
+    "trigram": 3,
+    "bm25": 3
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 3,
+   "n_norm": 3,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 3,
+    "bm25": 3
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "webqsp_el:WebQTrn-3125#0",
+   "gold": "Q30192",
+   "pos": {
+    "exact": 2,
+    "normalized": 2,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 3,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "webqsp_el:WebQTrn-3289#0",
+   "gold": "Q356487",
+   "pos": {
+    "exact": 2,
+    "normalized": 2,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "webqsp_el:WebQTrn-3370#0",
+   "gold": "Q11571",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "webqsp_el:WebQTrn-3468#0",
+   "gold": "Q103939",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 7,
+    "bm25": 7
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "webqsp_el:WebQTrn-415#0",
+   "gold": "Q3431027",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "webqsp_el:WebQTrn-481#0",
+   "gold": "Q6107",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "webqsp_el:WebQTrn-587#0",
+   "gold": "Q1435",
+   "pos": {
+    "exact": 3,
+    "normalized": 3,
+    "trigram": 3,
+    "bm25": 3
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 3,
+   "n_norm": 3,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "webqsp_el:WebQTrn-613#0",
+   "gold": "Q857012",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": null,
+   "in_index": true,
+   "n_exact": 6,
+   "n_norm": 6,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "webqsp_el:WebQTrn-613#1",
+   "gold": "Q4525",
+   "pos": {
+    "exact": 2,
+    "normalized": 2,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "webqsp_el:WebQTrn-713#0",
+   "gold": "Q23",
+   "pos": {
+    "exact": 13,
+    "normalized": 13,
+    "trigram": 13,
+    "bm25": 13
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 13,
+   "n_norm": 14,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "graphq_el:116000102#0",
+   "gold": "Q30",
+   "pos": {
+    "exact": 2,
+    "normalized": 2,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "graphq_el:139000201#0",
+   "gold": "Q659219",
+   "pos": {
+    "exact": 4,
+    "normalized": 4,
+    "trigram": 4,
+    "bm25": 4
+   },
+   "api_rank": 17,
+   "in_index": true,
+   "n_exact": 4,
+   "n_norm": 4,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "graphq_el:157000100#0",
+   "gold": "Q201052",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "graphq_el:168000302#0",
+   "gold": "Q191521",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "graphq_el:180000101#0",
+   "gold": "Q185208",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "graphq_el:19000000#0",
+   "gold": "Q24925",
+   "pos": {
+    "exact": 6,
+    "normalized": 6,
+    "trigram": 6,
+    "bm25": 6
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 6,
+   "n_norm": 6,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "graphq_el:194000501#0",
+   "gold": "Q462",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": null,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "graphq_el:205000201#0",
+   "gold": "Q11690245",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "graphq_el:21000201#0",
+   "gold": "Q180704",
+   "pos": {
+    "exact": 2,
+    "normalized": 2,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 2,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "graphq_el:216000301#0",
+   "gold": "Q13973",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 32,
+    "bm25": 32
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "graphq_el:223000600#0",
+   "gold": "Q2695156",
+   "pos": {
+    "exact": 15,
+    "normalized": 15,
+    "trigram": 15,
+    "bm25": 15
+   },
+   "api_rank": 9,
+   "in_index": true,
+   "n_exact": 15,
+   "n_norm": 15,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 61,
+    "bm25": 61
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "graphq_el:223000600#1",
+   "gold": "Q1443792",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": 6,
+   "in_index": false,
+   "n_exact": 7,
+   "n_norm": 7,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "graphq_el:239000100#0",
+   "gold": "Q5043",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "graphq_el:24000001#0",
+   "gold": "Q62424",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 11,
+    "bm25": 11
+   },
+   "api_rank": 83,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 4,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "graphq_el:243000300#0",
+   "gold": "Q182",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": null,
+   "in_index": false,
+   "n_exact": 5,
+   "n_norm": 5,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "graphq_el:244000501#0",
+   "gold": "Q1071224",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": null,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "graphq_el:43000200#0",
+   "gold": "Q9212",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "graphq_el:52000201#0",
+   "gold": "Q1091235",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": null,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "graphq_el:85000100#0",
+   "gold": "Q12199",
+   "pos": {
+    "exact": 4,
+    "normalized": 4,
+    "trigram": 4,
+    "bm25": 4
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 4,
+   "n_norm": 4,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "graphq_el:85000301#0",
+   "gold": "Q12199",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 35,
+    "bm25": 35
+   },
+   "api_rank": 2,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 3,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "graphq_el:89000301#0",
+   "gold": "Q131206",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": 160
+   },
+   "api_rank": 6,
+   "in_index": true,
+   "n_exact": 23,
+   "n_norm": 23,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "simplequestions_wd:valid-1146#0",
+   "gold": "Q4542475",
+   "pos": {
+    "exact": null,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": null,
+   "in_index": true,
+   "n_exact": 0,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "simplequestions_wd:valid-1347#0",
+   "gold": "Q7383192",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "simplequestions_wd:valid-1510#0",
+   "gold": "Q16968469",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "simplequestions_wd:valid-1512#0",
+   "gold": "Q793290",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": 1,
+   "in_index": false,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "simplequestions_wd:valid-1802#0",
+   "gold": "Q824638",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "simplequestions_wd:valid-1921#0",
+   "gold": "Q14927695",
+   "pos": {
+    "exact": 10,
+    "normalized": 10,
+    "trigram": 10,
+    "bm25": 10
+   },
+   "api_rank": 5,
+   "in_index": true,
+   "n_exact": 10,
+   "n_norm": 10,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "simplequestions_wd:valid-1952#0",
+   "gold": "Q1687841",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "simplequestions_wd:valid-2036#0",
+   "gold": "Q78491",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "simplequestions_wd:valid-2115#0",
+   "gold": "Q1282874",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "simplequestions_wd:valid-2317#0",
+   "gold": "Q178134",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "simplequestions_wd:valid-2417#0",
+   "gold": "Q1312076",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 6,
+    "bm25": 6
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "simplequestions_wd:valid-2490#0",
+   "gold": "Q508026",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "simplequestions_wd:valid-2548#0",
+   "gold": "Q115760",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 4,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "simplequestions_wd:valid-2755#0",
+   "gold": "Q9778",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "simplequestions_wd:valid-279#0",
+   "gold": "Q34217",
+   "pos": {
+    "exact": 30,
+    "normalized": 30,
+    "trigram": 30,
+    "bm25": 30
+   },
+   "api_rank": 2,
+   "in_index": true,
+   "n_exact": 30,
+   "n_norm": 30,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "simplequestions_wd:valid-32#0",
+   "gold": "Q3818433",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "simplequestions_wd:valid-344#0",
+   "gold": "Q877693",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "simplequestions_wd:valid-422#0",
+   "gold": "Q19880647",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "simplequestions_wd:valid-61#0",
+   "gold": "Q7499567",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "simplequestions_wd:valid-739#0",
+   "gold": "Q948187",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": 16,
+   "in_index": true,
+   "n_exact": 7,
+   "n_norm": 7,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "shadowlink:Shadow-27#0",
+   "gold": "Q5618901",
+   "pos": {
+    "exact": 6,
+    "normalized": 6,
+    "trigram": 6,
+    "bm25": 6
+   },
+   "api_rank": null,
+   "in_index": true,
+   "n_exact": 6,
+   "n_norm": 6,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "subset": "Shadow"
+  },
+  {
+   "key": "shadowlink:Shadow-457#0",
+   "gold": "Q466782",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": 157
+   },
+   "api_rank": null,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 2,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "subset": "Shadow"
+  },
+  {
+   "key": "shadowlink:Shadow-619#0",
+   "gold": "Q176342",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 3,
+    "bm25": 3
+   },
+   "api_rank": 4,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 4,
+    "bm25": 4
+   },
+   "typo_api_rank": null,
+   "subset": "Shadow"
+  },
+  {
+   "key": "shadowlink:Shadow-625#0",
+   "gold": "Q5454715",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 4,
+    "bm25": 4
+   },
+   "api_rank": 4,
+   "in_index": true,
+   "n_exact": 0,
+   "n_norm": 0,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "subset": "Shadow"
+  },
+  {
+   "key": "shadowlink:Tail-115#0",
+   "gold": "Q27049396",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 3,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "subset": "Tail"
+  },
+  {
+   "key": "shadowlink:Tail-223#0",
+   "gold": "Q5461383",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": 1,
+   "in_index": false,
+   "n_exact": 0,
+   "n_norm": 0,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "subset": "Tail"
+  },
+  {
+   "key": "shadowlink:Tail-258#0",
+   "gold": "Q535957",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "subset": "Tail"
+  },
+  {
+   "key": "shadowlink:Tail-333#0",
+   "gold": "Q1251356",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "subset": "Tail"
+  },
+  {
+   "key": "shadowlink:Tail-410#0",
+   "gold": "Q6419361",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "typo_api_rank": null,
+   "subset": "Tail"
+  },
+  {
+   "key": "shadowlink:Tail-608#0",
+   "gold": "Q26251211",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "subset": "Tail"
+  },
+  {
+   "key": "shadowlink:Tail-719#0",
+   "gold": "Q3324323",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "subset": "Tail"
+  },
+  {
+   "key": "shadowlink:Tail-779#0",
+   "gold": "Q60198152",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": null,
+   "in_index": false,
+   "n_exact": 0,
+   "n_norm": 0,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "subset": "Tail"
+  },
+  {
+   "key": "shadowlink:Tail-829#0",
+   "gold": "Q6869495",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "subset": "Tail"
+  },
+  {
+   "key": "shadowlink:Top-223#0",
+   "gold": "Q15229353",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": 117
+   },
+   "api_rank": null,
+   "in_index": true,
+   "n_exact": 0,
+   "n_norm": 1,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "typo_api_rank": null,
+   "subset": "Top"
+  },
+  {
+   "key": "shadowlink:Top-260#0",
+   "gold": "Q487999",
+   "pos": {
+    "exact": 10,
+    "normalized": 10,
+    "trigram": 10,
+    "bm25": 10
+   },
+   "api_rank": 3,
+   "in_index": true,
+   "n_exact": 10,
+   "n_norm": 10,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 40,
+    "bm25": 40
+   },
+   "typo_api_rank": null,
+   "subset": "Top"
+  },
+  {
+   "key": "shadowlink:Top-329#0",
+   "gold": "Q746530",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 5,
+    "bm25": 5
+   },
+   "api_rank": null,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "subset": "Top"
+  },
+  {
+   "key": "shadowlink:Top-355#0",
+   "gold": "Q4719066",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 18,
+    "bm25": 18
+   },
+   "api_rank": null,
+   "in_index": true,
+   "n_exact": 7,
+   "n_norm": 7,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "subset": "Top"
+  },
+  {
+   "key": "shadowlink:Top-433#0",
+   "gold": "Q357382",
+   "pos": {
+    "exact": 5,
+    "normalized": 5,
+    "trigram": 5,
+    "bm25": 5
+   },
+   "api_rank": 2,
+   "in_index": true,
+   "n_exact": 5,
+   "n_norm": 5,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "subset": "Top"
+  },
+  {
+   "key": "shadowlink:Top-626#0",
+   "gold": "Q54182",
+   "pos": {
+    "exact": 3,
+    "normalized": 3,
+    "trigram": 3,
+    "bm25": 3
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 3,
+   "n_norm": 3,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "subset": "Top"
+  },
+  {
+   "key": "shadowlink:Top-766#0",
+   "gold": "Q1069695",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 69,
+    "bm25": 69
+   },
+   "api_rank": null,
+   "in_index": true,
+   "n_exact": 7,
+   "n_norm": 8,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "subset": "Top"
+  },
+  {
+   "key": "amber:10fa39735f5d1dc720296d10c079acdb=9e114bae85a5a1a0c3352e73b90b0ed9#0",
+   "gold": "Q1144212",
+   "pos": {
+    "exact": 2,
+    "normalized": 2,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "head": true
+  },
+  {
+   "key": "amber:2731043b23b3f0eab0b2223baca0753d=09a9c71b0129fc4b9ea07193e04ea35a#0",
+   "gold": "Q15710699",
+   "pos": {
+    "exact": 3,
+    "normalized": 3,
+    "trigram": 3,
+    "bm25": 3
+   },
+   "api_rank": 3,
+   "in_index": true,
+   "n_exact": 3,
+   "n_norm": 3,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "head": false
+  },
+  {
+   "key": "amber:39cf9b26b5d2df662a05c0890ff19915=6733362ffb2f6f4296a64dbc49d5bee0#0",
+   "gold": "Q1273653",
+   "pos": {
+    "exact": 3,
+    "normalized": 3,
+    "trigram": 3,
+    "bm25": 3
+   },
+   "api_rank": 2,
+   "in_index": true,
+   "n_exact": 3,
+   "n_norm": 3,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "head": true
+  },
+  {
+   "key": "amber:3a097c67e844ef25efc27b041a2c42e5=836d8d1bfbc00547d4bfd35bd58131ef#0",
+   "gold": "Q7296259",
+   "pos": {
+    "exact": 2,
+    "normalized": 2,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "head": false
+  },
+  {
+   "key": "amber:3d175f14326987b2d56e2d709cbc2656=20718074211bef9898d94d90f8630ab2#0",
+   "gold": "Q6200068",
+   "pos": {
+    "exact": 3,
+    "normalized": 3,
+    "trigram": 3,
+    "bm25": 3
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 3,
+   "n_norm": 3,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "head": true
+  },
+  {
+   "key": "amber:5a70d5ae3113face3c12bf0b1e10dc29=dd1a5755dac6c9927b5e19a6f7ad03a2#0",
+   "gold": "Q4932746",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": 168
+   },
+   "api_rank": 3,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "head": false
+  },
+  {
+   "key": "amber:68d34ce3485c3e0153ff5dca44d55325=a8753e816df08e499fba92749d746de5#0",
+   "gold": "Q7581514",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 6,
+    "bm25": 6
+   },
+   "api_rank": 2,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "head": false
+  },
+  {
+   "key": "amber:6c965c090e7db4ffb309847a3c49c4c8=09bebd917db06c03875dd35d52476824#0",
+   "gold": "Q60748782",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": 20,
+   "in_index": false,
+   "n_exact": 3,
+   "n_norm": 3,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "head": false
+  },
+  {
+   "key": "amber:765ebeabfb1d9df0a22532a44c4c1931=c7f8f6a81bd214e7cc6b6e6efa3a8cf7#0",
+   "gold": "Q14819199",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "head": true
+  },
+  {
+   "key": "amber:7eef06a50052da5035f4cae0822bc644=190ddd2caeab803cb57f90d2bb8f077a#0",
+   "gold": "Q17064850",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 3,
+    "bm25": 3
+   },
+   "api_rank": 2,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 71,
+    "bm25": 71
+   },
+   "typo_api_rank": null,
+   "head": false
+  },
+  {
+   "key": "amber:95d3fcbcddd228713f81655590cb31fe=2dbcab0f982d5b708ba7cdfde7390dbb#0",
+   "gold": "Q2701531",
+   "pos": {
+    "exact": 2,
+    "normalized": 2,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "head": false
+  },
+  {
+   "key": "amber:a1f7932f37e8ce0169311e772587f55a=bd571db4ae72528ea44e2ff534ff671c#0",
+   "gold": "Q317237",
+   "pos": {
+    "exact": 2,
+    "normalized": 2,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "head": true
+  },
+  {
+   "key": "amber:ab0387dab32943477267b7b7a5d39d60=61e80332da9e76d1c094477e45cce34f#0",
+   "gold": "Q7208529",
+   "pos": {
+    "exact": 2,
+    "normalized": 2,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 5,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "head": false
+  },
+  {
+   "key": "amber:b28898112cb3a6272a8af038a87c76dd=53ea388764e40cb7cf1a5a39692ba988#0",
+   "gold": "Q2714553",
+   "pos": {
+    "exact": 2,
+    "normalized": 2,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 3,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 4,
+    "bm25": 4
+   },
+   "typo_api_rank": null,
+   "head": true
+  },
+  {
+   "key": "amber:cb7322e472d0edc1fd472e9f268e1cf0=da9e872c3928dc06243fd069719ec204#0",
+   "gold": "Q60749485",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": 6,
+   "in_index": false,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "typo_api_rank": null,
+   "head": false
+  },
+  {
+   "key": "amber:cf381f80be75d0dfa9feaeb3e14e0c63=02d258d4e985702f861fcc7622c22262#0",
+   "gold": "Q126652",
+   "pos": {
+    "exact": 3,
+    "normalized": 3,
+    "trigram": 3,
+    "bm25": 3
+   },
+   "api_rank": 5,
+   "in_index": true,
+   "n_exact": 3,
+   "n_norm": 3,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 4,
+    "bm25": 4
+   },
+   "typo_api_rank": null,
+   "head": true
+  },
+  {
+   "key": "amber:d6cd3a7acd0ff88a19ce973bc22d0937=cbee10a899cf34d028127d169897d642#0",
+   "gold": "Q19878706",
+   "pos": {
+    "exact": 2,
+    "normalized": 2,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "typo_api_rank": null,
+   "head": true
+  },
+  {
+   "key": "amber:d9b547381ef2576b6e09348b0150b6d4=663554ddb735b9c247ef44cba65486eb#0",
+   "gold": "Q916287",
+   "pos": {
+    "exact": 2,
+    "normalized": 2,
+    "trigram": 2,
+    "bm25": 2
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 2,
+   "n_norm": 2,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "head": true
+  },
+  {
+   "key": "amber:e36c74384aaa2e26834a97e49a48057a=3ae28f85e27a7d9389baa06209ff9b1d#0",
+   "gold": "Q3195742",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 2,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null,
+   "head": true
+  },
+  {
+   "key": "amber:fa03a161c78b3c534da5624bda1b6272=3ea7dc44037f035de87f9adce5a0dcd5#0",
+   "gold": "Q1194323",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 4,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "typo_api_rank": null,
+   "head": true
+  },
+  {
+   "key": "cronquestions:valid-11242#0",
+   "gold": "Q41582609",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": 1,
+   "in_index": false,
+   "n_exact": 0,
+   "n_norm": 0,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "cronquestions:valid-11242#1",
+   "gold": "Q7790622",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 2,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "cronquestions:valid-16535#0",
+   "gold": "Q1395896",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 13,
+    "bm25": 13
+   },
+   "typo_api_rank": 1
+  },
+  {
+   "key": "cronquestions:valid-16535#1",
+   "gold": "Q1813197",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": 1,
+   "in_index": false,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "cronquestions:valid-1772#0",
+   "gold": "Q1380538",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "cronquestions:valid-20901#0",
+   "gold": "Q73076",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 2,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "cronquestions:valid-21765#0",
+   "gold": "Q469966",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "cronquestions:valid-2240#0",
+   "gold": "Q6138083",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 5,
+    "bm25": 5
+   },
+   "api_rank": 2,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "cronquestions:valid-22898#0",
+   "gold": "Q4020686",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "cronquestions:valid-22898#1",
+   "gold": "Q5424035",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "cronquestions:valid-24715#0",
+   "gold": "Q1227732",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "cronquestions:valid-25051#0",
+   "gold": "Q280481",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "cronquestions:valid-25653#0",
+   "gold": "Q204338",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "cronquestions:valid-25653#1",
+   "gold": "Q21292816",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": 1,
+   "in_index": false,
+   "n_exact": 0,
+   "n_norm": 0,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "cronquestions:valid-25850#0",
+   "gold": "Q9157195",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": 1,
+   "in_index": false,
+   "n_exact": 0,
+   "n_norm": 0,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "cronquestions:valid-28244#0",
+   "gold": "Q1235614",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "cronquestions:valid-5922#0",
+   "gold": "Q656961",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 2,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "cronquestions:valid-6552#0",
+   "gold": "Q18739",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "cronquestions:valid-6552#1",
+   "gold": "Q529425",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "cronquestions:valid-7671#0",
+   "gold": "Q6522944",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "cronquestions:valid-8017#0",
+   "gold": "Q1893",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "cronquestions:valid-8017#1",
+   "gold": "Q3838120",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": 3,
+   "in_index": false,
+   "n_exact": 0,
+   "n_norm": 0,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "cronquestions:valid-9296#0",
+   "gold": "Q18810063",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": null,
+   "in_index": false,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "typo_api_rank": null
+  },
+  {
+   "key": "cronquestions:valid-9296#1",
+   "gold": "Q216787",
+   "pos": {
+    "exact": 1,
+    "normalized": 1,
+    "trigram": 1,
+    "bm25": 1
+   },
+   "api_rank": 1,
+   "in_index": true,
+   "n_exact": 1,
+   "n_norm": 1,
+   "typo_pos": null,
+   "typo_api_rank": null
+  },
+  {
+   "key": "cronquestions:valid-9782#0",
+   "gold": "Q17592486",
+   "pos": {
+    "exact": null,
+    "normalized": null,
+    "trigram": null,
+    "bm25": null
+   },
+   "api_rank": 1,
+   "in_index": false,
+   "n_exact": 0,
+   "n_norm": 0,
+   "typo_pos": null,
+   "typo_api_rank": null
+  }
+ ]
+}

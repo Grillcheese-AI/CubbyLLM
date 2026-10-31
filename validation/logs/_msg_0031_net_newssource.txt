@@ -1,0 +1,18 @@
+[0031] network split: the news source reads its feeds and robots.txt through a fetch; cubbyllm/ opens no socket
+
+NewsSource(..., fetch=None): its two GETs (a feed, a host's robots.txt) call fetch(url) for the body
+where they opened the URL themselves; the cache, the TTL, the stale-cache fallback and the robots
+reading are unchanged. Without a fetch a feed is down and `errors` says why (a RuntimeError naming
+what to hand in). The server's `--news` builds NewsSource(fetch=cubby_serve.sources.http.news()) (its
+User-Agent CubbyLLM/0.1, 20 s) and passes it to the ask loop. The tests' fake transports are unchanged.
+
+With this, no module in cubbyllm/ imports socket, urllib.request, http.client or requests, lazily or
+not (checked by an AST scan; the guard test comes with the guards): the wiki world's download, Wikidata,
+the web source, the news archive and the news source each take the fetch the server hands in, from
+cubby_serve/sources/.
+
+Tests: tests/sources, tests/reasoning, tests/serve, test_guards: 359 passed, 1 failed (the known red of
+order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

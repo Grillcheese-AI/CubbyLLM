@@ -1,0 +1,75 @@
+{
+ "reader": "frames",
+ "books_read_now": 0,
+ "reads_now": 0,
+ "books_done": 5217,
+ "reads": 5134,
+ "triples": 3263,
+ "facts_written": 3263,
+ "tiers": {
+  "attributed": 1932,
+  "held": 1033,
+  "corroborated": 298
+ },
+ "corroborated_share": 0.134,
+ "per_era": {
+  "AncientClassical": 985,
+  "MiddleAges": 848,
+  "Prehistory": 47,
+  "unknown": 349,
+  "EarlyModern": 1
+ },
+ "per_era_tier": {
+  "AncientClassical": {
+   "attributed": 829,
+   "held": 537,
+   "corroborated": 156
+  },
+  "EarlyModern": {
+   "attributed": 1
+  },
+  "MiddleAges": {
+   "attributed": 742,
+   "held": 396,
+   "corroborated": 106
+  },
+  "Prehistory": {
+   "attributed": 44,
+   "held": 13,
+   "corroborated": 3
+  },
+  "unknown": {
+   "attributed": 316,
+   "held": 87,
+   "corroborated": 33
+  }
+ },
+ "per_relation": {
+  "date of death": 768,
+  "place of birth": 518,
+  "date of birth": 494,
+  "capital": 336,
+  "point in time": 253,
+  "inception": 220,
+  "place of death": 214,
+  "founded by": 194,
+  "part of": 130,
+  "location": 75,
+  "place of burial": 49,
+  "reign": 7,
+  "head of state": 5
+ },
+ "entities": 1780,
+ "by_reader": {
+  "frames": 3263
+ },
+ "files": {
+  "AncientClassical": "d8ca79bd92a3b965",
+  "EarlyModern": "487809e62081979a",
+  "MiddleAges": "8cfe5b08db4399ee",
+  "Prehistory": "99848c07d490a988",
+  "_held": "5e0e98f43f1195f6",
+  "unknown": "f01055bd3387baf0"
+ },
+ "seconds": 27.2
+}

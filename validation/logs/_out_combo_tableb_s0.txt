@@ -1,0 +1,37 @@
+env: 2026-10-21 15:40 python 3.12.10 torch 2.4.1+cpu numpy 2.5.1 Intel64 Family 6 Model 151 Stepping 5, GenuineIntel (CPU, 2 threads)
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+--- combo_tableb_s0: 9.53M params, meta {'kind': 'cubby_base', 'D': 256, 'L': 8, 'heads': 4, 'window': 64, 'attn_every': 2, 'ctx': 32, 'slots': 8, 'gen_basis': 16, 'gen_rank': 8, 'vocab': 8192, 'vocab_real': 8192, 'mem_every': 0, 'tied': False, 'causal_ctx': True, 'spatial': {'scale': 2.0, 'seed': 0, 'at': 4, 'query': 'placed', 'bind': 'writes', 'copy': 'table', 'copy_beta': 0.0}}, 7677 entities, 512 held-out documents (512 questions)
+  ceiling per piece (random codes, ideal decoder): 0.857 over the vocabulary, 0.995 over the ~12 written tokens (11.9 items a scene)
+  read-aware gate: present reads' target cos 0.290, absent reads' best 0.233 -> beta 0.261
+  copy table: tau 2.334 (exp 10.3), lam 0.1, read-aware gate beta 0.261
+  step     0  loss 10.115  exact 0.225  first 0.480  later 0.353  end 0.000  language 9.117  read top-1 0.811 cos 0.299  gap 0.194  lam 0.137 {'first': 0.1664078282774426, 'later': 0.14666992944029472, 'end': 0.08015692923072493} tau 2.33 missed {'eos': 0, 'written': 0, 'other': 661}  gate +0.00   [40s]
+  step   100  loss 4.185  exact 0.059  first 0.137  later 0.005  end 1.000  language 2.713  read top-1 0.812 cos 0.299  gap 0.194  lam 0.783 {'first': 0.9803823747206479, 'later': 0.7435381742637608, 'end': 0.602172949409578} tau 2.43 missed {'eos': 1016, 'written': 0, 'other': 0}  gate -0.10   [370s]
+  step   200  loss 3.992  exact 0.145  first 0.486  later 0.015  end 1.000  language 2.487  read top-1 0.812 cos 0.299  gap 0.193  lam 0.776 {'first': 0.9900844478979707, 'later': 0.7509351738461318, 'end': 0.5307732935179956} tau 2.62 missed {'eos': 1006, 'written': 0, 'other': 0}  gate -0.22   [701s]
+  step   300  loss 3.913  exact 0.186  first 0.623  later 0.038  end 1.000  language 2.432  read top-1 0.814 cos 0.299  gap 0.193  lam 0.714 {'first': 0.9930512276478112, 'later': 0.6932420106960441, 'end': 0.41369067516643554} tau 2.79 missed {'eos': 982, 'written': 0, 'other': 0}  gate -0.31   [1031s]
+  step   400  loss 3.825  exact 0.234  first 0.699  later 0.097  end 1.000  language 2.372  read top-1 0.814 cos 0.298  gap 0.194  lam 0.754 {'first': 0.9911447025369853, 'later': 0.7470874377507187, 'end': 0.4466645292486646} tau 2.94 missed {'eos': 922, 'written': 0, 'other': 0}  gate -0.36   [1364s]
+  step   500  loss 3.787  exact 0.311  first 0.797  later 0.266  end 1.000  language 2.341  read top-1 0.811 cos 0.299  gap 0.194  lam 0.834 {'first': 0.9968159148702398, 'later': 0.8506013603039984, 'end': 0.569421546671947} tau 3.06 missed {'eos': 749, 'written': 0, 'other': 0}  gate -0.40   [1699s]
+  step   600  loss 3.729  exact 0.297  first 0.793  later 0.241  end 1.000  language 2.303  read top-1 0.809 cos 0.298  gap 0.194  lam 0.746 {'first': 0.9964629232417792, 'later': 0.7498904523986093, 'end': 0.40568246006660047} tau 3.15 missed {'eos': 775, 'written': 0, 'other': 0}  gate -0.43   [2033s]
+  step   700  loss 3.724  exact 0.330  first 0.807  later 0.334  end 1.000  language 2.270  read top-1 0.812 cos 0.298  gap 0.194  lam 0.780 {'first': 0.9971813539741561, 'later': 0.794506639519471, 'end': 0.44884198089130223} tau 3.22 missed {'eos': 680, 'written': 0, 'other': 0}  gate -0.44   [2374s]
+  step   800  loss 3.675  exact 0.350  first 0.811  later 0.378  end 1.000  language 2.249  read top-1 0.812 cos 0.298  gap 0.194  lam 0.802 {'first': 0.9978506208863109, 'later': 0.8137285026350405, 'end': 0.47083408194521326} tau 3.26 missed {'eos': 633, 'written': 0, 'other': 2}  gate -0.46   [2716s]
+  step   900  loss 3.637  exact 0.352  first 0.811  later 0.379  end 1.000  language 2.228  read top-1 0.812 cos 0.298  gap 0.194  lam 0.787 {'first': 0.9981731133302674, 'later': 0.7953516530360111, 'end': 0.44068233725738537} tau 3.29 missed {'eos': 632, 'written': 0, 'other': 2}  gate -0.47   [3069s]
+  step   999  loss 3.674  exact 0.357  first 0.812  later 0.400  end 0.998  language 2.224  read top-1 0.812 cos 0.298  gap 0.194  lam 0.800 {'first': 0.9981623416533694, 'later': 0.813008381062927, 'end': 0.4641761158782174} tau 3.31 missed {'eos': 610, 'written': 0, 'other': 3}  gate -0.47   [3368s]
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_k10_far_facts_combo_tableb_s0_2026-10-21.json

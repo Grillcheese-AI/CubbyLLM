@@ -1,0 +1,35 @@
+env: 2026-10-21 15:35 python 3.12.10 torch 2.4.1+cpu numpy 2.5.1 Intel64 Family 6 Model 151 Stepping 5, GenuineIntel (CPU, 2 threads)
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+--- combo_s2: 9.53M params, meta {'kind': 'cubby_base', 'D': 256, 'L': 8, 'heads': 4, 'window': 64, 'attn_every': 2, 'ctx': 32, 'slots': 8, 'gen_basis': 16, 'gen_rank': 8, 'vocab': 8192, 'vocab_real': 8192, 'mem_every': 0, 'tied': False, 'causal_ctx': True, 'spatial': {'scale': 2.0, 'seed': 0, 'at': 4, 'query': 'placed', 'bind': 'writes'}}, 7677 entities, 512 held-out documents (512 questions)
+  ceiling per piece (random codes, ideal decoder): 0.857 over the vocabulary, 0.995 over the ~12 written tokens (12.0 items a scene)
+  step     0  loss 10.108  exact 0.000  first 0.000  later 0.000  end 0.000  language 9.111  read top-1 0.791 cos 0.296  gap 0.198  gate +0.00   [39s]
+  step   100  loss 4.274  exact 0.000  first 0.002  later 0.000  end 1.000  language 2.742  read top-1 0.789 cos 0.296  gap 0.198  gate -0.10   [352s]
+  step   200  loss 4.004  exact 0.000  first 0.000  later 0.000  end 1.000  language 2.495  read top-1 0.791 cos 0.296  gap 0.198  gate -0.22   [669s]
+  step   300  loss 3.982  exact 0.000  first 0.000  later 0.000  end 1.000  language 2.442  read top-1 0.791 cos 0.296  gap 0.198  gate -0.30   [984s]
+  step   400  loss 3.945  exact 0.000  first 0.000  later 0.000  end 1.000  language 2.383  read top-1 0.801 cos 0.296  gap 0.198  gate -0.37   [1299s]
+  step   500  loss 3.861  exact 0.000  first 0.000  later 0.000  end 1.000  language 2.348  read top-1 0.803 cos 0.296  gap 0.198  gate -0.40   [1615s]
+  step   600  loss 3.827  exact 0.000  first 0.000  later 0.000  end 1.000  language 2.312  read top-1 0.801 cos 0.296  gap 0.198  gate -0.43   [1934s]
+  step   700  loss 3.821  exact 0.000  first 0.000  later 0.000  end 1.000  language 2.276  read top-1 0.799 cos 0.296  gap 0.198  gate -0.44   [2248s]
+  step   800  loss 3.777  exact 0.000  first 0.000  later 0.000  end 1.000  language 2.256  read top-1 0.801 cos 0.296  gap 0.198  gate -0.45   [2569s]
+  step   900  loss 3.742  exact 0.000  first 0.000  later 0.000  end 1.000  language 2.234  read top-1 0.803 cos 0.296  gap 0.198  gate -0.46   [2892s]
+  step   999  loss 3.748  exact 0.000  first 0.000  later 0.000  end 1.000  language 2.228  read top-1 0.803 cos 0.296  gap 0.198  gate -0.47   [3214s]
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_k10_far_facts_combo_s2_2026-10-21.json

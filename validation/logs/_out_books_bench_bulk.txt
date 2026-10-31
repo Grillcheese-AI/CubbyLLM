@@ -1,0 +1,5 @@
+finder: 10/100 gold in the top 5, 19 in the top 200 [13s]
+finder_covered: 29/100 gold in the top 5, 43 in the top 200 [13s]
+frames: agreement {'with_coarser': {'dev': 0.875, 'test': 0.763, 'all': 0.821}, 'strict': {'dev': 0.85, 'test': 0.737, 'all': 0.795}} (dev {'agree': 34, 'contradict': 5, 'coarser': 1}, test {'agree': 28, 'contradict': 9, 'coarser': 1, 'other': 1}) [456s]
+bench: 58/76 spoken (46 flat, 12 hedged), wrong flat 0 (as scored before review 0), wrong hedged 1; wrong tense answered flat 0/76 [494s]
+wrote validation/logs/exp_books_bench_bulk_2026-10-22.json

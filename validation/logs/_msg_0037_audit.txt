@@ -1,0 +1,41 @@
+[0037] The audit (seed 1) and what it taught the rule: a fit that holds nothing, two of a kind, a wide read
+
+validation/audit_namesake_relation.py (new, STANDALONE) runs the acceptance's three parts on the real hdc
+world, with CB_NAMESAKE_RELATION=1:
+- 50 shared-name hops drawn by seed 1;
+- the cue-word probe (20 names, seed 1);
+- the fixed checks.
+It writes validation/logs/audit_namesake_relation_2026-10-24.json and .md: the list for Cowork to read.
+
+Read by hand, the first run found:
+1. A pick that holds nothing (5 of 12 picks: Qu River, Petershausen, Barreiros, Gnojno, Turbulence). The one
+   item whose kind fit held no value, while an item of no kind held it, so the reply would have been "I don't
+   know" where the asker could have been asked. Now one that fits and holds none decides nothing; the holders
+   are noted, and the loop asks which, as in 0036 (d["holds"]; hdc_namesakes.hop_rows, ask_namesakes.after_walk).
+2. Two of a kind, one picked (Thespis: two taxa). One taxon fit because its facts were read widely; the other's
+   recorded kind did not carry the relation. Now an item that shares a kind with one that fits competes too,
+   so which is more completely described decides nothing (the order's "nothing is ranked").
+   hdc_relation.decide. Thespis is now answered for each, labelled by its parent taxon.
+3. A kind named wrongly (Demon Hunter): a band whose facts were read widely was named "a film". Table.read_how
+   now says "read widely" when an item's specific relations go with no kind together. The also-line names only
+   a kind recorded, or a single kind read (hdc_relation.sayable).
+4. A label that is the answer: "Steve Mills (country of citizenship: United Kingdom): United Kingdom". Labels
+   skip the relations asked (label_for(skip=)). The two Steve Mills hold nothing else that tells them apart,
+   so they are asked which.
+5. Two others of one kind and name are said once: "a manga named Japan (2 of them)".
+
+The rerun (the same draw):
+- fixed checks: Paris; the Japanese yen; Rome; Marie Curie -> Q7186, and "I don't know" (her one award here is
+  the Elliott Cresson Medal, not a Nobel Prize); Steve Mills asked which.
+- audit, 50 hops: 6 one item, 1 each labelled, 43 asked back (4 of them because the one that fit holds
+  nothing). 0 wrong picks by my reading; Cowork's reading is the one that counts.
+- probe, 20 names: 4 pick the target, 16 ask back (15 with the target among the fits), 0 wrong picks.
+- decision time: p50 5.9 ms, max 41.6 ms (75 decisions).
+With the rule on: 0014's bench 192 correct, 0 wrong (validation/logs/exp_hdc_bench_2026-10-24_0037.json);
+0033's probe 0 mixed (validation/logs/namesake_probe_2026-10-24_0037.json).
+
+Tests: test_the_audits_lessons_... (Zembla, Corvo, a widely read Fredonia), the label skip, the also-line's
+repeats. Whole suite: 1102 passed; the one failure is the known red (order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

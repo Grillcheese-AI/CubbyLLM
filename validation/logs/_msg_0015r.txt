@@ -1,0 +1,13 @@
+[0015] review: the first tranche in worlds, its bench, the report
+
+76 manifest rows decided (23 ingested, 42 excluded, 11 queued); 3.4 GB on the data disk. Fiction isolation:
+50 in-fiction facts asked as reality, 0 spoken; named, 49 of 50 answered, all correct. Exclusion: 0 files of
+excluded datasets; the eval sets' 5,642 questions as phrase queries: 2 hits, one 8-word noun phrase in a
+book's own text, no eval row. Regression: 0012's and 0014's benches identical through the registry's stores
+(0 wrong flat). Re-runs add 0 files. Time rule touched: wiki 52,815, hdc 908,108 (155,749 time-sensitive),
+bulk books 466, fiction 296. Logs: worlds_ingest_2026-10-22.json, exp_worlds_bench_2026-10-22.json.
+tests/reasoning/test_sleep.py: the reason scan read the time rule's "as_of" tier on the line after a reason;
+listed with its non-reasons.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

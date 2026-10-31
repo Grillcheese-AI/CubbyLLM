@@ -1,0 +1,18 @@
+[0033] mowm's FastWordEncoder ported into cubbyllm/worlds/fast_words.py, pinned bit for bit against mowm's
+
+0031's review, answer 3. Before, the server loaded the encoder by file path from a mowm checkout beside this one
+(exp_m3_domain_routing._load_semantic_words); now it is the package's.
+- The code is mowm/encoding/semantic_words.py's, unchanged except that the offline teacher's default (a
+  sentence-transformer that build loaded when given no embed_fn) is left out: build takes the teacher, so the
+  module imports only numpy.
+- cubby_serve/build.py loads the server's table with it, and validation's _load_semantic_words returns it, so no
+  script needs the mowm checkout for the encoder. The table builder still reads mowm's codebook.
+
+Pinned:
+- tests/worlds/test_fast_words.py (4), against mowm's module while mowm is there: split_words, signal_code,
+  the projection, the anisotropy fit, a built table's encodings, each loading the other's saved table.
+- validation/pin_fast_words.py on the production table (fastword_table_v4.npz, 60,151 words): 2,020 of 2,020
+  codes equal, max abs diff 0.0, same meta, same idf (validation/logs/pin_fast_words_2026-10-22.json).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

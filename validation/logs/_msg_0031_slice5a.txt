@@ -1,0 +1,22 @@
+[0031] slice 5, emit: emitter_base, emitter_450m, emitter_talk from standin/ to cubbyllm/emit/ (git mv; paths and imports only)
+
+  standin/emitter_base.py  -> cubbyllm/emit/base.py        (the contract, clean_reply, strip_fences, GPU_LOCK, replay)
+  standin/emitter_450m.py  -> cubbyllm/emit/seats_450m.py  (the 450M trunk and its program seat)
+  standin/emitter_talk.py  -> cubbyllm/emit/talk.py        (the talk seat, ContextualEmitter)
+  standin/tests/test_emitter_450m.py -> tests/emit/
+
+Imports only, outside the tool's rewrite: the seat's package imports are relative (..ops, .format),
+and its leftover sys.path lines go. standin/emitter.py (the facade, staying) and emitter_llama import
+from cubbyllm.emit; the facade puts the repo root on the path for that. The ask loop and chat take
+clean_reply / strip_fences from ..emit.base (their two transitional stand-in imports). Slice 3 follow-up:
+news/reply.py imports grounding from ...speech (it was moved before grounding was).
+
+Not the move's: standin/tests/test_plugins.py fails one test here, from b315242. That test fakes the
+trunk's grilly handle, which b315242 replaced. The next commit gives it back.
+
+Tests, full suite against the baseline with the moved files mapped: every file the same but
+test_plugins (above); 1,188 passed, 6 skipped, 2 failed (that test, and test_guards'
+test_every_module_declares_wiring, the known red of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

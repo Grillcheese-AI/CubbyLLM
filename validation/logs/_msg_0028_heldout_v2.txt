@@ -1,0 +1,18 @@
+[0028] the fresh held-out set, run once on the moved plugins: talk meets the line, alerts does not
+
+validation/plugins_routing.py gains --second-check: a held-out wake counts only when the woken
+plugin then claims the question (cubbyllm.plugins.check.claims: a source's or world's own covers, the
+thalamus for an adapter), as the server's loader counts it. The plugins are approved for it in a
+temporary lock (never the real one); nothing is loaded or fetched.
+
+Run once (docs/0028_routing_heldout_v2.local.md, unread; counts only in the log), the server as
+committed (MiniLM, logistic heads, tau 0.675), after the check:
+  talk               woken 9/10 (1 declined: the turn needs facts), near misses 1/10: the line met
+  envcanada-alerts   woken 10/10, near misses 3/10: the line (at most 1) missed; its covers claims all 3
+validation/logs/plugins_routing_minilm_logistic_heldout_v2_2026-10-22.json
+
+Order 0028 to review, with the question of how to fix alerts (a stricter covers, a per-plugin tau),
+measured on a new set since this one is spent.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

@@ -1,0 +1,22 @@
+[0012] Passages 380x faster for a much-mentioned name; frames read "born about 742" and "X, who died in 814"; a year agrees with the full date of that year
+
+Found running the bench on the real index:
+- passages(): the mention filter inside the FTS query (`rowid IN (SELECT ... mentions)`) stops FTS5 ranking by
+  its index; for Charlemagne (10,456 mentions) a query took 23 s warm, 80 s cold. The mention set is now read
+  once by its key and applied to the ranking's best 20 k: 0.06-2 s. Same results otherwise (tests unchanged).
+- book_frames: an approximate year reads as the year ("born about 742", c., ca., circa) and the verb may sit in
+  an apposition or a who-clause right after the name ("Charlemagne, who died in 814,", "Mehmet Ali, born in
+  1769 at Kavalla,"); the other-Bonaparte and pronoun refusals hold.
+- book_source: "814" and "28 January 814" are one value: a bare year joins the witnesses of the one full date of
+  that year (two full dates in a year are still a contradiction, held). Charlemagne's date of death: one value,
+  4 witnesses, independent -> plain.
+- question_forms.wording keeps the relation's phrase whole, frame words trimmed only at its ends ("head of
+  state", not "head state").
+- exp_books_bench asks the frames one relation at a time, as the loop does (pooled cues diluted the ranking:
+  0 reads for Charlemagne with five relations at once).
+
+Tests: test_books.py's library has a third Napoleon book (1769, merged with 1769-08-15) and a disagreeing one
+(1768, held); 24 passed in the books, audience, hdc and forms suites.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

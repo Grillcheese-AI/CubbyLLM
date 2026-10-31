@@ -1,0 +1,9 @@
+[0031] the tests of three validation/ scripts move to tests/validation/
+
+test_emitter_decode, test_exp_he18_ab and test_exp_he19_gate_a test validation/ scripts, not standin/
+modules (the map's placement); git mv, their __file__ paths unchanged in effect.
+
+Tests: tests/validation and test_guards: 15 passed, 1 failed (the known red of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

@@ -1,0 +1,20 @@
+[0012] The question forms' emitter binds the question's own words; the index reads the events file leniently and a book's own folder under a format folder
+
+Found running the real index and the leak scan (order 0016) on the wiki world:
+- TemplateEmitter wrote the plan with the relation's Wikidata label ("date of birth"). On the wiki world the
+  tail "date of birth of George Abbott" splits as the held relation "date" and the coverage check refuses
+  before any lever can translate it. The serving emitter binds the question's own words ("born", the gen-3
+  wordings) and the host translates them (levers 4 and 6); the stand-in now does the same
+  (Forms.wording: "born", "founded", "founder", "ruled", "located"; the label only for a form with no
+  content word, "When was the {S}?"). "Where is Colobane located?" now answers Dakar through the lever's alias.
+- historical_facts.jsonl holds a raw control character in a text: read with strict=False (all 3,934 lines).
+- 7 History Book Collection books took their own folder as their era (a truncated file name hid the author):
+  a level under a format folder (EPUB) is the book's own folder. build_books_index.py --refresh-meta reads
+  every book's names again in place (rows kept; refresh_meta lives there, books.py stays at 288 lines).
+
+Tests: test_books.py and test_question_forms.py updated (the regression test and the books-off test keep a
+plan in a fixed label through FakeEmitter); 331 passed across the serve, ask, books, forms, audience,
+reasoning and spatial suites.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

@@ -1,0 +1,4 @@
+﻿[0004] done: the rename checked (only kept names and keys remain); the arm key --only hypertoken stays, since dated logs carry it
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

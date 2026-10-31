@@ -1,0 +1,31 @@
+[0027] P1: the control board -- the flag, the page, Home's turntable, Chat with its journey and audit tab, System
+
+- serve_api.py --board (default off: every /board path answers 404; on, the server's other answers are
+  unchanged). One dispatch block and the flag: +20 lines on a file already over 300, the board itself lives in
+  standin/board_api.py (routes, static files, the public filter) and standin/board_data.py (what each section
+  reads).
+- GET /board (dashboard/board/: index.html, board.css, plain-JS modules, no build step, system fonts: the page
+  calls only the server it came from), /board/home, /board/journey/<id> (a record's steps sense / route /
+  recall / check / say from its thought graph, timed from the server's event ring; the question's entity /
+  relation / time spans from the question-forms parser), /board/system (the order queue, the news poller, the
+  latest copy-or-refuse rates, training runs from CUBBY_RUNS), and /board/watch | worlds | forecast | mood |
+  agents answering "not built yet (order NNNN)" with no numbers.
+- Public mode is 0016's audience, decided on the server from the request's token: each response is built for
+  its audience, and a public one is then checked string by string against every internal name the server knows
+  (feeds and their sites, the store's source names, mounted worlds); the page's switch only changes which
+  audience it asks as, and the audit tab is disabled in public.
+- Home: the seven sections on a CSS-3D turntable, only the front object animated (the others their stills;
+  with prefers-reduced-motion all stills and no transitions), arrows / click / keyboard to turn, three live
+  cards for a built section.
+- Assets: dashboard/assets/sections/ -- the .blend, the animated WebPs and the stills (the PNG copies, the
+  .blend1 backup, anim/ and _test/ stay out).
+- Measured (validation/logs/board_timing_2026-10-22.json, 50 calls per endpoint and audience, this machine's
+  archive, order queue and run logs, while a 450M job held 6 CPU threads): worst warm p95 22.8 ms, worst cold
+  (first call after the 5 s cache) 205.6 ms. In Chrome: no sideways scroll at 400 px in any view; every
+  request to the page's own host only; reduced motion shows the stills.
+- Tests: standin/tests/test_board.py (5): public responses never name the fixture's internal source, the audit
+  ones do; off = 404 and the rest unchanged; waiting sections carry no numbers; the page names no host; static
+  and asset routes serve only their own files.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

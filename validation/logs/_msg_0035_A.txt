@@ -1,0 +1,27 @@
+[0035] A: the host routes "n steps <direction> of X", "what is at x y z" and "where is X" to a mounted scene: 0034's questions all routed, 0 wrong
+
+0034's host routed 4 of 7 shapes (1,020 of 1,800 questions per view); the other three never reached the scene.
+
+With a scene mounted, the host now reads the three shapes off the question (cubbyllm/spatial/scene_ask.py), as it
+reads a profile's "who / what / where is X". It restates each in the scene's own grammar, so the plan check, the
+walk and the VM treat it like the other four:
+- "where is X" becomes "the position of X";
+- "n <direction> of X" becomes the relation "<n> <direction>" (n = 1 is "<direction> neighbour");
+- "what is at x y z" becomes "the occupant of x y z".
+
+The scene states the new facts from its exact reading (Scene.facts, Scene.relations): the thing n steps each way
+(2 to 4, and any n asked), and a cell's occupant. An empty cell states nothing, so the walk refuses. A name the
+scene does not hold is no scene question ("Where is Paris?" stays a profile ask). With no scene mounted, nothing
+changes.
+
+Measured: 0034's fixed questions (questions.json sha256 80b60cc3...), the same 60 villages, host only
+(validation/logs/exp_s12_scene_files_2026-10-23.json):
+- cut: 1,800 of 1,800 routed (was 1,020); 1,329 spoken, all right; 0 wrong.
+- whole: 1,800 of 1,800 routed; 1,350 spoken, all right; 0 wrong.
+- Every question with an answer was spoken right, every empty one refused (471 cut, 450 whole: the detail log).
+
+Tests: tests/spatial/test_scene_ask.py (3: the shapes, the facts, the loop answering all three). The runner's host
+test now pins all 7 shapes routed. Suite 1,235 passed, 1 failed (the known red), 6 skipped.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

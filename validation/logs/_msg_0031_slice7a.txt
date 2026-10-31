@@ -1,0 +1,11 @@
+[0031] slice 7, cortex: the sensory cortex from standin/cortex/ to cubbyllm/cortex/ (git mv; paths only)
+
+The seven modules of the sensory cortex package (contract, forward, retina, salience, what, where and
+the package itself) import only each other, relatively, so nothing is rewritten. test_cortex moves to
+tests/cortex/. Their wiring stays STANDALONE: a plugin, off unless mounted.
+
+Tests, full suite against the baseline with the moved files mapped: same counts in every file;
+1,189 passed, 6 skipped, 1 failed (test_every_module_declares_wiring, the known red of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

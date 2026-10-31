@@ -1,0 +1,40 @@
+[0011] Fact names in readable words (make_fact_shard --names v2) and facts_far1k_v2: event ids split with their case kept, no doubled word in any question
+
+The wiki world's 77k event ids (FortPeckDam_ConstructionBegan1933) went into the shards as
+"fortpeckdam constructionbegan1933": words() lowercased any name with an underscore, as it does a
+relation. With --names v2 (validation/fact_names.py; --names v1, the default, renders every shard
+before 0011 bit for bit: the first 300 documents of facts_far1k_lead rebuild identical):
+- relations: as before (WORKS_FOR -> works for);
+- entities: as before (KeikoMatsuzaka -> Keiko Matsuzaka), and an all-caps name is kept as it is
+  (ABBA, 1 BCE, FIDO2: v1 lowercased these 1,979 names too);
+- event ids: part by part, split on CamelCase and digit runs, case kept, joined by spaces:
+  "Fort Peck Dam Construction Began 1933", "Rocket Use In China 13th Century". Nothing is lowercased,
+  because an id cannot tell a word from a proper noun ("china" would be wrong; "Began" is only stiff).
+79,810 of the 374,975 names render differently.
+
+Questions: the 646 relations ending in "of" doubled the template's "of" ("What is the variant of of
+Spanish Dancer?"). The order's suggested fix, dropping one "of", asks the inverse in English ("What is
+the variant of Spanish Dancer?" asks for a variant OF it; "What is the capital of Paris?" for Paris
+CAPITAL_OF France). So these ask subject first: "What is Spanish Dancer variant of?", with a "the"
+where the name's last word is the relation's first ("What is Camp Album the album of?", 340 facts).
+Over all 365,923 facts: questions with a doubled word outside the names, 101,246 (v1) -> 0 (v2).
+
+facts_far1k_v2 (facts_far1k_lead's arguments, seed 2, --names v2; on the cache and the Drive):
+20,000 documents, 159,882 facts, 100,152 questions, as before. validation/diag_fact_names.py, from the
+shards' bytes: the same written and asked addresses and the same number of questions in all 20,000
+documents; written pieces 741,267 -> 706,581 (spaced names tokenize shorter); questions with "of of"
+27,585 -> 6 (titles beginning "Of" after the template's "of"); 0 with a doubled word outside a name.
+facts_far1k_lead, facts_far1k and facts_far1k_text: md5 unchanged. The filler between the facts and
+the questions is drawn by the same rng but its length follows the names, so it is not compared.
+
+Run 5's probe on the new shard (the order's acceptance) follows in the report.
+
+Logs: validation/logs/make_fact_shard_facts_far1k_v2_2026-10-21.json,
+validation/logs/diag_fact_names_facts_far1k_v2_2026-10-21.json. The build log no longer carries the
+cache's and the tokenizer's local paths.
+Tests: tests/spatial/test_fact_shard.py, 7 passed (3 new: the three kinds, no doubled question over
+all 2,902 relations, the readable name's pieces written at their addresses).
+make_fact_shard.py: 254 -> 260 lines (the names moved out to fact_names.py, 50 lines).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

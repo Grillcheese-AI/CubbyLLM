@@ -1,0 +1,26 @@
+[0014] in progress: the hdc set's Wikidata5M facts as a disk-backed world behind the wiki world (the code; the labels are being fetched)
+
+- standin/data/fetch_hdc_labels.py: the 1,599,821 Q-ids the local table cannot name, asked of the Wikidata
+  API 50 at a time, in series (maxlag, a User-Agent), labels en+fr, appended as they arrive (resumable; Nick
+  chose the API over a dump, 2026-10-22). Running: ~32,000 requests, ~0.74 s each.
+- standin/data/hdc_world.py: every triplet column of every file (3,295,347 Q-id statements, 999,441 alias
+  statements) and the multi-hop rows' `facts` sentences, labelled (the local table, the API's answers, the
+  properties' JSON; edited labels back to the property's), deduplicated, into SQLite with a names table
+  (labels, aliases, Q-ids); dropped facts counted by reason; TIME_SENSITIVE properties (heads of state and
+  government, officeholders, populations, teams, employers, CEOs, ...); the wiki world's facts on the same
+  subject and relation counted as agreeing or contradicting.
+- standin/hdc_store.py: HdcWorld (read-only; a subject by label, alias or Q-id; hop as TripleIndex.hop answers;
+  an LRU, no facts in RAM) and Stores (the wiki world first, then the hdc world: merged hop, _by_subj,
+  _by_obj, paths, relations; writes, provenance and dates are the wiki world's; a hdc fact's provenance is its
+  snapshot's).
+- standin/ask.py: the loop's relations include the other worlds' (by count, not by parsing 4.3M facts); a
+  changing value from a snapshot is said "As of 2019, X." (tier as_of), flat when 2019 is asked, refused for
+  another year or the future (time_mismatch); profile_ask reads every ' of ' prefix as a possible relation
+  ("the head of state of X" is a relation ask, not a profile -- also "place of birth", "date of death").
+- standin/serve_api.py: --world hdc (CUBBY_HDC_WORLD).
+
+Tests: standin/tests/test_hdc_store.py (4, a synthetic world); the ask, serve, self, harness suites pass.
+ask.py 1560 -> 1584 lines and serve_api.py 499 -> 506: the snapshot rule sits where the record is made.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

@@ -1,0 +1,33 @@
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+--- text control: 3.23M params, D=256, window 256, 8 facts/doc, filler 120
+  step     0  loss 6.987  held-out answers 0.00  language 6.982   [4s]
+  step   100  loss 2.960  held-out answers 0.00  language 2.602   [128s]
+  step   200  loss 2.726  held-out answers 0.00  language 2.321   [257s]
+  step   300  loss 2.661  held-out answers 0.00  language 2.254   [383s]
+  step   400  loss 2.618  held-out answers 0.00  language 2.206   [511s]
+  step   500  loss 2.571  held-out answers 0.00  language 2.173   [636s]
+  step   600  loss 2.547  held-out answers 0.00  language 2.138   [760s]
+  step   700  loss 2.531  held-out answers 0.01  language 2.117   [886s]
+  step   800  loss 2.494  held-out answers 0.01  language 2.093   [1010s]
+  step   900  loss 2.475  held-out answers 0.02  language 2.076   [1139s]
+  step   999  loss 2.467  held-out answers 0.03  language 2.070   [1265s]
+wrote validation\logs\exp_k10_hypertoken_control_window256_2026-10-20.json

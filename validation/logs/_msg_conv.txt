@@ -1,0 +1,4 @@
+[0018] real inputs: the local conversation set's 44k human user turns for the turn kind and robustness (the 117k assistant turns are model-written: excluded; private: internal only)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

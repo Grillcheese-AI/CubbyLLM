@@ -1,0 +1,30 @@
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+env: 2026-10-22 07:03 python 3.12.10 torch 2.4.1+cpu Intel64 Family 6 Model 151 Stepping 5, GenuineIntel (CPU, 2 threads)
+--- A seed 0: the switch alone (spatial.copy_path.gate.weight, spatial.copy_path.gate.bias, spatial.copy_path.tau, spatial.copy_path.beta), 500 steps, lr 0.01
+  joint  exact 0.857  seen/train 0.899  seen/held 0.864  unseen/train 0.839  unseen/held 0.816  absent answered 0.068  present wrong 0.110  refused 0.033  language 2.2708  copy alone 0.974  lam here 0.908 empty 0.145  [70s]
+  step  100  exact 0.902  seen/train 0.930  seen/held 0.893  unseen/train 0.901  unseen/held 0.881  absent answered 0.112  present wrong 0.076  refused 0.022  language 2.2708  copy alone 0.974  lam here 0.957 empty 0.102  [273s]
+  step  200  exact 0.850  seen/train 0.885  seen/held 0.869  unseen/train 0.823  unseen/held 0.811  absent answered 0.049  present wrong 0.114  refused 0.037  language 2.2704  copy alone 0.974  lam here 0.936 empty 0.043  [469s]
+  step  300  exact 0.897  seen/train 0.930  seen/held 0.897  unseen/train 0.880  unseen/held 0.876  absent answered 0.117  present wrong 0.081  refused 0.022  language 2.2706  copy alone 0.974  lam here 0.956 empty 0.079  [662s]
+  step  400  exact 0.880  seen/train 0.907  seen/held 0.883  unseen/train 0.865  unseen/held 0.859  absent answered 0.073  present wrong 0.088  refused 0.032  language 2.2705  copy alone 0.974  lam here 0.948 empty 0.064  [856s]
+  step  500  exact 0.897  seen/train 0.921  seen/held 0.897  unseen/train 0.885  unseen/held 0.881  absent answered 0.097  present wrong 0.077  refused 0.026  language 2.2706  copy alone 0.974  lam here 0.955 empty 0.075  [1051s]
+  frozen parameters unchanged: True; best match (p5/p50/p95) present [0.1802, 0.2925, 0.4146], absent [0.0434, 0.1057, 0.1667]; one threshold {'at': 0.17, 'balanced_accuracy': 0.9598}
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_k10_switch_A_s0_2026-10-22.json

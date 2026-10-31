@@ -1,0 +1,31 @@
+[0034] Scene files, and the runner that reads them with the host and the trunk (the questions fixed before any run)
+
+The public half of 0034. A world's own exporter writes the scene files; this repo has only the format and the
+reader.
+
+- cubbyllm/spatial/scene_file.py: the cubby.scene/1 format.
+  - Things are a name, a kind and a cell; regions are named boxes; meta is the exporter's own.
+  - Scene.from_json / to_json. A file with a wrong tag, a malformed cell, two things in one cell or one name
+    twice is refused whole.
+  - crop(): the largest square round a centre (at most 24 cells, 32 things, 3 levels), moved to the origin as
+    the spatial shard's villages are, with the regions cut to it.
+- validation/s12_questions.py: the 30 questions per village (position 5, where 4, neighbour 5, offset 5,
+  nearest 4, region 3, at 4). Draws lean towards answers that are things; each answer has a class (name, kind,
+  region, position, nothing); a placed question carries the cell it is about.
+- validation/exp_s12_scene_files.py, for scene files in $CUBBY_SCENES (outside this repo):
+  - `fix` writes the questions, with each file's hash, next to the files; `run` refuses if they are missing or
+    a file changed since.
+  - The host: a fresh AskLoop(scene=) per village, the CubeLang VM verifying.
+  - The trunk: run 5 through torch, documents rendered as the shard renders them, scored teacher-forced by
+    answer class. The three placed shapes are what run 5 was trained on; the other four are asked and
+    reported apart.
+  - The detail (names, cells) goes to the private folder; only counts come here.
+- cubbyllm/reasoning/ask_relation.py: with a scene mounted, the loop counts the scene's own relations as
+  relations. Before, "What is the east neighbour of the well?" was read as a profile of "east neighbour of the
+  well", and the scene's route never saw it. Without a scene, nothing changes.
+
+Tests: tests/spatial/test_scene_file.py (7), tests/spatial/test_s12_scene_files.py (3). The spatial and ask tests
+pass (70).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

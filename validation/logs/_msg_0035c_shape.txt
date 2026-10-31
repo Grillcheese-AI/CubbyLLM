@@ -1,0 +1,20 @@
+[0035] C: villages in the far facts' shape, C's measure and shard builder; untrained, the shape alone passes things and names
+
+make_spatial_shard.render(lead=True) (off by default: 800 documents byte for byte as HEAD's) writes a
+village as the far facts are written: a name's piece i at its cell + 6 i z; after a placed question
+the last token of "Answer: " asks for piece 0; the answer in the token form it was written in; each
+answer piece asks for the next. exp_s12_copy_villages.py reads a checkpoint on 0034's 60 villages and
+fixed placed questions in both shapes, by class, with the copy's gate and where missed first tokens
+go. make_scene_shard.py writes C's training shard from scene files (placed questions alternating a
+full cell and an empty one; villagers and other things alternating), into a private folder.
+
+Run 5, untrained, on 0034's villages (exp_s12_copy_villages_run5_2026-10-23.json):
+  0034's shape:       things 0.006, names 0.000, "nothing" 0.972 exact (0034's numbers, reproduced)
+  far facts' shape:   things 0.815, names 0.667, "nothing" 0.008 exact (first token 0.982 / 0.933)
+The shape alone carries things and names past C's lines (0.75, 0.60). "Nothing" collapses: the gate
+opens on empty cells (lambda 0.72) and copies a neighbour's piece (357 of 391). The training is for
+that. Most whole names missed after a right first piece stop there (65 of 87): the read at the
+second piece's address is weak.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

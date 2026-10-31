@@ -1,0 +1,34 @@
+[0034] Villages read from a real world: the host 0 wrong in 3,600; the trunk below the kill line (the words do not transfer); 20 of 20 markers placed
+
+60 villages (20 seeds x 3 days) of a world Cubby did not generate, exported by that world's own (private) exporter.
+Each village is cut to the shard's size and also read whole, with 30 questions per view fixed before the run
+(questions.json sha256 80b60cc3...; the generator was committed in e9c32da before any village existed).
+
+The host, AskLoop(scene=), CubeLang VM:
+- 0 wrong spoken in 1,800 (cut) and 1,800 (whole).
+- It routes 1,020 of 1,800: position, the one-step neighbour, nearest of a kind, region. Of those, every one
+  with an answer was spoken right (779 cut, 793 whole) and every "nothing" refused (241, 227).
+- It routes none of "n steps away", "at a cell" or "where is X" (780 per view): its grammar has no route
+  from those words to the scene.
+
+The trunk, run 5 (link + copy), placed questions (the shapes it was trained on):
+- things 0.006 exact (2 of 329), names 0.000 (0 of 120), "nothing" 0.972 (380 of 391).
+- Kill (pre-registered: kinds below 0.75): the synthetic villages did not transfer.
+
+Diagnosis (validation/diag_s12_names.py, reported apart from the gate): the same villages, cells and questions,
+every thing renamed to a shard word of its kind, read things at 0.581 (261 of 449) against 0.0045 as exported.
+Mostly the words: the trunk opens a thing it never saw as a village thing with "nothing", and the copy does not
+fire there. But the places cost too: 0.58, not the shard's 0.95.
+
+The act line (the world's act arm, counted by validation/s12_act.py):
+- 20 villages that could take a placement order: 20 markers on the computed cell, which was the expected cell
+  each time; 0 placed anywhere else.
+- 22 of 22 unplaceable targets refused before any order was sent.
+- 2 orders went to villages too young to take one; the world refused them. The act arm now checks first.
+
+Logs: validation/logs/exp_s12_scene_files_2026-10-22.json, diag_s12_names_2026-10-22.json (counts only; the
+villages, their names and cells stay in the private folder). The public log's act section was recomputed from the
+same act log after the counter stopped carrying the world's own refusal words.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

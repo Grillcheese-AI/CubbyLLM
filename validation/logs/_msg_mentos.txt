@@ -1,0 +1,9 @@
+[0010][0019] Addenda: MENTOS
+
+MENTOS labels 12,917 ESConv supporter turns with the supporter's belief, intent and emotion
+(Plutchik's eight plus 14 dyads, 0-3), written by gpt-4o and checked by people on 100 dialogues.
+0019: a report of its dyads against the cube's, no gate. 0010: the intent as a plan before the
+words, conditioning only.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

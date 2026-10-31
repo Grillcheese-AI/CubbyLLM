@@ -1,0 +1,36 @@
+[0016] Sources stay internal: a user audience by default, an audit token, a leak guard at every mouth, GET /audit/<id>
+
+Built (Nick's rule, so `user` is the default and not behind a flag):
+- standin/audience.py (new): audience(token) -- 'audit' only for the token in CUBBY_AUDIT_TOKEN or the
+  git-ignored standin/data/out/audit_token (neither set: never), compared in constant time; token_of (header
+  X-Audit-Token, Authorization: Bearer, or ?token= for an EventSource); for_user (drops learned, evidence,
+  provenance, citations, passages and the internal working: the thought graph, the store snapshot, the
+  reasoning task, the drafts not spoken, the route; a profile's per-line sources); LeakGuard (the names behind
+  the answer -- its facts' provenance, the cited books' authors and titles -- and the store's source names, URLs
+  and domains: cut where a clause only names the source, "(source: X)", "according to X,", otherwise refused;
+  the answer and the entity asked are never a leak; every 8-word run looked up in the passage index: a quote is
+  refused); mouth (every text a user reads; a profile's answer loses the item that names a source, refuses
+  when none is left, reason leak_guard); audit_chain (the plan, the facts with sources, dates and passages, the
+  gate's and VM's verdicts, the tier, the graph, the record's hash and whether it still matches); the access
+  log masks a token in a query string.
+- standin/ask.py: every kept record goes through the mouth and is sealed with its hash (AskLoop.guard reads the
+  books' index for the quote scan).
+- standin/serve_api.py: the panel, /brain, /map, /loop/events, /loop/stream, /events and /audit/<id> refuse a
+  user (403); an audit page served with the token gets a shim so its own requests carry it; /ask and /turn
+  return for_user(record) to a user; /health names no source and /worlds no world to a user; CORS allows the
+  two token headers.
+- standin/serve.py: the talk seat's reply through the guard before "speak" (a reply it cannot cut becomes the
+  "I don't know" line); the help line counts facts instead of naming the worlds.
+- standin/self_source.py: the self-profile counts what it learned ("fact learned: 152"), never from whom.
+- validation/exp_leak_scan.py: the acceptance scan (user role, 200 live-loop answers + the books bench).
+
+Tests: standin/tests/test_audience.py (new, 5, the HTTP surface included), test_self_source.py (the source lines
+now must be absent), test_serve.py (the console feed under the token; a user's /worlds a count, /events 403);
+331 passed across the serve, ask, books, forms, audience, reasoning and spatial suites. The measurements and the
+report follow.
+
+Files over 300 lines that grow: ask.py 1555 -> 1560 (the guard and the seal where the record is kept),
+serve_api.py 476 -> 499 (the routes it gates), serve.py 804 -> 811 (the talk seat's mouth).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

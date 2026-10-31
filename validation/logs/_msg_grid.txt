@@ -1,0 +1,33 @@
+[0001] A0 extended (the read-side grid) and the copy on run 3 at step 0; train_base: CB_SPATIAL_COPY, the copy added to a linked checkpoint, a fact probe at each eval
+
+validation/diag_fact_cleanup_grid.py (no training; Addendum 2): run 3's stored vectors, 400
+held-out facts_far1k_lead documents, 9,451 piece reads; per piece / whole answers --
+                       vocabulary        written (the ring)   writer gap -> tau
+  stored  K=1          0.758 / 0.457     0.992 / 0.965        0.096 -> 3.04
+  stored  K=2          0.954 / 0.859     1.000 / 0.999        0.151 -> 2.58
+  stored  K=4          0.999 / 0.996     1.000 / 1.000        0.238 -> 2.13
+  random  K=1          0.759 / 0.436     0.991 / 0.961        0.097
+  random  K=2          0.951 / 0.851     0.999 / 0.997
+  random  K=4          1.000 / 0.999     1.000 / 1.000
+Random identity codes change nothing (B4 dropped, as Addendum 3 says); splitting the scene by the
+place's hash (B8) lifts even the vocabulary decode (K=4: 0.996 whole answers); the ring alone
+reaches 0.965 at K=1. Logs: diag_fact_cleanup_grid_run3_2026-10-21.{json,log}.
+
+validation/diag_copy_step0.py: run 3 with the ring copy ADDED the way CB_INIT_FROM adds it (lam
+0.1, tau 3.04), nothing trained, 24 held-out documents (120 far-fact questions):
+  as trained   facts first 0.250 exact 0.000   villages exact 0.982
+  ring added   facts first 0.525 exact 0.058   villages exact 0.982
+At lam 0.1 the copy cannot yet outvote a confident trunk on the later pieces; on the toy lam opens
+0.1 -> 0.75 in 100 steps. Logs: diag_copy_step0_run3_ring_2026-10-21.{json,log}.
+
+validation/train_base.py (already over 300 lines: these live where build_model, init_from and the
+eval loop are): CB_SPATIAL_COPY=ring|table + CB_SPATIAL_COPY_TAU into meta["spatial"] (absent
+without them: every earlier meta still matches); init_copy -- CB_INIT_FROM a linked checkpoint
+into the model with the copy added (every tensor loads but the copy's three); CB_PROBE_SHARDS /
+CB_PROBE_DOCS -- exp_hypertoken_recall's held-out score and the copy's lam at every eval (the
+probe's import would set CB_NO_FLEX=1, which the backbone reads at every forward: it is undone).
+Test: test_init_from_adds_the_copy_path_to_a_linked_checkpoint. Full suite: 403 passed, 5
+skipped, 1 failed (the known wiring guard, 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

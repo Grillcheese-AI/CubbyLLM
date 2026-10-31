@@ -1,0 +1,29 @@
+env: 2026-10-21 13:59 python 3.12.10 torch 2.4.1+cpu numpy 2.5.1 Intel64 Family 6 Model 151 Stepping 5, GenuineIntel (CPU, 2 threads)
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+--- diag_pieces5_ring_s0: 3.36M params, meta {'kind': 'cubby_base', 'D': 256, 'L': 4, 'heads': 4, 'window': 64, 'attn_every': 2, 'ctx': 32, 'slots': 8, 'gen_basis': 16, 'gen_rank': 8, 'vocab': 1024, 'vocab_real': 1024, 'mem_every': 0, 'tied': False, 'causal_ctx': True, 'spatial': {'scale': 2.0, 'seed': 0, 'at': 2, 'query': 'placed', 'bind': 'writes', 'copy': 'ring'}}, 509 entities, 64 held-out documents (511 questions)
+  ceiling per piece (random codes, ideal decoder): 0.510 over the vocabulary, 0.879 over the ~24 written tokens (24.1 items a scene)
+  copy ring: tau 3.190 (exp 24.3), lam 0.1
+  step     0  loss 7.647  exact 0.673  first 0.881  later 0.857  end 0.000  language 6.986  read top-1 0.548 cos 0.206  gap 0.082  lam 0.100 {'first': 0.10031166047207764, 'later': 0.10006427966905405, 'end': 0.10005218754367586} tau 3.19 missed {'eos': 0, 'written': 147, 'other': 0}  gate +0.00   [4s]
+  step   100  loss 3.992  exact 0.507  first 0.881  later 0.651  end 0.802  language 2.731  read top-1 0.546 cos 0.206  gap 0.082  lam 0.739 {'first': 0.9821855486489088, 'later': 0.6890187526467474, 'end': 0.5639952323791332} tau 3.28 missed {'eos': 308, 'written': 51, 'other': 0}  gate -0.07   [148s]
+  step   200  loss 3.729  exact 0.587  first 0.879  later 0.746  end 0.738  language 2.315  read top-1 0.550 cos 0.206  gap 0.083  lam 0.753 {'first': 0.9960963709713662, 'later': 0.716813337684141, 'end': 0.5449911514206001} tau 3.38 missed {'eos': 198, 'written': 63, 'other': 0}  gate -0.14   [292s]
+  step   299  loss 3.607  exact 0.605  first 0.881  later 0.770  end 0.673  language 2.199  read top-1 0.550 cos 0.206  gap 0.083  lam 0.765 {'first': 0.9978291728258599, 'later': 0.7358637642118975, 'end': 0.5582357396366195} tau 3.41 missed {'eos': 162, 'written': 75, 'other': 0}  gate -0.16   [442s]
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_k10_far_facts_diag_pieces5_ring_s0_2026-10-21.json

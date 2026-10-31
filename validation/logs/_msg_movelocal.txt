@@ -1,0 +1,4 @@
+docs: a section of WORLDS.md moved to local notes; 0015 filter renamed
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

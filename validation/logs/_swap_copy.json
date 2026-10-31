@@ -1,0 +1,28 @@
+{
+ "run4": {
+  "facts_far1k_lead": {
+   "questions": 321,
+   "first_token": 0.9750778816199377,
+   "exact": 0.7383177570093458
+  },
+  "spatial_here": {
+   "questions": 569,
+   "first_token": 0.9648506151142355,
+   "exact": 0.9595782073813708
+  },
+  "_lam": 0.4965311884880066
+ },
+ "run3_trunk_run4_copy": {
+  "facts_far1k_lead": {
+   "questions": 321,
+   "first_token": 0.9875389408099688,
+   "exact": 0.8442367601246106
+  },
+  "spatial_here": {
+   "questions": 569,
+   "first_token": 0.961335676625659,
+   "exact": 0.9578207381370826
+  },
+  "_lam": 0.5374659895896912
+ }
+}

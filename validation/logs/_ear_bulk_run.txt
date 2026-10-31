@@ -1,0 +1,121 @@
+﻿  praise/fr/1: HTTP Error 402: Payment Required
+  praise/en/2: HTTP Error 402: Payment Required
+  praise/en/0: HTTP Error 402: Payment Required
+  praise/en/1: HTTP Error 402: Payment Required
+  praise/fr/2: HTTP Error 402: Payment Required
+  praise/qc/0: HTTP Error 402: Payment Required
+  praise/fr/0: HTTP Error 402: Payment Required
+  praise/qc/1: HTTP Error 402: Payment Required
+  encourage/en/1: HTTP Error 402: Payment Required
+  encourage/en/0: HTTP Error 402: Payment Required
+  praise/qc/2: HTTP Error 402: Payment Required
+  encourage/en/2: HTTP Error 402: Payment Required
+  encourage/fr/0: HTTP Error 402: Payment Required
+  encourage/qc/0: HTTP Error 402: Payment Required
+  encourage/fr/1: HTTP Error 402: Payment Required
+  encourage/qc/1: HTTP Error 402: Payment Required
+  encourage/fr/2: HTTP Error 402: Payment Required
+  kind/fr/1: HTTP Error 402: Payment Required
+  kind/en/0: HTTP Error 402: Payment Required
+  kind/en/2: HTTP Error 402: Payment Required
+  encourage/qc/2: HTTP Error 402: Payment Required
+  kind/en/1: HTTP Error 402: Payment Required
+  kind/fr/2: HTTP Error 402: Payment Required
+  kind/qc/0: HTTP Error 402: Payment Required
+  kind/qc/1: HTTP Error 402: Payment Required
+  kind/qc/2: HTTP Error 402: Payment Required
+  welcome/en/0: HTTP Error 402: Payment Required
+  welcome/en/1: HTTP Error 402: Payment Required
+  welcome/en/2: HTTP Error 402: Payment Required
+  welcome/fr/0: HTTP Error 402: Payment Required
+  welcome/fr/1: HTTP Error 402: Payment Required
+  welcome/fr/2: HTTP Error 402: Payment Required
+  welcome/qc/1: HTTP Error 402: Payment Required
+  welcome/qc/0: HTTP Error 402: Payment Required
+  welcome/qc/2: HTTP Error 402: Payment Required
+  thanks/en/0: HTTP Error 402: Payment Required
+  kind/fr/0: HTTP Error 402: Payment Required
+  thanks/fr/0: HTTP Error 402: Payment Required
+  thanks/en/1: HTTP Error 402: Payment Required
+  thanks/fr/1: HTTP Error 402: Payment Required
+  thanks/en/2: HTTP Error 402: Payment Required
+  thanks/qc/0: HTTP Error 402: Payment Required
+  comfort/en/1: HTTP Error 402: Payment Required
+  thanks/qc/1: HTTP Error 402: Payment Required
+  thanks/fr/2: HTTP Error 402: Payment Required
+  thanks/qc/2: HTTP Error 402: Payment Required
+  comfort/en/0: HTTP Error 402: Payment Required
+  comfort/en/2: HTTP Error 402: Payment Required
+  comfort/fr/0: HTTP Error 402: Payment Required
+  comfort/fr/1: HTTP Error 402: Payment Required
+  comfort/qc/0: HTTP Error 402: Payment Required
+  comfort/qc/1: HTTP Error 402: Payment Required
+  comfort/fr/2: HTTP Error 402: Payment Required
+  safety/en/1: HTTP Error 402: Payment Required
+  comfort/qc/2: HTTP Error 402: Payment Required
+  safety/en/0: HTTP Error 402: Payment Required
+  safety/fr/1: HTTP Error 402: Payment Required
+  safety/fr/0: HTTP Error 402: Payment Required
+  safety/fr/2: HTTP Error 402: Payment Required
+  safety/en/2: HTTP Error 402: Payment Required
+  safety/qc/1: HTTP Error 402: Payment Required
+  safety/qc/2: HTTP Error 402: Payment Required
+  safety/qc/0: HTTP Error 402: Payment Required
+  outcome/en/0: HTTP Error 402: Payment Required
+  outcome/fr/2: HTTP Error 402: Payment Required
+  outcome/en/2: HTTP Error 402: Payment Required
+  outcome/en/1: HTTP Error 402: Payment Required
+  outcome/fr/1: HTTP Error 402: Payment Required
+  outcome/fr/0: HTTP Error 402: Payment Required
+  outcome/qc/0: HTTP Error 402: Payment Required
+  outcome/qc/1: HTTP Error 402: Payment Required
+  health/en/2: HTTP Error 402: Payment Required
+  outcome/qc/2: HTTP Error 402: Payment Required
+  health/en/1: HTTP Error 402: Payment Required
+  health/fr/0: HTTP Error 402: Payment Required
+  health/en/0: HTTP Error 402: Payment Required
+  health/fr/1: HTTP Error 402: Payment Required
+  health/qc/0: HTTP Error 402: Payment Required
+  health/fr/2: HTTP Error 402: Payment Required
+  health/qc/2: HTTP Error 402: Payment Required
+  negation/en/0: HTTP Error 402: Payment Required
+  negation/en/1: HTTP Error 402: Payment Required
+  negation/en/2: HTTP Error 402: Payment Required
+  negation/fr/0: HTTP Error 402: Payment Required
+  negation/fr/2: HTTP Error 402: Payment Required
+  negation/fr/1: HTTP Error 402: Payment Required
+  negation/qc/0: HTTP Error 402: Payment Required
+  health/qc/1: HTTP Error 402: Payment Required
+  negation/qc/1: HTTP Error 402: Payment Required
+  trust/en/0: HTTP Error 402: Payment Required
+  trust/en/1: HTTP Error 402: Payment Required
+  trust/fr/1: HTTP Error 402: Payment Required
+  trust/en/2: HTTP Error 402: Payment Required
+  trust/fr/0: HTTP Error 402: Payment Required
+  trust/qc/0: HTTP Error 402: Payment Required
+  trust/fr/2: HTTP Error 402: Payment Required
+  negation/qc/2: HTTP Error 402: Payment Required
+  growth/en/0: HTTP Error 402: Payment Required
+  trust/qc/2: HTTP Error 402: Payment Required
+  growth/en/2: HTTP Error 402: Payment Required
+  trust/qc/1: HTTP Error 402: Payment Required
+  growth/fr/0: HTTP Error 402: Payment Required
+  growth/qc/1: HTTP Error 402: Payment Required
+  growth/fr/2: HTTP Error 402: Payment Required
+  growth/qc/0: HTTP Error 402: Payment Required
+  growth/fr/1: HTTP Error 402: Payment Required
+  growth/qc/2: HTTP Error 402: Payment Required
+  growth/en/1: HTTP Error 402: Payment Required
+{
+ "kept": 0,
+ "calls": 108,
+ "usage": {
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+ },
+ "finish": {},
+ "seed_ear_orders_right": 0.0,
+ "per": {}
+}

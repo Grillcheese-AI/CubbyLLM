@@ -1,0 +1,19 @@
+[0024] Replies in Cubby's words, and news as the trigger that a held fact may have changed
+
+- standin/news_reply.py (new, STANDALONE until the bench): "What happened with X on <date>?", "What was
+  reported about X this week?" and their French forms; the news items naming X in the window, grouped
+  (news_events), said as reported and dated by their first day: what else the reports named, and their key
+  words. No outlet named (the manifest's outlet names are filtered), no 8-word run of an item (checked against
+  every item used: refused otherwise); nothing found is a refusal in the question's language.
+- standin/news_trigger.py (new): a change word (appointed, resigned, elected, sworn in, died, acquired,
+  removed; English and French) beside a person or organisation the world holds, in a news item or an office's
+  statement, or in a kept GDELT event's URL words (never fetched): a mark (entity, cue, day, source) in
+  <archive>/_changes.jsonl, once. First day: 3 marks from items, 0 from 253 GDELT events.
+- standin/ask.py: AskLoop(news_changes=...) -- an "as of" reply whose subject the news marked after that date
+  adds "Reports on <day> say this may have changed."; the marks go to the record, which audience.for_user
+  drops (news_changes added to the provenance fields). Off (None): the reply as before. +15 lines on a file
+  already over 300: the branch it extends lives there.
+- Tests: test_news_reply.py (2), test_news_trigger.py (4).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

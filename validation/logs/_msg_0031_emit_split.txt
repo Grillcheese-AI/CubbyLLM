@@ -1,0 +1,20 @@
+[0031] pre-move: emitter_base keeps what the package needs; the stand-in's GGUF parts go to emitter_llama
+
+emitter_base moves to cubbyllm/emit/base.py in the emit slice, and the package may not open a
+socket or know the stand-in's chat templates. So, before the move, no path moves:
+
+- emitter_base keeps the contract (Emitter, SYSTEM), the reply cleaning (clean_reply), the card's
+  decode lock (GPU_LOCK) and the ReplayEmitter, and gains strip_think / strip_fences (moved verbatim
+  from eval_emitter_vm, which re-exports them through the facade: the ask loop strips fences too).
+  It no longer imports urllib.request, json or os.
+- The llama-server emitter (urllib), NO_THINK_PREFILL, the chat renderers and families, NON_LATIN and
+  the ScriptBan move verbatim into emitter_llama (the stand-in's GGUF emitters; 253 lines).
+- standin/emitter.py (the facade) re-exports every name as before, plus strip_think / strip_fences.
+
+Tests: test_build_emitter_sft (renderers, the script ban, strip_think/strip_fences), test_emitter_450m,
+test_emitter_decode, test_exp_he19_memory, test_serve, test_plugins_serve, test_asking, tests/reasoning,
+tests/speech, test_guards: 324 passed, 1 failed (test_every_module_declares_wiring, the known red of
+order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

@@ -1,0 +1,4 @@
+finder: 10/100 gold in the top 5 [12s]
+frames: agreement {'dev': 0.533, 'test': 0.571} (dev {'agree': 16, 'contra': 14}, test {'contra': 9, 'agree': 12}) [245s]
+bench: 10/49 spoken (1 flat, 9 hedged), wrong flat 0, wrong hedged 5; wrong tense answered flat 0/49 [290s]
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_books_bench_2026-10-22.json

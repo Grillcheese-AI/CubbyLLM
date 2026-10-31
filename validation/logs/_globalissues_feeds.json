@@ -1,0 +1,379 @@
+{
+ "publisher": "Global Issues",
+ "checked": "2026-10-22",
+ "listing": "https://www.globalissues.org/news/topic",
+ "pattern": "https://www.globalissues.org/news/topic/<id>/feed (Atom; /news/feed/issue/<id> ignores the id)",
+ "feeds": [
+  {
+   "topic": "AIDS around the world",
+   "id": 219,
+   "url": "https://www.globalissues.org/news/topic/219/feed",
+   "entries": 10,
+   "newest": "2012-06-23T02:29:00-07:00"
+  },
+  {
+   "topic": "AIDS in Africa",
+   "id": 90,
+   "url": "https://www.globalissues.org/news/topic/90/feed",
+   "entries": 10,
+   "newest": "2012-07-08T23:58:00-07:00"
+  },
+  {
+   "topic": "Aid",
+   "id": 786,
+   "url": "https://www.globalissues.org/news/topic/786/feed",
+   "entries": 10,
+   "newest": "2026-10-21T05:00:00-07:00"
+  },
+  {
+   "topic": "Arms Control",
+   "id": 66,
+   "url": "https://www.globalissues.org/news/topic/66/feed",
+   "entries": 10,
+   "newest": "2026-10-21T09:02:44-07:00"
+  },
+  {
+   "topic": "Arms Trade—a major cause of suffering",
+   "id": 73,
+   "url": "https://www.globalissues.org/news/topic/73/feed",
+   "entries": 10,
+   "newest": "2026-10-21T09:02:44-07:00"
+  },
+  {
+   "topic": "Asian Earthquake and Tsunami Disaster",
+   "id": 523,
+   "url": "https://www.globalissues.org/news/topic/523/feed",
+   "entries": 10,
+   "newest": "2012-04-09T01:38:00-07:00"
+  },
+  {
+   "topic": "Biodiversity",
+   "id": 169,
+   "url": "https://www.globalissues.org/news/topic/169/feed",
+   "entries": 10,
+   "newest": "2026-10-22T06:52:56-07:00"
+  },
+  {
+   "topic": "Causes of Poverty",
+   "id": 2,
+   "url": "https://www.globalissues.org/news/topic/2/feed",
+   "entries": 10,
+   "newest": "2026-10-22T06:52:56-07:00"
+  },
+  {
+   "topic": "Climate Change and Global Warming",
+   "id": 178,
+   "url": "https://www.globalissues.org/news/topic/178/feed",
+   "entries": 10,
+   "newest": "2026-10-22T06:52:56-07:00"
+  },
+  {
+   "topic": "Conflicts in Africa",
+   "id": 83,
+   "url": "https://www.globalissues.org/news/topic/83/feed",
+   "entries": 10,
+   "newest": "2026-10-22T04:42:00-07:00"
+  },
+  {
+   "topic": "Consumption and Consumerism",
+   "id": 235,
+   "url": "https://www.globalissues.org/news/topic/235/feed",
+   "entries": 10,
+   "newest": "2026-10-22T06:52:56-07:00"
+  },
+  {
+   "topic": "Corruption",
+   "id": 590,
+   "url": "https://www.globalissues.org/news/topic/590/feed",
+   "entries": 10,
+   "newest": "2012-06-16T19:06:00-07:00"
+  },
+  {
+   "topic": "Democracy",
+   "id": 761,
+   "url": "https://www.globalissues.org/news/topic/761/feed",
+   "entries": 10,
+   "newest": "2026-10-22T05:49:53-07:00"
+  },
+  {
+   "topic": "Deregulation or Protectionism?",
+   "id": 43,
+   "url": "https://www.globalissues.org/news/topic/43/feed",
+   "entries": 10,
+   "newest": "2012-05-18T23:57:00-07:00"
+  },
+  {
+   "topic": "Energy Security",
+   "id": 595,
+   "url": "https://www.globalissues.org/news/topic/595/feed",
+   "entries": 10,
+   "newest": "2026-10-21T17:08:51-07:00"
+  },
+  {
+   "topic": "Environmental Issues",
+   "id": 168,
+   "url": "https://www.globalissues.org/news/topic/168/feed",
+   "entries": 10,
+   "newest": "2026-10-22T06:52:56-07:00"
+  },
+  {
+   "topic": "Food and Agriculture Issues",
+   "id": 749,
+   "url": "https://www.globalissues.org/news/topic/749/feed",
+   "entries": 10,
+   "newest": "2026-10-22T05:49:53-07:00"
+  },
+  {
+   "topic": "Foreign Aid for Development Assistance",
+   "id": 35,
+   "url": "https://www.globalissues.org/news/topic/35/feed",
+   "entries": 10,
+   "newest": "2026-09-08T08:15:20-07:00"
+  },
+  {
+   "topic": "Foreign Policy — Projecting Power",
+   "id": 124,
+   "url": "https://www.globalissues.org/news/topic/124/feed",
+   "entries": 10,
+   "newest": "2026-10-21T05:00:00-07:00"
+  },
+  {
+   "topic": "Free Trade and Globalization",
+   "id": 38,
+   "url": "https://www.globalissues.org/news/topic/38/feed",
+   "entries": 10,
+   "newest": "2026-10-22T06:52:56-07:00"
+  },
+  {
+   "topic": "G8: Too Much Power?",
+   "id": 718,
+   "url": "https://www.globalissues.org/news/topic/718/feed",
+   "entries": 10,
+   "newest": "2026-10-22T04:42:00-07:00"
+  },
+  {
+   "topic": "Genetically Engineered Food",
+   "id": 188,
+   "url": "https://www.globalissues.org/news/topic/188/feed",
+   "entries": 10,
+   "newest": "2012-04-26T15:02:00-07:00"
+  },
+  {
+   "topic": "Geopolitics",
+   "id": 65,
+   "url": "https://www.globalissues.org/news/topic/65/feed",
+   "entries": 10,
+   "newest": "2026-10-22T06:52:56-07:00"
+  },
+  {
+   "topic": "Global Financial Crisis",
+   "id": 768,
+   "url": "https://www.globalissues.org/news/topic/768/feed",
+   "entries": 10,
+   "newest": "2026-10-22T06:52:56-07:00"
+  },
+  {
+   "topic": "Haiti",
+   "id": 141,
+   "url": "https://www.globalissues.org/news/topic/141/feed",
+   "entries": 10,
+   "newest": "2012-05-24T09:26:00-07:00"
+  },
+  {
+   "topic": "Health Issues",
+   "id": 587,
+   "url": "https://www.globalissues.org/news/topic/587/feed",
+   "entries": 10,
+   "newest": "2026-10-22T06:52:56-07:00"
+  },
+  {
+   "topic": "Human Population",
+   "id": 198,
+   "url": "https://www.globalissues.org/news/topic/198/feed",
+   "entries": 10,
+   "newest": "2026-10-20T15:37:49-07:00"
+  },
+  {
+   "topic": "Human Rights Issues",
+   "id": 137,
+   "url": "https://www.globalissues.org/news/topic/137/feed",
+   "entries": 10,
+   "newest": "2026-10-22T05:49:53-07:00"
+  },
+  {
+   "topic": "Immigration",
+   "id": 537,
+   "url": "https://www.globalissues.org/news/topic/537/feed",
+   "entries": 10,
+   "newest": "2026-10-22T05:49:53-07:00"
+  },
+  {
+   "topic": "International Criminal Court",
+   "id": 102,
+   "url": "https://www.globalissues.org/news/topic/102/feed",
+   "entries": 10,
+   "newest": "2026-10-21T09:02:44-07:00"
+  },
+  {
+   "topic": "Iran",
+   "id": 696,
+   "url": "https://www.globalissues.org/news/topic/696/feed",
+   "entries": 10,
+   "newest": "2012-06-08T17:30:00-07:00"
+  },
+  {
+   "topic": "Iraq Crisis",
+   "id": 104,
+   "url": "https://www.globalissues.org/news/topic/104/feed",
+   "entries": 10,
+   "newest": "2012-04-13T01:28:00-07:00"
+  },
+  {
+   "topic": "Mainstream Media",
+   "id": 156,
+   "url": "https://www.globalissues.org/news/topic/156/feed",
+   "entries": 10,
+   "newest": "2026-10-15T17:39:48-07:00"
+  },
+  {
+   "topic": "Middle East",
+   "id": 103,
+   "url": "https://www.globalissues.org/news/topic/103/feed",
+   "entries": 10,
+   "newest": "2026-10-20T05:00:00-07:00"
+  },
+  {
+   "topic": "Middle East and North Africa Unrest",
+   "id": 792,
+   "url": "https://www.globalissues.org/news/topic/792/feed",
+   "entries": 10,
+   "newest": "2017-02-13T14:50:36-08:00"
+  },
+  {
+   "topic": "Natural Disasters",
+   "id": 522,
+   "url": "https://www.globalissues.org/news/topic/522/feed",
+   "entries": 10,
+   "newest": "2026-10-22T05:49:53-07:00"
+  },
+  {
+   "topic": "Nature and Animal Conservation",
+   "id": 177,
+   "url": "https://www.globalissues.org/news/topic/177/feed",
+   "entries": 10,
+   "newest": "2026-10-22T06:52:56-07:00"
+  },
+  {
+   "topic": "Non-governmental Organizations on Development Issues",
+   "id": 25,
+   "url": "https://www.globalissues.org/news/topic/25/feed",
+   "entries": 10,
+   "newest": "2026-10-22T04:42:00-07:00"
+  },
+  {
+   "topic": "Nuclear Weapons",
+   "id": 67,
+   "url": "https://www.globalissues.org/news/topic/67/feed",
+   "entries": 10,
+   "newest": "2026-10-21T05:00:00-07:00"
+  },
+  {
+   "topic": "Palestine and Israel",
+   "id": 111,
+   "url": "https://www.globalissues.org/news/topic/111/feed",
+   "entries": 10,
+   "newest": "2012-06-12T00:24:00-07:00"
+  },
+  {
+   "topic": "Pharmaceutical Corporations and AIDS",
+   "id": 53,
+   "url": "https://www.globalissues.org/news/topic/53/feed",
+   "entries": 10,
+   "newest": "2012-06-23T02:29:00-07:00"
+  },
+  {
+   "topic": "Racism",
+   "id": 165,
+   "url": "https://www.globalissues.org/news/topic/165/feed",
+   "entries": 10,
+   "newest": "2026-10-21T05:00:00-07:00"
+  },
+  {
+   "topic": "Rights of Indigenous People",
+   "id": 693,
+   "url": "https://www.globalissues.org/news/topic/693/feed",
+   "entries": 10,
+   "newest": "2026-10-21T10:21:30-07:00"
+  },
+  {
+   "topic": "Sustainable Development",
+   "id": 367,
+   "url": "https://www.globalissues.org/news/topic/367/feed",
+   "entries": 10,
+   "newest": "2026-10-22T04:42:00-07:00"
+  },
+  {
+   "topic": "Tax Avoidance and Tax Havens; Undermining Democracy",
+   "id": 54,
+   "url": "https://www.globalissues.org/news/topic/54/feed",
+   "entries": 10,
+   "newest": "2011-08-17T10:48:00-07:00"
+  },
+  {
+   "topic": "Third World Debt Undermines Development",
+   "id": 28,
+   "url": "https://www.globalissues.org/news/topic/28/feed",
+   "entries": 10,
+   "newest": "2026-10-22T04:42:00-07:00"
+  },
+  {
+   "topic": "Trade, Economy, & Related Issues",
+   "id": 1,
+   "url": "https://www.globalissues.org/news/topic/1/feed",
+   "entries": 10,
+   "newest": "2026-10-22T06:52:56-07:00"
+  },
+  {
+   "topic": "United Nations on Development Issues",
+   "id": 24,
+   "url": "https://www.globalissues.org/news/topic/24/feed",
+   "entries": 10,
+   "newest": "2026-10-18T05:00:00-07:00"
+  },
+  {
+   "topic": "WTO Doha “Development” Trade Round Collapse, 2006",
+   "id": 663,
+   "url": "https://www.globalissues.org/news/topic/663/feed",
+   "entries": 10,
+   "newest": "2012-06-06T15:09:00-07:00"
+  },
+  {
+   "topic": "War on Terror",
+   "id": 245,
+   "url": "https://www.globalissues.org/news/topic/245/feed",
+   "entries": 10,
+   "newest": "2012-06-12T12:20:00-07:00"
+  },
+  {
+   "topic": "Water and Development",
+   "id": 601,
+   "url": "https://www.globalissues.org/news/topic/601/feed",
+   "entries": 10,
+   "newest": "2026-10-09T05:12:33-07:00"
+  },
+  {
+   "topic": "Women’s Rights",
+   "id": 166,
+   "url": "https://www.globalissues.org/news/topic/166/feed",
+   "entries": 10,
+   "newest": "2026-10-20T15:37:49-07:00"
+  },
+  {
+   "topic": "World Hunger and Poverty",
+   "id": 6,
+   "url": "https://www.globalissues.org/news/topic/6/feed",
+   "entries": 10,
+   "newest": "2026-10-22T05:49:53-07:00"
+  }
+ ]
+}

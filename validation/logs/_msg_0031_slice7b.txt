@@ -1,0 +1,11 @@
+[0031] slice 7, cortex: the old package name as a shim
+
+standin/cortex/ is a shim for one cycle. Importing `cortex` or `standin.cortex` gives cubbyllm.cortex
+itself, and each submodule under the old name is the moved submodule (cortex.retina is
+cubbyllm.cortex.retina), so no class exists twice; checked. The submodule shims beside it are the
+tool's, for running a file by its old path.
+
+Tests: tests/cortex, test_guards: 16 passed, 1 failed (the known red of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

@@ -1,0 +1,92 @@
+{
+ "what": "order 0035 C's measure: a checkpoint on 0034's villages (cut, the fixed placed questions), in 0034's shape and in the far facts' (lead) shape, by answer class",
+ "date": "2026-10-23",
+ "tag": "_smoke",
+ "checkpoint": "spatial_link_5_final.pt",
+ "copy": {
+  "scale": 2.0,
+  "seed": 0,
+  "at": 16,
+  "query": "placed",
+  "bind": "writes",
+  "copy": "ring",
+  "copy_tau": 3.04,
+  "copy_beta": 0.115
+ },
+ "villages": 2,
+ "questions_sha256": "80b60cc3a9f4f9aa70fb0f0cd43a36209b93a8c24162e8fcdb68085a59b08e7c",
+ "seconds": 14.2,
+ "shapes": {
+  "0034": {
+   "kind": {
+    "n": 5,
+    "first": 0,
+    "exact": 0,
+    "first_rate": 0.0,
+    "exact_rate": 0.0,
+    "lambda_mean": null,
+    "lambda_over_half": null,
+    "missed_first_went_to": {
+     "nothing": 5
+    }
+   },
+   "name": {
+    "n": 6,
+    "first": 0,
+    "exact": 0,
+    "first_rate": 0.0,
+    "exact_rate": 0.0,
+    "lambda_mean": null,
+    "lambda_over_half": null,
+    "missed_first_went_to": {
+     "nothing": 6
+    }
+   },
+   "nothing": {
+    "n": 17,
+    "first": 17,
+    "exact": 17,
+    "first_rate": 1.0,
+    "exact_rate": 1.0,
+    "lambda_mean": null,
+    "lambda_over_half": null,
+    "missed_first_went_to": {}
+   }
+  },
+  "lead": {
+   "kind": {
+    "n": 5,
+    "first": 5,
+    "exact": 5,
+    "first_rate": 1.0,
+    "exact_rate": 1.0,
+    "lambda_mean": 1.0,
+    "lambda_over_half": 5,
+    "missed_first_went_to": {}
+   },
+   "name": {
+    "n": 6,
+    "first": 6,
+    "exact": 1,
+    "first_rate": 1.0,
+    "exact_rate": 0.167,
+    "lambda_mean": 1.0,
+    "lambda_over_half": 6,
+    "missed_first_went_to": {}
+   },
+   "nothing": {
+    "n": 17,
+    "first": 0,
+    "exact": 0,
+    "first_rate": 0.0,
+    "exact_rate": 0.0,
+    "lambda_mean": 0.7336,
+    "lambda_over_half": 14,
+    "missed_first_went_to": {
+     "a neighbour's piece": 9,
+     "a farther thing's piece": 8
+    }
+   }
+  }
+ }
+}

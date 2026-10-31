@@ -1,0 +1,29 @@
+[0045] The rented card's runner, inputs, instruction-following gate and POD.md (review)
+
+A. validation/pod/prepare_inputs.py: the fresh slice (blocks neither earlier subset took), the decay
+   shards and facts_text_far into it, the epoch table for the most tokens an arm can see, the manifest
+   (sha256, commit), the staged upload to the private repo (resumable; the token from the environment,
+   redacted from logs). --dry plans and prints, writes nothing.
+B. validation/pod/{setup.sh, run_pod.py, pod_phases.py, pod_train.py, pod_remote.py}: preflight, fetch,
+   kernels (a failing kernel's flag off for the run), speed (the micro under 92% memory, the read count
+   written before training), control, grown (step 0 exact or no training), probes, readout, adapters on
+   the winner, done; every checkpoint slot uploaded as its sidecar turns valid; the state on the remote,
+   so a new pod resumes at the phase and step the last one reached; another card model refuses.
+   validation/grow_mem_readout.py: gates 0-3 in one place; the notebook's readout cell calls it.
+C. validation/exp_if_follow.py: ten rule kinds over the held chats, no model judging; scored over the
+   talk seat on grilly2 or a replies file.
+D. docs/POD.md.
+
+Measured here: run_pod.py --smoke runs every phase on a tiny shape in about a minute; killed mid-arm
+and restarted in an empty folder it fetches the newest slot and resumes at that step, the phases done
+before not run again; a failing kernel test turns its flag off; a B200 state refuses an H200 pod; the
+readout matches the notebook's formulas on fixture metrics; each rule of the gate passes a good reply
+and fails a bad one; the dry plan overlaps no earlier block.
+
+train_base.py (over 300 already): the copy probe draws within a tiny vocabulary; unchanged for a real one.
+
+Tests: 1134 passed, 1 failed (test_every_module_declares_wiring, the known red of order 0002); the
+runner's two tests pass apart (~1 min).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

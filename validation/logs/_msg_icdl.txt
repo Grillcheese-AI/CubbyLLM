@@ -1,0 +1,17 @@
+H-S10: baselines, controls, a frontier-LLM arm and held-out worlds; citation checker
+
+- validation/logs/g6_baselines_2026-10-15.json: logistic regression and naive
+  Bayes over the same property bits, paired bootstrap against replay
+- validation/logs/g6_llm_2026-10-15.json: one frontier LM on anonymized bits
+  (benchmark baseline only, never in the agent's loop), paired against ours
+- validation/logs/g7_controls_2026-10-15.json: fixed vs learned caution,
+  harm-price sweep, a safe field where caution can only cost
+- validation/logs/g7_heldout_2026-10-15.json: fresh seeds, the paper's own
+  chemistry key, moves learned from scratch
+- CUBBYLLM_HYPOTHESES.md: H-S10 read updated (learned caution claim corrected:
+  a fixed prior on the unknown does as well)
+- tools/check_citations.py and tools/bib_from_ids.py: every reference is
+  resolved against arXiv, Crossref and Semantic Scholar before a paper leaves
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

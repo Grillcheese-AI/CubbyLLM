@@ -1,0 +1,20 @@
+[0033] Report; status review
+
+All seven items are built, one commit each (85039fc .. 2f57ce1).
+- Namesakes: 0 mixed answers in 100 (74 before).
+- The Globe Theatre asks which of its 3 items.
+- 0014's bench: 179 of 179, 0 wrong (the 177 unchanged, and 2 aliases of one item gained).
+- The real stack: 19 of 20 identical; only the Globe Theatre changed.
+- Brave: 20 of 20. The path guard: both forms caught, 0 in git ls-files.
+- The encoder's port: 2,020 of 2,020 codes equal to mowm's on the v4 table.
+- The shim counter: 338 + 1 in a notebook.
+- The suite: 1,221 passed, 1 failed (the known red, order 0002), 6 skipped
+  (validation/logs/0033_tests_2026-10-22.json).
+
+Two judgment calls are the report's questions:
+- the hdc relation tier with three guards: a strict rule refused "capital of France" and "currency of Japan"
+  (validation/logs/0033_stack_strict_rule_2026-10-22.json);
+- $CUBBY_DATA as the data root's name, since $CUBBY_DATA_ROOT already means "any other drive root".
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

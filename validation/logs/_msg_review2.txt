@@ -1,0 +1,11 @@
+[review] 0012 and 0021 done; 0022 proposed (copy or refuse)
+
+0012: bench 0 wrong flat after the time rule, finer-is-agreement and the same-name guard; frames
+0.744 on 180 triples (0.88 without capitals), a fail recorded; the time rule extends to every
+world (0015, addendum 2). 0021: the switch alone leaves 7-9% of present facts answered wrong;
+the read separates present from absent (balanced 0.947-0.963) and the fallback to the trunk is the
+error. Copy or refuse: present wrong 0.6-1.3%, absent 2.9-4.9%, refused 12-16%. 0022 makes it the
+contract, with theta fit on a calibration split, and takes it to the 450M.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

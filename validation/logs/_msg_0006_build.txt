@@ -1,0 +1,27 @@
+[0006] Text-keyed addresses and the pointer query (flagged: meta["spatial"]["key"] = "text", query = "pointer"), and the free-text toy
+
+cubbyllm/model/spatial_key.py (new): TextKeys -- key(s, r) = u(e(s)) (*) u(e(r)), piece i at key (*) P_i,
+u(x) = unitary(W x), from the embedding table read without gradient. W is orthogonal, not Gaussian: a
+Gaussian W lifted the keys' crosstalk to mean |cos| 0.064 against the random floor's 0.050 at d = 256.
+Pointer -- two soft pointers (subject, relation) over the previous w tokens, from the stream at the read's
+layer (a query from the asker, keys from the earlier tokens, a bias per offset). The key is computed from
+what they point at; decode keeps a ring of the last w ids and their keys.
+
+SpatialLink: key="text" reads a writer's positions slots as (s, r, piece) and binds only the writers (exactly
+as themselves otherwise). query="pointer" makes the askers' query from the stream; with the copy and a query
+that is not given (learned, pointer), the copy reads where the read did -- no logged run used the copy with
+the learned query. CubbyModel passes the table / ids / starts / decode state through.
+
+Off is bit-identical: the configurations that existed before (run 3's and run 4's forms, the default link,
+the table copy), built with the same seeds in HEAD's package and in this one -- forward, decode and text all
+torch.equal (validation/logs/spatial_key_off_identity_2026-10-21.log). Binding commutes, so a key is
+symmetric in subject and relation (pinned in the tests; the toy's pointer accuracy takes either order).
+
+tests/model/test_spatial_key.py: 8 tests (11 cases). validation/k10_free_docs.py + exp_k10_free_text.py: the
+toy -- 8 templates (2 held out), 20% of the entities never in training, 20% absent facts (NONE); arms U / H /
+R / P. Runs in progress.
+
+pytest tests: 425 passed, 5 skipped, 1 failed (the known wiring guard, order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

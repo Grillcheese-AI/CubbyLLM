@@ -1,0 +1,18 @@
+[0031] split: the brain (618 lines) into four modules under 300, verbatim
+
+cubbyllm/brain.py keeps CubbyBrain's core (init, trace, mount, sense, turn; 213 lines); the rest moves
+verbatim:
+  brain_reasoning.py (196) the reasoning cortex, a generation cleaned, a tail matched, the CotChain
+                           opening (PROGRAM_PREFIX, _clean: the forge imports them through brain)
+  brain_memory.py    (134) the memory cortex: "remember that ..." gated and written through the VM
+  brain_route.py     (143) BrainRoute: the thalamus (needs_facts), route, a world looked up, the help
+                           line, with the seven patterns they read (class constants, now the mixin's)
+CubbyBrain(BrainRoute). brain.py re-exports every moved name.
+
+Checked: every name reachable before is reachable after with the same source (101 names).
+tests/brain/test_serve.py patches pipeline_answer where ReasoningCortex now calls it
+(cubbyllm.brain_reasoning); same test, same assertions.
+Tests: the full suite against the previous run, every file the same.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

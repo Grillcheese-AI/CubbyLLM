@@ -1,0 +1,4 @@
+[0012][0014] Question shape {wh} {tense} {verb form} {subject} [in {year}] (Nick): tense from the fact's dates, read back by the parser as a time constraint
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

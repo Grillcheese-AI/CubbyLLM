@@ -1,0 +1,39 @@
+[0012] The time rule, a same-name guard, finer places count (Cowork's review); 0006's run logs
+
+Cowork's review reopened 0012 on one flat wrong answer: "the capital of the Kingdom of Kush is Kerma", on two
+books -- true once, not for the kingdom's whole life.
+
+- The time rule (standin/time_rule.py, new): a relation whose value changes over a subject's life (seeded from the
+  Wikidata properties that take start / end qualifiers -- hdc's TIME_SENSITIVE -- plus capital, country, located
+  in, part of and the wiki world's nouns) is said flat only when every book witness dates it; undated, it is hedged
+  in time ("Kerma was a capital of Kush at one point."), and a year asked is refused (the tense check already
+  refuses it, "the fact carries no dates"; with that check off the rule refuses it as time_undated, routed to
+  clarify). It reads the books' citations and, for a book fact loaded from a store (order 0013's bulk worlds), the
+  store's provenance and times. A world's own facts are dated by the world (the wiki world's present, hdc's "as
+  of"): the rule does not read them.
+- The same-name guard (book_source.fits): a book's person counts for the subject only if every birth or death year
+  the book states for the name lies in the life the world knows (the loop's `_life`: the subject's birth and death
+  years in its world; a life of at most 110 years). The book's era was tried as a test too and dropped: an era is
+  a book's subject, not its people's -- on the bench it set aside Marie Tharp's, Mackintosh's, Agnesi's and Cayce's
+  true birth years (ancient-history books cite modern scholars).
+- Finer is agreement (validation/books_scoring.py, split out of exp_books_bench.py with agree / gazetteer /
+  year): a place inside the gold scores as agreement; a coarser one is right only hedged; a capital lies in its
+  state (the wiki world's CAPITAL_OF, hdc's capital). A value hedged "at one point" that is not the world's one
+  value scores unconfirmed, not wrong. REVIEWED keeps a reviewer's verdict where the offline gazetteer cannot see
+  the place (Gaiseric's Carthage: hdc's Vandal Kingdom has only Hippo Regius as capital), reported apart with the
+  count as scored before review.
+- exp_books_bench.py also takes --bulk <worlds dir> (order 0013: the bench with the bulk store loaded).
+
+Bench before the review entry (validation/logs/exp_books_bench_v5_2026-10-22.json, the partial hdc gazetteer):
+30/76 spoken (1 flat, 29 hedged); Kerma said "at one point" (unconfirmed); Ani likewise; Samuel Fuller (1580, the
+Mayflower's) set aside; wrong flat 1 (Gaiseric, the gazetteer), wrong hedged 3; the wrong tense answered flat 0/76.
+The final run, with the full hdc gazetteer and frames on 200 triples, follows 0014's labels.
+
+ask.py was already over 300 lines (1,560): +40 for the rule's call, `_undated` and `_life` -- the logic is in
+time_rule.py and book_source.py. Tests: standin/tests/test_time_rule.py (4); the books and loop suites, 65 passed.
+
+Also committed: order 0006's 2026-10-21 run logs (exp_k10_free_text_{U,H,R,P}_s*_2026-10-21), which its report
+cites and which had stayed untracked.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

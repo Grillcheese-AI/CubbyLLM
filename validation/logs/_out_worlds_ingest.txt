@@ -1,0 +1,76 @@
+ingest   100 For Dummies Series Books Collection (+Pack-2)               222.0s [reality:how-to: 122609 rows, +99 files] [reality:how-to: 231826 rows, +94 files]
+ingest   20 Business & Finance Books Collection Pack-1                    10.4s [reality:business: 9792 rows, +20 files]
+ingest   20 Encyclopedia Books Collection Pack-8                         160.9s [reality:reference: 114481 rows, +20 files]
+ingest   20 Reader's Digest Books Collection Pack-1                       16.6s [reality:reference: 138966 rows, +20 files]
+ingest   24 Assorted Books Collection Pack-33 / Pack-8                    11.0s [reality:assorted: None rows, +0 files] [reality:assorted: None rows, +0 files]
+ingest   50 Dark Psychology & Manipulation Books Collection                8.9s [reality:psychology: 40137 rows, +50 files]
+ingest   60 Python Learning & Programming Books Collection                 7.2s [domain:code: 34859 rows, +59 files]
+ingest   65 DK Encyclopedia Books Published By DK                        247.8s [reality:reference: 183069 rows, +64 files]
+ingest   Asimov, Isaac                                                   143.8s [reality:science: None rows, +0 files]
+ingest   AZ-900 / CompTIA Network+ / AP Physics 2 prep                     0.6s [domain:exam: 1726 rows, +3 files] [domain:exam: 1760 rows, +2 files] [domain:exam: 2285 rows, +1 files]
+ingest   single scholarly books (Becker x2, Bertolotti, Jenkins, Mils     63.9s [reality:scholarly: 2059 rows, +1 files] [reality:scholarly: 4022 rows, +1 files] [reality:scholarly: 4456 rows, +1 files] [reality:scholarly: 7004 rows, +1 files] [reality:scholarly: 7610 rows, +1 files] [reality:scholarly: 7921 rows, +1 files] [reality:scholarly: 9382 rows, +1 files] [reality:scholarly: 10567 rows, +2 files]
+excluded benchmarks (clutrr, proofwriter)                                  0.0s 
+queued   dbpedia-entities                                                  0.0s 
+excluded full-dbpedia                                                      0.0s 
+ingest   Dean Koontz / Stephen King / Science Fiction and Fantasy / H   1105.5s [fiction: 342674 rows, +116 files] [fiction: 624289 rows, +118 files] [fiction: 718334 rows, +422 files] [fiction: 1437449 rows, +273 files]
+ingest   domains (41 classified book domains)                           1934.9s [fiction: 3957561 rows, +2130 files] [fiction: 4035525 rows, +144 files]
+ingest   encyclopedia (Americana 2005)                                   105.6s [reality:encyclopedia: 109769 rows, +29 files]
+queued   gitcode                                                           0.0s 
+ingest   hdc                                                               0.1s [reality: 3384594 rows, +0 files]
+ingest   historical-quotes                                                 0.3s [reality:quotes: 24022 rows, +1 files]
+ingest   History Book Collection / HUGE_ENTITIES_HISTORICAL_VERIFIED_      5.2s [reality:history: 5639095 rows, +0 files]
+excluded misc                                                              0.0s 
+excluded sagi / symbolic                                                   0.0s 
+ingest   uci (mushroom, car, tic-tac-toe)                                  0.2s [data: 10810 rows, +3 files]
+excluded webquestions (NQ / WebQ subsets)                                  0.0s 
+queued   _pipeline/wikipedia (routed EN+FR), wikibooks_clean, arxiv a      0.0s 
+queued   wiki_full (EN+FR Wikipedia)                                       0.0s 
+queued   temporal (NYT dated news, causal links)                           0.0s 
+queued   factual / gbooks (Gutenberg)                                      0.0s 
+queued   kbtxt / knowledgetxt / jsonl                                      0.0s 
+queued   v3_3 (fineweb / wiki / stackexchange)                             0.0s 
+queued   unified (web/edu/math/news)                                       0.0s 
+excluded conversations_svc / instruct_svc / mental_health_svc / chatb      0.0s 
+ingest   identity_corpus                                                   0.0s [self: None rows, +0 files]
+excluded socratic_test_text (GSM8K)                                        0.0s 
+excluded nemotron_qa / nemotron_code                                       0.0s 
+excluded open_thoughts                                                     0.0s 
+queued   nemotron_legal (eCFR / CaseHOLD / CUAD parts)                     0.0s 
+excluded token caches / tokenizer / h200_run1 / labeling / svc_target      0.0s 
+excluded nvidia/Nemotron-CC-v2 (gated: accepted)                           0.0s 
+excluded nvidia/Nemotron-Pretraining-Code-v1 (accepted)                    0.0s 
+excluded bigcode/the-stack-smol (accepted)                                 0.0s 
+excluded navii23/wikilarge (accepted)                                      0.0s 
+excluded OpenLLM-France/Claire-Dialogue-French-0.1 (accepted)              0.0s 
+excluded bigscience-data/roots_en_wikibooks (accepted)                     0.0s 
+excluded Salesforce/xlam-function-calling-60k, hkust-nlp/Toolathlon-V      0.0s 
+excluded Idavidrein/gpqa, SEA-HELM evaluation sets (accepted)              0.0s 
+excluded theusamaaslam/nsfw-dataset (accepted)                             0.0s 
+excluded models: Mistral-Large-Instruct-2407, Gemma, Llama 3.2, Qwen3      0.0s 
+excluded conversations_svc_semantic.jsonl (E: root)                        0.0s 
+excluded empirical_grilly_next/file_topics_balanced.csv                    0.0s 
+ingest   knowledgetxt/historical_facts.jsonl                               0.2s [reality:events: 3934 rows, +1 files]
+excluded processed/gpu_knowledge_metadata.json + gpu_processed_knowle      0.0s 
+excluded knowledgetxt affect: amygdala_affect, emotion_valence_arousa      0.0s 
+excluded knowledgetxt/instruct_55k_clean.jsonl                             0.0s 
+excluded knowledgetxt/tool_usage_training_data.jsonl                       0.0s 
+excluded knowledgetxt persona sets (batch_chat_templates*, identity*,      0.0s 
+excluded knowledgetxt/combined_grammar.jsonl                               0.0s 
+excluded knowledgetxt/intent_all.jsonl                                     0.0s 
+ingest   GitHub-archive/cubby-lm identity (identity_facts.yaml, cubby      0.0s [self: None rows, +0 files]
+excluded dlds AG News parquet (train / test)                               0.0s 
+excluded AURA_GENESIS/datasets/go_emotions.jsonl (+ 2 copies)              0.0s 
+excluded AURA_GENESIS/datasets/openassistant-guanaco-unfiltered            0.0s 
+excluded AURA_GENESIS + aura-liquidmoe conversations.json                  0.0s 
+excluded aura/data/mietr_*.json                                            0.0s 
+excluded AURA_GENESIS/datasets model-written sets (GPTeacher, gpt-4 i      0.0s 
+excluded AURA_GENESIS/datasets nemotron_pairs (20 gz) + sbert .npy +       0.0s 
+queued   Google AI Studio pastes (Oxford Guide to IHL chapter, Oppenh      0.0s 
+excluded AURA_GENESIS/rare_manuscripts                                     0.0s 
+excluded AURA_GENESIS/10.12751_g-node.270z59                               0.0s 
+excluded MELD (declare-lab/MELD; text CSVs only; fetched 2026-10-22)       0.0s 
+excluded ESConv (thu-coai/Emotional-Support-Conversation; fetched 202      0.0s 
+excluded ExTES (pandazzh2020/ExTES)                                        0.0s 
+ingest   domains/drama: 25 screenplays and TV pilots (non-numeric .tx     66.2s [fiction: 4157232 rows, +103 files]
+ingest   domains/drama: 78 Gutenberg plays (+ metadata json)               1.9s [fiction: 4157232 rows, +0 files]
+excluded MENTOS (KUNLP; fetched 2026-10-22)                                0.0s 

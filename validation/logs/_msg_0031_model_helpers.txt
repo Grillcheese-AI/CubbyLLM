@@ -1,0 +1,21 @@
+[0031] pre-move: the model from a meta and the far-fact layout move into cubbyllm/model
+
+The loci reader (moving to cubbyllm/reasoning in slice 4) imported build_model from
+validation/train_base.py and address/words from validation/make_fact_shard.py. A cubbyllm module
+cannot import validation/, so the two pieces move into the package, verbatim:
+
+- cubbyllm/model/build.py: build_model(meta, dev, seed, grad_checkpoint=False) and spatial_link(meta).
+  The trainer's CB_GRAD_CKPT is now an argument; train_base.build_model passes it, so the trainer
+  is unchanged. Checked: the same seed gives identical parameters by both paths (with and without a
+  spatial link, 292,868 and 375,495 parameters).
+- cubbyllm/model/fact_layout.py: ORIGIN/SIDE/STEP/GRID, cell, step, address (from make_fact_shard)
+  and CAMEL, DIGITS, words (from fact_names). Both scripts re-export them.
+- standin/loci_reader.py imports from the package.
+
+train_base.py stays over 300 lines (it shrinks by 38); not split in this order.
+
+Tests: tests/model, tests/spatial, standin/tests/test_loci_reader.py, tests/test_guards.py:
+181 passed, 5 skipped, 1 failed (test_every_module_declares_wiring, the known red of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

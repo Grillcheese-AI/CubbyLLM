@@ -1,0 +1,25 @@
+[0028] review fixes 1-2: the code check closes the escapes; Approve shows the code it pins
+
+Fix 1 (the code check). The AST review now also refuses eval/exec/compile, importlib, builtins, pickle,
+marshal, runpy, the os.exec*/spawn*/posix_spawn family, shutil.rmtree/move, os.remove and friends,
+Path writes (write_text/write_bytes/unlink/rename/...), open() in a write mode or a non-literal mode,
+getattr with a computed name, sys.modules and __builtins__. A plugin that keeps state writes through
+ctx.save / ctx.load, which stay inside its own data folder (envcanada-alerts moved to them).
+Tests: 16 escapes each caught, 4 ordinary patterns let through (test_plugins.py, parametrized).
+
+Fix 2 (Approve shows the code). guard.review(plugin) lists every file new / changed / same / removed
+since the last approval, with a new text file's text and a changed one's diff against the copy kept at
+approval (beside the git-ignored lock), and a digest of exactly that state. guard.approve(expect=digest)
+refuses if the files changed after the review was shown: what is approved is what was read.
+- CLI: `python -m standin.plugins approve <name>` prints the review; it approves only with --yes.
+- Board: GET /board/plugins/review?name= (audit audience only; public gets null); the Approve button
+  becomes "Review to approve", shows permissions, the check and the files/diff, then "Approve these
+  files" posts the digest. POST approve without a digest, or with a stale one, answers 409.
+Tests: test_approve_shows_the_code_and_refuses_a_stale_review, test_approve_needs_the_review_it_shows;
+39 passed (test_plugins, test_plugins_serve, test_board).
+
+standin/serve_api.py was already over 300 lines (564): the POST body read for the digest is 5 lines in
+the existing route and does not belong in a separate module.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

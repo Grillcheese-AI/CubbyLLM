@@ -1,0 +1,28 @@
+[0031] slice 8, the brain: build_serve, the selftest and the command line split out to cubby_serve/build.py
+
+serve.py had two halves. The brain (CubbyBrain, its reasoning and memory cortices, the turn) moved to
+cubbyllm/brain.py in cf73b96; the server's half now leaves it for a new package, cubby_serve/
+(Business Source License 1.1), as the map has it:
+
+  cubby_serve/build.py  slot_index, build_serve (the fact pool and the fast-word table into the first
+                        world, the 450M seats on grilly2 or the stand-in's GGUF, the wiki world, the
+                        slotted emitter's name index), load_val_chains, given_facts, selftest, main
+  cubby_serve/__init__.py, cubby_serve/LICENSE (a verbatim copy of standin/LICENSE)
+
+Moved verbatim; build_serve takes ContextualEmitter / Cubby450mEmitter / Cubby450mTrunk /
+Cubby450mTalk from cubbyllm.emit and LlamaCppEmitter from standin.emitter_llama (the --gguf seat, one
+of the review's named lazy imports) instead of through the facade: the same objects. The mowm
+fast-word encoder stays loaded by file path, lazily, as before (question 8 is open).
+
+cubbyllm/brain.py keeps CubbyBrain and says WIRED (the server builds it). It is 618 lines; its
+cortices are split out later. `python -m cubby_serve.build` is the command line; serve_cli,
+talk_probe and exp_r37 import build_serve from cubby_serve.build. `import cubbyllm.brain` in a fresh
+interpreter loads no standin/, cubby_serve/ or validation/ module, and neither torch nor grilly.
+
+Tests, full suite against the baseline with the moved files mapped: same counts in every file;
+1,189 passed, 6 skipped, 1 failed (test_every_module_declares_wiring, the known red of order 0002).
+Entry points: python standin/serve.py --help and python -m cubby_serve.build --help both reach the
+builder's command line; python standin/serve_api.py starts.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

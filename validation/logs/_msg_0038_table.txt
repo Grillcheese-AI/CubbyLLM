@@ -1,0 +1,25 @@
+[0038] Everyday wording: the host reads "Who wrote X?" (CB_EVERYDAY=1, off), and the WebQuestions scoreboard
+
+Built by Cowork while Claude Code was off; landed from the cowork/everyday worktree.
+
+- cubbyllm/reasoning/everyday.py (new): EverydayForms, a table of everyday wordings -> relation (EN + FR).
+  restate() turns a question the table reads into the host's grammar, "What is the {relation} of {entity}?".
+  Values that change and need a date go to the model as before.
+- ask.py: AskLoop(everyday=None), on with CB_EVERYDAY=1, off by default. A question the table reads skips
+  the emitter. The record carries `restated`.
+- validation/exp_everyday_webq.py (new, STANDALONE): the scoreboard, 187 WebQuestions questions plus the
+  stack's 20.
+
+Measured with no model in the programs seat, live Wikidata, the fixes in and the tense check on
+(validation/logs/everyday_stack_on_live_tense_2026-10-24.json, everyday_webq_on_live_tense_2026-10-24.json):
+- the stack's 20: 9 right, 0 wrong. They were 2 with the 450M in 0036's run.
+- WebQ: 47 spoken, 0 wrong, read by hand.
+With the tense check off: 54 spoken, 6 wrong, all old currencies. The euro has only Wikidata's `mul` label;
+that fix is next. Without the table: 0 spoken. Every arm is in the order's table.
+
+Tests: test_everyday.py (9). Whole suite: 1095 passed; the one failure is the known red (order 0002).
+
+CLAUDE.md: the queue lists 0037 in progress and 0038 in review.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

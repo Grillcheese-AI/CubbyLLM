@@ -1,0 +1,21 @@
+[0031] Step 1: the move map, for review before any move (nothing moved)
+
+All 146 modules of standin/ (38,387 lines):
+- 71 to cubbyllm/: worlds 22, sources 12 (news 9), affect 9, cortex 7, plugins 8, speech 5, reasoning 4,
+  emit 3, the brain 1;
+- 12 to cubby_serve/;
+- 34 data builders beside their trainers in validation/ (sft/ for the 450M's talk and emitter adapters,
+  build/ for the worlds, the lexicon, the ear and the benches);
+- 29 stay: the game, the GGUF seat, the LFM source, the proposer, the stand-in's eval, probes, and
+  three GGUF-only builders.
+
+The map found 18 imports that would cross the new lines, each with a behaviour-free fix (a helper
+moved, an object passed in); four files to split before the move (serve, identity, emitter_base,
+import_science); 27 moving files over 300 lines to split after it; and a home for all 81 test files.
+Seven questions for the review, two of them Nick's: the builders' licence (validation/ is Apache-2.0),
+and whether the network fetchers belong in cubbyllm/ (sources.py's own rule says they do not).
+
+docs/0031_move_map.md (the table), validation/logs/move_map_0031_2026-10-22.json (every importer).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

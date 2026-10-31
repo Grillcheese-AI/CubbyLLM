@@ -1,0 +1,31 @@
+Windowed attention as banded flash kernels in Triton (CB_ATTN_TRITON=1); flex tiles for 99 KB cards; the speed check picks among them
+
+On a card whose shared memory per block is under flex's tile for a head of 256 (99 KB: the
+RTX PRO 6000 Blackwell, the L4) the windowed layers fell back to dense_attention -- an S x S
+mask through SDPA's memory-efficient kernel, every score computed, most discarded: 15% of run
+2's step for 11 of 32 layers.
+
+cubbyllm/model/backbone/window_attn_triton.py: flash attention restricted to the band. A block
+of queries visits only the key blocks that hold its window (online softmax, log2 units); the
+backward is FlashAttention-2's split -- dK, dV per key block over the query blocks that see it,
+dQ per query block -- from the forward's log-sum-exp and delta = rowsum(O * dO). Tiles
+autotuned among configs that fit 99 KB at a head of 256; float32 inputs take IEEE dots (tests),
+bf16 the tensor cores. A torch.library.custom_op (fake + autograd registered); triton optional.
+hybrid.py: CB_ATTN_TRITON=1 takes it on CUDA ahead of flex and the dense mask (q, k cast to v's
+dtype, as SDPA would under autocast); CB_FLEX_OPTS passes flex its kernel_options (tiles for a
+99 KB card). Off, nothing changes.
+
+tests/model/backbone/test_window_attn_triton.py: values and the three gradients against
+dense_attention at windows narrower than a tile, wider, and wider than the sequence (S a
+multiple of no tile), opcheck, and on CUDA the mixer under the flag; under TRITON_INTERPRET=1 on
+a CPU (4 passed, the CUDA one skipped).
+
+validation/speed_check.py now runs both kernels' tests on the card, then profile_base per
+variant -- torch as configured, + fused MinGRU, + banded attention, + flex with small tiles
+(where flex was off) -- and the run takes the fastest that ran (speed.json; the text arm
+follows). validation/bench_kernels.py + notebooks/kernels_check.ipynb: each op alone, forward +
+backward at the 450M's shapes, against what it replaces, for a short session on a cheap card
+before a run. profile_base files the band's kernels under attention. Unmeasured on a GPU yet.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

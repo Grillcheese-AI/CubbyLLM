@@ -1,0 +1,26 @@
+The MinGRU recurrence as one fused Triton kernel each way (CB_MINGRU_TRITON=1), and a speed check that decides per run
+
+cubbyllm/model/backbone/mingru_triton.py: the torch path computes the gates, a sign-split
+log-domain scan (two logcumsumexp), the float32 casts and their flipped backward as a dozen
+memory-bound kernels -- 13% of run 2's step plus part of the 22% of loose elementwise work.
+One kernel takes the projections' g, v, d (bf16 under autocast) and writes h in float32;
+one backward kernel recomputes the gates, runs the adjoint G_t = dh_t + a_{t+1} G_{t+1} in
+reverse and writes the three input gradients. The scan is direct (0.001 <= a < 1: no
+overflow, and a sequential carry has no prefix product to underflow), chunked in time as
+(T, C) tiles through tl.associative_scan. A torch.library.custom_op with a fake
+implementation (torch.compile sees one opaque op) and its autograd registered; triton is
+optional (absent on Windows: the module imports, the torch path stays the only one).
+mingru.py: _MinGRUMixer takes it on CUDA under CB_MINGRU_TRITON=1; off, nothing changes.
+
+tests/model/backbone/test_mingru_triton.py: the forward is the recurrence across chunk and
+channel-block edges, the gradients autograd's through the sequential recurrence (float32
+precision), bf16 inputs, the torch path agrees, opcheck (schema, fake, autograd), and on CUDA
+the mixer under the flag; on a CPU under TRITON_INTERPRET=1 (5 passed, the CUDA one skipped).
+
+validation/speed_check.py + a cell in notebooks/spatial_facts_450m.ipynb: on the run's card
+and shape, the kernel's tests, then profile_base with the flag off and on; the run takes
+the kernel only if the tests pass and it is faster (the link arm decides, the text arm
+follows, resumed sessions reuse the verdict). Unmeasured on a GPU until then.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

@@ -1,0 +1,26 @@
+[0022] A: copy or refuse on 0021's toy models, theta fit on calibration documents, measured once
+
+validation/k10_refuse.py (new): calibration documents (seed + 199, disjoint from the held-out ones at
+seed + 99); the reads ahead and the copy's picks captured through the model; (theta, theta_end) = the pair
+meeting both lines (present wrong <= 2%, absent answered <= 5%) on calibration with the fewest refused;
+then the held-out documents once, through the model with copy_refuse set (its own argmax to EOS / NONE),
+beside the simulation from the reads.
+Test documents (1,024 each; logs k10_refuse_<arm>_s<seed>_2026-10-22.json):
+  A s0  exact 0.617  present wrong 0.023  refused 0.359  absent answered 0.015  (theta 0.197 / end 0.131)
+  U s0  exact 0.610  wrong 0.034  refused 0.356  absent 0.015
+  P s0  exact 0.614  wrong 0.031  refused 0.356  absent 0.024
+  P s1  exact 0.579  wrong 0.024  refused 0.397  absent 0.010
+  P s2  exact 0.574  wrong 0.026  refused 0.400  absent 0.000
+Calibration met both lines on every arm (wrong 0.018-0.019); the test documents miss the 2% line on all
+five (0.023-0.034): A's acceptance fails. The model's answers equal the simulation's on A and the three P
+seeds; on U they differ on 2 of 1,024 (the trunk did not say EOS after a whole copied answer).
+Why so many refused (A s0, 818 present): a piece's read between theta_end and theta 160, the end's read
+in that zone 124, an empty first read 7, no end 3. Piece reads p5 0.174, end reads p95 0.163: one test per
+read, 3-6 reads an answer, the overlap compounds. The wrong answers left are mostly cut short (14 of 19: a
+real piece read below theta_end, taken for the end).
+make_fact_shard.py: --absent q (questions about facts no document holds, flagged in <name>.absent.json),
+--skip-facts n, --out (the shard beside the cache, the cache only read); off is byte-identical (checked
+against the previous builder on 40 documents). 299 lines.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

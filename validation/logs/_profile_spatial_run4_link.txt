@@ -1,0 +1,14 @@
+device: NVIDIA RTX PRO 6000 Blackwell Server Edition | 102 GB | torch 2.11.0+cu130
+profile: D1024/L32 S1024 micro 32 mem_every 0 spatial True route 1.0 recompute False compile True no_flex False banded False | cuda
+
+This call originates from:
+  File "/content/CubbyLLM/cubbyllm/model/backbone/hybrid.py", line 116, in _rope_tables
+    inv = _rope_inv_freq(dh, str(device))
+
+
+This call originates from:
+  File "/content/CubbyLLM/cubbyllm/model/backbone/hybrid.py", line 173, in forward
+    bm = _window_block_mask(S, self.window, str(x.device))
+
+/usr/local/lib/python3.13/dist-packages/torch/profiler/profiler.py:224: UserWarning: Warning: Profiler clears events at the end of each cycle.Only events from the current cycle will be reported.To keep events across cycles, set acc_events=True.
+  _warn_once(

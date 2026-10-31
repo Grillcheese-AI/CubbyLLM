@@ -1,0 +1,10 @@
+[0006] Free-text questions: addresses keyed by the words, asked through a pointer (toy) -- open (Nick chose the route)
+
+Today an address is a hash of the subject name, which no question can compute: the learned route
+memorizes it for a closed set (villages, route alone 0.748) and not for 160k subjects (far facts
+0.014). Text keys u(e(s)) * u(e(r)) can be computed by both sides; the trunk only has to point at
+the question's subject and relation tokens. Pre-registered: >= 0.80 exact on unseen subjects and
+held-out templates, <= 5% wrong on absent facts; kill below 0.50.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

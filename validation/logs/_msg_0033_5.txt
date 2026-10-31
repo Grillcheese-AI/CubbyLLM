@@ -1,0 +1,27 @@
+[0033] The loci reasons' routes, and the server's news fetch names itself CubbyLLM/0.1 and takes no other name
+
+0031's review, answer 1: the sleep cycle routes the loci read's two refusals.
+- loci_mismatch goes to a new queue, loci_review: the trunk's read and the store disagree; nothing was said.
+  0029's boundary errors and the store's own doubtful values land there too.
+- loci_miss goes to source_gaps: the trunk read nothing at the address and no source supplied the fact.
+
+tests/reasoning/test_sleep.py:
+- a new test pins both routes;
+- the reason scan now reads loci_reader.py, which it skipped while the two had no route.
+
+sleep.py is over 300 lines already (580 -> 583): the three lines belong in its one routing table, and splitting
+sleep.py is not this order's.
+
+0031's review, answer 2: the politeness is cubbyllm's logic over the fetch it is handed, and the server's fetch
+sets the name itself.
+- cubby_serve.sources.news.NAME = "CubbyLLM/0.1" is the server's, no longer imported from cubbyllm.
+- news.get and http.news() send it, and take no name.
+- http.get refuses a User-Agent header (ValueError), so no caller can rename the fetcher.
+
+tests/test_offline_seams.py:
+- both fetches send CubbyLLM/0.1;
+- the name equals cubbyllm.sources.news.feeds.UA (robots are read for the name sent);
+- a User-Agent header is refused.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

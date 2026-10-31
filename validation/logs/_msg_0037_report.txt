@@ -1,0 +1,28 @@
+[0037] Report: the rule audited (seed 1), the probes, the stack; status review
+
+The audit: 50 hops, seed 1, the list for Cowork's reading in
+validation/logs/audit_namesake_relation_2026-10-24.md.
+- 6 one item, 1 each labelled, 43 asked back.
+- 0 wrong picks by my reading. The first run had 1 wrong pick (Thespis) and one wrong kind named
+  (Demon Hunter). Both are fixed (60ec6b1, 39b87f9); the report names the guards that missed.
+
+The cue probe: 3 pick the target, 17 ask back, 0 wrong picks.
+- France, Japan and Italy answer: Paris, the Japanese yen, Rome.
+- Marie Curie: Q7186 is picked. The class guard says it does not know.
+- On the stack, the literal Nobel question never reaches the hop: the 450M's plan ("won", "marie") is
+  refused by the plan check.
+
+The benches:
+- 0033's probe: 0 mixed.
+- 0014's bench: 192 correct, 0 wrong, the same with the rule off.
+
+The stack's 20, rule off and on (validation/logs/0037_stack_off_2026-10-24.json, _on_):
+- Both arms speak the same 10.
+- With the rule on, the snapshot answers first ("As of 2019, Paris") and the replies name the other
+  namesakes.
+
+Decision time: p50 4.5 ms, max 40.9 ms.
+The flag stays off until Cowork's reading.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

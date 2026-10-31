@@ -1,0 +1,4 @@
+[0017] proposed: claim checks -- yes/no and tag questions, false premises, phrasing-invariant verdicts (yes / no / not quite / cannot confirm)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

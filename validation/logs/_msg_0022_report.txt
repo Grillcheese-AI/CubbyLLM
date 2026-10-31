@@ -1,0 +1,23 @@
+[0022] Report: the contract says the answer's end; 450M present wrong 5.4% -> 1.7%; the kill criterion fires at 32.9% refused
+
+The 450M's first test-half run let the trunk end a whole copied answer. Run 5's trunk often went
+on past it, so a right read came out wrong: 5.4% present wrong against the 1.7% the decision
+alone predicts. set_refuse(end_id=...) has the contract say the end itself (None = as before).
+With it, the model reads exactly the simulation on the 200 test documents of facts_far1k_v2_absent:
+exact 0.654, refused 32.9%, present wrong 1.7%, absent answered 0.0%; no logit changes off the
+asking positions (exp_refuse_450m_end_2026-10-22.json; the first run: exp_refuse_450m_2026-10-22.json).
+
+Against the pre-registered lines:
+- A (toy, theta fit on calibration): absent answered 0.0-2.4% (meets); present wrong 2.3-3.4% on
+  the test documents after 1.8-1.9% on calibration (misses: a theta fit at the line's edge).
+- C (450M): both wrong-answer lines met with the end said; refused 32.9% > 25%, so the kill
+  criterion fires: a single threshold is too blunt (arm D's direction next).
+- B (12 templates, P x3): unseen x held-out exact under the contract 0.541 / 0.627 / 0.580 (line
+  0.80, fails); pointer 1.000 / 1.000 / 0.998 (meets). Under the mix: 0.827 / 0.855 / 0.920.
+
+k10_refuse.py gains --tag (B's _t12 logs) and the per-cell reading; exp_refuse_450m.py gains
+--theta / --theta-end / --end (the test half with a fitted pair).
+Tests: tests/model/test_spatial_refuse.py + test_spatial_copy.py, 26 passed.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

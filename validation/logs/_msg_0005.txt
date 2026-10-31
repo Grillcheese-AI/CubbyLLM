@@ -1,0 +1,30 @@
+[0005] review: CB_TRAIN_ONLY=copy trains the copy's 1,027 parameters on a frozen trunk (CPU smoke from run 3: every other tensor bit-identical, 3.51 s a step vs 12.50 s full); the probe splits first/later/end and lam here/empty; RUN = 5
+
+train_base: CB_TRAIN_ONLY=copy (absent = every parameter trains, as before) freezes every tensor but the copy
+path's; only those enter the optimizer, at CB_COPY_LR (default 3e-3, the same schedule shape). The trunk's forward
+builds no graph. CubbyModel.parameters() yields only tensors that require grad, so train_only keeps the full
+list first and payload/restore/init_from/init_copy take it (params_of). The first CPU smoke stopped at init on
+exactly that; a test now pins that a frozen model's checkpoint holds every tensor and loads back. A micro-batch
+the copy never acts in has no graph under the flag and skips its backward. fact_probe goes through the new
+validation/recall_split.py: exp_hypertoken_recall's first token and exact (held equal by a test), plus later /
+end per piece and the copy's lam at asking tokens whose address holds a written piece vs is empty. It also
+loads the tokenizer once instead of at every probe.
+
+CPU smoke (validation/logs/train_only_smoke_2026-10-21.log): 20 steps from spatial_link_3_final, 1,024 tokens a
+step. diag_frozen_check (new) against run 3: 326 tensors + 5 router tensors, 0 moved. tau 3.040 -> 3.072, beta
+0.115 -> 0.089, gate bias -2.197 -> -2.171. 3.51 s a step vs 12.50 s for a full step, same settings.
+
+notebooks: RUN = 5 continues spatial_link_3_final with run 4's copy flags + CB_TRAIN_ONLY=copy, CB_ROUTE_LOSS=0
+(it would train nothing), only spatial_here and facts_far1k_lead drawn. The readout's three lines are far facts
+>= 0.80 (kill below run 4's 0.761), villages >= 0.90, and every source without places within 0.005 of run 3's
+last eval: run 5's _mix covers only its two shards, so it is not comparable to run 3's. HOURS_PER_ARM stays a
+placeholder for Cowork.
+
+Long files: train_base.py 1,117 -> 1,149 lines, because the flag lives where the optimizer, step and checkpoint
+are; the probe's split went to its own file. _build_spatial.py 375 -> 412, because run 5's config and readout sit
+with the runs they continue.
+
+pytest tests: 414 passed, 5 skipped, 1 failed (the known wiring guard, order 0002) -- 406 + the 8 new.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

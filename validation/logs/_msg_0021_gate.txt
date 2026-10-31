@@ -1,0 +1,22 @@
+[0021] The kill line's readout split by absent questions, and an opt-in gate loss (off: the order's recipe)
+
+U seed 0, the order's recipe (validation/logs/exp_k10_switch_U_s0_2026-10-22.json): joint exact 0.848 -> 0.879
+after 500 steps of the switch alone; present answered wrong 0.117 -> 0.093; absent answered 0.063 -> 0.083; the
+frozen hash unchanged. The curve trades one for the other (step 100: absent 0.024, exact 0.830; step 200: absent
+0.102, exact 0.885).
+
+A diagnostic on U's saved joint model: at an absent question the frozen trunk alone says NONE 206/206, so what
+is answered there is the gate's. At the first answer token the read's best match is present p5/p50/p95
+0.188 / 0.293 / 0.419, absent 0.051 / 0.106 / 0.173: one threshold (0.18) keeps 96% of present facts and closes
+96% of absent ones. The gate's inputs can tell them apart; the language loss, one term a token, weighs a present
+answer's up-to-five pieces against an absent one's single NONE, and pulled beta to 0.159, under the split.
+
+- best_match now reports present and absent first answer tokens apart (and the other empty asking positions),
+  the margin over the second best, and the one-threshold balanced accuracy.
+- --gate-loss W (off by default): the gate's binary cross-entropy against "the asked fact holds a piece here",
+  one term an asking position. A labelled extra arm for the report, not the order's recipe.
+
+tests/test_k10_switch.py: 4 (gate loss off = the recipe, bit for bit; targets on the asked pieces only).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

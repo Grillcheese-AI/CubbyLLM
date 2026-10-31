@@ -1,0 +1,8 @@
+[0038] Nick: the place qualifier and name matching on by default (CB_PLACE_QUALIFIER=0 / CB_NAME_MATCH=0 turn them off)
+
+Nick, 2026-10-24, in Claude Code's chat: "Both on". Live, both gave 3 right answers and 0 wrong (0038's record:
+WebQ 63 -> 65, the stack's 20 10 -> 11). Each runs only when no Wikidata item carries the name as asked. The tests'
+off cases now set the flag to 0. Whole suite: 1110 passed; the one failure is the known red (order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

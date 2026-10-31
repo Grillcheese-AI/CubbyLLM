@@ -1,0 +1,11 @@
+[review] 0007, 0013, 0014 done; 0023 proposed (nested questions)
+
+0007: ask 1 a miss on 95/100, 0 wrong; ask 2 0 wrong, 0 calls on stored facts, the reader equals the
+store on 0.723 (line 0.80 fails; 0.89 single-valued): several values get sub-addresses in 0009.
+0013: distant-supervision labels state the fact 45/100 (Cowork's re-check of 20 agrees on 17), so
+no reader is trained; the bulk pass and the held veto give 58/76 spoken, 0 wrong flat. 0014: 3.4M
+facts, labels 0.989, p95 0.31 ms, 177/200 spoken and correct, 0 wrong, 0 flat time-sensitive.
+0023: nested prompts with exact inner hops, a wording translated on a miss, a live as-of.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

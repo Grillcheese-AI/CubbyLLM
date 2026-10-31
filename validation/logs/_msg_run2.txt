@@ -1,0 +1,31 @@
+Run 2 of the spatial notebook read: only writers bound, the token before the answer asks (run 3); the profile counts each kernel once
+
+The link arm of run 2 (G4, 3,058 steps = 0.40B tokens; roles, a scene per document, the facts
+800 tokens past the window): villages 0.776 exact (route alone 0.729), far facts 0.005 (first
+token 0.22). validation/diag_fact_read.py splits it on 24 held-out documents: the first piece
+reads 0.242 with or without the places (the read at `here` reaches nothing); the later pieces
+0.096 with the places, 0.213 without, 0.229 binding only the writers -- every placed token was
+bound at the input, so each answer piece, asking for the next, entered the trunk as
+e (*) S(p_next) and the trunk lost the token it had just read.
+
+cubbyllm/model/spatial.py: SpatialLink(bind="writes") and bind_input: with roles, only the
+writing tokens are bound; an asking token enters as itself and asks with S(p). The default
+("placed") binds every placed token, as before. assembly.py: features and step bind through
+it. validation/train_base.py: CB_SPATIAL_BIND (meta["spatial"]["bind"], absent at the
+default). validation/make_fact_shard.py --lead: the token right before each answer asks for
+its first piece; built facts_far1k_lead (run 2's documents, ids identical by md5).
+notebooks/spatial_facts_450m.ipynb: RUN = 3 (facts_far1k_lead, CB_SPATIAL_BIND=writes).
+
+validation/profile_base.py summed every row of key_averages: each kernel counted twice (as
+itself and in the op that launched it), the optimizer three times, "Command Buffer Full" (the
+CPU waiting on a full launch queue) as GPU work, and the fmha kernels filed under matmul. Now
+the device's own events only, attention before matmul, the scan's reversed backward under the
+scan, and a GEMM line: run 2's trace re-read this way -- GEMMs 42% of device time at ~377
+TFLOPS (75% of peak), attention 15%, MinGRU scan 13%, other elementwise 22%, CE 3%; the 128k
+head is 29% of the GEMM FLOPs. Recorded under H-S12 and H-K10 (the vocabulary line corrected).
+
+Tests: an asking token enters as itself with bind="writes", a questions-only document is text
+exactly, decode = forward; --lead changes only the roles and places, one asker per question.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

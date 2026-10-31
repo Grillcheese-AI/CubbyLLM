@@ -1,0 +1,23 @@
+[0029] step 1: where copy or refuse spends its refusals and its wrong answers (diagnostics, nothing trained)
+
+validation/refuse_diag_450m.py on run 5's final checkpoint, 0022's calibration half only (200
+documents: 802 present, 175 absent; CPU, 2 threads, 1,414 s; the test half unread). At 0022's pair
+(theta 0.117, theta_end 0.085) it reproduces 0022's calibration exactly: exact 0.6958, present
+refused 0.2843, present wrong 0.020, absent answered 0.0.
+
+- All 16 wrong answers are boundary errors: 13 cut short, 3 run on, by 1 to 5 pieces. None is a
+  piece of another fact.
+- 211 of the 228 refused present facts had the copy's picks equal to the gold (157 a true piece below
+  theta, 50 the end read above theta_end, 4 nothing read).
+- Refusals climb with length (16.9% at 2 pieces, 31.5% at 5, 53.2% at 7, 71.1% at 9+); wrong answers
+  do not (0 to 4 per length).
+- Absent first reads all sit below theta (the highest is 0.1053), 89.7% below theta_end.
+- The margin to the runner-up separates the wrong answers somewhat (11 of 16 under 0.02); lambda does not.
+
+The report is in docs/orders/0029-learned-confidence.md; step 2 waits for Cowork's read.
+`--from-rows` recomputes the summary from the saved rows without the model (the two follow-up
+breakdowns were added that way; every earlier number is unchanged).
+validation/logs/refuse_diag_450m_2026-10-22.json, .rows.json
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

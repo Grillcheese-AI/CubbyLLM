@@ -1,0 +1,19 @@
+[0031] split: the neurochemistry (816 lines) into five modules under 300, verbatim
+
+cubbyllm/affect/neurochem.py keeps Neurochemistry's init, its constants, the quiescent bands and
+their classmethod (it names the class), and to_dict (183 lines); the rest moves verbatim:
+  neurochem_appraise.py (63)  a turn's text appraised, and the sigmoid and clip the chemistry uses
+  neurochem_update.py   (247) NeuroUpdate: the ODE step, the emotion read, the step's message, the
+                              modulated threshold and tau
+  neurochem_signals.py  (103) NeuroSignals: arousal, weight, tolerance, craving, deviation, the body
+  neurochem_body.py     (299) NeuroBody: the somatic names, the cube and its corners, could_be,
+                              modulation, manner, with the constants they read (now the mixin's)
+Neurochemistry(NeuroBody, NeuroSignals, NeuroUpdate). neurochem.py re-exports every moved name.
+
+Checked against HEAD's class, loaded under another name: all 39 class members equal (values, or the
+source of methods and properties); a fresh instance serializes the same; 20 messages through both give
+the same appraisal, state, manner, cube and somatic names at every step.
+Tests: the full suite against the previous run, every file the same.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

@@ -1,0 +1,31 @@
+[0031] slice 10, the builders: 35 data builders from standin/data/ to validation/ (git mv; paths and imports only)
+
+Nick's answer to question 1: how Cubby is made is open (Apache-2.0), so the builders go beside their
+trainers.
+  validation/sft/       the SFT sets of the 450M's adapters: build_chat_sft, build_emitter_sft,
+                        build_events_sft, build_explicit_sft, build_gen2_partition, build_gen3,
+                        build_ground_sft, build_hdc_sft, build_history_sft, build_passage_sft,
+                        build_program_first, build_quotes_sft, build_reader_sft, build_talk_mix, build_v13f,
+                        build_webqa_sft, chat_sft_v6, gen3_llm_wordings, hf_rows, import_tinygsm, and the
+                        identity SFT records (identity.py; its runtime half is cubbyllm/speech/identity.py)
+  validation/builders/  the worlds' and the benches' data: build_books_index, build_ear, build_ear_bulk,
+                        build_history_graph, build_history_records, build_lexicon, build_nyt_events,
+                        build_property_aliases, build_same_place, build_webq_bench, build_word_table,
+                        convert_books, fetch_hdc_labels, goemotions_cube
+  their seven tests -> tests/builders/
+
+Imports of moved modules become package imports (cubbyllm.*, validation.sft.*, validation.builders.*),
+and a wrapped import keeps its lines and comments. The builders keep their sys.path lines, their paths
+rewritten: they are scripts run by their path and reach the stand-in's modules (openrouter, the
+game) through them. tools/move_slice.py learns both (path lines are dropped only in files bound for
+cubbyllm/ or cubby_serve/; a module-only change is substituted in place). What stays in standin/data/:
+the three builders that serve the GGUF adapters only (build_game_sft, build_profile_sft, gap_families).
+
+Checked: build_chat_sft, build_emitter_sft and build_word_table answer --help by their new paths,
+and build_chat_sft by its old one.
+
+Tests, full suite against the baseline with the moved files mapped: same counts in every file;
+1,189 passed, 6 skipped, 1 failed (test_every_module_declares_wiring, the known red of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

@@ -1,0 +1,23 @@
+[0021] The switch alone on 0006's toy: --save, exp_k10_switch (copy-only on a frozen trunk), present answered wrong, 12 templates
+
+- exp_k10_free_text.py: --save PATH writes the joint model at the end (every part's tensors by name: CubbyModel
+  is not an nn.Module, and the embedding and head list only trainable tensors, so a state_dict per part missed the
+  trained embedding table); a present-answered-wrong column (1 - exact - refused); --templates 6|12 for part B.
+  key_cos moved to k10_free_docs (the file stays at 288 lines).
+- exp_k10_switch.py (new): --resume the joint model, freeze everything but the copy path's gate, tau and beta
+  (trunk, embeddings, pointer frozen), --copy-only STEPS with the language loss alone on the same documents, the
+  frozen tensors' hash before and after, the joint run's own held-out set; at the end the read's best-match cosine
+  on present and empty pieces (the kill line's two distributions).
+- k10_free_docs.py: 6 more training templates (8-13) and 5 more function words, used only with templates == 12;
+  the held-out templates and documents never move.
+
+Off unchanged: a tiny joint run of arms P and U with HEAD's two files and with these gives identical final
+metrics. tests/test_k10_switch.py (3): a resumed model's tensors equal the saved ones (embedding and router
+included) and it scores the same; the switch-alone steps move only the gate, tau and beta (the frozen hash holds);
+present wrong = 1 - exact - refused; twelve templates train on 0-5 and 8-13, never 6-7, and the held-out documents
+are token for token the same.
+
+Runs (U, A, P x 3 seeds: joint 1,000 steps, then 500 switch alone) in progress.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

@@ -1,0 +1,31 @@
+[0038] Reading the question: a bare year is the as-of, noise words go, a place qualifier (CB_PLACE_QUALIFIER=1, off)
+
+Item 2 of Cowork's sorting of the 76 "couldn't find it" refusals (inbox, 2026-10-24).
+
+- everyday.py:
+  - "croatia 2012": a year at the name's end, with no "in", is the question's as-of year. Only for a state's
+    value, and never for a year still to come, so "blade runner 2049" keeps its name.
+  - Noise words go: yahoo, gmt, wiki answers, based, a trailing "and"; "the state of michigan" reads as
+    michigan.
+- cubbyllm/sources/wikidata_place.py (new, WIRED behind CB_PLACE_QUALIFIER=1, off by default). A name that
+  carries where it is ("cleveland ohio", "denver co", "texas san antonio", "new england usa") is read as a name
+  and a qualifier, the qualifier last or first, with abbreviations spelled out.
+  - The name's exact hits are kept when a place they are in names the qualifier: located in (P131, up three
+    steps), the country, the continent.
+  - One item resolves it. Several: refused, named. Nothing is ranked.
+  - It runs only when no item carries the whole name. Every place is the source's own claim.
+- Tests: the year and noise readings (test_everyday), and the place reading with a fake that searches by query.
+  The fake covers a city in a county in a state, a region in a country, and two in one place refused (test_sources).
+
+Live scoreboard, the table on, tense on, CB_PLACE_QUALIFIER=1
+(validation/logs/everyday_webq_on_live_tense_reading_2026-10-24.json), every changed row read by hand:
+- WebQ: 63 spoken, up from 54; 0 wrong.
+  - New, all right: Croatia in 2012 -> the Croatian kuna; Switzerland -> the Swiss franc; Slovakia and Germany
+    -> the euro; England (twice) -> pound sterling; Argentina -> Spanish (a noise word gone); and through the
+    place reading, Ontario, Canada -> the Canadian dollar and Colombia, South America -> Spanish.
+  - "Couldn't find it" fell from 75 to 60. The other 6 now refuse honestly: a time zone with several values
+    (ambiguous_hop), or two namesakes in the place named (ambiguous_entity).
+- The 10 mismatches are the 8 read as right before, plus pound sterling for "UK £" twice.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

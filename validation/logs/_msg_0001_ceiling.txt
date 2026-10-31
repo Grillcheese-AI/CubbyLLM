@@ -1,0 +1,16 @@
+[0001] Addendum 2: the far-facts read is at capacity for a 128k-way decode; A0 extended to test the read-side fixes offline; B8 address-partitioned scene (K sub-scenes, routed by the place)
+
+validation/sim_hrr_ceiling.py: an FHRR scene with random codes and an ideal argmax decoder (the read's
+best case), plus counts from the real shards (validation/logs/sim_hrr_ceiling_2026-10-21.json):
+- villages (spatial_here): 32.4 items a scene, 40 distinct written tokens -> ceiling 1.000
+- far facts (facts_far1k_lead): 37.1 items, 47,670 distinct written tokens -> ceiling 0.765 per piece
+  among 131,072 (0.995 with the scene split in 2, 1.000 in 4); ~4.6 pieces an answer, so ~0.3 exact
+  even for a perfect decoder.
+Same load, different candidate set: that is the difference between the regime that reads and the one
+that does not. B1 alone cannot reach the 0.80 line; B8 (partition the scene by a hash of the place,
+the oracle routing that gave MoE-moryLLM its largest gain, no router to learn, state still fixed-size)
+lifts the ceiling. B9 (a document-local candidate set) is measured in A0 but not built without Nick:
+it needs a growing list of written ids.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

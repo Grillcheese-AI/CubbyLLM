@@ -1,0 +1,37 @@
+[0038][0037] Nick: the everyday table and the tense check on by default; three things that surfaced, fixed
+
+Nick, 2026-10-24, in Claude Code's chat:
+- CB_EVERYDAY is on by default; CB_EVERYDAY=0 turns it off.
+- The tense check is on always, books or not. tense=None now means on; the server's --no-tense turns it off
+  (--tense is kept, and does nothing).
+- The time rule follows the tense check, as Cowork measured.
+
+Three things surfaced when they came on:
+1. Nested questions. The table read "What is the capital of the country of citizenship of Marie?" as one hop,
+   with "country of citizenship of Marie" as the name. EverydayForms now leaves a seed that starts with a
+   relation it names to the model's plan ("Bank of America" and "national anthem of France" are still names).
+2. The host's own grammar for an event. "What is the date of birth of X?" was refused, because the tense check
+   read its "is" as asking about the birth in the present. question_forms.noun_tense: an event named as a noun
+   asks no tense.
+   - "Where is X born?" is still refused.
+   - A state keeps its auxiliary: "What is the currency of Germany?" still refuses the Deutsche Mark.
+3. 0037's answers and the checks.
+   - The checks after a walk (the bulk veto, tense, "as of", the time rule, the one-witness hedge) moved
+     verbatim from AskLoop._ask into AskMemory._checked. They run only when the walk and the record both say
+     verified, so a namesake's refusal is never given an "As of 2019, None." reply.
+   - Each "several fit" walk passes the same checks, so an ended value is not said for one namesake.
+   - The namesakes' "there is also ..." line comes after the "as of", instead of being overwritten.
+   - With the flag off, the loop is unchanged: after_walk stays where it was.
+
+Tests that pinned the old defaults now name the switch they mean: tense=False / time_rule=False in
+test_hdc_store and test_time_rule, everyday=False for the emitter's alias path in test_ask. New pins: the
+nested guard, on by default and off with CB_EVERYDAY=0, noun_tense, and each namesake's walk checked.
+Whole suite: 1096 passed; the one failure is the known red, test_every_module_declares_wiring (order 0002).
+
+Re-measured offline, on the cache the live runs filled. 0 rows changed against Cowork's runs:
+- WebQ: 47 spoken, 38 matched, 9 mismatched, the same 9 read as right
+  (validation/logs/everyday_webq_on_offline_tense_newdefaults_2026-10-24.json);
+- the stack's 20: 9 spoken (validation/logs/everyday_stack_on_offline_tense_newdefaults_2026-10-24.json).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

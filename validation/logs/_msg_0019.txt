@@ -1,0 +1,8 @@
+[0019] ESConv and MELD fetched: numbers from the released files
+
+ESConv's released file holds 1,300 conversations and 38,365 utterances (the paper describes 1,053);
+1,150 carry the seeker's intensity before and after (4.07, then 2.07). MELD: 13,708 utterances,
+1,432 dialogues (train 9,989 / dev 1,109 / test 2,610). Text only.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

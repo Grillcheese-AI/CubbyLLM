@@ -1,0 +1,12 @@
+[0031] import_science goes with the builders: standin/data/ to validation/builders/ (git mv; paths and imports only)
+
+The map's split of import_science: the mount went to cubbyllm/worlds/science.py (53d9d49) and the
+import (MegaScience rows -> science fact worlds; its fetch, extract and build commands) goes with the
+builders. It keeps its sys.path lines and re-exports mount_science as before. The guard scan for what
+standin/ may still hold found it, the one module that was neither staying nor a shim.
+
+Checked: `--help` by its new path and its old one. Tests: test_import_science, test_guards: 8 passed,
+1 failed (the known red of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

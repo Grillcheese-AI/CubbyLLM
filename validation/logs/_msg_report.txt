@@ -1,0 +1,20 @@
+[0001] review: the report -- the read already carries the far facts; a copy over the document's written ids with a read-aware gate takes the 450M-like toy 0.000 -> 0.930 / 0.908 / 0.895 (3 seeds); RUN = 4 written
+
+The last ladder step: 6, the gap (+ roles, documents of 1,024, facts ~800 tokens before their
+questions): 0.941 at step 999 (roles: 0.943 by step 800) -- distance does not break the read
+(the scene does not decay and the hypertoken carries its address), so B7 is not needed. Logs:
+exp_k10_far_facts_gap800_2026-10-21.{json,log}.
+
+The report in docs/orders/0001-far-facts-local.md: A0 and its grid, the ladder, the fixes on the
+combination arm, run 3 with the copy at step 0, each acceptance line (A split: the starting
+configuration as written reads 0.877 < 0.90, the combination 0.000; B passes on 3 of 3 seeds with
+the read-aware gate, the language within 0.02 on each), what a GPU must still check, what was found
+on the way (the villages never tested copying; the specified gate cannot see an empty address;
+exp_hypertoken_recall's import sets CB_NO_FLEX=1 process-wide), and the questions for Cowork/Nick
+(run 4's gate and budget).
+
+notebooks/_build_spatial.py (+ the notebook): run 4's note quotes run 3 + the read-aware ring at
+step 0 (0.800 first / 0.258 exact) and the toy's 3 seeds.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

@@ -1,0 +1,4 @@
+[0036] in progress: inverse questions, a chosen item kept as itself, the kind-to-relations table, the audit
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

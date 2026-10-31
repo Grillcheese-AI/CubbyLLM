@@ -1,0 +1,25 @@
+[0031] network split: the news archive's socket, poller and CLI move to cubby_serve/sources/news.py
+
+Out of cubbyllm/sources/news/archive.py, verbatim, into cubby_serve/sources/news.py:
+- the GET (_get -> get: User-Agent CubbyLLM/0.1, the body un-gzipped either way, an HTTP error as its code);
+- start_poller (the hourly thread the chat server runs with --news-archive);
+- the CLI (`python -m cubby_serve.sources.news --root <dir> --once | --every 3600 | --stats`).
+
+The Archive stays in the package and polls through the fetch it is handed: its day files, keys and
+lock, robots and Crawl-delay over that fetch, the feeds' parsing, Global Voices, GDELT. Built without
+one, it reads and writes its files and refuses to fetch with a RuntimeError that says why. The package
+no longer imports urllib.request there.
+
+Who hands it in: the server's poller; the plugins' ctx.fetch (the server's loader gets fetch=get;
+guard.Ctx no longer falls back to the archive's own GET); validation/plugins_checks.py (the alerts
+plugin's live check). `python standin/news_archive.py --every 3600`, the 0024 poller's command, still
+works: its shim now runs cubby_serve.sources.news. The detached poller running since 13:47 UTC has the
+old code loaded and is untouched.
+
+test_news_archive's gzip test patches urlopen in the GET's new module (same assertion).
+
+Tests: tests/sources, tests/plugins, tests/serve, test_guards: 189 passed, 1 failed (the known red of
+order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

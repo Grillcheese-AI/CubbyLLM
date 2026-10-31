@@ -1,0 +1,6 @@
+[0031] import_science: the old name as a shim
+
+`python standin/data/import_science.py ...` runs validation/builders/import_science.py for one cycle.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

@@ -1,0 +1,23 @@
+[0031] pre-move: the 450M seats reach grilly2 through cubbyllm/ops/grilly_seats.py
+
+Only cubbyllm/ops/ may import grilly, and the seats' trunk (emitter_450m, bound for
+cubbyllm/emit/seats_450m.py) imported grilly, grilly.infer.lora and the export loader of
+validation/exp_e5_base450m_probes. cubbyllm/ops/grilly_seats.py now holds those calls, verbatim:
+load_export (exp_e5's load_grilly, which the probe script imports back), wrap_lora, copy_pair (a
+role's A/B pair into the wrapped projections) and generate (the greedy or seeded sampled decode).
+The trunk calls them; it no longer puts validation/ on sys.path. grilly is imported when a function
+runs, so `import cubbyllm` stays grilly-free.
+
+Checked on the local card with grilly2 (validation/seats_record.py, new): one trunk with the
+emitter adapter and a talk adapter on the base450m_cont export, three questions, a talk decode, a
+swap back, two sampled programs (temperature 0.7, seed 7) and five slotted val prompts. The trunk's
+old code (HEAD) and the new give byte-identical outputs and the same 3 swaps (25.9 s and 25.5 s).
+The adapter is in: CotPlan, CotChain and role-binding prompts come back as the start of their gold
+programs. validation/logs/0031_seats_grilly2_2026-10-22.json
+
+Tests: test_emitter_450m (a fake trunk), test_serve, test_plugins_serve, test_local_paths,
+test_guards (test_ops_is_sole_grilly_importer passes): 52 passed, 1 failed
+(test_every_module_declares_wiring, the known red of order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

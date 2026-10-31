@@ -1,0 +1,13 @@
+[review] 0006, 0011, 0016 done; 0012 reopened; H-K10 records 0006 and 0011
+
+0006: text keys + pointer reach unseen subjects (0.854/0.899/0.870, seen phrasings; hashed 0.000);
+its lines missed on the switch (copy alone 0.955-0.974, mixed 0.846-0.857): order 0021.
+0011: readable names, run 5 reads 0.931 vs 0.941 on the same 64 documents: passes.
+0016: leak scan 0 names / 0 URLs / 0 quotes over 200 spoken, 200/200 audit chains: passes.
+0012: index passes; finder fails as pre-registered (premise: books rarely state the wiki pairs);
+frames short of 200 triples; one flat wrong (Kerma, an earlier capital): a time rule, finer is
+agreement, a same-name guard, then re-run. 0013 takes the conditional finder measure; 0015 takes
+label hygiene. The 2026-10-20 shard build logs lose their local paths.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

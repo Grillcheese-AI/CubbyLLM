@@ -1,0 +1,34 @@
+loaded in 40s; 20 questions
+{
+ "what": "exp_everyday_webq",
+ "everyday": "on",
+ "emitter": "none",
+ "online": true,
+ "tense": "on",
+ "namesake_tier": false,
+ "questions": "stack 20",
+ "parsed_only": false,
+ "counts": {
+  "asked": 20,
+  "spoken": 10,
+  "spoken_by_form": 10,
+  "match": 0,
+  "mismatch": 0,
+  "refused:no_plan": 5,
+  "refused:retrieval_exhausted": 3,
+  "refused:ambiguous_hop": 1,
+  "refused:entity_unresolved": 1
+ },
+ "by_form": {
+  "capital": 2,
+  "place of birth": 1,
+  "author": 2,
+  "creator": 1,
+  "discoverer or inventor": 1,
+  "currency": 1,
+  "located in or next to body of water": 1,
+  "end time": 1
+ },
+ "emitter_calls": null,
+ "wall_s": 50.4
+}

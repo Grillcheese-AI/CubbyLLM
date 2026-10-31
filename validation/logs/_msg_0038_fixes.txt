@@ -1,0 +1,25 @@
+[0038] Three walk fixes the live Wikidata lookup needed (Cowork's, landed by Claude Code)
+
+Each fix has a test that fails without it.
+
+- pipeline._latest_dated: a value whose end the source stated never beats one still standing. When every
+  dated value has ended, nothing is picked and the walk refuses.
+  - Live: France -> Bayeux (June to September 1944), on its later start alone.
+- learn.learn_and_answer: a fetched duplicate that only a read-only world behind holds is also put in the
+  first world, so the walk sees it beside its siblings.
+  - Live: Italy -> Florence. Rome sat in the hdc world, unread behind the shared name; the Czech koruna was the
+    same case.
+  - It is admitted once: held_by() is None as soon as the first world holds it.
+- wikidata_resolve.resolve: the label beats an alias only among different kinds (new helper _one_kind).
+  - Live: "Ben Franklin" -> Carthage, from a minor item labelled with the nickname.
+  - CB_NAMESAKE_TIER=1 keeps the old reach.
+  - Two of a kind are refused at the source, which is order 0037's default for the hdc world (asked which).
+    Kept as is; 0037's answer-each can extend to the source later.
+
+Tests: +1 each in test_ask.py, test_hdc_namesakes.py and test_sources.py.
+
+learn.py and pipeline.py were already over 300 lines. Each fix sits where its logic lives (14 and 15
+lines); splitting the files is not this order's work.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

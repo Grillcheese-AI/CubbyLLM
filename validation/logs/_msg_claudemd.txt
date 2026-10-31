@@ -1,0 +1,25 @@
+A clean CLAUDE.md for the split: Cowork researches and dispatches, Claude Code codes; work orders in docs/orders/
+
+CLAUDE.md is rewritten for where the work stands (2026-10-21) and how it is now divided: Nick
+decides, Cowork (Claude in the desktop app) does the research, the Colab runs and the records and
+writes work orders, Claude Code (in this repo) takes the orders, builds, tests, commits and
+reports. The rules every change keeps (flag-gated, < 300 lines, __wiring__, tests pin the claim,
+custom-op fakes match the kernel's strides, numbers link their logs, no local paths, no external
+LLM on the serving path, BlockWorld stays private) and the working notes (pytest's -q, generated
+notebooks, shards, commits) are in it; the old file, the validation-campaign history, is
+docs/archive/CLAUDE_2026-10-21.md.
+
+Machine paths, drives and accounts move to CLAUDE.local.md, git-ignored (Claude Code loads it
+beside CLAUDE.md): this repo is public.
+
+docs/orders/: README (format, lifecycle proposed -> open -> in progress -> review -> done |
+blocked), _TEMPLATE, and two proposed orders: 0001 -- reproduce the far-facts failure on a CPU
+toy (a ladder from the toy that reads at 0.94 toward the 450M that reads at 0.021) and fix it
+there (copy path, read nearer the head, denser supervision) before the next Colab run; 0002 --
+the red wiring guard.
+
+docs/research/2026-10-21-far-facts-research-brief.md: the far-facts problem stated for a wide
+literature search.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

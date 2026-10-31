@@ -1,0 +1,31 @@
+[0035] B: why the copy did not fire on real villages: the gate stays shut on village documents, and their shape gives it no written token to copy
+
+Measured without training: run 5's copy at every asking token (gate lambda, best match, what it points at), on 0034's
+villages (cut, the placed questions, fixed) and beside the documents it was trained on.
+Log: validation/logs/diag_s12_copy_2026-10-23.json, counts only.
+
+1. The gate stays shut on village documents.
+   - At 0034's `here` tokens: lambda 0.06 (things), 0.02 (names), 0.00 (nothing).
+   - On run 5's own shard villages (spatial_here): 0.00 at all 359 asking tokens. The 0.953 there is the trunk's
+     read alone.
+   - On the far facts (facts_far1k_lead) it opens: 0.71, pointing at the next token 1,005 of 1,410 times.
+2. The read mostly finds the right thing: at `here` it points at the answer's first piece, in its written form, for
+   199 of 329 things.
+3. 0034's document shape gives the copy nothing it can copy:
+   - it asks at `here`, which is followed by "?" or a newline, not by the answer;
+   - the answer's first token is a token never written: the listing writes "coal" at a line's start, and the answer
+     after "Answer:" is " coal", another id;
+   - with the lead token also asking, the gate opens (0.96 / 0.99) and still gives 0 of 329 things, 3 of 120 names.
+4. In the far facts' shape (the lead token asks; "Answer:", a space, then the name in its written form), with no
+   training:
+   - things 0.726 (239 of 329), names 0.358 (43 of 120);
+   - the misses are mostly another piece of the same name (80 things, 69 names: a name's pieces all share one cell),
+     few a neighbour's piece (10, 3);
+   - "nothing" breaks: the gate opens on empty cells too (0.73), 3 of 391 right.
+
+So C as written (the copy's 1,027 parameters on village documents) can learn when to open, not which written token
+the read points at. Its shard needs the far facts' shape: the lead token asking, the answers in the written form,
+and each piece of a name at its own address. Questions in the order's report.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01B8QTwiZKpHw6Uvw7HvkjGP

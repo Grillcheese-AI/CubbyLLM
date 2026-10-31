@@ -1,0 +1,15 @@
+[0031] pre-move: what stays in standin/ takes identity's runtime names and the brain's from the package
+
+The game (forge, pac_affect, pac_speech, pacman), the stand-in's eval (eval_emitter_vm) and its two
+staying builders (gap_families, build_game_sft) imported identity's runtime names (EMITTER_SYSTEM,
+identity_system, guess_lang, identity_ok, load_facts, voice_ok, is_identity_reply, is_model_guard,
+sample_state) through standin/data/identity.py, which re-exports them. They now import them from
+cubbyllm.speech.identity, and forge takes PROGRAM_PREFIX and _clean from cubbyllm.brain instead of
+the serve shim: the same objects. That leaves the identity SFT records module to the builders, which
+move next. No path moves.
+
+Tests: standin/tests, tests/speech, test_guards: 280 passed, 1 failed (the known red of order 0002);
+test_build_game_sft 2 passed.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

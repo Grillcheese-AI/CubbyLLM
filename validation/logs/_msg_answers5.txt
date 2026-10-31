@@ -1,0 +1,4 @@
+Ten free-running far-fact answers (greedy, held-out, up to 16 tokens): run 3 alone 0 of 10, run 5 9 of 10 exact (the miss stops one word short)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

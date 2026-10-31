@@ -1,0 +1,16 @@
+[0031] pre-move: the server's modules take the science mount and the 450M trunk from the package
+
+Before the cubby_serve slice moves the server, no path moves:
+- serve_cli mounts the science worlds with cubbyllm.worlds.science.mount_science (where 53d9d49 put
+  it) instead of putting standin/data on sys.path for the builder that re-exports it.
+- plugins_serve takes Cubby450mTrunk from cubbyllm.emit.seats_450m (the same class its isinstance check
+  needs; the facade re-exported it).
+- cubby_serve/build.py imports the stand-in's GGUF seat as `emitter_llama`, the name the facade uses,
+  so the module is loaded once, not also as standin.emitter_llama.
+
+Tests: test_plugins_serve, test_board, test_board_review, test_harness, test_harness_wiring,
+test_ledger_vault, tests/brain, tests/plugins, test_guards: 126 passed, 1 failed (the known red of
+order 0002).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

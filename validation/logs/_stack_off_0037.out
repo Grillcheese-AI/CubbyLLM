@@ -1,0 +1,33 @@
+loaded in 21s; 20 questions
+{
+ "what": "exp_everyday_webq",
+ "everyday": "on",
+ "emitter": "none",
+ "online": false,
+ "source": "off",
+ "tense": "on",
+ "namesake_relation": true,
+ "source_over_snapshot": true,
+ "namesake_tier": false,
+ "questions": "stack 20",
+ "parsed_only": false,
+ "counts": {
+  "asked": 20,
+  "spoken": 4,
+  "spoken_by_form": 4,
+  "match": 0,
+  "mismatch": 0,
+  "refused:retrieval_exhausted": 6,
+  "refused:no_plan": 3,
+  "refused:ambiguous_entity": 4,
+  "refused:entity_unresolved": 2,
+  "refused:unknown_relation": 1
+ },
+ "by_form": {
+  "capital": 2,
+  "currency": 1,
+  "located in or next to body of water": 1
+ },
+ "emitter_calls": null,
+ "wall_s": 21.4
+}

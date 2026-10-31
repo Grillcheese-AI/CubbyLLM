@@ -1,0 +1,11 @@
+[0034] Report; status review
+
+Host: 0 wrong in 3,600 (every routed question with an answer spoken right, every empty one refused; 3 of 7
+shapes have no route).
+Trunk: things 0.006, names 0.000 on real villages: the kill line is met, the synthetic villages did not transfer.
+Renamed to shard words, the same villages read 0.58: the words, more than the places.
+Act: 20 of 20 markers on the computed cell, 0 elsewhere, 22 of 22 unplaceable targets refused before any order.
+Suite: 1,232 passed, 1 failed (the known red), 6 skipped (validation/logs/0034_tests_2026-10-22.json).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

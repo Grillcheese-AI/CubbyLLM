@@ -1,0 +1,4 @@
+[0018] Question shapes SFT (Nick): EN-US / EN-UK / FR-FR / FR-QC x wh, yes/no, tag, leading, embedded, imperative, clefted, follow-up and search shapes -> the emitter plan; no external model; Nick writes the FR-QC eval -- open
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm

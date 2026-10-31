@@ -1,0 +1,41 @@
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+exposure curve on the trunk: 1.06M params (D=128 L=4), 1000 facts in groups of 250 seen (1, 10, 100, 1000) times, paraphrase=False; corpus 3.33M tokens (1.67M of facts), one pass
+  step    0/406  loss 6.963  language held-out 6.962  exact recall 1x:0.00  10x:0.00  100x:0.00  1000x:0.00   [9s]
+  step   25/406  loss 5.822  language held-out 6.277  exact recall 1x:0.00  10x:0.00  100x:0.00  1000x:0.00   [47s]
+  step   50/406  loss 3.479  language held-out 4.520  exact recall 1x:0.00  10x:0.00  100x:0.00  1000x:0.17   [86s]
+  step   75/406  loss 2.579  language held-out 3.238  exact recall 1x:0.00  10x:0.00  100x:0.00  1000x:0.36   [125s]
+  step  100/406  loss 2.121  language held-out 2.967  exact recall 1x:0.00  10x:0.00  100x:0.00  1000x:0.54   [164s]
+  step  125/406  loss 2.070  language held-out 2.916  exact recall 1x:0.00  10x:0.00  100x:0.04  1000x:0.77   [203s]
+  step  150/406  loss 2.002  language held-out 2.878  exact recall 1x:0.00  10x:0.00  100x:0.09  1000x:0.76   [241s]
+  step  175/406  loss 2.020  language held-out 2.823  exact recall 1x:0.00  10x:0.00  100x:0.02  1000x:0.45   [280s]
+  step  200/406  loss 2.018  language held-out 2.824  exact recall 1x:0.00  10x:0.00  100x:0.16  1000x:0.75   [318s]
+  step  225/406  loss 1.885  language held-out 2.795  exact recall 1x:0.00  10x:0.00  100x:0.12  1000x:0.65   [358s]
+  step  250/406  loss 1.918  language held-out 2.753  exact recall 1x:0.00  10x:0.00  100x:0.16  1000x:0.70   [398s]
+  step  275/406  loss 1.951  language held-out 2.742  exact recall 1x:0.00  10x:0.00  100x:0.39  1000x:0.92   [438s]
+  step  300/406  loss 1.923  language held-out 2.719  exact recall 1x:0.00  10x:0.00  100x:0.41  1000x:0.95   [478s]
+  step  325/406  loss 1.960  language held-out 2.699  exact recall 1x:0.00  10x:0.00  100x:0.43  1000x:0.93   [518s]
+  step  350/406  loss 1.939  language held-out 2.681  exact recall 1x:0.00  10x:0.00  100x:0.40  1000x:0.90   [559s]
+  step  375/406  loss 1.908  language held-out 2.675  exact recall 1x:0.00  10x:0.00  100x:0.36  1000x:0.87   [598s]
+  step  400/406  loss 1.891  language held-out 2.667  exact recall 1x:0.00  10x:0.00  100x:0.28  1000x:0.83   [637s]
+  step  405/406  loss 1.859  language held-out 2.667  exact recall 1x:0.00  10x:0.00  100x:0.30  1000x:0.86   [645s]
+  final: 1x: exact 0.00 (first token 0.00)  10x: exact 0.00 (first token 0.00)  100x: exact 0.30 (first token 0.78)  1000x: exact 0.86 (first token 1.00)
+  wrote validation\logs\exp_k7_exposure_verbatim_2026-10-20.json  (644.9s)

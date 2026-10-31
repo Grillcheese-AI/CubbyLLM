@@ -1,0 +1,11 @@
+[0031] check: the loci bench on run 5 reads the same after slice 4
+
+bench_loci_learn phase 2 (100 one-hop questions, offline, the facts phase 1 stored) rerun on
+spatial_link_5_final.pt through the moved code: the ask loop and loci reader in cubbyllm/reasoning,
+the model built by cubbyllm/model/build.py, the scene laid out by cubbyllm/model/fact_layout.py.
+All 100 rows equal the phase-2 rows of bench_loci_learn_2026-10-22.json (path, answer, reason, the
+reader's reads, source calls); the summary too: 34 answered through the loci path, 0 wrong spoken.
+CPU, 2 threads, 0.6 s a question. validation/logs/0031_loci_bench_after_2026-10-22.json
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

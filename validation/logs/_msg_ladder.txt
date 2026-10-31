@@ -1,0 +1,28 @@
+[0001] The ladder and the first fix arm: the 450M-like toy reads 0.000 for 1,000 steps; the ring copy lifts it to 0.922 (seed 0), language unchanged
+
+validation/exp_k10_far_facts.py, D 256, 1,000 steps x 16 documents, seed 0, CPU (2 threads an
+arm); exact (teacher-forced, every piece) / first / later / end (the EOS after the name) /
+filler-language loss; ceiling = sim_hrr_ceiling (random codes, ideal argmax) per piece.
+  base (--query placed --gate-bias 0 --route-loss 1, as the order starts)  0.877 / - / - / 1.000 / 2.075
+       (the same seed without the route loss read 0.934 on 2026-10-20; HERE also writes at the asked
+       address in this layout, 16 items a scene: ceiling 0.767 over 1,024)
+  roles (facts write, questions ask)          0.943 at step 800 (stopped there: CPU)     ceiling 0.993
+  vocab8k (8,192 answers)                     0.000 at step 500 (stopped there: CPU)     ceiling 0.583
+  pieces5 (1-5-piece names, roles)            0.221 / 0.548 / 0.396 / 0.843 / 2.142      ceiling 0.513 (0.885 written)
+  combination (vocab 8,192, 4 facts of 1-5 pieces, 1 question a document, L 8 read at 4):
+    no copy                                   0.000 at every eval / 0 / 0 / 1.000 / 2.226
+    + ring copy (Addendum 3's gate)           0.922 / 0.992 / 0.964 / 0.469 / 2.226
+    ceiling 0.857 over the vocabulary, 0.995 over the ~12 written tokens (11.9 items a scene)
+The ring copy reads 0.980 at step 0 (nothing learned: the cleanup alone), dips to 0.543 at step
+300 while the gate learns which askers hold something, and ends at 0.922; its end token 0.469 --
+the gate from h alone keeps copying after the last piece (see 4f672f5, the read-aware gate).
+vocab32k and sparse were stopped at step 0 / 100 to free the CPU (scratch logs, _stopped_*).
+Logs: exp_k10_far_facts_{base,roles,vocab8k,pieces5,combo_s0,combo_ring_s0}_2026-10-21.{json,log}
+(roles and vocab8k: .log only, marked where they stopped).
+
+Also validation/diag_fact_cleanup_grid.py: absent reads and the read-aware gate's threshold. On
+run 3: present reads' target cos 0.164, absent reads' best 0.066 among the writers (0.137 over the
+vocabulary) -> copy_beta 0.115 for the ring. Logs: diag_fact_cleanup_grid_beta_run3_2026-10-21.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

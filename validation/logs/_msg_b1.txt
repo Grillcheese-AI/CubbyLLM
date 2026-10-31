@@ -1,0 +1,35 @@
+[0001] B1: the spatial link's copy path over the ring (Addendum 3) -- the read cleaned up against the document's written ids and mixed into the output; the far-facts toy ladder
+
+cubbyllm/model/spatial_copy.py (new; meta["spatial"]["copy"] = "ring" | "table", absent = None,
+nothing built). At an asking token the link's read r = scene (*) S(p)^-1 is scored by cosine
+against the stored vectors of the candidates and mixed in as a pointer distribution:
+  p = (1 - lam) p_LM + lam p_copy,  p_copy = softmax_c exp(tau) cos(r, e_c) scattered onto ids,
+  lam = sigmoid(g . rms(h) + b), starting at 0.1 (g = 0); tau from meta copy_tau.
+"ring": the last 256 ids this document WROTE (reset at starts; a (B, 256) ring + count at decode,
+fixed-size, Nick's call); "table": the whole vocabulary, the comparison arm. The asking rows'
+logits become log p (normalized: CE over them is -log p(y)); every other row is the trunk's
+logits bit for bit; an asking token with nothing written keeps the trunk's logits.
+Why: A0 (f3033a9) -- run 3's read decodes 0.992 a piece / 0.965 whole answers among the
+document's writers, 0.758 / 0.457 over 128k; the trunk reads 0.021.
+
+SpatialLink(copy=, copy_tau=, copy_ring=) owns it (registered last: its 3 tensors follow the
+link's, old checkpoints load); SpatialLink.add_copy is the call; CubbyModel.forward splits
+features into _trunk (h + the copy's inputs), step keeps the ring (remember) and mixes at
+asks; init_state allocates the ring. train_base.spatial_link passes copy / copy_tau /
+copy_ring from the meta (one line in a file already over 300: the meta plumbing has to live
+where build_model does).
+
+tests/model/test_spatial_copy.py: off = nothing built, forward and decode unchanged; added =
+every non-asking position bit-identical, asking rows a normalized log-mixture; gate open + one
+token written -> that token on top (forward and decode, both modes); decode = forward with the
+copy open, roles, a document restart, and a ring of 2 under 3 writes; the ring = each
+document's last writers (brute force); no candidate -> trunk logits; gate and tau get gradient;
+meta keys build it. Full suite: 402 passed, 5 skipped, 1 failed (the known wiring guard, 0002).
+
+validation/exp_k10_far_facts.py + k10_far_docs.py: the toy ladder (the toy's documents
+generalized, identical at its settings -- selfcheck at every start), --copy ring|table with
+tau from the toy's own A0 gap (~2 nats), --copy-aux (B5, conditional), --answer-weight (B3);
+logs lam at asking tokens, the writer gap, and the read's ceiling (sim_hrr_ceiling).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

@@ -1,0 +1,20 @@
+[0028] review 2: the MiniLM router on in the server; a woken plugin loads only when it claims the question
+
+The router's score is a guess, and a woken plugin acts: a source fetches, a talk adapter words the
+reply. So a plugin the router wakes is asked first (standin/plugins_check.py, called by Loader.wake):
+- a source or world: its own covers(question), on the object built but not mounted;
+- an adapter (talk): only when the thalamus (CubbyBrain.needs_facts) says the turn needs no facts.
+A plugin that declines is not counted and loads nothing; why goes in Loader.declined, the ask record's
+plugins_declined (internal) and the board's "which plugin would wake?".
+
+envcanada-alerts' covers claimed any weather word ("what causes freezing rain?" scored 0.8). It now
+claims an alert's own word, or a hazard with now: 30/30 of its examples, 1/30 of its not-lines.
+serve_cli --plugin-router defaults to minilm (nearest = the earlier router); the library default is
+unchanged.
+
+Tests: test_plugins_check.py (4); pytest tests standin/tests 1,189 passed, red only 0002's.
+The fresh held-out set is not run: Nick's note pauses standin/ work until 0031 moves the plugins
+slice; this change was in progress and is committed as asked.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U1g7Ncsx4GPjR4vE8xyiDH

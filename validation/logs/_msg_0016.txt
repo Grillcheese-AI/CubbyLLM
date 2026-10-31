@@ -1,0 +1,7 @@
+[0016] Sources stay internal (Nick): replies to regular users never name a source or quote a passage; an audit view (token) shows the whole chain -- open; WORLDS.md, CLAUDE.md, the explainer and orders 0007/0012/0015 updated
+
+Attributed facts are now spoken hedged ("one account says...") instead of "According to <author>".
+A user's own documents can be cited back to that user.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01CwnGz89LGTJ46rp5DrHejm
