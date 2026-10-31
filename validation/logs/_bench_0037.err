@@ -1,8 +1,0 @@
-C:\Users\grill\Documents\GitHub\CubbyLLM\validation\exp_hdc_bench.py:34: DeprecationWarning: hdc_store moved to cubbyllm.worlds.hdc_store (order 0031)
-  from hdc_store import HdcWorld, Stores  # noqa: E402
-C:\Users\grill\Documents\GitHub\CubbyLLM\validation\exp_hdc_bench.py:35: DeprecationWarning: question_forms moved to cubbyllm.reasoning.question_forms (order 0031)
-  from question_forms import Forms, TemplateEmitter, tensed  # noqa: E402
-C:\Users\grill\Documents\GitHub\CubbyLLM\validation\exp_hdc_bench.py:72: DeprecationWarning: wikikg moved to cubbyllm.worlds.wikikg (order 0031)
-  import wikikg as wk
-C:\Users\grill\Documents\GitHub\CubbyLLM\validation\exp_hdc_bench.py:73: DeprecationWarning: ask moved to cubbyllm.reasoning.ask (order 0031)
-  from ask import AskLoop

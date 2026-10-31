@@ -132,6 +132,7 @@ def test_the_corpus_reads_the_shard_by_documents_and_the_link_trains_on_it(tmp_p
     monkeypatch.setattr(sys, "argv", ["make_spatial_shard", "--cache", str(tmp_path), "--tokenizer", str(TOK),
                                       "--villages", "12", "--doc", "192", "--things", "4", "8",
                                       "--questions", "2", "4", "--holdout-frac", "0.25", "--seed", "3"])
+    monkeypatch.setattr(mss, "HERE", str(tmp_path))                     # its dated log into tmp, never validation/logs
     mss.main()
     assert (tmp_path / "spatial.u32").exists() and (tmp_path / "spatial.pos.i16").exists()
     import json
@@ -186,6 +187,7 @@ def test_the_corpus_reads_the_shard_by_documents_and_the_link_trains_on_it(tmp_p
                                       "--villages", "12", "--doc", "192", "--things", "4", "8", "--mode", "text",
                                       "--questions", "2", "4", "--holdout-frac", "0.25", "--seed", "3"])
     os.makedirs(tmp_path / "text")
+    monkeypatch.setattr(mss, "HERE", str(tmp_path))                     # its dated log into tmp, never validation/logs
     mss.main()
     assert (tmp_path / "text" / "spatial_text.u32").exists() and not (tmp_path / "text" / "spatial_text.pos.i16").exists()
     tx, _ = Corpus(str(tmp_path / "text"), seq=128, val_tokens=0, seed=0).batch(1, 0, 2, "stable")

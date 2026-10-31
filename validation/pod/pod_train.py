@@ -82,11 +82,12 @@ def grow_step0(ctx, env: dict) -> str:
     """The grown model at step 0 from the start checkpoint, exact or no training."""
     out = os.path.join(ctx.run_dir("grown"), "grow_step0.pt")
     tag = "pod_smoke" if ctx.smoke else f"pod_m{env['CB_MEM_EVERY']}"
-    rep = os.path.join(REPO, "validation", "logs", f"grow_step0_{tag}.json")
+    logs = ctx.logs if ctx.smoke else os.path.join(REPO, "validation", "logs")   # a smoke's report stays in its work dir
+    rep = os.path.join(logs, f"grow_step0_{tag}.json")
     if os.path.exists(out) and os.path.exists(rep) and json.load(open(rep, encoding="utf-8")).get("exact"):
         return out
     cmd = [sys.executable, "-u", "validation/grow_base.py", "--ckpt", ctx.path("start"), "--cache", ctx.path("corpus"),
-           "--depth", "2", "--ffn", "2", "--mem-every", env["CB_MEM_EVERY"], "--save", out, "--tag", tag,
+           "--depth", "2", "--ffn", "2", "--mem-every", env["CB_MEM_EVERY"], "--save", out, "--tag", tag, "--log-dir", logs,
            "--windows", "1", "--seq", "64" if ctx.smoke else "1024"]
     if ctx.smoke:
         cmd += ["--sources", "fineweb_edu,books"]

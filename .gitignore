@@ -222,3 +222,8 @@ dashboard/assets/sections/_test/
 
 # one machine's folders by name (cubbyllm/local_paths.py, order 0030)
 paths.local.json
+
+# scratch: validation/logs/_* is a session's working files (CLAUDE.md), never committed; _discard/ is set aside, not deleted
+validation/logs/_*
+_discard/
+/_*.err

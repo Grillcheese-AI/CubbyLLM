@@ -79,13 +79,14 @@ def main() -> None:
     ap.add_argument("--seq", type=int, default=1024)
     ap.add_argument("--save", default="", help="write the grown checkpoint here")
     ap.add_argument("--tag", default="")
+    ap.add_argument("--log-dir", default=os.path.join(HERE, "logs"), help="where the step-0 report goes (a smoke: its work dir)")
     ap.add_argument("--threads", type=int, default=0)
     args = ap.parse_args()
     if args.threads:
         torch.set_num_threads(args.threads)
     tag = args.tag or (f"w{args.width}d{args.depth}f{args.ffn}{'' if args.exit == 'zero' else '_copy'}"
                        + (f"m{args.mem_every}" if args.mem_every else ""))
-    logp = os.path.join(HERE, "logs", f"grow_step0_{tag}")
+    logp = os.path.join(args.log_dir, f"grow_step0_{tag}")
     os.makedirs(os.path.dirname(logp), exist_ok=True)
     open(logp + ".log", "w", encoding="utf-8").close()
     lines = []

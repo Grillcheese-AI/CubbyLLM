@@ -61,4 +61,4 @@ hdc: 10,000 rows, 3,999 chains ({'row:chain_broken': 679, 'row:unparsed_fact': 3
  },
  "vm": "cubelang"
 }
-log: C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_s10_branches_2026-10-16.json
+log: $CUBBY_REPO\validation\logs\exp_s10_branches_2026-10-16.json

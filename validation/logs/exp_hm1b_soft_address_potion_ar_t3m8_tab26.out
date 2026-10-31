@@ -1,4 +1,4 @@
-hm1b | fastword_table_potion_ar.npz: 60147 words, k=80 l=128, teacher npz:C:\CUBBY-TRAINED-MODELS\teacher_potion_ar.npz | reader: top-3 slots per word, top-8 key phases per block, 26 tables, K in (1, 4, 16, 64) (8s)
+hm1b | fastword_table_potion_ar.npz: 60147 words, k=80 l=128, teacher npz:$CUBBY_MODELS\teacher_potion_ar.npz | reader: top-3 slots per word, top-8 key phases per block, 26 tables, K in (1, 4, 16, 64) (8s)
   corpus: 597093 distinct trigrams | queries: self (sanity) 4000, paraphrase 4000, semantic neighbour 4000, entity (different fact) 4000, random word 4000 (22s)
 
 blend 0.00 (34s)

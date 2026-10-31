@@ -1,7 +1,7 @@
 {
  "args": {
   "answers": 200,
-  "bench": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\validation\\logs\\exp_books_bench_2026-10-22.json",
+  "bench": "$CUBBY_REPO\\validation\\logs\\exp_books_bench_2026-10-22.json",
   "seed": 0
  },
  "asked": 359,

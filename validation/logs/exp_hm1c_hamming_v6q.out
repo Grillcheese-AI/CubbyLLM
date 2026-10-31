@@ -1,13 +1,13 @@
 Traceback (most recent call last):
-  File "C:\Users\grill\Documents\GitHub\CubbyLLM\validation\exp_hm1c_hamming.py", line 128, in <module>
+  File "$CUBBY_REPO\validation\exp_hm1c_hamming.py", line 128, in <module>
     main()
-  File "C:\Users\grill\Documents\GitHub\CubbyLLM\validation\exp_hm1c_hamming.py", line 80, in main
+  File "$CUBBY_REPO\validation\exp_hm1c_hamming.py", line 80, in main
     tab = Table(a.table)
           ^^^^^^^^^^^^^^
-  File "C:\Users\grill\Documents\GitHub\CubbyLLM\validation\exp_hm1_ngram_hv.py", line 73, in __init__
+  File "$CUBBY_REPO\validation\exp_hm1_ngram_hv.py", line 73, in __init__
     z = np.load(path, allow_pickle=True)
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\grill\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\numpy\lib\_npyio_impl.py", line 454, in load
+  File "~\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\numpy\lib\_npyio_impl.py", line 454, in load
     fid = stack.enter_context(open(os.fspath(file), "rb"))
                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'C:\\CUBBY-TRAINED-MODELS\\fastword_table_v6q.npz'
+FileNotFoundError: [Errno 2] No such file or directory: '$CUBBY_MODELS\\fastword_table_v6q.npz'

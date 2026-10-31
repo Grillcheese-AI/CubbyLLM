@@ -1,8 +1,12 @@
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[3]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
 
 import bpy, os, time
 sc = bpy.data.scenes["CubbyEmblems"]
 bpy.context.window_manager  # noqa
-OUT = r"C:\Users\grill\Documents\GitHub\CubbyLLM\dashboard\assets\sections\anim"
+OUT = _lp(r"$CUBBY_REPO\dashboard\assets\sections\anim")
 r = sc.render
 r.resolution_x = r.resolution_y = 360
 sc.cycles.samples = 32

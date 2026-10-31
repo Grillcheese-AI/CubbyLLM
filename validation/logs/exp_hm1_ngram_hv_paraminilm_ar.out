@@ -1,4 +1,4 @@
-hm1 | fastword_table_paraminilm_ar.npz: 60147 words, k=80 l=128, teacher npz:C:\CUBBY-TRAINED-MODELS\teacher_paraminilm_ar.npz, stored blend 0.5 (8s)
+hm1 | fastword_table_paraminilm_ar.npz: 60147 words, k=80 l=128, teacher npz:$CUBBY_MODELS\teacher_paraminilm_ar.npz, stored blend 0.5 (8s)
   pairs: paraphrase 35, entity (different fact) 546, semantic neighbour 2000, random 2000
   corpus: 597093 distinct in-vocabulary trigrams from 400 x 4000 tokens (20s)
 
