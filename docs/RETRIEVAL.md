@@ -76,6 +76,15 @@ everything exact):
   checks what it hands over.
 - **Serving it** depends on order 0042 (the VM as a service), still proposed.
 
+**Branch, check, decide** (Nick, 2026-10-31). Where a name gives several items, or a fact several values:
+1. One branch per reading runs its program in the VM (`QUERY`, verified hops).
+2. Each branch's reading goes to the possibility worlds (H-E17): an impossible branch drops, an unknown one
+   waits latent.
+3. The graph over the branches that verify decides: answer, say once, answer each, or `ASK`.
+
+The forked trunk (H-P1, H-P5) writes each branch's program from one reading of the question. It is tested
+in 0046 as arms B1 to B3, before anything is built.
+
 ## Experiments (order 0046 runs them)
 Each one is offline, on held-out data, with its pass line and kill line written before it runs.
 - **R0, the denominator.** Run today's pipeline on the held-out sets. Label every refusal by its stage

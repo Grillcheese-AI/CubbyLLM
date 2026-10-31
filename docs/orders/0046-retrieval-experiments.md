@@ -326,3 +326,72 @@ what is measured must be that store, not a stand-in.
 - **R4's statements:** the logic is tested in Python first, as written. If it passes, the statements
   (rank, start, end, point in time) are stored as VM facts and checked there, in its build order.
 - **Nothing here changes the serving path.** Serving through the VM waits on 0042.
+
+## Cowork's addition: branch, check, decide (2026-10-31)
+Nick, 2026-10-31: "we have a lot of reasoning already built, why aren't we using it with CoT and GoT within
+the VM?", then "also: possibility worlds (H-E17), forkable recurrent state, counterfactual re-entry (H-P1 to
+H-P5)".
+
+Today the host's Python walk does every lookup and choice. The program the VM checks only carries the
+objects the host found (`plan_verify.py`: "bind-only"). The thought graph records alternatives but decides
+nothing (`graph.py`).
+
+The parts to do it properly are built and measured:
+- the VM's `QUERY`, its branches on the wire (each on its own clone of the store, a report of every lookup),
+  `ASK` / suspend and its budgets (CubeLang `docs/BRANCH.md`, `docs/ASK_SUSPEND.md`);
+- the possibility worlds (H-E17, passed at its screen 2026-09-29, not on the serving path);
+- the forkable recurrent state and counterfactual re-entry (H-P1, H-P5, verified at toy scale).
+
+This section tests them as one retrieval step, before anything is built.
+
+**The step:** where a name gives several items (or the trunk's entropy marks a choice point, H-P2):
+1. one branch per candidate item;
+2. in each branch, the program for that reading runs in the VM: `QUERY` and the hops, verified;
+3. each branch's reading is put to the possibility worlds: which world, and is it possible there? An
+   impossible branch drops, an unknown one stays latent (never spoken), a possible one stands;
+4. the graph over the branches decides:
+
+   | Branches that verify | Outcome |
+   |---|---|
+   | none | refuse |
+   | one | answer |
+   | several, same value | say it once |
+   | several, different values | answer each, at most three, or `ASK` |
+
+Branches are never ranked. Similarity may only order which branch runs first under a budget.
+
+**In plain words:** Cubby thinks each possible meaning through on its own, checks each one against what it
+knows and what is possible, and only then decides what to say.
+- **Over a conventional model:** a model folds the meanings into one guess in a single pass. Here each meaning
+  is its own checked line of reasoning, and the record shows why one was said.
+
+**Arms** (in R2, on the same candidates and sets; and in R4, where the branches are the values):
+- **B1, VM branches.** The host opens the branches on the wire. A fixed program per relation runs `QUERY`
+  against a test segment of the candidates' facts. The outcome is read from the branch reports. No model,
+  no new opcode.
+- **B2, B1 + the possibility worlds** (`bridges.possibility`, the store oracle, member routing as H-E17
+  settled):
+  - over Wikidata5M's fact worlds, the law worlds where they exist, and the fiction worlds;
+  - in R4, the time worlds: a fact world sliced by when the fact held.
+- **B3, B2 + the forked trunk.**
+  - The 450M reads the question once. Its state is forked once per candidate (H-P1: exact, O(1) in the
+    prefix) and re-entered with that candidate substituted (H-P5).
+  - Each fork writes its branch's program in the programs seat, and the VM runs it.
+  - B3a, optional: branch only where the trunk's entropy marks a choice point (H-P2). Report its AUROC
+    against the gold ambiguous names.
+
+**Lines** (R2's lines hold for every arm; these are added):
+- **The possibility worlds never prune the gold item:** 0 on the fame set's qualified rows and on Mintaka's
+  test. Kill: one pruned gold item.
+- **The fame check, per arm:** Shadow's accuracy within 5 points of Top's. For B3, also the forked trunk's
+  branch programs: correct as often on Shadow items as on Top items, within 5 points. Kill: over 10 points.
+- **Fork against independent passes** (B3): every branch's state equal to an independent pass on the same
+  substituted prefix (H-P1's line, now on real questions), and the cost per added branch reported.
+- **Budget:** p95 per question with k branches, k in {1, 2, 3, 5}. On the wire, if it exceeds R7's per-hop
+  line, the CubeLang task is the in-program fork, already designed (`VM::snapshot` / `restore`; opcode bytes
+  0x3E and 0x3F free).
+- **R4 with time worlds:** 0 wrong. A second value of a relation that may hold several is never refused as a
+  contradiction: H-E17's 1.25% of true facts refused were that.
+
+**Order:** B1 runs with R2's other arms. B2 follows once B1 has numbers. B3 needs the 450M in the programs
+seat, which R3 sets up. Nothing here reaches the serving path.
