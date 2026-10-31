@@ -163,7 +163,8 @@ waits on R0 and R1.
    one?"), never used to settle a tie. Today's ledger stays until the stage is rebuilt from R5.
 4. **The dump line:** 20% of the route-labelled seed misses absent from every local store.
 
-Still open: 5 and 6 (the redirect tables and the names extract).
+5 and 6, Nick (2026-10-31): **yes** to both: the redirect tables and the names extract, through Colab to
+Drive.
 
 R0 measured decision 4's line: 5.5% of the route-labelled seed misses are items absent from every local
 store, against 20%. The full claims extract waits.

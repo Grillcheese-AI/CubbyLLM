@@ -395,3 +395,15 @@ knows and what is possible, and only then decides what to say.
 
 **Order:** B1 runs with R2's other arms. B2 follows once B1 has numbers. B3 needs the 450M in the programs
 seat, which R3 sets up. Nothing here reaches the serving path.
+
+## R1b: go (Nick, 2026-10-31: yes to the names extract and the redirect tables)
+- **Claude Code writes the notebook, and Nick runs it on Colab.**
+  - **What it reads:** the current Wikidata dump's `id`, `labels`, `aliases` and `sitelinks` columns only (never
+    `claims`), keeping EN and FR labels and aliases, the enwiki and frwiki titles, and the item ids.
+  - **What it fetches:** the EN and FR Wikipedia redirect tables, with the page tables they need to name a
+    redirect's target.
+  - **Where the extract goes:** Drive, as the master copy. The raw files are not kept.
+- **First, 10 parquet files only.** Report the bytes read per file and the extract's size, and project the
+  whole run from them. Nick says go on the projection before the rest runs.
+- **Then the VM segment:** names and aliases to items, built from the extract (the VM arm above), copied to an
+  SSD for the runs, and R1b scored with the lines already written.
