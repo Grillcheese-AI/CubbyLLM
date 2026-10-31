@@ -319,9 +319,10 @@ what is measured must be that store, not a stand-in.
 - **CubeLang needs one addition for this:** a typo lookup over knowledge keys (`knowledge fuzzy KEY
   --edits N`, and the same in a program).
   - The history's fuzzy search does it over its term index today.
-  - It is built in the CubeLang checkout that has the layered store, never over main's release binary.
-  - Cowork builds it, or writes it as a CubeLang task. **Say which in the report; do not start R1b
-    without it.**
+  - **Claude Code builds it, as part of this order** (Nick, 2026-10-31). Build it in the CubeLang checkout
+    on the branch that holds the layered store, beside the main one, never over main's release binary.
+  - Its tests sit beside the store's: exact and typo lookups answer as a scan of every key would.
+  - R1b does not start without it.
 - **R4's statements:** the logic is tested in Python first, as written. If it passes, the statements
   (rank, start, end, point in time) are stored as VM facts and checked there, in its build order.
 - **Nothing here changes the serving path.** Serving through the VM waits on 0042.
