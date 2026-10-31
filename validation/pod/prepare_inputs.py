@@ -80,14 +80,16 @@ def plan_slice(src: str, frac: float, exclude_frac: list, exclude_dirs: list, va
 
 def overlaps(plan: dict) -> list[str]:
     """The shards whose planned blocks overlap a block an earlier subset took (none, by construction)."""
+    import bisect
     bad = []
     for name, r in plan.items():
         if r["whole"]:
             continue
-        taken = set()
-        for s in r["used"]:
-            taken.update(range(s, s + mbc.BLOCK))
-        if any(any(x in taken for x in (s, s + mbc.BLOCK - 1)) for s in r["starts"]):
+        used = sorted(r["used"])                         # blocks of one size overlap iff their starts are < BLOCK apart
+        def near(s):                                     # (a set of every taken token ran out of memory on the real cache)
+            i = bisect.bisect_left(used, s)
+            return any(abs(used[j] - s) < mbc.BLOCK for j in (i - 1, i) if 0 <= j < len(used))
+        if any(near(s) for s in r["starts"]):
             bad.append(name)
     return bad
 

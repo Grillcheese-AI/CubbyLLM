@@ -228,3 +228,27 @@ flag falling to 0 when a kernel test fails. **The rental is next Tuesday** (Nick
 6. **On Tuesday:** Nick rents the card and runs the one command. Claude Code does not start a paid run.
 
 Status: open until items 1 to 4 are reported. Then `review` (ready to rent).
+
+## Pre-rental item 1: the slice size (Claude Code, 2026-10-31)
+`prepare_inputs.py --dry` on the full cache (66 GB, 13 shards; excluding the first run's `--frac 0.2` and the
+continuation's subset). The first try ran out of memory in the overlap check (a set of every taken token); it now
+compares block starts (equal-size blocks overlap iff their starts are under a block apart), pinned by a test.
+- **At 14 h on a B200 (13.69B tokens an arm):**
+  - `--frac 0.3`: 5.42B, eight shards over 2 epochs (fineweb_edu 5.01).
+  - `--frac 0.8`: 10.41B, and ten shards are **out of unseen blocks**. Still over: fineweb_edu 2.51, nemotron_code
+    2.03. More `--frac` adds nothing unseen. At `--frac 1.0` the plan takes whole shards, including the blocks the
+    earlier runs read.
+- **So the unseen blocks cannot give what 14 h needs.** This is the case your check asked to hear before building.
+  Nothing is built.
+- **What holds:**
+  - **(a) `HOURS_PER_ARM=11`** with every unseen block (`--frac 0.9`). Every row is at most 2 epochs (fineweb_edu 1.97,
+    nemotron_code 1.59; table in `validation/logs/_pod_dry_11h.txt`). Upload: about 42 GB of shards (10.41B tokens as
+    u32), plus the decay shards, `facts_text_far`, the start checkpoint (6.6 GB) and the adapter sets (0.3 GB): about
+    50 GB, against the 25-35 planned.
+  - **(b) 14 h, accepting fineweb_edu at 2.5 epochs** and nemotron_code at 2.0. The same upload as (a).
+  - **(c) 14 h, letting the arms reread blocks the earlier runs saw** (`--frac 1.0`). The slice is the whole cache:
+    17.7B tokens, about 71 GB as u32 plus the rest. That breaks "blocks neither run took".
+- **My reading:** (a) keeps both rules as written. It costs 3 h an arm, and with the probes on the card it still fits
+  a spot rental. The upload is larger than planned either way.
+- **The question is Nick's or Cowork's:** (a), (b) or (c)? The build starts on the answer. With D: as the stage it takes
+  about an hour here, then the upload.

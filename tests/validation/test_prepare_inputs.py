@@ -73,3 +73,12 @@ def test_dry_run_from_the_command_line_writes_nothing(toy, tmp_path):
                          capture_output=True, text=True, encoding="utf-8")
     assert out.returncode == 0, out.stderr[-800:]
     assert "epochs in a" in out.stdout and "slice:" in out.stdout and not dst.exists()
+
+
+def test_an_overlap_is_found_and_an_adjacent_block_is_not():
+    B = pi.mbc.BLOCK
+    plan = {"a": {"whole": False, "used": [0, 3 * B], "starts": [B]},          # adjacent to both: no overlap
+            "b": {"whole": False, "used": [0, 3 * B], "starts": [2 * B + 1]},  # runs into the block at 3B
+            "c": {"whole": False, "used": [5 * B], "starts": [5 * B - B // 2]},
+            "d": {"whole": True, "used": [0], "starts": [0]}}
+    assert pi.overlaps(plan) == ["b", "c"]
