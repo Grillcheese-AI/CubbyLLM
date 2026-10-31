@@ -55,6 +55,27 @@ does (the decisions at the end).
 | **Recall** | the asker's corrections and choices, per asker | the conversation | a referent the asker named ("him", "the first one") | (item) |
 | **Read text** | FTS5 passages + a qFHRR re-rank around the mention | books, encyclopedia, Wikipedia, news | which passage a reader reads | facts, latent until corroborated |
 
+**Where each stage lives** (Nick, 2026-10-31: "shouldn't we use the VM for retrieval?" -- yes, for
+everything exact):
+- **In the VM's layered store** (CubeLang's knowledge segments and history, `docs/STORE.md` in the
+  CubeLang repo):
+  - the name index: names and aliases to items, as segment keys, with an alias costing one key rather
+    than a copy;
+  - typo-tolerant lookup through the segment's own index, one or two edits away, as the history search
+    already does;
+  - the statements with their rank and dates;
+  - the asker's sealed history.
+
+  CubeLang programs query them, and the VM checks what they return in the same place.
+- **Outside the VM:** the similarity work (the qFHRR context for choosing between namesakes, the
+  relation codebook). It runs on grilly and hands the VM (item, score) only, as the boundary rule says.
+  The VM's own hippocampal memory hashes key strings, so it cannot measure resemblance.
+- **In plain words:** one store finds and checks every lookup, so what Cubby finds and what it verifies
+  cannot drift apart.
+- **Over a conventional model:** its retrieval is a separate search engine beside the model, and nothing
+  checks what it hands over.
+- **Serving it** depends on order 0042 (the VM as a service), still proposed.
+
 ## Experiments (order 0046 runs them)
 Each one is offline, on held-out data, with its pass line and kill line written before it runs.
 - **R0, the denominator.** Run today's pipeline on the held-out sets. Label every refusal by its stage

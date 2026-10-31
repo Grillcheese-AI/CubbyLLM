@@ -301,3 +301,27 @@ Read: the report, both R1 logs, R0's log, and the fame set's construction and sp
   construction is what R2 reads. Date of birth is out, as the report says.
 - **Next:** 0047 first (wrong answers on the live path), then R2, R3 and R4. Then R1b when Nick says
   yes to the names. Status: open.
+
+## Cowork's addition: the VM arm (2026-10-31, Nick: "shouldn't we use the VM for retrieval?" -- yes)
+The exact stages will live in CubeLang's layered store (`docs/RETRIEVAL.md`, "Where each stage lives"), so
+what is measured must be that store, not a stand-in.
+- **R1b's local arm is the VM's knowledge segment.**
+  - Names and aliases go to items as segment keys (`cubelang knowledge build`). The lookup is exact,
+    then typo-tolerant through the segment's own index, one or two edits away.
+  - The Python index of R1 stays as the reference arm, run on the same mentions.
+- **R7 measures the segment:** at 5M, 20M and 75M names, report:
+  - build time and file size;
+  - memory when opened (plain and memory-mapped);
+  - exact and typo lookup latency (p50, p95);
+  - recall against R1's index.
+
+  The gate stays p95 at most 50 ms at 75M.
+- **CubeLang needs one addition for this:** a typo lookup over knowledge keys (`knowledge fuzzy KEY
+  --edits N`, and the same in a program).
+  - The history's fuzzy search does it over its term index today.
+  - It is built in the CubeLang checkout that has the layered store, never over main's release binary.
+  - Cowork builds it, or writes it as a CubeLang task. **Say which in the report; do not start R1b
+    without it.**
+- **R4's statements:** the logic is tested in Python first, as written. If it passes, the statements
+  (rank, start, end, point in time) are stored as VM facts and checked there, in its build order.
+- **Nothing here changes the serving path.** Serving through the VM waits on 0042.
