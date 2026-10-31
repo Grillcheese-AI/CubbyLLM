@@ -242,7 +242,7 @@ compares block starts (equal-size blocks overlap iff their starts are under a bl
   Nothing is built.
 - **What holds:**
   - **(a) `HOURS_PER_ARM=11`** with every unseen block (`--frac 0.9`). Every row is at most 2 epochs (fineweb_edu 1.97,
-    nemotron_code 1.59; table in `validation/logs/_pod_dry_11h.txt`). Upload: about 42 GB of shards (10.41B tokens as
+    nemotron_code 1.59; table in `validation/logs/pod_dry_slice_11h_2026-10-31.txt`). Upload: about 42 GB of shards (10.41B tokens as
     u32), plus the decay shards, `facts_text_far`, the start checkpoint (6.6 GB) and the adapter sets (0.3 GB): about
     50 GB, against the 25-35 planned.
   - **(b) 14 h, accepting fineweb_edu at 2.5 epochs** and nemotron_code at 2.0. The same upload as (a).

@@ -1,0 +1,17 @@
+the most tokens an arm sees: 10.75B (B200 at 35% MFU for 11.0 h)
+slice: 10.41B training tokens over 13 shards; out of unseen blocks: ['books', 'fineweb_edu', 'kbtxt', 'nemotron_code', 'nemotron_legal', 'nemotron_qa', 'unified', 'verified_facts', 'wiki_full', 'wikibooks']
+shard                subset train          drawn  epochs in a 10.8B run (at most 2)
+arxiv                  11,640,440      6,335,878    0.54
+books                 577,765,376    834,861,009    1.45
+fineweb_edu         1,159,725,056  2,284,700,010    1.97
+kbtxt                 200,278,016    290,816,905    1.45
+nemotron_code         506,462,208    806,806,729    1.59
+nemotron_legal        429,916,160    180,177,365    0.42
+nemotron_qa           977,272,832  1,039,035,698    1.06
+pretrain_ext              846,185        460,577    0.54
+unified             3,852,468,224  3,496,724,949    0.91
+verified_facts        489,684,992    205,133,305    0.42
+wiki_full           1,823,473,664  1,172,661,087    0.64
+wikibooks             253,755,392    368,571,003    1.45
+wikipedia             123,395,015     67,163,761    0.54
+(the decay shards and facts_text_far are added by the build; their rows appear in the build's own table)
