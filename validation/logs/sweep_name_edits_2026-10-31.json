@@ -1,0 +1,80 @@
+{
+ "what": "order 0047: the reader's transforms that edit a name span, on R0's dev sample",
+ "date": "2026-10-31",
+ "n_per_set_lang": 300,
+ "rows": 2650,
+ "read_by_the_table": {
+  "en": 166,
+  "fr": 17
+ },
+ "fired": {
+  "everyday.noise/en": 5,
+  "everyday.state/en": 1,
+  "forms.as_of/en": 2,
+  "forms.the/en": 42,
+  "fr.article/fr": 1
+ },
+ "mismatches": 0,
+ "mismatch_ids": [],
+ "ids": {
+  "forms.the": [
+   "mintaka:0ab93de4:en",
+   "mintaka:2edd3bca:en",
+   "mintaka:57ba9cee:en",
+   "mintaka:7987cd85:en",
+   "mintaka:aa423d1a:en",
+   "mintaka:db319851:en",
+   "mintaka:f10313a1:en",
+   "mintaka:fd0ae114:en",
+   "qald9plus:train-129:en",
+   "qald9plus:train-195:en",
+   "qald9plus:train-19:en",
+   "qald9plus:train-21:en",
+   "qald9plus:train-238:en",
+   "qald9plus:train-259:en",
+   "qald9plus:train-304:en",
+   "qald9plus:train-330:en",
+   "qald9plus:train-379:en",
+   "qald9plus:train-397:en",
+   "webqsp_el:WebQTrn-1192",
+   "webqsp_el:WebQTrn-2673",
+   "webqsp_el:WebQTrn-3",
+   "webqsp_el:WebQTrn-3080",
+   "webqsp_el:WebQTrn-3309",
+   "webqsp_el:WebQTrn-841",
+   "simplequestions_wd:valid-105",
+   "simplequestions_wd:valid-1262",
+   "simplequestions_wd:valid-2528",
+   "simplequestions_wd:valid-32",
+   "simplequestions_wd:valid-478",
+   "simplequestions_wd:valid-80",
+   "amber:04ea441d7c91b0a7107b9893e9ef16a0=374a15a7b5b1d21befb0cec74d893b0d",
+   "amber:054548d6e42e2adfae111f2acdca533e=2354863bd0724963106d092864884a9f",
+   "amber:05bb50b4c8043faf492f3e12769555f7=33376143104cd8d1aa54dec3bec6e0e4",
+   "amber:1a3e66475c2d865ec00d04b0742225fa=5e1f4603a7073b261de6730e900ae89e",
+   "amber:419d0d04cee2285d7245596b9d6b5286=4efd77ec0e9ab2503ca9dce980ea7b48",
+   "amber:55ab747bd5564fa986e6bea599b7a450=d48b46e1b0e6c66b0c8b9bdd98c8949f",
+   "amber:a35c3cb24c2e38d78f13110d863f7c9c=bd569783af4d88d3b56248be0fa49fff",
+   "amber:cf6753b7b9818880575ca10c5c784eef=905946513a48fbdcd38806b96c49b066",
+   "amber:d856b7d81db46ee1e0d61405d97fa9e9=9c2da2bb3a7c6ad79bc3532b636b72e9",
+   "amber:ddeb2a2b298b42027e782bc91a9857bf=57441a42204605d70e1a1744abbb9be4"
+  ],
+  "everyday.noise": [
+   "qald9plus:train-203:en",
+   "webqsp_el:WebQTrn-1192",
+   "webqsp_el:WebQTrn-2095",
+   "webqsp_el:WebQTrn-65",
+   "webqsp_el:WebQTrn-841"
+  ],
+  "fr.article": [
+   "qald9plus:train-238:fr"
+  ],
+  "everyday.state": [
+   "webqsp_el:WebQTrn-373"
+  ],
+  "forms.as_of": [
+   "cronquestions:valid-19967",
+   "cronquestions:valid-25850"
+  ]
+ }
+}

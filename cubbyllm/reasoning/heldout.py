@@ -1,13 +1,13 @@
 """cubbyllm/reasoning/heldout.py -- order 0047's guarantees, found by 0046's R0 on held-out questions (six wrong answers
 spoken on today's serving path), and their switches.
 
-- ``CB_HELDOUT_FIXES=1``: the name kept as asked (``asked_span`` here; the source's side is
+- ``CB_HELDOUT_FIXES`` (on by default since the acceptance held, 2026-10-31; ``=0`` off): the name kept as asked (``asked_span`` here; the source's side is
   ``sources.wikidata_asked``), a quantity said with its unit (``sources.wikidata_units``), and an answer of the class
   the question asks or a ``class_mismatch`` refusal (``ask_class``).
 - ``CB_CLASS_WALK=1`` (with the fixes on): a value of the wrong class is walked up ``located in`` to the first item of
   the class asked ("Dallas, where Parkland Memorial Hospital is"), instead of refused.
 
-Off (the default until the order's acceptance holds), every answer is bit-identical to before.
+Off (``CB_HELDOUT_FIXES=0``), every answer is bit-identical to before. The walk stays off until Cowork reads it.
 
 Wired: WIRED (``ask.AskLoop._ask``, ``ask_memory.AskMemory._checked``, ``sources.wikidata``).
 """
@@ -24,7 +24,7 @@ _ART = re.compile(r"(?:(?<![\w'’])(the|le|la|les)\s+|(?<![\w'’])(l)['’]\s*
 
 
 def on() -> bool:
-    return os.environ.get("CB_HELDOUT_FIXES") == "1"
+    return os.environ.get("CB_HELDOUT_FIXES") != "0"
 
 
 def walk_on() -> bool:

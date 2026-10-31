@@ -287,7 +287,7 @@ class WikidataSource(WikiResolve, WikiNamesakes):
                         # says so: "2560 BC", not "2560". Day precision on a BCE date is noise -- the
                         # year is the claim. (self.times keeps the signed ISO for the machine side.)
                         obj = (ts[1:5].lstrip("0") or "0") + " BC"
-                elif t == "quantity":                # with its unit, or not served (order 0047: CB_HELDOUT_FIXES=1)
+                elif t == "quantity":                # with its unit, or not served (order 0047; CB_HELDOUT_FIXES=0 off)
                     obj = quantity_text(self, p, v) if heldout_on() else v.get("amount", "").lstrip("+")
                 elif t == "string":
                     obj = v

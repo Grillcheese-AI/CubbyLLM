@@ -1,5 +1,5 @@
 """cubbyllm/sources/wikidata_asked.py -- the name kept as asked at the source (order 0047, item 1;
-``CB_HELDOUT_FIXES=1``).
+``CB_HELDOUT_FIXES``, on by default; ``=0`` off).
 
 0046's R0: the reader dropped a leading "The" ("The Last Dragon" -> "Last Dragon"), and the source's one-exact-hit tier
 then resolved another item labelled exactly the shorter name (McDermott's *Last Dragon*, not De Mari's *The Last

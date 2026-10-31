@@ -1,4 +1,4 @@
-"""Order 0047 -- the six held-out wrong answers of 0046's R0, on canned claims (no network), ``CB_HELDOUT_FIXES=1``:
+"""Order 0047 -- the six held-out wrong answers of 0046's R0, on canned claims (no network), ``CB_HELDOUT_FIXES`` on (the default):
 
 - the four titles, asked with their article in English and French, resolve to the item asked or refuse -- never to
   the item labelled with the shorter name; off, the shorter one wins (the defect, pinned so the flag is what fixes it);
@@ -75,7 +75,7 @@ def test_the_name_as_asked_resolves_to_the_item_asked_never_the_shorter_one(q, r
 
 
 def test_off_the_shorter_name_still_wins_the_defect_the_flag_fixes(monkeypatch):
-    monkeypatch.delenv("CB_HELDOUT_FIXES", raising=False)
+    monkeypatch.setenv("CB_HELDOUT_FIXES", "0")
     rec = loop_with(titles_source(), {}).ask("Who wrote The Last Dragon?")
     assert rec["answer"] == "author of Last Dragon"
 
@@ -109,7 +109,7 @@ def test_an_answer_of_another_class_refuses_or_walks_up_to_the_class_asked(monke
     monkeypatch.setenv("CB_CLASS_WALK", "1")
     rec = loop_with(jfk_source(), {}).ask(q)
     assert rec["verified"] and rec["answer"] == "Dallas" and rec["reply"] == "Dallas, where Parkland Memorial Hospital is."
-    monkeypatch.delenv("CB_HELDOUT_FIXES")
+    monkeypatch.setenv("CB_HELDOUT_FIXES", "0")
     monkeypatch.delenv("CB_CLASS_WALK")
     rec = loop_with(jfk_source(), {}).ask(q)
     assert rec["verified"] and rec["answer"] == "Parkland Memorial Hospital"           # (off: as before)
@@ -131,7 +131,7 @@ def test_a_quantity_carries_its_unit_a_missing_one_is_not_served_a_count_is_bare
     assert got == {"height": "96 m", "population": "8900000"}
     got = {t.rel: t.obj for t in quantities("1").facts("Big Ben")}
     assert got == {"population": "8900000"}                                            # a height without its unit: not served
-    monkeypatch.delenv("CB_HELDOUT_FIXES")
+    monkeypatch.setenv("CB_HELDOUT_FIXES", "0")
     got = {t.rel: t.obj for t in quantities("http://www.wikidata.org/entity/Q11573").facts("Big Ben")}
     assert got["height"] == "96"                                                        # (off: as before)
 
@@ -144,3 +144,36 @@ def test_a_quantity_carries_its_unit_a_missing_one_is_not_served_a_count_is_bare
 def test_the_class_word_is_the_kind_of_the_answer_never_a_word_about_kinds(q, want):
     from cubbyllm.reasoning.ask_class import class_word
     assert class_word(q) == want
+
+
+def test_a_class_word_the_table_reads_as_the_relation_asked_is_not_checked(monkeypatch):
+    """"what nationality is X?" plans country of citizenship: "nationality" names the relation, and a country is no
+    instance of a class called nationality -- no check, the answer stands (the scoreboard, 2026-10-31)."""
+    from cubbyllm.reasoning import ask_class
+    monkeypatch.setenv("CB_HELDOUT_FIXES", "1")
+
+    class Table:
+        def relations(self, text):
+            return {"nationality": ["country of citizenship"], "city": []}.get(text, [])
+
+    class Loop:
+        source, _everyday = Fake({}, {}), Table()
+
+    class Hop:
+        triple, fact = ("x", "country of citizenship", "United States"), "United States is the country of citizenship of x"
+
+    class LR:
+        class result:
+            trace = [Hop()]
+
+    rec = {"answer": "United States", "plan": ["country of citizenship"], "verified": True}
+    assert ask_class.check(Loop(), "what nationality is jermaine paul?", LR(), rec) and rec["verified"]
+
+
+def test_the_fixes_are_on_by_default_and_zero_turns_them_off(monkeypatch):
+    from cubbyllm.reasoning import heldout
+    monkeypatch.delenv("CB_HELDOUT_FIXES", raising=False)
+    monkeypatch.delenv("CB_CLASS_WALK", raising=False)
+    assert heldout.on() and not heldout.walk_on()
+    monkeypatch.setenv("CB_HELDOUT_FIXES", "0")
+    assert not heldout.on()

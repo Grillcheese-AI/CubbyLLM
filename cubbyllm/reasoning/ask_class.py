@@ -1,5 +1,5 @@
 """cubbyllm/reasoning/ask_class.py -- an answer of the class the question asks (order 0047, item 2;
-``CB_HELDOUT_FIXES=1``).
+``CB_HELDOUT_FIXES``, on by default; ``=0`` off).
 
 0046's R0: "In which city did John F. Kennedy die?" was answered "Parkland Memorial Hospital" -- his place of death,
 a hospital, not a city. When the question names the kind of its answer ("which city", "what country", "quelle
@@ -14,7 +14,10 @@ ville", "quel pays"):
 
 The value's item: the one the source linked the fact's object to, else the items labelled exactly so. A date or a
 number asked by a "year" or "date" is checked to be one; a class word the source has no class for, and a value no
-item carries, are left as they were (nothing to check against).
+item carries, are left as they were (nothing to check against). A class word the reader's own table reads as the
+relation the plan asks ("what nationality" -> country of citizenship, "what language" -> official language) is the
+relation, not a class: the relation already names the answer's kind, and no check is made (the scoreboard, 2026-10-31:
+Turkish and Icelandic are a "language" two ``subclass of`` steps up, and a country is no "nationality").
 
 Wired: WIRED (``ask_memory.AskMemory._checked``).
 """
@@ -98,6 +101,10 @@ def check(loop, question: str, lr, rec: dict) -> bool:
     h = lr.result.trace[-1] if lr.result.trace else None
     if not cw or h is None or h.triple is None or not hasattr(src, "_claims"):
         return True
+    table = getattr(loop, "_everyday", None)
+    if table is not None and set(rec.get("plan") or ()) & set(table.relations(cw[0])):
+        return True                     # the class word IS the relation asked ("what nationality", "what language"):
+                                        # the relation already names the answer's kind (0047's scoreboard run)
     value = str(rec.get("answer") or "")
     if cw[0].split()[-1] in DATES:
         if _DATE.match(value.strip()):

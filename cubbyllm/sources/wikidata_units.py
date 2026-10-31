@@ -1,4 +1,4 @@
-"""cubbyllm/sources/wikidata_units.py -- a quantity said with its unit (order 0047, item 3; ``CB_HELDOUT_FIXES=1``).
+"""cubbyllm/sources/wikidata_units.py -- a quantity said with its unit (order 0047, item 3; ``CB_HELDOUT_FIXES``, on by default; ``=0`` off).
 
 0046's R0: "How tall is Big Ben?" was answered "96" -- the source dropped the statement's unit. Now:
 - a statement with a unit is said with the unit's own symbol (P5061, English first), else its label: "96 m";

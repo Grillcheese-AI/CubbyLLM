@@ -131,7 +131,9 @@ def run_chunk(job: tuple) -> list[dict]:
         stage, detail = label(rec, calls, items, gold_answers.get(r["id"], set()))
         out.append({"id": r["id"], "set": r["set"], "lang": r["lang"], "stage": stage, "detail": detail,
                     "gold_items": sorted(items), "resolved": sorted({c["qid"] for c in calls if c["qid"]}),
-                    "source_calls": len(calls), "plan": rec.get("plan"), "wall_s": round(time.perf_counter() - t, 2)})
+                    "source_calls": len(calls), "plan": rec.get("plan"), "wall_s": round(time.perf_counter() - t, 2),
+                    "_said": {"question": r["question"], "answer": rec.get("answer"), "reply": rec.get("reply"),
+                              "gold": sorted(gold_answers.get(r["id"], set()))[:8]} if rec.get("verified") else None})
     return out
 
 
@@ -156,6 +158,7 @@ def main() -> None:
     ap.add_argument("--n", type=int, default=300)
     ap.add_argument("--workers", type=int, default=3)
     ap.add_argument("--sets", nargs="*", default=list(SETS))
+    ap.add_argument("--tag", default="", help="appended to the log's name (order 0047: _heldout)")
     a = ap.parse_args()
     t0 = time.time()
     gold = Gold(source())
@@ -197,9 +200,14 @@ def main() -> None:
     by_store = collections.Counter(k for q in set(all_m) for k, v in held[q].items() if v)
     rep = {"what": "order 0046 R0: the denominator", "date": _dt.date.today().isoformat(), "n_per_set_lang": a.n,
            "pipeline": "ask loop, wiki + hdc worlds, live Wikidata source, lexicon, everyday table, tense on; no model in the programs seat",
+           "flags": {k: os.environ.get(k) for k in ("CB_HELDOUT_FIXES", "CB_CLASS_WALK")},
            "summary": summary, "dump": dump, "items": {"distinct": len(set(all_m)), "held_by": dict(by_store)},
            "wikipedia_text": WIKI_TEXT, "wall_s": round(time.time() - t0), "rows": out}
-    path = os.path.join(os.path.dirname(HERE), "logs", f"retrieval_R0_{rep['date']}.json")
+    said = [dict(x, id=r["id"], detail=r["detail"]) for r in out for x in [r.pop("_said", None)] if x]
+    path = os.path.join(os.path.dirname(HERE), "logs", f"retrieval_R0_{rep['date']}{a.tag}.json")
+    with open(os.path.join(os.path.dirname(HERE), "logs", f"_r0_spoken{a.tag}.jsonl"), "w", encoding="utf-8") as f:
+        for x in said:                                   # every spoken answer, to be read by hand (scratch: the text stays local)
+            f.write(json.dumps(x, ensure_ascii=False) + "\n")
     json.dump(rep, open(path, "w", encoding="utf-8"), indent=1)
     print(json.dumps({"summary": summary, "dump": dump, "items": rep["items"]}, indent=1))
     print("->", path)

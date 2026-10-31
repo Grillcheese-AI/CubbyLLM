@@ -123,7 +123,7 @@ class AskMemory:
         from .ask_source_first import source_wins
         if not lr.result.verified or not rec.get("verified"):
             return
-        from .ask_class import check as class_check       # an answer of the class asked (order 0047, CB_HELDOUT_FIXES=1)
+        from .ask_class import check as class_check       # an answer of the class asked (order 0047; CB_HELDOUT_FIXES=0 off)
         if not class_check(self, question, lr, rec):
             return
         why = self._time_check(question, lr) if self.tense else None

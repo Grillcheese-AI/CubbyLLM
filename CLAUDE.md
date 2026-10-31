@@ -75,12 +75,12 @@ recurrent vector per layer plus a ring of `window` keys), not a growing KV cache
   measured lessons (read its "Before you touch anything").
 - **Known red:** `tests/test_guards.py::test_every_module_declares_wiring` fails on
   `cubbyllm.spatial` and `cubbyllm.reasoning.step_loop` (order 0002, proposed).
-- **Queue (2026-10-28):** 0001, 0004-0007, 0011-0016, 0021, 0022, 0028, 0030, 0031, 0033-0038 done (0037: the namesake rule on by
+- **Queue (2026-10-31):** 0001, 0004-0007, 0011-0016, 0021, 0022, 0028, 0030, 0031, 0033-0038, 0047 done (0037: the namesake rule on by
   default, `CB_NAMESAKE_RELATION=0` off; the source's value over the snapshot's, `CB_SOURCE_OVER_SNAPSHOT=0` off; 0038: 65 of 187
-  spoken, 0 wrong); in progress: 0024 (news from feeds), 0027 (the control board: P1 done; P2 after 0024, P3 after 0020/0026),
-  0029 (arm D: step 2); review: 0045 (the rented card: inputs, runner, the instruction-following gate, `docs/POD.md`; built and
-  smoked here, the paid run is Nick's); blocked on the retrieval replan (`docs/RETRIEVAL.md`): 0039, 0043 (`CB_SOURCE_NAMESAKES=1`,
-  built, under its line), 0044; review: 0046 (R0 and R1 measured; R2 waits on Cowork's reading); open, in this order: 0032 (the trunk
+  spoken, 0 wrong; 0047: the name kept as asked, the class asked, the unit, on by default, `CB_HELDOUT_FIXES=0` off, the walk up
+  `located in` behind `CB_CLASS_WALK=1`); in progress: 0024 (news from feeds), 0027 (the control board: P1 done; P2 after 0024, P3 after 0020/0026),
+  0029 (arm D: step 2); open: 0045 (the rented card: built and smoked here; the pre-rental items before Nick rents on Tuesday); blocked on the retrieval replan (`docs/RETRIEVAL.md`): 0039, 0043 (`CB_SOURCE_NAMESAKES=1`,
+  built, under its line), 0044; open: 0046 (R0, R1 read; R2 with arm B1 next, then R3, R4, B2, B3; CubeLang's typo lookup built, R1b waits on Nick's yes); open, in this order: 0032 (the trunk
   reads the worlds), 0023 (nested questions over the worlds), 0025 (world watch), 0026 (forecasts, the branching tree), 0008
   (creativity), 0009 (capacity), 0010 (casual talk), 0018 (question shapes), 0019 (emotions), 0020 (emotional arcs); proposed:
   0002, 0003, 0017 (claim checks), 0042 (the VM service).
