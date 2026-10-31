@@ -117,17 +117,19 @@ def check(loop, question: str, lr, rec: dict) -> bool:
     if not cls or not items or any(is_a(src, q, cls) for q in items):
         return True
     kinds = [src._labels_for([k]).get(k) for k in _ids(src._claims(items[0]), "P31")][:1]
-    if walk_on():
-        path = walk_up(loop, items[0], cls)
-        if path:
-            subj = value
-            facts = []
-            for q, lab in path:
-                facts.append(f"{lab} is the located in the administrative territorial entity of {subj}")
-                subj = lab
-            rec.update(answer=path[-1][1], reply=f"{path[-1][1]}, where {value} is.", trace=list(rec.get("trace") or []) + facts,
-                       class_walk={"from": value, "path": [q for q, _l in path], "class": cw[0]})
-            return False
+    path = walk_up(loop, items[0], cls)
+    if not walk_on():                   # what the walk would have done, for the nightly count (Cowork, 2026-10-31); never said
+        rec["class_walk_would"] = {"outcome": "reached" if path else "not reached", "class": cw[0],
+                                   "to": path[-1][1] if path else None, "path": [q for q, _l in path or ()]}
+    elif path:
+        subj = value
+        facts = []
+        for q, lab in path:
+            facts.append(f"{lab} is the located in the administrative territorial entity of {subj}")
+            subj = lab
+        rec.update(answer=path[-1][1], reply=f"{path[-1][1]}, where {value} is.", trace=list(rec.get("trace") or []) + facts,
+                   class_walk={"from": value, "path": [q for q, _l in path], "class": cw[0]})
+        return False
     rec.update(answer=None, verified=False, reason="class_mismatch",
                refused={"answer": value, "why": f"the question asks for a {cw[0]}; {value} is "
                         + (f"a {kinds[0]}" if kinds and kinds[0] else "not one")})

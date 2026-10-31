@@ -123,6 +123,7 @@ class DayRecord:
     kind: str | None = None                     # "relation" for a relation ask (reasoning/skills.py)
     asker: str | None = None                    # who gave the feedback, when someone did
     paths: list[list[str]] = field(default_factory=list)   # a relation ask's paths, as relation chains
+    class_walk: str | None = None               # a class_mismatch: would the walk up "located in" have reached it (0047)
 
 
 def load_day(path: str | pathlib.Path) -> list[DayRecord]:
@@ -149,7 +150,7 @@ def load_day(path: str | pathlib.Path) -> list[DayRecord]:
                 chain=list(r.get("trace") or []), learned=list(r.get("learned") or []),
                 unknown=list(r.get("unknown") or (r.get("refused") or {}).get("unknown_relations") or []),
                 gold=r.get("gold"), match=r.get("match"), feedback=r.get("feedback"), run=run, ts=r.get("ts"),
-                kind=r.get("kind"), asker=r.get("asker"),
+                kind=r.get("kind"), asker=r.get("asker"), class_walk=(r.get("class_walk_would") or {}).get("outcome"),
                 # an answer turned round by an inverse rule is not an episode of its paths' composition
                 paths=[list(p) for p in r.get("paths") or []] if r.get("direction") != "inverse" else []))
         return out
@@ -483,6 +484,7 @@ def sleep(day: list[str | pathlib.Path], out: str | pathlib.Path, night: str | N
     rep["triage"] = triage(records, out / "queues", night, ledger)
     rep["audit"] = audit(records, st, night, ledger)
     rep["skills"] = skills_night(records, out, night, ledger, git=git_revision(repo))
+    rep["class_walk_would"] = _count(r.class_walk or "?" for r in records if _reason_key(r.reason) == "class_mismatch")
     rep["refusals"] = dict(sorted(_count(_reason_key(r.reason) or "?" for r in records if not answered(r)).items(),
                                   key=lambda kv: -kv[1]))
     # what the NIGHT did, from the ledger -- so re-running a night reports the same night, not "nothing new"
@@ -547,6 +549,10 @@ def render(rep: dict, prev: dict | None) -> str:
             said = (", ".join(f"{k} ×{n}" for k, n in sorted(c["counts"].items(), key=lambda kv: -kv[1]))
                     if c["why"] == "conflict" else f"{c['majority']}, but episode {c['episode']} states {c['states']}")
             L.append(f"  - contested, kept out: `{c['premise']}` → {said}")
+    cw = rep.get("class_walk_would")
+    if cw:                                      # what switching CB_CLASS_WALK on would have said (order 0047; Cowork reads it)
+        L.append(f"- **The class walk, off:** of {sum(cw.values())} class mismatches, "
+                 + ", ".join(f"{v} {k}" for k, v in sorted(cw.items())) + " the class asked up `located in`.")
     L += ["", "## Queues", ""]
     for q, v in rep["triage"].items():
         if not v["items"]:

@@ -106,6 +106,7 @@ def test_an_answer_of_another_class_refuses_or_walks_up_to_the_class_asked(monke
     q = "In which city did John F. Kennedy die?"
     rec = loop_with(jfk_source(), {}).ask(q)
     assert not rec["verified"] and rec["reason"] == "class_mismatch" and "a hospital" in rec["refused"]["why"]
+    assert rec["class_walk_would"] == {"outcome": "reached", "class": "city", "to": "Dallas", "path": ["Q16557"]}   # never said
     monkeypatch.setenv("CB_CLASS_WALK", "1")
     rec = loop_with(jfk_source(), {}).ask(q)
     assert rec["verified"] and rec["answer"] == "Dallas" and rec["reply"] == "Dallas, where Parkland Memorial Hospital is."
@@ -177,3 +178,18 @@ def test_the_fixes_are_on_by_default_and_zero_turns_them_off(monkeypatch):
     assert heldout.on() and not heldout.walk_on()
     monkeypatch.setenv("CB_HELDOUT_FIXES", "0")
     assert not heldout.on()
+
+
+def test_the_nightly_pass_counts_what_the_class_walk_would_have_reached(tmp_path):
+    import json
+    from cubbyllm.reasoning import sleep as S
+    rows = [{"id": "a", "question": "In which city did John F. Kennedy die?", "verified": False, "reason": "class_mismatch",
+             "plan": ["place of death"], "seed": "John F. Kennedy", "class_walk_would": {"outcome": "reached", "to": "Dallas"}},
+            {"id": "b", "question": "In which city is the Pacific?", "verified": False, "reason": "class_mismatch",
+             "plan": ["located in"], "seed": "Pacific", "class_walk_would": {"outcome": "not reached", "to": None}},
+            {"id": "c", "question": "Who wrote Emma?", "verified": True, "answer": "Jane Austen", "plan": ["author"], "seed": "Emma"}]
+    day = tmp_path / "day.jsonl"
+    day.write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8")
+    rep = S.sleep([day], tmp_path / "sleep", night="2026-10-31")
+    assert rep["class_walk_would"] == {"reached": 1, "not reached": 1}
+    assert "of 2 class mismatches, 1 not reached, 1 reached" in (tmp_path / "sleep" / "nights" / "2026-10-31" / "report.md").read_text(encoding="utf-8")

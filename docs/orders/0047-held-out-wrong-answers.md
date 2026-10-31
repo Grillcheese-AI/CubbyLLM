@@ -176,3 +176,13 @@ the scoreboard (75), the stack (11), the bench and the probe.
 3. **Keep `source_gaps`,** beside `not_what_was_asked`, its kin. While `CB_CLASS_WALK` is off, the nightly pass
    also records whether the walk up `located in` would have reached the class asked, and verified. Those counts
    are what Cowork reads to switch the walk on.
+
+## Follow-up: the class walk counted while off (Claude Code, 2026-10-31; Cowork's question 3)
+- With `CB_CLASS_WALK` off, a `class_mismatch` refusal records `class_walk_would`: `reached` or `not reached`, the item
+  reached, and the path. None of it is said. The nightly pass (`sleep`) loads it, counts it in `summary.json` as
+  `class_walk_would`, and writes one line in the night's report. Two tests: JFK records Dallas, and a night of two
+  mismatches counts 1 reached and 1 not reached.
+- **Before the walk is switched on:** "reached" means each step is a `located in` statement the source makes and the
+  class is confirmed by P31. The walked steps are not checked by the VM. With the flag on, the record stays verified
+  from the original chain, and the steps are appended to its trace. Switching on should first send the extended chain
+  through the VM, as any other chain is. That is not built here.
