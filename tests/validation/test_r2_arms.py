@@ -78,6 +78,34 @@ def test_the_gates_read_off_a_summary():
                             "6+": {"n": 1, "p50_ms": 40, "p95_ms": 40}}
 
 
+def test_qfhrr_decides_past_the_margin_on_grilly2(tmp_path):
+    import shutil
+    from retrieval_bench import r2_qfhrr as Q
+    assert Q.decide(["Q1", "Q2"], [0.8, 0.2], 0.5)["item"] == "Q1"
+    assert Q.decide(["Q1", "Q2"], [0.8, 0.7], 0.5)["outcome"] == "several"
+    assert Q.decide(["Q1", "Q2"], [0.0, 0.0], 0.0)["outcome"] == "several"                     # no context, no pick
+    q = "Which country is A1 motorway in canton of Bern in?"
+    rows = [{"id": "r1", "mention": "A1 motorway", "question": q, "lang": "en", "cands": ["Q1", "Q2"], "pids": ["P17"]},
+            {"id": "r2", "mention": "A1 motorway", "question": q, "lang": "en", "cands": ["Q1", "Q3"], "pids": ["P17"]}]
+    jb, done = Q.job(rows, P, "")
+    assert list(done) == ["r2"] and done["r2"]["item"] == "Q1"                                   # settled before any score
+    assert jb["rows"][0]["items"] == ["Q1|en", "Q2|en"] and "bern" in jb["rows"][0]["cues"].split()
+    try:
+        Q.grilly2_dir()
+    except SystemExit:
+        pytest.skip("no grilly2 checkout here")
+    if not shutil.which("uv"):
+        pytest.skip("no uv here")
+    from cubbyllm.worlds.fast_words import FastWordEncoder, signal_code
+    table = tmp_path / "table.npz"                       # one word: every other word falls back to its signal code
+    FastWordEncoder(["x"], signal_code("x", 80, 128)[None], {"x": 1.0}, 1.0, 80, 128).save_npz(table)
+    jb["table"] = str(table)
+    rep = Q.score(jb)
+    s1, s2 = rep["scores"]["r1"]
+    assert s1 > 0.5 > 0.1 > s2                   # "canton", "bern" are Q1's; Q2 shares a block by chance (80 of 128)
+    assert rep["interpreter"] == "grilly2" and rep["check"]["max_abs_diff_vs_numpy"] < 1e-5
+
+
 def test_b1_through_the_vm(tmp_path):
     from cubbyllm.bridges.cubelang_client import CubelangNotFound, CubelangSession, find_cubelang_exe
     try:

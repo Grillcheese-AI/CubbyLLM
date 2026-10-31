@@ -2,10 +2,10 @@
 each arm decides (``r2_arms``, ``r2_vm``), never by fame or order.
 
 Arms: ``tiers`` (today's: the name, the relation, the label over an alias), ``bm25`` (+ the question's own words past a
-rank-normalized margin ``tau``), ``b1`` (VM branches: the relation's values verified per candidate; only where the
-relation is known -- the fame set's). Not run here, and why: the usage table between kinds (no anchor counts: the
-local Wikipedia text kept no links; R1b's redirects give names, not counts), and the qFHRR context (it needs the
-grilly2 encoder (`../grilly2`, on the local card) and one prototype per item; the next pass).
+rank-normalized margin ``tau``), ``qfhrr`` (the same words as qFHRR codes, one prototype per item, scored on grilly2:
+``r2_qfhrr``), ``b1`` (VM branches: the relation's values verified per candidate; only where the relation is known --
+the fame set's). Not run here, and why: the usage table between kinds (no anchor counts: the local Wikipedia text
+kept no links; R1b's redirects give names, not counts).
 
 Sets: the fame set (bare names: no single pick allowed; qualified: that item), ShadowLink (Top, Shadow, Tail), Mintaka
 and WebQSP_EL (each mention's gold item). ``tau`` is set on dev: the smallest of ``--taus`` with 0 wrong picks on the
@@ -16,7 +16,7 @@ spoken picks within 5 points of Top's; Mintaka and WebQSP_EL test: no more wrong
 with more decided. Kill: any bare-name single pick, or a Shadow-Top gap over 10 points.
 
     python validation/retrieval_bench/r2_choosing.py --split dev [--n 300] [--taus 0.25 0.5 0.75 0.9]
-    python validation/retrieval_bench/r2_choosing.py --split test --tau <dev's>
+    python validation/retrieval_bench/r2_choosing.py --split test --tau <dev's BM25> --tau-qfhrr <dev's qFHRR>
 -> validation/logs/retrieval_R2_<split>_<date>.json (ids and outcomes only)
 
 Wired: STANDALONE (an experiment).
@@ -79,7 +79,8 @@ def judge(row: dict, out: dict) -> str:
     return "refused" if o == "refuse" else "undecided"
 
 
-def run(rows: list[dict], taus: list[float], use_vm: bool) -> list[dict]:
+def run(rows: list[dict], taus: list[float], use_vm: bool, qfhrr_taus: list[float] = ()) -> dict:
+    """Every arm on every row (``r["arms"]``); returns what the qFHRR scorer reported (its card, its numpy check)."""
     from retrieval_bench import r2_arms as A
     from retrieval_bench import r2_vm as V
     from retrieval_bench.name_index import NameIndex
@@ -119,7 +120,14 @@ def run(rows: list[dict], taus: list[float], use_vm: bool) -> list[dict]:
     finally:
         if session is not None:
             session.close()
-    return rows
+    info = {}
+    if qfhrr_taus:
+        from cubbyllm.worlds.fact_pool import V4_TABLE
+        from retrieval_bench import r2_qfhrr as Q
+        got, info = Q.arms(rows, P, list(qfhrr_taus), str(V4_TABLE))
+        for r in rows:
+            r["arms"].update({a: {"outcome": o["outcome"], "item": o.get("item"), "judge": judge(r, o)} for a, o in got[r["id"]].items()})
+    return info
 
 
 def summarize(rows: list[dict]) -> dict:
@@ -135,10 +143,10 @@ def summarize(rows: list[dict]) -> dict:
     return out
 
 
-def pick_tau(summary: dict, taus: list[float]) -> float | None:
+def pick_tau(summary: dict, taus: list[float], arm: str = "bm25") -> float | None:
     """The smallest tau with 0 wrong picks on the entity-linking sets' dev rows."""
     for t in sorted(taus):
-        if all(summary.get(s, {}).get(f"bm25@{t}", {}).get("wrong", 0) == 0 for s in ("mintaka", "webqsp_el", "shadowlink/Top",
+        if all(summary.get(s, {}).get(f"{arm}@{t}", {}).get("wrong", 0) == 0 for s in ("mintaka", "webqsp_el", "shadowlink/Top",
                                                                                          "shadowlink/Shadow", "shadowlink/Tail")):
             return t
     return None
@@ -149,28 +157,37 @@ def main() -> None:
     ap.add_argument("--split", choices=("dev", "test"), required=True)
     ap.add_argument("--n", type=int, default=300)
     ap.add_argument("--taus", type=float, nargs="*", default=[0.25, 0.5, 0.75, 0.9])
-    ap.add_argument("--tau", type=float, help="test: dev's tau")
+    ap.add_argument("--tau", type=float, help="test: dev's tau for BM25")
+    ap.add_argument("--tau-qfhrr", type=float, help="test: dev's tau for qFHRR")
     ap.add_argument("--no-vm", action="store_true")
+    ap.add_argument("--no-qfhrr", action="store_true", help="skip the qFHRR arm (it runs on grilly2)")
+    ap.add_argument("--no-bm25", action="store_true")
     ap.add_argument("--fame-n", type=int, default=0, help="a smoke: the first N fame rows (0: all)")
     ap.add_argument("--no-fame", action="store_true")
     ap.add_argument("--no-el", action="store_true", help="the fame set only")
     ap.add_argument("--tag", default="", help="appended to the log's name (a partial rerun keeps the full run's log)")
     a = ap.parse_args()
     t0 = time.time()
-    taus = [a.tau] if a.split == "test" and a.tau is not None else a.taus
+    test = a.split == "test"
+    taus = [] if a.no_bm25 else [a.tau] if test and a.tau is not None else a.taus
+    qtaus = [] if a.no_qfhrr else [a.tau_qfhrr] if test and a.tau_qfhrr is not None else a.taus
     fame = [] if a.no_fame else fame_rows()
     rows = (fame[:a.fame_n] if a.fame_n else fame) + ([] if a.no_el else el_rows(a.split, a.n))
-    run(rows, taus, use_vm=not a.no_vm)
+    qinfo = run(rows, taus, use_vm=not a.no_vm, qfhrr_taus=qtaus)
     summary = summarize(rows)
     rep = {"what": "order 0046 R2: choosing among a name's items", "date": _dt.date.today().isoformat(), "split": a.split,
-           "n_per_set_lang": a.n, "taus": taus, "tau_from_dev": pick_tau(summary, taus) if a.split == "dev" else a.tau,
-           "not_run": {"usage": "no anchor counts here (the local Wikipedia text kept no links)", "qfhrr": "next pass, on grilly2"},
+           "n_per_set_lang": a.n, "taus": {"bm25": taus, "qfhrr": qtaus},
+           "tau_from_dev": ({"bm25": pick_tau(summary, taus), "qfhrr": pick_tau(summary, qtaus, "qfhrr")} if not test
+                            else {"bm25": a.tau, "qfhrr": a.tau_qfhrr}),
+           "qfhrr_scorer": qinfo,
+           "not_run": {"usage": "no anchor counts here (the local Wikipedia text kept no links)"},
            "summary": summary, "wall_s": round(time.time() - t0),
            "rows": [{k: r[k] for k in ("id", "set", "lang", "kind", "gold", "n_api", "n_local", "gold_in_cands", "arms")} for r in rows]}
     from retrieval_bench.r2_gates import budget, gates
     rep["gates"] = gates(summary)
     rep["b1_budget"] = budget(rows)
-    rep["args"] = {"no_fame": a.no_fame, "no_el": a.no_el, "no_vm": a.no_vm, "fame_n": a.fame_n, "tag": a.tag}
+    rep["args"] = {"no_fame": a.no_fame, "no_el": a.no_el, "no_vm": a.no_vm, "no_qfhrr": a.no_qfhrr, "no_bm25": a.no_bm25,
+                   "fame_n": a.fame_n, "tag": a.tag}
     path = os.path.join(os.path.dirname(HERE), "logs", f"retrieval_R2_{a.split}_{rep['date']}{a.tag}.json")
     json.dump(rep, open(path, "w", encoding="utf-8"), indent=1)
     print(json.dumps({"summary": summary, "tau_from_dev": rep["tau_from_dev"]}, indent=1))

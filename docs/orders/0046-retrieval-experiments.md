@@ -1,5 +1,5 @@
 # 0046 — Retrieval, measured before it is built: experiments R0 to R8
-status: open (R2 on dev reported 2026-10-31: no arm passes, test unread; R2 next: qFHRR on grilly2; R3, R4; R1b on the notebook)
+status: open (R2 on dev, 2026-10-31: no arm passes (tiers, BM25, qFHRR on grilly2, B1), test unread; R3, R4 next; R1b on the notebook)
 written: 2026-10-28 by Cowork · approved: 2026-10-28 by Nick ("tested before implementing"; a plan doc and an experiments-only order) · hypothesis: none (each experiment below is pre-registered)
 
 ## Why
@@ -534,3 +534,43 @@ the API), and WebQSP_EL and ShadowLink are English only. So R2's French side is 
   - **(c) The fame set's names checked against today's:** a name that only one item bears today is reported apart,
     whatever the line decides about Pilot Corporation.
 - **Next on R2:** the qFHRR arm on grilly2, with one prototype per item. Then test, once.
+
+## R2's qFHRR arm, on grilly2 (Claude Code, 2026-10-31)
+- **Log:** `retrieval_R2_dev_2026-10-31_qfhrr.json`. Every dev row, with tiers and BM25 rerun beside it; their numbers
+  match the two logs above.
+- **How it runs (`validation/retrieval_bench/r2_qfhrr.py`):**
+  - **Same words as BM25:** the question's cue words and each item's description and values.
+  - **qFHRR codes** from the serving word table (fastword v4, through `cubbyllm.worlds.fast_words`). One prototype per
+    item and language.
+  - **Pick rule:** the cosine, with the best item picked past a rank-normalized margin, as for BM25.
+  - **On grilly2:** the cosine runs in grilly2's own interpreter (`r2_qfhrr_score.py`, through
+    `uv run --project <grilly2>`), never grilly v1, which this repo's interpreter imports. It runs on `vulkan:0`
+    (`grilly.vsa.similarity_batch` over `index_select`).
+  - **Size:** 12,628 prototypes (0.52 GB on the card); 2,653 rows scored in 25 s. Rescoring 50 rows in numpy differs by
+    at most 1.2e-6.
+
+| qFHRR, margin | Bare: single picks | Qualified: wrong, resolved | ShadowLink: Top, Shadow (gap) | Mintaka: wrong / decided | WebQSP_EL: wrong / decided |
+|---|---|---|---|---|---|
+| 0.25 | 298 | 29, 77.4% | 17.6%, 28.9% (11.2) | 28 / 212 | 30 / 180 |
+| 0.5 | 73 | 3, 47.4% | 15.4%, 26.7% (11.3) | 11 / 121 | 10 / 112 |
+| 0.75 | 21 | 0, 12.4% | 16.7%, 11.1% (5.6) | 8 / 92 | 7 / 84 |
+| 0.9 | 11 | 0, 1.1% | 0%, 11.1% (11.1) | 8 / 83 | 7 / 80 |
+| tiers, for reference | 6 | 2, 0.2% | 0%, 14.3% (14.3) | 25 / 105 | 13 / 87 |
+
+- **Bare names: killed at every margin, for BM25's reason.** At 0.9, the 11 picks come from the template's relation
+  words: "pays" / "trouve" 4, "né" 2, and "born", "living", "country", "die" and "mort" once each.
+- **Qualified:** 0 wrong only from 0.75, where it resolves 12.4% against the line's 70%.
+- **ShadowLink:** the gap is over the kill line (10) at three margins. At 0.75 it is 5.6 points, just over the line,
+  on few picks.
+- **Mintaka and WebQSP_EL: the first arm better than today's tiers.**
+  - At 0.5: fewer wrong (11 against 25, 10 against 13) and more decided (121 against 105, 112 against 87).
+  - It is still over 1 in 50: 2.5% and 3.1% of rows.
+  - From 0.75: 8 and 7 wrong (1.8% and 2.2%), but fewer decided than tiers.
+- **French:** the table's teacher is English. Most French words fall back to their signal code, so in French the arm
+  matches only the words as written.
+- **Where R2 stands:**
+  - Every registered arm has run on dev, except the usage table, which has no anchor counts. None passes, and no
+    margin carries to test, so test is unread.
+  - **Yours to decide:** whether R2 ends here (test read once, for the record), or goes on with an arm you register
+    from (a) to (c) above. The qFHRR scorer would serve (b) as it is: B1 first, then the codes among the branches that
+    verify.
