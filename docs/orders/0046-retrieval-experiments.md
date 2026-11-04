@@ -1087,6 +1087,36 @@ That is under the 50 ms line, but near it past 6 branches. B1 alone, the same ru
 - **The chain reading runs next,** after PIAF's link queries finish (both use the query service). It tests the place
   rows. The incoming and count rows are the rule's to change, not the reading's.
 
+## R3k on dev: the "chain" reading (Claude Code, 2026-11-04)
+- **Log:** `retrieval_R3o_dev_2026-11-04_r3k_chain.json`. The values' `instance of` then any number of `subclass of`
+  steps (one SPARQL query a row; 0 left unanswered). Same rows, classes and margin rule as the one-step reading.
+- **The chain fixes "place":** the kind drops the gold on 5 place rows, not 55. In all, 99 golds are dropped (one step:
+  151): person 74, quantity 20, place 5.
+- **margin_r3k: none.** All scored rows (908), recall@5 / wrong rate / missing-fact handovers:
+
+| | R3o (no kind) | R3k, chain |
+|---|---|---|
+| lexicon_content | 0.374 / 14.5% / 6 | 0.350 / 9.9% / 8 |
+| qfhrr @0 | 0.684 / 30.3% / 36 | 0.609 / 28.9% / 83 |
+| qfhrr @0.1 | 0.560 / 20.9% / 30 | 0.515 / 21.3% / 71 |
+| qfhrr @0.25 | 0.401 / 11.3% / 16 | 0.389 / 13.2% / 51 |
+
+- **The gate on held rows** (qfhrr @0): SimpleQuestions 0.880, QALD FR 0.564 (R3o 0.893, 0.578). It does not pass.
+- **Where the kind works:** "place" (qfhrr @0, recall 0.77, 6% wrong) and "time" (0.63, no wrong). Read by kind, it
+  helps where the asked kind is read off the item's own values.
+- **Where it costs:**
+  - "who" questions asked from the value's side ("who was born in Paris?"): the rule keeps incoming properties out when
+    a kind is asked.
+  - "how many" over item-valued properties.
+
+  Each dropped gold makes a missing-fact row, where qFHRR hands a near property over (83 against 36). That is the
+  danger R8's kill line reads.
+- **Yours, if R3k is to be read again:**
+  - keep incoming properties for "who" (the asker's kind is then the subject's);
+  - let "how many" also keep item-valued properties (a count of values).
+
+  Both are rule changes written after the numbers, so they would be read on test, not tuned here.
+
 ## The typo index (Claude Code, 2026-11-04)
 - **Log:** `retrieval_typo_index_2026-11-04.json`. CubeLang `cowork/vm-contracts` `29e81bd` (`src/vm/typo_index.rs`,
   `docs/STORE.md` there).
