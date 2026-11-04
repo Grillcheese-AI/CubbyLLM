@@ -252,3 +252,42 @@ compares block starts (equal-size blocks overlap iff their starts are under a bl
   a spot rental. The upload is larger than planned either way.
 - **The question is Nick's or Cowork's:** (a), (b) or (c)? The build starts on the answer. With D: as the stage it takes
   about an hour here, then the upload.
+
+## One arm now: the control (Nick and Cowork, 2026-11-04)
+Nick, 2026-11-03: "let's budget for one arm right now, the one [Cowork deems] the best one", and the card is rented
+once the upload has landed.
+- **The arm is the control:** the 450M from `base450m_cont_stable_end.pt`, with round 2's config and decay mix. Why
+  it goes first:
+  - **It can be read on its own:** gate 3 (each new shard below its first reading, the checked sources not
+    regressing) and gate 4 (serving at home, against the 450M as it is). The grown arm alone could not be read: without
+    the control at equal hours (gate 1), its gains could not be told from the data's.
+  - **It is what Cubby serves:** the adapters phase retrains the emitter and talk seats on its final, at today's
+    serving cost.
+  - **It sees the most tokens:** about 10.8B on a B200 in 11 h, every unseen block within 2 epochs. The grown arm
+    would see about a third of that in the same hours.
+  - **Round 1's grown arm** never left the growth's transient, and its read stayed on the floor.
+- **Nothing pre-registered is lost:** the grown arm runs later on the same card model, the same inputs (kept on the
+  Hub) and the same hours, and gates 0 to 2 are read then, as written. Its floors (the control's final and probes)
+  come from this run.
+- **The hours, from the bench:** the most hours at which every row stays within 2 epochs, at most 14, computed from
+  the measured tokens per second and recorded before training. About 11 h on a B200, 14 h on an H200.
+- **The slice:** built once at `--frac 0.9` (every unseen block; table (a) above), so either card is covered. About
+  50 GB to upload, with `--emitter-data` and `--talk-data`.
+- **The runner:** `CB_POD_ARMS=control` from the environment, written to the state once, like `HOURS_PER_ARM`. The
+  readout reports gate 3 and the control's probes, and gates 0 to 2 as "waiting on the grown arm". Phase 8 trains the
+  adapters on the control's final. The smoke covers the one-arm run.
+- **The card:** a B200 gives about 1.7x an H200's tokens for a similar bill. Prices seen 2026-11-04, to recheck before
+  renting:
+  - B200, one GPU: from $3.75/h on demand (in stock at one provider), $5.50-6.99 at the reliable ones; spot from about
+    $3.59, rarely in stock.
+  - H200, one GPU: from about $3.59/h on demand; $2.25-2.76 on marketplaces.
+- **The budget for one arm** (estimates):
+  - B200: about 15 h on the meter (fetch and bench ~1 h, training 11 h, probes ~1 h, adapters ~1-2 h), so $55-105.
+  - H200: about 18 h, so $40-50 on a marketplace or $65-77 on demand.
+- **The sequence:**
+  1. Claude Code builds the inputs now; no token is needed for that.
+  2. Nick sets `HF_TOKEN` and `CB_POD_REPO` in his environment himself, never in a file or a chat.
+  3. Claude Code runs the round trip through `HfRemote`, then the upload, and writes in the inbox when it has landed.
+  4. Nick rents the card and runs the one command.
+
+Status: open. `review` (ready to rent) once the upload has landed.
