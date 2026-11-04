@@ -1,0 +1,39 @@
+{
+ "what": "order 0046: the typo index over the names store's 32 shards (CubeLang cowork/vm-contracts 29e81bd)",
+ "date": "2026-11-04",
+ "queries": "R1's dev mentions' typo variants (r1_finding.mentions_of, seed 0), 2 edits, limit 100",
+ "store": {
+  "shards": 32,
+  "keys": 76813854,
+  "index_bytes": 846366647,
+  "index_build_ms": 130340
+ },
+ "walk_every_shard": {
+  "n": 300,
+  "p50_ms": 424.7,
+  "p95_ms": 609.3,
+  "p99_ms": 782.1,
+  "max_ms": 795.5
+ },
+ "banded_row": {
+  "n": 300,
+  "p50_ms": 164.9,
+  "p95_ms": 201.8,
+  "p99_ms": 226.5,
+  "max_ms": 230.3,
+  "same_answers": 300
+ },
+ "typo_index": {
+  "n": 1204,
+  "p50_ms": 32.0,
+  "p95_ms": 38.2,
+  "p99_ms": 100.0,
+  "max_ms": 111.8,
+  "same_answers_on_the_300": 300,
+  "on_the_same_300": {
+   "p50_ms": 32.4,
+   "p95_ms": 38.7
+  }
+ },
+ "line": "R7: p95 at most 50 ms"
+}

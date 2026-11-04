@@ -1086,3 +1086,29 @@ That is under the 50 ms line, but near it past 6 branches. B1 alone, the same ru
   - **Time:** the datatype holds every time.
 - **The chain reading runs next,** after PIAF's link queries finish (both use the query service). It tests the place
   rows. The incoming and count rows are the rule's to change, not the reading's.
+
+## The typo index (Claude Code, 2026-11-04)
+- **Log:** `retrieval_typo_index_2026-11-04.json`. CubeLang `cowork/vm-contracts` `29e81bd` (`src/vm/typo_index.rs`,
+  `docs/STORE.md` there).
+- **Where the 589 ms went:** the names store's 32 shards are split by a hash of the key, so every shard holds every
+  prefix. A 2-edit lookup walked the same region of 32 indexes, allocated a row for every byte it read, and read
+  facts for every key in reach before cutting to the limit.
+- **Built:**
+  - one index of every shard's keys (keys only), built once beside the shards (`cubelang knowledge typo-index DIR`;
+    76,813,854 keys, 846 MB, 130 s). It is used only over the shards it was built from, by name and size;
+  - a banded row (5 cells at 2 edits);
+  - facts read only up to the limit.
+
+  The exact lookup is unchanged. A store opened from the directory (`knowledge batch`, run-proto's
+  `knowledge_path`) uses the index without any change on CubbyLLM's side.
+
+| R1's dev typo mentions, 2 edits | p50 | p95 |
+|---|---|---|
+| walking every shard (300) | 425 ms | 609 ms |
+| banded row (the same 300) | 165 ms | 202 ms |
+| **through the index** (the same 300; all 1,204) | **32 ms; 32 ms** | **39 ms; 38 ms** |
+
+- **The line is met:** p95 38 ms against R7's 50 ms, with p99 100 ms. On the 300 compared, the answers are identical
+  to the old binary's. The tests pin the index against the shards without it, at every distance and with a limit.
+- **Served cost:** the typo lookup runs only on an exact miss (R1c's rule). On Mintaka's test, that is 62 of 1,475 EN
+  mentions and none of FR.
