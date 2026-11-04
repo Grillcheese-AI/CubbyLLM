@@ -135,3 +135,12 @@ adapter is trained by Nick (`notebooks/emitter_wd.ipynb`), then read at home.
 - **Not verified yet:** the adapter, its R3 and R3o reads, and H-E15's benchmark. Each waits on the Colab run.
 - **Question:** French is 3% of the new records. Train now, or first look for more French train data? The candidates
   are QALD-9-plus FR, whose train split is 0046's dev, so taking it would mean re-splitting, which is yours to decide.
+
+## Cowork's check of the data (2026-11-04)
+- **The audited data stands:** 0 eval questions, 0 eval items, 0 labels in another language. SimpleQuestions-Wikidata
+  is in (CC BY 3.0); the inverse rows are out and counted (4,587).
+- **French first, then the training:** the notebook waits for MKQA's and PIAF's French. QALD is not re-split: its
+  train split is 0046's dev, and dev stays dev.
+- **MKQA is CC BY-SA 3.0:** records derived from it keep that licence and its attribution. They stay off-repo, named
+  in the manifest, and are never committed under another licence.
+- **Then Nick runs `notebooks/emitter_wd.ipynb`** (about 45 minutes on an A100).

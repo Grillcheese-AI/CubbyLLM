@@ -1112,3 +1112,39 @@ That is under the 50 ms line, but near it past 6 branches. B1 alone, the same ru
   to the old binary's. The tests pin the index against the shards without it, at every distance and with a limit.
 - **Served cost:** the typo lookup runs only on an exact miss (R1c's rule). On Mintaka's test, that is 62 of 1,475 EN
   mentions and none of FR.
+
+## Cowork's check of the fork, R1c, B1q on seed 0, R3k and the typo index (2026-11-04, afternoon)
+- **The fork: met** (0.38 ms a branch, p95 3.3 ms at k = 7, the outcomes identical). Merging `cowork/vm-contracts` is
+  Nick's call.
+- **The typo index: met** (p95 38 ms against 50, the same answers).
+- **R1c on test: passes.** The gold is in the set at EN 0.911 against the API's 0.862, and FR 0.994 against 0.971.
+  After the relation filter, the set's p50 is 1 and p95 38. From here on, finding is the candidate set; the API stays
+  only as R1's reference.
+- **B1q on seed 0:** resolved 0.764 (line 70%) but 3 wrong (line 0). Two rules fix that, both general, and both
+  written before seed 1 is read:
+  1. **Short names match only as written.** A name of 3 characters or fewer (a code, an abbreviation) matches a cue
+     only with its case and accents kept, so "né" never matches "NE". A length floor on cues would drop short real
+     words, and a list of participles would never end.
+     - Span accounting also counts the words the relation reading used, whatever the lexicon holds. On the fame set
+       those are the template's own relation words ("né", "born", "pays").
+  2. **The qualifier is checked along the `located in` chain,** each step a VM-checked hop, up to the country. The 3
+     wrongs become undecided, the safe direction.
+
+  Seed 1 is then read once, with both rules frozen.
+- **ShadowLink, where the gold bears the mention:** 4.6 points (line 5), so it passes on dev.
+- **Mintaka and WebQSP_EL:** 2.3% and 2.2% wrong per row on dev, against the 2% line read on test (tiers: 5.8% and
+  4.0%). The chain rule may move them; test decides.
+- **R3k: three gaps in Cowork's rule, not in the code:**
+  - **Incoming properties:** the kind is read on the items that point at this one ("who was born here?" asks for
+    persons). An incoming property stays when its subjects are of the kind.
+  - **The kind along the subclass chain:** a value's `instance of` reaches the kind through `subclass of` steps (a
+    city up to a place), each VM-checked, the bound reported.
+  - **"How many":** a quantity-valued property, or a property with several values on this item (their count).
+
+  Re-read on dev with these, under the margin rule as written. These fixes come from dev, before test.
+- **R4, both readings confirmed:**
+  - the live scoreboard's 44 `ambiguous_hop` and 2 `time_mismatch` rows. If the latest run's rows are not the plan's
+    44 + 2, keep the plan's by id and report the difference;
+  - CronQuestions' `simple_entity` for the 60% line, with `simple_time` beside it and the complex types out.
+
+Status: open.
