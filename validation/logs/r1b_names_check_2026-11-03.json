@@ -1,0 +1,1822 @@
+{
+ "what": "order 0046 R1b: the names extract against live Wikidata",
+ "date": "2026-11-03",
+ "dump": "2026-09-28",
+ "pool": 61789981,
+ "n": 300,
+ "seed": 0,
+ "counts": {
+  "same": 300,
+  "differ_edited_after": 0,
+  "differ_unexcused": 0,
+  "missing_live": 0
+ },
+ "gate": {
+  "line": "at most 1% of items differ without an edit after the dump",
+  "unexcused": 0,
+  "share": 0.0,
+  "passes": true
+ },
+ "items": [
+  {
+   "id": "Q100307718",
+   "verdict": "same",
+   "modified": "2025-03-27T15:00:44Z",
+   "diff": {}
+  },
+  {
+   "id": "Q102428341",
+   "verdict": "same",
+   "modified": "2025-04-17T04:38:57Z",
+   "diff": {}
+  },
+  {
+   "id": "Q10281530",
+   "verdict": "same",
+   "modified": "2026-09-10T16:20:45Z",
+   "diff": {}
+  },
+  {
+   "id": "Q103861615",
+   "verdict": "same",
+   "modified": "2024-04-06T04:28:51Z",
+   "diff": {}
+  },
+  {
+   "id": "Q104390569",
+   "verdict": "same",
+   "modified": "2021-01-24T05:28:51Z",
+   "diff": {}
+  },
+  {
+   "id": "Q104536988",
+   "verdict": "same",
+   "modified": "2026-07-18T22:33:37Z",
+   "diff": {}
+  },
+  {
+   "id": "Q104960591",
+   "verdict": "same",
+   "modified": "2024-06-17T01:03:44Z",
+   "diff": {}
+  },
+  {
+   "id": "Q105468296",
+   "verdict": "same",
+   "modified": "2026-08-22T11:57:14Z",
+   "diff": {}
+  },
+  {
+   "id": "Q105757470",
+   "verdict": "same",
+   "modified": "2025-06-15T20:06:58Z",
+   "diff": {}
+  },
+  {
+   "id": "Q106024371",
+   "verdict": "same",
+   "modified": "2024-05-17T13:50:21Z",
+   "diff": {}
+  },
+  {
+   "id": "Q106104868",
+   "verdict": "same",
+   "modified": "2024-07-11T01:34:59Z",
+   "diff": {}
+  },
+  {
+   "id": "Q106235858",
+   "verdict": "same",
+   "modified": "2023-04-05T19:36:24Z",
+   "diff": {}
+  },
+  {
+   "id": "Q106713186",
+   "verdict": "same",
+   "modified": "2024-12-30T03:57:00Z",
+   "diff": {}
+  },
+  {
+   "id": "Q107893965",
+   "verdict": "same",
+   "modified": "2024-03-08T18:45:06Z",
+   "diff": {}
+  },
+  {
+   "id": "Q108131835",
+   "verdict": "same",
+   "modified": "2024-09-19T16:34:08Z",
+   "diff": {}
+  },
+  {
+   "id": "Q108136602",
+   "verdict": "same",
+   "modified": "2023-05-13T08:02:54Z",
+   "diff": {}
+  },
+  {
+   "id": "Q108230627",
+   "verdict": "same",
+   "modified": "2026-03-25T09:02:45Z",
+   "diff": {}
+  },
+  {
+   "id": "Q108236820",
+   "verdict": "same",
+   "modified": "2026-03-25T20:12:19Z",
+   "diff": {}
+  },
+  {
+   "id": "Q108301373",
+   "verdict": "same",
+   "modified": "2025-11-23T10:40:10Z",
+   "diff": {}
+  },
+  {
+   "id": "Q108997877",
+   "verdict": "same",
+   "modified": "2024-12-18T20:27:23Z",
+   "diff": {}
+  },
+  {
+   "id": "Q10915236",
+   "verdict": "same",
+   "modified": "2026-02-07T13:05:16Z",
+   "diff": {}
+  },
+  {
+   "id": "Q109392642",
+   "verdict": "same",
+   "modified": "2026-07-25T19:45:20Z",
+   "diff": {}
+  },
+  {
+   "id": "Q109590242",
+   "verdict": "same",
+   "modified": "2026-10-31T16:55:08Z",
+   "diff": {}
+  },
+  {
+   "id": "Q109617367",
+   "verdict": "same",
+   "modified": "2025-05-02T00:46:27Z",
+   "diff": {}
+  },
+  {
+   "id": "Q110190878",
+   "verdict": "same",
+   "modified": "2024-05-19T04:19:35Z",
+   "diff": {}
+  },
+  {
+   "id": "Q110208085",
+   "verdict": "same",
+   "modified": "2026-09-14T23:25:38Z",
+   "diff": {}
+  },
+  {
+   "id": "Q110388941",
+   "verdict": "same",
+   "modified": "2023-03-07T08:45:56Z",
+   "diff": {}
+  },
+  {
+   "id": "Q111181555",
+   "verdict": "same",
+   "modified": "2023-05-13T21:45:41Z",
+   "diff": {}
+  },
+  {
+   "id": "Q111338346",
+   "verdict": "same",
+   "modified": "2026-08-24T12:10:24Z",
+   "diff": {}
+  },
+  {
+   "id": "Q111371250",
+   "verdict": "same",
+   "modified": "2024-10-11T08:22:57Z",
+   "diff": {}
+  },
+  {
+   "id": "Q111386810",
+   "verdict": "same",
+   "modified": "2026-05-31T22:13:05Z",
+   "diff": {}
+  },
+  {
+   "id": "Q111596353",
+   "verdict": "same",
+   "modified": "2026-09-28T11:20:19Z",
+   "diff": {}
+  },
+  {
+   "id": "Q11178083",
+   "verdict": "same",
+   "modified": "2026-07-23T13:33:59Z",
+   "diff": {}
+  },
+  {
+   "id": "Q112203847",
+   "verdict": "same",
+   "modified": "2025-05-30T07:15:10Z",
+   "diff": {}
+  },
+  {
+   "id": "Q112399308",
+   "verdict": "same",
+   "modified": "2026-10-29T16:29:03Z",
+   "diff": {}
+  },
+  {
+   "id": "Q112405738",
+   "verdict": "same",
+   "modified": "2025-10-19T07:39:42Z",
+   "diff": {}
+  },
+  {
+   "id": "Q112420974",
+   "verdict": "same",
+   "modified": "2026-08-18T02:23:51Z",
+   "diff": {}
+  },
+  {
+   "id": "Q112466233",
+   "verdict": "same",
+   "modified": "2025-07-13T15:25:48Z",
+   "diff": {}
+  },
+  {
+   "id": "Q11364482",
+   "verdict": "same",
+   "modified": "2026-09-21T10:55:18Z",
+   "diff": {}
+  },
+  {
+   "id": "Q114470299",
+   "verdict": "same",
+   "modified": "2026-05-03T11:44:32Z",
+   "diff": {}
+  },
+  {
+   "id": "Q114515839",
+   "verdict": "same",
+   "modified": "2026-06-27T03:03:53Z",
+   "diff": {}
+  },
+  {
+   "id": "Q11465538",
+   "verdict": "same",
+   "modified": "2026-10-07T11:50:50Z",
+   "diff": {}
+  },
+  {
+   "id": "Q114674578",
+   "verdict": "same",
+   "modified": "2026-09-23T19:06:08Z",
+   "diff": {}
+  },
+  {
+   "id": "Q115093577",
+   "verdict": "same",
+   "modified": "2024-04-19T09:58:44Z",
+   "diff": {}
+  },
+  {
+   "id": "Q115772678",
+   "verdict": "same",
+   "modified": "2024-11-13T20:29:43Z",
+   "diff": {}
+  },
+  {
+   "id": "Q115825812",
+   "verdict": "same",
+   "modified": "2025-09-14T02:51:51Z",
+   "diff": {}
+  },
+  {
+   "id": "Q115850298",
+   "verdict": "same",
+   "modified": "2025-09-15T20:53:56Z",
+   "diff": {}
+  },
+  {
+   "id": "Q116361221",
+   "verdict": "same",
+   "modified": "2026-03-23T15:05:52Z",
+   "diff": {}
+  },
+  {
+   "id": "Q117496978",
+   "verdict": "same",
+   "modified": "2023-04-10T23:21:07Z",
+   "diff": {}
+  },
+  {
+   "id": "Q117529118",
+   "verdict": "same",
+   "modified": "2024-10-23T01:01:40Z",
+   "diff": {}
+  },
+  {
+   "id": "Q117741999",
+   "verdict": "same",
+   "modified": "2025-10-16T15:22:43Z",
+   "diff": {}
+  },
+  {
+   "id": "Q11863646",
+   "verdict": "same",
+   "modified": "2025-06-22T23:51:54Z",
+   "diff": {}
+  },
+  {
+   "id": "Q11876052",
+   "verdict": "same",
+   "modified": "2024-04-04T10:21:32Z",
+   "diff": {}
+  },
+  {
+   "id": "Q119162355",
+   "verdict": "same",
+   "modified": "2025-07-07T21:29:14Z",
+   "diff": {}
+  },
+  {
+   "id": "Q120276673",
+   "verdict": "same",
+   "modified": "2023-08-08T12:13:07Z",
+   "diff": {}
+  },
+  {
+   "id": "Q120979308",
+   "verdict": "same",
+   "modified": "2026-10-23T11:44:23Z",
+   "diff": {}
+  },
+  {
+   "id": "Q1224185",
+   "verdict": "same",
+   "modified": "2026-07-23T18:40:37Z",
+   "diff": {}
+  },
+  {
+   "id": "Q12260914",
+   "verdict": "same",
+   "modified": "2026-09-11T13:44:30Z",
+   "diff": {}
+  },
+  {
+   "id": "Q123134842",
+   "verdict": "same",
+   "modified": "2025-11-22T16:39:57Z",
+   "diff": {}
+  },
+  {
+   "id": "Q123713044",
+   "verdict": "same",
+   "modified": "2026-07-26T12:49:24Z",
+   "diff": {}
+  },
+  {
+   "id": "Q12401679",
+   "verdict": "same",
+   "modified": "2024-06-02T14:45:19Z",
+   "diff": {}
+  },
+  {
+   "id": "Q124108565",
+   "verdict": "same",
+   "modified": "2026-10-23T01:39:05Z",
+   "diff": {}
+  },
+  {
+   "id": "Q124238675",
+   "verdict": "same",
+   "modified": "2026-10-16T00:14:42Z",
+   "diff": {}
+  },
+  {
+   "id": "Q124411914",
+   "verdict": "same",
+   "modified": "2026-11-03T23:28:57Z",
+   "diff": {}
+  },
+  {
+   "id": "Q124507061",
+   "verdict": "same",
+   "modified": "2025-07-11T09:36:05Z",
+   "diff": {}
+  },
+  {
+   "id": "Q124622073",
+   "verdict": "same",
+   "modified": "2026-04-01T05:32:07Z",
+   "diff": {}
+  },
+  {
+   "id": "Q124687957",
+   "verdict": "same",
+   "modified": "2025-07-10T23:56:37Z",
+   "diff": {}
+  },
+  {
+   "id": "Q125084952",
+   "verdict": "same",
+   "modified": "2026-10-29T20:55:36Z",
+   "diff": {}
+  },
+  {
+   "id": "Q125631613",
+   "verdict": "same",
+   "modified": "2024-04-27T05:28:24Z",
+   "diff": {}
+  },
+  {
+   "id": "Q126081102",
+   "verdict": "same",
+   "modified": "2025-02-21T03:35:23Z",
+   "diff": {}
+  },
+  {
+   "id": "Q126108340",
+   "verdict": "same",
+   "modified": "2026-10-16T02:16:14Z",
+   "diff": {}
+  },
+  {
+   "id": "Q126415717",
+   "verdict": "same",
+   "modified": "2026-09-29T20:09:50Z",
+   "diff": {}
+  },
+  {
+   "id": "Q127429499",
+   "verdict": "same",
+   "modified": "2024-07-15T21:26:03Z",
+   "diff": {}
+  },
+  {
+   "id": "Q129444879",
+   "verdict": "same",
+   "modified": "2026-09-19T23:56:57Z",
+   "diff": {}
+  },
+  {
+   "id": "Q130399836",
+   "verdict": "same",
+   "modified": "2026-04-10T01:39:47Z",
+   "diff": {}
+  },
+  {
+   "id": "Q1304534",
+   "verdict": "same",
+   "modified": "2026-09-01T21:27:51Z",
+   "diff": {}
+  },
+  {
+   "id": "Q130659173",
+   "verdict": "same",
+   "modified": "2025-01-21T06:20:14Z",
+   "diff": {}
+  },
+  {
+   "id": "Q130711195",
+   "verdict": "same",
+   "modified": "2026-10-03T04:00:49Z",
+   "diff": {}
+  },
+  {
+   "id": "Q130798340",
+   "verdict": "same",
+   "modified": "2026-05-16T07:28:38Z",
+   "diff": {}
+  },
+  {
+   "id": "Q132127815",
+   "verdict": "same",
+   "modified": "2026-04-25T16:23:08Z",
+   "diff": {}
+  },
+  {
+   "id": "Q132855036",
+   "verdict": "same",
+   "modified": "2026-11-01T14:28:13Z",
+   "diff": {}
+  },
+  {
+   "id": "Q133306515",
+   "verdict": "same",
+   "modified": "2026-10-13T12:41:54Z",
+   "diff": {}
+  },
+  {
+   "id": "Q13336778",
+   "verdict": "same",
+   "modified": "2025-10-17T02:32:41Z",
+   "diff": {}
+  },
+  {
+   "id": "Q133424723",
+   "verdict": "same",
+   "modified": "2026-05-17T03:23:28Z",
+   "diff": {}
+  },
+  {
+   "id": "Q134157164",
+   "verdict": "same",
+   "modified": "2025-05-05T07:43:21Z",
+   "diff": {}
+  },
+  {
+   "id": "Q134220638",
+   "verdict": "same",
+   "modified": "2025-05-04T07:29:27Z",
+   "diff": {}
+  },
+  {
+   "id": "Q135105078",
+   "verdict": "same",
+   "modified": "2026-05-31T22:16:26Z",
+   "diff": {}
+  },
+  {
+   "id": "Q135260765",
+   "verdict": "same",
+   "modified": "2025-08-01T07:59:35Z",
+   "diff": {}
+  },
+  {
+   "id": "Q135274108",
+   "verdict": "same",
+   "modified": "2026-09-26T09:26:00Z",
+   "diff": {}
+  },
+  {
+   "id": "Q135286457",
+   "verdict": "same",
+   "modified": "2026-02-25T10:23:17Z",
+   "diff": {}
+  },
+  {
+   "id": "Q135330735",
+   "verdict": "same",
+   "modified": "2026-03-24T14:32:53Z",
+   "diff": {}
+  },
+  {
+   "id": "Q136166618",
+   "verdict": "same",
+   "modified": "2026-09-07T18:08:08Z",
+   "diff": {}
+  },
+  {
+   "id": "Q136535868",
+   "verdict": "same",
+   "modified": "2025-10-28T10:04:10Z",
+   "diff": {}
+  },
+  {
+   "id": "Q136571691",
+   "verdict": "same",
+   "modified": "2026-06-23T18:14:46Z",
+   "diff": {}
+  },
+  {
+   "id": "Q137149997",
+   "verdict": "same",
+   "modified": "2026-05-18T07:12:54Z",
+   "diff": {}
+  },
+  {
+   "id": "Q137843342",
+   "verdict": "same",
+   "modified": "2026-01-22T01:20:44Z",
+   "diff": {}
+  },
+  {
+   "id": "Q138229051",
+   "verdict": "same",
+   "modified": "2026-02-12T21:12:15Z",
+   "diff": {}
+  },
+  {
+   "id": "Q138348258",
+   "verdict": "same",
+   "modified": "2026-08-28T01:30:08Z",
+   "diff": {}
+  },
+  {
+   "id": "Q139269003",
+   "verdict": "same",
+   "modified": "2026-04-13T10:35:20Z",
+   "diff": {}
+  },
+  {
+   "id": "Q139295207",
+   "verdict": "same",
+   "modified": "2026-05-07T11:40:23Z",
+   "diff": {}
+  },
+  {
+   "id": "Q1395006",
+   "verdict": "same",
+   "modified": "2026-07-25T22:58:03Z",
+   "diff": {}
+  },
+  {
+   "id": "Q14018613",
+   "verdict": "same",
+   "modified": "2026-08-21T10:47:10Z",
+   "diff": {}
+  },
+  {
+   "id": "Q141106118",
+   "verdict": "same",
+   "modified": "2026-08-17T02:31:56Z",
+   "diff": {}
+  },
+  {
+   "id": "Q141201897",
+   "verdict": "same",
+   "modified": "2026-08-28T08:06:10Z",
+   "diff": {}
+  },
+  {
+   "id": "Q1424129",
+   "verdict": "same",
+   "modified": "2026-07-23T21:34:21Z",
+   "diff": {}
+  },
+  {
+   "id": "Q14699605",
+   "verdict": "same",
+   "modified": "2025-12-06T04:23:36Z",
+   "diff": {}
+  },
+  {
+   "id": "Q14810461",
+   "verdict": "same",
+   "modified": "2026-10-24T08:18:03Z",
+   "diff": {}
+  },
+  {
+   "id": "Q1520468",
+   "verdict": "same",
+   "modified": "2026-10-04T06:07:35Z",
+   "diff": {}
+  },
+  {
+   "id": "Q15381847",
+   "verdict": "same",
+   "modified": "2026-08-25T02:34:30Z",
+   "diff": {}
+  },
+  {
+   "id": "Q15395618",
+   "verdict": "same",
+   "modified": "2025-06-25T11:41:06Z",
+   "diff": {}
+  },
+  {
+   "id": "Q15437842",
+   "verdict": "same",
+   "modified": "2026-08-04T16:24:43Z",
+   "diff": {}
+  },
+  {
+   "id": "Q15579851",
+   "verdict": "same",
+   "modified": "2025-06-17T13:55:35Z",
+   "diff": {}
+  },
+  {
+   "id": "Q16237195",
+   "verdict": "same",
+   "modified": "2026-09-10T18:26:17Z",
+   "diff": {}
+  },
+  {
+   "id": "Q17068501",
+   "verdict": "same",
+   "modified": "2026-08-20T22:44:17Z",
+   "diff": {}
+  },
+  {
+   "id": "Q1737129",
+   "verdict": "same",
+   "modified": "2026-07-08T08:42:48Z",
+   "diff": {}
+  },
+  {
+   "id": "Q17679875",
+   "verdict": "same",
+   "modified": "2026-08-26T14:36:13Z",
+   "diff": {}
+  },
+  {
+   "id": "Q1779564",
+   "verdict": "same",
+   "modified": "2026-01-03T22:29:57Z",
+   "diff": {}
+  },
+  {
+   "id": "Q17861536",
+   "verdict": "same",
+   "modified": "2024-06-16T19:38:30Z",
+   "diff": {}
+  },
+  {
+   "id": "Q19057483",
+   "verdict": "same",
+   "modified": "2022-12-25T16:25:17Z",
+   "diff": {}
+  },
+  {
+   "id": "Q19244889",
+   "verdict": "same",
+   "modified": "2026-10-26T20:13:52Z",
+   "diff": {}
+  },
+  {
+   "id": "Q206598",
+   "verdict": "same",
+   "modified": "2025-11-01T00:20:38Z",
+   "diff": {}
+  },
+  {
+   "id": "Q207004",
+   "verdict": "same",
+   "modified": "2026-10-15T20:19:45Z",
+   "diff": {}
+  },
+  {
+   "id": "Q21264182",
+   "verdict": "same",
+   "modified": "2026-08-30T23:36:23Z",
+   "diff": {}
+  },
+  {
+   "id": "Q21268665",
+   "verdict": "same",
+   "modified": "2026-07-30T14:30:46Z",
+   "diff": {}
+  },
+  {
+   "id": "Q21269918",
+   "verdict": "same",
+   "modified": "2026-03-06T04:59:09Z",
+   "diff": {}
+  },
+  {
+   "id": "Q21957205",
+   "verdict": "same",
+   "modified": "2024-03-08T23:14:53Z",
+   "diff": {}
+  },
+  {
+   "id": "Q22494171",
+   "verdict": "same",
+   "modified": "2024-02-23T02:10:33Z",
+   "diff": {}
+  },
+  {
+   "id": "Q22961415",
+   "verdict": "same",
+   "modified": "2020-03-01T14:39:01Z",
+   "diff": {}
+  },
+  {
+   "id": "Q23581156",
+   "verdict": "same",
+   "modified": "2026-06-21T22:37:30Z",
+   "diff": {}
+  },
+  {
+   "id": "Q23658307",
+   "verdict": "same",
+   "modified": "2025-11-02T14:31:56Z",
+   "diff": {}
+  },
+  {
+   "id": "Q24110925",
+   "verdict": "same",
+   "modified": "2023-12-09T17:45:33Z",
+   "diff": {}
+  },
+  {
+   "id": "Q24142467",
+   "verdict": "same",
+   "modified": "2023-12-11T23:40:41Z",
+   "diff": {}
+  },
+  {
+   "id": "Q25055699",
+   "verdict": "same",
+   "modified": "2025-07-22T18:23:18Z",
+   "diff": {}
+  },
+  {
+   "id": "Q25200450",
+   "verdict": "same",
+   "modified": "2026-02-14T23:57:55Z",
+   "diff": {}
+  },
+  {
+   "id": "Q26290444",
+   "verdict": "same",
+   "modified": "2026-08-23T15:00:28Z",
+   "diff": {}
+  },
+  {
+   "id": "Q26315145",
+   "verdict": "same",
+   "modified": "2024-07-03T13:03:39Z",
+   "diff": {}
+  },
+  {
+   "id": "Q26490055",
+   "verdict": "same",
+   "modified": "2024-06-30T14:14:42Z",
+   "diff": {}
+  },
+  {
+   "id": "Q26692803",
+   "verdict": "same",
+   "modified": "2025-10-27T22:12:30Z",
+   "diff": {}
+  },
+  {
+   "id": "Q27055860",
+   "verdict": "same",
+   "modified": "2025-12-27T03:39:59Z",
+   "diff": {}
+  },
+  {
+   "id": "Q29050481",
+   "verdict": "same",
+   "modified": "2026-09-13T20:08:20Z",
+   "diff": {}
+  },
+  {
+   "id": "Q29276994",
+   "verdict": "same",
+   "modified": "2021-05-17T08:08:10Z",
+   "diff": {}
+  },
+  {
+   "id": "Q29407494",
+   "verdict": "same",
+   "modified": "2025-12-02T05:50:08Z",
+   "diff": {}
+  },
+  {
+   "id": "Q29477904",
+   "verdict": "same",
+   "modified": "2026-10-21T14:15:12Z",
+   "diff": {}
+  },
+  {
+   "id": "Q29825048",
+   "verdict": "same",
+   "modified": "2025-02-20T08:45:46Z",
+   "diff": {}
+  },
+  {
+   "id": "Q29829306",
+   "verdict": "same",
+   "modified": "2023-12-15T13:16:36Z",
+   "diff": {}
+  },
+  {
+   "id": "Q29874004",
+   "verdict": "same",
+   "modified": "2024-02-19T08:18:56Z",
+   "diff": {}
+  },
+  {
+   "id": "Q3016953",
+   "verdict": "same",
+   "modified": "2023-10-06T14:38:25Z",
+   "diff": {}
+  },
+  {
+   "id": "Q31239481",
+   "verdict": "same",
+   "modified": "2025-03-04T15:53:57Z",
+   "diff": {}
+  },
+  {
+   "id": "Q31273403",
+   "verdict": "same",
+   "modified": "2024-02-26T21:47:29Z",
+   "diff": {}
+  },
+  {
+   "id": "Q31600874",
+   "verdict": "same",
+   "modified": "2024-08-19T22:40:52Z",
+   "diff": {}
+  },
+  {
+   "id": "Q31930932",
+   "verdict": "same",
+   "modified": "2022-07-30T01:35:39Z",
+   "diff": {}
+  },
+  {
+   "id": "Q32038229",
+   "verdict": "same",
+   "modified": "2024-04-28T23:26:42Z",
+   "diff": {}
+  },
+  {
+   "id": "Q34755130",
+   "verdict": "same",
+   "modified": "2025-03-17T03:06:31Z",
+   "diff": {}
+  },
+  {
+   "id": "Q34874478",
+   "verdict": "same",
+   "modified": "2025-03-30T10:50:58Z",
+   "diff": {}
+  },
+  {
+   "id": "Q35381869",
+   "verdict": "same",
+   "modified": "2025-03-06T14:52:09Z",
+   "diff": {}
+  },
+  {
+   "id": "Q3611448",
+   "verdict": "same",
+   "modified": "2026-09-13T18:47:13Z",
+   "diff": {}
+  },
+  {
+   "id": "Q3976817",
+   "verdict": "same",
+   "modified": "2026-06-19T14:15:26Z",
+   "diff": {}
+  },
+  {
+   "id": "Q40020728",
+   "verdict": "same",
+   "modified": "2024-05-04T08:28:27Z",
+   "diff": {}
+  },
+  {
+   "id": "Q41351912",
+   "verdict": "same",
+   "modified": "2022-11-09T03:24:30Z",
+   "diff": {}
+  },
+  {
+   "id": "Q4301089",
+   "verdict": "same",
+   "modified": "2024-08-03T02:24:40Z",
+   "diff": {}
+  },
+  {
+   "id": "Q44614454",
+   "verdict": "same",
+   "modified": "2026-07-13T02:41:52Z",
+   "diff": {}
+  },
+  {
+   "id": "Q4533947",
+   "verdict": "same",
+   "modified": "2026-09-05T23:51:09Z",
+   "diff": {}
+  },
+  {
+   "id": "Q4621609",
+   "verdict": "same",
+   "modified": "2025-04-18T23:05:46Z",
+   "diff": {}
+  },
+  {
+   "id": "Q463565",
+   "verdict": "same",
+   "modified": "2026-10-26T11:59:56Z",
+   "diff": {}
+  },
+  {
+   "id": "Q4717147",
+   "verdict": "same",
+   "modified": "2026-10-13T18:02:14Z",
+   "diff": {}
+  },
+  {
+   "id": "Q47498148",
+   "verdict": "same",
+   "modified": "2026-06-18T20:29:44Z",
+   "diff": {}
+  },
+  {
+   "id": "Q48763937",
+   "verdict": "same",
+   "modified": "2026-07-31T04:16:10Z",
+   "diff": {}
+  },
+  {
+   "id": "Q48803957",
+   "verdict": "same",
+   "modified": "2023-05-03T07:13:32Z",
+   "diff": {}
+  },
+  {
+   "id": "Q49023016",
+   "verdict": "same",
+   "modified": "2026-09-06T12:22:49Z",
+   "diff": {}
+  },
+  {
+   "id": "Q49412635",
+   "verdict": "same",
+   "modified": "2026-09-06T19:02:34Z",
+   "diff": {}
+  },
+  {
+   "id": "Q49523637",
+   "verdict": "same",
+   "modified": "2026-08-25T04:46:55Z",
+   "diff": {}
+  },
+  {
+   "id": "Q5067007",
+   "verdict": "same",
+   "modified": "2025-12-12T18:44:47Z",
+   "diff": {}
+  },
+  {
+   "id": "Q5278117",
+   "verdict": "same",
+   "modified": "2026-08-11T16:20:55Z",
+   "diff": {}
+  },
+  {
+   "id": "Q5309373",
+   "verdict": "same",
+   "modified": "2026-08-20T06:40:20Z",
+   "diff": {}
+  },
+  {
+   "id": "Q5344626",
+   "verdict": "same",
+   "modified": "2025-08-30T09:42:46Z",
+   "diff": {}
+  },
+  {
+   "id": "Q54893393",
+   "verdict": "same",
+   "modified": "2024-10-09T16:21:49Z",
+   "diff": {}
+  },
+  {
+   "id": "Q55123128",
+   "verdict": "same",
+   "modified": "2026-10-01T18:35:44Z",
+   "diff": {}
+  },
+  {
+   "id": "Q55159981",
+   "verdict": "same",
+   "modified": "2023-12-15T22:30:05Z",
+   "diff": {}
+  },
+  {
+   "id": "Q55687101",
+   "verdict": "same",
+   "modified": "2025-01-30T17:25:55Z",
+   "diff": {}
+  },
+  {
+   "id": "Q56143858",
+   "verdict": "same",
+   "modified": "2023-12-05T10:56:18Z",
+   "diff": {}
+  },
+  {
+   "id": "Q56665887",
+   "verdict": "same",
+   "modified": "2025-11-19T01:38:40Z",
+   "diff": {}
+  },
+  {
+   "id": "Q56743878",
+   "verdict": "same",
+   "modified": "2022-06-05T18:42:54Z",
+   "diff": {}
+  },
+  {
+   "id": "Q5728537",
+   "verdict": "same",
+   "modified": "2026-09-08T16:25:44Z",
+   "diff": {}
+  },
+  {
+   "id": "Q59506952",
+   "verdict": "same",
+   "modified": "2026-08-30T16:56:56Z",
+   "diff": {}
+  },
+  {
+   "id": "Q5952973",
+   "verdict": "same",
+   "modified": "2026-10-17T18:58:27Z",
+   "diff": {}
+  },
+  {
+   "id": "Q59556734",
+   "verdict": "same",
+   "modified": "2024-05-26T11:37:40Z",
+   "diff": {}
+  },
+  {
+   "id": "Q60341526",
+   "verdict": "same",
+   "modified": "2026-05-24T17:19:26Z",
+   "diff": {}
+  },
+  {
+   "id": "Q60379862",
+   "verdict": "same",
+   "modified": "2025-10-21T05:49:28Z",
+   "diff": {}
+  },
+  {
+   "id": "Q60554304",
+   "verdict": "same",
+   "modified": "2023-12-04T16:56:52Z",
+   "diff": {}
+  },
+  {
+   "id": "Q6086465",
+   "verdict": "same",
+   "modified": "2025-07-21T11:58:11Z",
+   "diff": {}
+  },
+  {
+   "id": "Q61010241",
+   "verdict": "same",
+   "modified": "2026-07-20T16:27:14Z",
+   "diff": {}
+  },
+  {
+   "id": "Q61611919",
+   "verdict": "same",
+   "modified": "2026-10-17T14:01:01Z",
+   "diff": {}
+  },
+  {
+   "id": "Q61722684",
+   "verdict": "same",
+   "modified": "2026-09-27T10:37:11Z",
+   "diff": {}
+  },
+  {
+   "id": "Q61865196",
+   "verdict": "same",
+   "modified": "2025-02-19T01:39:26Z",
+   "diff": {}
+  },
+  {
+   "id": "Q61866741",
+   "verdict": "same",
+   "modified": "2024-05-29T14:50:39Z",
+   "diff": {}
+  },
+  {
+   "id": "Q62354597",
+   "verdict": "same",
+   "modified": "2019-04-20T20:19:42Z",
+   "diff": {}
+  },
+  {
+   "id": "Q62640437",
+   "verdict": "same",
+   "modified": "2024-07-10T08:30:43Z",
+   "diff": {}
+  },
+  {
+   "id": "Q6301154",
+   "verdict": "same",
+   "modified": "2026-09-11T01:36:32Z",
+   "diff": {}
+  },
+  {
+   "id": "Q63586959",
+   "verdict": "same",
+   "modified": "2024-05-08T08:47:49Z",
+   "diff": {}
+  },
+  {
+   "id": "Q6419996",
+   "verdict": "same",
+   "modified": "2025-07-29T19:19:55Z",
+   "diff": {}
+  },
+  {
+   "id": "Q64313704",
+   "verdict": "same",
+   "modified": "2026-02-03T14:53:10Z",
+   "diff": {}
+  },
+  {
+   "id": "Q64893964",
+   "verdict": "same",
+   "modified": "2026-10-17T23:03:03Z",
+   "diff": {}
+  },
+  {
+   "id": "Q65043180",
+   "verdict": "same",
+   "modified": "2020-12-13T05:55:36Z",
+   "diff": {}
+  },
+  {
+   "id": "Q65625688",
+   "verdict": "same",
+   "modified": "2024-05-08T18:55:47Z",
+   "diff": {}
+  },
+  {
+   "id": "Q66478548",
+   "verdict": "same",
+   "modified": "2024-07-03T23:27:18Z",
+   "diff": {}
+  },
+  {
+   "id": "Q67026746",
+   "verdict": "same",
+   "modified": "2026-07-01T10:24:42Z",
+   "diff": {}
+  },
+  {
+   "id": "Q6780184",
+   "verdict": "same",
+   "modified": "2026-07-13T04:14:21Z",
+   "diff": {}
+  },
+  {
+   "id": "Q6868209",
+   "verdict": "same",
+   "modified": "2026-03-27T01:18:04Z",
+   "diff": {}
+  },
+  {
+   "id": "Q6955868",
+   "verdict": "same",
+   "modified": "2021-01-23T04:13:10Z",
+   "diff": {}
+  },
+  {
+   "id": "Q70456358",
+   "verdict": "same",
+   "modified": "2024-05-07T19:53:42Z",
+   "diff": {}
+  },
+  {
+   "id": "Q71478641",
+   "verdict": "same",
+   "modified": "2019-10-18T22:59:36Z",
+   "diff": {}
+  },
+  {
+   "id": "Q71642976",
+   "verdict": "same",
+   "modified": "2019-10-20T04:47:03Z",
+   "diff": {}
+  },
+  {
+   "id": "Q7167086",
+   "verdict": "same",
+   "modified": "2026-07-17T23:13:40Z",
+   "diff": {}
+  },
+  {
+   "id": "Q7225172",
+   "verdict": "same",
+   "modified": "2025-12-21T21:57:29Z",
+   "diff": {}
+  },
+  {
+   "id": "Q72466953",
+   "verdict": "same",
+   "modified": "2025-11-03T14:24:02Z",
+   "diff": {}
+  },
+  {
+   "id": "Q7319991",
+   "verdict": "same",
+   "modified": "2026-04-01T10:32:05Z",
+   "diff": {}
+  },
+  {
+   "id": "Q73380968",
+   "verdict": "same",
+   "modified": "2023-07-22T21:06:14Z",
+   "diff": {}
+  },
+  {
+   "id": "Q75445189",
+   "verdict": "same",
+   "modified": "2023-04-29T07:15:22Z",
+   "diff": {}
+  },
+  {
+   "id": "Q75447013",
+   "verdict": "same",
+   "modified": "2026-10-18T06:06:09Z",
+   "diff": {}
+  },
+  {
+   "id": "Q75570156",
+   "verdict": "same",
+   "modified": "2024-11-27T22:51:59Z",
+   "diff": {}
+  },
+  {
+   "id": "Q75570183",
+   "verdict": "same",
+   "modified": "2023-04-29T08:39:14Z",
+   "diff": {}
+  },
+  {
+   "id": "Q75638273",
+   "verdict": "same",
+   "modified": "2021-11-04T18:39:28Z",
+   "diff": {}
+  },
+  {
+   "id": "Q75927299",
+   "verdict": "same",
+   "modified": "2026-07-19T14:18:16Z",
+   "diff": {}
+  },
+  {
+   "id": "Q76039606",
+   "verdict": "same",
+   "modified": "2026-07-22T02:03:14Z",
+   "diff": {}
+  },
+  {
+   "id": "Q76047674",
+   "verdict": "same",
+   "modified": "2026-07-19T18:35:11Z",
+   "diff": {}
+  },
+  {
+   "id": "Q76051371",
+   "verdict": "same",
+   "modified": "2026-07-19T19:08:20Z",
+   "diff": {}
+  },
+  {
+   "id": "Q76142456",
+   "verdict": "same",
+   "modified": "2026-07-20T07:50:44Z",
+   "diff": {}
+  },
+  {
+   "id": "Q76415399",
+   "verdict": "same",
+   "modified": "2024-05-24T06:44:04Z",
+   "diff": {}
+  },
+  {
+   "id": "Q77152942",
+   "verdict": "same",
+   "modified": "2024-11-05T16:02:20Z",
+   "diff": {}
+  },
+  {
+   "id": "Q77317532",
+   "verdict": "same",
+   "modified": "2024-10-30T20:02:54Z",
+   "diff": {}
+  },
+  {
+   "id": "Q78116191",
+   "verdict": "same",
+   "modified": "2025-03-19T10:29:13Z",
+   "diff": {}
+  },
+  {
+   "id": "Q78388730",
+   "verdict": "same",
+   "modified": "2025-02-18T08:28:44Z",
+   "diff": {}
+  },
+  {
+   "id": "Q78444662",
+   "verdict": "same",
+   "modified": "2024-10-28T10:07:01Z",
+   "diff": {}
+  },
+  {
+   "id": "Q78587662",
+   "verdict": "same",
+   "modified": "2025-03-19T18:07:24Z",
+   "diff": {}
+  },
+  {
+   "id": "Q78600715",
+   "verdict": "same",
+   "modified": "2024-10-09T03:00:52Z",
+   "diff": {}
+  },
+  {
+   "id": "Q81317043",
+   "verdict": "same",
+   "modified": "2025-03-14T01:41:47Z",
+   "diff": {}
+  },
+  {
+   "id": "Q81490790",
+   "verdict": "same",
+   "modified": "2025-02-26T07:23:07Z",
+   "diff": {}
+  },
+  {
+   "id": "Q81524729",
+   "verdict": "same",
+   "modified": "2026-10-30T15:27:03Z",
+   "diff": {}
+  },
+  {
+   "id": "Q82294054",
+   "verdict": "same",
+   "modified": "2025-11-05T17:47:36Z",
+   "diff": {}
+  },
+  {
+   "id": "Q83691870",
+   "verdict": "same",
+   "modified": "2024-11-07T19:20:29Z",
+   "diff": {}
+  },
+  {
+   "id": "Q8374714",
+   "verdict": "same",
+   "modified": "2025-08-06T21:00:46Z",
+   "diff": {}
+  },
+  {
+   "id": "Q83865932",
+   "verdict": "same",
+   "modified": "2024-10-28T13:46:09Z",
+   "diff": {}
+  },
+  {
+   "id": "Q84206573",
+   "verdict": "same",
+   "modified": "2024-12-12T21:40:53Z",
+   "diff": {}
+  },
+  {
+   "id": "Q84670554",
+   "verdict": "same",
+   "modified": "2024-04-06T18:55:02Z",
+   "diff": {}
+  },
+  {
+   "id": "Q8486174",
+   "verdict": "same",
+   "modified": "2025-11-16T21:14:12Z",
+   "diff": {}
+  },
+  {
+   "id": "Q85187716",
+   "verdict": "same",
+   "modified": "2025-03-31T14:28:48Z",
+   "diff": {}
+  },
+  {
+   "id": "Q8530495",
+   "verdict": "same",
+   "modified": "2025-08-10T17:42:05Z",
+   "diff": {}
+  },
+  {
+   "id": "Q85306895",
+   "verdict": "same",
+   "modified": "2024-11-27T16:56:02Z",
+   "diff": {}
+  },
+  {
+   "id": "Q85420952",
+   "verdict": "same",
+   "modified": "2024-11-30T17:06:47Z",
+   "diff": {}
+  },
+  {
+   "id": "Q85631420",
+   "verdict": "same",
+   "modified": "2025-05-11T15:26:58Z",
+   "diff": {}
+  },
+  {
+   "id": "Q85662158",
+   "verdict": "same",
+   "modified": "2024-11-26T03:23:15Z",
+   "diff": {}
+  },
+  {
+   "id": "Q85807539",
+   "verdict": "same",
+   "modified": "2026-08-14T06:27:05Z",
+   "diff": {}
+  },
+  {
+   "id": "Q86334776",
+   "verdict": "same",
+   "modified": "2025-02-01T01:57:44Z",
+   "diff": {}
+  },
+  {
+   "id": "Q86459850",
+   "verdict": "same",
+   "modified": "2026-07-29T06:02:49Z",
+   "diff": {}
+  },
+  {
+   "id": "Q86699824",
+   "verdict": "same",
+   "modified": "2025-04-16T22:59:29Z",
+   "diff": {}
+  },
+  {
+   "id": "Q86817791",
+   "verdict": "same",
+   "modified": "2024-10-19T08:27:10Z",
+   "diff": {}
+  },
+  {
+   "id": "Q86914903",
+   "verdict": "same",
+   "modified": "2024-11-25T12:59:43Z",
+   "diff": {}
+  },
+  {
+   "id": "Q87265450",
+   "verdict": "same",
+   "modified": "2025-03-08T17:17:03Z",
+   "diff": {}
+  },
+  {
+   "id": "Q87550332",
+   "verdict": "same",
+   "modified": "2026-01-16T05:54:27Z",
+   "diff": {}
+  },
+  {
+   "id": "Q87578970",
+   "verdict": "same",
+   "modified": "2025-03-01T00:56:59Z",
+   "diff": {}
+  },
+  {
+   "id": "Q87794599",
+   "verdict": "same",
+   "modified": "2024-06-08T17:47:40Z",
+   "diff": {}
+  },
+  {
+   "id": "Q87901945",
+   "verdict": "same",
+   "modified": "2025-03-09T00:34:24Z",
+   "diff": {}
+  },
+  {
+   "id": "Q87941127",
+   "verdict": "same",
+   "modified": "2025-03-24T01:20:33Z",
+   "diff": {}
+  },
+  {
+   "id": "Q8795862",
+   "verdict": "same",
+   "modified": "2025-08-13T07:39:50Z",
+   "diff": {}
+  },
+  {
+   "id": "Q88267568",
+   "verdict": "same",
+   "modified": "2025-03-09T04:51:04Z",
+   "diff": {}
+  },
+  {
+   "id": "Q88435282",
+   "verdict": "same",
+   "modified": "2024-11-09T03:33:52Z",
+   "diff": {}
+  },
+  {
+   "id": "Q88595646",
+   "verdict": "same",
+   "modified": "2024-05-08T20:24:37Z",
+   "diff": {}
+  },
+  {
+   "id": "Q88633446",
+   "verdict": "same",
+   "modified": "2025-02-08T09:49:47Z",
+   "diff": {}
+  },
+  {
+   "id": "Q88783863",
+   "verdict": "same",
+   "modified": "2025-02-22T03:42:07Z",
+   "diff": {}
+  },
+  {
+   "id": "Q8896536",
+   "verdict": "same",
+   "modified": "2025-08-15T08:00:02Z",
+   "diff": {}
+  },
+  {
+   "id": "Q89126119",
+   "verdict": "same",
+   "modified": "2024-10-29T15:14:14Z",
+   "diff": {}
+  },
+  {
+   "id": "Q89178165",
+   "verdict": "same",
+   "modified": "2024-10-29T05:33:19Z",
+   "diff": {}
+  },
+  {
+   "id": "Q8922061",
+   "verdict": "same",
+   "modified": "2025-08-15T13:40:15Z",
+   "diff": {}
+  },
+  {
+   "id": "Q89599285",
+   "verdict": "same",
+   "modified": "2026-05-21T19:17:38Z",
+   "diff": {}
+  },
+  {
+   "id": "Q89699240",
+   "verdict": "same",
+   "modified": "2024-05-25T20:05:41Z",
+   "diff": {}
+  },
+  {
+   "id": "Q90184402",
+   "verdict": "same",
+   "modified": "2024-11-13T02:48:32Z",
+   "diff": {}
+  },
+  {
+   "id": "Q91421056",
+   "verdict": "same",
+   "modified": "2025-02-03T01:45:53Z",
+   "diff": {}
+  },
+  {
+   "id": "Q91752544",
+   "verdict": "same",
+   "modified": "2026-08-19T17:02:43Z",
+   "diff": {}
+  },
+  {
+   "id": "Q92193643",
+   "verdict": "same",
+   "modified": "2026-03-07T08:48:02Z",
+   "diff": {}
+  },
+  {
+   "id": "Q9286083",
+   "verdict": "same",
+   "modified": "2026-09-02T14:41:02Z",
+   "diff": {}
+  },
+  {
+   "id": "Q931047",
+   "verdict": "same",
+   "modified": "2026-09-30T01:24:35Z",
+   "diff": {}
+  },
+  {
+   "id": "Q95042808",
+   "verdict": "same",
+   "modified": "2025-09-08T20:36:43Z",
+   "diff": {}
+  },
+  {
+   "id": "Q95150635",
+   "verdict": "same",
+   "modified": "2022-07-25T12:51:55Z",
+   "diff": {}
+  },
+  {
+   "id": "Q95639662",
+   "verdict": "same",
+   "modified": "2025-07-31T17:24:23Z",
+   "diff": {}
+  },
+  {
+   "id": "Q95982897",
+   "verdict": "same",
+   "modified": "2022-01-08T17:28:22Z",
+   "diff": {}
+  },
+  {
+   "id": "Q96075277",
+   "verdict": "same",
+   "modified": "2020-10-18T09:35:12Z",
+   "diff": {}
+  },
+  {
+   "id": "Q96212010",
+   "verdict": "same",
+   "modified": "2026-07-16T06:18:22Z",
+   "diff": {}
+  },
+  {
+   "id": "Q9663070",
+   "verdict": "same",
+   "modified": "2025-08-24T08:59:57Z",
+   "diff": {}
+  },
+  {
+   "id": "Q96653547",
+   "verdict": "same",
+   "modified": "2025-06-06T21:42:10Z",
+   "diff": {}
+  },
+  {
+   "id": "Q96860408",
+   "verdict": "same",
+   "modified": "2025-03-22T19:00:56Z",
+   "diff": {}
+  },
+  {
+   "id": "Q97389396",
+   "verdict": "same",
+   "modified": "2026-07-25T22:54:19Z",
+   "diff": {}
+  },
+  {
+   "id": "Q97691362",
+   "verdict": "same",
+   "modified": "2026-08-14T06:50:42Z",
+   "diff": {}
+  },
+  {
+   "id": "Q97733246",
+   "verdict": "same",
+   "modified": "2026-09-09T17:41:15Z",
+   "diff": {}
+  },
+  {
+   "id": "Q98343074",
+   "verdict": "same",
+   "modified": "2026-09-18T09:12:06Z",
+   "diff": {}
+  },
+  {
+   "id": "Q99185286",
+   "verdict": "same",
+   "modified": "2025-05-07T07:01:12Z",
+   "diff": {}
+  },
+  {
+   "id": "Q9943990",
+   "verdict": "same",
+   "modified": "2023-07-03T19:39:26Z",
+   "diff": {}
+  },
+  {
+   "id": "Q99452031",
+   "verdict": "same",
+   "modified": "2024-08-09T10:30:53Z",
+   "diff": {}
+  },
+  {
+   "id": "Q99649411",
+   "verdict": "same",
+   "modified": "2021-03-06T00:41:51Z",
+   "diff": {}
+  },
+  {
+   "id": "Q99678456",
+   "verdict": "same",
+   "modified": "2021-03-04T03:21:07Z",
+   "diff": {}
+  },
+  {
+   "id": "Q99680442",
+   "verdict": "same",
+   "modified": "2023-12-03T14:54:10Z",
+   "diff": {}
+  }
+ ]
+}

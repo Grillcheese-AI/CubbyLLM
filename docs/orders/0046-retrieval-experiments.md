@@ -1,5 +1,5 @@
 # 0046 — Retrieval, measured before it is built: experiments R0 to R8
-status: open (R2 and R3 on dev: no arm passes, test unread; R1b: the extract is on Drive, the segment building; R4 next)
+status: open (R2 and R3 on dev: no arm passes, test unread; R1b killed on dev (below the API on Mintaka; the names are there, the namesake sets are too large for 20 unranked); R3o, then seed 1 with B1q and the fork, then R4)
 written: 2026-10-28 by Cowork · approved: 2026-10-28 by Nick ("tested before implementing"; a plan doc and an experiments-only order) · hypothesis: none (each experiment below is pre-registered)
 
 ## Why
@@ -732,3 +732,72 @@ as the report says.
 
 **Order of work:** R1b's scoring, then R3o (the weakest stage), then the seed-1 fame set with B1q and the fork task,
 then R4. Nothing here reaches the serving path. Status: open.
+
+## R1b on dev: the VM's names segment (Claude Code, 2026-11-04)
+- **Logs:**
+  - `r1b_names_check_2026-11-03.json`: the source check.
+  - `retrieval_R1b_dev_2026-11-03.json`: the scoring, on R1's own 6,373 mentions and 1,204 typo variants, checked
+    to be R1's by key and gold item. The API's ranks are R1's (2026-10-28), not asked again.
+- **The source check passes:** 300 items drawn by seed 0 from 61,789,981, all 300 identical to live Wikidata. 580
+  names were compared; 28 of the items had been edited after the dump, none in its names.
+- **The segment** (`validation/retrieval_sets/names_segment.py`; manifest beside the shards, off-repo):
+  - Every EN, FR and `mul` label, EN and FR alias, enwiki and frwiki title, and EN and FR redirect, as CubeLang
+    knowledge keys. One fact is (name, item), with the name's kinds as its source.
+  - **Counts:** 119.4M names and 12.5M redirects (1.32M section redirects left out, 15,221 with no item) gave
+    92,390,110 facts. That is 5.65 GB in 32 shards on the SSD, built in 25 minutes.
+  - **CubeLang** (local branch `cowork/vm-contracts`, `5779db3`): `knowledge build` holds a store in memory, which
+    the whole does not fit, so it is built as shards. A directory of segments now opens as one store, each shard a
+    layer read through its own index. `knowledge batch` answers many mentions with the same lookup and `fuzzy` a
+    program's QUERY runs. Every CubeLang test passes (210 in the library, the rest in its suites).
+- **The arms:**
+  - `vm_exact`: the items under the mention's key.
+  - `vm_edit1`: + those 1 edit away.
+  - `vm_edit2`: + those 2 edits away.
+  - Each distance is one unordered group, entering a shortlist whole or not at all (R1's rule). A group the typo
+    lookup's limit (100 keys) may have cut is left out.
+
+**Recall@20:**
+
+| | API | R1's best local | vm_exact | vm_edit2 | vm_edit2 on typos (API) |
+|---|---|---|---|---|---|
+| Mintaka EN | 0.866 | 0.877 | 0.625 | 0.654 | 0.496 (0.036) |
+| Mintaka FR | 0.981 | 0.759 | 0.775 | 0.777 | 0.559 (0.052) |
+| WebQSP_EL | 0.874 | 0.931 | 0.657 | 0.662 | 0.485 (0.041) |
+| GraphQ_EL | 0.816 | 0.863 | 0.729 | 0.738 | 0.480 (0.013) |
+| ShadowLink | 0.707 | 0.731 | 0.534 | 0.542 | 0.440 (0.033) |
+| AmbER | 0.958 | 0.886 | 0.872 | 0.872 | 0.610 (0.0) |
+| QALD EN / FR | 0.990 / 0.996 | 0.915 / 0.681 | 0.664 / 0.721 | 0.664 / 0.729 | 0.453 / 0.476 |
+| SimpleQ | 0.967 | 0.952 | 0.902 | 0.902 | 0.698 (0.052) |
+| CronQuestions | 0.984 | 0.724 | 0.936 | 0.936 | 0.720 (0.0) |
+
+- **Killed by its own line:** below the API on Mintaka EN and FR. No gate passes, except "within 5 points" on
+  CronQuestions.
+- **Why, measured. The names are there; the namesake sets are too large for 20 with no ranking:**
+
+  | | gold under its exact name | within 2 edits | in an exact set of more than 20 items | under no name within 2 edits |
+  |---|---|---|---|---|
+  | Mintaka EN | 87.4% | 92.2% | 24.9% | 7.8% |
+  | Mintaka FR | 99.6% | 99.8% | 22.1% | 0.2% |
+  | WebQSP_EL | 91.8% | 93.3% | 26.2% | 6.7% |
+  | QALD EN | 100% | 100% | 33.6% | 0% |
+  | ShadowLink | 56.6% | 58.0% | 3.2% | 42.0% |
+
+  - **The full name space brings many more namesakes than Wikidata5M:** 420 of Mintaka EN's 1,453 mentions name
+    over 20 items (median 7). The API orders such a set by its own popularity signal, which this plan forbids
+    within a kind.
+  - At @100 the gap mostly closes: Mintaka EN 0.834 against 0.875, FR 0.966 against 0.985, WebQSP_EL 0.887 against
+    0.879, GraphQ_EL 0.888 against 0.830.
+  - ShadowLink's misses are names no label, alias or redirect spells. That is a reading question, not a coverage
+    one.
+- **Typos:** the typo lookup finds 44 to 72% of misspelt mentions where the API finds 0 to 5%.
+- **Speed** (a first R7 reading, 92.4M facts, one process, the machine above):
+  - The store opens in 5.0 s.
+  - An exact lookup takes p50 43 µs, p95 76 µs.
+  - A 2-edit typo lookup across the 32 shards takes **p50 435 ms, p95 589 ms**, over R7's 50 ms line by an order
+    of magnitude.
+- **For your decision** (nothing changed after the kill):
+  - (a) Score finding as the candidate set, not a shortlist: recall at any size (Mintaka FR 99.8%, EN 92.2%), with
+    the set's size reported. The choose stage then takes the whole set, the relation and the kind dropping what
+    cannot carry it, as R2's arms already do. That would be a new line, so it is yours to write.
+  - (b) Bound the set inside a kind by something other than fame.
+  - (c) Move the typo lookup to one index, not 32 shards, before R7.
