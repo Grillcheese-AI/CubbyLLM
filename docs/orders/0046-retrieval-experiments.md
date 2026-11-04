@@ -862,3 +862,62 @@ On the held rows the numbers are within 1-7 points of these: qfhrr at margin 0 h
   so that pairing is right. Nothing refuses the wrong one, though: on `base450m` the programs seat writes no program.
   A guard (the adapter recording its base's hash, checked at load) would be a serving change, so it is an order.
 - **Test not read.** Dev sets no margin and no arm passes both lines.
+
+## Cowork's check of R1b and R3o (2026-11-04, later)
+Read: both reports and their tables, against the lines.
+
+**R1b: killed by its own line, and the record keeps it** (below the API on Mintaka EN and FR at @20).
+- **What it found:** the names are there. The gold is under its exact name for 87.4% of Mintaka EN mentions and 99.6%
+  of FR. But a fifth to a third of mentions name more than 20 items, and an unranked set enters a 20 shortlist whole or
+  not at all. The API orders those sets by popularity, which this plan forbids within a kind.
+- **(a) becomes a new arm, R1c: finding is the candidate set.** Its line is written here and read once, on Mintaka's
+  test split (EN and FR), which no arm has read:
+  - the gold within the set (exact, then up to 2 edits; names and redirects) at least as often as within the API's 20;
+  - the set's size reported (p50, p95, max);
+  - on the rows where R3's gold rules give one property, the set after the relation filter (the items that carry
+    it): its size reported, and the gold kept whenever it carries the relation.
+
+  The set's size is the cost choosing pays (one branch per item), so the fork task and the typo index below come
+  before any serving.
+- **(b) is choosing's job, not finding's:** the relation (B1), the qualifier (B1q) and the kind (B2) bound the set. No
+  arm here.
+- **(c), yes:** one typo index over all 32 shards, in CubeLang on `cowork/vm-contracts`, built with the fork task. The
+  typo lookup runs only when the exact lookup finds nothing. Line: R7's, p95 at most 50 ms.
+- **ShadowLink's 42% of names that nothing spells** are reading, as R2's check said, and its choosing line is read
+  where the gold bears the mention.
+
+**R3o: SimpleQuestions passes, QALD FR does not, so the arm does not pass.**
+- **What it settles:** bounding the candidates by the item's own properties is right. The wrong rate collapses
+  (lexicon_content on SimpleQuestions, 23% to 4%), and qFHRR goes from not kept to 0.887 (0.893 on held rows), against
+  chance's 0.149.
+- **The margin, by R3's rule as written:** the qFHRR arm is kept only if it adds at least 3 points at no higher wrong
+  rate. At 0.25 it adds 2.7 (0.401 against 0.374) at a lower wrong rate (11.3% against 14.5%). Not met: no margin is
+  set and qFHRR is not kept. The rule is not rewritten after the numbers.
+- **The missing-fact rows are the danger:** at margin 0, qFHRR hands a near property over on 36 of 38. That is a wrong
+  answer built on a checked fact, which the VM cannot catch, because the near property is on record.
+- **French is now the common gap (R2, R3):** the word table's teacher is English, so French words match only as
+  written. Recorded: a French-aware word table is the lever, after R4.
+
+**R3k, a new arm: the kind the question asks bounds the properties further.**
+- **The asked kind** comes from a closed list of question words per language, written here before any row is read:
+  who / qui gives a person; where / où a place; when / quand / what year / en quelle année a time; how many / combien
+  a quantity; anything else gives no kind.
+- **Only the candidate properties whose values on this item are of that kind stay** (by the value's `instance of`, as
+  0047's class check reads it). Each arm then scores as in R3o.
+- **The margin rule, written now:** the smallest margin at which both the pooled wrong rate and the missing-fact
+  handovers are at most lexicon_content's, on the same rows and candidates. Recall is read at that margin, against
+  R3's gate as written.
+- **In plain words:** "where was she born?" asks for a place, so Cubby only weighs what it knows about her that is a
+  place.
+- **Over a conventional model:** a model can answer a "where" with a date or a person when its guess slips. Here the
+  question word bounds what can be said.
+
+**The programs adapter on Wikidata's property labels:** the 450M's unmapped wordings name no property even among the
+item's own, so the adapter stays the lever for the programs seat. It is new training, so it waits on Nick's yes, as
+its own order. Adapters train in minutes on Colab, so it is cheap.
+
+**The guard:** serving pairs the programs adapter with `base450m_cont` correctly today, but nothing refuses the wrong
+base. The guard (the adapter records its base's hash, checked at load) goes with the adapter's order.
+
+**Order of work:** the seed-1 fame set with B1q and the fork task; R1c on test; R3k; the typo index, with the fork;
+then R4. Test stays unread for R2, R3o and R3k until their dev lines say otherwise. Status: open.

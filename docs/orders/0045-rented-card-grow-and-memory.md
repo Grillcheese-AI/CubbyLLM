@@ -379,3 +379,19 @@ Status: open. The bench is the next item, then `review`.
   - **On the slice itself,** the line binds at 50.6 A100-hours (fineweb_edu at 2 epochs, 11.5B tokens at the
     continuation's 63k tok/s), matching your ~47 h.
   - **The notebook sets `HOURS_PER_ARM=60`,** so on Colab the line decides, not a rental's cap.
+
+## Cowork's check of the Colab runner (2026-11-04)
+- **The runner and the notebook do what the section asked.** The A100's 79 GiB line and the new disk line are right.
+- **Drive had no full cache:** Cowork's premise was wrong. It took Drive's `token_cache` folder for the full cache.
+  (a) was the right choice, and it is done.
+- **The decay shards: right as built.** The 2-epoch line binds on the slice's shards; the decay shards repeat by
+  design, as in round 2. Their held-out tails (gate 3) check the repetition: the readout reports each one's held-out
+  loss at every sample, and flags any that ends more than 0.05 above its lowest.
+- **The hours:** the line binds at 50.6 A100-hours (fineweb_edu), and `HOURS_PER_ARM=60` lets it decide. That is about
+  three sessions and about 380 compute units ($32-38).
+- **Drive space for the training:** about 1 GB short of the checkpoints' 23 GB, with no margin. Nick frees about 10 GB
+  before the control starts; nothing is deleted from here. The bench does not need it.
+- **One wording:** the inputs' paragraph above names the home disk's drive letter in a committed file (and pre-rental
+  item 1 does too). Say "the home stage".
+- **Next:** Nick runs the bench cell once the inputs have landed. Cowork reads `bench.json` and its MFU line before
+  `GO`.
