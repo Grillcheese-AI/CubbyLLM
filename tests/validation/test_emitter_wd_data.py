@@ -36,3 +36,17 @@ def test_the_audit_catches_eval_questions_items_and_a_label_in_another_language(
     bad = W.audit([ok, en_label, held], {"what is the capital of france"}, {"Q90"}, LX)
     assert bad == {"eval_question": ["wd-c"], "eval_item": ["wd-c"], "label_not_in_language": ["wd-b"]}
     assert W.audit([ok], set(), set(), LX) == {"eval_question": [], "eval_item": [], "label_not_in_language": []}
+
+
+def test_mkqa_s_item_is_found_by_rule_and_written_only_on_one_link():
+    import emitter_wd_mkqa as K
+    q = "qui a écrit le petit prince"
+    texts = [t for _s, _e, t in K.spans_of(q)]
+    assert "le petit prince" in texts and "petit prince" in texts and "le" not in texts   # a function word alone is no span
+    spans = [(15, 27, "petit prince"), (12, 27, "le petit prince"), (7, 12, "écrit")]
+    items_of = {"petit prince": ["Q25338", "Q999"], "le petit prince": ["Q25338"], "écrit": ["Q5"]}
+    why, rec = K.decide(spans, items_of, [("Q25338", "P50")])
+    assert why == "written" and rec == {"span": [12, 27], "item": "Q25338", "pid": "P50"}   # the longest span holding it
+    assert K.decide(spans, items_of, [("Q25338", "P50"), ("Q25338", "P170")])[0] == "several properties"
+    assert K.decide(spans, items_of, [("Q25338", "P50"), ("Q5", "P50")])[0] == "linking items under several spans"
+    assert K.decide(spans, items_of, [])[0] == "no link"

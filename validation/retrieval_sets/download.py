@@ -39,6 +39,14 @@ SETS = {
     "simplequestions_wd": {"licence": "CC BY 3.0 (the repository's LICENSE.txt: SimpleQuestions, Facebook)",
                            "files": [(f"{GH}/askplatypus/wikidata-simplequestions/master/annotated_wd_data_{s}_answerable.txt",
                                       f"annotated_wd_data_{s}_answerable.txt") for s in ("valid", "test", "train")]},
+    "mkqa": {"licence": "CC BY-SA 3.0 (the repository's README; its code is Apache-2.0, and the Hub card's cc-by-3.0 is wrong). "
+                        "Order 0048's French training records only; never an evaluation set here",
+             "files": [("https://github.com/apple/ml-mkqa/raw/main/dataset/mkqa.jsonl.gz", "mkqa.jsonl.gz")]},
+    "frenchqa": {"licence": "its PIAF rows only: PIAF v1.2, MIT (the PIAF card). The bundle's other rows are not used: "
+                            "SQuAD machine-translated (model-written), FQuAD and newsquadfr (non-commercial). Order 0048's "
+                            "French training records only; never an evaluation set here",
+                 "files": [("https://huggingface.co/datasets/CATIE-AQ/frenchQA/resolve/refs%2Fconvert%2Fparquet/default/train/0000.parquet",
+                            "frenchqa_train.parquet")]},
     "shadowlink": {"licence": "see the dataset card (vera-pro/ShadowLink)",
                    "files": [(f"https://huggingface.co/datasets/vera-pro/ShadowLink/resolve/main/{f}", f)
                              for f in ("Top.json", "Shadow.json", "Neutral.json", "Tail.json", "README.md")]},

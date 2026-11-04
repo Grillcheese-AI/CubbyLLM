@@ -144,3 +144,28 @@ adapter is trained by Nick (`notebooks/emitter_wd.ipynb`), then read at home.
 - **MKQA is CC BY-SA 3.0:** records derived from it keep that licence and its attribution. They stay off-repo, named
   in the manifest, and are never committed under another licence.
 - **Then Nick runs `notebooks/emitter_wd.ipynb`** (about 45 minutes on an A100).
+
+## The French data, added (Claude Code, 2026-11-04)
+- **Sources** (their train material only; every record is checked against 0046's dev and test as before):
+  - **MKQA** (Apple, `apple/mkqa`): CC BY-SA 3.0, per its repository's README. The Hub card's cc-by-3.0 is wrong.
+  - **PIAF** v1.2: MIT. Its rows of `CATIE-AQ/frenchQA` only; the bundle's other sources are left out.
+  - **Rejected:** `CGCTG/french_qa` (its questions were written by an external model, which the order forbids) and
+    `benjleite/t5-french-qa` (a model, not data).
+- **Method** (`validation/emitter_wd_mkqa.py`, `--source mkqa|piaf`): no model writes or rewrites anything.
+  - The question's item is found by rule in R1b's names segment: a span of the question names exactly one item.
+  - The item is linked to the answer's item by exactly one Wikidata property (SPARQL, cached).
+  - The record is the question with Wikidata's French property label as `HOP1`'s target. Everything else is counted
+    and left out.
+- **Candidates:** MKQA 1,234 French; PIAF 241, from 3,385 questions with an answer item. PIAF left out: 3,003 with no
+  link, 103 with several properties, 35 with no span naming an item, 3 linking items under several spans.
+- **Written after the audit:**
+  - MKQA FR 909 (325 out: in 0046's dev or test);
+  - PIAF FR 198 (43 out, the same way).
+- **French goes from 440 to 1,547 records**, 10% of the 15,470 Wikidata-label records (train 14,847, val 623). The
+  other sets are unchanged: SimpleQuestions EN 13,403, Mintaka EN 520 and FR 440.
+- **Audit:** 0 eval questions, 0 eval items, 0 labels in another language.
+- **Licences:** the manifest beside the file names each source's licence. MKQA's records keep CC BY-SA 3.0. They stay
+  off-repo (on Drive only), as your check says.
+- **The file:** `$CUBBY_DRIVE/cubbyllm/emitter/emitter_sft_v12e_wd.jsonl`, rebuilt 2026-11-04, with its manifest.
+- **Next: Nick runs `notebooks/emitter_wd.ipynb`.** The read follows at home: R3 and R3o as `450m_wd`, then H-E15's
+  benchmark.

@@ -11,6 +11,9 @@ fame-set item) gets in, filtered by the folded question and by item id:
                                         to an answer item in today's Wikidata (R3's rule, through the source's cache),
                                         written only when exactly one links them, item to answer. An answer-to-item
                                         link alone is an inverse row: counted, not written.
+  MKQA (CC BY-SA 3.0), FR               its French questions, the item found by rule over the VM's names segment and
+                                        linked to an answer by one property (``emitter_wd_mkqa``); then the same checks
+  PIAF (MIT), FR                        its French questions, the same way (``emitter_wd_mkqa --source piaf``)
   QALD-9-plus                           none: its train split is 0046's dev.
 A record: the question with its item as a slot (``[E1: ...]``, ``r3_450m.annotate``, as H-E15), and v12e's one-hop plan
 with ``HOP1`` the property's label in the question's language from the frozen lexicon (none in that language: left out
@@ -38,7 +41,9 @@ for p in (os.path.dirname(HERE), HERE):
 
 __wiring__ = "STANDALONE"
 
-LICENCES = {"simplequestions_wd": "CC BY 3.0", "mintaka": "CC BY 4.0"}
+LICENCES = {"simplequestions_wd": "CC BY 3.0", "mintaka": "CC BY 4.0",
+            "mkqa": "CC BY-SA 3.0 (share-alike: whether it reaches a model trained on it is a release question)",
+            "piaf": "MIT (PIAF v1.2, the rows of CATIE-AQ/frenchQA titled piaf)"}
 EVAL_SETS = ("mintaka", "qald9plus", "webqsp_el", "graphq_el", "simplequestions_wd", "shadowlink", "amber", "cronquestions")
 PROGRAM = ("use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n"
            "        create frame: number;\n        bind frame, SEED, \"{seed}\";\n        bind frame, HOP1, \"{rel}\";\n"
@@ -158,6 +163,22 @@ def build(base: str, out: str) -> dict:
             continue
         recs.append(record(r["id"], k, r["question"], r["qid"], span, r["pid"], label))
         c[f"{k}: written"] += 1
+    from retrieval_sets.common import data_root
+    fr_lines = []                                         # emitter_wd_mkqa's candidates, each source if built
+    for src_name in ("mkqa", "piaf"):
+        path_ = os.path.join(data_root(), f"{src_name}_fr_records.jsonl")
+        if os.path.exists(path_):
+            fr_lines += [(src_name, line) for line in open(path_, encoding="utf-8")]
+    for src_name, line in fr_lines:
+        m = json.loads(line)
+        why = "in 0046's dev or test" if fold(m["question"]) in ex_q or m["item"] in ex_items else None
+        label = None if why else (lx["label"].get(m["pid"]) or {}).get("fr")
+        why = why or (None if label else "no label in the question's language")
+        if why:
+            c[f"{src_name}/fr: {why}"] += 1
+            continue
+        recs.append(record(m["id"], f"{src_name}/fr", m["question"], m["item"], m["span"], m["pid"], label))
+        c[f"{src_name}/fr: written"] += 1
     bad = audit(recs, ex_q, ex_items, lx)
     if any(bad.values()):
         raise SystemExit(f"the audit found records that must not be written: { {k: v[:5] for k, v in bad.items() if v} }")
