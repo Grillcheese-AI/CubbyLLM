@@ -43,14 +43,16 @@ def codebook(lx: dict, langs=("en", "fr")) -> dict[str, str]:
     return out
 
 
-def job(rows: list[dict], lx: dict, table: str) -> dict:
-    """The scorer's input: the codebook and each row's context (rows with no context word are left out)."""
+def job(rows: list[dict], lx: dict, table: str, cands: dict | None = None) -> dict:
+    """The scorer's input: the codebook and each row's context (rows with no context word are left out); with `cands`
+    ({row id: [P..]}, R3o) each row is scored against those properties only."""
     from retrieval_bench.r3_arms import leftover
     todo = []
     for r in rows:
         ctx = words(leftover(r["question"], r.get("spans")))
         if ctx:
-            todo.append({"id": r["id"], "lang": r["lang"], "cues": " ".join(ctx)})
+            todo.append({"id": r["id"], "lang": r["lang"], "cues": " ".join(ctx),
+                         **({"cands": sorted(cands.get(r["id"], ()), key=lambda p: int(p[1:]))} if cands is not None else {})})
     return {"table": table, "docs": codebook(lx), "rows": todo, "keep": KEEP}
 
 

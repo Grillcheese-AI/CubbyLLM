@@ -3,7 +3,8 @@ v1, which this repo's own interpreter imports), started by ``r3_qfhrr.score``:
 
     uv run --project <the grilly2 checkout beside this one> python validation/retrieval_bench/r3_qfhrr_score.py JOB OUT
 
-JOB  {"table": the word table (.npz), "docs": {"P17|en": text}, "rows": [{"id", "lang", "cues": text}], "keep": n}
+JOB  {"table": the word table (.npz), "docs": {"P17|en": text}, "rows": [{"id", "lang", "cues": text, "cands"?: [P..]}],
+      "keep": n} -- a row with ``cands`` (R3o: the item's own properties) is scored against those codes only
 OUT  {"device", "n_docs", "check": {...}, "wall_s", "ranked": {row id: [[property, score], ...] best first}}
 
 Each code is the serving word table's (``cubbyllm.worlds.fast_words``), scaled to unit length, so a score is the cosine.
@@ -48,6 +49,7 @@ def main() -> None:
     for lang in sorted({r["lang"] for r in job["rows"]}):
         keys = sorted(k for k in job["docs"] if k.endswith("|" + lang))
         names = [k.split("|")[0] for k in keys]
+        at = {n: i for i, n in enumerate(names)}
         protos = np.stack([unit(enc.encode(job["docs"][k])) for k in keys])
         P = grilly.from_numpy(protos)
         device, n_docs = str(P.device), n_docs + len(keys)
@@ -55,12 +57,18 @@ def main() -> None:
         rows = [r for r in job["rows"] if r["lang"] == lang]
         for i, r in enumerate(rows):
             q = unit(enc.encode(r["cues"]))
-            got = vsa.similarity_batch(grilly.from_numpy(q), P).numpy() * enc.k     # NVSA's sum(a * b) / k, back to the cosine
+            idx = None if r.get("cands") is None else np.array([at[c] for c in r["cands"] if c in at], dtype=np.int64)
+            if idx is not None and not len(idx):
+                ranked[r["id"]] = []
+                continue
+            book = P if idx is None else grilly.index_select(P, 0, grilly.from_numpy(idx))
+            got = vsa.similarity_batch(grilly.from_numpy(q), book).numpy() * enc.k     # NVSA's sum(a * b) / k, the cosine
             if checked < CHECK:
-                ref = protos.reshape(len(keys), -1) @ q.reshape(-1)
+                ref = (protos if idx is None else protos[idx]).reshape(len(got), -1) @ q.reshape(-1)
                 worst, checked = max(worst, float(np.abs(ref - got).max())), checked + 1
+            ids = np.arange(len(keys)) if idx is None else idx
             best = np.argsort(-got, kind="stable")[:keep]
-            ranked[r["id"]] = [[names[j], round(float(got[j]), 6)] for j in best]
+            ranked[r["id"]] = [[names[ids[j]], round(float(got[j]), 6)] for j in best]
             if i % 300 == 0:
                 print(f"{lang} {i}/{len(rows)} rows", flush=True)
         del P

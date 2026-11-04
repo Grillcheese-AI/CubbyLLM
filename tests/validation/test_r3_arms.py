@@ -63,3 +63,16 @@ def test_the_450m_prompt_slots_the_names_and_its_relation_is_hop1():
     prog = 'bind frame, SEED, "$E1";\n        bind frame, HOP1, "official language";\n bind frame, HOP2, "x";'
     assert M.read(prog) == {"hop1": "official language", "hops": 2}
     assert M.read("http://www.example.com") == {"hop1": None, "hops": 0}
+
+
+def test_r3o_hands_over_only_properties_the_item_carries():
+    from retrieval_bench import r3o as O
+    from retrieval_bench.r3o_props import candidates
+    props = {"Q1": {"out": ["P19", "P27"], "in": ["P50"]}, "Q2": {"out": ["P17"], "in": None}}
+    c = candidates(["Q1", "Q2"], props)
+    assert c["all"] == {"P17", "P19", "P27", "P50"} and c["in_unknown"] is True         # an unanswered query is unknown, not none
+    found = [("born", 1, ["P19", "P569"]), ("country", 1, ["P17", "P27", "P495"])]
+    got = O.within(found, {"P19", "P27"})
+    assert got["top"] == ["P19", "P27"] and "P569" not in got["top"]                   # date of birth is not this item's
+    assert O.within(found, {"P40"})["read"] is False
+    assert O.within([], {"P19"}, {"P19": O.WHOLE})["top"] == ["P19"]                   # the 450M's whole wording

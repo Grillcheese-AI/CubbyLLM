@@ -801,3 +801,64 @@ then R4. Nothing here reaches the serving path. Status: open.
     cannot carry it, as R2's arms already do. That would be a new line, so it is yours to write.
   - (b) Bound the set inside a kind by something other than fame.
   - (c) Move the typo lookup to one index, not 32 shards, before R7.
+
+## R3o on dev: the relation among the item's own properties (Claude Code, 2026-11-04)
+- **Log:** `retrieval_R3o_dev_2026-11-04.json`. Harness: `validation/retrieval_bench/r3o.py` and `r3o_props.py`.
+  Rows, gold rules and the 450M's programs are R3's (the programs were read back, not regenerated).
+- **The candidates:** for each item, its outgoing properties (from its statements, by id, through the source's cache)
+  and its incoming ones (`SELECT DISTINCT ?p WHERE { ?s ?p wd:Q }` at query.wikidata.org).
+  - 952 items, fetched 2026-11-03 and 2026-11-04. For 4 items the service could not answer (very common values);
+    those are recorded as unavailable, never as "none".
+  - A row's items are the ones its question names (located), else all of them. That keeps QALD's class constraints
+    (Q5, "human") out.
+  - **The sets are large**, so choosing 5 among them is not free. Median candidates: SimpleQuestions 39, QALD about
+    190, Mintaka about 175. Five at random among them would score 0.149 on SimpleQuestions and 0.04-0.08 elsewhere.
+- **Every arm scores only among the candidates.**
+  - The 450M's `HOP1` wording goes through the serving property table (the whole wording), and through the frozen
+    lexicon's wordings found inside it.
+  - qFHRR scores against the candidates' codes only, on grilly2 (`index_select`; numpy agrees to within 1.4e-6).
+  - `lexicon_content>450m` is the lexicon, and the 450M only where the lexicon reads nothing.
+- **Held:** on 870 of 908 scored rows the items carry the gold property today. On 38 they do not (a missing fact):
+  SimpleQuestions 2, QALD EN 17, QALD FR 12, Mintaka 1 and 6.
+
+**Recall@5 (wrong rate), on all scored rows:**
+
+| | SimpleQ EN | QALD EN | QALD FR | Mintaka EN | Mintaka FR |
+|---|---|---|---|---|---|
+| lexicon_content | 0.563 (4.0%) | 0.360 (17.5%) | 0.217 (15.1%) | 0.331 (28.1%) | 0.190 (21.5%) |
+| 450m | 0.470 (6.3%) | 0.315 (11.0%) | 0.115 (9.6%) | 0.182 (15.7%) | 0.066 (7.4%) |
+| lexicon_content>450m | 0.603 (6.3%) | 0.400 (21.0%) | 0.253 (19.9%) | 0.331 (28.9%) | 0.198 (25.6%) |
+| grammar | 0.140 (0.3%) | 0.120 (1.0%) | 0.054 (0.6%) | 0.008 (0%) | 0.008 (0%) |
+| **qfhrr, margin 0** | **0.887 (9.0%)** | 0.755 (22.5%) | **0.536 (45.8%)** | 0.554 (44.6%) | 0.397 (60.3%) |
+| qfhrr, margin 0.1 | 0.747 (6.0%) | 0.580 (17.5%) | 0.476 (32.5%) | 0.421 (26.5%) | 0.314 (42.1%) |
+| qfhrr, margin 0.25 | 0.573 (3.0%) | 0.400 (9.5%) | 0.349 (15.1%) | 0.223 (14.1%) | 0.223 (27.3%) |
+| R3, for reference: best | 0.557 | 0.555 | 0.361 | 0.314 | 0.207 |
+| **gate** | **0.85** | | **0.80** | | |
+
+On the held rows the numbers are within 1-7 points of these: qfhrr at margin 0 holds 0.893 on SimpleQuestions and
+0.578 on QALD FR.
+
+- **No arm passes both lines.**
+  - qFHRR at margin 0 passes SimpleQuestions: 0.887 on all rows, 0.893 on held ones, against chance's 0.149.
+  - It fails QALD FR: 0.536, or 0.578 on held rows, against 0.80.
+  - The French gap is R2's: the word table is English, so French words match only as written.
+- **What the item's properties change, against R3:**
+  - **The wrong rate collapses:** lexicon_content on SimpleQuestions goes from 23.0% to 4.0%. Most of R3's wrong
+    lists named properties the item does not carry.
+  - **qFHRR goes from not kept to the strongest arm** (0.417 to 0.887 on SimpleQuestions, 0.361 to 0.536 on QALD FR).
+    Among an item's 40 or 200 properties, the codebook's ranking carries signal it could not carry among 12,684.
+  - **The 450M's wordings** gain (SimpleQuestions recall 0.350 to 0.470, wrong 15.7% to 6.3%), but its coverage
+    does not move (53%). The unmapped wordings ("film", "album", "birth") name no property even among the item's own,
+    so the item's properties do not place most of the 132.
+- **The missing-fact rows (38), what each arm hands over there:** qfhrr at margin 0 hands over a near property on 36,
+  at 0.25 on 16; lexicon_content on 6; the 450M on 4; grammar on 0. These are the rows where a near property would
+  become a wrong answer (R8's kill line).
+- **Margins:** none was set. R3's rule (no higher pooled wrong rate than lexicon_content's) is not met by any margin.
+  At margin 0.25 qfhrr's pooled wrong rate is 11.3% against lexicon_content's 14.5%, with recall 0.401 against
+  0.374. That would be the reading if the rule applied to the candidate-bounded arm; it is yours to say.
+- **Which base serving pairs with the programs adapter (your question):** nothing in the repo pins it. The server
+  takes it on the command line (`python -m cubby_serve --cubby450m <export> --emitter-adapter <dir>`). The recorded
+  live run (H-E15, 2026-10-17) passed `base450m_cont` for the programs seat and `base450m` only as `--talk-export`,
+  so that pairing is right. Nothing refuses the wrong one, though: on `base450m` the programs seat writes no program.
+  A guard (the adapter recording its base's hash, checked at load) would be a serving change, so it is an order.
+- **Test not read.** Dev sets no margin and no arm passes both lines.
