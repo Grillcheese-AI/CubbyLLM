@@ -921,3 +921,32 @@ base. The guard (the adapter records its base's hash, checked at load) goes with
 
 **Order of work:** the seed-1 fame set with B1q and the fork task; R1c on test; R3k; the typo index, with the fork;
 then R4. Test stays unread for R2, R3o and R3k until their dev lines say otherwise. Status: open.
+
+## The fork task: B1's cost on the layered store (Claude Code, 2026-11-04)
+- **Log:** `retrieval_R2_dev_2026-11-04_fame_b1_layered.json`: B1 on the fame set (seed 0, 1,910 rows), the same harness,
+  run on CubeLang's `cowork/vm-contracts` binary (`CUBELANG_EXE`).
+- **Where the 7 ms a branch went:** R2's B1 ran on the main CubeLang binary, which copies the whole knowledge store
+  into every request, so a branch cost grew with the store.
+  - The layered store (`docs/STORE.md` there) is the fork this task describes: a request shares the frozen base
+    read-only through a pointer and keeps only its own exclusions and assumptions in its top layer.
+  - Measured on one request and a 2,000-fact store: a query costs 0.76 ms on the main binary and 0.38 ms on the
+    layered one. A trivial program with no store costs 0.24 ms, the round trip.
+- **The same 1,910 outcomes,** every row identical to `retrieval_R2_dev_2026-10-31_fame_b1.json`.
+
+| branches k | main binary, p95 | layered store, p50 / p95 |
+|---|---|---|
+| 2 | 18.0 ms | 0.75 / 1.12 ms |
+| 5 | 42.3 ms | 1.92 / 2.68 ms |
+| **7** | in "6+": 239 ms | **2.57 / 3.28 ms** |
+| 10 | | 3.74 / 4.62 ms |
+| 20 | | 7.43 / 9.63 ms |
+| 42 | | 15.3 / 15.5 ms |
+
+- **The line is met:** p95 3.3 ms a question at k = 7, against 50 ms. The cost per added branch is 0.38 ms (the median
+  of wall/k), flat up to k = 42.
+- **No new opcode or snapshot was needed.** `VM::snapshot` / `restore` (bytes 0x3E and 0x3F) would only take the
+  round trip out of each branch, at most 0.24 ms of the 0.38. Nothing at this scale asks for it; B3's fork of the
+  trunk is a different cost.
+- **What serving runs:** `cubbyllm.bridges.cubelang_client` finds the main CubeLang checkout's binary by default, the
+  copying store. The layered store lives on `cowork/vm-contracts`, which has no remote. Merging it into CubeLang's
+  main branch is a decision for you and Nick. Until then, the experiments set `CUBELANG_EXE`.
