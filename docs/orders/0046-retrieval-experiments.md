@@ -654,3 +654,81 @@ the API), and WebQSP_EL and ShadowLink are English only. So R2's French side is 
     lever this run points to. That would be new training, so it needs its own order and your yes.
   - The exact lexicon's misses are the questions' own phrasings ("Who directed X" against "director"); grammar reads
     too little to matter.
+
+## Cowork's check of R2, R3 and R1b's source check (2026-11-04)
+Read: the three reports, both R2 tables, `r2_gates.py`'s lines against the order's, and R3's gold rules.
+
+**R1b's source check passes** (300 of 300 identical; gate at most 1%). The extract stands as R1b's names. The sharded
+segment (32 shards opened as one store, `knowledge batch`) is what R1b and R7 measure, and R7 reports it as served,
+shards included. Next as you say: R1b scored on R1's own mentions.
+
+**R2: test stays unread.** BM25 and qFHRR, as built, are killed on the bare-name line and are not run again as
+choosers on their own. Three decisions, then one new arm:
+1. **(c), yes, as a rule on the set:** a bare-name row whose name only one item bears in R1b's names (today's) is
+   out of the bare-name line, for every arm, and reported apart with its count. The fame set tests shared names; a
+   name no longer shared tests nothing. On seed 0 this takes out the Pilot Corporation rows and whatever else it
+   finds. Report the line both ways.
+2. **(a), yes, as one general rule, span accounting:** each word of the question serves one role: the name, the
+   relation, or a cue. The relation lexicon's EN and FR labels and aliases for the question's property, and function
+   words, are never cues. It is written here, before seed 1 exists.
+3. **(b), changed: the qualifier is checked, not scored.** The construction defines a qualifier as "one discriminator
+   from one item's own facts" (its occupation, a place it is in), so it can be verified like the relation.
+   - **B1q:** in each branch, the cue words are looked up as names in R1b's segment (exact, then typo), giving a set
+     of value items. The branch holds the qualifier if one of its item's statements has one of them as its value, in
+     either direction. A branch stands if it verifies both the relation and the qualifier; the outcome table decides
+     as before. No margin, nothing ranked.
+   - **Without a relation** (ShadowLink, and entity-linking rows that have none), the same check runs on the context's
+     cue words alone: a candidate stands if one of its statements holds a value the context names. One standing is a
+     pick; otherwise undecided.
+   - **Your (b), for comparison:** qFHRR among the branches that verify, past a margin set on seed 0. It ranks, so
+     "branches are never ranked" stands unless its numbers make the case against B1q.
+   - **In plain words:** asked about "Paz the singer", Cubby checks "singer" against what it knows of each Paz, and
+     only the Paz it fits stands.
+   - **Over a conventional model:** a model weighs word overlap, so "born" in the question can tip the choice. Here
+     the detail is a fact that holds or does not.
+4. **The fresh fame sample:** seed 1, the same construction, with (c) applied before it is frozen, and its SHA-256
+   committed before any arm runs. Seed 0 is dev (the comparison arm's margin); seed 1 is read once.
+
+**ShadowLink: the line is read where the gold bears the mention.** Most wrongs are mentions that no name of the gold
+equals ("Fest", "fixed", "plug-in"): finding (R1b), not choosing. Which rows those are is decided by R1b's names
+(labels, aliases, titles, redirects), never by an arm's output. The other rows are counted under R1b's misses, and
+all rows are still reported.
+- **Please label the cells:** tiers shows Top 0% beside "Top from 11 wrong to 13", and the text says Shadow is ahead
+  each time, where qFHRR at 0.75 has Top ahead. Say whether the percentages are accuracy or wrong share among spoken
+  picks, and give the counts (spoken, right, wrong) per group.
+
+**Mintaka and WebQSP_EL: give the B arms their relation.** Today's pipeline always has a relation; these rows ran
+without one, so the check never ran. Where R3's gold rules give one property (Mintaka's 121 linked rows, WebQSP's
+SPARQL), run B1 and B1q with it, reported as "relation given". The other rows run the arms that need none. The line
+is unchanged.
+
+**B1's cost triggers the CubeLang task this order pre-registered:** p95 is 239 ms past 5 branches, and the fame set's
+median is 7. Claude Code builds the in-program fork on `cowork/vm-contracts`: a branch shares the base store
+read-only and keeps only its own exclusions and assumptions, or `VM::snapshot` / `restore` (bytes 0x3E and 0x3F),
+whichever measures cheaper. Line: p95 at most 50 ms a question at k = 7, with the cost per added branch reported up
+to k = 42.
+
+**R3: the relation is chosen among the item's own properties first; the adapter waits.** The qFHRR arm is not kept,
+as the report says.
+- **R3o, a new arm:** the candidates are the properties the gold item carries, outgoing and incoming (for the inverse
+  rows), from its statements fetched by id through the source's cache, with the fetch dated (R4 fetches the same).
+  Each wording (lexicon_content, the 450M's `HOP1` wording, qFHRR) is scored only among them. It is the check step
+  applied to relations: a property the item does not carry cannot verify.
+  - **The 450M's wordings** ("film", "album", "born in $E1") are matched to the item's own property labels and
+    aliases the same way. This may place most of its 132 unmapped programs without training.
+  - **Reported apart:** the rows where the gold property is not among the item's properties today (a missing fact),
+    with what the arm hands over there. That is where a near property would become a wrong answer, and R8's kill
+    line reads it.
+  - **Lines:** R3's gate as written (0.85 on SimpleQuestions-Wikidata, 0.80 on QALD-9-plus FR), read on the rows
+    where the gold is held and on all rows; the wrong rate reported beside lexicon_content's.
+  - **In plain words:** to work out what you are asking about something, Cubby considers only what it actually knows
+    about that thing.
+  - **Over a conventional model:** a model can name a relation the item does not have and answer anyway. Here the
+    choice is bounded by the facts on record.
+- **The programs adapter trained on Wikidata's property labels:** only if R3o fails, as its own order with Nick's yes.
+- **`base450m` against `base450m_cont`:** please check which base the serving path loads with the programs adapter,
+  and report it. If serving pairs the adapter with `base450m`, the programs seat writes nothing there today.
+- Test stays unread until R3o has run on dev.
+
+**Order of work:** R1b's scoring, then R3o (the weakest stage), then the seed-1 fame set with B1q and the fork task,
+then R4. Nothing here reaches the serving path. Status: open.
