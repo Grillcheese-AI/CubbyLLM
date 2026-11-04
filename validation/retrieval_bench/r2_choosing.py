@@ -42,13 +42,17 @@ __wiring__ = "STANDALONE"
 EL = ("shadowlink", "mintaka", "webqsp_el")
 
 
-def fame_rows() -> list[dict]:
-    path = os.path.join(os.path.dirname(HERE), "retrieval_sets", "fame_set.jsonl")
+def fame_rows(name: str = "fame_set") -> list[dict]:
+    """A frozen fame set's rows (``fame_set`` is seed 0, dev; ``fame_set_seed1`` is read once), its hash checked."""
+    from retrieval_sets.lexicon import frozen, sha256
+    path = os.path.join(os.path.dirname(HERE), "retrieval_sets", f"{name}.jsonl")
+    if sha256(path) != frozen()[name]["sha256"]:
+        raise SystemExit(f"{name}.jsonl moved since it was frozen")
     out = []
     for line in open(path, encoding="utf-8"):
         r = json.loads(line)
         out.append({"id": r["id"], "set": "fame", "lang": r["lang"], "question": r["question"], "mention": r["name"],
-                    "pids": [r["relation"]], "gold": r.get("gold_item"), "kind": r["form"]})
+                    "pids": [r["relation"]], "gold": r.get("gold_item"), "kind": r["form"], "items": r.get("items") or []})
     return out
 
 
@@ -63,7 +67,9 @@ def el_rows(split: str, n: int) -> list[dict]:
                     if m.get("qid") and m.get("text"):
                         out.append({"id": f"{r['id']}#{k}", "set": name, "lang": lang, "question": r["question"],
                                     "mention": m["text"], "pids": [], "gold": m["qid"],
-                                    "kind": (r.get("extra") or {}).get("subset") or "row"})
+                                    "kind": (r.get("extra") or {}).get("subset") or "row",
+                                    "row_items": [x["qid"] for x in r["mentions"] if x.get("qid")],
+                                    "answer_qids": r.get("answer_qids") or []})
     return out
 
 
@@ -79,7 +85,7 @@ def judge(row: dict, out: dict) -> str:
     return "refused" if o == "refuse" else "undecided"
 
 
-def run(rows: list[dict], taus: list[float], use_vm: bool, qfhrr_taus: list[float] = ()) -> dict:
+def run(rows: list[dict], taus: list[float], use_vm: bool, qfhrr_taus: list[float] = (), b1_qfhrr_taus: list[float] = ()) -> dict:
     """Every arm on every row (``r["arms"]``); returns what the qFHRR scorer reported (its card, its numpy check)."""
     from retrieval_bench import r2_arms as A
     from retrieval_bench import r2_vm as V
@@ -106,6 +112,9 @@ def run(rows: list[dict], taus: list[float], use_vm: bool, qfhrr_taus: list[floa
         kpath = os.path.join(tempfile.mkdtemp(), "r2_segment.jsonl")
         V.write_segment(kpath, {q: P[q] for r in rows if r["pids"] for q in r["cands"] if q in P}, pids)
         session = CubelangSession()
+    if session is not None:                              # B1q's qualifier facts and Mintaka's relation, given (2026-11-04)
+        from retrieval_bench.r2_b1q_prep import prepare
+        prepare(rows, P, kpath)
     try:
         for r in rows:
             arms = {"tiers": A.tiers(r["mention"], r["cands"], P, r["pids"])}
@@ -114,13 +123,21 @@ def run(rows: list[dict], taus: list[float], use_vm: bool, qfhrr_taus: list[floa
             if session is not None and r["pids"]:
                 named = A.bearing(r["mention"], r["cands"], P)                 # the VM checks the relation itself
                 arms["b1"] = V.b1(session, kpath, named, r["pids"][0]) if named else {"outcome": "refuse", "why": "no candidate bears the name"}
+            if session is not None:
+                from retrieval_bench.r2_b1q_prep import b_arms
+                arms.update(b_arms(session, kpath, r, P))
+            if (arms.get("b1") or {}).get("items"):             # the branches that verify, for the comparison arm
+                r["b1_items"] = list(arms["b1"]["items"])
             r["arms"] = {a: {"outcome": o["outcome"], "item": o.get("item"), "judge": judge(r, o),
-                             **{k: o[k] for k in ("k", "wall_ms") if k in o}} for a, o in arms.items()}
+                             **{k: o[k] for k in ("k", "wall_ms", "qualifier") if k in o}} for a, o in arms.items()}
             r["gold_in_cands"] = bool(r["gold"]) and r["gold"] in r["cands"]
     finally:
         if session is not None:
             session.close()
     info = {}
+    if b1_qfhrr_taus and use_vm:
+        from retrieval_bench.r2_b1q_prep import b1_qfhrr
+        info["b1_qfhrr_scorer"] = b1_qfhrr(rows, P, list(b1_qfhrr_taus))
     if qfhrr_taus:
         from cubbyllm.worlds.fact_pool import V4_TABLE
         from retrieval_bench import r2_qfhrr as Q
@@ -135,6 +152,10 @@ def summarize(rows: list[dict]) -> dict:
     groups = collections.defaultdict(list)
     for r in rows:
         groups[f"{r['set']}/{r['kind']}" if r["set"] in ("fame", "shadowlink") else r["set"]].append(r)
+        if r["set"] == "shadowlink" and r.get("gold_bears") is not None:     # read where the gold bears the mention
+            groups[f"shadowlink/{r['kind']}/{'bears' if r['gold_bears'] else 'does not bear'}"].append(r)
+        if r["set"] == "fame" and r["kind"] == "bare" and r.get("shared_today") is not None:   # rule (c), both ways
+            groups[f"fame/bare/{'shared today' if r['shared_today'] else 'one bearer today'}"].append(r)
         groups[f"{r['set']}/{r['lang']}"].append(r)
     for g, rs in sorted(groups.items()):
         arms = sorted({a for r in rs for a in r["arms"]})
@@ -166,27 +187,33 @@ def main() -> None:
     ap.add_argument("--no-fame", action="store_true")
     ap.add_argument("--no-el", action="store_true", help="the fame set only")
     ap.add_argument("--tag", default="", help="appended to the log's name (a partial rerun keeps the full run's log)")
+    ap.add_argument("--fame-set", default="fame_set", help="fame_set (seed 0, dev) or fame_set_seed1 (read once)")
+    ap.add_argument("--b1-qfhrr", type=float, nargs="*", default=None,
+                    help="the comparison arm (B1, then qFHRR among the branches that verify) at these margins")
     a = ap.parse_args()
     t0 = time.time()
     test = a.split == "test"
     taus = [] if a.no_bm25 else [a.tau] if test and a.tau is not None else a.taus
     qtaus = [] if a.no_qfhrr else [a.tau_qfhrr] if test and a.tau_qfhrr is not None else a.taus
-    fame = [] if a.no_fame else fame_rows()
+    fame = [] if a.no_fame else fame_rows(a.fame_set)
     rows = (fame[:a.fame_n] if a.fame_n else fame) + ([] if a.no_el else el_rows(a.split, a.n))
-    qinfo = run(rows, taus, use_vm=not a.no_vm, qfhrr_taus=qtaus)
+    qinfo = run(rows, taus, use_vm=not a.no_vm, qfhrr_taus=qtaus, b1_qfhrr_taus=a.b1_qfhrr or ())
     summary = summarize(rows)
     rep = {"what": "order 0046 R2: choosing among a name's items", "date": _dt.date.today().isoformat(), "split": a.split,
            "n_per_set_lang": a.n, "taus": {"bm25": taus, "qfhrr": qtaus},
            "tau_from_dev": ({"bm25": pick_tau(summary, taus), "qfhrr": pick_tau(summary, qtaus, "qfhrr")} if not test
                             else {"bm25": a.tau, "qfhrr": a.tau_qfhrr}),
            "qfhrr_scorer": qinfo,
+           "b1_qfhrr_margin_from_seed0": (__import__("retrieval_bench.r2_b1q_prep", fromlist=["x"]).pick_margin(
+               summary, a.b1_qfhrr) if a.b1_qfhrr and a.fame_set == "fame_set" else None),
            "not_run": {"usage": "no anchor counts here (the local Wikipedia text kept no links)"},
            "summary": summary, "wall_s": round(time.time() - t0),
-           "rows": [{k: r[k] for k in ("id", "set", "lang", "kind", "gold", "n_api", "n_local", "gold_in_cands", "arms")} for r in rows]}
+           "rows": [{k: r.get(k) for k in ("id", "set", "lang", "kind", "gold", "n_api", "n_local", "gold_in_cands", "arms",
+                                           "gold_bears", "shared_today", "pids_given", "cues")} for r in rows]}
     from retrieval_bench.r2_gates import budget, gates
     rep["gates"] = gates(summary)
     rep["b1_budget"] = budget(rows)
-    rep["args"] = {"no_fame": a.no_fame, "no_el": a.no_el, "no_vm": a.no_vm, "no_qfhrr": a.no_qfhrr, "no_bm25": a.no_bm25,
+    rep["args"] = {"fame_set": a.fame_set, "no_fame": a.no_fame, "no_el": a.no_el, "no_vm": a.no_vm, "no_qfhrr": a.no_qfhrr, "no_bm25": a.no_bm25,
                    "fame_n": a.fame_n, "tag": a.tag}
     path = os.path.join(os.path.dirname(HERE), "logs", f"retrieval_R2_{a.split}_{rep['date']}{a.tag}.json")
     json.dump(rep, open(path, "w", encoding="utf-8"), indent=1)

@@ -117,3 +117,36 @@ def test_b1_through_the_vm(tmp_path):
     with CubelangSession() as s:
         assert V.b1(s, str(seg), ["Q1", "Q2"], "P17")["outcome"] == "each"
         assert V.b1(s, str(seg), ["Q1", "Q3"], "P17")["item"] == "Q1"
+
+
+def test_b1q_s_cues_are_what_is_neither_the_name_nor_the_relation_nor_a_function_word():
+    from retrieval_bench import r2_b1q as Q
+    lx = {"by_wording": {"en": {"born": ["P19", "P569"], "place of birth": ["P19"], "country": ["P17"]}, "fr": {"né": ["P19"]}}}
+    assert Q.cue_runs("Where was Paz the singer born?", "Paz", ["P19"], lx) == ["singer"]
+    assert Q.cue_runs("Where was Paz born?", "Paz", ["P19"], lx) == []                  # a bare question: no qualifier
+    assert "the" not in Q.cue_runs("Which country is A1 motorway in canton of Bern in?", "A1 motorway", ["P17"], lx)
+    assert {"canton", "bern", "canton of bern"} - set(Q.cue_runs("Which country is A1 motorway in canton of Bern in?",
+                                                                   "A1 motorway", ["P17"], lx)) == set()
+
+
+def test_b1q_holds_a_qualifier_either_way():
+    from retrieval_bench import r2_b1q as Q
+    prof = {"value_ids": {"P106": ["Q177220"], "P19": ["Q90"]}}
+    assert Q.holds("Q1", prof, {"Q177220"}, {})                                      # the candidate states it
+    assert Q.holds("Q1", {"value_ids": {}}, {"Q5"}, {"Q5": {"P50": ["Q1"]}})          # the value item states the candidate
+    assert not Q.holds("Q1", prof, {"Q33999"}, {"Q33999": {"P50": ["Q2"]}})
+
+
+def test_b1q_takes_every_name_of_the_items_out_of_the_cues():
+    from retrieval_bench import r2_b1q as Q
+    lx = {"by_wording": {"en": {"country": ["P17"]}, "fr": {"pays": ["P17"]}}}
+    q = "Dans quel pays se trouve autoroute A1 ?"
+    assert "autoroute" in Q.cue_runs(q, "A1 motorway", ["P17"], lx)                   # the English name alone misses it
+    assert Q.cue_runs(q, ["A1 motorway", "autoroute A1"], ["P17"], lx) == ["trouve"]  # every name the items go by
+
+
+def test_the_name_is_one_span_and_a_qualifier_is_the_longest_name():
+    from retrieval_bench import r2_b1q as Q
+    lx = {"by_wording": {"en": {"country": ["P17"]}, "fr": {}}}
+    assert "dhaka district" in Q.cue_runs("Which country is Dhaka in Dhaka District in?", "Dhaka", ["P17"], lx)
+    assert Q.longest(["terre", "terre neuve", "terre neuve et labrador", "cap"]) == ["terre neuve et labrador", "cap"]

@@ -970,3 +970,119 @@ then R4. Test stays unread for R2, R3o and R3k until their dev lines say otherwi
 - **The line holds in both languages:** the set holds the gold more often than the API's 20 does.
 - **What it costs choosing:** the set itself (p95 100 items in EN), or after the relation p95 38. On the layered store a
   branch costs 0.38 ms, so p95 is about 38 ms and 15 ms. One typo lookup took the cut at its 100-key limit.
+
+## B1q on dev, seed 0 (Claude Code, 2026-11-04)
+- **Logs:** `retrieval_R2_dev_2026-11-04_b1q.json` (the run reported here) and `retrieval_R2_dev_2026-11-04_b1q_first.json`
+  (the first run, kept: two bugs in my cue code, below). Harness: `r2_choosing.py --b1-qfhrr 0.25 0.5 0.75 0.9`, with
+  `r2_b1q.py` (the check) and `r2_b1q_prep.py` (cues, the relation given, the qualifier facts). Layered store
+  (`CUBELANG_EXE`). Rules (a), (b) and (c) as written in your check; nothing tuned on these rows.
+- **The first run's two bugs,** both in my span accounting, not in the rule:
+  - the name took every occurrence of its words, so "Dhaka" in "Dhaka District" was no cue;
+  - every sub-span of a cue run counted, so "terre" and "cap" alone found items.
+
+  Fixed: the name is one span (the first occurrence of its longest name), and a cue run is looked up only by its
+  longest span that names items. French questions name the item in French, so every label of the row's items is the
+  name. Tests pin both. The first run had 5 wrong qualified picks, the fixed run 3.
+
+**The fame set (seed 0, 1,910 rows), B1q against today's tiers and B1:**
+
+| | bare: single picks | qualified: right | wrong | undecided | refused | resolved |
+|---|---|---|---|---|---|---|
+| tiers | 6 | 0 | 2 | 908 | 0 | 0.002 |
+| B1 | 2 | 0 | 0 | 910 | 0 | 0 |
+| **B1q** | **2** | **692** | **3** | 61 | 154 | **0.764** |
+| B1 + qFHRR @0.75 (your (b)) | 35 | 173 | 0 | 737 | 0 | 0.190 |
+| B1 + qFHRR @0.9 | 21 | 23 | 0 | 887 | 0 | 0.025 |
+
+- **Rule (c), both ways:** 14 bare rows have a name one item bears today. B1q's 2 single picks:
+  - *Pilot Corporation* (EN): one bearer today, the store has 1 item under the name. It is in "one bearer today", out of
+    the line by (c).
+  - *Tim Brown* (FR, "Où est né Tim Brown ?", relation P19): shared today. "né" stays a cue under rule (a) as written,
+    because the lexicon's French wordings for P19 do not include it. Folded to "ne", it names Nebraska (alias "NE"),
+    and one Tim Brown, Q2433818, was born in Nebraska, so that branch alone holds the "qualifier". **On the
+    shared-today line, B1q makes 1 single pick, so the line fails by one row.** I have not changed (a) after the
+    numbers. Whether a past participle like "né" counts as a relation word, or a cue must be longer than 2 letters,
+    is yours to say.
+- **The 3 wrong qualified picks are one case:** the gold no longer states the qualifier itself.
+  - *Rosebank (Western Cape)*, EN and FR: the gold Q7368057 is `located in` Cape Town, and Cape Town is in the Western
+    Cape. Another Rosebank, Q7368068, states the Western Cape directly, so B1q picks it.
+  - *Signal Hill (Terre-Neuve-et-Labrador)*, FR: the gold Q245680 is in St. John's. Q61004535 states the province.
+  - The fame set took the discriminator from the gold's statements when it was built, and today the gold's own
+    `located in` is a level lower.
+  - Checking the qualifier along the `located in` chain (0047's walk, `CB_CLASS_WALK`) would make both namesakes hold
+    in both cases: undecided, not right. That is a rule change and not mine to make; the record keeps the 3 as wrong.
+- **Your (b), qFHRR among the branches, has no margin:** the rule asks 0 bare single picks and 0 wrong qualified on
+  seed 0. No margin tried gives 0 single picks (21 at 0.9). B1q resolves 4 times as much as qFHRR @0.75 does.
+
+**ShadowLink, the cells labelled.** The percentage is right / (right + wrong), over spoken picks only; refused and
+undecided rows are not in it. Counts are spoken (right, wrong):
+
+| | rows | gold bears the mention | tiers | B1q |
+|---|---|---|---|---|
+| Top, bears | 29 | 29 | 2 (0, 2): 0% | 10 (8, 2): 80% |
+| Shadow, bears | 38 | 37 | 2 (2, 0): 100% | 13 (11, 2): 85% |
+| Tail, bears | 88 | 87 | 72 (71, 1): 99% | 36 (36, 0): 100% |
+| Top, does not bear | 74 | 54 | 13 (0, 13) | 13 (0, 13) |
+| Shadow, does not bear | 70 | 55 | 12 (0, 12) | 14 (2, 12) |
+
+- **The line, where the gold bears the mention:** B1q's gap is Top 80% against Shadow 85%, 4.6 points, under the kill
+  line (10). On all rows it is 34.8% against 48.1%, 13.4 points; there the wrongs are the rows no name of the gold
+  spells, as your check said.
+- **B1q speaks half as often as tiers on Tail** (36 against 72). It needs a cue that holds, and Tail rows rarely
+  carry one. It is never wrong there.
+
+**Mintaka and WebQSP_EL** (wrong per row; the line is at most 1 in 50):
+
+| | Mintaka EN, 433 rows: right / wrong | wrong per row | WebQSP_EL, 323 rows: right / wrong | wrong per row |
+|---|---|---|---|---|
+| tiers | 80 / 25 | 5.8% | 74 / 13 | 4.0% |
+| B1q, cues alone | 64 / 10 | 2.3% | 28 / 7 | 2.2% |
+| B1, relation given | 13 / 5 | 1.2% | (no relation) | |
+| B1q, relation given | 6 / 3 | 0.7% | (no relation) | |
+
+- **Relation given:** for Mintaka, where R3's gold rules give one property (69 of the 433 rows). The other rows run
+  the cue check alone.
+- **WebQSP_EL has no Wikidata property:** its SPARQL is Freebase's, so there is nothing to give, and its rows run the
+  cue check alone.
+- **What the relation-given wrongs are:** Mintaka's complex questions, where the one property R3's rules find links
+  the mention to the answer without being what is asked. Examples: "What city is called the Big Apple?" (P460, picks
+  New York City, gold the nickname's item); "the longest Star Wars movie" (P8345); "the highest-grossing actor"
+  (P106). The relation given is the rule's, not the question's.
+- **B1q halves tiers' wrong rate on both sets and still misses the line** (2.3% and 2.2% against 2%).
+
+**B1q's cost** (every row, the same layered store as the fork task): the check adds the cue lookups and the
+qualifier's facts to each branch. p50 / p95 by branches: 2: 1.4 / 6.2 ms; 4: 2.8 / 21.9 ms; 6 or more: 10.2 / 40.6 ms.
+That is under the 50 ms line, but near it past 6 branches. B1 alone, the same run: 6 or more 4.9 / 11.7 ms.
+
+**Next:** seed 1, read once with every arm, after your word on "né" (a) and on the qualifier along `located in`.
+
+## R3k on dev: the kind asked, the "one step" reading (Claude Code, 2026-11-04)
+- **Log:** `retrieval_R3o_dev_2026-11-04_r3k_one.json`. Harness: `r3o.py --kind one` with `r3k_kind.py`. The question
+  word opens the question (after an optional preposition), so a relative "qui" or the conjunction "ou" asks nothing.
+  Tests pin the list.
+- **The kind's classes:** the items Wikidata labels "person" / "personne" and "place" / "lieu" that have a `subclass
+  of` of their own:
+  - person: Q215627, Q5;
+  - place: Q13526752, Q17334923, Q2221906, Q82794, Q98929991.
+- **Rows asking a kind:** 513, of which 305 are scored (gold): person 189, quantity 36, place 64, time 16.
+- **margin_r3k: none.** No qFHRR margin has a pooled wrong rate at or below lexicon_content's (9.9%): 28.9% at 0, 21.6%
+  at 0.1, 13.4% at 0.25. The gate fails on QALD FR for every arm; at margin 0, SimpleQuestions held is 0.892 and QALD
+  FR held 0.559 (R3o: 0.893 and 0.536).
+- **Why: the kind drops the gold.** Of the rows whose gold the item carried before the kind, the kind keeps it out:
+
+| kind | scored | gold held before | dropped by the kind | gold incoming only | gold outgoing |
+|---|---|---|---|---|---|
+| person | 189 | 182 | 76 | 51 | 25 |
+| place | 64 | 64 | 55 | 0 | 55 |
+| quantity | 36 | 36 | 20 | 9 | 11 |
+| time | 16 | 16 | 0 | | |
+
+  - **Person, 51 incoming:** "who was born in Paris?" asks from the value's side. The gold, P19, is an incoming property
+    of Paris, and the rule as written keeps incoming properties only when no kind is asked.
+  - **Place, 55 outgoing:** one step above `instance of` rarely reaches "place" (city, then human settlement, then
+    ...). The chain reading is for this.
+  - **Quantity, 11 outgoing:** "how many children" asks a count of an item-valued property (P40), not a quantity
+    datatype.
+  - **Time:** the datatype holds every time.
+- **The chain reading runs next,** after PIAF's link queries finish (both use the query service). It tests the place
+  rows. The incoming and count rows are the rule's to change, not the reading's.

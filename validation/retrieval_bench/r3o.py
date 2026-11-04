@@ -79,6 +79,8 @@ def summarize(rows: list[dict]) -> dict:
         if r["why"] == "gold":
             groups[f"{r['set']}/{r['lang']}"].append(r)
             groups["all"].append(r)
+            if r.get("kind_asked"):
+                groups[f"kind/{r['kind_asked']}"].append(r)
     out = {}
     for g, rs in groups.items():
         held = [r for r in rs if r["held"]]
@@ -112,6 +114,8 @@ def main() -> None:
     ap.add_argument("--programs", default=None, help="R3's programs (default: its 300-row run of this split)")
     ap.add_argument("--arm", default="450m", help="the model arm's name (order 0048: 450m_wd, with its programs)")
     ap.add_argument("--tag", default="")
+    ap.add_argument("--kind", choices=("none", "one", "chain"), default="none",
+                    help="R3k: the asked kind bounds the properties (one subclass step, or the whole chain)")
     a = ap.parse_args()
     t0, src = time.time(), source()
     rows = load(a.split, a.n)
@@ -127,9 +131,16 @@ def main() -> None:
         if "id" in d:
             progs[d["id"]] = d.get("program")
     lx, gram = check(), A.Grammar()
+    kinds, kinfo = ({}, None)
+    if a.kind != "none":
+        from retrieval_bench.r3k_kind import bound
+        kinds, kinfo = bound(rows, items, props, src, lx, a.kind)
     cands = {}
     for r in rows:
         c = candidates(items[r["id"]], props)
+        if r["id"] in kinds:                             # R3k: the asked kind bounds them further
+            r["held_before_kind"] = bool(set(r["golds"]) & c["all"])
+            c["all"] = kinds[r["id"]]
         cands[r["id"]] = c["all"]
         r["held"], r["in_unknown"] = bool(set(r["golds"]) & c["all"]), c["in_unknown"]
         r["n_cands"] = len(c["all"])
@@ -150,9 +161,13 @@ def main() -> None:
            "split": a.split, "n_per_set_lang": a.n, "prepared": prep, "props_fetched": fetched,
            "props": {"items": len(props), "in_unavailable": sum(1 for d in props.values() if d["in"] is None)},
            "qfhrr_scorer": {k: v for k, v in rep_q.items() if k != "ranked"}, "gates": gates, "summary": summary,
+           "kind": {"mode": a.kind, **(kinfo or {}),
+                    "gold_dropped_by_kind": sum(1 for r in rows if r.get("held_before_kind") and not r.get("held")),
+                    "margin_r3k": (__import__("retrieval_bench.r3k_kind", fromlist=["x"]).pick_margin(summary, a.taus)
+                                   if a.kind != "none" else None)},
            "wall_s": round(time.time() - t0),
            "rows": [{"id": r["id"], "set": r["set"], "lang": r["lang"], "golds": r["golds"], "why": r["why"], "held": r.get("held"),
-                     "n_cands": r.get("n_cands"), "judge": r.get("judge"),
+                     "n_cands": r.get("n_cands"), "judge": r.get("judge"), "kind_asked": r.get("kind_asked"),
                      "out": {k: {x: o[x] for x in ("top", "hop1", "wordings", "margin") if x in o} for k, o in (r.get("out") or {}).items()}}
                     for r in rows]}
     path = os.path.join(os.path.dirname(HERE), "logs", f"retrieval_R3o_{a.split}_{rep['date']}{a.tag}.json")

@@ -76,3 +76,22 @@ def test_r3o_hands_over_only_properties_the_item_carries():
     assert got["top"] == ["P19", "P27"] and "P569" not in got["top"]                   # date of birth is not this item's
     assert O.within(found, {"P40"})["read"] is False
     assert O.within([], {"P19"}, {"P19": O.WHOLE})["top"] == ["P19"]                   # the 450M's whole wording
+
+
+def test_r3k_reads_the_asked_kind_off_the_question_s_opening_word():
+    from retrieval_bench.r3k_kind import asked_kind
+    assert [asked_kind(q) for q in ("Who wrote Hamlet?", "In what year did he die?", "Où est né Victor Hugo ?",
+                                    "Combien d'habitants a Lyon ?", "Quand est mort Molière ?")] == \
+        ["person", "time", "place", "quantity", "time"]
+    assert asked_kind("Quel est le film qui a gagné ?") is None                       # a relative "qui" asks no person
+    assert asked_kind("Paris ou Lyon ?") is None and asked_kind("Whose book is it?") is None
+
+
+def test_r3k_keeps_only_the_properties_whose_values_are_of_the_kind():
+    from retrieval_bench.r3k_kind import kept
+    lx = {"datatype": {"P569": "time", "P19": "wikibase-item", "P1082": "quantity", "P50": "wikibase-item"}}
+    claims = {"P19": ["Q90"], "P50": ["Q42"]}
+    is_place = {"Q90"}.__contains__
+    assert kept("place", {"P569", "P19", "P50"}, {"P737"}, claims, lx, is_place) == {"P19"}
+    assert kept("time", {"P569", "P19", "P1082"}, set(), claims, lx, is_place) == {"P569"}
+    assert kept(None, {"P19"}, {"P737"}, claims, lx, is_place) == {"P19", "P737"}     # no kind: R3o's candidates
