@@ -19,8 +19,12 @@ item, and only it, is meant).
    recorded for the relation cannot be ruled out. Gold: that item. A French variant only where the discriminator has a
    French label (the hdc world's, else Wikidata's by id) told apart in French too.
 5. **Freeze:** ``fame_set.jsonl`` beside this file (committed), its SHA-256 in ``frozen.json``, before R2 runs.
+6. **A fresh sample** (Cowork, 2026-11-04: seed 0 is dev, seed 1 is read once): ``--seed 1`` draws from the names
+   seed 0 did not take, after rule (c): a name keeps a relation only while two or more of its items still bear the
+   name today (R1b's names: the VM's segment, exact), since a name no longer shared tests nothing. Ids ``fame1:``;
+   frozen as ``fame_set_seed1`` before any arm runs.
 
-    python validation/retrieval_sets/fame_set.py [--n 500]
+    python validation/retrieval_sets/fame_set.py [--n 500] [--seed 1]
 
 Wired: STANDALONE (a data builder).
 """
@@ -206,7 +210,17 @@ def qualified_text(name: str, r: str, d: str, val_en: str, val_fr: str | None) -
     return tidy(en).replace(" ?", "?"), tidy(fr)
 
 
-def build(n: int, folder: str) -> list[dict]:
+def shared_today(names: list, today: dict) -> list:
+    """Rule (c): each name's relations kept only where two or more of their items bear the name in today's names."""
+    out = []
+    for lab, el in names:
+        keep = {r: qs for r, qs in el.items() if len(set(qs) & set(today.get(lab, ()))) >= 2}
+        if keep:
+            out.append((lab, keep))
+    return out
+
+
+def build(n: int, folder: str, seed: int = SEED, exclude: set | None = None, prefix: str = "fame") -> list[dict]:
     facts, labels = load(folder)
     from retrieval_sets.common import fold
     HOMONYMS.clear()
@@ -224,7 +238,11 @@ def build(n: int, folder: str) -> list[dict]:
             el = eligible(items, facts)
             if el:
                 names.append((lab, el))
-    rng = random.Random(SEED)
+    if seed != SEED:                                     # the fresh sample: not seed 0's names, and rule (c)
+        from retrieval_sets.names_segment import exact_items
+        names = [x for x in names if x[0] not in (exclude or set())]
+        names = shared_today(names, exact_items([lab for lab, _el in names]))
+    rng = random.Random(seed)
     picked = sorted(rng.sample(names, min(n, len(names))), key=lambda x: x[0])
     need = {v for _lab, el in picked for qs in el.values() for q in qs for v in facts[q]["P106"] | place_set(q, "P131", facts) | place_set(q, "P19", facts)}
     fr = fr_labels(need | {q for _lab, el in picked for qs in el.values() for q in qs})
@@ -235,8 +253,8 @@ def build(n: int, folder: str) -> list[dict]:
         answers = {q: sorted(facts[q][r]) for q in items}
         base = {"name": lab, "relation": r, "items": items, "answers": answers, "n_namesakes": len(by_name[lab])}
         name_fr = fr.get(items[0]) if all(fr.get(q) == fr.get(items[0]) for q in items) and fr.get(items[0]) else lab
-        rows.append({"id": f"fame:{k}:bare:en", "lang": "en", "form": "bare", "question": ASK[r][0].format(n=lab), **base})
-        rows.append({"id": f"fame:{k}:bare:fr", "lang": "fr", "form": "bare", "question": ASK[r][1].format(n=name_fr), **base})
+        rows.append({"id": f"{prefix}:{k}:bare:en", "lang": "en", "form": "bare", "question": ASK[r][0].format(n=lab), **base})
+        rows.append({"id": f"{prefix}:{k}:bare:fr", "lang": "fr", "form": "bare", "question": ASK[r][1].format(n=name_fr), **base})
         for q in items:
             others = [o for o in items if o != q]
             d = discriminator(q, others, r, facts, labels)
@@ -244,9 +262,9 @@ def build(n: int, folder: str) -> list[dict]:
                 continue
             en, frq = qualified_text(lab, r, d[0], labels[d[1]], fr.get(d[1]) if fr_unique(d[1], others, d[0], facts, fr) else None)
             extra = {**base, "gold_item": q, "discriminator": {"relation": d[0], "value": d[1], "label": labels[d[1]]}}
-            rows.append({"id": f"fame:{k}:q:{q}:en", "lang": "en", "form": "qualified", "question": en, **extra})
+            rows.append({"id": f"{prefix}:{k}:q:{q}:en", "lang": "en", "form": "qualified", "question": en, **extra})
             if frq:
-                rows.append({"id": f"fame:{k}:q:{q}:fr", "lang": "fr", "form": "qualified", "question": frq.replace("{n}", name_fr), **extra})
+                rows.append({"id": f"{prefix}:{k}:q:{q}:fr", "lang": "fr", "form": "qualified", "question": frq.replace("{n}", name_fr), **extra})
     return rows, len(names)
 
 
@@ -254,15 +272,20 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--n", type=int, default=500)
     ap.add_argument("--folder", default=raw_dir("wikidata5m"))
+    ap.add_argument("--seed", type=int, default=SEED)
     a = ap.parse_args()
-    if os.path.exists(OUT):
-        raise SystemExit(f"{OUT} exists: the fame set is frozen once (move it aside to rebuild)")
-    rows, pool = build(a.n, a.folder)
-    with open(OUT, "w", encoding="utf-8", newline="\n") as f:
+    out = OUT if a.seed == SEED else OUT.replace(".jsonl", f"_seed{a.seed}.jsonl")
+    if os.path.exists(out):
+        raise SystemExit(f"{out} exists: a fame set is frozen once (move it aside to rebuild)")
+    seed0 = {json.loads(x)["name"] for x in open(OUT, encoding="utf-8")} if a.seed != SEED else set()
+    rows, pool = build(a.n, a.folder, a.seed, seed0, "fame" if a.seed == SEED else f"fame{a.seed}")
+    with open(out, "w", encoding="utf-8", newline="\n") as f:
         for r in rows:
             f.write(json.dumps(r, ensure_ascii=False, sort_keys=True) + "\n")
     c = collections.Counter((r["form"], r["lang"]) for r in rows)
-    h = freeze("fame_set", OUT, f"order 0046's fame set: {a.n} names drawn by seed 0 from {pool} eligible; rows {dict(c)}")
+    key = "fame_set" if a.seed == SEED else f"fame_set_seed{a.seed}"
+    rule = "" if a.seed == SEED else f", not seed 0's {len(seed0)} names, rule (c) applied"
+    h = freeze(key, out, f"order 0046's fame set: {a.n} names drawn by seed {a.seed} from {pool} eligible{rule}; rows {dict(c)}")
     print(f"{pool} eligible names; {len(rows)} rows {dict(c)}; relations {dict(collections.Counter(r['relation'] for r in rows if r['form'] == 'bare' and r['lang'] == 'en'))}; sha256 {h}")
 
 

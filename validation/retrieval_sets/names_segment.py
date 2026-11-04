@@ -63,6 +63,21 @@ def cubelang_exe() -> str:
     return exe
 
 
+def exact_items(keys: list[str], segment: str | None = None) -> dict[str, list[str]]:
+    """{key: [items]} through the built segment, exact (one ``cubelang knowledge batch`` over every key)."""
+    import tempfile
+    from retrieval_sets.common import data_root
+    qp = os.path.join(tempfile.mkdtemp(), "keys.jsonl")
+    with open(qp, "w", encoding="utf-8") as f:
+        for i, k in enumerate(keys):
+            f.write(json.dumps({"id": str(i), "key": k}, ensure_ascii=False) + "\n")
+    r = subprocess.run([cubelang_exe(), "knowledge", "batch", segment or os.path.join(data_root(), "r1b_segment"), qp],
+                       capture_output=True, text=True, encoding="utf-8")
+    if r.returncode:
+        raise SystemExit(r.stderr.strip())
+    return {keys[int(d["id"])]: sorted({f["text"] for f in d["exact"]}) for d in map(json.loads, r.stdout.splitlines())}
+
+
 def route(src: str, work: str, shards: int) -> dict:
     """Pass 1: every (name, item, kind) to its shard's work file. Returns counts."""
     import pyarrow.compute as pc

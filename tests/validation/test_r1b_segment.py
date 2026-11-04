@@ -67,3 +67,10 @@ def test_each_distance_enters_whole_and_a_cut_group_is_left_out():
     hit = {"exact": [{"text": "Q1"}], "near": [{"edits": 1, "facts": [{"text": "Q2"}]}, {"edits": 2, "facts": [{"text": "Q3"}]}]}
     assert V.groups(hit) == {"vm_exact": [["Q1"]], "vm_edit1": [["Q1"], ["Q2"]], "vm_edit2": [["Q1"], ["Q2"], ["Q3"]]}
     assert V.groups(hit, limit=2)["vm_edit2"] == [["Q1"], ["Q2"], []]                            # at the limit: edits 2 may be cut
+
+
+def test_rule_c_keeps_a_relation_only_while_two_items_still_bear_the_name():
+    from retrieval_sets.fame_set import shared_today
+    names = [("A", {"P19": ["Q1", "Q2", "Q3"], "P17": ["Q1", "Q4"]}), ("Pilot Corporation", {"P17": ["Q5", "Q6"]})]
+    today = {"A": ["Q1", "Q2", "Q9"], "Pilot Corporation": ["Q5"]}                   # renamed since 2019: one bearer left
+    assert shared_today(names, today) == [("A", {"P19": ["Q1", "Q2", "Q3"]})]

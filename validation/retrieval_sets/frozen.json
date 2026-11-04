@@ -12,5 +12,12 @@
   "file": "fame_set.jsonl",
   "frozen": "2026-10-28 00:52:29",
   "note": "order 0046's fame set: 500 names drawn by seed 0 from 34773 eligible; rows {('bare', 'en'): 500, ('bare', 'fr'): 500, ('qualified', 'en'): 466, ('qualified', 'fr'): 444}"
+ },
+ "fame_set_seed1": {
+  "sha256": "e653e19d72f7a9df2c5c73a7d81fc7390ec217c159af1253848b25e075f38680",
+  "bytes": 713457,
+  "file": "fame_set_seed1.jsonl",
+  "frozen": "2026-11-04 01:30:16",
+  "note": "order 0046's fame set: 500 names drawn by seed 1 from 34026 eligible, not seed 0's 500 names, rule (c) applied; rows {('bare', 'en'): 500, ('bare', 'fr'): 500, ('qualified', 'en'): 491, ('qualified', 'fr'): 461}"
  }
 }
