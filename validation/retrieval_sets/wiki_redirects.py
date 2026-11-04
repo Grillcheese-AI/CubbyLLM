@@ -41,12 +41,19 @@ def unescape(b: bytes) -> str:
     return _ESC.sub(lambda m: _MAP.get(m.group(1), m.group(1)), b).decode("utf-8", "replace").replace("_", " ")
 
 
+def _values(lines):
+    """The lines that hold tuples: an ``INSERT INTO ... VALUES (...),(...);`` line (the dumps until 2026), and since the
+    dumps of 2026-11 each tuple on its own line after a bare ``INSERT INTO `t` VALUES`` header. A parser that read only
+    the first form found 0 redirects in both wikis on the first Colab run (2026-11-03)."""
+    for ln in lines:
+        if ln.startswith(b"INSERT INTO") or ln.startswith(b"("):
+            yield ln
+
+
 def redirect_pages(lines) -> dict[int, str]:
     """{page id: title} of the article-space pages that are redirects."""
     out = {}
-    for ln in lines:
-        if not ln.startswith(b"INSERT INTO"):
-            continue
+    for ln in _values(lines):
         for m in PAGE.finditer(ln):
             if m.group(2) == b"0" and m.group(4) == b"1":
                 out[int(m.group(1))] = unescape(m.group(3))
@@ -55,9 +62,7 @@ def redirect_pages(lines) -> dict[int, str]:
 
 def pairs(lines, pages: dict[int, str]):
     """(from, to, fragment) for each article-space redirect whose page is known and whose target is local."""
-    for ln in lines:
-        if not ln.startswith(b"INSERT INTO"):
-            continue
+    for ln in _values(lines):
         for m in REDIRECT.finditer(ln):
             src = pages.get(int(m.group(1)))
             iw = m.group(5)
@@ -85,7 +90,11 @@ def build(wiki: str, out: str) -> dict:
     dst = os.path.join(out, f"redirects_{wiki}.parquet")
     meta = {t: head(BASE.format(w=wiki, t=t)) for t in ("page", "redirect")}
     if os.path.exists(dst):
-        return {"wiki": wiki, "out": dst, "skipped": True, **meta}
+        if pq.ParquetFile(dst).metadata.num_rows > 0:
+            return {"wiki": wiki, "out": dst, "skipped": True, **meta}
+        aside = f"{dst}.empty_{time.strftime('%Y%m%d_%H%M%S')}"      # an empty extract is moved aside, never deleted
+        os.replace(dst, aside)
+        print(f"{wiki}: the empty extract moved aside to {os.path.basename(aside)}; building again", flush=True)
     t0 = time.time()
     pages = redirect_pages(_lines(meta["page"]["url"]))
     print(f"{wiki}: {len(pages):,} redirect pages in {time.time() - t0:.0f} s", flush=True)

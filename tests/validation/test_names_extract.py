@@ -35,6 +35,20 @@ def test_redirect_tuples_become_article_space_pairs():
     assert got == [("JFK", "John F. Kennedy", ""), ("L'Étranger", "L'Étranger (roman)", "Intrigue")]
 
 
+def test_one_tuple_a_line_reads_the_same():
+    """The dumps of 2026-11 put ``INSERT INTO `t` VALUES`` alone on a line and each tuple on its own line after it; the
+    first Colab run read 0 redirects from them."""
+    page = [b"INSERT INTO `page` VALUES\n",
+            b"(10,0,'JFK',1,0,0.1,'20261101','20261101',5,40,'wikitext',NULL),\n",
+            b"(11,0,'John_F._Kennedy',0,0,0.2,'20261101','20261101',6,90000,'wikitext',NULL),\n",
+            b"(13,0,'L\\'\xc3\x89tranger',1,0,0.4,'20261101','20261101',8,30,'wikitext',NULL);\n"]
+    redirect = [b"INSERT INTO `redirect` VALUES\n", b"(10,0,'John_F._Kennedy','',''),\n",
+                b"(13,0,'L\\'\xc3\x89tranger_(roman)',NULL,'Intrigue');\n"]
+    pages = R.redirect_pages(page)
+    assert pages == {10: "JFK", 13: "L'Étranger"}
+    assert list(R.pairs(redirect, pages)) == [("JFK", "John F. Kennedy", ""), ("L'Étranger", "L'Étranger (roman)", "Intrigue")]
+
+
 def test_unescape_reads_mysql_escapes():
     assert R.unescape(b"a\\\\b\\nc_d") == "a\\b\nc d"
 
