@@ -1178,3 +1178,83 @@ That is under the 50 ms line, but near it past 6 branches. B1 alone, the same ru
   - CronQuestions' `simple_entity` for the 60% line, with `simple_time` beside it and the complex types out.
 
 Status: open.
+
+## R4 on dev: several values and time (Claude Code, 2026-11-04)
+- **Log:** `retrieval_R4_dev_2026-11-04.json`. Harness: `r4.py`, `r4_values.py` (the arms), `r4_statements.py`.
+  - **Statements** are read by id, with rank, start, end and point in time, and dated: outgoing through the source's
+    cache, incoming by one SPARQL query a (property, item).
+  - **Rows,** as your check confirmed: the live scoreboard's 44 `ambiguous_hop` and 2 `time_mismatch` rows from the
+    0047 run, which is the plan's 44 + 2; and CronQuestions' `simple_entity` (500 of dev's 7,745, seed 0), with
+    `simple_time` (300) beside it.
+- **The arms:**
+  - **order:** preferred rank; else one value; else, for a single-value property, the one value with no stated end;
+    else every value with no stated end, as a set.
+  - **interval:** at an explicit year, the values whose own dates place them there. An open end holds from its start;
+    an undated value is never placed.
+  - **now:** a present-tense question with no year takes the values that hold this year.
+
+  Nothing is ranked; several values are a set or a refusal.
+
+**The scoreboard (46 rows).** The values outside WebQuestions' gold are read by hand, one verdict per (question,
+value), with its reason, in `r4_board_read.json`:
+
+| | spoken | right | wrong | to read | refused |
+|---|---|---|---|---|---|
+| order | 42 | 39 | 2 | 1 | 4 |
+| interval | 40 | 37 | 2 | 1 | 6 |
+| now | 40 | 37 | 2 | 1 | 6 |
+
+- **Spoken: 40 to 42 of 46,** against the line's 20.
+- **Refused:** 4 seeds that today's source does not resolve ("the uk", "london", "the netherlands", "cyprus").
+- **The two time rows** ("capital of Spain in 2010", "currency of Sweden in 2010") are refused under a year. Madrid's
+  and the krona's statements carry no dates, so neither can be placed. The order arm, which ignores the year, says
+  both right.
+- **The 2 wrong rows, both from the source's own statements with no stated end:**
+  - "what language does greece use?": the plan's relation is P2936 (language used), whose 15 values include Ancient
+    Greek.
+  - "what country is the iberian peninsula located in?": Gibraltar, a British territory, among the "countries".
+- **To read:** "what nationality is zack de la rocha?". The source says the United States and Mexico; I could not
+  settle the Mexican citizenship.
+- **The rest read right:** time zones under several names for one zone (America/Chicago, UTC-06:00, Eastern Standard
+  Time), governments by their narrower names, and every official language.
+
+**CronQuestions `simple_entity` (500; 399 asked of the item's own statements, 101 of the statements naming it):**
+
+| | spoken | right | partly | wrong | refused |
+|---|---|---|---|---|---|
+| order (ignores the year) | 73.8% | 32 | 181 | 156 | 131 |
+| **interval** | **98.6%** | **334** | **139** | **20** | 7 |
+| now (= interval: every row has a year) | 98.6% | 334 | 139 | 20 | 7 |
+
+- **Judging:** "partly" means the spoken set holds the gold and other values. Judged by item id; 4 of the 20 wrong
+  are the same prize under another item, with the gold's exact label (item drift since CronQuestions' 2020 KG).
+- **Where the other values come from** (partly and wrong rows):
+  - **dated values placed at the year** (113 rows): several clubs in a transfer year (P54, 61), several awards that
+    year (P166, 32), several holders of a position (P39, 20). The source dates each one there.
+  - **values placed only by an open end** (42 rows: 7 wrong, 35 partly): a statement with a start and no end. It
+    is placed at every later year, so a Perpetual Secretary who began in 1782 is said to hold the post in 1935 and
+    in 2005. That is the danger: **"no stated end" is not "still holds"** for a value that ended without the source
+    saying so. 1,187 such values were spoken, 1,180 of them on `position held`.
+- **The set's size:** p50 3, p95 250, max 653. Positions with many holders (members of a parliament) are spoken
+  whole.
+- **`simple_time` (300, outside the line):** right 282, refused 11, wrong 5, partly 2. The 5 wrong are award years one
+  off the gold (the source's date against the dataset's). The 2 partly are a term dated a year later, and a second
+  marriage's years beside the first's.
+
+**The lines:** CronQuestions spoken 98.6% (line 60%) and the board 40 to 42 of 46 (line 20) are met. **0 wrong is not
+met, and the kill line (any wrong value) is crossed on dev:**
+- the open ends (7 rows wrong; 35 more speak an ended value beside the gold);
+- the source's own wrong or historical values (Gibraltar, Ancient Greek).
+
+**What I read from it (yours to decide; nothing changed on these lines):**
+- **An open end is not evidence that a value holds at a later year.** Candidates, each general:
+  - an open end holds only up to the subject's own end (a person's death, P570; an organisation's dissolution,
+    P576);
+  - a single-value property's open end holds only until the next value's start;
+  - an open end is never placed, only a closed interval or a point.
+- **"position held" asked from the position's side** ("who was the member of ... in 1993") has hundreds of holders.
+  Speaking them all is a list, not an answer. A size line for a spoken set may be wanted.
+- **Item drift:** judging by label equality when the ids differ would turn 4 wrong into right; I kept the strict
+  reading.
+- The source's own errors (Gibraltar) are what B2's possibility worlds and R8's checks would have to catch; no rule
+  over one statement can.

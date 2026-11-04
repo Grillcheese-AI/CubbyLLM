@@ -1,0 +1,80 @@
+{
+ "_what": "order 0046 R4: the board's values outside the WebQuestions gold, read by hand (Claude Code, 2026-11-04), one verdict per (question, value): holds = true today and an answer to what was asked; wrong = not true, or not what was asked; unsure = not settled here, left to read (the row stays 'to read').",
+ "what form of government does russia have today?": {
+  "Q4446300": {"verdict": "holds", "why": "super-presidential republic: a form of government Russia has (a narrower name than the gold's)"}},
+ "what time zone am i in michigan?": {
+  "Q2086913": {"verdict": "holds", "why": "Central Time Zone: four Upper Peninsula counties keep it"},
+  "Q28146035": {"verdict": "holds", "why": "America/New_York: the tz database's name for the Eastern zone"},
+  "Q5390": {"verdict": "holds", "why": "Eastern Standard Time: the Eastern zone's standard time"}},
+ "what time zone is oklahoma state?": {
+  "Q15406405": {"verdict": "holds", "why": "America/Chicago: the tz database's name for the Central zone"}},
+ "what time zone is new york under?": {
+  "Q5390": {"verdict": "holds", "why": "Eastern Standard Time"}},
+ "what is the time zone in california called?": {
+  "Q2204": {"verdict": "holds", "why": "UTC-08:00: Pacific standard time's offset"},
+  "Q2212": {"verdict": "holds", "why": "UTC-07:00: Pacific daylight time's offset (in summer)"},
+  "Q4742667": {"verdict": "holds", "why": "America/Los Angeles: the tz database's name for the Pacific zone"}},
+ "what timezone is the state of texas?": {
+  "Q15406405": {"verdict": "holds", "why": "America/Chicago"},
+  "Q5385": {"verdict": "holds", "why": "UTC-06:00: Central standard time's offset"}},
+ "what form of government does canada have?": {
+  "Q41614": {"verdict": "holds", "why": "constitutional monarchy"},
+  "Q43702": {"verdict": "holds", "why": "federation"}},
+ "what time zone is it in california?": {
+  "Q2212": {"verdict": "holds", "why": "UTC-07:00: Pacific daylight time's offset (in summer)"},
+  "Q4742667": {"verdict": "holds", "why": "America/Los Angeles"}},
+ "what timezone is nevada in right now?": {
+  "Q4742667": {"verdict": "holds", "why": "America/Los Angeles: most of Nevada keeps Pacific time"}},
+ "what time zone am i in missouri?": {
+  "Q15406405": {"verdict": "holds", "why": "America/Chicago"}},
+ "what language does greece use?": {
+  "Q35497": {"verdict": "wrong", "why": "Ancient Greek is no language Greece uses today; the plan's relation (P2936, language used) lists historical and minority languages"},
+  "Q13358": {"verdict": "holds", "why": "Megleno-Romanian: a minority language spoken in Greece"},
+  "Q180937": {"verdict": "holds", "why": "Tosk (Albanian): spoken by a minority"},
+  "Q220607": {"verdict": "holds", "why": "Tsakonian: spoken in Greece"},
+  "Q256": {"verdict": "holds", "why": "Turkish: spoken by the Thrace minority"},
+  "Q29316": {"verdict": "holds", "why": "Aromanian: spoken in Greece"},
+  "Q29347": {"verdict": "holds", "why": "Arvanitic: spoken in Greece"},
+  "Q3565084": {"verdict": "holds", "why": "Greek Sign Language"},
+  "Q36510": {"verdict": "holds", "why": "Modern Greek: the gold's language"},
+  "Q36748": {"verdict": "holds", "why": "Pontic Greek: spoken in Greece"},
+  "Q3915435": {"verdict": "holds", "why": "Romano-Greek: spoken by Romani in Greece"},
+  "Q7918": {"verdict": "holds", "why": "Bulgarian (Pomak speakers)"},
+  "Q853414": {"verdict": "unsure", "why": "Cappadocian Greek: near extinct; whether Greece 'uses' it is not settled here"},
+  "Q9296": {"verdict": "holds", "why": "Macedonian (Slavic speakers in northern Greece)"}},
+ "what do they speak in austria?": {
+  "Q188": {"verdict": "holds", "why": "German: Austria's official language"},
+  "Q36668": {"verdict": "holds", "why": "Austrian Sign Language: recognised in Austria's constitution since 2005"}},
+ "what timezone is minnesota in?": {
+  "Q15406405": {"verdict": "holds", "why": "America/Chicago"},
+  "Q5385": {"verdict": "holds", "why": "UTC-06:00"}},
+ "what nationality is zack de la rocha?": {
+  "Q96": {"verdict": "unsure", "why": "Mexican citizenship: the source states it; not settled here"}},
+ "what country is the iberian peninsula located in?": {
+  "Q1410": {"verdict": "wrong", "why": "Gibraltar is a British overseas territory, not a country"},
+  "Q142": {"verdict": "holds", "why": "France: French Cerdagne lies on the peninsula"},
+  "Q228": {"verdict": "holds", "why": "Andorra lies on the peninsula"}},
+ "what timezone is sweden?": {
+  "Q6655": {"verdict": "holds", "why": "UTC+01:00: Central European Time's offset"}},
+ "what language is spoken in haiti today?": {
+  "Q33491": {"verdict": "holds", "why": "Haitian Creole"}},
+ "what time zone am i in california?": {
+  "Q2212": {"verdict": "holds", "why": "UTC-07:00 (summer)"},
+  "Q4742667": {"verdict": "holds", "why": "America/Los Angeles"}},
+ "what type of government does germany have now?": {
+  "Q5440547": {"verdict": "holds", "why": "federal parliamentary republic"}},
+ "where did adolf hitler die?": {
+  "Q153491": {"verdict": "holds", "why": "the Fuehrerbunker, in Berlin: a place, and 'where' asks a place (R0's Kennedy row asked a city)"}},
+ "what timezone is the state of michigan and?": {
+  "Q28146035": {"verdict": "holds", "why": "America/New_York"},
+  "Q5390": {"verdict": "holds", "why": "Eastern Standard Time"}},
+ "what time zone is pennsylvania in right now?": {
+  "Q28146035": {"verdict": "holds", "why": "America/New_York"},
+  "Q5390": {"verdict": "holds", "why": "Eastern Standard Time"}},
+ "what kind of government does poland have?": {
+  "Q166747": {"verdict": "holds", "why": "parliamentary system"},
+  "Q179164": {"verdict": "holds", "why": "unitary state"},
+  "Q49890": {"verdict": "holds", "why": "semi-presidential system: a common classification of Poland's government"}},
+ "what do they speak in norway?": {
+  "Q56463": {"verdict": "holds", "why": "Sami: official in Sami administrative areas"}}
+}
