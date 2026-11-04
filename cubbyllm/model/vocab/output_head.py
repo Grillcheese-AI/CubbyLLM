@@ -100,11 +100,25 @@ class TopKRetrievalHead:
             self.codebook = int8_weight_only(self.codebook)
         return self
 
-    def logits(self, query: "Tensor", k: int) -> "Tensor":
+    shortlist = None          # a ShortlistIndex (order 0050), read only with CB_HEAD_SHORTLIST=1
+    shortlist_k, shortlist_arm = 1024, "clusters"
+
+    def attach_shortlist(self, index, k: int = 1024, arm: str = "clusters") -> "TopKRetrievalHead":
+        """Attach a ``shortlist.ShortlistIndex``: with ``CB_HEAD_SHORTLIST=1`` the head then scores only its
+        shortlist's rows (exactly) and the rest are ``-inf``; off, nothing changes (order 0050, stage 1)."""
+        self.shortlist, self.shortlist_k, self.shortlist_arm = index, int(k), str(arm)
+        return self
+
+    def logits(self, query: "Tensor", k: int, prev: "Tensor | None" = None) -> "Tensor":
         import torch
         import torch.nn.functional as F
 
         q = query if self.learnable else F.normalize(query, dim=-1)
+        if self.shortlist is not None:
+            from .shortlist import on
+            if on():
+                return self.shortlist.masked_logits(q, self._codes(), self.temperature, self.shortlist_k,
+                                                    self.shortlist_arm, prev)
         # F.linear, not `q @ codes.t()`: identical arithmetic — the same
         # kernel with the weight read transposed — but it is the call a
         # quantized weight can answer with its own kernel, and it does not
