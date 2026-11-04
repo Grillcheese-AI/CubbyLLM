@@ -52,8 +52,21 @@ def fame_rows(name: str = "fame_set") -> list[dict]:
     for line in open(path, encoding="utf-8"):
         r = json.loads(line)
         out.append({"id": r["id"], "set": "fame", "lang": r["lang"], "question": r["question"], "mention": r["name"],
-                    "pids": [r["relation"]], "gold": r.get("gold_item"), "kind": r["form"], "items": r.get("items") or []})
+                    "pids": [r["relation"]], "gold": r.get("gold_item"), "kind": r["form"], "items": r.get("items") or [],
+                    "relation_words": template_words(r)})
     return out
+
+
+def template_words(r: dict) -> list[str]:
+    """The fame template's own words (B1q's span accounting: the relation reading's words), name and value left out."""
+    from retrieval_bench.r2_arms import fold
+    from retrieval_sets.fame_set import ASK, qualified_text
+    n, v, i = "zqnamez", "zqvaluez", 0 if r["lang"] == "en" else 1
+    if r["form"] == "qualified":
+        t = qualified_text(n, r["relation"], r["discriminator"]["relation"], v, v)[i]
+    else:
+        t = ASK[r["relation"]][i].replace("{n}", n)
+    return [w for w in fold(t or "").split() if w not in (n, v)]
 
 
 def el_rows(split: str, n: int) -> list[dict]:

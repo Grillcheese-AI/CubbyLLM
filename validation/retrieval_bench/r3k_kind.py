@@ -14,6 +14,13 @@ The properties kept, when a kind is asked: the item's outgoing properties whose 
 No kind: the row is scored as in R3o. Incoming properties (asked from the value's side) are kept only when no kind is
 asked: a kind is read off the values the item states.
 
+The re-read (mode ``gaps``, Cowork's check of 2026-11-04 afternoon, three gaps in the rule, written before it is run):
+  incoming    an incoming property stays when its subjects are of the kind ("who was born here?" asks for persons):
+              some item stating it with this one as its value reaches the kind through instance of / subclass of*
+              (one SPARQL query a row, FILTER EXISTS per property); unanswered: every incoming property stays
+  the chain   the kind along subclass of, as ``chain``
+  how many    a quantity-valued property, or a property with several values on this item (their count)
+
 Wired: STANDALONE (R3k's bench).
 """
 from __future__ import annotations
@@ -73,17 +80,42 @@ def chain(values: list[str], cls: set) -> set[str] | None:
     return None
 
 
-def kept(kind: str | None, out_props: set, in_props: set, claims: dict, lx: dict, of_kind) -> set:
+def kept(kind: str | None, out_props: set, in_props: set, claims: dict, lx: dict, of_kind,
+         in_of_kind: set | None = None, counts: bool = False) -> set:
     """The candidate properties left once the kind bounds them. `claims`: the item's {property: [value items]};
-    `of_kind`: a value item -> bool for person / place."""
+    `of_kind`: a value item -> bool for person / place. The re-read: `in_of_kind`, the incoming properties whose
+    subjects are of the kind (kept); `counts`, "how many" also keeps a property with several values here."""
     if kind is None:
         return out_props | in_props
     if kind in DATATYPE:
-        return {p for p in out_props if lx["datatype"].get(p) == DATATYPE[kind]}
-    return {p for p in out_props if any(of_kind(v) for v in claims.get(p) or ())}
+        out = {p for p in out_props if lx["datatype"].get(p) == DATATYPE[kind]}
+        if counts and kind == "quantity":
+            out |= {p for p in out_props if len(set(claims.get(p) or ())) >= 2}
+        return out
+    return {p for p in out_props if any(of_kind(v) for v in claims.get(p) or ())} | (in_of_kind or set())
 
 
-__all__ = ["asked_kind", "chain", "kept", "kind_classes", "one_step"]
+def incoming_of_kind(item: str, props: list[str], cls: set) -> set[str] | None:
+    """The incoming properties of `item` some subject of which reaches a class of `cls`; None if unanswered."""
+    from cubbyllm.sources.wikidata import UA
+    if not props or not cls:
+        return set()
+    q = ("SELECT ?p WHERE { VALUES ?p { " + " ".join(f"wdt:{p}" for p in props) + " } FILTER EXISTS { ?s ?p wd:" + item
+         + " . ?s wdt:P31/wdt:P279* ?c . VALUES ?c { " + " ".join(f"wd:{c}" for c in cls) + " } } }")
+    for k in range(3):
+        try:
+            req = urllib.request.Request("https://query.wikidata.org/sparql", data=urllib.parse.urlencode({"query": q}).encode(),
+                                         headers={"User-Agent": UA, "Accept": "application/sparql-results+json"})
+            with urllib.request.urlopen(req, timeout=60) as r:
+                rows = json.loads(r.read().decode("utf-8"))["results"]["bindings"]
+            time.sleep(0.2)
+            return {b["p"]["value"].rsplit("/", 1)[1] for b in rows}
+        except Exception:                                  # noqa: BLE001 -- recorded as unknown, never as "none"
+            time.sleep(5 * (k + 1))
+    return None
+
+
+__all__ = ["asked_kind", "chain", "incoming_of_kind", "kept", "kind_classes", "one_step"]
 
 
 def bound(rows: list[dict], items: dict, props: dict, src, lx: dict, mode: str) -> tuple[dict, dict]:
@@ -92,7 +124,7 @@ def bound(rows: list[dict], items: dict, props: dict, src, lx: dict, mode: str) 
     cls = {k: kind_classes(src, k) for k in KIND_WORDS}
     claims = ClaimIds(src).get(sorted({q for r in rows for q in items[r["id"]]}))
     memo: dict[str, bool] = {}
-    out, unanswered = {}, 0
+    out, unanswered, in_unanswered = {}, 0, 0
     for r in rows:
         kind = r["kind_asked"] = asked_kind(r["question"])
         if kind is None:
@@ -105,9 +137,18 @@ def bound(rows: list[dict], items: dict, props: dict, src, lx: dict, mode: str) 
             for p, vs in (claims.get(q) or {}).items():
                 cl.setdefault(p, []).extend(vs)
         of_kind = lambda v: False                                                      # noqa: E731
+        in_k: set | None = None
+        if kind in KIND_WORDS and mode == "gaps" and in_p:
+            in_k = set()
+            for q in its:
+                got = incoming_of_kind(q, sorted(set(props.get(q, {}).get("in") or ()), key=lambda p: int(p[1:])), cls[kind])
+                if got is None:                         # the service could not say: every incoming property stays
+                    in_unanswered += 1
+                    got = set(props.get(q, {}).get("in") or ())
+                in_k |= got
         if kind in KIND_WORDS:
             vals = sorted({v for p in out_p for v in cl.get(p) or ()})
-            if mode == "chain":
+            if mode in ("chain", "gaps"):
                 ok = chain(vals, cls[kind])
                 if ok is None:                          # the service could not say: the kind bounds nothing here
                     unanswered += 1
@@ -119,9 +160,9 @@ def bound(rows: list[dict], items: dict, props: dict, src, lx: dict, mode: str) 
                     if v not in memo:
                         memo[v] = one_step(src, v, cls[kind])
                     return memo[v]
-        out[r["id"]] = kept(kind, out_p, in_p, cl, lx, of_kind)
+        out[r["id"]] = kept(kind, out_p, in_p, cl, lx, of_kind, in_k, counts=mode == "gaps")
     return out, {"classes": {k: sorted(v) for k, v in cls.items()}, "chain_unanswered": unanswered,
-                 "rows_with_kind": len(out)}
+                 "incoming_unanswered": in_unanswered, "rows_with_kind": len(out)}
 
 
 def pick_margin(summary: dict, taus: list[float]) -> float | None:

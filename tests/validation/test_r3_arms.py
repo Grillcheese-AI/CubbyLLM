@@ -95,3 +95,13 @@ def test_r3k_keeps_only_the_properties_whose_values_are_of_the_kind():
     assert kept("place", {"P569", "P19", "P50"}, {"P737"}, claims, lx, is_place) == {"P19"}
     assert kept("time", {"P569", "P19", "P1082"}, set(), claims, lx, is_place) == {"P569"}
     assert kept(None, {"P19"}, {"P737"}, claims, lx, is_place) == {"P19", "P737"}     # no kind: R3o's candidates
+
+
+def test_r3k_gaps_keep_incoming_of_the_kind_and_counts_for_how_many():
+    from retrieval_bench.r3k_kind import kept
+    lx = {"datatype": {"P1082": "quantity", "P40": "wikibase-item", "P19": "wikibase-item", "P17": "wikibase-item"}}
+    claims = {"P40": ["Q1", "Q2", "Q2"], "P17": ["Q142"]}
+    no = lambda v: False                                                                          # noqa: E731
+    assert kept("person", {"P40"}, {"P19", "P737"}, claims, lx, no, {"P19"}) == {"P19"}            # born here: persons
+    assert kept("quantity", {"P1082", "P40", "P17"}, set(), claims, lx, no, counts=True) == {"P1082", "P40"}
+    assert kept("quantity", {"P1082", "P40"}, set(), claims, lx, no) == {"P1082"}                   # the rule as first read

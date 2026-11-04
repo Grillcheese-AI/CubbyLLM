@@ -114,7 +114,7 @@ def main() -> None:
     ap.add_argument("--programs", default=None, help="R3's programs (default: its 300-row run of this split)")
     ap.add_argument("--arm", default="450m", help="the model arm's name (order 0048: 450m_wd, with its programs)")
     ap.add_argument("--tag", default="")
-    ap.add_argument("--kind", choices=("none", "one", "chain"), default="none",
+    ap.add_argument("--kind", choices=("none", "one", "chain", "gaps"), default="none",
                     help="R3k: the asked kind bounds the properties (one subclass step, or the whole chain)")
     a = ap.parse_args()
     t0, src = time.time(), source()

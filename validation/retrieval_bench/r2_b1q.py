@@ -15,7 +15,15 @@ by id through the source's cache, for cue names that name at most ``IN_MAX`` ite
 holding (candidate, cue) pair is a fact of the branch segment, keyed ``<candidate> ~ <cue words>``, and a branch
 queries its cues there.
 
-A branch stands when it verifies the relation (B1's check) and holds the qualifier. A question whose cue words name
+A branch stands when it verifies the relation (B1's check) and holds the qualifier. Two rules from Cowork's check of seed 0 (2026-11-04
+afternoon), written before seed 1 is read:
+  short names   a cue of 3 characters or fewer (a code, an abbreviation) names only the items with a label or alias
+                equal to it as the question writes it, case and accents kept ("né" never names "NE")
+  relation      span accounting also counts the words the relation reading used: on the fame set, the template's own
+                words (``relation_words``; function words stay function words)
+  located in    a branch whose own statements do not hold the qualifier walks `located in` (P131) in the VM, one hop
+                a query of the branch segment, up to a country (``MAX_HOPS``); reaching a cue's item holds it
+A question whose cue words name
 no item has no qualifier to check: B1's outcome, counted apart ("no qualifier"). Without a relation (an
 entity-linking row with none), a candidate stands on the qualifier alone: one standing is a pick, otherwise undecided.
 The outcome table is B1's (``r2_vm.decide``). No margin, nothing ranked.
@@ -28,7 +36,7 @@ import json
 
 __wiring__ = "STANDALONE"
 
-MAX_WORDS, IN_MAX = 6, 20
+MAX_WORDS, IN_MAX, SHORT, MAX_HOPS = 6, 20, 3, 8
 
 
 def relation_wordings(pids, lx: dict, langs=("en", "fr")) -> set[str]:
@@ -37,7 +45,7 @@ def relation_wordings(pids, lx: dict, langs=("en", "fr")) -> set[str]:
     return {w for lg in langs for w, ps in lx["by_wording"].get(lg, {}).items() if want & set(ps)}
 
 
-def cue_runs(question: str, mention, pids, lx: dict) -> list[str]:
+def cue_runs(question: str, mention, pids, lx: dict, relation_words=()) -> list[str]:
     """Every run of 1 to MAX_WORDS cue words, as folded text (rule (a)). `mention`: the name as asked, or every name
     the row's items go by (a French question asks the French label)."""
     from retrieval_bench.r2_arms import STOP, fold
@@ -56,6 +64,10 @@ def cue_runs(question: str, mention, pids, lx: dict) -> list[str]:
         for i in range(len(toks) - n + 1):
             if n and toks[i:i + n] == words and all(r is None for r in role[i:i + n]):
                 role[i:i + n] = ["relation"] * n
+    from retrieval_bench.r2_arms import STOP as _S
+    for i, t in enumerate(toks):                         # the relation reading's own words (a template's), not function words
+        if role[i] is None and t in set(relation_words) and t not in _S:
+            role[i] = "relation"
     runs, cur = [], []                                   # runs break at the name and the relation only, so a name
     for t, r in zip(toks, role):                         # with a function word inside it ("canton of Bern") stays whole
         if r is None:
@@ -67,6 +79,28 @@ def cue_runs(question: str, mention, pids, lx: dict) -> list[str]:
         runs.append(cur)
     spans = {tuple(run[i:j]) for run in runs for i in range(len(run)) for j in range(i + 1, min(len(run), i + MAX_WORDS) + 1)}
     return sorted(" ".join(sp) for sp in spans if sp[0] not in STOP and sp[-1] not in STOP)   # never a function word at an edge
+
+
+def written(question: str, cue: str) -> str | None:
+    """The cue as the question writes it (case and accents kept), or None."""
+    import re
+    import unicodedata
+    from retrieval_bench.r2_arms import fold
+    toks = re.findall(r"\w+", unicodedata.normalize("NFC", question or ""))
+    want = cue.split()
+    folded = [fold(t) for t in toks]
+    for i in range(len(toks) - len(want) + 1):
+        if folded[i:i + len(want)] == want:
+            return " ".join(toks[i:i + len(want)])
+    return None
+
+
+def short_ok(question: str, cue: str, items: list[str], names: dict) -> list[str]:
+    """Rule 1: a short cue keeps only the items named exactly as written; a longer cue keeps them all."""
+    if len(cue) > SHORT:
+        return list(items)
+    w = written(question, cue)
+    return [q for q in items if w and w in (names.get(q) or ())]
 
 
 def longest(named: list[str]) -> list[str]:
@@ -86,12 +120,13 @@ def holds(cand: str, profile: dict, values: set[str], claims_in: dict) -> bool:
     return any(cand in ids for v in values for ids in (claims_in.get(v) or {}).values())
 
 
-def write_segment(path: str, rows: list[dict], profiles: dict, items_of: dict, claims_in: dict) -> int:
+def write_segment(path: str, rows: list[dict], profiles: dict, items_of_all: dict, claims_in: dict) -> int:
     """The qualifier facts: ``<candidate> ~ <cue>`` for every holding pair, appended to B1's segment at `path`."""
     n = 0
     with open(path, "a", encoding="utf-8") as f:
         seen = set()
         for r in rows:
+            items_of = r.get("cue_items", items_of_all)
             for q in r.get("named") or ():
                 for cue in longest([c for c in r.get("cues") or () if items_of.get(c)]):
                     vals = set(items_of.get(cue) or ())
@@ -122,6 +157,21 @@ def b1q(session, kpath: str, named: list[str], pid: str | None, cues: list[str],
             if b["values"]:
                 qual = True
                 break
+        if not qual:                                     # along `located in`, one VM hop at a time, up to a country
+            want, seen, front = {v for c in checked for v in items_of.get(c) or ()}, {q}, [q]
+            for _ in range(MAX_HOPS):
+                nxt = []
+                for x in front:
+                    b = V.branch(session, kpath, x, "P131")
+                    wall += b["wall_ms"] or 0
+                    nxt += [v for v in b["values"] if v not in seen]
+                if want & set(nxt):
+                    qual = True
+                    break
+                seen |= set(nxt)
+                front = nxt
+                if not front:
+                    break
         bs.append({"item": q, "values": rel["values"] if qual else [], "wall_ms": rel["wall_ms"]})
     if pid:
         out = V.decide(bs)
@@ -132,4 +182,4 @@ def b1q(session, kpath: str, named: list[str], pid: str | None, cues: list[str],
     return {**out, "k": len(named), "wall_ms": round(wall, 3), "qualifier": "checked"}
 
 
-__all__ = ["b1q", "cue_runs", "holds", "longest", "relation_wordings", "write_segment"]
+__all__ = ["b1q", "cue_runs", "holds", "longest", "relation_wordings", "short_ok", "write_segment", "written"]

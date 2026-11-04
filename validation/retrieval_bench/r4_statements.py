@@ -1,0 +1,152 @@
+"""r4_statements -- order 0046, R4: a relation's values with their rank and time, fetched by id and dated.
+
+Wikidata5M keeps no ranks or qualifiers, so R4 reads the statements themselves (the order: "fetch the statements by id
+(rank, start, end, point in time) through the source's cache, and record the date of the fetch"):
+  out     the item's own statements of the property (``wbgetentities`` claims, through the source's cache)
+  in      the statements naming the item as their value (one SPARQL query a (property, item): the subject, the rank,
+          start, end and point in time); a query the service cannot answer is recorded as unavailable, never as none
+  single  the property's single-value constraints (P2302 with Q19474404 "single-value", or Q52060874 "single-best-
+          value"), from the property's own statements
+A value: {"v": item id or literal (None for "no value" / "unknown value"), "rank", "start", "end", "point"}, each time
+as {"y": signed year, "m", "d", "prec"} (Wikidata's precision: 9 a year, 10 a month, 11 a day).
+Kept in ``$CUBBY_DATA_ROOT/retrieval/r4_statements.jsonl``, one line per (item, property, direction), with its date.
+
+Wired: STANDALONE (R4's bench).
+"""
+from __future__ import annotations
+
+import datetime as _dt
+import json
+import os
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+
+__wiring__ = "STANDALONE"
+
+SPARQL = "https://query.wikidata.org/sparql"
+TIME_Q = {"P580": "start", "P582": "end", "P585": "point"}
+SINGLE = {"Q19474404", "Q52060874"}
+RANKS = {"PreferredRank": "preferred", "NormalRank": "normal", "DeprecatedRank": "deprecated"}
+
+
+def parse_time(t: str, prec: int | None = None) -> dict | None:
+    """'+2001-05-00T00:00:00Z' -> {"y": 2001, "m": 5, "d": 0, "prec": ...}; the sign is the era."""
+    t = str(t or "")
+    if t[:1] not in "+-" or len(t) < 5:
+        return None
+    sign = -1 if t.startswith("-") else 1
+    try:
+        y, m, d = t[1:].split("T")[0].split("-")[:3]
+        return {"y": sign * int(y), "m": int(m), "d": int(d), "prec": int(prec if prec is not None else 11)}
+    except ValueError:
+        return None
+
+
+def values_of(claims: dict, pid: str) -> list[dict]:
+    """The property's statements in `claims` (a ``wbgetentities`` claims object), as values."""
+    out = []
+    for st in claims.get(pid) or ():
+        snak = st.get("mainsnak") or {}
+        dv = (snak.get("datavalue") or {}).get("value")
+        v = None
+        if snak.get("snaktype", "value") == "value" and dv is not None:
+            v = dv.get("id") if isinstance(dv, dict) and "id" in dv else \
+                (dv.get("time") if isinstance(dv, dict) and "time" in dv else
+                 (dv.get("amount") if isinstance(dv, dict) and "amount" in dv else
+                  (dv.get("text") if isinstance(dv, dict) else dv)))
+        val = {"v": v, "rank": st.get("rank", "normal")}
+        for q, slot in TIME_Q.items():
+            for qs in (st.get("qualifiers") or {}).get(q) or ():
+                tv = (qs.get("datavalue") or {}).get("value") or {}
+                pt = parse_time(tv.get("time"), tv.get("precision"))
+                if pt and slot not in val:
+                    val[slot] = pt
+        out.append(val)
+    return out
+
+
+def _sparql(query: str, tries: int = 3, timeout: float = 70) -> list[dict] | None:
+    from cubbyllm.sources.wikidata import UA
+    for k in range(tries):
+        try:
+            req = urllib.request.Request(SPARQL, data=urllib.parse.urlencode({"query": query}).encode(),
+                                         headers={"User-Agent": UA, "Accept": "application/sparql-results+json"})
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                rows = json.loads(r.read().decode("utf-8"))["results"]["bindings"]
+            time.sleep(0.2)
+            return rows
+        except urllib.error.HTTPError as e:
+            time.sleep((int(e.headers.get("Retry-After") or 30) + 1) if e.code == 429 else 5 * (k + 1))
+        except Exception:                                   # noqa: BLE001 -- recorded as unavailable, never as none
+            time.sleep(5 * (k + 1))
+    return None
+
+
+def incoming(pid: str, obj: str) -> list[dict] | None:
+    """The statements `?s pid obj`, as values whose "v" is the subject; None if the service could not say."""
+    opt = " ".join(f"OPTIONAL {{ ?st pqv:{q} ?{s}v . ?{s}v wikibase:timeValue ?{s} ; wikibase:timePrecision ?{s}p . }}"
+                   for q, s in TIME_Q.items())
+    rows = _sparql(f"SELECT ?st ?s ?rank ?start ?startp ?end ?endp ?point ?pointp WHERE {{ ?s p:{pid} ?st . "
+                   f"?st ps:{pid} wd:{obj} ; wikibase:rank ?rank . {opt} }} LIMIT 5000")
+    if rows is None:
+        return None
+    by: dict[str, dict] = {}
+    for b in rows:
+        st = b["st"]["value"]
+        if st in by:
+            continue
+        val = {"v": b["s"]["value"].rsplit("/", 1)[1], "rank": RANKS.get(b["rank"]["value"].rsplit("#", 1)[1], "normal")}
+        for s in TIME_Q.values():
+            if s in b:
+                t = b[s]["value"]
+                val[s] = parse_time(t if t[:1] in "+-" else "+" + t, int(b[s + "p"]["value"]) if s + "p" in b else None)
+        by[st] = val
+    return list(by.values())
+
+
+class Statements:
+    """One fetch per (item, property, direction), ever; dated."""
+
+    def __init__(self, src, path: str | None = None) -> None:
+        from retrieval_sets.common import data_root
+        self.src, self.path = src, path or os.path.join(data_root(), "r4_statements.jsonl")
+        self.c: dict[str, dict] = {}
+        if os.path.exists(self.path):
+            for line in open(self.path, encoding="utf-8"):
+                if line.strip():
+                    d = json.loads(line)
+                    self.c[d["key"]] = d
+
+    def _put(self, key: str, values: list | None, **extra) -> dict:
+        d = {"key": key, "values": values, "fetched": _dt.date.today().isoformat(), **extra}
+        self.c[key] = d
+        with open(self.path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(d, ensure_ascii=False) + "\n")
+        return d
+
+    def out(self, qid: str, pid: str) -> dict:
+        key = f"out|{qid}|{pid}"
+        if key not in self.c:
+            from retrieval_sets.common import entities
+            claims = (entities(self.src, [qid], props="claims", langs="en").get(qid) or {}).get("claims") or {}
+            self._put(key, values_of(claims, pid))
+        return self.c[key]
+
+    def inc(self, qid: str, pid: str) -> dict:
+        key = f"in|{qid}|{pid}"
+        if key not in self.c:
+            self._put(key, incoming(pid, qid))
+        return self.c[key]
+
+    def single(self, pid: str) -> bool:
+        key = f"single|{pid}"
+        if key not in self.c:
+            from retrieval_sets.common import entities
+            claims = (entities(self.src, [pid], props="claims", langs="en").get(pid) or {}).get("claims") or {}
+            self._put(key, None, single=any(v["v"] in SINGLE for v in values_of(claims, "P2302")))
+        return bool(self.c[key].get("single"))
+
+
+__all__ = ["Statements", "incoming", "parse_time", "values_of"]

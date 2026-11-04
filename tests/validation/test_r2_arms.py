@@ -150,3 +150,28 @@ def test_the_name_is_one_span_and_a_qualifier_is_the_longest_name():
     lx = {"by_wording": {"en": {"country": ["P17"]}, "fr": {}}}
     assert "dhaka district" in Q.cue_runs("Which country is Dhaka in Dhaka District in?", "Dhaka", ["P17"], lx)
     assert Q.longest(["terre", "terre neuve", "terre neuve et labrador", "cap"]) == ["terre neuve et labrador", "cap"]
+
+
+def test_b1q_s_rules_before_seed_1_short_names_as_written_and_the_template_s_words():
+    from retrieval_bench.r2_b1q import cue_runs, short_ok, written
+    from retrieval_bench.r2_choosing import template_words
+    names = {"Q1553": {"NE", "Nebraska"}, "Q30": {"US", "United States"}}
+    assert written("Où est né Tim Brown ?", "ne") == "né"
+    assert short_ok("Où est né Tim Brown ?", "ne", ["Q1553"], names) == []                    # "né" never names "NE"
+    assert short_ok("Is Rye in the US?", "us", ["Q30"], names) == ["Q30"]                     # written as named
+    assert short_ok("x", "nebraska", ["Q1553"], {}) == ["Q1553"]                              # longer cues untouched
+    lx = {"by_wording": {"en": {}, "fr": {}}}
+    tw = template_words({"lang": "fr", "relation": "P19", "form": "bare"})
+    assert tw == ["ou", "est", "ne"] and cue_runs("Où est né Tim Brown ?", "Tim Brown", ["P19"], lx, tw) == []
+    q = {"lang": "en", "relation": "P17", "form": "qualified", "discriminator": {"relation": "P131"}}
+    assert cue_runs("Which country is Rosebank in Western Cape in?", "Rosebank", ["P17"], lx, template_words(q)) == \
+        ["cape", "western", "western cape"]
+
+
+def test_b1q_walks_located_in_one_vm_hop_at_a_time(monkeypatch):
+    from retrieval_bench import r2_b1q as Q
+    facts = {("Q1", "~ western cape"): [], ("Q2", "~ western cape"): [], ("Q1", "P19"): ["Q9"], ("Q2", "P19"): ["Q9"],
+             ("Q1", "P131"): ["Q5465"], ("Q5465", "P131"): ["Q127167"], ("Q2", "P131"): ["Q8"], ("Q8", "P131"): []}
+    monkeypatch.setattr(V, "branch", lambda s, k, q, p: {"item": q, "values": facts.get((q, p), []), "wall_ms": 0.1})
+    out = Q.b1q(None, "", ["Q1", "Q2"], "P19", ["western cape"], {"western cape": ["Q127167"]})
+    assert out["outcome"] != "ask" and out.get("item") == "Q1"            # Cape Town is in the Western Cape; Q2 is not

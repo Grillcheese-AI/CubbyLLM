@@ -26,7 +26,7 @@ def prepare(rows: list[dict], profiles: dict, kpath: str) -> dict:
     from retrieval_bench import r2_arms as A
     from retrieval_bench import r2_b1q as Q
     from retrieval_bench.r3_gold import ClaimIds, links
-    from retrieval_sets.common import source
+    from retrieval_sets.common import entities, names_of, source
     from retrieval_sets.lexicon import check
     from retrieval_sets.names_segment import exact_items
     lx, src = check(), source()
@@ -38,7 +38,7 @@ def prepare(rows: list[dict], profiles: dict, kpath: str) -> dict:
             ls = links(r.get("row_items") or [], r.get("answer_qids") or [], claims)
             r["pids_given"] = ls if len(ls) == 1 else []
         names = [r["mention"]] + [v for q in r.get("items") or () for v in ((profiles.get(q) or {}).get("labels") or {}).values() if v]
-        r["cues"] = Q.cue_runs(r["question"], names, r["pids"] or r.get("pids_given") or [], lx)
+        r["cues"] = Q.cue_runs(r["question"], names, r["pids"] or r.get("pids_given") or [], lx, r.get("relation_words") or ())
     names = sorted({c for r in rows for c in r["cues"]} | {r["mention"] for r in rows if r["set"] in ("shadowlink", "fame")})
     found = exact_items(names)
     _ITEMS.clear()
@@ -48,6 +48,13 @@ def prepare(rows: list[dict], profiles: dict, kpath: str) -> dict:
             r["gold_bears"] = r["gold"] in set(found.get(r["mention"]) or ())
         if r["set"] == "fame" and r["kind"] == "bare":
             r["shared_today"] = len(set(r.get("items") or ()) & set(found.get(r["mention"]) or ())) >= 2
+    # rule 1: a short cue names only the items named exactly as the question writes it
+    short = sorted({v for c in _ITEMS if len(c) <= Q.SHORT for v in _ITEMS[c]})
+    ents = entities(src, short, props="labels|aliases", langs="en|fr|mul") if short else {}
+    exact_names = {q: set(names_of(e, "en")) | set(names_of(e, "fr")) for q, e in ents.items()}
+    for r in rows:
+        r["cue_items"] = {c: Q.short_ok(r["question"], c, _ITEMS[c], exact_names) for c in r["cues"] if _ITEMS.get(c)}
+    n_chain = located_in(kpath, rows, src)
     small = sorted({v for c in {c for r in rows for c in r["cues"]} for v in (_ITEMS.get(c) or ()) if len(_ITEMS[c]) <= Q.IN_MAX})
     claims_in = ClaimIds(src).get(small) if small else {}
     n_q = Q.write_segment(kpath, rows, profiles, _ITEMS, claims_in)
@@ -59,8 +66,35 @@ def prepare(rows: list[dict], profiles: dict, kpath: str) -> dict:
                     for v in dict.fromkeys((profiles.get(q, {}).get("values") or {}).get(pid) or ()):
                         f.write(json.dumps({"key": f"{q} {pid}", "text": v, "source": f"wikidata:{q}"}, ensure_ascii=False) + "\n")
                         n_rel += 1
-    return {"qualifier_facts": n_q, "relation_given_facts": n_rel, "cue_names": len(_ITEMS),
+    return {"qualifier_facts": n_q, "relation_given_facts": n_rel, "located_in_facts": n_chain, "cue_names": len(_ITEMS),
             "relation_given_rows": sum(1 for r in rows if r.get("pids_given"))}
+
+
+def located_in(kpath: str, rows: list[dict], src) -> int:
+    """`<x> P131` facts for every item on the `located in` chains from the candidates of rows with a qualifier, up to a
+    country (instance of Q6256 or Q3624078) or MAX_HOPS; read from statements by id, walked by the VM in B1q."""
+    from retrieval_bench import r2_b1q as Q
+    from retrieval_bench.r3_gold import ClaimIds
+    countries, seen, n = {"Q6256", "Q3624078"}, set(), 0
+    front = sorted({q for r in rows if any(r.get("cue_items", {}).values()) for q in r.get("named") or ()})
+    with open(kpath, "a", encoding="utf-8") as f:
+        for _ in range(Q.MAX_HOPS):
+            front = [q for q in front if q not in seen]
+            if not front:
+                break
+            seen |= set(front)
+            claims = ClaimIds(src).get(front)
+            nxt = []
+            for q in front:
+                c = claims.get(q) or {}
+                if countries & set(c.get("P31") or ()):
+                    continue                                      # up to the country
+                for v in dict.fromkeys(c.get("P131") or ()):
+                    f.write(json.dumps({"key": f"{q} P131", "text": v, "source": f"wikidata:{q}"}) + "\n")
+                    n += 1
+                    nxt.append(v)
+            front = nxt
+    return n
 
 
 def b_arms(session, kpath: str, r: dict, profiles: dict) -> dict:
@@ -69,13 +103,13 @@ def b_arms(session, kpath: str, r: dict, profiles: dict) -> dict:
     named, out = r.get("named") or [], {}
     none = {"outcome": "refuse", "why": "no candidate bears the name"}
     if r["pids"]:
-        out["b1q"] = b1q(session, kpath, named, r["pids"][0], r["cues"], _ITEMS) if named else none
+        out["b1q"] = b1q(session, kpath, named, r["pids"][0], r["cues"], r.get("cue_items", _ITEMS)) if named else none
         return out
-    out["b1q"] = b1q(session, kpath, named, None, r["cues"], _ITEMS) if named else none
+    out["b1q"] = b1q(session, kpath, named, None, r["cues"], r.get("cue_items", _ITEMS)) if named else none
     if r.get("pids_given"):
         pid = r["pids_given"][0]
         out["b1_rel"] = V.b1(session, kpath, named, pid) if named else none
-        out["b1q_rel"] = b1q(session, kpath, named, pid, r["cues"], _ITEMS) if named else none
+        out["b1q_rel"] = b1q(session, kpath, named, pid, r["cues"], r.get("cue_items", _ITEMS)) if named else none
     return out
 
 
