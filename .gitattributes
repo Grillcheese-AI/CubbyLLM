@@ -3,3 +3,4 @@
 
 # frozen by checksum (order 0046): no end-of-line conversion, or a fresh checkout would change its SHA-256
 validation/retrieval_sets/fame_set.jsonl -text
+validation/retrieval_sets/fame_set_seed1.jsonl -text
