@@ -73,3 +73,16 @@ def test_whole_clusters_are_taken_in_score_order_and_successors_join_arm_c():
     idx.router, idx.succ = (idx.centroids, np.zeros(10, dtype=np.float32)), succ
     with_succ = idx.shortlist(h, 50, "router+succ", prev=np.array([1]))[0]
     assert {2, 3} <= set(with_succ) and set(ids) <= set(with_succ)
+
+
+def test_the_screen_arm_lists_a_context_clusters_tokens_by_their_mass():
+    from cubbyllm.model.vocab.shortlist import ScreenIndex
+    rng = np.random.default_rng(3)
+    hid = np.concatenate([rng.normal(5, 0.1, (40, 4)), rng.normal(-5, 0.1, (40, 4))]).astype(np.float32)
+    top = np.concatenate([np.tile([7, 8], (40, 1)), np.tile([9, 7], (40, 1))])
+    w = np.concatenate([np.tile([0.9, 0.1], (40, 1)), np.tile([0.6, 0.3], (40, 1))])
+    sc = ScreenIndex.build(hid, top, w, vocab=20, n=2, seed=0)
+    near_a = sc.shortlist(hid[:1], 1)[0]
+    assert list(near_a) == [7]                                   # the cluster's heaviest token
+    assert set(sc.shortlist(hid[:1], 3)[0]) == {7, 8, 9}         # k distinct: the next cluster fills the rest
+    assert ScreenIndex.build(hid, top, w, 20, 2, seed=0).ids.tolist() == sc.ids.tolist()

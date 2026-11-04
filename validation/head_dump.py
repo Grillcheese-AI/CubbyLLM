@@ -11,7 +11,8 @@ tails), one forward of each window through the base export, keeping per position
 The head's own rows are read from the export when the index is built (``head_shortlist_eval.py``).
 
     uv run --project <grilly2> python validation/head_dump.py --split heldout --windows 4 --len 1024
-    uv run --project <grilly2> python validation/head_dump.py --split heldin --windows 8 --len 1024
+    uv run --project <grilly2> python validation/head_dump.py --split heldin --windows 32 --len 1024
+    uv run --project <grilly2> python validation/head_dump.py --split heldin --windows 4 --phase 0.5 --name heldin_val
 -> $CUBBY_DATA_ROOT/head_shortlist/<split>.npz
 
 Wired: STANDALONE (an experiment; feeds ``head_shortlist_eval.py``). Imports grilly (grilly2), never torch.
@@ -34,13 +35,15 @@ SHARDS = ("arxiv", "books", "fineweb_edu", "kbtxt", "nemotron_code", "nemotron_l
           "unified", "verified_facts", "wiki_full", "wikibooks", "wikipedia")
 
 
-def windows(cache: str, name: str, split: str, n: int, length: int) -> np.ndarray:
-    """(n, length + 1) token windows: evenly spaced over the held-out tail, or over the training region (held-in)."""
+def windows(cache: str, name: str, split: str, n: int, length: int, phase: float = 0.0) -> np.ndarray:
+    """(n, length + 1) token windows: evenly spaced over the held-out tail, or over the training region (held-in);
+    `phase` shifts the starts by that share of their spacing (a held-in tuning split apart from the build's)."""
     arr = np.memmap(os.path.join(cache, f"{name}.u32"), dtype=np.uint32, mode="r")
     hold = int(json.load(open(os.path.join(cache, "_holdout.json"), encoding="utf-8"))[name])
     lo, hi = (len(arr) - hold, len(arr)) if split == "heldout" else (0, len(arr) - hold)
     span = hi - lo - length - 1
-    starts = [lo + (span * i) // max(n - 1, 1) for i in range(n)] if span > 0 else [lo] * n
+    step = span // max(n - 1, 1) if span > 0 else 0
+    starts = [min(lo + span, lo + step * i + int(phase * step)) for i in range(n)] if span > 0 else [lo] * n
     return np.stack([np.array(arr[s:s + length + 1], dtype=np.int64) for s in starts])
 
 
@@ -69,12 +72,14 @@ def main() -> None:
     ap.add_argument("--windows", type=int, default=4)
     ap.add_argument("--len", type=int, default=1024)
     ap.add_argument("--top", type=int, default=16)
+    ap.add_argument("--phase", type=float, default=0.0, help="shift the held-in windows (a tuning split: 0.5)")
+    ap.add_argument("--name", default="", help="the file's name (default: the split's)")
     a = ap.parse_args()
     model, cfg = load_export(expand(a.export))
     cap = Capture(model.lm_head)
     cache, keep = expand(a.cache), {k: [] for k in ("hidden", "target", "prev", "top", "toplogit", "lse", "tlogit", "shard")}
     for si, name in enumerate(SHARDS):
-        for w in windows(cache, name, a.split, a.windows, a.len):
+        for w in windows(cache, name, a.split, a.windows, a.len, a.phase):
             x, y = w[:-1], w[1:]
             with g.no_grad():
                 logits = model(g.tensor(x.reshape(1, -1).tolist())).logits.reshape(len(x), -1)
@@ -96,7 +101,7 @@ def main() -> None:
         print(f"{name}: nll {nll:.3f}", flush=True)
     out = expand(a.out)
     os.makedirs(out, exist_ok=True)
-    path = os.path.join(out, f"{a.split}.npz")
+    path = os.path.join(out, f"{a.name or a.split}.npz")
     np.savez(path, **{k: np.concatenate(v) for k, v in keep.items()}, shards=np.array(SHARDS))
     print("->", path, sum(len(t) for t in keep["target"]), "positions")
 

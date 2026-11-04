@@ -7,6 +7,12 @@ is unchanged bit for bit). Built once, offline, deterministically from a seed:
   (b) router     a linear map from the trunk's final state to cluster scores, trained (``validation/
                  head_shortlist_eval.py``) on the frozen trunk's held-in states against the full head's top-k
   (c) + succ     (b), plus the previous token's most frequent successors (counted on held-in text)
+  (d) screen     added by Claude Code (recorded in 0050's report), after "learning to screen" (Chen et al., 2018):
+                 k-means over the trunk's held-in states; each context cluster keeps the tokens the full head ranks in
+                 its top-k for that cluster's states, by their summed probability. A query takes its nearest context
+                 cluster's list (then the next nearest) up to K. "screen+succ" adds (c)'s successors.
+The clusters are spherical (rows centred on their mean, compared by direction): in 1,024 dimensions plain Euclidean
+k-means put half the rows in clusters of one (``head_shortlist_<date>.json``, the first read).
 The shortlist: whole clusters in score order until at least K rows (a cluster is never cut, so the rows scored are
 K plus at most one cluster; ``sizes`` reports them), with (c)'s successors added. K >= the vocabulary: every row.
 
@@ -23,7 +29,7 @@ import numpy as np
 
 __wiring__ = "WIRED"
 
-ARMS = ("clusters", "router", "router+succ")
+ARMS = ("clusters", "router", "router+succ", "screen", "screen+succ")
 
 
 def on() -> bool:
@@ -31,18 +37,23 @@ def on() -> bool:
     return os.environ.get("CB_HEAD_SHORTLIST") == "1"
 
 
+def _unit(x: np.ndarray) -> np.ndarray:
+    return x / np.maximum(np.linalg.norm(x, axis=1, keepdims=True), 1e-12)
+
+
 def kmeans(rows: np.ndarray, n: int, seed: int = 0, iters: int = 10, chunk: int = 8192) -> tuple[np.ndarray, np.ndarray]:
-    """(centroids (n, d), assignment (V,)): Lloyd's k-means from n rows drawn by `seed`; deterministic. An emptied
-    cluster takes the row farthest from its centroid, so every cluster keeps at least one row."""
-    rows = np.ascontiguousarray(rows, dtype=np.float32)
+    """(centroids (n, d), assignment (V,)): spherical k-means (rows centred, compared by direction) from n rows drawn
+    by `seed`; deterministic. The centroids returned are the members' raw means (what a query is scored against). An
+    emptied cluster takes the row worst fitted to its own, so every cluster keeps at least one row."""
+    raw = np.ascontiguousarray(rows, dtype=np.float32)
+    rows = _unit(raw - raw.mean(0))
     rng = np.random.default_rng(seed)
     cent = rows[np.sort(rng.choice(len(rows), n, replace=False))].copy()
     assign = np.zeros(len(rows), dtype=np.int64)
     for _ in range(iters):
-        c2 = (cent * cent).sum(1)
         best = np.empty(len(rows), dtype=np.float32)
         for i in range(0, len(rows), chunk):
-            s = rows[i:i + chunk] @ cent.T * 2.0 - c2          # argmax of 2 x.c - |c|^2 = argmin of |x - c|^2
+            s = rows[i:i + chunk] @ cent.T
             assign[i:i + chunk] = s.argmax(1)
             best[i:i + chunk] = s.max(1)
         sums = np.zeros_like(cent)
@@ -56,8 +67,10 @@ def kmeans(rows: np.ndarray, n: int, seed: int = 0, iters: int = 10, chunk: int 
             counts[assign[r]] -= 1
             sums[assign[r]] -= rows[r]
             assign[r], sums[c], counts[c] = c, rows[r], 1
-        cent = sums / counts[:, None]
-    return cent.astype(np.float32), assign
+        cent = _unit(sums / counts[:, None])
+    raw_sums = np.zeros((n, raw.shape[1]), dtype=np.float64)
+    np.add.at(raw_sums, assign, raw)
+    return (raw_sums / np.bincount(assign, minlength=n)[:, None]).astype(np.float32), assign
 
 
 class ShortlistIndex:
@@ -89,6 +102,13 @@ class ShortlistIndex:
         return h @ w.T + b
 
     def shortlist(self, h: np.ndarray, k: int, arm: str = "clusters", prev: np.ndarray | None = None) -> list:
+        if arm.startswith("screen"):
+            return self.screen.shortlist(h, k, self.succ if arm.endswith("succ") else None, prev)
+        return self._clusters(h, k, arm, prev)
+
+    screen = None             # a ScreenIndex (arm d), attached by the builder
+
+    def _clusters(self, h: np.ndarray, k: int, arm: str, prev: np.ndarray | None) -> list:
         """[token ids (sorted)] per query: whole clusters in score order until >= k rows; (c) adds successors."""
         if k >= self.vocab:
             return [np.arange(self.vocab)] * len(np.asarray(h).reshape(-1, self.centroids.shape[1]))
@@ -118,7 +138,8 @@ class ShortlistIndex:
         return out.reshape(*q.shape[:-1], self.vocab)
 
     def save(self, path: str) -> None:
-        extra = {}
+        extra = {} if self.screen is None else {"screen_c": self.screen.centroids, "screen_ids": self.screen.ids,
+                                                "screen_off": self.screen.offsets}
         if self.router is not None:
             extra["router_w"], extra["router_b"] = self.router
         if self.succ is not None:
@@ -129,7 +150,52 @@ class ShortlistIndex:
     def load(cls, path: str) -> "ShortlistIndex":
         d = np.load(path)
         router = (d["router_w"], d["router_b"]) if "router_w" in d else None
-        return cls(d["centroids"], d["assign"], router, d["succ"] if "succ" in d else None)
+        idx = cls(d["centroids"], d["assign"], router, d["succ"] if "succ" in d else None)
+        if "screen_c" in d:
+            idx.screen = ScreenIndex(d["screen_c"], d["screen_ids"], d["screen_off"], len(idx.assign))
+        return idx
+
+
+class ScreenIndex:
+    """Arm (d): context clusters of the trunk's states, each with the tokens the full head ranks for it (CSR)."""
+
+    def __init__(self, centroids: np.ndarray, ids: np.ndarray, offsets: np.ndarray, vocab: int) -> None:
+        self.centroids, self.ids, self.offsets, self.vocab = centroids, ids, offsets, vocab
+
+    @classmethod
+    def build(cls, hidden: np.ndarray, top: np.ndarray, weight: np.ndarray, vocab: int, n: int, seed: int = 0,
+              iters: int = 10, keep: int = 8192) -> "ScreenIndex":
+        """`hidden` (N, d) held-in states; `top` (N, t) the full head's top ids there; `weight` (N, t) their
+        probabilities. Each cluster's list: its tokens by summed probability (ties by id), at most `keep`."""
+        cent, assign = kmeans(hidden, n, seed, iters)
+        lists = []
+        for c in range(n):
+            sel = assign == c
+            tok, w = top[sel].reshape(-1), weight[sel].reshape(-1)
+            sums = np.bincount(tok, weights=w, minlength=vocab)
+            nz = np.flatnonzero(sums)
+            lists.append(nz[np.lexsort((nz, -sums[nz]))][:keep])
+        off = np.concatenate([[0], np.cumsum([len(x) for x in lists])])
+        return cls(cent, np.concatenate(lists).astype(np.int64), off, vocab)
+
+    def shortlist(self, h: np.ndarray, k: int, succ=None, prev=None) -> list:
+        h = np.asarray(h, dtype=np.float32).reshape(-1, self.centroids.shape[1])
+        rank = np.argsort(-(h @ self.centroids.T), axis=1, kind="stable")
+        out = []
+        for i, row in enumerate(rank):
+            got, seen = [], set()
+            for c in row:                                   # nearest clusters first, until k distinct tokens
+                lst = [t for t in self.ids[self.offsets[c]:self.offsets[c + 1]].tolist() if t not in seen]
+                got.extend(lst[:k - len(got)])
+                seen.update(lst)
+                if len(got) >= k:
+                    break
+            ids = np.asarray(got, dtype=np.int64)
+            if succ is not None and prev is not None:
+                s = succ[int(np.asarray(prev).reshape(-1)[i])]
+                ids = np.concatenate([ids, s[s >= 0]])
+            out.append(np.unique(ids))
+        return out
 
 
 def successors(tokens: np.ndarray, vocab: int, top: int = 32) -> np.ndarray:
@@ -148,4 +214,4 @@ def successors(tokens: np.ndarray, vocab: int, top: int = 32) -> np.ndarray:
     return out
 
 
-__all__ = ["ARMS", "ShortlistIndex", "kmeans", "on", "successors"]
+__all__ = ["ARMS", "ScreenIndex", "ShortlistIndex", "kmeans", "on", "successors"]
