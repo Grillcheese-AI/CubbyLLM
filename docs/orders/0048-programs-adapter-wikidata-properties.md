@@ -169,3 +169,9 @@ adapter is trained by Nick (`notebooks/emitter_wd.ipynb`), then read at home.
 - **The file:** `$CUBBY_DRIVE/cubbyllm/emitter/emitter_sft_v12e_wd.jsonl`, rebuilt 2026-11-04, with its manifest.
 - **Next: Nick runs `notebooks/emitter_wd.ipynb`.** The read follows at home: R3 and R3o as `450m_wd`, then H-E15's
   benchmark.
+
+## Cowork's check of the French data (2026-11-04, evening)
+- **Accepted:** French goes from 440 to 1,547 records (10% of 15,470), and the audit is clean. MKQA's records keep
+  CC BY-SA 3.0 and stay off-repo.
+- **Nick runs `notebooks/emitter_wd.ipynb`** on an A100. The read follows at home, as the order says. If French
+  coverage stays far below English, the report says by how much; more French data is then a decision, not a rerun.

@@ -1258,3 +1258,40 @@ met, and the kill line (any wrong value) is crossed on dev:**
   reading.
 - The source's own errors (Gibraltar) are what B2's possibility worlds and R8's checks would have to catch; no rule
   over one statement can.
+
+## Cowork's check of R4 on dev (2026-11-04, evening)
+Read: the report, both tables and `r4_board_read.json`'s verdicts. R3k's re-read and B1q's seed-0 rerun are running
+under the rules already frozen (`43715a6`); nothing changes for them here.
+
+**R4: the spoken lines are met, 0 wrong is not.** The interval arm is the one to build on (CronQuestions spoken 98.6%,
+the board 40 of 46). Four rules, each general, written now:
+1. **An open end is placed only if nothing on record says it ended.** A value with a start and no end holds at a
+   later year (or now) only if:
+   - the subject's own end (death P570, dissolution P576, end time P582) is not before that year;
+   - the value item's own end (the same properties) is not before it;
+   - where the property holds one value at a time (a single-value constraint, or a "replaced by" P1366 qualifier on
+     the statement), no later value starts before it.
+
+   Otherwise the value is not placed at that year. "No stated end" never means "still holds".
+2. **A spoken set has at most 10 values.** Above that, Cubby says how many there are and asks to narrow it (`ASK`).
+   The share of rows that hit the bound is reported.
+3. **The class asked applies here as on the serving path** (0047's check): "what country" keeps only values whose
+   class reaches "country". Gibraltar, a British overseas territory, drops.
+4. **Item drift:** the gold id is resolved through Wikidata's merge redirects before judging. A different item with
+   the same label stays wrong, as you read it.
+
+**Where they are read:** written after dev, so they are read once on CronQuestions' test (`simple_entity`, 500 by seed
+0, with `simple_time` beside it), with the lines as written: 0 wrong, at least 60% spoken. The board's 46 rows have no
+held-out version: they are re-read and reported, and their 0 wrong still counts.
+
+**Left to later stages, by name:**
+- Ancient Greek under "language used" (P2936). It goes if the language's own end is on record (rule 1). If not, it is
+  B2's time worlds' case.
+- Choosing P2936 over official language (P37) for "use" is R3's reading.
+
+**In plain words:** Cubby no longer assumes a post, a club or a title still holds because no end date was written. It
+checks whether the person was still alive, the thing still existed, or someone else had taken over.
+- **Over a conventional model:** a model tends to state the last thing it read as current. Here every value's time is
+  checked against the record, and a value the record cannot place is not said.
+
+Status: open.
