@@ -146,13 +146,14 @@ def main() -> None:
     ap.add_argument("--positions", type=int, default=0, help="read only the first N positions (0: all)")
     ap.add_argument("--build", default="heldin", help="the dump the router and the screen are built from")
     ap.add_argument("--read", default="heldout", help="the dump read: heldin_val to tune, heldout once")
+    ap.add_argument("--stride", type=int, default=1, help="read every n-th position (evenly across the shards)")
     ap.add_argument("--tag", default="")
     a = ap.parse_args()
     dumps = expand(a.dumps)
     w = head_rows(expand(a.export))
     held, out = dict(np.load(os.path.join(dumps, f"{a.build}.npz"))), dict(np.load(os.path.join(dumps, f"{a.read}.npz")))
-    if a.positions:
-        out = {k: (v[:a.positions] if k != "shards" else v) for k, v in out.items()}
+    if a.positions or a.stride > 1:
+        out = {k: (v[::a.stride][:a.positions or None] if k != "shards" else v) for k, v in out.items()}
     t0 = time.time()
     idx = ShortlistIndex.build(w, a.clusters, seed=0, iters=a.iters)
     built = round(time.time() - t0, 1)
@@ -164,7 +165,7 @@ def main() -> None:
                                    np.exp(held["toplogit"] - held["lse"][:, None]), len(w), a.screen, seed=0, iters=a.iters)
     idx.save(os.path.join(dumps, "index_router_succ.npz"))
     res = read(idx, w, out, list(ARMS), [int(x) for x in a.ks.split(",")])
-    rep = {"what": "order 0050 stage 1: the shortlist index's quality on the 13 held-out tails", "read": a.read,
+    rep = {"what": "order 0050 stage 1: the shortlist index's quality on the 13 held-out tails", "read": a.read, "stride": a.stride,
            "build": a.build,
            "date": _dt.date.today().isoformat(), "clusters": a.clusters, "screen_clusters": a.screen, "iters": a.iters, "index_build_s": built,
            "cluster_sizes": {"min": int(np.diff(idx.offsets).min()), "p50": float(np.median(np.diff(idx.offsets))),

@@ -26,6 +26,7 @@ Wired: STANDALONE (R3k's bench).
 from __future__ import annotations
 
 import json
+import os
 import re
 import time
 import urllib.parse
@@ -60,13 +61,26 @@ def one_step(src, qid: str, cls: set) -> bool:
     return is_a(src, qid, cls)
 
 
-def chain(values: list[str], cls: set) -> set[str] | None:
-    """The values whose instance of reaches a class through any number of subclass of steps; None if unanswered."""
+_CACHE: dict = {}
+
+
+def sparql(q: str) -> list | None:
+    """The query's bindings, kept in ``$data_root/r3k_sparql.jsonl`` as each arrives (a run that stops keeps what it
+    asked); None (unanswered after three tries) is never kept, so a later run asks again."""
+    import hashlib
     from cubbyllm.sources.wikidata import UA
-    if not values or not cls:
-        return set()
-    q = ("SELECT DISTINCT ?v WHERE { VALUES ?v { " + " ".join(f"wd:{v}" for v in values) + " } VALUES ?c { "
-         + " ".join(f"wd:{c}" for c in cls) + " } ?v wdt:P31/wdt:P279* ?c . }")
+    from retrieval_sets.common import data_root
+    path = os.path.join(data_root(), "r3k_sparql.jsonl")
+    if not _CACHE.get("_loaded"):
+        if os.path.exists(path):
+            for line in open(path, encoding="utf-8"):
+                if line.strip():
+                    d = json.loads(line)
+                    _CACHE[d["key"]] = d["rows"]
+        _CACHE["_loaded"] = True
+    key = hashlib.sha1(q.encode("utf-8")).hexdigest()
+    if key in _CACHE:
+        return _CACHE[key]
     for k in range(3):
         try:
             req = urllib.request.Request("https://query.wikidata.org/sparql", data=urllib.parse.urlencode({"query": q}).encode(),
@@ -74,10 +88,23 @@ def chain(values: list[str], cls: set) -> set[str] | None:
             with urllib.request.urlopen(req, timeout=60) as r:
                 rows = json.loads(r.read().decode("utf-8"))["results"]["bindings"]
             time.sleep(0.2)
-            return {b["v"]["value"].rsplit("/", 1)[1] for b in rows}
+            _CACHE[key] = rows
+            with open(path, "a", encoding="utf-8") as f:
+                f.write(json.dumps({"key": key, "rows": rows}, ensure_ascii=False) + "\n")
+            return rows
         except Exception:                                  # noqa: BLE001 -- recorded as unknown, never as "none"
             time.sleep(5 * (k + 1))
     return None
+
+
+def chain(values: list[str], cls: set) -> set[str] | None:
+    """The values whose instance of reaches a class through any number of subclass of steps; None if unanswered."""
+    if not values or not cls:
+        return set()
+    q = ("SELECT DISTINCT ?v WHERE { VALUES ?v { " + " ".join(f"wd:{v}" for v in values) + " } VALUES ?c { "
+         + " ".join(f"wd:{c}" for c in cls) + " } ?v wdt:P31/wdt:P279* ?c . }")
+    rows = sparql(q)
+    return None if rows is None else {b["v"]["value"].rsplit("/", 1)[1] for b in rows}
 
 
 def kept(kind: str | None, out_props: set, in_props: set, claims: dict, lx: dict, of_kind,
@@ -97,22 +124,12 @@ def kept(kind: str | None, out_props: set, in_props: set, claims: dict, lx: dict
 
 def incoming_of_kind(item: str, props: list[str], cls: set) -> set[str] | None:
     """The incoming properties of `item` some subject of which reaches a class of `cls`; None if unanswered."""
-    from cubbyllm.sources.wikidata import UA
     if not props or not cls:
         return set()
     q = ("SELECT ?p WHERE { VALUES ?p { " + " ".join(f"wdt:{p}" for p in props) + " } FILTER EXISTS { ?s ?p wd:" + item
          + " . ?s wdt:P31/wdt:P279* ?c . VALUES ?c { " + " ".join(f"wd:{c}" for c in cls) + " } } }")
-    for k in range(3):
-        try:
-            req = urllib.request.Request("https://query.wikidata.org/sparql", data=urllib.parse.urlencode({"query": q}).encode(),
-                                         headers={"User-Agent": UA, "Accept": "application/sparql-results+json"})
-            with urllib.request.urlopen(req, timeout=60) as r:
-                rows = json.loads(r.read().decode("utf-8"))["results"]["bindings"]
-            time.sleep(0.2)
-            return {b["p"]["value"].rsplit("/", 1)[1] for b in rows}
-        except Exception:                                  # noqa: BLE001 -- recorded as unknown, never as "none"
-            time.sleep(5 * (k + 1))
-    return None
+    rows = sparql(q)
+    return None if rows is None else {b["p"]["value"].rsplit("/", 1)[1] for b in rows}
 
 
 __all__ = ["asked_kind", "chain", "incoming_of_kind", "kept", "kind_classes", "one_step"]
