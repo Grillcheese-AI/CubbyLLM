@@ -250,7 +250,7 @@ compares block starts (equal-size blocks overlap iff their starts are under a bl
     17.7B tokens, about 71 GB as u32 plus the rest. That breaks "blocks neither run took".
 - **My reading:** (a) keeps both rules as written. It costs 3 h an arm, and with the probes on the card it still fits
   a spot rental. The upload is larger than planned either way.
-- **The question is Nick's or Cowork's:** (a), (b) or (c)? The build starts on the answer. With D: as the stage it takes
+- **The question is Nick's or Cowork's:** (a), (b) or (c)? The build starts on the answer. With the home stage it takes
   about an hour here, then the upload.
 
 ## One arm now: the control (Nick and Cowork, 2026-11-04)
@@ -370,7 +370,7 @@ Status: open. The bench is the next item, then `review`.
       for the run's checkpoint slots (6.9 GB each) and finals. It needs more Drive space first.
   - Each choice moves tens of GB onto Nick's Drive, so I have not started either.
 - **The inputs are staged at home:** 25 files, 49.68 GB, manifest at commit `ab8b513`
-  (`D:` stage, not uploaded). The build's table at 10.8B tokens has every slice shard within 2 epochs (fineweb_edu
+  (the home stage, not uploaded). The build's table at 10.8B tokens has every slice shard within 2 epochs (fineweb_edu
   1.87). The four decay shards are over it by design: instruct 7.12, program 6.17, agent 3.09, facts_text_far 2.14
   (round 2's decay mix repeats them).
   - **The hours rule's rows are the slice's,** as table (a) counted them. The decay shards are reported, never

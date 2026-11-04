@@ -1,5 +1,5 @@
 # 0048 — The programs adapter names Wikidata's properties (EN and FR), and refuses the wrong base
-status: open
+status: in progress
 written: 2026-11-04 by Cowork · approved: 2026-11-04 by Nick ("Yes, write the order") · hypothesis: H-E15 (the programs seat)
 
 ## Why
