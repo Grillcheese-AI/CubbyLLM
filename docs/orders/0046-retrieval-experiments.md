@@ -1,5 +1,5 @@
 # 0046 — Retrieval, measured before it is built: experiments R0 to R8
-status: open (R2 on dev, 2026-10-31: no arm passes (tiers, BM25, qFHRR on grilly2, B1), test unread; R3, R4 next; R1b on the notebook)
+status: open (R2 and R3 on dev: no arm passes, test unread; R1b: the extract is on Drive, the segment building; R4 next)
 written: 2026-10-28 by Cowork · approved: 2026-10-28 by Nick ("tested before implementing"; a plan doc and an experiments-only order) · hypothesis: none (each experiment below is pre-registered)
 
 ## Why
@@ -574,3 +574,83 @@ the API), and WebQSP_EL and ShadowLink are English only. So R2's French side is 
   - **Yours to decide:** whether R2 ends here (test read once, for the record), or goes on with an arm you register
     from (a) to (c) above. The qFHRR scorer would serve (b) as it is: B1 first, then the codes among the branches that
     verify.
+
+## R3 on dev: the relation, given the item (Claude Code, 2026-11-03)
+- **Log:** `retrieval_R3_dev_2026-11-03.json` (ids, properties, judgements; no question text). Harness:
+  `validation/retrieval_bench/r3_relation.py`, with `r3_gold`, `r3_arms`, `r3_qfhrr` (+ `r3_qfhrr_score`, on grilly2)
+  and `r3_450m` (on grilly2).
+- **Rows:** 300 a set and language, by seed 0 (QALD FR has 250). The gold item gives every arm one thing only: where
+  its name is. Its words are taken out of the question, and the 450M sees them as `[E1: ...]`. No arm reads the
+  item's facts.
+- **Gold properties, rules fixed in `r3_gold` before any row was scored:**
+  - SimpleQuestions-Wikidata: the set's own property.
+  - QALD-9-plus: the SPARQL's properties without P31 and P279 (class constraints). A row is scored only when exactly
+    one property is left; 82 EN and 69 FR rows have several, and 18 and 15 have none.
+  - Mintaka gives answers, not properties. Its gold is the properties that link a question item to an answer item in
+    today's Wikidata, either way. 121 of 300 rows have such a link; the other 179 (counts, comparisons, yes/no) are
+    counted apart.
+- **The arms:**
+  - **grammar:** today's host reader (the everyday table), its relation wording through the serving property table.
+  - **lexicon:** the frozen lexicon over the words left once the names are out, longest wording first.
+    **lexicon_content** is the same without wordings made only of function words ("in", "by", "de", "is a"); 36 EN
+    and 20 FR such wordings are in the frozen lexicon. That rule is general and was written before scoring.
+  - **qfhrr:** a qFHRR codebook of every property, one code per property and language: 25,368 codes (0.52 GB a
+    language on the card, one language at a time), with the margin as in R2. 1,431 rows scored on `vulkan:0` in 17 s;
+    numpy agrees to within 2.3e-6.
+  - **450m:** the 450M in the programs seat (`base450m_cont` + `cubby450m_v12e_w_step_cont`, greedy) on grilly2. Its
+    program's `HOP1` wording goes through the serving property table. About 2.4 s a question.
+  - Every arm hands over at most 5 properties. A run of equal scores is taken whole, and a first run longer than 5 is
+    "undecided".
+- **Found on the way:** on `base450m`'s export, the programs adapter writes no program (PHP classes, URLs). H-E15
+  records that it was trained on `base450m_cont`; the harness pins that base.
+
+**Coverage first** (the share of each set's rows the arm reads):
+
+| | SimpleQ EN | QALD EN | QALD FR | Mintaka EN | Mintaka FR |
+|---|---|---|---|---|---|
+| grammar | 16.7% | 10.3% | 4.4% | 3.7% | 2.0% |
+| lexicon | 88.0% | 83.3% | 86.0% | 91.0% | 97.0% |
+| lexicon_content | 80.7% | 65.0% | 54.0% | 77.0% | 75.0% |
+| qfhrr, margin 0 | 97.7% | 97.7% | 99.2% | 99.0% | 100% |
+| qfhrr, margin 0.25 | 10.3% | 16.3% | 31.6% | 15.0% | 24.7% |
+| 450m | 53.3% | 42.3% | 28.8% | 27.7% | 21.0% |
+
+**Recall@5, and the wrong rate** (a list without the gold), over the scored rows (300, 200, 166, 121, 121):
+
+| | SimpleQ EN | QALD EN | QALD FR | Mintaka EN | Mintaka FR |
+|---|---|---|---|---|---|
+| grammar | 0.143 (2.3%) | 0.125 (2.0%) | 0.054 (1.2%) | 0.008 (1.7%) | 0.008 (1.7%) |
+| lexicon | 0.367 (22.7%) | 0.260 (34.0%) | 0.211 (54.2%) | 0.198 (41.3%) | 0.157 (56.2%) |
+| lexicon_content | 0.493 (23.0%) | 0.375 (28.5%) | 0.253 (35.5%) | 0.314 (47.9%) | 0.198 (57.9%) |
+| qfhrr, margin 0 | 0.417 (56.0%) | 0.555 (43.0%) | 0.361 (63.9%) | 0.248 (75.2%) | 0.141 (86.0%) |
+| lexicon_content + qfhrr, 0 | 0.557 (33.7%) | 0.500 (47.0%) | 0.343 (65.7%) | 0.314 (63.6%) | 0.207 (79.3%) |
+| 450m | 0.350 (15.7%) | 0.290 (20.5%) | 0.121 (18.1%) | 0.124 (15.7%) | 0.041 (16.5%) |
+| **gate** | **0.85** | | **0.80** | | |
+
+- **No arm passes. The best are 0.557 on SimpleQuestions and 0.361 on QALD FR, against 0.85 and 0.80.** Taking, on
+  each row, any of grammar, lexicon_content or the 450M that hits gives 0.587 on SimpleQuestions and 0.437 on QALD:
+  no combination of these arms reaches the line either.
+- **The qFHRR arm is not kept.** At no margin does lexicon_content + qfhrr have a pooled wrong rate at or below
+  lexicon_content's (34.5%), so dev sets no margin. At margin 0 it adds 6.6 points pooled, at 18 more points of wrong.
+- **Today's grammar reads little and reads it well:** 7.5% of rows, and among the rows it reads, 86% hold the gold on
+  SimpleQuestions. In French it reads almost nothing (2 to 4%).
+- **The 450M reads about half of SimpleQuestions (53%) and less elsewhere: it names many relations in words the
+  property table does not hold.** On SimpleQuestions:
+  - 132 of 300 programs bind a `HOP1` wording that names no property: "film" 15, "album" 12, "born in $E1" 10,
+    "birth" 6, "game" 5. These are the wiki world's relation words, which it was trained on, not Wikidata's labels.
+    8 rows got no fact program.
+  - When its wording does name properties, it holds the gold in 105 of 160 rows (66%).
+  - Most wrong lists are a near property: "death" for place of death (P20) 4, "language" for P364 3, "produced" for
+    P162 3.
+  - In French the share falls (29% read on QALD FR, 21% on Mintaka FR). French programs more often take 2 or more
+    hops (81 of 166 on QALD FR).
+- **SimpleQuestions' inverse rows** (73, asked from the object's side) are the 450M's worst: 7 hits, against 23 for
+  lexicon_content.
+- **Not run:** test. No arm passes on dev and no margin was set, so, as for R2, test stays unread until you say.
+- **What this says about reading** (for your decision, not a rule written here):
+  - The relation is the weakest stage measured so far.
+  - The 450M's proposal is useful only once its wording reaches a property, a mapping the frozen lexicon does not
+    give. A programs adapter trained on Wikidata's property labels (the frozen lexicon's wordings as targets) is the
+    lever this run points to. That would be new training, so it needs its own order and your yes.
+  - The exact lexicon's misses are the questions' own phrasings ("Who directed X" against "director"); grammar reads
+    too little to matter.

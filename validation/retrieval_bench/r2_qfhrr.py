@@ -53,12 +53,12 @@ def job(rows: list[dict], profiles: dict, table: str) -> tuple[dict, dict]:
     return {"table": table, "docs": docs, "rows": todo}, done
 
 
-def score(jb: dict) -> dict:
-    """Run the scorer under grilly2's interpreter; its output, read back."""
+def score(jb: dict, scorer: str = SCORER) -> dict:
+    """Run a scorer (R2's by default; R3's codebook scorer too) under grilly2's interpreter; its output, read back."""
     tmp = tempfile.mkdtemp()
     jp, op = os.path.join(tmp, "job.json"), os.path.join(tmp, "out.json")
     json.dump(jb, open(jp, "w", encoding="utf-8"))
-    subprocess.run(["uv", "run", "--project", grilly2_dir(), "python", SCORER, jp, op], check=True, cwd=ROOT)
+    subprocess.run(["uv", "run", "--project", grilly2_dir(), "python", scorer, jp, op], check=True, cwd=ROOT)
     return json.load(open(op, encoding="utf-8"))
 
 
