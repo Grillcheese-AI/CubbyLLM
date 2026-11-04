@@ -97,9 +97,12 @@ def test_a_failing_kernel_test_turns_its_flag_off_and_another_card_refuses_to_re
     from run_pod import Ctx
     import argparse
     st = state_of(remote)
-    ctx = Ctx(argparse.Namespace(work=str(work), smoke=True, hours=1.0, card="", kernel_tests=None), None,
+    ctx = Ctx(argparse.Namespace(work=str(work), smoke=True, hours=1.0, hours_cap=1.0, card="", kernel_tests=None), None,
               json.loads((work / "inputs" / "pod_inputs.json").read_text()), st)
     assert pod_phases.base_env(ctx, "control")["CB_MINGRU_TRITON"] == "0"
+    p = runner(tmp_path / "w4", tmp_path / "r4", "--phase", "preflight", "--card", json.dumps({"name": "NVIDIA A100-SXM4-80GB", "gb": 79.2, "torch": "2.8.0", "cuda": "12.6"}))
+    out = p.communicate(timeout=600)[0]
+    assert p.returncode == 0, out[-2000:]                                  # Colab's A100 80 GB is a card this run uses
     # the state says B200; a pod with an H200 refuses before it fetches anything
     p = runner(work, remote, "--phase", "preflight", "--card", json.dumps({"name": "NVIDIA H200", "gb": 141.0, "torch": "2.8.0", "cuda": "12.8"}))
     out = p.communicate(timeout=600)[0]
@@ -126,3 +129,54 @@ def test_a_token_never_reaches_a_log_line(monkeypatch):
     from pod_remote import redact
     monkeypatch.setenv("HF_TOKEN", "hf_" + "x" * 30)
     assert "hf_" not in redact(f"upload failed: 401 for token {'hf_' + 'x' * 30} and hf_{'A1' * 15}")
+
+
+def test_one_arm_now_trains_the_control_only_and_its_readout_waits_on_the_grown_arm(tmp_path):
+    """Order 0045, 2026-11-04 (Nick: one arm now, the control): CB_POD_ARMS=control runs every phase, skips the grown
+    arm and records why, decides the hours after the bench, marks the grown arm's gates as waiting, and trains the
+    adapters on the control."""
+    remote, work = tmp_path / "remote", tmp_path / "work"
+    p = runner(work, remote, "--until", "speed", env=dict(os.environ, CB_POD_ARMS="control"))     # the bench first, then stop
+    out = p.communicate(timeout=900)[0]
+    assert p.returncode == 0 and "stopped after speed" in out, out[-4000:]
+    st = state_of(remote)
+    assert st["done"] == ["preflight", "fetch", "kernels", "speed"] and "control" in st["bench"] and "grown" in st["bench"]
+    assert st["bench"]["mfu_line"]["line"] == 0.75 and "ratio" in st["bench"]["mfu_line"]
+    p = runner(work, remote, env=dict(os.environ, CB_POD_ARMS="control"))
+    out = p.communicate(timeout=900)[0]
+    assert p.returncode == 0, out[-4000:]
+    st = state_of(remote)
+    assert st["done"][-1] == "done" and st["knobs"]["arms"] == ["control"] and "grown" in st["skipped"]
+    rule = st["bench"]["hours_rule"]
+    assert rule["limit_shard"] and rule["hours_at_2_epochs"] > 0 and st["knobs"]["hours_from"] == "bench"
+    assert (remote / "runs" / "control" / "grow_mem_control_final.pt").exists()
+    assert not (remote / "runs" / "grown").exists()
+    md = (remote / "runs" / "readout.md").read_text(encoding="utf-8")
+    assert "waiting on the grown arm" in md and "1. growth" in md
+    assert json.loads((remote / "runs" / "adapters.json").read_text(encoding="utf-8"))["winner"] == "control"
+    p = runner(work, remote, env=dict(os.environ, CB_POD_ARMS="control,grown"))      # a resumed pod keeps the first knob
+    out = p.communicate(timeout=300)[0]
+    assert p.returncode == 0 and "keeping it" in out and state_of(remote)["knobs"]["arms"] == ["control"]
+
+
+def test_the_hours_are_the_most_within_two_epochs_and_at_most_the_cap(tmp_path):
+    import numpy as np
+    sys.path.insert(0, str(ROOT / "validation" / "pod"))
+    sys.path.insert(0, str(ROOT / "validation"))
+    import pod_phases
+    from run_pod import arms_of
+    corpus = tmp_path / "corpus"
+    corpus.mkdir()
+    for name, n in (("fineweb_edu", 9000), ("books", 3000), ("instruct", 500)):
+        np.zeros(n, dtype=np.uint32).tofile(corpus / f"{name}.u32")
+    (corpus / "_sizes.json").write_text(json.dumps({"fineweb_edu": 8900, "books": 2900, "instruct": 450}))
+    (corpus / "_holdout.json").write_text(json.dumps({"fineweb_edu": 100, "books": 100, "instruct": 50}))
+    r = pod_phases.hours_from_bench(str(corpus), tok_s=1.0, cap=100.0)          # 1 token a second: hours = tokens / 3600
+    assert r["by"].endswith("at 2 epochs") and abs(max(r["epochs"].values()) - 2.0) < 1e-3
+    assert r["epochs"][r["limit_shard"]] == max(r["epochs"].values())
+    capped = pod_phases.hours_from_bench(str(corpus), tok_s=1.0, cap=r["hours_at_2_epochs"] / 2)
+    assert capped["by"] == "the cap" and capped["hours"] == round(r["hours_at_2_epochs"] / 2, 4)
+    assert max(capped["epochs"].values()) < 2.0
+    assert arms_of("control") == ("control",) and arms_of(None) == ("control", "grown") and arms_of("grown,control") == ("control", "grown")
+    with pytest.raises(SystemExit):
+        arms_of("grown")

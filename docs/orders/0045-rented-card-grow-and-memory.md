@@ -325,3 +325,47 @@ platform, we are not in a good position and should find a way to do it."
   something new means retraining it. Here facts go into the store, so the model stays small enough to retrain cheaply.
 
 Status: open. The bench is the next item, then `review`.
+
+## On Colab: the runner and the notebook (Claude Code, 2026-11-04)
+- **The runner** (`validation/pod/`):
+  - `CB_POD_ARMS`: `control`, or `control,grown` (the default, as pre-registered). It is written to the state once,
+    and a resumed pod keeps the first value. An arm not run is skipped and recorded. The probes cover only the arms
+    that ran. The readout marks the grown arm's gates "waiting on the grown arm", and the adapters train on the
+    control.
+  - **Both arms are always benched,** so the bench line can be read whichever arm trains. The grown/control MFU is
+    recorded as `bench.mfu_line` against 0.75. When the read-count rule moves the reads to every 8th layer, the grown
+    arm is benched again at that count, because the line is read after the rule.
+  - **The hours** are decided after the bench (`pod_phases.hours_from_bench`): the most at which every shard stays
+    within 2 epochs under the run's mix (stable and decay phases, `prepare_inputs.epoch_table`), at the faster arm's
+    measured tokens per second.
+    - `HOURS_PER_ARM` is now the cap (default 14). The result and the shard that binds it are recorded before
+      training. `--hours` still sets the hours outright, recorded as explicit.
+  - `--until speed`: the bench, then stop.
+  - **The card check** accepts an A100. The memory line is 79 GiB: an "80 GB" card reports 79.2 to 79.6 GiB, so the
+    old 80 refused Colab's A100, and would have refused an H100 80 GB too.
+  - **The disk line** is now 1.2x the inputs plus 100 GB, down from 3x plus 100 GB. A Colab A100's disk (about
+    235 GB) could not hold the old line's ~250 GB for 50 GB of inputs.
+  - Tests: `test_pod_runner.py` gains the one-arm run (the bench and stop, then the rest, then a resumed pod keeping
+    its knob), the hours rule on a toy corpus, `CB_POD_ARMS` parsing, and an A100 passing the preflight. All 13 pod
+    tests pass. The kill-mid-arm resume test already covers a session ending.
+- **The notebook** `notebooks/pod_colab.ipynb` (from `_build_pod_colab.py`):
+  - It mounts Drive and refuses any card but an A100 80 GB.
+  - The remote is `folder:` `MyDrive/cubbyllm/pod`.
+  - Cell 3 is the bench, which stops after the speed phase and prints `bench.json`.
+  - Cell 4 is the control, behind `GO = False` until Cowork has read the bench.
+- **The inputs, built at home** (`--frac 0.9`, with `emitter_sft_v12e_w_tg30_step.jsonl` and `talk_v2_2.jsonl`):
+  - These are the programs adapter's own training set (its `emitter_lora.json` names it) and the talk set.
+    `docs/POD.md` had named `emitter_sft_v12e_w_step.jsonl`, a 35k-row file; corrected.
+  - The build writes the manifest (every file's sha256), the reference Cowork asked the Colab copy to be checked
+    against. Nothing is uploaded.
+- **A premise that does not hold: Drive does not have the full token cache.**
+  - Drive's `cubbyllm/` holds `token_cache_cont` (14.8 GB) and `token_cache_base`. The full cache (66 GB, 13 shards)
+    the slice is cut from is only on the home disk.
+  - Drive has 78 GB free.
+  - So the slice cannot be built on Colab from Drive. Two ways, yours to choose:
+    - **(a) Copy the home-built inputs to `MyDrive/cubbyllm/pod/inputs/`:** about 50 GB, leaving about 28 GB. Drive
+      for desktop uploads them; the manifest's hashes are checked on every fetch. My recommendation: it is built
+      once, and every session fetches the same bytes.
+    - **(b) Copy the full cache to Drive (66 GB) and build on Colab:** that leaves about 12 GB on Drive, too little
+      for the run's checkpoint slots (6.9 GB each) and finals. It needs more Drive space first.
+  - Each choice moves tens of GB onto Nick's Drive, so I have not started either.

@@ -153,7 +153,8 @@ def markdown(r: dict) -> str:
         lines.append(f"| {k}{tag} | {f(row.get('grown'))} | {f(row.get('control'))} | {f(row.get('start'))} |")
     lines += ["", "## Gates", ""]
     for k, ok in r["checks"].items():
-        lines.append(f"- {'PASS' if ok else 'fail' if ok is False else 'not yet'}  {k}")
+        wait = "waiting on the grown arm" if k in r.get("waiting", ()) else "not yet"
+        lines.append(f"- {'PASS' if ok else 'fail' if ok is False else wait}  {k}")
     for k, ok in r.get("kills", {}).items():
         lines.append(f"- {'KILLED' if ok else 'not killed'}  {k}")
     p = r.get("probes") or {}

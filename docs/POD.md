@@ -24,7 +24,7 @@ card, resumable after a spot preemption. Nick rents and starts the card from thi
 ```
 python validation/pod/prepare_inputs.py --src <full token cache> --dst <token_cache_r3> --exclude-dir <token_cache_cont> \
     --tokenizer <bbpe128k.json> --start <base450m_cont_stable_end.pt> --cont-metrics <base450m_cont_metrics.jsonl> \
-    --emitter-data <emitter_sft_v12e_w_step.jsonl> --talk-data <talk_v2_2.jsonl> --hours 14 --card b200 --dry
+    --emitter-data <emitter_sft_v12e_w_tg30_step.jsonl> --talk-data <talk_v2_2.jsonl> --hours 14 --card b200 --dry
 ```
 
 `--dry` prints the slice's plan (blocks neither the first run nor the continuation took) and the epoch table for the
@@ -40,7 +40,9 @@ the pod checks out: push that commit first.
 |---|---|
 | `HF_TOKEN` | the private repo's token; read from the environment, redacted from every log, never written |
 | `CB_POD_REPO` | the private dataset repo holding `inputs/` (and receiving `runs/`, `logs/`, `pod_state.json`) |
-| `HOURS_PER_ARM` | training hours per arm: 7 for a 20 h on-demand rental, 12-14 with spot |
+| `HOURS_PER_ARM` | the cap on the hours per arm (default 14); the hours themselves are decided after the bench: the most at which every shard stays within 2 epochs (`pod_phases.hours_from_bench`), recorded before training |
+| `CB_POD_ARMS` | `control` (one arm now, 2026-11-04) or `control,grown` (the default); both arms are always benched, and the grown/control MFU is recorded against the 0.75 line |
+| `--until speed` | the bench, then stop (Cowork reads it before anything trains) |
 | `CB_POD_STOP` | the provider's own stop command, run when the last upload is done (a card never sits billing idle) |
 | `CB_REPO_URL` | this repo's git URL, cloned on the pod at the manifest's commit |
 | `POD_WORK` | the local NVMe folder (default `/workspace/pod`) |
@@ -98,3 +100,9 @@ python validation/pod/run_pod.py --smoke --work <tmp>/work --remote folder:<tmp>
 
 A tiny shape on the CPU, minutes: every phase, a folder standing in for the repo. `tests/validation/test_pod_runner.py`
 kills it mid-arm and resumes it in an empty folder.
+
+## On Colab (2026-11-04)
+`notebooks/pod_colab.ipynb`: the same runner on one Colab A100 80 GB, its remote `folder:` the mounted Drive
+(`MyDrive/cubbyllm/pod`), no Hugging Face repo and no token. Cell 3 is the bench (`--until speed`); cell 4 the control,
+after Cowork's go. A session that ends is a preemption: the next session's cells resume it. The inputs must be on Drive
+under `pod/inputs/` first (see order 0045).

@@ -145,6 +145,8 @@ def probes(ctx) -> None:
         env = dict(os.environ, CB_CORPUS=ctx.path("corpus"), CUBBY_SPM=ctx.path("tokenizer"), CB_SHARDS="facts_text_far", CB_DOCS="400", CB_BATCH="8")
         for name, ck in (("grown", os.path.join(ctx.run_dir("grown"), "grow_mem_grown_final.pt")),
                          ("control", os.path.join(ctx.run_dir("control"), "grow_mem_control_final.pt")), ("base", ctx.path("start"))):
+            if name != "base" and name not in ctx.arms:          # an arm this run did not train (CB_POD_ARMS)
+                continue
             o = os.path.join(ctx.runs, f"hypertoken_recall_{name}.json")
             run(ctx, [sys.executable, "-u", "validation/exp_hypertoken_recall.py"], dict(env, CB_CKPT=ck, CB_OUT=o), f"probe_recall_{name}.log")
             out[f"recall_{name}"] = o
@@ -173,6 +175,9 @@ def readout(ctx) -> dict:
     r["preemptions"] = ctx.state.get("preemptions", 0)
     r["kernels"] = ctx.state.get("kernels")
     r["bench"] = {k: v for k, v in (ctx.state.get("bench") or {}).items() if k != "rows"}
+    r["arms_run"] = list(ctx.arms)
+    if "grown" not in ctx.arms:                              # one arm now (2026-11-04): the grown arm's gates wait for it
+        r["waiting"] = sorted(k for k, v in r["checks"].items() if v is None)
     json.dump(r, open(os.path.join(ctx.runs, "readout.json"), "w", encoding="utf-8"), indent=1)
     open(os.path.join(ctx.runs, "readout.md"), "w", encoding="utf-8").write(gr.markdown(r))
     for f in ("readout.json", "readout.md"):
@@ -183,7 +188,7 @@ def readout(ctx) -> dict:
 
 def adapters(ctx) -> None:
     r = json.load(open(os.path.join(ctx.runs, "readout.json"), encoding="utf-8"))
-    winner = "grown" if r["checks"].get("1. growth: grown mix <= control mix + 0.02") else "control"
+    winner = "grown" if "grown" in ctx.arms and r["checks"].get("1. growth: grown mix <= control mix + 0.02") else "control"
     out_dir = os.path.join(ctx.runs, "adapters", winner)
     os.makedirs(out_dir, exist_ok=True)
     rep = {"winner": winner}

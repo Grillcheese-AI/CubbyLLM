@@ -21,8 +21,10 @@ __wiring__ = "WIRED"
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 KERNEL_TESTS = ("tests/model/backbone/test_mingru_triton.py", "tests/model/backbone/test_window_attn_triton.py")
 KERNEL_FLAGS = {"test_mingru_triton.py": "CB_MINGRU_TRITON", "test_window_attn_triton.py": "CB_ATTN_TRITON"}
-CARDS = ("H100", "H200", "B200")
-MIN_GB, DISK_SPARE_GB, MEM_SHARE = 80, 100, 0.92
+CARDS = ("A100", "H100", "H200", "B200")                # an A100 80 GB: the Colab run (Nick and Cowork, 2026-11-04)
+MIN_GB, DISK_SPARE_GB, MEM_SHARE = 79, 100, 0.92       # GiB: an "80 GB" card reports 79.2-79.6
+MFU_LINE = 0.75                                        # the grown arm's MFU at least 0.75x the control's (the bench line)
+MAX_HOURS = 14.0                                       # the hours rule's cap (order 0045, 2026-11-04)
 MEM_EVERY, MEM_EVERY_SLOW, SLOW_RATIO = 4, 8, 0.5
 # round 2's config (notebooks/_build_grow_mem.py), the pre-registered knobs: S 2048, 131,072 tokens a step, the decay
 # mix with the three new shards and facts_text_far, samples every 500 steps
@@ -112,10 +114,12 @@ def preflight(ctx) -> None:
     if ctx.state.get("card") and ctx.state["card"] != card["name"]:
         raise SystemExit(f"this run trained on a {ctx.state['card']}; a {card['name']} compares nothing. "
                          "Rent the same card model to resume, or start a new run folder")
-    need_gb = 3 * sum(f["bytes"] for f in ctx.manifest["files"].values()) / 2 ** 30 + (0 if ctx.smoke else DISK_SPARE_GB)
+    # the inputs once (a fetch writes one file aside at a time), plus the spare for the checkpoint slots and finals: a Colab
+    # A100's disk (~235 GB) holds that; 3x the inputs (the rented card's line) did not (2026-11-04)
+    need_gb = 1.2 * sum(f["bytes"] for f in ctx.manifest["files"].values()) / 2 ** 30 + (0 if ctx.smoke else DISK_SPARE_GB)
     free_gb = shutil.disk_usage(ctx.work).free / 2 ** 30
     if free_gb < need_gb:
-        raise SystemExit(f"free disk {free_gb:.0f} GB < {need_gb:.0f} GB needed (3 x the inputs + {DISK_SPARE_GB} GB)")
+        raise SystemExit(f"free disk {free_gb:.0f} GB < {need_gb:.0f} GB needed (1.2 x the inputs + {DISK_SPARE_GB} GB)")
     if ctx.remote.kind == "hf" and not os.environ.get("HF_TOKEN"):
         raise SystemExit("HF_TOKEN is not set (the private repo needs it)")
     probe = os.path.join(ctx.logs, "_preflight.txt")
@@ -157,6 +161,26 @@ def kernels(ctx) -> None:
     write_state(ctx.remote, ctx.work, ctx.state)
 
 
+def hours_from_bench(corpus: str, tok_s: float, cap: float = MAX_HOURS) -> dict:
+    """The hours an arm trains (Nick and Cowork, 2026-11-04): the most at which every shard of the slice stays within 2
+    epochs under the run's mix (``prepare_inputs.epoch_table``, stable and decay phases), at the bench's measured tokens
+    per second, and at most `cap`. Decided once, after the bench and before any training, and recorded."""
+    from prepare_inputs import MAX_EPOCHS, epoch_table
+    sizes = json.load(open(os.path.join(corpus, "_sizes.json"), encoding="utf-8"))
+    holds = json.load(open(os.path.join(corpus, "_holdout.json"), encoding="utf-8"))
+    kept = {k: os.path.getsize(os.path.join(corpus, f"{k}.u32")) // 4 - holds.get(k, 0) for k in sizes
+            if os.path.exists(os.path.join(corpus, f"{k}.u32"))}
+    unit = 1e12                                            # epochs scale with the tokens: read them off a large run
+    per = {r["shard"]: r["drawn"] / max(r["train"], 1) for r in epoch_table(sizes, kept, unit, DECAY_JSON)}
+    worst = max(per, key=per.get)
+    at_line = MAX_EPOCHS / per[worst] * unit / max(tok_s, 1e-9) / 3600
+    hours = min(cap, at_line)
+    tokens = hours * 3600 * tok_s
+    return {"hours": round(hours, 4), "hours_at_2_epochs": round(at_line, 4), "cap": cap, "tok_s": tok_s,
+            "tokens": round(tokens), "limit_shard": worst, "by": "the cap" if cap <= at_line else f"{worst} at {MAX_EPOCHS:g} epochs",
+            "epochs": {k: round(v * tokens / unit, 3) for k, v in sorted(per.items())}, "decided": time.strftime("%F %T")}
+
+
 # -- phase 3: speed ---------------------------------------------------------------------------------------------------
 _ROW = re.compile(r"micro\s+(\d+):\s+([\d.]+) ms/micro\s+([\d,]+) tok/s\s+MFU\s+([\d.]+|nan)%\s+peak\s+([\d.]+|nan) GB")
 
@@ -184,8 +208,8 @@ def speed(ctx) -> None:
     if ctx.state.get("bench"):
         say(ctx, "bench already decided; not measured again")
         return
-    bench = {"card": ctx.state.get("card")}
-    for arm in ("control", "grown"):
+    bench = {"card": ctx.state.get("card"), "arms": list(ctx.arms)}
+    for arm in ("control", "grown"):                     # both arms are benched, whichever train: the MFU line needs both
         env = base_env(ctx, arm)
         if arm == "grown":
             env["CB_MEM_EVERY"] = str(2 if ctx.smoke else MEM_EVERY)
@@ -201,13 +225,32 @@ def speed(ctx) -> None:
     slow = bench["grown"]["mfu"] < SLOW_RATIO * bench["control"]["mfu"] if bench["control"]["mfu"] else False
     bench["mem_every"] = 2 if ctx.smoke else (MEM_EVERY_SLOW if slow else MEM_EVERY)
     bench["reads"] = int(TINY_SHAPES["grown"]["CB_L"] if ctx.smoke else SHAPES["grown"]["CB_L"]) // bench["mem_every"]
-    bench["decided"] = time.strftime("%F %T")
     say(ctx, f"the memory read every {bench['mem_every']}th layer ({bench['reads']} reads)" + (" -- the grown arm ran under half the control's MFU" if slow else ""))
+    if slow and not ctx.smoke:                           # the line is read after the read-count rule: bench it at that count
+        env = dict(base_env(ctx, "grown"), CB_MEM_EVERY=str(bench["mem_every"]), **bench["grown"]["env"])
+        bench["grown_at_first_count"] = bench["grown"]
+        bench["grown"] = {**bench_arm(ctx, "grown", env), "env": bench["grown"]["env"]}
+    ratio = bench["grown"]["mfu"] / bench["control"]["mfu"] if bench["control"]["mfu"] else None
+    bench["mfu_line"] = {"line": MFU_LINE, "ratio": None if ratio is None else round(ratio, 3),
+                         "passes": None if ratio is None else ratio >= MFU_LINE}
+    say(ctx, f"MFU, grown over control: {bench['mfu_line']['ratio']} (line {MFU_LINE}: "
+             f"{'passes' if bench['mfu_line']['passes'] else 'not measured' if ratio is None else 'under it: the grown arm waits on engineering'})")
+    bench["decided"] = time.strftime("%F %T")
+    # the hours: the fastest arm sees the most tokens, so it sets the epoch line; every arm trains the same hours
+    rule = hours_from_bench(ctx.path("corpus"), max(bench[a]["tok_s"] for a in ctx.arms), ctx.hours_cap)
+    bench["hours_rule"] = rule
+    knobs = ctx.state.setdefault("knobs", {})
+    if "hours" not in knobs or knobs.get("hours_from") != "explicit":
+        knobs["hours"] = ctx.hours_cap if ctx.smoke else rule["hours"]   # (the smoke's tiny shards would give seconds)
+        knobs["hours_from"] = "bench"
+    ctx.hours = knobs["hours"]
+    say(ctx, f"hours per arm: {ctx.hours} ({rule['by']}; {rule['tokens'] / 1e9:.2f}B tokens at {rule['tok_s']:,.0f} tok/s; "
+             f"2 epochs at {rule['hours_at_2_epochs']} h)" + (" -- the smoke trains at the cap" if ctx.smoke else ""))
     json.dump(bench, open(os.path.join(ctx.runs, "bench.json"), "w", encoding="utf-8"), indent=1)
     ctx.remote.put(os.path.join(ctx.runs, "bench.json"), "runs/bench.json")
     ctx.state["bench"] = bench
     write_state(ctx.remote, ctx.work, ctx.state)
 
 
-__all__ = ["DECAY_JSON", "KERNEL_TESTS", "ROUND2", "SHAPES", "TINY", "TINY_SHAPES", "base_env", "bench_arm", "card_info",
-           "fetch_inputs", "kernels", "preflight", "run", "say", "speed"]
+__all__ = ["DECAY_JSON", "KERNEL_TESTS", "MAX_HOURS", "MFU_LINE", "ROUND2", "SHAPES", "TINY", "TINY_SHAPES", "base_env", "bench_arm",
+           "card_info", "fetch_inputs", "hours_from_bench", "kernels", "preflight", "run", "say", "speed"]
