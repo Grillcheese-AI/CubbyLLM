@@ -56,12 +56,12 @@ def groups(hit: dict, limit: int = LIMIT) -> dict[str, list[list[str]]]:
     return {"vm_exact": [exact], "vm_edit1": [exact, by[1]], "vm_edit2": [exact, by[1], by[2]]}
 
 
-def batch(segment: str, queries: list[tuple[str, str]], exe: str) -> dict[str, dict]:
+def batch(segment: str, queries: list[tuple[str, str]], exe: str, edits: int = 2) -> dict[str, dict]:
     qp = os.path.join(tempfile.mkdtemp(), "queries.jsonl")
     with open(qp, "w", encoding="utf-8") as f:
         for k, text in queries:
             f.write(json.dumps({"id": k, "key": text}, ensure_ascii=False) + "\n")
-    r = subprocess.run([exe, "knowledge", "batch", segment, qp, "--edits", "2", "--limit", str(LIMIT)],
+    r = subprocess.run([exe, "knowledge", "batch", segment, qp, "--edits", str(edits), "--limit", str(LIMIT)],
                        capture_output=True, text=True, encoding="utf-8")
     if r.returncode:
         raise SystemExit(r.stderr.strip())

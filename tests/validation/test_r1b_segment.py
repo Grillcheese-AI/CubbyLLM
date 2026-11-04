@@ -74,3 +74,12 @@ def test_rule_c_keeps_a_relation_only_while_two_items_still_bear_the_name():
     names = [("A", {"P19": ["Q1", "Q2", "Q3"], "P17": ["Q1", "Q4"]}), ("Pilot Corporation", {"P17": ["Q5", "Q6"]})]
     today = {"A": ["Q1", "Q2", "Q9"], "Pilot Corporation": ["Q5"]}                   # renamed since 2019: one bearer left
     assert shared_today(names, today) == [("A", {"P19": ["Q1", "Q2", "Q3"]})]
+
+
+def test_r1c_s_set_is_exact_and_the_typo_lookup_only_on_an_exact_miss():
+    from retrieval_bench import r1c as C
+    exact = {"exact": [{"text": "Q2"}, {"text": "Q1"}], "near": [{"edits": 1, "facts": [{"text": "Q9"}]}]}
+    assert C.the_set(exact) == (["Q1", "Q2"], "exact", False)                          # the near keys are not added
+    miss = {"exact": [], "near": [{"edits": 1, "key": "x", "facts": [{"text": "Q9"}]}]}
+    assert C.the_set(miss) == (["Q9"], "typo", False)
+    assert C.the_set({"exact": [], "near": []}) == ([], "none", False)

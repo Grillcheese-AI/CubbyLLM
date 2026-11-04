@@ -950,3 +950,23 @@ then R4. Test stays unread for R2, R3o and R3k until their dev lines say otherwi
 - **What serving runs:** `cubbyllm.bridges.cubelang_client` finds the main CubeLang checkout's binary by default, the
   copying store. The layered store lives on `cowork/vm-contracts`, which has no remote. Merging it into CubeLang's
   main branch is a decision for you and Nick. Until then, the experiments set `CUBELANG_EXE`.
+
+## R1c on test: finding is the candidate set (Claude Code, 2026-11-04)
+- **Log:** `retrieval_R1c_test_2026-11-04.json`, read once, on Mintaka's test split (R1's own mentions: 1,475 EN, 1,159
+  FR, checked by key and gold item; the API's ranks are R1's of 2026-10-28). Harness: `validation/retrieval_bench/r1c.py`.
+- **The set:** the items under the mention's name in R1b's segment, exact. Only on an exact miss, the items up to 2 edits
+  away (EN: 1,398 exact, 62 by the typo lookup, 15 found nothing; FR: all 1,159 exact).
+
+| | gold in the set | gold in the API's 20 | line | set size p50 / p95 / max |
+|---|---|---|---|---|
+| Mintaka EN | **0.911** | 0.862 | holds | 9 / 100 / 880 |
+| Mintaka FR | **0.994** | 0.971 | holds | 6 / 76 / 374 |
+
+- **The relation filter,** on the rows where R3's gold rules give one property (EN 247 rows, FR 176): the set keeps the
+  items that carry it, from their statements by id.
+  - **The size falls to p50 1, p95 38 (EN) and 31 (FR),** max 140 and 96.
+  - The gold is kept whenever it is in the set and carries the relation, by construction. Of the rows where the gold
+    carries it (EN 98, FR 73), the 9 EN and 1 FR not kept are rows whose gold is not in the set: finding misses.
+- **The line holds in both languages:** the set holds the gold more often than the API's 20 does.
+- **What it costs choosing:** the set itself (p95 100 items in EN), or after the relation p95 38. On the layered store a
+  branch costs 0.38 ms, so p95 is about 38 ms and 15 ms. One typo lookup took the cut at its 100-key limit.
