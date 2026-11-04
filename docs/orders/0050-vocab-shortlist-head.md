@@ -26,6 +26,10 @@ Behind `CB_HEAD_SHORTLIST`, off by default.
 1. **Measure today first:** the head's share of decode time and memory per token.
    - At home on grilly2 (the RX 6750 XT), and in torch on an A100.
    - At batch 1 and batch 16, in fp32 and in int8 (`quantize_`).
+   - **And the head's share of a training step** (forward, backward and the cross-entropy, with its activation
+     memory) for the 450M and for the grown 1.36B shape, on the A100. By parameter count the head is about 29% of
+     the 450M's per-token matmuls (131M of 445M: backbone 313.65M, the input embedding a lookup) and about 11% of
+     the grown arm's. The measured share decides whether stage 2 is worth its order.
 2. **A shortlist index over the trained head's rows** (`base450m_cont`'s), built once offline. The arms (Claude Code
    may add one, recorded):
    - **(a) clusters:** k-means over the rows; probe the clusters whose centroids score best;
