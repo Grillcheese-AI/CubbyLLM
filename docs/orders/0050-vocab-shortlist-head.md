@@ -1,5 +1,5 @@
 # 0050 — The vocabulary at a small head's cost: a real shortlist for the 450M's 128k output head
-status: open
+status: in progress
 written: 2026-11-04 by Cowork · approved: 2026-11-04 by Nick ("I think a priority would be to fix the vocab first") · hypothesis: H-C3 (with H-C1, H-C6)
 
 ## Why
@@ -90,3 +90,28 @@ Its own order, written from stage 1's numbers. 0045's runs are not changed.
 - **Not verified here:**
 - **Found on the way:**
 - **Questions:**
+
+## Step 1 on grilly2: the head's share of decode (Claude Code, 2026-11-04)
+- **Log:** `head_share_grilly_2026-11-04.json` (`validation/head_share.py`, on grilly2, the RX 6750 XT). The export is
+  `base450m_cont` (128,000 x 1,024). A decode step is timed with its greedy token read back to the host (what a seat
+  waits for), after a 64-token prompt, p50 of 30 steps. Heads are timed alone on a hidden state of the step's shape,
+  p50 of 50.
+
+| | step | 128k head | head's share | full 32k head | K = 256 / 1,024 / 4,096 rows |
+|---|---|---|---|---|---|
+| fp32, batch 1 | 22.0 ms | 1.61 ms | **7.3%** | 0.50 ms | 0.11 / 0.13 / 0.17 ms |
+| fp32, batch 16 | 32.8 ms | 3.13 ms | **9.6%** | 0.96 ms | 0.15 / 0.15 / 0.22 ms |
+| int8, batch 1 | 21.2 ms | 0.75 ms | **3.5%** | 0.52 ms | 0.13 / 0.15 / 0.17 ms |
+| int8, batch 16 | 32.4 ms | 2.65 ms | **8.2%** | 0.92 ms | 0.15 / 0.15 / 0.21 ms |
+
+- **Memory:** the head is 524 MB in fp32 (of the export's 2.3 GB), 132 MB in int8.
+- **What it says:** at home, the head is not where decode's time goes.
+  - A step reads 2.3 GB in 22 ms, about 100 GB/s, well under the card's bandwidth. The step is bound by its many
+    small launches (32 layers), not by the head's bytes.
+  - The ceiling for a perfect shortlist at batch 1 is about 7% of a decode step (1.6 ms of 22), 3.5% with the int8
+    head.
+  - The speed line is within reach: a gathered K-row head costs 0.11 to 0.22 ms against the 32k head's 0.50 to 0.96.
+    That leaves the index itself about 0.3 to 0.8 ms to fit.
+- **Still to measure:** the A100 (torch, Nick's session), and the training step's share (Cowork's addition).
+  - By parameters, the head is 29% of the 450M's per-token matmuls. A training step pays that in full, plus the
+    cross-entropy over 128k, so stage 2's case rests on the A100's training number, not on decode at home.

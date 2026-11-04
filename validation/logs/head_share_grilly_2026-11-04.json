@@ -1,0 +1,183 @@
+{
+ "what": "order 0050 stage 1: the output head's share of a decode step (grilly2)",
+ "date": "2026-11-04",
+ "export": "base450m_cont",
+ "vocab": 128000,
+ "hidden": 1024,
+ "machine": "Windows-11-10.0.26340-SP0",
+ "prompt": 64,
+ "runs": [
+  {
+   "precision": "fp32",
+   "batch": 1,
+   "step": {
+    "p50_ms": 22.008,
+    "mean_ms": 22.061,
+    "n": 30
+   },
+   "head": {
+    "p50_ms": 1.608,
+    "mean_ms": 1.622,
+    "p90_ms": 1.658,
+    "n": 50
+   },
+   "head32k_fp32": {
+    "p50_ms": 0.504,
+    "mean_ms": 0.506,
+    "p90_ms": 0.514,
+    "n": 50
+   },
+   "shortlist_rows_fp32": {
+    "256": {
+     "p50_ms": 0.113,
+     "mean_ms": 0.116,
+     "p90_ms": 0.122,
+     "n": 50
+    },
+    "1024": {
+     "p50_ms": 0.126,
+     "mean_ms": 0.127,
+     "p90_ms": 0.129,
+     "n": 50
+    },
+    "4096": {
+     "p50_ms": 0.167,
+     "mean_ms": 0.173,
+     "p90_ms": 0.194,
+     "n": 50
+    }
+   },
+   "head_bytes": 524288000,
+   "head_share_of_step": 0.0731
+  },
+  {
+   "precision": "fp32",
+   "batch": 16,
+   "step": {
+    "p50_ms": 32.78,
+    "mean_ms": 33.086,
+    "n": 30
+   },
+   "head": {
+    "p50_ms": 3.13,
+    "mean_ms": 3.139,
+    "p90_ms": 3.201,
+    "n": 50
+   },
+   "head32k_fp32": {
+    "p50_ms": 0.955,
+    "mean_ms": 0.973,
+    "p90_ms": 1.025,
+    "n": 50
+   },
+   "shortlist_rows_fp32": {
+    "256": {
+     "p50_ms": 0.152,
+     "mean_ms": 0.162,
+     "p90_ms": 0.204,
+     "n": 50
+    },
+    "1024": {
+     "p50_ms": 0.149,
+     "mean_ms": 0.154,
+     "p90_ms": 0.163,
+     "n": 50
+    },
+    "4096": {
+     "p50_ms": 0.224,
+     "mean_ms": 0.229,
+     "p90_ms": 0.255,
+     "n": 50
+    }
+   },
+   "head_bytes": 524288000,
+   "head_share_of_step": 0.0955
+  },
+  {
+   "precision": "int8",
+   "batch": 1,
+   "step": {
+    "p50_ms": 21.15,
+    "mean_ms": 21.217,
+    "n": 30
+   },
+   "head": {
+    "p50_ms": 0.748,
+    "mean_ms": 0.757,
+    "p90_ms": 0.791,
+    "n": 50
+   },
+   "head32k_fp32": {
+    "p50_ms": 0.521,
+    "mean_ms": 0.523,
+    "p90_ms": 0.546,
+    "n": 50
+   },
+   "shortlist_rows_fp32": {
+    "256": {
+     "p50_ms": 0.128,
+     "mean_ms": 0.13,
+     "p90_ms": 0.139,
+     "n": 50
+    },
+    "1024": {
+     "p50_ms": 0.146,
+     "mean_ms": 0.151,
+     "p90_ms": 0.16,
+     "n": 50
+    },
+    "4096": {
+     "p50_ms": 0.169,
+     "mean_ms": 0.171,
+     "p90_ms": 0.176,
+     "n": 50
+    }
+   },
+   "head_bytes": 131584000,
+   "head_share_of_step": 0.0354
+  },
+  {
+   "precision": "int8",
+   "batch": 16,
+   "step": {
+    "p50_ms": 32.403,
+    "mean_ms": 32.848,
+    "n": 30
+   },
+   "head": {
+    "p50_ms": 2.649,
+    "mean_ms": 2.663,
+    "p90_ms": 2.718,
+    "n": 50
+   },
+   "head32k_fp32": {
+    "p50_ms": 0.918,
+    "mean_ms": 0.935,
+    "p90_ms": 0.999,
+    "n": 50
+   },
+   "shortlist_rows_fp32": {
+    "256": {
+     "p50_ms": 0.145,
+     "mean_ms": 0.147,
+     "p90_ms": 0.152,
+     "n": 50
+    },
+    "1024": {
+     "p50_ms": 0.146,
+     "mean_ms": 0.148,
+     "p90_ms": 0.156,
+     "n": 50
+    },
+    "4096": {
+     "p50_ms": 0.21,
+     "mean_ms": 0.212,
+     "p90_ms": 0.22,
+     "n": 50
+    }
+   },
+   "head_bytes": 131584000,
+   "head_share_of_step": 0.0818
+  }
+ ]
+}
