@@ -172,11 +172,13 @@ def test_the_hours_are_the_most_within_two_epochs_and_at_most_the_cap(tmp_path):
     (corpus / "_sizes.json").write_text(json.dumps({"fineweb_edu": 8900, "books": 2900, "instruct": 450}))
     (corpus / "_holdout.json").write_text(json.dumps({"fineweb_edu": 100, "books": 100, "instruct": 50}))
     r = pod_phases.hours_from_bench(str(corpus), tok_s=1.0, cap=100.0)          # 1 token a second: hours = tokens / 3600
-    assert r["by"].endswith("at 2 epochs") and abs(max(r["epochs"].values()) - 2.0) < 1e-3
-    assert r["epochs"][r["limit_shard"]] == max(r["epochs"].values())
+    slice_ = {k: v for k, v in r["epochs"].items() if k not in r["not_binding"]}
+    assert r["by"].endswith("at 2 epochs") and abs(max(slice_.values()) - 2.0) < 1e-3
+    assert r["limit_shard"] != "instruct" and r["not_binding"] == ["instruct"]      # a decay shard is reported, never binding
+    assert r["epochs"][r["limit_shard"]] == max(slice_.values())
     capped = pod_phases.hours_from_bench(str(corpus), tok_s=1.0, cap=r["hours_at_2_epochs"] / 2)
     assert capped["by"] == "the cap" and capped["hours"] == round(r["hours_at_2_epochs"] / 2, 4)
-    assert max(capped["epochs"].values()) < 2.0
+    assert max(v for k, v in capped["epochs"].items() if k != "instruct") < 2.0
     assert arms_of("control") == ("control",) and arms_of(None) == ("control", "grown") and arms_of("grown,control") == ("control", "grown")
     with pytest.raises(SystemExit):
         arms_of("grown")

@@ -369,3 +369,13 @@ Status: open. The bench is the next item, then `review`.
     - **(b) Copy the full cache to Drive (66 GB) and build on Colab:** that leaves about 12 GB on Drive, too little
       for the run's checkpoint slots (6.9 GB each) and finals. It needs more Drive space first.
   - Each choice moves tens of GB onto Nick's Drive, so I have not started either.
+- **The inputs are staged at home:** 25 files, 49.68 GB, manifest at commit `ab8b513`
+  (`D:` stage, not uploaded). The build's table at 10.8B tokens has every slice shard within 2 epochs (fineweb_edu
+  1.87). The four decay shards are over it by design: instruct 7.12, program 6.17, agent 3.09, facts_text_far 2.14
+  (round 2's decay mix repeats them).
+  - **The hours rule's rows are the slice's,** as table (a) counted them. The decay shards are reported, never
+    binding. Left to bind, instruct would cut the run to about 3 h. If you meant them to bind, say so; the run would
+    then be a few hours.
+  - **On the slice itself,** the line binds at 50.6 A100-hours (fineweb_edu at 2 epochs, 11.5B tokens at the
+    continuation's 63k tok/s), matching your ~47 h.
+  - **The notebook sets `HOURS_PER_ARM=60`,** so on Colab the line decides, not a rental's cap.

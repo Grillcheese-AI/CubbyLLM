@@ -35,7 +35,7 @@ lands, the logs. A session that ends is a preemption: run the cells again in a n
 1. **The bench** (cell 3, about an hour): both arms' tokens per second and MFU, then it stops. Cowork reads
    `pod/runs/bench.json` before anything trains. **Line:** the grown arm's MFU at least 0.75x the control's.
 2. **The control** (cell 4, only after Cowork's go): the hours follow from the bench (the most at which every shard
-   stays within 2 epochs, at most 14 h, over as many sessions as it takes), then the probes, the readout and the adapters.
+   stays within 2 epochs: about 50 A100-hours, over as many sessions as it takes), then the probes, the readout and the adapters.
 **Disconnect the runtime** when a cell ends and nothing else is to run: an idle runtime burns units.
 """),
     code(r"""
@@ -82,8 +82,10 @@ checked against its sha256), the kernels' tests, then the speed phase for **both
 """),
     code(r"""
 ARMS = 'control'          # the arm(s) to train (one arm now: the control); both arms are benched either way
-code_ = run('validation/pod/run_pod.py', '--work', WORK, '--remote', f'folder:{REMOTE}', '--until', 'speed',
-            env={'CB_POD_ARMS': ARMS})
+# on Colab the 2-epoch line decides the hours, not a rental's cap: ~50 A100-hours at the continuation's 63k tok/s,
+# over as many sessions as it takes (each resumes); 60 only keeps the cap out of the line's way
+KNOBS = {'CB_POD_ARMS': ARMS, 'HOURS_PER_ARM': '60'}
+code_ = run('validation/pod/run_pod.py', '--work', WORK, '--remote', f'folder:{REMOTE}', '--until', 'speed', env=KNOBS)
 print('exit', code_)
 b = json.load(open(os.path.join(REMOTE, 'runs', 'bench.json')))
 for arm in ('control', 'grown'):
@@ -98,7 +100,7 @@ Resumable: rerun this cell in each new session until it prints `done`.
     code(r"""
 GO = False          # set True once Cowork has read the bench and said go
 assert GO, 'the bench first: Cowork reads pod/runs/bench.json, then GO = True'
-print('exit', run('validation/pod/run_pod.py', '--work', WORK, '--remote', f'folder:{REMOTE}', env={'CB_POD_ARMS': ARMS}))
+print('exit', run('validation/pod/run_pod.py', '--work', WORK, '--remote', f'folder:{REMOTE}', env=KNOBS))
 """),
 ]
 

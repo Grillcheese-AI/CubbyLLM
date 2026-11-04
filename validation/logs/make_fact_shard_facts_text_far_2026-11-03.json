@@ -1,0 +1,51 @@
+{
+ "args": {
+  "cache": "<token cache>",
+  "tokenizer": "grillcheese_bbpe128k.json",
+  "docs": 20000,
+  "doc": 2048,
+  "facts": [
+   8,
+   16
+  ],
+  "questions": [
+   4,
+   8
+  ],
+  "mode": "text",
+  "far": true,
+  "filler": "books,wikipedia,fineweb_edu",
+  "lead": false,
+  "names": "v1",
+  "name": "",
+  "holdout_frac": 0.02,
+  "seed": 0,
+  "absent": 0.0,
+  "skip_facts": 0,
+  "out": null
+ },
+ "shard": "facts_text_far",
+ "documents": 20000,
+ "facts_used": 240208,
+ "relations": 2902,
+ "tokens": 40960000,
+ "train_tokens": 40140800,
+ "holdout_tokens": 819200,
+ "questions": 119839,
+ "placed_tokens": 0,
+ "questions_with_a_doubled_word": 33048,
+ "doubled_examples": [
+  "What is the instance of of Maccabiah Games?",
+  "What is the member of of Julie Krone?",
+  "What is the component of of Chemical Reactivity?",
+  "What is the part of of Poipet?",
+  "What is the instance of of Sturgeon?",
+  "What is the intended audience of of Gentile Patrons?",
+  "What is the part of of Exhibits?",
+  "What is the instance of of Quiver Tip?",
+  "What is the part of of Kismayo?",
+  "What is the composed of of Maly Lyakhovsky Island?"
+ ],
+ "questions_with_a_repeat_in_or_at_a_name": 33188,
+ "seconds": 242.6
+}

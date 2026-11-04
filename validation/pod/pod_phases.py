@@ -164,21 +164,26 @@ def kernels(ctx) -> None:
 def hours_from_bench(corpus: str, tok_s: float, cap: float = MAX_HOURS) -> dict:
     """The hours an arm trains (Nick and Cowork, 2026-11-04): the most at which every shard of the slice stays within 2
     epochs under the run's mix (``prepare_inputs.epoch_table``, stable and decay phases), at the bench's measured tokens
-    per second, and at most `cap`. Decided once, after the bench and before any training, and recorded."""
-    from prepare_inputs import MAX_EPOCHS, epoch_table
+    per second, and at most `cap`. Decided once, after the bench and before any training, and recorded.
+
+    The rows that bind are the slice's (its unseen blocks, as table (a) counted them). The decay shards (instruct, agent,
+    program, facts_text_far) are small curated sets the decay's mix repeats on purpose (7, 6, 3 and 2 epochs in a
+    10.8B run): reported, never binding -- left to bind, instruct alone would cut the run to about 3 h (2026-11-04)."""
+    from prepare_inputs import DECAY_SHARDS, MAX_EPOCHS, epoch_table
     sizes = json.load(open(os.path.join(corpus, "_sizes.json"), encoding="utf-8"))
     holds = json.load(open(os.path.join(corpus, "_holdout.json"), encoding="utf-8"))
     kept = {k: os.path.getsize(os.path.join(corpus, f"{k}.u32")) // 4 - holds.get(k, 0) for k in sizes
             if os.path.exists(os.path.join(corpus, f"{k}.u32"))}
     unit = 1e12                                            # epochs scale with the tokens: read them off a large run
     per = {r["shard"]: r["drawn"] / max(r["train"], 1) for r in epoch_table(sizes, kept, unit, DECAY_JSON)}
-    worst = max(per, key=per.get)
+    worst = max((k for k in per if k not in DECAY_SHARDS), key=per.get)
     at_line = MAX_EPOCHS / per[worst] * unit / max(tok_s, 1e-9) / 3600
     hours = min(cap, at_line)
     tokens = hours * 3600 * tok_s
     return {"hours": round(hours, 4), "hours_at_2_epochs": round(at_line, 4), "cap": cap, "tok_s": tok_s,
             "tokens": round(tokens), "limit_shard": worst, "by": "the cap" if cap <= at_line else f"{worst} at {MAX_EPOCHS:g} epochs",
-            "epochs": {k: round(v * tokens / unit, 3) for k, v in sorted(per.items())}, "decided": time.strftime("%F %T")}
+            "epochs": {k: round(v * tokens / unit, 3) for k, v in sorted(per.items())},
+            "not_binding": sorted(k for k in per if k in DECAY_SHARDS), "decided": time.strftime("%F %T")}
 
 
 # -- phase 3: speed ---------------------------------------------------------------------------------------------------
