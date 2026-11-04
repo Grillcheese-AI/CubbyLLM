@@ -7,8 +7,12 @@ Wikidata5M keeps no ranks or qualifiers, so R4 reads the statements themselves (
           start, end and point in time); a query the service cannot answer is recorded as unavailable, never as none
   single  the property's single-value constraints (P2302 with Q19474404 "single-value", or Q52060874 "single-best-
           value"), from the property's own statements
+  ends    an item's own end (R4's rule 1): the earliest year of its death (P570), dissolution (P576) or end time
+          (P582), not deprecated; None if it states none; "unread" if the source did not answer
 A value: {"v": item id or literal (None for "no value" / "unknown value"), "rank", "start", "end", "point"}, each time
-as {"y": signed year, "m", "d", "prec"} (Wikidata's precision: 9 a year, 10 a month, 11 a day).
+as {"y": signed year, "m", "d", "prec"} (Wikidata's precision: 9 a year, 10 a month, 11 a day), and "replaced": True when
+the statement carries a "replaced by" (P1366) qualifier. Entries written before "replaced" was read (no "r": 2) are
+fetched again.
 Kept in ``$CUBBY_DATA_ROOT/retrieval/r4_statements.jsonl``, one line per (item, property, direction), with its date.
 
 Wired: STANDALONE (R4's bench).
@@ -57,6 +61,8 @@ def values_of(claims: dict, pid: str) -> list[dict]:
                  (dv.get("amount") if isinstance(dv, dict) and "amount" in dv else
                   (dv.get("text") if isinstance(dv, dict) else dv)))
         val = {"v": v, "rank": st.get("rank", "normal")}
+        if (st.get("qualifiers") or {}).get("P1366"):
+            val["replaced"] = True
         for q, slot in TIME_Q.items():
             for qs in (st.get("qualifiers") or {}).get(q) or ():
                 tv = (qs.get("datavalue") or {}).get("value") or {}
@@ -88,8 +94,8 @@ def incoming(pid: str, obj: str) -> list[dict] | None:
     """The statements `?s pid obj`, as values whose "v" is the subject; None if the service could not say."""
     opt = " ".join(f"OPTIONAL {{ ?st pqv:{q} ?{s}v . ?{s}v wikibase:timeValue ?{s} ; wikibase:timePrecision ?{s}p . }}"
                    for q, s in TIME_Q.items())
-    rows = _sparql(f"SELECT ?st ?s ?rank ?start ?startp ?end ?endp ?point ?pointp WHERE {{ ?s p:{pid} ?st . "
-                   f"?st ps:{pid} wd:{obj} ; wikibase:rank ?rank . {opt} }} LIMIT 5000")
+    rows = _sparql(f"SELECT ?st ?s ?rank ?start ?startp ?end ?endp ?point ?pointp ?rb WHERE {{ ?s p:{pid} ?st . "
+                   f"?st ps:{pid} wd:{obj} ; wikibase:rank ?rank . {opt} OPTIONAL {{ ?st pq:P1366 ?rb . }} }} LIMIT 5000")
     if rows is None:
         return None
     by: dict[str, dict] = {}
@@ -98,6 +104,8 @@ def incoming(pid: str, obj: str) -> list[dict] | None:
         if st in by:
             continue
         val = {"v": b["s"]["value"].rsplit("/", 1)[1], "rank": RANKS.get(b["rank"]["value"].rsplit("#", 1)[1], "normal")}
+        if "rb" in b:
+            val["replaced"] = True
         for s in TIME_Q.values():
             if s in b:
                 t = b[s]["value"]
@@ -128,16 +136,16 @@ class Statements:
 
     def out(self, qid: str, pid: str) -> dict:
         key = f"out|{qid}|{pid}"
-        if key not in self.c:
+        if self.c.get(key, {}).get("r") != 2:
             from retrieval_sets.common import entities
             claims = (entities(self.src, [qid], props="claims", langs="en").get(qid) or {}).get("claims") or {}
-            self._put(key, values_of(claims, pid))
+            self._put(key, values_of(claims, pid), r=2)
         return self.c[key]
 
     def inc(self, qid: str, pid: str) -> dict:
         key = f"in|{qid}|{pid}"
-        if key not in self.c:
-            self._put(key, incoming(pid, qid))
+        if self.c.get(key, {}).get("r") != 2:
+            self._put(key, incoming(pid, qid), r=2)
         return self.c[key]
 
     def single(self, pid: str) -> bool:
@@ -147,6 +155,22 @@ class Statements:
             claims = (entities(self.src, [pid], props="claims", langs="en").get(pid) or {}).get("claims") or {}
             self._put(key, None, single=any(v["v"] in SINGLE for v in values_of(claims, "P2302")))
         return bool(self.c[key].get("single"))
+
+    def ends(self, qids) -> dict:
+        """{item: the earliest year its own end is stated (P570, P576, P582), or None}, fetched 50 to a call."""
+        from retrieval_sets.common import entities
+        todo = [q for q in dict.fromkeys(qids) if f"end|{q}" not in self.c]
+        got = entities(self.src, todo, props="claims", langs="en") if todo else {}
+        unread = {q for q in todo if q not in got}       # not answered: never read as "no end" (rule 1 cannot place)
+        for q in todo:
+            if q in unread:
+                continue
+            claims = (got.get(q) or {}).get("claims") or {}
+            ys = [v["v"] for p in ("P570", "P576", "P582") for v in values_of(claims, p)
+                  if v.get("rank") != "deprecated" and isinstance(v.get("v"), str)]
+            yrs = [t["y"] for t in (parse_time(x) for x in ys) if t]
+            self._put(f"end|{q}", None, end=min(yrs) if yrs else None)
+        return {q: "unread" if q in unread else self.c[f"end|{q}"].get("end") for q in qids}
 
 
 __all__ = ["Statements", "incoming", "parse_time", "values_of"]

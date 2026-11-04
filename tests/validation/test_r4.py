@@ -74,3 +74,77 @@ def test_statements_keep_their_rank_their_time_and_the_era():
     v = S.values_of(claims, "P36")
     assert v[0] == {"v": "Q2807", "rank": "preferred", "start": {"y": 1561, "m": 0, "d": 0, "prec": 9}}
     assert v[1]["v"] is None and v[2]["point"]["y"] == -753
+
+
+# Cowork's four rules after dev (``r4_rules``), read once on CronQuestions' test.
+from retrieval_bench import r4_rules as R  # noqa: E402
+
+
+SECRETARY = {"v": "Q100", "rank": "normal", "start": t(1782)}            # began 1782, no end stated
+
+
+def test_rule_1_an_open_end_is_not_placed_once_the_record_says_it_ended():
+    ends = {"Q1": None, "Q100": 1823}                                       # the holder died in 1823
+    assert R.why_ended(SECRETARY, [SECRETARY], 1800, "Q1", ends, False) is None
+    assert R.why_ended(SECRETARY, [SECRETARY], 2005, "Q1", ends, False) == "the value ended in 1823"
+    assert R.why_ended(SECRETARY, [SECRETARY], 2005, "Q1", {"Q1": 1900}, False) == "the asked item ended in 1900"
+    nxt = {"v": "Q101", "rank": "normal", "start": t(1830)}
+    vals = [SECRETARY, nxt]
+    assert R.why_ended(SECRETARY, vals, 1840, "Q1", {}, False) is None                      # several may hold: no
+    assert R.why_ended(SECRETARY, vals, 1840, "Q1", {}, True) == "a later value started in 1830"   # one at a time
+    assert R.why_ended(dict(SECRETARY, replaced=True), vals, 1840, "Q1", {}, False) == "a later value started in 1830"
+    assert R.why_ended(SECRETARY, vals, 1830, "Q1", {}, True) is None       # the successor's own year: both stand
+    assert R.why_ended(SECRETARY, vals, 1840, "Q1", {"Q100": "unread"}, False) == "the value's end could not be read"
+    closed = {"v": "Q5", "start": t(1900), "end": t(1950)}
+    assert R.why_ended(closed, [closed], 1920, "Q1", {"Q5": 1910}, True) is None            # a stated end decides
+    keep, dropped = R.drop_ended(vals, 1840, "Q1", {}, True)
+    assert keep == [nxt] and dropped == [("Q100", "a later value started in 1830")]
+    assert R.drop_ended(vals, None, "Q1", {}, True) == (vals, [])
+    assert R.ended_ids(vals + [closed, {"v": "1990"}], "Q1") == ["Q1", "Q100", "Q101"]
+
+
+def test_rule_2_more_than_ten_values_is_a_count_and_ask():
+    eleven = {"spoken": [f"Q{i}" for i in range(11)], "why": "x"}
+    assert R.bound(eleven) == {"spoken": None, "ask": 11, "why": "11 values: the count and ASK"}
+    ten = {"spoken": [f"Q{i}" for i in range(10)], "why": "x"}
+    assert R.bound(ten) is ten and R.bound({"spoken": None}) == {"spoken": None}
+
+
+class _Src:
+    """A source with Wikidata's search and claims: Gibraltar is a territory, Spain a country."""
+    CLAIMS = {"Q6256": {"P279": ["Q1048835"]}, "Q29": {"P31": ["Q6256"]}, "Q1410": {"P31": ["Q46395"]},
+              "Q46395": {"P279": ["Q161243"]}}
+
+    def _get(self, params):
+        return {"search": [{"id": "Q6256", "label": "country"}]} if params.get("search") == "country" else {}
+
+    def _claims(self, q):
+        return {p: [{"mainsnak": {"datavalue": {"type": "wikibase-entityid", "value": {"id": x}}}} for x in xs]
+                for p, xs in self.CLAIMS.get(q, {}).items()}
+
+
+def test_rule_3_the_class_asked_drops_a_value_of_another_class():
+    q, res = "what country is the iberian peninsula located in?", {"spoken": ["Q1410", "Q29"], "why": "set"}
+    out = R.class_filter(_Src(), q, res, {"country"}, exempt=False)
+    assert out["spoken"] == ["Q29"] and out["class_dropped"] == ["Q1410"]
+    assert R.class_filter(_Src(), q, {"spoken": ["Q1410"]}, None, exempt=False)["spoken"] is None
+    kept = R.class_filter(_Src(), q, res, {"country"}, exempt=True)       # the serving path's exemption: the word is
+    assert kept["spoken"] == ["Q1410", "Q29"]                              # the relation asked, so no check
+    assert R.class_filter(_Src(), "who was it?", res, None) is res         # no class named
+
+
+def test_rule_4_gold_ids_follow_merges_and_a_namesake_stays_wrong():
+    gold = R.gold_through_merges({"Q7"}, {"Q7": "Q8"})
+    assert gold == {"Q7", "Q8"} and V.judge(["Q8"], gold) == "right" and V.judge(["Q9"], gold) == "wrong"
+
+
+def test_statements_read_replaced_by_and_an_items_own_end(monkeypatch, tmp_path):
+    claims = {"P39": [{"mainsnak": {"snaktype": "value", "datavalue": {"value": {"id": "Q5"}}}, "rank": "normal",
+                       "qualifiers": {"P1366": [{"datavalue": {"value": {"id": "Q6"}}}]}}]}
+    assert S.values_of(claims, "P39")[0]["replaced"] is True
+    import retrieval_sets.common as C
+    died = {"P570": [{"mainsnak": {"snaktype": "value", "datavalue": {"value": {"time": "+1823-05-01T00:00:00Z"}}},
+                      "rank": "normal"}]}
+    monkeypatch.setattr(C, "entities", lambda src, ids, **k: {q: {"claims": died} for q in ids if q == "Q100"})
+    st = S.Statements(None, path=str(tmp_path / "s.jsonl"))
+    assert st.ends(["Q100", "Q1"]) == {"Q100": 1823, "Q1": "unread"}
