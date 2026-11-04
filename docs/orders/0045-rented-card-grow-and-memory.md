@@ -291,3 +291,37 @@ once the upload has landed.
   4. Nick rents the card and runs the one command.
 
 Status: open. `review` (ready to rent) once the upload has landed.
+
+## On Colab first, bench first (Nick and Cowork, 2026-11-04)
+Supersedes the previous section's card, upload and sequence; the arm (the control first) and the slice stand.
+
+Nick: "our whole thesis is about training large models on the fly; if we cannot fine-tune our own on an affordable
+platform, we are not in a good position and should find a way to do it."
+- **What is already measured:**
+  - the adapters train in minutes on Colab (talk_v2.2: 28 min), and the talk adapter's mechanics ran on grilly2 on
+    the local RX 6750 XT;
+  - the 450M's continuation read 4.8B tokens in 21.1 h on one Colab A100 (MFU 34.5%), about $13-16 of compute units.
+- **The arithmetic:** a run's cost is set by its FLOPs and its MFU, not by the platform. A Colab A100 80 GB
+  (about 7.5 units an hour, $0.62-0.75) buys about 420-500 dense BF16 TFLOPS per dollar-hour; a B200 at $3.75/h buys
+  about 600. Round 1's grown arm ran at 7-9% MFU, and that, not the card, is what made growth look unaffordable.
+- **So the order runs on Colab**, on an A100 80 GB for every session (the same card model, as gate 0 asks):
+  1. **Bench first:** the runner's speed phase for both arms (about an hour), tokens per second and MFU recorded, then
+     it stops. **Line:** after the read-count rule, the grown arm's MFU is at least 0.75x the control's. Under it, the
+     grown arm waits on an engineering task (kernels, micro size, recompute), not on a longer run. Cowork reads the
+     bench before the control starts.
+  2. **The control:** the B200 plan's tokens, about 10.8B, every row within 2 epochs; the hours follow from the
+     bench (about 47 A100-hours, two or three sessions, about $30-40). The probes and the adapters on its final, as
+     before.
+  3. **The remote is Drive** (`FolderRemote` over the mounted Drive). The full token cache and
+     `base450m_cont_stable_end.pt` are already there. The slice and the decay shards are built from it on Colab, and
+     their hashes are checked against the home cache's manifest. No Hugging Face upload and no token.
+  4. **Sessions:** Nick starts each one, and the runner resumes from the last checkpoint on Drive. A session that
+     ends counts as a preemption.
+- **The rented card** stays an option for the grown arm, once its bench says it is efficient and Colab proves too
+  slow.
+- **In plain words:** Cubby's own model can be retrained on a cloud GPU at under a dollar an hour, and its adapters
+  on a gaming PC.
+- **Over a conventional model:** a model that keeps its knowledge in its weights must be large, and teaching it
+  something new means retraining it. Here facts go into the store, so the model stays small enough to retrain cheaply.
+
+Status: open. The bench is the next item, then `review`.
