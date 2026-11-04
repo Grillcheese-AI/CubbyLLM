@@ -90,6 +90,19 @@ def apply_lora(model, targets, rank, alpha) -> dict:
     return wrapped
 
 
+def ckpt_sha256(path: str) -> str | None:
+    """The base checkpoint's sha256, recorded in the adapter's json beside its name (order 0048: provenance; the serving
+    guard checks the export's own hash, written by ``validation/adapter_base_hash.py``)."""
+    import hashlib
+    if not path or not os.path.isfile(path):
+        return None
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for b in iter(lambda: f.read(1 << 22), b""):
+            h.update(b)
+    return h.hexdigest()
+
+
 def save_adapter(wrapped, out_dir, meta, name: str = "talk_lora") -> None:
     """`name` picks the file pair (`talk_lora.*`; the emitter adapter writes `emitter_lora.*`)."""
     from safetensors.numpy import save_file
@@ -203,10 +216,12 @@ def main():
                 n += k
         return tot / max(n, 1.0)
 
+    base_sha = ckpt_sha256(args.ckpt)
+
     def meta_out(step):
         return {"step": step, "rank": args.rank, "alpha": args.alpha, "targets": targets, "trainer": "torch",
-                "ckpt": os.path.basename(args.ckpt) if args.ckpt else "smoke", "data": os.path.basename(args.data),
-                "epochs": args.epochs, "batch": args.batch, "lr": args.lr, "tag": args.tag}
+                "ckpt": os.path.basename(args.ckpt) if args.ckpt else "smoke", "ckpt_sha256": base_sha,
+                "data": os.path.basename(args.data), "epochs": args.epochs, "batch": args.batch, "lr": args.lr, "tag": args.tag}
 
     logs = os.path.join(HERE, "logs")
     os.makedirs(logs, exist_ok=True)

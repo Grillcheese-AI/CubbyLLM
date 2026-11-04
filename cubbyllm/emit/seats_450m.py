@@ -8,8 +8,31 @@ from __future__ import annotations
 import json
 import os
 import threading
+import warnings
 
 __wiring__ = "WIRED"
+
+
+def short_name(path: str) -> str:
+    """A folder named by its last two parts (``base450m_cont/grilly``): an export's own folder is often just "grilly"."""
+    p = os.path.normpath(path)
+    return "/".join(x for x in (os.path.basename(os.path.dirname(p)), os.path.basename(p)) if x)
+
+
+def check_base(meta: dict, base_hash, export_name: str, adapter_name: str) -> str:
+    """The base guard (order 0048): an adapter that records its base's sha256 (``base_sha256``, the export's
+    ``model.safetensors``) loads only on that base; a mismatch refuses, naming both. An adapter with no recorded hash
+    loads with a warning (``validation/adapter_base_hash.py`` writes it for a known pairing, after one program).
+    `base_hash`: a callable, so the export is hashed only when an adapter asks. Returns "ok" / "unrecorded"."""
+    want = meta.get("base_sha256")
+    if not want:
+        warnings.warn(f"adapter {adapter_name} records no base hash; loading it on {export_name} unchecked", stacklevel=2)
+        return "unrecorded"
+    have = base_hash()
+    if have != want:
+        raise ValueError(f"adapter {adapter_name} was trained on base {meta.get('base_name') or '?'} ({want[:12]}); "
+                         f"this export, {export_name}, is {have[:12]}: refused (it would write no program)")
+    return "ok"
 
 
 class Cubby450mTrunk:
@@ -62,6 +85,7 @@ class Cubby450mTrunk:
         for role in self.adapter_dirs:
             meta_p, tensors_p = self._adapter_files(role)
             meta = json.load(open(meta_p, encoding="utf-8"))
+            check_base(meta, self.base_hash, short_name(self.export_dir), short_name(self.adapter_dirs[role]))
             this = (int(meta["rank"]), float(meta["alpha"]), tuple(meta["targets"]))
             if layout is None:
                 layout = this
@@ -125,6 +149,7 @@ class Cubby450mTrunk:
             meta = json.load(open(meta_p, encoding="utf-8"))
             if (int(meta["rank"]), float(meta["alpha"]), tuple(meta["targets"])) != self.layout():
                 raise ValueError(f"adapter {role!r} has another LoRA layout than the base's (rank/alpha/targets)")
+            check_base(meta, self.base_hash, short_name(self.export_dir), short_name(adapter_dir))
             if self._model is not None:                      # loaded: its weights now; else at the first load
                 from safetensors.numpy import load_file
                 tensors = load_file(tensors_p)

@@ -1,0 +1,55 @@
+{
+ "what": "order 0048: v12e's records + Wikidata's property labels as HOP1's targets (EN, FR)",
+ "licences": {
+  "simplequestions_wd": "CC BY 3.0",
+  "mintaka": "CC BY 4.0"
+ },
+ "excluded": {
+  "questions": 107740,
+  "items": 36631
+ },
+ "counts": {
+  "mintaka/en: in 0046's dev or test": 2121,
+  "mintaka/en: no forward link": 10739,
+  "mintaka/en: no label in the question's language": 1,
+  "mintaka/en: several links": 619,
+  "mintaka/en: written": 520,
+  "mintaka/fr: in 0046's dev or test": 2121,
+  "mintaka/fr: item not found in the question": 80,
+  "mintaka/fr: no forward link": 10739,
+  "mintaka/fr: no label in the question's language": 1,
+  "mintaka/fr: several links": 619,
+  "mintaka/fr: written": 440,
+  "simplequestions_wd/en: in 0046's dev or test": 691,
+  "simplequestions_wd/en: inverse": 4587,
+  "simplequestions_wd/en: item not found in the question": 800,
+  "simplequestions_wd/en: written": 13403
+ },
+ "share": {
+  "arithmetic": 0.8769,
+  "chain": 0.0075,
+  "kernel": 0.0109,
+  "plan": 0.0074,
+  "role_binding": 0.0092,
+  "wd": 0.0882
+ },
+ "wd_by_set_lang": {
+  "simplequestions_wd/en": 13403,
+  "mintaka/en": 520,
+  "mintaka/fr": 440
+ },
+ "wd_split": {
+  "train": 13782,
+  "val": 581
+ },
+ "files": {
+  "emitter_sft_v12e_w_tg30_step.jsonl": "00555c3518e0b0a1d4bc7c75c1c0728a3313937fe71e987459205cce6f9091e0",
+  "emitter_sft_v12e_wd.jsonl": "914ea3c60c6f2e36d6494916556cbe2384f972fcfb4414b4f357362412af19f4"
+ },
+ "lexicon_sha256": "fffbd70444617a52bb8aed21c38042eab3986fda9da034f977ec1c08b58ba6e2",
+ "audit": {
+  "eval_question": 0,
+  "eval_item": 0,
+  "label_not_in_language": 0
+ }
+}

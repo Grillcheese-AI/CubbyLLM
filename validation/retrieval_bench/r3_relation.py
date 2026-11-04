@@ -43,7 +43,8 @@ GATE = {"simplequestions_wd/en": 0.85, "qald9plus/fr": 0.80}
 LEX = ("lexicon", "lexicon_content")
 
 
-def run(rows: list[dict], taus: list[float], use_450m: bool, use_qfhrr: bool, programs_path: str) -> dict:
+def run(rows: list[dict], taus: list[float], use_450m: bool, use_qfhrr: bool, programs_path: str,
+        adapter: str | None = None, arm: str = "450m") -> dict:
     from retrieval_bench import r3_arms as A
     from retrieval_sets.lexicon import check
     lx, gram, info = check(), A.Grammar(), {}
@@ -65,12 +66,12 @@ def run(rows: list[dict], taus: list[float], use_450m: bool, use_qfhrr: bool, pr
                     r["out"][f"{lex}+qfhrr@{t}"] = r["out"][lex] if r["out"][lex]["read"] else q
     if use_450m:
         from retrieval_bench import r3_450m as M
-        got = M.run(rows, programs_path)
+        got = M.run(rows, programs_path, adapter)
         info["seat"] = got["seat"]
         for r in rows:
             p = got["programs"].get(r["id"]) or {}
             rd = M.read(p.get("program"))
-            r["out"]["450m"] = {**A.pids_of(rd["hop1"], gram.aliases), **rd, "wall_s": p.get("wall_s")}
+            r["out"][arm] = {**A.pids_of(rd["hop1"], gram.aliases), **rd, "wall_s": p.get("wall_s")}
     for r in rows:
         r["judge"] = {a: A.judge(o, r["golds"]) for a, o in r["out"].items()}
     return info
@@ -124,6 +125,8 @@ def main() -> None:
     ap.add_argument("--no-450m", action="store_true")
     ap.add_argument("--no-qfhrr", action="store_true")
     ap.add_argument("--tag", default="")
+    ap.add_argument("--adapter", default=None, help="another programs adapter (order 0048: its arm is 450m_wd)")
+    ap.add_argument("--arm", default=None, help="the model arm's name (default 450m, or 450m_wd with --adapter)")
     a = ap.parse_args()
     from retrieval_bench.r3_gold import prepare, rows as load
     from retrieval_sets.common import data_root, source
@@ -131,8 +134,10 @@ def main() -> None:
     taus = [a.tau] if a.split == "test" and a.tau is not None else a.taus
     rows = load(a.split, a.n)
     prep = prepare(rows, source())
-    progs = os.path.join(data_root(), f"r3_programs_{a.split}_n{a.n}.jsonl")
-    info = run(rows, taus, use_450m=not a.no_450m, use_qfhrr=not a.no_qfhrr, programs_path=progs)
+    name = os.path.basename(os.path.normpath(a.adapter)) if a.adapter else ""
+    progs = os.path.join(data_root(), f"r3_programs_{a.split}_n{a.n}{'_' + name if name else ''}.jsonl")
+    info = run(rows, taus, use_450m=not a.no_450m, use_qfhrr=not a.no_qfhrr, programs_path=progs,
+               adapter=a.adapter, arm=a.arm or ("450m_wd" if a.adapter else "450m"))
     summary = summarize(rows)
     rep = {"what": "order 0046 R3: the relation, given the item", "date": _dt.date.today().isoformat(), "split": a.split,
            "n_per_set_lang": a.n, "taus": taus, "prepared": prep, **info,

@@ -41,7 +41,7 @@ import torch  # noqa: E402
 
 from emitter_data import decode_program, encode_records, fill, table_of, val_records  # noqa: E402
 from talk_data import batches, lora_targets, make_batch  # noqa: E402
-from train_talk_torch import apply_lora, load_adapter, masked_loss, save_adapter  # noqa: E402
+from train_talk_torch import apply_lora, ckpt_sha256, load_adapter, masked_loss, save_adapter  # noqa: E402
 
 ADAPTER = "emitter_lora"
 LOG: list[str] = []
@@ -245,9 +245,11 @@ def main():
                 n += k
         return tot / max(n, 1.0)
 
+    base_sha = ckpt_sha256(args.ckpt)
+
     def meta_out(step):
         return {"step": step, "rank": args.rank, "alpha": args.alpha, "targets": targets, "trainer": "torch",
-                "adapter": ADAPTER, "ckpt": os.path.basename(args.ckpt) if args.ckpt else "smoke",
+                "adapter": ADAPTER, "ckpt": os.path.basename(args.ckpt) if args.ckpt else "smoke", "ckpt_sha256": base_sha,
                 "data": os.path.basename(args.data), "epochs": args.epochs, "batch": args.batch, "lr": args.lr,
                 "max_len": args.max_len, "tag": args.tag}
 

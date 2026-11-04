@@ -30,15 +30,15 @@ LIMIT = 1 << 30
 GH = "https://raw.githubusercontent.com"
 SETS = {
     "mintaka": {"licence": "CC BY 4.0 (the repository's README)",
-                "files": [(f"{GH}/amazon-science/mintaka/main/data/mintaka_{s}.json", f"mintaka_{s}.json") for s in ("dev", "test")]},
+                "files": [(f"{GH}/amazon-science/mintaka/main/data/mintaka_{s}.json", f"mintaka_{s}.json") for s in ("dev", "test", "train")]},
     "qald9plus": {"licence": "CC BY 4.0 (LICENSE)",
                   "files": [(f"{GH}/KGQA/QALD_9_plus/main/data/qald_9_plus_{s}_wikidata.json", f"qald_9_plus_{s}_wikidata.json")
                             for s in ("train", "test")]},
     "el4qa": {"licence": "released with BLINK/ELQ (MIT); the questions are WebQSP's and GraphQuestions'",
               "files": [("http://dl.fbaipublicfiles.com/elq/EL4QA_data.tar.gz", "EL4QA_data.tar.gz")]},
-    "simplequestions_wd": {"licence": "not stated in the repository (SimpleQuestions itself: CC BY 3.0)",
+    "simplequestions_wd": {"licence": "CC BY 3.0 (the repository's LICENSE.txt: SimpleQuestions, Facebook)",
                            "files": [(f"{GH}/askplatypus/wikidata-simplequestions/master/annotated_wd_data_{s}_answerable.txt",
-                                      f"annotated_wd_data_{s}_answerable.txt") for s in ("valid", "test")]},
+                                      f"annotated_wd_data_{s}_answerable.txt") for s in ("valid", "test", "train")]},
     "shadowlink": {"licence": "see the dataset card (vera-pro/ShadowLink)",
                    "files": [(f"https://huggingface.co/datasets/vera-pro/ShadowLink/resolve/main/{f}", f)
                              for f in ("Top.json", "Shadow.json", "Neutral.json", "Tail.json", "README.md")]},
@@ -94,11 +94,13 @@ def fetch(name: str) -> dict:
     got = {}
     for url, rel in spec["files"]:
         dest = os.path.join(out, rel)
-        if not os.path.exists(dest):
+        if os.path.exists(dest):                         # a file on disk is never fetched again: a set built from it
+            got[rel] = os.path.getsize(dest)             # would change under the experiments that read it
+        else:
             n = size_of(url)
             if n is not None and n > LIMIT:
                 raise SystemExit(f"{name}/{rel} is {n / 1e9:.2f} GB: over the line that needs Nick's yes")
-        got[rel] = download(url, dest, UA)
+            got[rel] = download(url, dest, UA)
         mark = dest + ".unpacked"
         if rel.endswith((".tar.gz", ".zip")) and not os.path.exists(mark):
             unpack(dest, out)

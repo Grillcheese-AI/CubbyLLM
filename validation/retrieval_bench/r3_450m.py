@@ -52,19 +52,21 @@ def read(program: str) -> dict:
     return {"hop1": m.group(1).strip() if m else None, "hops": len(HOPS.findall(program or ""))}
 
 
-def seat() -> dict:
+def seat(adapter: str | None = None) -> dict:
+    """The export and the programs adapter: `adapter` (order 0048's ``450m_wd``), else ``$CUBBY_450M_EMITTER``, else the
+    serving one."""
     from cubbyllm.local_paths import value
     models = value("CUBBY_MODELS") or ""
     return {"export": value("CUBBY_450M_EXPORT") or os.path.join(models, "base450m_cont", "grilly"),
-            "adapter": value("CUBBY_450M_EMITTER") or os.path.join(models, "emitter", "cubby450m_v12e_w_step_cont")}
+            "adapter": adapter or value("CUBBY_450M_EMITTER") or os.path.join(models, "emitter", "cubby450m_v12e_w_step_cont")}
 
 
-def run(rows: list[dict], out_path: str) -> dict:
+def run(rows: list[dict], out_path: str, adapter: str | None = None) -> dict:
     """Every row's program (resumed from ``out_path``); returns {row id: program} and the seat's report."""
     import subprocess
     import tempfile
     from retrieval_bench.r2_qfhrr import grilly2_dir
-    jb = {**seat(), "max_new": MAX_NEW, "rows": [{"id": r["id"], "prompt": annotate(r["question"], r["mentions"])} for r in rows]}
+    jb = {**seat(adapter), "max_new": MAX_NEW, "rows": [{"id": r["id"], "prompt": annotate(r["question"], r["mentions"])} for r in rows]}
     jp = os.path.join(tempfile.mkdtemp(), "job.json")
     json.dump(jb, open(jp, "w", encoding="utf-8"))
     subprocess.run(["uv", "run", "--project", grilly2_dir(), "python", os.path.abspath(__file__), jp, out_path], check=True, cwd=ROOT)

@@ -81,10 +81,57 @@ terms, in English and French, so every relation it names can be looked up and ch
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
-- **Commits:**
-- **Files:**
+**Status: built; waiting on the Colab run.** The data, the guard, the notebook and the harness arm are done. The
+adapter is trained by Nick (`notebooks/emitter_wd.ipynb`), then read at home.
+
+- **The data** (`validation/emitter_wd_data.py`; manifest `validation/logs/emitter_wd_data_manifest_2026-11-04.json`;
+  the records on Drive as `cubbyllm/emitter/emitter_sft_v12e_wd.jsonl`):
+  - **Licences:**
+    - SimpleQuestions-Wikidata: CC BY 3.0. The repository's `LICENSE.txt`; the downloader had noted "not stated",
+      now corrected.
+    - Mintaka: CC BY 4.0.
+    - QALD-9-plus: none taken. Its train split is 0046's dev.
+  - **Train splits fetched:** SimpleQuestions-Wikidata's (1.2 MB) and Mintaka's (33.6 MB). The downloader no longer
+    fetches a file already on disk. It used to re-fetch every file, which could have changed 0046's dev and test
+    files under it; their hashes are unchanged.
+  - **Excluded before anything is written:** every question (107,740, folded) and item (36,631) of every 0046 dev and
+    test row, all eight sets, and the fame set's items. The build audits its own output and refuses to write on a
+    violation; the audit found 0 eval questions, 0 eval items and 0 labels in another language.
+  - **Inverse rows: the program format has no inverse form.** A hop goes from the seed through its relation, and
+    nothing reads "?x P seed". So SimpleQuestions' `R` rows (4,587) and Mintaka's answer-to-item links are left out
+    and counted, as the order allows.
+  - **Written: 14,363 records.** SimpleQuestions EN 13,403; Mintaka EN 520 and FR 440; 581 are `val`.
+    - Left out: 691 + 2,121 x 2 in 0046's dev or test; Mintaka 10,739 with no forward link and 619 with several;
+      800 SimpleQuestions and 80 Mintaka FR items not found in their question; 2 with no label in the language.
+    - **French is thin: 440 records,** all Mintaka. SimpleQuestions is English-only, and QALD's train split is 0046's
+      dev. The kill line reads coverage on QALD FR, so this is the risk, said before training.
+  - **The mix:** v12e's 148,437 records unchanged, plus these. Shares: arithmetic 87.7%, wd 8.8%, kernel 1.1%,
+    role_binding 0.9%, chain 0.75%, plan 0.74%.
+  - **A record** is v12e's one-hop plan, byte for byte, with `HOP1` the property's frozen-lexicon label in the
+    question's language, and the item as `[E1: ...]`.
+- **The guard** (`cubbyllm/emit/seats_450m.py`, `check_base`):
+  - An adapter's json may record `base_sha256` (the export's `model.safetensors`) and `base_name`.
+  - At load, and when a plugin adds a role, a mismatch refuses, naming both exports and both hashes. An adapter with
+    no hash loads with a warning, as before (the talk adapters).
+  - `validation/adapter_base_hash.py` writes the hash for a pairing only after it emits a program. It ran on grilly2
+    for `cubby450m_v12e_w_step_cont` on `base450m_cont` (`81a45418edb5`), and its json was kept as `.pre_hash`.
+  - **Live check on grilly2:** `base450m` is refused ("trained on base base450m_cont (81a45418edb5); this export,
+    base450m/grilly, is 695f05b9f997"), and `base450m_cont` loads.
+  - Both trainers now record their base checkpoint's sha256 (`ckpt_sha256`) as provenance.
+    `train_emitter_torch.py` was already 338 lines and grows by 2 for it.
+- **The notebook** `notebooks/emitter_wd.ipynb` (from `_build_emitter_wd.py`):
+  - It continues the serving adapter (copied to Drive, which no longer had it) for one epoch.
+  - It uses the serving adapter's own settings (rank 16, alpha 32, lr 2e-4, batch 32, max length 1024): about
+    4,950 steps, around 45 minutes on an A100.
+  - It writes `cubby450m_wd_cont` and refuses to overwrite it.
+- **The harness arm:** `r3_relation.py --adapter <dir>` (arm `450m_wd`, its own programs file) and
+  `r3o.py --programs <file> --arm 450m_wd`.
 - **Tests:**
-- **Measured:** <against each acceptance line>
-- **Not verified here:**
-- **Found on the way:**
-- **Questions:**
+  - `tests/emit/test_base_guard.py`: a matched base loads, a mismatched one refuses, a missing hash warns; the tool
+    records only after a program.
+  - `tests/validation/test_emitter_wd_data.py`: the record is v12e's plan with the label; the audit catches eval
+    questions, eval items and a label in another language.
+  - Emit, plugin, R3 and guard tests: 39 pass; the only red is the known one (order 0002).
+- **Not verified yet:** the adapter, its R3 and R3o reads, and H-E15's benchmark. Each waits on the Colab run.
+- **Question:** French is 3% of the new records. Train now, or first look for more French train data? The candidates
+  are QALD-9-plus FR, whose train split is 0046's dev, so taking it would mean re-splitting, which is yours to decide.

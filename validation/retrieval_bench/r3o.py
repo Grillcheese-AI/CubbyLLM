@@ -54,7 +54,7 @@ def within(found: list[tuple[str, int, list]], cands: set, extra: dict | None = 
     return {"read": bool(scores), **top(scores), "wordings": [w for w, _n, ps in found if set(ps) & cands]}
 
 
-def arms_for(r: dict, cands: set, lx: dict, gram, program: str | None) -> dict:
+def arms_for(r: dict, cands: set, lx: dict, gram, program: str | None, arm: str = "450m") -> dict:
     from retrieval_bench import r3_450m as M
     from retrieval_bench import r3_arms as A
     text = A.leftover(r["question"], r["spans"])
@@ -63,13 +63,13 @@ def arms_for(r: dict, cands: set, lx: dict, gram, program: str | None) -> dict:
     if hop:
         wording = hop.replace("$E1", " ").replace("$E2", " ")
         whole = {p: WHOLE for p in gram.aliases.pids(wording) if p in cands}
-        out["450m"] = {**within(A.matches(wording, lx["by_wording"]["en"], True), cands, whole), "hop1": hop}
+        out[arm] = {**within(A.matches(wording, lx["by_wording"]["en"], True), cands, whole), "hop1": hop}
     else:
-        out["450m"] = {"read": False, "top": [], "undecided": False, "hop1": None}
+        out[arm] = {"read": False, "top": [], "undecided": False, "hop1": None}
     g = gram(r["question"])
     keep = [p for p in g.get("top") or () if p in cands]
     out["grammar"] = {"read": bool(keep), **A.top({p: 1.0 for p in keep})}
-    out["lexicon_content>450m"] = out["lexicon_content"] if out["lexicon_content"]["read"] else out["450m"]
+    out[f"lexicon_content>{arm}"] = out["lexicon_content"] if out["lexicon_content"]["read"] else out[arm]
     return out
 
 
@@ -110,6 +110,8 @@ def main() -> None:
     ap.add_argument("--n", type=int, default=300)
     ap.add_argument("--taus", type=float, nargs="*", default=[0.0, 0.1, 0.25])
     ap.add_argument("--programs", default=None, help="R3's programs (default: its 300-row run of this split)")
+    ap.add_argument("--arm", default="450m", help="the model arm's name (order 0048: 450m_wd, with its programs)")
+    ap.add_argument("--tag", default="")
     a = ap.parse_args()
     t0, src = time.time(), source()
     rows = load(a.split, a.n)
@@ -131,7 +133,7 @@ def main() -> None:
         cands[r["id"]] = c["all"]
         r["held"], r["in_unknown"] = bool(set(r["golds"]) & c["all"]), c["in_unknown"]
         r["n_cands"] = len(c["all"])
-        r["out"] = arms_for(r, c["all"], lx, gram, progs.get(r["id"]))
+        r["out"] = arms_for(r, c["all"], lx, gram, progs.get(r["id"]), a.arm)
     rep_q = Q.score(Q.job(rows, lx, str(V4_TABLE), cands))
     for r in rows:
         for t in a.taus:
@@ -153,7 +155,7 @@ def main() -> None:
                      "n_cands": r.get("n_cands"), "judge": r.get("judge"),
                      "out": {k: {x: o[x] for x in ("top", "hop1", "wordings", "margin") if x in o} for k, o in (r.get("out") or {}).items()}}
                     for r in rows]}
-    path = os.path.join(os.path.dirname(HERE), "logs", f"retrieval_R3o_{a.split}_{rep['date']}.json")
+    path = os.path.join(os.path.dirname(HERE), "logs", f"retrieval_R3o_{a.split}_{rep['date']}{a.tag}.json")
     json.dump(rep, open(path, "w", encoding="utf-8"), indent=1, ensure_ascii=False)
     for g, s in summary.items():
         print(g, s["scored"], "held", s["held"], {k: (v["all"]["recall_at_5"], v["held"]["recall_at_5"], v["all"]["wrong_rate"])
