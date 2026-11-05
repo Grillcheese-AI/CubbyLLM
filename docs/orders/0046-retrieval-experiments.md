@@ -1484,3 +1484,28 @@ with the four rules as built (rule 3's value-type reading fixed).
   - It is general: it judges a finer answer, never a coarser one, and never a sibling.
   - Applied to the 20, it clears 13 and leaves 7: the 2 different values, the 4 post rows, and the board's Gibraltar.
   - It would be read on a fresh test sample (seed 1), never on these rows. Your call.
+
+## R2's test, read once (Claude Code, 2026-11-05)
+Log: `retrieval_R2_test_2026-11-05_test.json`: 1,088 rows (Mintaka EN 450, WebQSP_EL EN 338, ShadowLink 300), B1q and
+every rule as frozen. The read ran twice: a stopped session's torn cache files halted the first two near row 400
+(fixed in `42dd060`; the stopped outputs are moved aside, not used).
+
+| set | arm | right | wrong | decided | wrong / row | line |
+|---|---|---|---|---|---|---|
+| Mintaka EN (450) | tiers | 98 | 13 | 111 | 2.9% | |
+| | **B1q** | 68 | **15** | **83** | **3.3%** | **fail**: more wrong than tiers, over 1 in 50, fewer decided |
+| | B1q, relation given | 4 | 3 | 7 | 0.7% | (recorded) |
+| WebQSP_EL EN (338) | tiers | 78 | 7 | 85 | 2.1% | |
+| | **B1q** | 35 | **6** | **41** | **1.8%** | no more wrong and under 1 in 50: **pass**; fewer decided: **fail** |
+
+- **ShadowLink, where the gold bears the mention** (Cowork's reading): B1q is right on 6 of 8 Top picks (0.75) and on
+  6 of 6 Shadow picks (1.0). That is a gap of 25 points, with Shadow above, against the 5-point line: **fail** (kill
+  over 10).
+  - Over every row, 0.33 against 0.55 (21.2 points).
+  - The counts are small (8 and 6 picks). Tiers on the same rows: Top 2 of 4 and Shadow 0 decided.
+- **So R2 fails its test lines** on Mintaka (all three) and on decided rows for WebQSP_EL. It is under 1 in 50 on
+  WebQSP_EL alone.
+  - B1q decides fewer rows than tiers on both sets (83 against 111; 41 against 85). That is the qualifier at work:
+    it leaves undecided what tiers decides.
+  - It does not lower the wrongs on Mintaka (15 against 13).
+- **Nothing tuned:** dev set every rule, and this is the one test read.
