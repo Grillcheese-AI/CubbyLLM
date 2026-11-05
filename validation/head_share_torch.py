@@ -2,7 +2,7 @@
 
   decode  the trained 450M (a checkpoint's weights): one decode step (``CubbyModel.step``, the greedy token read back)
           against the head alone on a state of the step's shape, a full 32k head, and K gathered rows; batch 1 and 16,
-          fp32 and bf16 (int8 is grilly2's path, measured at home: ``head_share.py``)
+          fp32, as serving decodes (int8 is grilly2's path, measured at home: ``head_share.py``)
   train   the head's share of a training step: forward + backward of a micro batch with the 128k head and its
           cross-entropy, against the same step through the trunk alone (its loss read off the state); time and peak
           memory. For each --ckpt's shape (the 450M and the grown 1.36B), weights at their init (shapes, not values)
@@ -75,7 +75,7 @@ def decode(a, dev) -> dict:
     model, meta = load(a.ckpt[0], dev)               # --ckpt is a list (train takes two)
     head, d, out = model.head, meta["D"], {"meta": meta, "runs": []}
     w32 = torch.randn(32000, d, device=dev) * 0.02
-    for dtype in (torch.float32, torch.bfloat16):
+    for dtype in (torch.float32,):                     # serving decodes in fp32 (bf16 autocast meets the fp32 decode ring)
         for b in (1, 16):
             amp = dtype != torch.float32
             state = model.init_state(b, dev)

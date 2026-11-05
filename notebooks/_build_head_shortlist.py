@@ -30,7 +30,7 @@ CELLS = [
 
 Stage 1 of order 0050, on an A100 (any CUDA card works; the order asks for the A100):
 1. **Decode:** one decode step of `base450m_cont` against its 128k head alone, a full 32k head and K gathered rows,
-   batch 1 and 16, fp32 and bf16 (~5 min).
+   batch 1 and 16, fp32 (~3 min).
 2. **Training:** a forward + backward with the 128k head and its cross-entropy against the trunk alone, for the 450M
    and the grown 1.36B shape, time and peak memory (~5 min).
 3. **Held-in states:** 64 windows of 1,024 tokens from each of the 13 shards' training region: the state the head
