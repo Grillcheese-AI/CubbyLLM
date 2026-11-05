@@ -1,4 +1,4 @@
-# 0054 — The system evaluation: right, wrong and refused on four public benchmarks, against Cubby without the VM, the 450M alone and frontier models' published numbers
+# 0054 — The system evaluation: right, wrong and refused on five public benchmarks, against Cubby without the VM, the 450M alone and frontier models' published numbers
 status: open
 written: 2026-11-05 by Cowork · approved: 2026-11-05 by Nick ("best would be to run the tests now"; "Full sets on Colab now"; then "lets use the reported numbers for now and run the frontier model benchmark later with openrouter, 11k questions might cost a lot") · hypothesis: the system paper (H-E14, H-E15, H-E16, H-A11, H-A13)
 
@@ -30,6 +30,10 @@ in this run.**
    - **WebQuestions** (test, 2,032);
    - **CLUTRR** `gen_train23_test2to10` (test, 1,146), with each story's relations given as facts: H-A13's setting,
      the library learned on train as in `exp_r34`.
+   - **AA-Omniscience, public split** (600, v1; Apache 2.0; `ArtificialAnalysis/AA-Omniscience-Public` on the Hub).
+     This is the only benchmark here where a current frontier model publishes right, wrong and declined on the same
+     questions (F, below). It is specialist knowledge across six domains, so Cubby is expected to refuse most of it;
+     the read is what it says when it does answer.
    - Licences recorded. Any question seen in development is flagged and reported separately as well as in the total:
      0038's scoreboard, and WebQuestions questions whose WebQSP version 0046 read.
 2. **The arms:**
@@ -46,8 +50,13 @@ in this run.**
        is, said so.
      - Where GPT-6 or Claude Opus 5.5 publish nothing on a benchmark, that is said. The newest models that do publish
        are listed instead, by name and date.
+     - **Found so far:** Claude Opus 5.5's system card (September 22, 2026, section 6.5.4.1, figures 6.5.4.1.A-B),
+       on AA-Omniscience's public split, closed book, no web search:
+       - Claude Opus 5.5: correct 0.76, incorrect 0.17, declined 0.07 (net 0.58);
+       - Claude Opus 5: 0.71 / 0.22 / 0.06; Claude Sonnet 5: 0.47 / 0.24 / 0.28.
+       - Read from the figures; checked against the card before any of it reaches the paper.
      - They are labelled in every table as other models, other graders and other settings. They are context, not a
-       matched comparison.
+       matched comparison. On AA-Omniscience the questions are the same, and only the grader and settings differ.
 3. **The grading,** with no judge model:
    - A spoken answer that matches a gold or an alias after normalization is right (`exp_everyday_webq`'s normalizer).
    - **C's unmatched spoken answers are all read** (C speaks few), with each one's program and certification trace.
