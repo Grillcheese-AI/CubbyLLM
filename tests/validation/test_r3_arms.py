@@ -105,3 +105,33 @@ def test_r3k_gaps_keep_incoming_of_the_kind_and_counts_for_how_many():
     assert kept("person", {"P40"}, {"P19", "P737"}, claims, lx, no, {"P19"}) == {"P19"}            # born here: persons
     assert kept("quantity", {"P1082", "P40", "P17"}, set(), claims, lx, no, counts=True) == {"P1082", "P40"}
     assert kept("quantity", {"P1082", "P40"}, set(), claims, lx, no) == {"P1082"}                   # the rule as first read
+
+
+def test_r3k_prefetch_plans_every_query_then_asks_each_once(monkeypatch, tmp_path):
+    import io
+    import json as _json
+    from retrieval_bench import r3k_kind as K
+    import retrieval_sets.common as C
+    monkeypatch.setattr(C, "data_root", lambda: str(tmp_path))
+    monkeypatch.setattr(K, "_CACHE", {})
+    asked = []
+
+    class _Resp(io.BytesIO):
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+    def fake_open(req, timeout=0):
+        asked.append(req.data)
+        return _Resp(_json.dumps({"results": {"bindings": [{"v": {"value": "http://x/Q1"}}]}}).encode())
+    monkeypatch.setattr(K.urllib.request, "urlopen", fake_open)
+    monkeypatch.setattr(K.time, "sleep", lambda s: None)
+
+    def plan():
+        assert K.chain(["Q1"], {"Q5"}) == set() and K.chain(["Q2"], {"Q5"}) == set()   # planning answers nothing
+        K.chain(["Q1"], {"Q5"})                                                        # asked twice, fetched once
+    info = K.prefetch(plan)
+    assert info == {"planned": 2, "unanswered": 0, "secs": info["secs"]} and len(asked) == 2
+    assert K.chain(["Q1"], {"Q5"}) == {"Q1"} and len(asked) == 2                      # from the cache now

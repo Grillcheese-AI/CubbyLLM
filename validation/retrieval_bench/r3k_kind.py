@@ -28,6 +28,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import threading
 import time
 import urllib.parse
 import urllib.request
@@ -62,6 +63,9 @@ def one_step(src, qid: str, cls: set) -> bool:
 
 
 _CACHE: dict = {}
+_LOCK = threading.Lock()
+_PLAN: list = []          # while bound() plans: the queries it would ask (nothing is fetched)
+WORKERS = 4               # queries in flight at once while prefetching (the query service allows 5 a client)
 
 
 def sparql(q: str) -> list | None:
@@ -81,6 +85,9 @@ def sparql(q: str) -> list | None:
     key = hashlib.sha1(q.encode("utf-8")).hexdigest()
     if key in _CACHE:
         return _CACHE[key]
+    if _PLAN:                                         # planning: note the query, answer nothing
+        _PLAN[0].append(q)
+        return []
     for k in range(3):
         try:
             req = urllib.request.Request("https://query.wikidata.org/sparql", data=urllib.parse.urlencode({"query": q}).encode(),
@@ -88,13 +95,32 @@ def sparql(q: str) -> list | None:
             with urllib.request.urlopen(req, timeout=60) as r:
                 rows = json.loads(r.read().decode("utf-8"))["results"]["bindings"]
             time.sleep(0.2)
-            _CACHE[key] = rows
-            with open(path, "a", encoding="utf-8") as f:
-                f.write(json.dumps({"key": key, "rows": rows}, ensure_ascii=False) + "\n")
+            with _LOCK:
+                _CACHE[key] = rows
+                with open(path, "a", encoding="utf-8") as f:
+                    f.write(json.dumps({"key": key, "rows": rows}, ensure_ascii=False) + "\n")
             return rows
         except Exception:                                  # noqa: BLE001 -- recorded as unknown, never as "none"
             time.sleep(5 * (k + 1))
     return None
+
+
+def prefetch(plan) -> dict:
+    """Run `plan()` (bound() in planning) to collect the queries it would ask, then fetch the ones not kept yet,
+    WORKERS at a time, into the cache. The answers are the ones a sequential run would get: same queries, same
+    retries; only the order of asking changes."""
+    from concurrent.futures import ThreadPoolExecutor
+    _PLAN.append([])
+    try:
+        plan()
+    finally:
+        qs = list(dict.fromkeys(_PLAN.pop()))
+    t0 = time.time()
+    with ThreadPoolExecutor(WORKERS) as ex:
+        got = list(ex.map(sparql, qs))
+    info = {"planned": len(qs), "unanswered": sum(g is None for g in got), "secs": round(time.time() - t0, 1)}
+    print(f"r3k prefetch: {info}", flush=True)
+    return info
 
 
 def chain(values: list[str], cls: set) -> set[str] | None:
@@ -135,9 +161,11 @@ def incoming_of_kind(item: str, props: list[str], cls: set) -> set[str] | None:
 __all__ = ["asked_kind", "chain", "incoming_of_kind", "kept", "kind_classes", "one_step"]
 
 
-def bound(rows: list[dict], items: dict, props: dict, src, lx: dict, mode: str) -> tuple[dict, dict]:
+def bound(rows: list[dict], items: dict, props: dict, src, lx: dict, mode: str, _plan: bool = False) -> tuple[dict, dict]:
     """({row id: kept properties} for rows that ask a kind, info): R3k's candidates, `mode` "one" or "chain"."""
     from retrieval_bench.r3_gold import ClaimIds
+    if mode in ("chain", "gaps") and not _plan:       # every SPARQL query first, several at a time; then the pass
+        prefetch(lambda: bound(rows, items, props, src, lx, mode, _plan=True))
     cls = {k: kind_classes(src, k) for k in KIND_WORDS}
     claims = ClaimIds(src).get(sorted({q for r in rows for q in items[r["id"]]}))
     memo: dict[str, bool] = {}
