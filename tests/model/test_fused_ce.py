@@ -81,9 +81,10 @@ def test_the_matmuls_run_in_the_asked_dtype_as_autocast_runs_the_full_head():
     loss = chunked_cross_entropy(h, w, y, chunk=64, dtype=torch.bfloat16)
     loss.backward()
     assert h.grad.dtype == torch.float32 and w.grad.dtype == torch.float32
-    hb, wb = h.detach().to(torch.bfloat16).float().requires_grad_(), w.detach().to(torch.bfloat16).float().requires_grad_()
-    ref = F.cross_entropy(hb @ wb.t(), y, ignore_index=-100)
-    ref.backward()
-    assert _rel(loss, ref) <= 1e-2 and _rel(h.grad, hb.grad) <= 2e-2 and _rel(w.grad, wb.grad) <= 2e-2
+    hb, wb = h.detach().clone().requires_grad_(), w.detach().clone().requires_grad_()
+    ref = F.cross_entropy((hb.to(torch.bfloat16) @ wb.to(torch.bfloat16).t()).float(), y, ignore_index=-100)
+    ref.backward()                                                         # the full path as autocast runs it
+    assert _rel(loss, ref) <= 1e-3                                         # 0050's bf16 line (Cowork, 2026-11-04)
+    assert _rel(h.grad, hb.grad) <= 2e-2 and _rel(w.grad, wb.grad) <= 2e-2
     with torch.no_grad():                                                  # eval: the loss alone, nothing saved
         assert _rel(chunked_cross_entropy(h, w, y, chunk=64, dtype=torch.bfloat16), loss) <= 1e-6
