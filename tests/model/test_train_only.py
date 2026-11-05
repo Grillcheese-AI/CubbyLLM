@@ -97,6 +97,26 @@ def test_with_the_flag_one_step_changes_only_the_copys_tensors(monkeypatch):
     assert len(every) > 2 * len(own)
 
 
+def test_link_and_copy_train_alone_and_every_trunk_tensor_stays(monkeypatch):
+    """``CB_TRAIN_ONLY=link,copy`` (order 0052 B): the whole link trains at ``CB_LINK_LR`` on a frozen trunk."""
+    tb = _tb()
+    monkeypatch.setattr(tb, "TRAIN_ONLY", "link,copy")
+    m = _linked("ring")
+    every = list(m.parameters())
+    own = {id(p) for p in m.spatial.parameters()}
+    assert own > {id(p) for p in m.spatial.copy_path.parameters()}             # the read's tensors, not only the copy's
+    peak = tb.train_only(m)
+    assert peak == tb.LINK_LR and {id(p) for p in every if p.requires_grad} == own
+    opt = tb.make_opt(m, peak, CPU)
+    loss_fn = tb.make_fns(m, META["vocab"], CPU)[0]
+    x, y, _ = _batch(tb)
+    assert _leaves(loss_fn(x, y)) <= own
+    before = {id(p): p.detach().clone() for p in every}
+    _step(tb, m, opt, loss_fn, x, y)
+    assert all(torch.equal(p, before[id(p)]) for p in every if id(p) not in own), "the trunk never moves"
+    assert any(not torch.equal(p, before[id(p)]) for p in every if id(p) in own)
+
+
 def test_with_the_flag_the_checkpoint_still_holds_the_whole_model(tmp_path, monkeypatch):
     """``CubbyModel.parameters()`` yields only what requires grad: the checkpoint's list must not
     shrink to the copy's when the trunk is frozen, and it loads back into a frozen model."""

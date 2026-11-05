@@ -125,6 +125,7 @@ LR = _env("CB_LR", 6e-4, float)              # peak; CB_MODE=lrprobe to choose i
 # only (no graph, no update) and the checkpoint still saves every tensor. "" = every parameter trains (every run so far).
 TRAIN_ONLY = _env("CB_TRAIN_ONLY", "", str)
 COPY_LR = _env("CB_COPY_LR", 3e-3, float)
+LINK_LR = _env("CB_LINK_LR", 1e-3, float)       # CB_TRAIN_ONLY=link,copy: the link's peak (order 0052 B)
 BETA2 = _env("CB_BETA2", 0.95, float)
 WD = _env("CB_WD", 0.1, float)
 CLIP = _env("CB_CLIP", 1.0, float)
@@ -470,18 +471,21 @@ def train_only(model: CubbyModel) -> float:
     """``CB_TRAIN_ONLY``: every tensor but the named part's stops requiring grad, so the trunk's forward
     builds no graph and keeps no activations, and ``make_opt`` takes only the part. Returns the peak
     learning rate the run trains at (``CB_LR`` without the flag). ``CubbyModel.parameters()`` yields only
-    the tensors that require grad, so the full list is kept first, as the checkpoint's (``params_of``)."""
+    the tensors that require grad, so the full list is kept first, as the checkpoint's (``params_of``).
+    ``copy``: the copy path alone (order 0005, at ``CB_COPY_LR``). ``link,copy``: the whole link -- the read's
+    query, gate, output and norm, and the copy path -- on a frozen trunk (order 0052 B, at ``CB_LINK_LR``), so the
+    trunk's tensors stay those of the checkpoint it started from."""
     if not TRAIN_ONLY:
         return LR
     cp = model.spatial.copy_path if model.spatial is not None else None
-    if TRAIN_ONLY != "copy" or cp is None:
-        raise SystemExit(f"CB_TRAIN_ONLY={TRAIN_ONLY!r}: only 'copy' is known, and it needs the link's copy path"
+    if TRAIN_ONLY not in ("copy", "link,copy") or cp is None:
+        raise SystemExit(f"CB_TRAIN_ONLY={TRAIN_ONLY!r}: 'copy' or 'link,copy', and either needs the link's copy path"
                          " (CB_SPATIAL=1 CB_SPATIAL_COPY=ring)")
     model.full_params = list(model.parameters())
-    own = {id(p) for p in cp.parameters()}
+    own = {id(p) for p in (cp if TRAIN_ONLY == "copy" else model.spatial).parameters()}
     for p in model.full_params:
         p.requires_grad_(id(p) in own)
-    return COPY_LR
+    return COPY_LR if TRAIN_ONLY == "copy" else LINK_LR
 
 
 def params_of(model: CubbyModel) -> list:
@@ -936,8 +940,10 @@ def train(dev):
     print(f"params {n_params/1e6:.1f}M (trainable; embedding + head "
           f"{2*vp*D/1e6:.0f}M) | {fpt/1e9:.2f} GFLOP/token")
     if TRAIN_ONLY:
-        print(f"trunk FROZEN (CB_TRAIN_ONLY={TRAIN_ONLY}): {n_train:,} trainable parameters, the copy path's, at peak lr"
-              f" {peak:g}; the trunk runs forward only (no graph, no update; MFU counts the forward)")
+        print(f"trunk FROZEN (CB_TRAIN_ONLY={TRAIN_ONLY}): {n_train:,} trainable parameters, "
+              f"{'the copy path' if TRAIN_ONLY == 'copy' else 'the link and its copy'}'s, at peak lr {peak:g}; the trunk's"
+              f" tensors never update{'' if TRAIN_ONLY == 'copy' else ' (the layers above the read carry its backward)'};"
+              f" MFU counts the forward")
 
     ck = Checkpoints(LOCAL_DIR, DRIVE_DIR, NAME)
     sched = {"warmup": WARMUP, "steps": STEPS_ENV or 10**9,

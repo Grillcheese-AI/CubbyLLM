@@ -1,5 +1,5 @@
 # 0052 — The loci link on grilly2: far facts read by their place, served at home
-status: open
+status: in progress
 written: 2026-11-05 by Cowork · approved: 2026-11-05 by Nick ("yes") · hypothesis: H-K10 (with H-S12)
 
 ## Why
@@ -80,3 +80,21 @@ where it was put, instead of losing it once it scrolls out of view.
 - **Not verified here:**
 - **Found on the way:**
 - **Questions:**
+
+## B, built (Claude Code, 2026-11-05)
+- **`CB_TRAIN_ONLY=link,copy`** (`validation/train_base.py`):
+  - the whole link trains: the read's query, gate, output and norm, and the copy path;
+  - its peak is `CB_LINK_LR` (default 1e-3, a choice of mine, recorded);
+  - every trunk tensor stays the checkpoint's.
+  - `train_base.py` was already over 300 lines; it grows by 9 for this.
+- **The test** (`tests/model/test_train_only.py`): one step moves only the link's tensors, every trunk tensor stays bit
+  for bit, and the peak is `CB_LINK_LR`. 9 pass.
+- **The notebook:** `spatial_facts_450m.ipynb`, now `RUN = 7`.
+  - Run 6's link and copy flags (placed, writes binding, the route loss, the copy ring with tau 3.04 and beta 0.115),
+    added to `base450m_cont_final.pt`, the served trunk.
+  - Only the link trains, for run 6's step count (1,203, read from its metrics), on its two shards.
+  - The readout reads far facts on the 400 held-out documents, against line 0.70 and kill 0.50. It also checks that
+    every trunk tensor and the router are bit-identical to the start.
+  - The builder was already over 300 lines (426); it grows by 27, because run 7 shares its corpus, probes and readout
+    with runs 1-6.
+- **A:** next, at home on grilly2.
