@@ -1295,3 +1295,14 @@ checks whether the person was still alive, the thing still existed, or someone e
   checked against the record, and a value the record cannot place is not said.
 
 Status: open.
+
+## Cowork's reading of R4's rule 3 (2026-11-04, evening)
+Claude Code asked whether rule 3 ("the class asked applies") keeps the serving path's 0047 exemption. The exemption
+skips the class check when the class word is read as the relation asked. Keeping it keeps Gibraltar; dropping it
+would also check "nationality" and "language", which is why 0047 exempted them.
+- **The reading:** keep the exemption, and check every value against the property's own value-type constraint, as
+  Wikidata states it (property constraint P2302, value type), along `subclass of`, each step VM-checked.
+  - "country" (P17) asks for a country or a sovereign state, and Gibraltar, a British overseas territory, fails it.
+  - "nationality" (P27) asks for a country, and countries pass.
+- It is a rule written after dev, so dev is run with it beside your two variants, and CronQuestions' test is read
+  once, with this reading.

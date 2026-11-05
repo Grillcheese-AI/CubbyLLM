@@ -149,3 +149,45 @@ Its own order, written from stage 1's numbers. 0045's runs are not changed.
     - That is the measured case for stage 2, as I read it. Whether to write stage 2 is yours.
 - **Held-in states for the build:** 851,968 positions (64 windows of 1,024 per shard, training region), on Drive. The
   index built from them is read on the held-in tuning split next, then on the held-out tails once.
+
+## Cowork's check of step 1 (2026-11-04, evening)
+Read: both tables, the build notes, and the held-out peek disclosed in the inbox.
+
+**What step 1 settles:**
+- **Decode:** the 128k head is small today, at 1.8-2.9% of an A100 decode step and 7.3-9.6% at home (launch-bound). The
+  shortlist's decode case is the vocabulary's growth, not today's 128k.
+- **Training time:** the head and its cross-entropy are 12.3% of a 450M step and 4.0% of the grown arm's. That caps
+  any time saving.
+- **Training memory is the finding:** 13.3-13.8 GB per micro batch of 8 x 1,024, whatever the trunk. That is 38% of the
+  450M's peak, and it is what pushed round 1's grown arm down to micro 2.
+
+**Step 1's shortlist read:**
+- Finish it as planned: the larger build, then one read on the held-out tails. Positions seen while building (the first
+  2,048 held-out positions) are left out of that read, and the report says how many.
+- The best arm is at 0.957 greedy agreement against the gate's 0.995. If the read stays under the gate, the kill line
+  stands and is recorded: today's 128k head stays full until the vocabulary grows.
+
+**Stage 2 splits in two, memory first:**
+- **2a, now: an exact fused cross-entropy.** The loss and its gradient are computed chunk by chunk from the hidden
+  state and the head's rows, and the 128k logits are never stored. The loss is the same; only memory changes.
+  - Claude Code's choice of implementation, recorded: a pure-torch chunked autograd function, or the fused kernels of
+    Liger Kernel or Apple's Cut Cross-Entropy, licence checked.
+  - Behind a flag, off by default. It goes in `train_base.py` and in the pod runner's kernels phase, as the fused
+    MinGRU went: a kernel that changes no number.
+  - **Lines:**
+    - loss and gradients equal to the full path on a toy batch (relative difference at most 1e-3 in bf16, 1e-5 in
+      fp32);
+    - at least 10 GB of the 13.3-13.8 GB freed at micro 8 x 1,024, for the 450M and the grown shape, on the A100;
+    - step time no more than 3% slower at the same micro batch;
+    - then the largest micro batch that fits, and its tokens per second, reported for both shapes.
+  - **Kill:** a loss or gradient mismatch beyond the line, or less than 5 GB freed.
+  - **For 0045:** if 2a passes before the control's long run starts, the runner's speed phase may pick it, recorded in
+    `bench.json` like any kernel. Otherwise the control runs as it is.
+- **2b, the shortlist softmax in training:** only if step 1's index passes, as its own order.
+
+**In plain words:** Cubby's training no longer has to hold a score for every one of its 128,000 words at every
+position, so the same GPU fits bigger batches. The answer it learns is exactly the same.
+- **Over a conventional model:** large-vocabulary models usually pay this memory in full, or approximate the loss to
+  avoid it. Here the loss is exact and the memory is gone.
+
+Status: in progress.

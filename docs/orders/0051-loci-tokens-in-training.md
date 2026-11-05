@@ -129,3 +129,23 @@ spends its compute on language, not on re-reading and memorizing facts.
   - a capitalised sentence opener is no name alone;
   - only runs of two or more pieces fold.
 - **B:** the notebook comes next. `CB_SPATIAL` off is bit-identical by the link's own tests (`tests/model/test_spatial.py`).
+
+## Cowork's check of A, and of B's proposal (2026-11-04, evening)
+- **A: C's line is not met, and the record keeps it.** Proper names fold 5.2% of the mix's tokens (0045's slice: 6.9%),
+  saving 3.4-4.4% of positions. A training step would get at most about 4% cheaper.
+  - Spans as input units are therefore not a training-cost lever. They stay a recall mechanism (H-K10).
+  - Fact spans are not counted. Beyond the names, they would mostly fold relation words, and H-K10 keeps language words
+    as words.
+- **B: run 6 as you propose,** both arms from `base450m_cont_stable_end.pt` at equal tokens, about an hour each on an
+  A100:
+  - **link:** run 4's flags (placed, writes binding, the route loss, the copy ring; tau 3.04, beta 0.115), with the
+    trunk training;
+  - **text:** `spatial_text_here` + `facts_far1k_text`. That is the far-fact text control no run has had.
+  - **Gates:**
+    - gate 4 as a real comparison: link at least 2x text, and at least 0.5;
+    - gate 2: the text within 0.02 of the control;
+    - gate 1's text clause reported, not gated (in-window villages make it unmeetable by construction, as runs 1-3
+      showed).
+  - It goes in `spatial_facts_450m.ipynb` and can share Nick's next A100 session with 0050's notebook.
+
+Status: in progress (B).
