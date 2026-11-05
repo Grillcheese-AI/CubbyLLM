@@ -33,6 +33,7 @@ from .ask_words import (ABSENT_REPLY, SAY, _AS_OF_PHRASE, _CATEGORY, _GROUP, _IS
 from .ask_claims import (BACKWARD_CUES, FORWARD_CUES, _BEGIN, _CAUSAL_REL, _END, _PRONOUN, _SENT,  # noqa: F401
                          _aliases, _cue, _learned, _mentions, branch_clarify, claim_check, parse_choose, talk_reply)
 from .ask_namesakes import after_walk, also, seed_for
+from . import uncertified as unc
 from ..spatial.scene_ask import scene_ask
 from .ask_memory import AskMemory
 from .ask_relation import AskRelation
@@ -269,6 +270,8 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
                    branches=lr.result.branches, chose=choose or None,
                    clarify=branch_clarify(lr.plan or plan, lr.result, parse_choose(choose)),
                    wall_s=round(time.perf_counter() - t0, 3))
+        if unc.on():                                     # a measurement's field (order 0054), never said; off: unchanged
+            rec["uncertified"] = unc.value(lr.result, plan.n_hop)
         after_walk(self, rec, rec["seed"] or "", learn=learn)  # which item a shared name is: decided, or the asker is asked
         self._checked(question, lr, rec, again=again)    # the veto, the tense, "as of" (the source first), the time rule, the hedge
         also(rec)                                        # then the other namesakes, after the reply is what it will be
