@@ -20,6 +20,13 @@ exports each memory layer as ``memory_norm.weight`` and
 ``mem_key`` / ``mem_capacity`` config fields; grilly2's ``CubbyMemory``
 (``grilly/infer/models/cubby.py``) carries the read and the per-stream
 store, so such a base serves through the same path as the 450M.
+
+A base with the spatial link (``meta["spatial"]``, order 0052 A) exports it BESIDE the trunk, in
+``spatial.json`` (the link's meta, ``d`` and ``dims``) and ``spatial.safetensors`` (its phases, the
+read's norm, query, gate and output, and the copy's gate, tau and beta), read by
+``cubbyllm.model.spatial_decode.SpatialDecode``. ``config.json`` and ``model.safetensors`` hold the
+trunk alone, exactly as without a link: grilly2's loader refuses a tensor it does not know, so the
+link never enters its file, and an export without a link is unchanged.
 """
 from __future__ import annotations
 
@@ -76,6 +83,26 @@ def named_tensors(model) -> dict:
     return {k: v.detach().to(torch.float32).contiguous().cpu() for k, v in out.items()}
 
 
+def spatial_export(meta: dict, model) -> tuple[dict, dict]:
+    """(spatial.json, spatial.safetensors's tensors) for a linked base; the variants the decode port has not
+    taken (a text key, the pointer query, copy-or-refuse, the table copy) refuse."""
+    sp, link = dict(meta["spatial"]), model.spatial
+    if sp.get("key") or sp.get("copy_refuse") or sp.get("query") == "pointer" or sp.get("copy") not in (None, "ring"):
+        raise SystemExit(f"this spatial link ({sp}) has no grilly2 form yet: the port takes placed / learned "
+                         "queries and the ring copy")
+    t = {"phases": link.phases, "norm_w": link.norm_w, "q.weight": link.q.weight, "gate.weight": link.gate.weight,
+         "gate.bias": link.gate.bias, "o.weight": link.o.weight}
+    cp = link.copy_path
+    if cp is not None:
+        t.update({"copy.gate.weight": cp.gate.weight, "copy.gate.bias": cp.gate.bias, "copy.tau": cp.tau.reshape(1)})
+        if cp.beta is not None:
+            t["copy.beta"] = cp.beta.reshape(1)
+        sp["copy_ring"] = cp.ring
+    cfg = {**sp, "d": link.d, "dims": link.dims, "scale": link.scale, "seed": link.seed, "at": link.at,
+           "query": link.query, "bind": link.bind_mode}
+    return cfg, {k: v.detach().to(torch.float32).contiguous().cpu() for k, v in t.items()}
+
+
 def grilly_config(meta: dict, model) -> dict:
     """``CubbyConfig``'s fields, from the checkpoint's meta and the modules."""
     gen, router = model.memory.generator, model.context_source
@@ -113,9 +140,8 @@ def main() -> None:
     ck = torch.load(args.ckpt, map_location="cpu", weights_only=False)
     meta, step, tokens = ck["meta"], ck.get("step"), ck.get("tokens")
     del ck                         # a grown 1.8B checkpoint is 7 GB; don't hold it twice
-    if meta.get("spatial"):
-        raise SystemExit("the spatial link (meta['spatial']) has no grilly2 form yet: serve it through torch")
     model = load_base(args.ckpt, "cpu")
+    link = spatial_export(meta, model) if meta.get("spatial") else None     # refuses an unported variant first
     tensors = named_tensors(model)
     cfg = grilly_config(meta, model)
     cfg["source"] = {"checkpoint": os.path.basename(args.ckpt), "step": step,
@@ -124,6 +150,10 @@ def main() -> None:
     save_file(tensors, os.path.join(args.out, "model.safetensors"))
     with open(os.path.join(args.out, "config.json"), "w", encoding="utf-8") as f:
         json.dump(cfg, f, indent=1)
+    if link is not None:                                                     # beside the trunk, never in its file
+        json.dump(link[0], open(os.path.join(args.out, "spatial.json"), "w", encoding="utf-8"), indent=1)
+        save_file(link[1], os.path.join(args.out, "spatial.safetensors"))
+        print(f"the spatial link: {len(link[1])} tensors -> spatial.json, spatial.safetensors")
     if args.tokenizer:
         import shutil
         shutil.copyfile(args.tokenizer, os.path.join(args.out, "tokenizer.json"))

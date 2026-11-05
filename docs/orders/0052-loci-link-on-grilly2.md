@@ -98,3 +98,37 @@ where it was put, instead of losing it once it scrolls out of view.
   - The builder was already over 300 lines (426); it grows by 27, because run 7 shares its corpus, probes and readout
     with runs 1-6.
 - **A:** next, at home on grilly2.
+
+## A, steps 1 and 2: the export and the link's decode math (Claude Code, 2026-11-05)
+- **How the encoding is computed (the order's open choice):** precomputed on the host.
+  - grilly2 has no FFT kernel and no complex type (its holographic bind is a direct O(d²) convolution).
+  - At d = 1,024, a real DFT is a (d/2+1) x d matrix product, about 1M multiply-adds a transform, against the
+    trunk's ~450M a token. So the transforms are two precomputed real matrices each way, and the rest is elementwise
+    or a small linear.
+  - The place angles are computed in float32, as torch computes them; everything else in float64 on the host.
+- **`cubbyllm/model/spatial_decode.py`** (numpy, no torch): `SpatialDecode`, the link's four decode calls in
+  `CubbyModel.step`'s order:
+  - `bind_input`: a writer's input bound to its place; a non-writer's input is untouched, bit for bit;
+  - `write`: a document start empties the scene and the ring; a writer adds its bound input and its id;
+  - `read`: at layer `at`, after the mixer, before the FFN. It adds exactly zero while nothing is written;
+  - `add_copy`: the ring copy at asking rows with a candidate.
+  - Per stream it keeps the scene (d) and the ring (256 ids): fixed-size, as torch's.
+- **`validation/export_base.py`:** a linked base no longer refuses.
+  - The link goes **beside** the trunk, in `spatial.json` and `spatial.safetensors`. `config.json` and
+    `model.safetensors` stay the trunk's alone, because grilly2's loader refuses a tensor it does not know.
+  - An export without a link is unchanged.
+  - The variants the port has not taken (a text key, the pointer query, copy-or-refuse, the table copy) refuse.
+- **Tests** (`tests/model/test_spatial_decode.py`, 5 pass; `test_export_grilly.py` still 2 pass in grilly2's
+  environment):
+  - the DFT matrices equal numpy's rfft / irfft;
+  - **parity:** the torch trunk stepped with the numpy link where grilly2 will call it gives torch's own step's
+    logits at every token, with roles, a document restart, a ring smaller than the writes and the copy's gate open.
+    Worst relative gap: 7.3e-6 without the copy, 1.4e-6 with it (line 1e-4);
+  - with nothing placed, the logits are bit-identical to the trunk alone;
+  - the export's file contract and its refusals.
+- **Next, step 3:**
+  - grilly2's `CubbyForCausalLM` takes an optional link object: the input bound before layer 0, the read at layer
+    `at`, the final stream returned for the copy;
+  - `cubbyllm/ops/grilly_seats.py` passes positions and roles through;
+  - `cubby_serve` loads `spatial.json` behind a flag (`--spatial`, off by default);
+  - then run 6's link exported and read at home (far facts within 0.01 of 0.804), and decode time with and without.
