@@ -193,3 +193,13 @@ def test_b1q_s_compared_rule_two_names_compared_or_chosen_are_no_cue_for_each_ot
     assert "lyon" not in cue_runs("Qui est né à Paris ou à Lyon ?", "Paris", [], lx)
     assert "france" in cue_runs("Où est la tour Eiffel en France ?", "tour Eiffel", [], lx)        # "où": no choice
     assert "france" in cue_runs("Was Tim born or raised in France?", "Tim", [], lx)              # "or" joins no names
+
+
+def test_the_profile_cache_skips_a_line_an_interrupted_write_left_torn(tmp_path):
+    """A run stopped mid-write left 53,802 NUL bytes as one line of r2_profiles.jsonl (2026-11-05); the next run must
+    load the rest and refetch that one, not stop."""
+    from retrieval_bench.r2_items import Profiles
+    p = tmp_path / "profiles.jsonl"
+    p.write_text('{"id": "Q1"}\n' + "\x00" * 50 + "\n" + '{"id": "Q2"}\n', encoding="utf-8")
+    prof = Profiles(None, str(p))
+    assert set(prof.p) == {"Q1", "Q2"} and prof.torn == 1

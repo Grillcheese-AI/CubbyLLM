@@ -65,10 +65,15 @@ class Profiles:
         self.src = src
         self.path = path or os.path.join(data_root(), "retrieval", "r2_profiles.jsonl")
         self.p: dict[str, dict] = {}
+        self.torn = 0                                  # lines an interrupted write left half-written: skipped, refetched
         if os.path.exists(self.path):
             for line in open(self.path, encoding="utf-8"):
                 if line.strip():
-                    r = json.loads(line)
+                    try:
+                        r = json.loads(line)
+                    except json.JSONDecodeError:
+                        self.torn += 1
+                        continue
                     self.p[r["id"]] = r
 
     def get(self, qids) -> dict[str, dict]:
