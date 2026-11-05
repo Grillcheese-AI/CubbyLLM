@@ -34,9 +34,13 @@ class Signature:
     kernel: str
     inverse: bool
 
-    def key(self) -> str:
-        return "|".join([self.task, ",".join(self.relations), self.lang, f"h{self.hops}", f"a{self.arith}",
-                         self.kernel, "inv" if self.inverse else "fwd"])
+    def key(self, coarse: bool = False) -> str:
+        """The ledger's key. ``coarse``: the relation words left out (a skill as "relation words of this language and
+        shape", not one per relation): 0049's planted gap "Wikidata's relation words in English" is one coarse key and
+        hundreds of fine ones. Which grain the run uses is written down before it runs."""
+        rel = "*" if coarse and self.relations else ",".join(self.relations)
+        return "|".join([self.task, rel, self.lang, f"h{self.hops}", f"a{self.arith}", self.kernel,
+                         "inv" if self.inverse else "fwd"])
 
 
 def of(program: str, lang: str = "en", task: str = "", inverse: bool | None = None) -> Signature:

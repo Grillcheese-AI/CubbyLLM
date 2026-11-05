@@ -108,3 +108,9 @@ def test_the_gate_refuses_an_adapter_that_lowers_the_battery():
     assert not ok and "E8" in why
     assert not g.judge(0.40, 0.40, base, base)[0]                          # no rise on its own gap
     assert not g.judge(0.40, 0.70, base, {"E8": 0.80})[0]                  # a battery line not read
+
+
+def test_a_coarse_key_joins_the_relations_of_one_language_and_shape():
+    a, b = signature.of(PROG % "birth", "en"), signature.of(PROG % "capital", "en")
+    assert a.key() != b.key() and a.key(coarse=True) == b.key(coarse=True)
+    assert a.key(coarse=True) != signature.of(PROG % "birth", "fr").key(coarse=True)
