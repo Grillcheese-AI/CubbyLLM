@@ -50,23 +50,29 @@ def load(ckpt: str, dev, weights: bool = True):
     return model, meta
 
 
+def _sync() -> None:
+    import torch
+    if torch.cuda.is_available():
+        torch.cuda.synchronize()
+
+
 def _timed(fn, reps: int, warm: int = 3) -> dict:
     import torch
     for _ in range(warm):
         fn()
-    torch.cuda.synchronize()
+    _sync()
     ts = []
     for _ in range(reps):
         t0 = time.perf_counter()
         fn()
-        torch.cuda.synchronize()
+        _sync()
         ts.append((time.perf_counter() - t0) * 1e3)
     return {"p50_ms": round(statistics.median(ts), 3), "mean_ms": round(statistics.fmean(ts), 3), "n": reps}
 
 
 def decode(a, dev) -> dict:
     import torch
-    model, meta = load(a.ckpt, dev)
+    model, meta = load(a.ckpt[0], dev)               # --ckpt is a list (train takes two)
     head, d, out = model.head, meta["D"], {"meta": meta, "runs": []}
     w32 = torch.randn(32000, d, device=dev) * 0.02
     for dtype in (torch.float32, torch.bfloat16):
@@ -103,7 +109,32 @@ def train(a, dev) -> dict:
     for ck in a.ckpt:
         model, meta = load(ck, dev, weights=False)
         params = list(model.parameters())
-        x = torch.randint(100, meta["vocab"] - 1, (a.micro, a.seq + 1), device=dev)
+        micro = a.micro
+        while True:                                      # a card too small for --micro: halve it, record what ran
+            try:
+                rec = _train_shape(model, meta, params, ck, micro, a, dev)
+                break
+            except torch.cuda.OutOfMemoryError:
+                for p in params:
+                    p.grad = None
+                torch.cuda.empty_cache()
+                if micro == 1:
+                    raise
+                micro //= 2
+                print(f"out of memory: micro {micro * 2} -> {micro}", flush=True)
+        out["shapes"].append(rec)
+        print(rec["ckpt"], "micro", micro, "full", rec["full"]["p50_ms"], "trunk", rec["trunk"]["p50_ms"],
+              "share", rec["head_share_of_step"], flush=True)
+        del model, params
+        torch.cuda.empty_cache()
+    return out
+
+
+def _train_shape(model, meta, params, ck, micro, a, dev) -> dict:
+    import torch
+    import torch.nn.functional as F
+    if True:                                         # (one shape at one micro batch)
+        x = torch.randint(100, meta["vocab"] - 1, (micro, a.seq + 1), device=dev)
         inp, y = x[:, :-1], x[:, 1:]
 
         def full():
@@ -120,7 +151,7 @@ def train(a, dev) -> dict:
             h.float().pow(2).mean().backward()
             for p in params:
                 p.grad = None
-        rec = {"ckpt": os.path.basename(ck), "D": meta["D"], "L": meta["L"], "vocab": meta["vocab"],
+        rec = {"ckpt": os.path.basename(ck), "D": meta["D"], "L": meta["L"], "vocab": meta["vocab"], "micro": micro,
                "params_M": round(sum(p.numel() for p in params) / 1e6, 1)}
         for name, fn in (("full", full), ("trunk", trunk)):
             torch.cuda.reset_peak_memory_stats()
@@ -128,12 +159,7 @@ def train(a, dev) -> dict:
             rec[name]["peak_gb"] = round(torch.cuda.max_memory_allocated() / 2**30, 2)
         rec["head_share_of_step"] = round(1 - rec["trunk"]["p50_ms"] / rec["full"]["p50_ms"], 4)
         rec["head_peak_gb"] = round(rec["full"]["peak_gb"] - rec["trunk"]["peak_gb"], 2)
-        out["shapes"].append(rec)
-        print(rec["ckpt"], "full", rec["full"]["p50_ms"], "trunk", rec["trunk"]["p50_ms"], "share", rec["head_share_of_step"],
-              flush=True)
-        del model, params
-        torch.cuda.empty_cache()
-    return out
+        return rec
 
 
 def dump(a, dev) -> dict:
