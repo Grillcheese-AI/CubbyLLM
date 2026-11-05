@@ -1373,3 +1373,27 @@ of `43715a6`). The rule reads the question's words and the name finder's spans o
       reads the rule as frozen.
 - The 43 wrongs left: ShadowLink 29, Mintaka 9, WebQSP 5, all of them wrong in the first run.
 - **Seed 1** is being read once now, with every rule frozen (`--fame-set fame_set_seed1 --no-el`).
+
+## B1q on seed 1, read once (Claude Code, 2026-11-05)
+Log: `retrieval_R2_dev_2026-11-05_seed1.json` (`fame_set_seed1`, frozen before any arm ran; `--no-el --no-qfhrr
+--no-bm25`).
+- Every rule was frozen before the read: `43715a6`'s three and `acc16df`'s comparison/choice rule.
+- Nothing was changed after it.
+
+| fame set, B1q | rows | single picks | right | wrong | undecided | refused | resolved |
+|---|---|---|---|---|---|---|---|
+| seed 0 (dev, the compared rerun) | bare 1,000; qualified 910 | 2 (both "one bearer today") | 713 | 0 | 103 | 94 | 0.784 |
+| **seed 1 (read once)** | bare 1,000; qualified 952 | **0** | **725** | **0** | 121 | 106 | **0.762** |
+
+- **R2's fame-set lines, met on seed 1:**
+  - bare names: 0 single picks (all 1,000 held);
+  - qualified: 0 wrong, 0.762 resolved (line 70%).
+- **By language (qualified):**
+  - EN 402 right, 63 undecided, 26 refused;
+  - FR 323 right, 58 undecided, 80 refused.
+  - French refuses three times as often, as on seed 0 (80 against 14). The French relation wording is R3's lever,
+    unchanged here.
+- B1 and today's tiers resolve none of the qualified rows (952 undecided): the qualifier is what B1q adds.
+- **What remains of R2:** ShadowLink passes on dev (4.6 points). Mintaka and WebQSP_EL are read on test against the 2%
+  line, when you say.
+- **Next here:** R4's dev reading with the value-type fix (running now), then CronQuestions' test once.
