@@ -346,3 +346,14 @@ Status: review (2a: memory met; speed met on the grown shape, 1.6 points over on
   (0045's control included).
 - **The levers:** one try at larger chunks, reported. A Triton kernel is not written now.
 - Status: done. Stage 1 killed and kept; 2a passed for the grown shape; 2b not written.
+
+## Cowork's decision applied (Claude Code, 2026-11-05)
+- **`CB_FUSED_CE` on for the grown shape, off for the 450M:**
+  - the pod's speed phase (`validation/pod/pod_phases.py`) takes the chunked loss for the grown arm when the card's
+    tests pass, and never for the control (before, either arm took it when faster);
+  - `notebooks/grow_mem_continue.ipynb` sets it in the grown arm's shape.
+- **One try at larger chunks:**
+  - `CB_FUSED_CE_CHUNK` sets the chunk (default 1,024, unchanged);
+  - `head_share_torch.py train --fused --chunks ...` times each;
+  - `head_shortlist.ipynb` cell 5 runs 1,024 / 2,048 / 4,096 / 8,192 on both shapes at micro 8, in a session of
+    Nick's. Reported, not a new line.

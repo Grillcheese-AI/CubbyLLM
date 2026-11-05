@@ -182,7 +182,9 @@ elif ARM == 'grown':
 """),
     code(r"""
 # --- config, and a runner that tees the log to Drive ---
-shape = (dict(CB_L='64', CB_FFN_MULT='4', CB_MEM_EVERY=str(MEM_EVERY), CB_INIT_FROM=GROWN) if ARM == 'grown'
+# CB_FUSED_CE (0050 2a, Cowork 2026-11-05): the loss without the logits on for the grown shape (10.9 GB freed at +1.6% a
+# step), off for the 450M
+shape = (dict(CB_L='64', CB_FFN_MULT='4', CB_MEM_EVERY=str(MEM_EVERY), CB_INIT_FROM=GROWN, CB_FUSED_CE='1') if ARM == 'grown'
          else dict(CB_L='32', CB_INIT_FROM=CONTINUE_FROM or START_CKPT))
 # the three decay shards: multipliers on size-proportional draws (15.5M, 79.5M and 7.3M tokens against a
 # 17.7B cache), solved so that in the decay instruct is ~5%, agent ~10% and program ~2% of the tokens -- 0.8,

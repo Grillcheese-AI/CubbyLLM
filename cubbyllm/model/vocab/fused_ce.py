@@ -23,7 +23,7 @@ import os
 
 __wiring__ = "WIRED"
 
-CHUNK = 1024
+CHUNK = int(os.environ.get("CB_FUSED_CE_CHUNK") or 1024)    # positions a chunk (0050: one try at larger ones)
 
 
 def on() -> bool:

@@ -152,11 +152,11 @@ def _train_shape(model, meta, params, ck, micro, a, dev) -> dict:
             for p in params:
                 p.grad = None
 
-        def fused():                                     # 0050 2a: the same loss, the logits never stored
-            from cubbyllm.model.vocab.fused_ce import chunked_cross_entropy
+        def fused(chunk=None):                           # 0050 2a: the same loss, the logits never stored
+            from cubbyllm.model.vocab.fused_ce import CHUNK, chunked_cross_entropy
             with torch.autocast("cuda", dtype=torch.bfloat16):
                 h = model.features(inp)
-            chunked_cross_entropy(h, model.head._codes(), y, dtype=torch.bfloat16).backward()
+            chunked_cross_entropy(h, model.head._codes(), y, chunk=chunk or CHUNK, dtype=torch.bfloat16).backward()
             for p in params:
                 p.grad = None
         rec = {"ckpt": os.path.basename(ck), "D": meta["D"], "L": meta["L"], "vocab": meta["vocab"], "micro": micro,
@@ -170,6 +170,11 @@ def _train_shape(model, meta, params, ck, micro, a, dev) -> dict:
         if a.fused:                                      # 2a's lines: >= 10 GB freed, <= 3% slower at the same micro
             rec["fused_freed_gb"] = round(rec["full"]["peak_gb"] - rec["fused"]["peak_gb"], 2)
             rec["fused_slower"] = round(rec["fused"]["p50_ms"] / rec["full"]["p50_ms"] - 1, 4)
+            for c in [int(v) for v in a.chunks.split(",") if v]:   # 0050: one try at larger chunks (Cowork, 2026-11-05)
+                torch.cuda.reset_peak_memory_stats()
+                t = _timed(lambda: fused(c), a.reps, warm=2)
+                rec.setdefault("fused_chunks", {})[str(c)] = {**t, "peak_gb": round(
+                    torch.cuda.max_memory_allocated() / 2**30, 2), "slower": round(t["p50_ms"] / rec["full"]["p50_ms"] - 1, 4)}
             rec["largest_micro"] = {name: _largest(fn_of, a, meta, dev) for name, fn_of in
                                     (("full", lambda i, t: _step(model, params, meta, i, t, False)),
                                      ("fused", lambda i, t: _step(model, params, meta, i, t, True)))}
@@ -255,6 +260,7 @@ def main() -> None:
     ap.add_argument("--fused", action="store_true", help="train: also the chunked cross-entropy (0050 2a) and the "
                     "largest micro batch each path fits")
     ap.add_argument("--micros", default="8,12,16,24,32,48")
+    ap.add_argument("--chunks", default="", help="train --fused: also time these chunk sizes (positions a chunk)")
     ap.add_argument("--seq", type=int, default=1024)
     ap.add_argument("--cache", default="")
     ap.add_argument("--split", default="heldin")

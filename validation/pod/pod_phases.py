@@ -228,12 +228,13 @@ def speed(ctx) -> None:
                 chosen_env = json.load(open(out, encoding="utf-8")).get("env") or {}
         env.update(chosen_env)
         bench[arm] = {**bench_arm(ctx, arm, env), "env": chosen_env}
-        if (ctx.state.get("kernels") or {}).get("CB_FUSED_CE") == "on":    # 0050 2a: the same loss without the logits
-            fused = bench_arm(ctx, arm, dict(env, CB_FUSED_CE="1"))        # frees memory for a larger micro batch:
-            bench[arm]["fused_ce"] = {k: fused[k] for k in ("micro", "tok_s", "mfu", "peak_gb")}   # kept if faster
-            if fused["tok_s"] > bench[arm]["tok_s"]:
-                bench[arm] = {**fused, "env": {**chosen_env, "CB_FUSED_CE": "1"}, "fused_ce": bench[arm]["fused_ce"],
-                              "without_fused_ce": {k: bench[arm][k] for k in ("micro", "tok_s", "mfu", "peak_gb")}}
+        # 0050 2a (Cowork, 2026-11-05): the chunked loss on for the grown shape, where memory binds (10.9 GB freed,
+        # +1.6% a step); off for the 450M control (+4.6% a step, a wash at its largest batch)
+        if arm == "grown" and (ctx.state.get("kernels") or {}).get("CB_FUSED_CE") == "on":
+            fused = bench_arm(ctx, arm, dict(env, CB_FUSED_CE="1"))       # taken: the order's decision, not the bench's
+            bench[arm] = {**fused, "env": {**chosen_env, "CB_FUSED_CE": "1"},
+                          "fused_ce": {k: fused[k] for k in ("micro", "tok_s", "mfu", "peak_gb")},
+                          "without_fused_ce": {k: bench[arm][k] for k in ("micro", "tok_s", "mfu", "peak_gb")}}
         say(ctx, f"{arm}: micro {bench[arm]['micro']}, {bench[arm]['tok_s']:,.0f} tok/s, MFU {100 * bench[arm]['mfu']:.1f}%")
     slow = bench["grown"]["mfu"] < SLOW_RATIO * bench["control"]["mfu"] if bench["control"]["mfu"] else False
     bench["mem_every"] = 2 if ctx.smoke else (MEM_EVERY_SLOW if slow else MEM_EVERY)

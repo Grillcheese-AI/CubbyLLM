@@ -103,6 +103,14 @@ stream('train', '--ckpt', CK450, '--ckpt', CKGROWN, '--micro', '8', '--seq', '10
 keep('train')
 print('done: disconnect the runtime')
 """),
+    code(r"""
+# --- 5. stage 2a, one try at larger chunks (Cowork, 2026-11-05): the step at 2,048, 4,096 and 8,192 positions a chunk
+# beside 1,024, both shapes, micro 8; reported, not a new line
+stream('train', '--ckpt', CK450, '--ckpt', CKGROWN, '--micro', '8', '--seq', '1024', '--fused', '--reps', '10',
+       '--micros', '8', '--chunks', '1024,2048,4096,8192')
+keep('train')
+print('done: disconnect the runtime')
+"""),
 ]
 
 nb = {"cells": CELLS,
