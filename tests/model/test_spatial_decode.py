@@ -108,3 +108,40 @@ def test_the_export_writes_the_link_beside_the_trunk_and_refuses_what_is_not_por
     save_file({k: v.numpy() for k, v in t.items()}, str(tmp_path / "spatial.safetensors"))
     assert SpatialDecode.load(str(tmp_path)).at == m.spatial.at
     assert SpatialDecode.load(str(tmp_path / "nothing")) is None      # an export without the link
+
+
+def _hybrid_forward(m, dec, x, pos, placed, writes, asks, starts):
+    """CubbyModel.forward with the link's calls made by one port ``Call`` over the whole sequence (a prefill)."""
+    st, table = dec.state(x.shape[0]), m.embedding.core.weight.detach().numpy()
+    with torch.no_grad():
+        ctx = m.infer_context(x)
+        xi = m.embedding.embed(x, ctx)
+        call = dec.call(st, xi.numpy(), x.numpy(), pos.numpy(), writes.numpy(), asks.numpy(), starts.numpy())
+
+        def fn(h):
+            r = call.read(h.numpy())
+            return torch.zeros_like(h) if r is None else torch.from_numpy(r).to(h.dtype)
+        h = m.backbone.forward(torch.from_numpy(call.xb).float(), read=(dec.at, fn))
+        h = m.memory.forward_generated(h, ctx)
+        lg = m.logits_from(h)
+        return torch.from_numpy(call.copy(lg.numpy(), h.numpy(), table)), st
+
+
+@pytest.mark.parametrize("copy", [None, "ring"])
+def test_one_call_over_a_prompt_is_the_torch_forward_and_leaves_the_steps_state(copy):
+    m = _linked(copy, ring=3)
+    if copy:
+        _open(m, bias=2.0, tau=1.0)
+    x, pos, placed, writes, asks, starts = _roles()
+    with torch.no_grad():
+        ref = m.forward(x, pos, placed, writes, asks, starts)
+    dec = _port(m)
+    got, st = _hybrid_forward(m, dec, x, pos, placed, writes, asks, starts)
+    assert float(((got - ref).norm(dim=-1) / ref.norm(dim=-1)).max()) <= 1e-4
+    st2 = dec.state(x.shape[0])                                  # the prompt's end state = the steps' end state
+    with torch.no_grad():
+        xi = m.embedding.embed(x, m.infer_context(x)).numpy()
+    for t in range(S):
+        dec.write(st2, dec.bind_input(xi[:, t], pos[:, t].numpy(), writes[:, t].numpy()),
+                  x[:, t].numpy(), writes[:, t].numpy(), starts[:, t].numpy())
+    assert np.allclose(st["scene"], st2["scene"]) and all(np.array_equal(st[k], st2[k]) for k in st if k != "scene")

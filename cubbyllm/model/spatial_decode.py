@@ -135,8 +135,12 @@ class SpatialDecode:
 
     def read(self, st: dict, h, position, ask):
         """What the read adds to the stream at layer ``at`` (B, d); zero rows where the scene is empty."""
+        return self.read_rows(st["scene"], h, position, ask)
+
+    def read_rows(self, scene, h, position, ask):
+        """The read for N rows, each with its own scene (N, d)."""
         h = np.asarray(h, dtype=np.float64)
-        if not st["scene"].any():                    # nothing written in any stream: the read adds exactly zero
+        if not scene.any():                          # nothing written in any stream: the read adds exactly zero
             return np.zeros_like(h)
         n = h / np.sqrt((h * h).mean(-1, keepdims=True) + 1e-6) * self.norm_w
         g = 1.0 / (1.0 + np.exp(-(n @ self.gate_w + self.gate_b)))
@@ -144,7 +148,7 @@ class SpatialDecode:
         if self.query == "placed" and position is not None and ask is not None:
             a = np.asarray(ask, dtype=bool)
             q[a] = self.encode(np.asarray(position, dtype=np.float32)[a])
-        return g[:, None] * (self.lookup(st["scene"], q) @ self.o_w.T)
+        return g[:, None] * (self.lookup(scene, q) @ self.o_w.T)
 
     def add_copy(self, st: dict, logits, h, position, ask, table):
         """The logits (B, V) with the copy mixed in at asking rows that have a candidate; ``table`` (V, d) the
@@ -158,6 +162,24 @@ class SpatialDecode:
             r = self.lookup(st["scene"][b:b + 1], self.encode(np.asarray(position, dtype=np.float32)[b:b + 1]))[0]
             out[b] = self._mix(out[b], np.asarray(h[b], dtype=np.float64), r, table, ids)
         return out
+
+    def call(self, st: dict, x, token, position, write, ask=None, start=None) -> "Call":
+        """One trunk call over T tokens, (B, T, ...) each: the writers bound, the scene and the ring written position by
+        position (``st`` left at the call's end, so a prompt and the steps after it share one stream), and each
+        position's scene (and an asking position's ring) kept for the read and the copy."""
+        token, write = np.asarray(token), np.asarray(write, dtype=bool)
+        B, T = token.shape
+        x = np.asarray(x, dtype=np.float64)
+        pos = np.asarray(position, dtype=np.float32)
+        xb = self.bind_input(x.reshape(B * T, -1), pos.reshape(B * T, -1), write.reshape(-1)).reshape(x.shape)
+        scenes, rings = np.empty((B, T, self.d)), {}
+        for t in range(T):
+            self.write(st, xb[:, t], token[:, t], write[:, t], None if start is None else np.asarray(start)[:, t])
+            scenes[:, t] = st["scene"]
+            if self.copy and ask is not None:
+                for b in np.nonzero(np.asarray(ask, dtype=bool)[:, t] & (st["ring_n"] > 0))[0]:
+                    rings[(int(b), t)] = st["ring"][b, :min(int(st["ring_n"][b]), self.ring)].copy()
+        return Call(self, xb, scenes, rings, pos, None if ask is None else np.asarray(ask, dtype=bool), bool(write.any()))
 
     def _mix(self, logits, h, r, table, ids):
         n = h / math.sqrt(float((h * h).mean()) + 1e-6)
@@ -181,4 +203,37 @@ class SpatialDecode:
         return np.logaddexp(ls(-g) + lsm, ls(g) + log_copy).astype(np.float32)
 
 
-__all__ = ["FILES", "SpatialDecode", "dft"]
+class Call:
+    """One trunk call's link: its bound input, then the read at layer ``at`` and the copy on the logits."""
+
+    def __init__(self, dec, xb, scenes, rings, position, ask, wrote) -> None:
+        self.dec, self.xb, self.scenes, self.rings, self.position, self.ask = dec, xb, scenes, rings, position, ask
+        self.wrote = wrote                           # False: no position wrote, the input is the trunk's own
+
+    def read(self, h):
+        """(B, T, d) what the read adds; None when every position's scene is empty (nothing to add, not even 0.0)."""
+        if not self.scenes.any():
+            return None
+        B, T, d = self.scenes.shape
+        a = None if self.ask is None else self.ask.reshape(-1)
+        return self.dec.read_rows(self.scenes.reshape(-1, d), np.asarray(h).reshape(-1, d),
+                                  self.position.reshape(B * T, -1), a).reshape(B, T, d)
+
+    def copy(self, logits, h, table, keep: int = 0):
+        """``logits`` / ``h`` (B, K, ...) for the call's last K positions (K = T without ``keep``), the copy mixed in at
+        each asking position with a candidate; the same array back when there is none."""
+        if not self.rings:
+            return logits
+        T = self.scenes.shape[1]
+        first = T - (keep or T)
+        out = np.array(logits, dtype=np.float32, copy=True)
+        for (b, t), ids in self.rings.items():
+            if t < first:
+                continue
+            r = self.dec.lookup(self.scenes[b, t][None], self.dec.encode(self.position[b, t][None]))[0]
+            out[b, t - first] = self.dec._mix(out[b, t - first], np.asarray(h[b, t - first], dtype=np.float64), r,
+                                              table, ids)
+        return out
+
+
+__all__ = ["Call", "FILES", "SpatialDecode", "dft"]

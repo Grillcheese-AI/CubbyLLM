@@ -132,3 +132,26 @@ where it was put, instead of losing it once it scrolls out of view.
   - `cubbyllm/ops/grilly_seats.py` passes positions and roles through;
   - `cubby_serve` loads `spatial.json` behind a flag (`--spatial`, off by default);
   - then run 6's link exported and read at home (far facts within 0.01 of 0.804), and decode time with and without.
+
+## A, step 3: grilly2 runs the link (Claude Code, 2026-11-05)
+- **grilly2** (branch `cubby-spatial-link`, `b80de06`, pushed for Nick's review; grilly2's `main` is untouched, per its
+  working agreement):
+  - `CubbyForCausalLM.forward(..., spatial=None)` binds the writing tokens' inputs after the context, adds the read at
+    layer `spatial.at` between the mixer (and memory) and the FFN, and mixes the copy into the logits;
+  - `spatial=None` leaves the trunk as before. grilly2's `tests/python/test_cubby.py` still passes (26).
+- **CubbyLLM:**
+  - `SpatialDecode.call`: one trunk call over T tokens, a prompt or a step, sharing one stream state;
+  - `cubbyllm/ops/grilly_spatial.py` (`GrillyLink`): the three hook points, numpy in and out of grilly2's tensors.
+- **Tests:**
+  - `tests/model/test_spatial_decode.py`, 7 pass on CPU. A call over a whole prompt is torch's forward, and it leaves
+    the state the steps leave.
+  - `tests/model/test_spatial_grilly.py`, 3 pass with grilly2's branch, and skip without it. A linked base exported,
+    then run by grilly2 with `GrillyLink`, gives torch's logits:
+    - over a prompt, 7.2e-6 relative without the copy and 1.7e-6 with it;
+    - step by step after a prompt, within 1e-4 (the order's parity line);
+    - with nothing placed, grilly2's logits are its own, bit for bit.
+- **Not yet:**
+  - **run 6's link at home:** far facts on grilly2 within 0.01 of 0.804 on the 400 held-out documents, and decode
+    time per token with the link against without (line +15%). This needs grilly2's branch checked out locally and
+    run 6's checkpoint (2.3 GB, on Drive) exported. It is next, in short chunks on the local card.
+  - **`cubby_serve --spatial`:** loading the link behind a flag, after the read above.
