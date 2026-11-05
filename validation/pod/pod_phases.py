@@ -19,8 +19,10 @@ from pod_remote import fetch, redact, write_state
 __wiring__ = "WIRED"
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-KERNEL_TESTS = ("tests/model/backbone/test_mingru_triton.py", "tests/model/backbone/test_window_attn_triton.py")
-KERNEL_FLAGS = {"test_mingru_triton.py": "CB_MINGRU_TRITON", "test_window_attn_triton.py": "CB_ATTN_TRITON"}
+KERNEL_TESTS = ("tests/model/backbone/test_mingru_triton.py", "tests/model/backbone/test_window_attn_triton.py",
+                "tests/model/test_fused_ce.py")
+KERNEL_FLAGS = {"test_mingru_triton.py": "CB_MINGRU_TRITON", "test_window_attn_triton.py": "CB_ATTN_TRITON",
+                "test_fused_ce.py": "CB_FUSED_CE"}       # 0050 2a: off by default; the speed phase decides (below)
 CARDS = ("A100", "H100", "H200", "B200")                # an A100 80 GB: the Colab run (Nick and Cowork, 2026-11-04)
 MIN_GB, DISK_SPARE_GB, MEM_SHARE = 79, 100, 0.92       # GiB: an "80 GB" card reports 79.2-79.6
 MFU_LINE = 0.75                                        # the grown arm's MFU at least 0.75x the control's (the bench line)
@@ -226,6 +228,12 @@ def speed(ctx) -> None:
                 chosen_env = json.load(open(out, encoding="utf-8")).get("env") or {}
         env.update(chosen_env)
         bench[arm] = {**bench_arm(ctx, arm, env), "env": chosen_env}
+        if (ctx.state.get("kernels") or {}).get("CB_FUSED_CE") == "on":    # 0050 2a: the same loss without the logits
+            fused = bench_arm(ctx, arm, dict(env, CB_FUSED_CE="1"))        # frees memory for a larger micro batch:
+            bench[arm]["fused_ce"] = {k: fused[k] for k in ("micro", "tok_s", "mfu", "peak_gb")}   # kept if faster
+            if fused["tok_s"] > bench[arm]["tok_s"]:
+                bench[arm] = {**fused, "env": {**chosen_env, "CB_FUSED_CE": "1"}, "fused_ce": bench[arm]["fused_ce"],
+                              "without_fused_ce": {k: bench[arm][k] for k in ("micro", "tok_s", "mfu", "peak_gb")}}
         say(ctx, f"{arm}: micro {bench[arm]['micro']}, {bench[arm]['tok_s']:,.0f} tok/s, MFU {100 * bench[arm]['mfu']:.1f}%")
     slow = bench["grown"]["mfu"] < SLOW_RATIO * bench["control"]["mfu"] if bench["control"]["mfu"] else False
     bench["mem_every"] = 2 if ctx.smoke else (MEM_EVERY_SLOW if slow else MEM_EVERY)

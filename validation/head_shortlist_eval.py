@@ -149,13 +149,15 @@ def main() -> None:
     ap.add_argument("--build", default="heldin", help="the dump the router and the screen are built from")
     ap.add_argument("--read", default="heldout", help="the dump read: heldin_val to tune, heldout once")
     ap.add_argument("--stride", type=int, default=1, help="read every n-th position (evenly across the shards)")
+    ap.add_argument("--skip", type=int, default=0, help="leave out the first n positions (0050: the 2,048 held-out "
+                    "positions seen while the build was shaped)")
     ap.add_argument("--tag", default="")
     a = ap.parse_args()
     dumps = expand(a.dumps)
     w = head_rows(expand(a.export))
     held, out = dict(np.load(os.path.join(dumps, f"{a.build}.npz"))), dict(np.load(os.path.join(dumps, f"{a.read}.npz")))
-    if a.positions or a.stride > 1:
-        out = {k: (v[::a.stride][:a.positions or None] if k != "shards" else v) for k, v in out.items()}
+    if a.positions or a.stride > 1 or a.skip:
+        out = {k: (v[a.skip:][::a.stride][:a.positions or None] if k != "shards" else v) for k, v in out.items()}
     t0 = time.time()
     idx = ShortlistIndex.build(w, a.clusters, seed=0, iters=a.iters)
     built = round(time.time() - t0, 1)
@@ -167,7 +169,7 @@ def main() -> None:
                                    np.exp(held["toplogit"] - held["lse"][:, None]), len(w), a.screen, seed=0, iters=a.iters)
     idx.save(os.path.join(dumps, "index_router_succ.npz"))
     res = read(idx, w, out, list(ARMS), [int(x) for x in a.ks.split(",")])
-    rep = {"what": "order 0050 stage 1: the shortlist index's quality on the 13 held-out tails", "read": a.read, "stride": a.stride,
+    rep = {"what": "order 0050 stage 1: the shortlist index's quality on the 13 held-out tails", "read": a.read, "stride": a.stride, "skip": a.skip,
            "build": a.build,
            "date": _dt.date.today().isoformat(), "clusters": a.clusters, "screen_clusters": a.screen, "iters": a.iters, "index_build_s": built,
            "cluster_sizes": {"min": int(np.diff(idx.offsets).min()), "p50": float(np.median(np.diff(idx.offsets))),

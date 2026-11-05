@@ -516,8 +516,20 @@ def make_fns(model: CubbyModel, vocab: int, dev):
         model.spatial.q.register_forward_hook(                         # training forwards only: eval and samples
             lambda _m, _i, out: taps.append(out) if torch.is_grad_enabled() else None)   # must not pile up activations
 
+    from cubbyllm.model.vocab import fused_ce
+    fused = (fused_ce.on() and model.spatial is None and getattr(model.head, "learnable", False)
+             and float(getattr(model.head, "temperature", 1.0)) == 1.0)
+    if fused_ce.on():
+        print("  loss: " + ("chunked cross-entropy, the logits never stored (CB_FUSED_CE=1)" if fused else
+                            "CB_FUSED_CE=1 asked, but the model has a link or a fixed head: the full loss"), flush=True)
+
     def loss_fn(x, y):
         taps.clear()
+        if fused:                                    # CB_FUSED_CE=1 (order 0050 2a): the same loss, the logits never
+            ids = x.ids if isinstance(x, Tokens) else x                      # stored (no link: the head is plain h W^T)
+            with torch.autocast("cuda", dtype=torch.bfloat16, enabled=amp):
+                h = model.features(ids)
+            return fused_ce.chunked_cross_entropy(h, model.head._codes(), y)
         with torch.autocast("cuda", dtype=torch.bfloat16, enabled=amp):
             logits = forward_batch(model, x)
         loss = F.cross_entropy(logits.float().reshape(-1, vocab), y.reshape(-1))

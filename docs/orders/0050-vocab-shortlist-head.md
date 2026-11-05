@@ -191,3 +191,36 @@ position, so the same GPU fits bigger batches. The answer it learns is exactly t
   avoid it. Here the loss is exact and the memory is gone.
 
 Status: in progress.
+
+## Stage 2a built: the exact chunked cross-entropy (Claude Code, 2026-11-04 night)
+- **The choice, recorded:** a pure-torch chunked autograd function (`cubbyllm/model/vocab/fused_ce.py`), not Liger
+  Kernel or Cut Cross-Entropy. It needs no kernel to build, runs on every card (the CPU tests included), and brings no
+  licence question.
+  - **Forward,** chunk by chunk (1,024 positions): the logits in fp32, their log-sum-exp, the target's logit. It keeps
+    only the hidden state, the head's rows and one log-sum-exp a position.
+  - **Backward:** the logits recomputed per chunk; `dh = (softmax - onehot) W` and `dW += (softmax - onehot)^T h`.
+  - **Dtypes:** the matmuls run in the state's dtype (bf16 under autocast) against the head's rows, the softmax in
+    fp32.
+- **Behind `CB_FUSED_CE=1`,** off by default. `train_base.loss_fn` takes it only when the model has no spatial link
+  (the copy path mixes into the logits) and a plain learnable head; it says so in the log. Off, the loss is the full
+  path, unchanged.
+- **The pod runner:** `tests/model/test_fused_ce.py` joins the kernels phase as `CB_FUSED_CE`. When it passes there,
+  the speed phase benches each arm with and without it and keeps the higher tokens per second, both recorded in
+  `bench.json`. The gain shows as a larger micro batch, not a faster step.
+- **Tests** (`tests/model/test_fused_ce.py`, 5 passed on CPU):
+  - loss and both gradients equal to the full path within 1e-5 relative in fp32;
+  - within 1e-3 (loss) in bf16, the gradients within 2e-2 of both the bf16 and the fp32 full path;
+  - ignored targets and a ragged last chunk;
+  - a (B, S, d) state with an upstream gradient;
+  - a bf16 state against fp32 rows, as autocast trains;
+  - nothing of the logits' size saved for backward.
+- **On the A100, next session:** `head_shortlist.ipynb` cell 4 (setup + cell 4 only). It runs the tests on the card,
+  then the training step with the chunked loss beside the full one at micro 8 (memory freed, time), and the largest
+  micro batch each path fits with its tokens per second, both shapes. That reads 2a's lines.
+
+## Step 1's shortlist read: the larger build, tuned on held-in (Claude Code, 2026-11-04 night)
+- Built from the 851,968 held-in states, tuned on the held-in tuning split (4,096 positions across the 13 shards). The
+  best: screen + successors at K = 4,096 with 4,096 context clusters, **0.964** greedy agreement (1,024 clusters
+  0.955; the 106k build 0.957).
+- More build data moved it by under a point. The held-out read (frozen at that setting; the first 2,048 held-out
+  positions left out; every 4th position after them) is running.

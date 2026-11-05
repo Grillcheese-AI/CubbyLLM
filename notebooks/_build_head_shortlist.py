@@ -36,6 +36,13 @@ Stage 1 of order 0050, on an A100 (any CUDA card works; the order asks for the A
 3. **Held-in states:** 64 windows of 1,024 tokens from each of the 13 shards' training region: the state the head
    reads, the full head's top-16, its log-sum-exp and the target's logit (~852k positions, ~20 min, ~1.7 GB on Drive).
 
+4. **Stage 2a, the exact chunked cross-entropy** (`CB_FUSED_CE`): its tests on the card, then the training step with
+   it beside the full path at micro 8 (memory freed, time), and the largest micro batch each path fits with its
+   tokens per second, both shapes (~15 min). Lines: loss and gradients equal (the tests), at least 10 GB freed, at most
+   3% slower.
+
+Cells 1-3 ran on 2026-11-04 (their logs are in the repo): **run the setup cell and cell 4 only.**
+
 Everything lands in `MyDrive/cubbyllm/head_shortlist/`. Claude Code builds and reads the index from there at home
 (CPU). **Disconnect the runtime when the last cell ends.**
 """),
@@ -84,6 +91,16 @@ stream('dump', '--ckpt', CK450, '--cache', CACHE, '--split', 'heldin', '--window
        '--name', 'heldin_w64', '--out', '/content/head_shortlist')
 shutil.copy('/content/head_shortlist/heldin_w64.npz', OUTD)
 keep('dump')
+print('done: disconnect the runtime')
+"""),
+    code(r"""
+# --- 4. stage 2a: the chunked cross-entropy -- its tests on this card, then memory, time and the largest micro ---
+t = subprocess.run([sys.executable, '-m', 'pytest', '-q', '-p', 'no:cacheprovider', 'tests/model/test_fused_ce.py'],
+                   cwd='/content/CubbyLLM', capture_output=True, text=True)
+print(t.stdout[-1500:], t.stderr[-500:])
+assert t.returncode == 0, 'the chunked cross-entropy disagrees with the full path on this card: stop here'
+stream('train', '--ckpt', CK450, '--ckpt', CKGROWN, '--micro', '8', '--seq', '1024', '--fused', '--reps', '10')
+keep('train')
 print('done: disconnect the runtime')
 """),
 ]

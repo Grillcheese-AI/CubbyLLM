@@ -151,15 +151,66 @@ def _train_shape(model, meta, params, ck, micro, a, dev) -> dict:
             h.float().pow(2).mean().backward()
             for p in params:
                 p.grad = None
+
+        def fused():                                     # 0050 2a: the same loss, the logits never stored
+            from cubbyllm.model.vocab.fused_ce import chunked_cross_entropy
+            with torch.autocast("cuda", dtype=torch.bfloat16):
+                h = model.features(inp)
+            chunked_cross_entropy(h, model.head._codes(), y).backward()
+            for p in params:
+                p.grad = None
         rec = {"ckpt": os.path.basename(ck), "D": meta["D"], "L": meta["L"], "vocab": meta["vocab"], "micro": micro,
                "params_M": round(sum(p.numel() for p in params) / 1e6, 1)}
-        for name, fn in (("full", full), ("trunk", trunk)):
+        for name, fn in (("full", full), ("trunk", trunk)) + ((("fused", fused),) if a.fused else ()):
             torch.cuda.reset_peak_memory_stats()
             rec[name] = _timed(fn, a.reps, warm=2)
             rec[name]["peak_gb"] = round(torch.cuda.max_memory_allocated() / 2**30, 2)
         rec["head_share_of_step"] = round(1 - rec["trunk"]["p50_ms"] / rec["full"]["p50_ms"], 4)
         rec["head_peak_gb"] = round(rec["full"]["peak_gb"] - rec["trunk"]["peak_gb"], 2)
+        if a.fused:                                      # 2a's lines: >= 10 GB freed, <= 3% slower at the same micro
+            rec["fused_freed_gb"] = round(rec["full"]["peak_gb"] - rec["fused"]["peak_gb"], 2)
+            rec["fused_slower"] = round(rec["fused"]["p50_ms"] / rec["full"]["p50_ms"] - 1, 4)
+            rec["largest_micro"] = {name: _largest(fn_of, a, meta, dev) for name, fn_of in
+                                    (("full", lambda i, t: _step(model, params, meta, i, t, False)),
+                                     ("fused", lambda i, t: _step(model, params, meta, i, t, True)))}
         return rec
+
+
+def _step(model, params, meta, inp, y, fused: bool) -> None:
+    import torch
+    import torch.nn.functional as F
+    with torch.autocast("cuda", dtype=torch.bfloat16):
+        h = model.features(inp)
+        logits = None if fused else model.logits_from(h)
+    if fused:
+        from cubbyllm.model.vocab.fused_ce import chunked_cross_entropy
+        chunked_cross_entropy(h, model.head._codes(), y).backward()
+    else:
+        F.cross_entropy(logits.float().reshape(-1, meta["vocab"]), y.reshape(-1)).backward()
+    for p in params:
+        p.grad = None
+
+
+def _largest(fn, a, meta, dev) -> dict:
+    """The largest micro batch (of --micros) that fits under 92% of the card, and its tokens per second."""
+    import torch
+    cap = 0.92 * torch.cuda.get_device_properties(0).total_memory / 2**30
+    best = None
+    for m in [int(v) for v in a.micros.split(",")]:
+        x = torch.randint(100, meta["vocab"] - 1, (m, a.seq + 1), device=dev)
+        try:
+            torch.cuda.reset_peak_memory_stats()
+            t = _timed(lambda: fn(x[:, :-1], x[:, 1:]), 3, warm=1)
+            peak = torch.cuda.max_memory_allocated() / 2**30
+        except torch.cuda.OutOfMemoryError:
+            torch.cuda.empty_cache()
+            break
+        if peak > cap:
+            break
+        best = {"micro": m, "tok_s": round(m * a.seq / (t["p50_ms"] / 1e3)), "peak_gb": round(peak, 2)}
+        print("  largest micro so far:", best, flush=True)
+    torch.cuda.empty_cache()
+    return best or {}
 
 
 def dump(a, dev) -> dict:
@@ -201,6 +252,9 @@ def main() -> None:
     ap.add_argument("--ckpt", action="append", required=True)
     ap.add_argument("--reps", type=int, default=30)
     ap.add_argument("--micro", type=int, default=8)
+    ap.add_argument("--fused", action="store_true", help="train: also the chunked cross-entropy (0050 2a) and the "
+                    "largest micro batch each path fits")
+    ap.add_argument("--micros", default="8,12,16,24,32,48")
     ap.add_argument("--seq", type=int, default=1024)
     ap.add_argument("--cache", default="")
     ap.add_argument("--split", default="heldin")
