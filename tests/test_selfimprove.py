@@ -114,3 +114,14 @@ def test_a_coarse_key_joins_the_relations_of_one_language_and_shape():
     a, b = signature.of(PROG % "birth", "en"), signature.of(PROG % "capital", "en")
     assert a.key() != b.key() and a.key(coarse=True) == b.key(coarse=True)
     assert a.key(coarse=True) != signature.of(PROG % "birth", "fr").key(coarse=True)
+
+
+def test_a_stepped_problems_level_is_in_its_key_and_its_steps_share_one():
+    """One record is one step (one operation): the level shows only through the problem's step count."""
+    one = "        create s0 : quantity;\n        assign s0 = $N1;\n        add s0, $N2;\n"
+    two = "        create s1 : quantity;\n        assign s1 = $S1;\n"
+    a = signature.of(one, "en", "arithmetic", steps=4)
+    assert a.key(coarse=True) == signature.of(two, "en", "arithmetic", steps=4).key(coarse=True)
+    assert a.key(coarse=True) != signature.of(one, "en", "arithmetic", steps=5).key(coarse=True)
+    assert signature.of(one, "en", "arithmetic").key() == "arithmetic||en|h0|a1|-|fwd"        # no step count: as before
+    assert signature.of(PROG % "birth", "en", "wd").key(coarse=True) != signature.of(PROG % "birth", "en", "plan").key(coarse=True)

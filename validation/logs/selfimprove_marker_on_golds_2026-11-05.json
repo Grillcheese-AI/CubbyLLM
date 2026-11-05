@@ -1,0 +1,175 @@
+{
+ "what": "order 0049: the marker on 0048's gold programs (train split, a seed-0 sample per family; kernel 200, the others 30): every family should read right",
+ "vm_commit": "29e81bd",
+ "families": {
+  "arithmetic/steps=1": {
+   "n": 30,
+   "marks": {
+    "right/True": 30
+   },
+   "why": {}
+  },
+  "arithmetic/steps=10": {
+   "n": 30,
+   "marks": {
+    "right/True": 30
+   },
+   "why": {}
+  },
+  "arithmetic/steps=11": {
+   "n": 30,
+   "marks": {
+    "right/True": 30
+   },
+   "why": {}
+  },
+  "arithmetic/steps=12": {
+   "n": 30,
+   "marks": {
+    "right/True": 30
+   },
+   "why": {}
+  },
+  "arithmetic/steps=13": {
+   "n": 14,
+   "marks": {
+    "right/True": 13,
+    "refused/None": 1
+   },
+   "why": {
+    "refused/None": "the answer written in, not computed"
+   }
+  },
+  "arithmetic/steps=14": {
+   "n": 15,
+   "marks": {
+    "right/True": 15
+   },
+   "why": {}
+  },
+  "arithmetic/steps=15": {
+   "n": 16,
+   "marks": {
+    "right/True": 16
+   },
+   "why": {}
+  },
+  "arithmetic/steps=2": {
+   "n": 30,
+   "marks": {
+    "right/True": 30
+   },
+   "why": {}
+  },
+  "arithmetic/steps=3": {
+   "n": 30,
+   "marks": {
+    "right/True": 30
+   },
+   "why": {}
+  },
+  "arithmetic/steps=4": {
+   "n": 30,
+   "marks": {
+    "right/True": 30
+   },
+   "why": {}
+  },
+  "arithmetic/steps=5": {
+   "n": 30,
+   "marks": {
+    "right/True": 29,
+    "caught/None": 1
+   },
+   "why": {
+    "caught/None": "does not run"
+   }
+  },
+  "arithmetic/steps=6": {
+   "n": 30,
+   "marks": {
+    "right/True": 30
+   },
+   "why": {}
+  },
+  "arithmetic/steps=7": {
+   "n": 30,
+   "marks": {
+    "right/True": 30
+   },
+   "why": {}
+  },
+  "arithmetic/steps=8": {
+   "n": 30,
+   "marks": {
+    "right/True": 30
+   },
+   "why": {}
+  },
+  "arithmetic/steps=9": {
+   "n": 30,
+   "marks": {
+    "right/True": 29,
+    "caught/None": 1
+   },
+   "why": {
+    "caught/None": "does not run"
+   }
+  },
+  "chain": {
+   "n": 30,
+   "marks": {
+    "right/True": 30
+   },
+   "why": {}
+  },
+  "kernel": {
+   "n": 200,
+   "marks": {
+    "right/True": 179,
+    "caught/None": 21
+   },
+   "why": {
+    "caught/None": "does not run"
+   }
+  },
+  "plan": {
+   "n": 30,
+   "marks": {
+    "right/None": 30
+   },
+   "why": {
+    "right/None": "runs (no gold)"
+   }
+  },
+  "role_binding": {
+   "n": 30,
+   "marks": {
+    "right/None": 30
+   },
+   "why": {
+    "right/None": "runs (no gold)"
+   }
+  },
+  "wd/en": {
+   "n": 30,
+   "marks": {
+    "right/True": 25,
+    "right/True/among several": 5
+   },
+   "why": {
+    "right/True": "among 4 named"
+   }
+  },
+  "wd/fr": {
+   "n": 30,
+   "marks": {
+    "right/True/among several": 13,
+    "right/True": 17
+   },
+   "why": {
+    "right/True": "among 2 named"
+   }
+  }
+ }
+}

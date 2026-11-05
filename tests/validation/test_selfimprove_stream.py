@@ -32,6 +32,7 @@ def test_the_stream_plants_its_gaps_and_shuffles_one_family_only():
     assert all(r["split"] == "train" for r in st + held)
     fams = collections.Counter(r["family"] for r in st)
     assert fams["wd/en"] == 20 and fams["arithmetic/steps=1#shuffled"] == 20
+    assert fams["arithmetic/steps=1"] == 0 and any(r["family"] == "arithmetic/steps=1" for r in held)   # the copy alone
     sh = [r for r in st if r["shuffled"]]
     orig = {r["id"]: r["gold"] for r in _recs()}
     assert sorted(r["gold"] for r in sh) != sorted(orig[r["id"].split("#")[0]] for r in sh) or \

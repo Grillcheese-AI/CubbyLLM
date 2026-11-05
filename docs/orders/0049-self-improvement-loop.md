@@ -140,3 +140,102 @@ Flag-gated (`CB_SELFIMPROVE`, off by default), off the serving path. File names 
 - **The VM on Colab: (a), with no token needed.** CubeLang's repository is public: an anonymous `ls-remote` lists
   `cowork/vm-contracts` at `29e81bd`. The notebook clones it at a pinned commit and builds it, and reports the build
   time.
+
+## Written down before the stream runs (Claude Code, 2026-11-05)
+The four proposals as Cowork accepted them, and what the build added. Every number is a default in
+`validation/selfimprove/run.py` and is recorded in each output (`args`).
+1. **The signature's grain: coarse** (the relation words left out). Two things are read from the request's record and
+   not from the program:
+   - **The task** (`wd`, `plan`, `arithmetic`, ...): the job the host asks of the emitter. Read from the program alone,
+     wd/en's key equals plan n_hop=1's (816 records the base adapter already does).
+   - **An arithmetic problem's step count** (`stats.K`). One record is one step, a single operation, so no level shows
+     in a program: every level and the shuffled copy would share the keys `a0` / `a1`.
+     - Coarse keeps the step count and leaves out the one step's operation count, so one problem's steps share a key.
+     - Planted gaps at this grain: wd/en, wd/fr and arithmetic level k each have a key of their own. No two share one.
+   - **The shuffled copy** (of arithmetic/steps=1) is the only family on its key: the original leaves the stream, and
+     its held problems stay.
+2. **The gap rule:**
+   - 20 failures within a 2,000-request window;
+   - a probe on up to 100 of the key's failed problems, with up to 50 others held (a third, when fewer);
+   - a gain of at least 0.05 nats of held loss;
+   - a re-probe after 3 nights.
+   - **What a probe learns from:** only what practice finds right. The base adapter gets 8 sampled attempts a problem
+     (temperature 1.0, top-k 50), and the VM marks each one against the gold.
+     - The probe adapter trains on the right programs of the train part (40 steps of 16, lr 2e-4). Its gain is the
+       drop of the loss on the held part's right programs.
+     - Fewer than 10 right programs in the train part, or 5 in the held part: no gain. This is how the shuffled
+       family stays unflagged.
+     - No reference program is ever trained on.
+3. **The planted arithmetic level:** one above the highest level the base adapter gets right at least half the time.
+   - **On which problems:** the base adapter (`cubby450m_v12e_w_step_cont`) trained two epochs on these very train
+     records. So the read is on the stream's held problems: train records kept out of the stream, the population the
+     gap's gate reads. The val split is read beside it.
+   - The notebook's first step. Its result is written here before night 1.
+4. **T3's negatives:** unlikelihood, -log(1 - p), beside the SFT loss.
+   - It applies to the wrong program's tokens from their first divergence from the problem's right program.
+   - A problem with no right attempt keeps its negatives in the memory, unused.
+   - **Equal compute:** the same steps and the same 16 rows a step; in B and C, half the rows are wrong programs.
+   - The term's weight is 1.0.
+- **The adapters:**
+  - T1's adapter is a LoRA continued from the base adapter on the gap's right set (arm A): 3 epochs, between 50 and
+    400 steps of 16, lr 2e-4.
+  - It needs at least 20 right programs.
+  - Practice covers up to 300 of the key's failed problems in the window.
+- **The gate on Colab:**
+  - the gap's held problems must rise;
+  - every other key's held problems must stay within 1 point.
+  - E8 reworded and R3's rows outside every gap need the full stack, so they are read at home on the saved adapters
+    before any promotion counts.
+- **The router:**
+  - Keys are read from the request, so a request outside a gap reaching its adapter is 0 by construction.
+  - The log also records the key read from the base's own attempt (`attempt_key`), and how often it would have routed
+    differently.
+- **The marks:**
+  - arithmetic steps: the step school's judge (the block's VM value against the step's gold);
+  - wd: the program runs in the VM, and its HOP1 word names the gold property (labels and aliases, EN and FR).
+    - **A word naming several properties is right when the gold is one of them.** In serving the host keeps only the
+      named properties the item carries; this harness has no item store.
+    - Read strictly (one property only), 13 of 30 gold French programs and 5 of 30 English ones would be refused, a
+      ceiling near 57% on the planted French gap.
+    - Several without the gold: refused. One other property: wrong.
+  - the other families: the program runs, and its value matches the gold.
+    - The "answer written in" guard is arithmetic's. Kernel programs keep constants as literals by design, and 8 of 30
+      gold kernel programs tripped it, so kernel skips it.
+- **The marker on the gold programs** (`selfimprove_marker_on_golds_2026-11-05.json`, VM `29e81bd`, the train split, a
+  sample per family):
+  - every arithmetic level, chain, plan, role_binding, wd/en and wd/fr read right (30 of 30), except:
+    - two arithmetic steps that do not run (levels 5 and 9);
+    - one step at level 13 that writes its answer in.
+  - kernel: 179 of 200 right; **21 gold kernel programs do not run on this VM build.** Kernel is not planted. Its base
+    failures include these, and it can show up only as a candidate, which the probe then reads.
+
+## Built: the harness and the notebook (Claude Code, 2026-11-05)
+- `validation/selfimprove/`:
+  - `trunk.py`: the frozen 450M with swappable LoRA weights. Sampling is batched across prompts, with no padding in a
+    row's recurrent state. Training is SFT plus unlikelihood from the first divergence.
+  - `mark.py`: the VM's mark and its reason.
+  - `loop.py`: the nights, the probe, practice, the adapter, the gate, the router, and the base read.
+  - `t3.py`: the arms and their measures.
+  - `run.py`: the three steps.
+- `stream.py`: the shuffled copy's original leaves the stream.
+- `cubbyllm/selfimprove/signature.py`: `steps`.
+- `notebooks/selfimprove.ipynb` (`_build_selfimprove.py`):
+  - the VM cloned from CubeLang's public repository at `29e81bd` and built, with its build time saved;
+  - step 1, the base read (stop and write it here);
+  - step 2, T1 (`LEVEL` set by hand);
+  - step 3, T3.
+- The property table it reads is on Drive (`selfimprove/`), copied from the local data folder (Wikidata labels, CC0).
+- **The CPU smoke** (the real 450M with the base adapter, the local VM, 9 records):
+  - loading, batched greedy decode, sampling, marking, the loss and a training step all ran;
+  - the base adapter's wd attempts were refused or caught (0048's gap, as expected);
+  - its arithmetic steps were right.
+- **Tests:** 17 pass on CPU.
+  - `tests/test_selfimprove.py`;
+  - `tests/validation/test_selfimprove_stream.py`;
+  - `tests/validation/test_selfimprove_harness.py`, on a toy recurrent model. It checks that:
+    - a batch samples what each prompt samples alone;
+    - unlikelihood reaches only the tokens from the divergence;
+    - the trunk never moves;
+    - the marker's verdicts are right;
+    - the keys split wd from plan and one level from another;
+    - a probe with too few right programs gives no gain.

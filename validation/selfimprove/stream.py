@@ -8,7 +8,8 @@ FR), the arithmetic levels (``steps=k``) and the emitter families (kernel, role_
             level one above the base adapter's; fixed before the run from the base's read, written in the stream's
             header)
   shuffled  a copy of --shuffled's records with their golds permuted among themselves: no rule to learn; must never
-            be flagged
+            be flagged. The original family leaves the stream (its held problems stay): the copy's prompts are the
+            original's, so both would share one signature, and the copy must be the only family on its key
   the rest  every other family, as it comes
 Each request carries its family, whether it is planted or shuffled, the prompt, the gold and the reference program
 (the signature is read from the reference, ``cubbyllm.selfimprove.signature``), and the night it falls in. Practice
@@ -59,6 +60,8 @@ def build(records: list[dict], level: int, shuffled: str, per_family: int, held:
     for fam in sorted(by):
         rows = rng.sample(by[fam], len(by[fam]))
         held_out += [dict(r, family=fam, planted=fam in planted) for r in rows[:held]]
+        if fam == shuffled:
+            continue
         stream += [dict(r, family=fam, planted=fam in planted, shuffled=False) for r in rows[held:held + per_family]]
     src = rng.sample(by[shuffled], min(len(by[shuffled]), per_family + held))
     golds = [r["gold"] for r in src]
@@ -69,7 +72,7 @@ def build(records: list[dict], level: int, shuffled: str, per_family: int, held:
     for i, r in enumerate(stream):
         r["night"] = i // night + 1
     header = {"what": "order 0049's stream", "seed": seed, "level": level, "planted": sorted(planted),
-              "shuffled": shuffled + "#shuffled", "per_family": per_family, "held": held, "night": night,
+              "shuffled": shuffled + "#shuffled", "original_in_stream": False, "per_family": per_family, "held": held, "night": night,
               "requests": len(stream), "families": dict(collections.Counter(r["family"] for r in stream))}
     return header, stream, held_out
 
