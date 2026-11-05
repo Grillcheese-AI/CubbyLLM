@@ -175,3 +175,21 @@ def test_b1q_walks_located_in_one_vm_hop_at_a_time(monkeypatch):
     monkeypatch.setattr(V, "branch", lambda s, k, q, p: {"item": q, "values": facts.get((q, p), []), "wall_ms": 0.1})
     out = Q.b1q(None, "", ["Q1", "Q2"], "P19", ["western cape"], {"western cape": ["Q127167"]})
     assert out["outcome"] != "ask" and out.get("item") == "Q1"            # Cape Town is in the Western Cape; Q2 is not
+
+
+def test_b1q_s_compared_rule_two_names_compared_or_chosen_are_no_cue_for_each_other():
+    """Cowork's check of the seed-0 rerun (2026-11-04 night): "Does California have more electoral votes than Rhode
+    Island?" -- California is the other side, not a qualifier of Rhode Island. A same-side qualifier stays; "où" is no
+    choice; "ou" / "or" only between two names."""
+    from retrieval_bench.r2_b1q import cue_runs
+    lx = {"by_wording": {"en": {}, "fr": {}}}
+    ri = cue_runs("Does California have more electoral votes than Rhode Island?", "Rhode Island", [], lx)
+    assert "california" not in ri and "electoral votes" in ri
+    assert "rhode island" not in cue_runs("Does California have more electoral votes than Rhode Island?", "California", [], lx)
+    pa = cue_runs("Is Paris in Texas bigger than London?", "Paris", [], lx)
+    assert "texas" in pa and "london" not in pa
+    assert "nile" not in cue_runs("Which river is longer, the Nile or the Amazon?", "Amazon", [], lx)
+    assert "paris" not in cue_runs("Lyon est-elle plus grande que Paris ?", "Lyon", [], lx)
+    assert "lyon" not in cue_runs("Qui est né à Paris ou à Lyon ?", "Paris", [], lx)
+    assert "france" in cue_runs("Où est la tour Eiffel en France ?", "tour Eiffel", [], lx)        # "où": no choice
+    assert "france" in cue_runs("Was Tim born or raised in France?", "Tim", [], lx)              # "or" joins no names

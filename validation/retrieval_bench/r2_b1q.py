@@ -23,6 +23,12 @@ afternoon), written before seed 1 is read:
                 words (``relation_words``; function words stay function words)
   located in    a branch whose own statements do not hold the qualifier walks `located in` (P131) in the VM, one hop
                 a query of the branch segment, up to a country (``MAX_HOPS``); reaching a cue's item holds it
+  compared      (Cowork's check of the rerun, 2026-11-04 night) two names joined by a comparison or a choice are each a
+                name of their own, and neither is a cue for the other: across EN "than", "versus", "vs", "compared
+                with", "or" between two names, FR "que" after "plus" / "moins" / "aussi", "par rapport à", "ou" (not
+                "où") between two names, the words written with a capital on the far side from the row's name are no
+                cue. From the question's own words only, never a set's gold links. ("Does California have more electoral
+                votes than Rhode Island?": California is no qualifier of Rhode Island.)
 A question whose cue words name
 no item has no qualifier to check: B1's outcome, counted apart ("no qualifier"). Without a relation (an
 entity-linking row with none), a candidate stands on the qualifier alone: one standing is a pick, otherwise undecided.
@@ -64,6 +70,7 @@ def cue_runs(question: str, mention, pids, lx: dict, relation_words=()) -> list[
         for i in range(len(toks) - n + 1):
             if n and toks[i:i + n] == words and all(r is None for r in role[i:i + n]):
                 role[i:i + n] = ["relation"] * n
+    compared(question, toks, role)
     from retrieval_bench.r2_arms import STOP as _S
     for i, t in enumerate(toks):                         # the relation reading's own words (a template's), not function words
         if role[i] is None and t in set(relation_words) and t not in _S:
@@ -79,6 +86,50 @@ def cue_runs(question: str, mention, pids, lx: dict, relation_words=()) -> list[
         runs.append(cur)
     spans = {tuple(run[i:j]) for run in runs for i in range(len(run)) for j in range(i + 1, min(len(run), i + MAX_WORDS) + 1)}
     return sorted(" ".join(sp) for sp in spans if sp[0] not in STOP and sp[-1] not in STOP)   # never a function word at an edge
+
+
+def _words(question: str, case: bool, accents: bool) -> list[str]:
+    import re
+    import unicodedata
+    s = unicodedata.normalize("NFC" if accents else "NFKD", question or "")
+    if not accents:
+        s = "".join(c for c in s if not unicodedata.combining(c))
+    return re.sub(r"[^\w]+", " ", s if case else s.lower()).split()
+
+
+def _connectors(toks: list[str], cased: list[str], accented: list[str]) -> list[tuple[int, int]]:
+    """(start, end) of each comparison or choice word in the folded question (rule "compared")."""
+    from retrieval_bench.r2_arms import STOP
+
+    def cap(i, step):                                    # the nearest word that is not a function word, capitalised
+        while 0 <= i < len(toks) and toks[i] in STOP:
+            i += step
+        return 0 <= i < len(toks) and cased[i][:1].isupper()
+    out = []
+    for i, t in enumerate(toks):
+        if t in ("than", "versus", "vs"):
+            out.append((i, i + 1))
+        elif toks[i:i + 2] == ["compared", "with"] or toks[i:i + 3] == ["par", "rapport", "a"]:
+            out.append((i, i + (2 if t == "compared" else 3)))
+        elif t == "que" and any(w in ("plus", "moins", "aussi") for w in toks[:i]):
+            out.append((i, i + 1))
+        elif (t == "or" or (t == "ou" and accented[i] == "ou")) and cap(i - 1, -1) and cap(i + 1, 1):
+            out.append((i, i + 1))
+    return out
+
+
+def compared(question: str, toks: list[str], role: list) -> None:
+    """Rule "compared": the capitalised words across a comparison or a choice from the name get role "compared"."""
+    cased, accented = _words(question, True, False), _words(question, False, True)
+    if len(cased) != len(toks) or len(accented) != len(toks) or "name" not in role:
+        return                                           # words not aligned, or no name found: the rule cannot place it
+    a = role.index("name")
+    b = a + next((k for k, r in enumerate(role[a:]) if r != "name"), len(role) - a)
+    for c, d in _connectors(toks, cased, accented):
+        far = range(d, len(toks)) if b <= c else range(0, c) if a >= d else ()
+        for i in far:
+            if role[i] is None and cased[i][:1].isupper():
+                role[i] = "compared"
 
 
 def written(question: str, cue: str) -> str | None:
