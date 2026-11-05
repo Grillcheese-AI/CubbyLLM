@@ -1447,3 +1447,40 @@ value-type reading, with a bug), `retrieval_R4_dev_2026-11-05_rules_valuetype_in
   - The 0-wrong line is expected to fail on 11 dev wrongs. The read records it honestly.
   - Then sort the dev and test wrongs together by cause. A fifth rule is written only if it is general, and it is read
     on a fresh test sample (seed 1), never on the rows it came from.
+
+## R4 on CronQuestions' test, read once (Claude Code, 2026-11-05)
+Log: `retrieval_R4_test_2026-11-05_rules_valuetype.json`: 500 `simple_entity` rows by seed 0 and 300 `simple_time`,
+with the four rules as built (rule 3's value-type reading fixed).
+
+| interval arm | right | partly | asked | refused | wrong | spoken |
+|---|---|---|---|---|---|---|
+| dev | 305 | 87 | 36 | 61 | 11 | 0.806 |
+| **test** | **289** | 83 | 45 | 74 | **9** | **0.762** |
+
+- **The lines:**
+  - 0 wrong is **not met** on test (9 of 500, 1.8%), as dev showed;
+  - at least 60% spoken is **met** (0.762);
+  - the bound (rule 2) asks on 45 rows (9%).
+- `simple_time`: 287 right, 2 wrong of 300.
+- The board: 1 wrong, Gibraltar, unchanged.
+- **The wrongs of dev and test together, by cause** (19 distinct rows):
+  1. **The record's value is finer than the gold: 13** (dev 6, test 7), all awards (P166).
+     - The record today names a specific item where CronQuestions' gold is its general class, one or two
+       `subclass of` / `part of` / `instance of` steps above.
+     - 9 of the 13 are "honorary doctor of the University of X" against the gold "honorary doctorate".
+     - The others: "Cross of the Order of Merit" against "Order of Merit"; "TWAS Prize for Mathematics" against "TWAS
+       Prize"; "Governor General's Award for French-language poetry" against "Governor General's Awards"; "Narcís
+       Monturiol Medal" against "Narcís Monturiol Prize".
+     - The answer is right and finer. The grading counts it wrong, the way rule 4 counted a merged item before it
+       was resolved.
+  2. **A different value: 2.**
+     - Team (P54): Club Atlético Banfield for River Plate, in 1942.
+     - Award: "Premio de la Crítica" for "National Novel Prize", in 2009. Two different prizes.
+  3. **Posts read from the holders' side (P39, incoming): 4** (dev 3, test 1).
+     - "Who held post X in year Y" speaks several holders whose terms the record places at Y, and the gold is not
+       among them: 2-10 names spoken out of 44-348 holders.
+- **A fifth rule, proposed, not written:** a spoken value that reaches the gold within 2 VM-checked steps up
+  `subclass of`, `part of` or `instance of` counts as the gold, said more finely.
+  - It is general: it judges a finer answer, never a coarser one, and never a sibling.
+  - Applied to the 20, it clears 13 and leaves 7: the 2 different values, the 4 post rows, and the board's Gibraltar.
+  - It would be read on a fresh test sample (seed 1), never on these rows. Your call.
