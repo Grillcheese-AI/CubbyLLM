@@ -1,5 +1,5 @@
 # 0054 — The system evaluation: right, wrong and refused on five public benchmarks, against Cubby without the VM, the 450M alone and frontier models' published numbers
-status: open
+status: in progress
 written: 2026-11-05 by Cowork · approved: 2026-11-05 by Nick ("best would be to run the tests now"; "Full sets on Colab now"; then "lets use the reported numbers for now and run the frontier model benchmark later with openrouter, 11k questions might cost a lot") · hypothesis: the system paper (H-E14, H-E15, H-E16, H-A11, H-A13)
 
 ## Why
