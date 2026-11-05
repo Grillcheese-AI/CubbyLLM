@@ -396,3 +396,22 @@ def test_a_name_is_matched_with_its_accents_folded_and_saint_or_doctor_read_as_s
     assert src.resolve("diego velazquez")[0] == "Q297"
     assert src.resolve("st elizabeth ann seton")[0] == "Q5"
     assert src.resolve("saint louis")[0] == "Q38021"
+
+
+def test_a_cache_file_a_stopped_process_left_torn_is_fetched_again_and_kept_aside(tmp_path):
+    """2026-11-05: a run stopped mid-write left a cache file of NUL bytes, and the next run that read it stopped. A
+    torn file reads as a miss: fetched again, and the torn one moved aside (never deleted); new files are written whole
+    (a temp file renamed into place)."""
+    import json as _json
+    import cubbyllm.sources.wikidata as W
+    calls = []
+    body = {"entities": {"Q1": {"labels": {"en": {"value": "x"}}}}}
+    src = W.WikidataSource(cache_dir=tmp_path, sleep_s=0.0, offline=False,
+                           fetch=lambda url: calls.append(url) or _json.dumps(body).encode())
+    params = {"action": "wbgetentities", "ids": "Q1"}
+    assert src._get(params) == body and len(calls) == 1
+    (cached,) = list(tmp_path.glob("*.json"))
+    cached.write_bytes(b"\x00" * 64)                         # torn
+    assert src._get(params) == body and len(calls) == 2
+    assert (tmp_path / (cached.stem + ".torn")).exists() and _json.loads(cached.read_text()) == body
+    assert not list(tmp_path.glob("*.part"))

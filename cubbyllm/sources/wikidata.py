@@ -87,7 +87,10 @@ class WikidataSource(WikiResolve, WikiNamesakes):
         key = hashlib.sha256(urllib.parse.urlencode(sorted(params.items())).encode()).hexdigest()[:24]
         path = self.cache / f"{key}.json" if self.cache else None
         if path and path.exists():
-            return json.loads(path.read_text(encoding="utf-8"))
+            try:
+                return json.loads(path.read_text(encoding="utf-8"))
+            except ValueError:                             # a write a stopped process left torn (2026-11-05): moved
+                path.replace(path.with_suffix(".torn"))    # aside, and fetched again like a miss
         if self.offline:
             return None
         if self.fetch is None:
@@ -105,8 +108,10 @@ class WikidataSource(WikiResolve, WikiNamesakes):
                     time.sleep(RETRY_S)
         if data is None:
             return None
-        if path:
-            path.write_text(json.dumps(data), encoding="utf-8")
+        if path:                                           # whole or not at all: a temp file renamed into place
+            tmp = path.with_suffix(".part")
+            tmp.write_text(json.dumps(data), encoding="utf-8")
+            tmp.replace(path)
         time.sleep(self.sleep_s)
         return data
 
