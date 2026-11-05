@@ -148,3 +148,28 @@ def test_statements_read_replaced_by_and_an_items_own_end(monkeypatch, tmp_path)
     monkeypatch.setattr(C, "entities", lambda src, ids, **k: {q: {"claims": died} for q in ids if q == "Q100"})
     st = S.Statements(None, path=str(tmp_path / "s.jsonl"))
     assert st.ends(["Q100", "Q1"]) == {"Q100": 1823, "Q1": "unread"}
+
+
+class _VSrc:
+    """P17's value type: country or dependent territory, instance of; Gibraltar a British overseas territory."""
+    def __init__(self, classes):
+        st = {"mainsnak": {"datavalue": {"value": {"id": "Q21510865"}}}, "rank": "normal",
+              "qualifiers": {"P2308": [{"datavalue": {"value": {"id": c}}} for c in classes],
+                             "P2309": [{"datavalue": {"value": {"id": "Q21503252"}}}]}}
+        snak = lambda x: {"mainsnak": {"datavalue": {"value": {"id": x}}}, "rank": "normal"}   # noqa: E731
+        self.claims = {"P17": {"P2302": [st]}, "Q29": {"P31": [snak("Q3624078")]}, "Q3624078": {"P279": [snak("Q6256")]},
+                       "Q1410": {"P31": [snak("Q46395")]}, "Q46395": {"P279": [snak("Q161243")]}, "P99": {}}
+
+    def _claims(self, q):
+        return self.claims.get(q, {})
+
+
+def test_rule_3_valuetype_checks_each_value_against_the_propertys_type():
+    from retrieval_bench import r4_valuetype as VT
+    res = {"spoken": ["Q1410", "Q29"], "why": "set"}
+    strict = VT.check(_VSrc(["Q6256"]), "P17", res, {})               # countries only: Gibraltar drops
+    assert strict["spoken"] == ["Q29"] and strict["type_dropped"] == ["Q1410"]
+    wide = VT.check(_VSrc(["Q6256", "Q161243"]), "P17", res, {})      # dependent territories too: it stands
+    assert wide["spoken"] == ["Q1410", "Q29"] and wide["value_type"] == "every value of the type"
+    assert VT.check(_VSrc(["Q6256"]), "P99", res, {})["value_type"] == "no constraint"
+    assert VT.check(_VSrc(["Q6256"]), "P17", {"spoken": ["Q1410"]}, {})["spoken"] is None

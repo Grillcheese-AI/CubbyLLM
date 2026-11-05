@@ -15,7 +15,7 @@ Lines (0046): 0 wrong; at least 20 of the 46 rows spoken; at least 60% of CronQu
 --rules: Cowork's four rules after dev (``r4_rules``: open ends placed only if nothing says they ended, at most 10
 values, the class asked, gold through merges), read once on CronQuestions' test (``--split test``); the board re-read.
 
-    python validation/retrieval_bench/r4.py --n 500 [--split test --rules --class-exempt serving|none --tag _x]
+    python validation/retrieval_bench/r4.py --n 500 [--split test --rules --class-exempt serving|none|valuetype --tag _x]
 -> validation/logs/retrieval_R4_<split>_<date><tag>.json (ids, values and counts; no question text beyond the board's)
 
 Wired: STANDALONE (an experiment).
@@ -47,7 +47,8 @@ def readings() -> dict:
     return json.load(open(READ, encoding="utf-8")) if os.path.exists(READ) else {}
 
 
-def arms_on(vals, single, year, question, rules: dict | None = None, asked: str = "", plan_rel=None) -> dict:
+def arms_on(vals, single, year, question, rules: dict | None = None, asked: str = "", plan_rel=None,
+            pid: str = "") -> dict:
     """The three arms; with `rules` ({"st", "src", "exempt", "cache"}): rule 1 where a year applies, then 3, then 2."""
     from retrieval_bench import r4_rules as R
     from retrieval_bench import r4_values as V
@@ -67,7 +68,11 @@ def arms_on(vals, single, year, question, rules: dict | None = None, asked: str 
         out["now"]["ended"] = drop_now
     for a, res in out.items():
         res = R.class_filter(rules["src"], question, res, plan_rel, rules["exempt"], rules["cache"])
-        out[a] = {**R.bound(res), **{k: res[k] for k in ("ended", "class", "class_dropped") if k in res}}
+        if rules.get("valuetype") and pid:                 # rule 3 as Cowork read it: the property's value type
+            from retrieval_bench import r4_valuetype as VT
+            res = {**res, **VT.check(rules["src"], pid, res, rules["cache"])}
+        out[a] = {**R.bound(res), **{k: res[k] for k in ("ended", "class", "class_dropped", "value_type", "type_dropped")
+                                     if k in res}}
     return out
 
 
@@ -102,7 +107,7 @@ def cron_rows(st, n: int, split: str = "dev", rules: dict | None = None) -> list
     for r in sample:
         q, pid, year = r["mentions"][0]["qid"], r["prop"], V.asked_year(r["question"], r["extra"]["times"])
         vals, how, fetched = values_for(st, q, pid)
-        arms = arms_on(vals, st.single(pid), year, r["question"], rules, q, pid_labels(pid) if rules else None)
+        arms = arms_on(vals, st.single(pid), year, r["question"], rules, q, pid_labels(pid) if rules else None, pid)
         gold = R.gold_through_merges(set(r["answer_qids"]), merges)
         out.append({"id": r["id"], "pid": pid, "year": year, "direction": how, "fetched": fetched,
                     "n_values": len(V.live(vals)), "gold": sorted(gold),
@@ -160,7 +165,8 @@ def board_rows(st, src, rules: dict | None = None) -> list[dict]:
             continue
         pid = carried[0]
         o = st.out(res[0], pid)
-        arms = arms_on(o["values"], st.single(pid), V.asked_year(r["question"]), r["question"], rules, res[0], set(r["plan"]))
+        arms = arms_on(o["values"], st.single(pid), V.asked_year(r["question"]), r["question"], rules, res[0],
+                       set(r["plan"]), pid)
         ents = entities(src, sorted({x for a in arms.values() for x in a["spoken"] or ()}), props="labels|aliases", langs="en")
         gold = {_normalize(g) for g in r["golds"]}
         rec.update(pid=pid, fetched=o["fetched"], n_values=len(V.live(o["values"])), arms={})
@@ -190,7 +196,8 @@ def effects(rows: list[dict]) -> dict:
                   "bound_share": round(sum(1 for x in arm if x.get("ask")) / max(1, len(rows)), 4),
                   "rule1_rows": sum(1 for x in arm if x.get("ended")),
                   "rule1_values": sum(len(x.get("ended") or ()) for x in arm),
-                  "class_rows": sum(1 for x in arm if x.get("class_dropped"))}
+                  "class_rows": sum(1 for x in arm if x.get("class_dropped")),
+                  "type_rows": sum(1 for x in arm if x.get("type_dropped"))}
     out["golds_merged"] = sum(1 for r in rows if r.get("merged"))
     return out
 
@@ -203,13 +210,14 @@ def main() -> None:
     ap.add_argument("--n-time", type=int, default=300)
     ap.add_argument("--split", choices=("dev", "test"), default="dev")
     ap.add_argument("--rules", action="store_true", help="Cowork's four rules after dev (r4_rules)")
-    ap.add_argument("--class-exempt", choices=("serving", "none"), default="serving",
-                    help="rule 3: keep the serving path's exemption (the class word read as the relation asked) or not")
+    ap.add_argument("--class-exempt", choices=("serving", "none", "valuetype"), default="serving",
+                    help="rule 3: serving (the exemption kept), none (dropped), valuetype (kept, and each value checked against the property's value-type constraint, Cowork's reading)")
     ap.add_argument("--tag", default="")
     a = ap.parse_args()
     src = source()
     st = Statements(src)
-    rules = {"st": st, "src": src, "exempt": a.class_exempt == "serving", "cache": {}} if a.rules else None
+    rules = {"st": st, "src": src, "exempt": a.class_exempt in ("serving", "valuetype"),
+             "valuetype": a.class_exempt == "valuetype", "cache": {}} if a.rules else None
     board = board_rows(st, src, rules)
     cron = cron_rows(st, a.n, a.split, rules)
     ctime = cron_time_rows(st, a.n_time, a.split)
