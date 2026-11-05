@@ -1,5 +1,5 @@
 # 0049 — The self-improvement loop: gaps noticed, adapters made on demand, mistakes kept as "never this" (T1 and T3)
-status: open
+status: in progress
 written: 2026-11-04 by Cowork · approved: 2026-11-04 by Nick ("yes"; "if it solves postmortem could be the whole paper") · hypothesis: H-A15
 
 ## Why
