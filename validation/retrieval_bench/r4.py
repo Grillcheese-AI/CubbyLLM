@@ -48,7 +48,7 @@ def readings() -> dict:
 
 
 def arms_on(vals, single, year, question, rules: dict | None = None, asked: str = "", plan_rel=None,
-            pid: str = "") -> dict:
+            pid: str = "", direction: str = "out") -> dict:
     """The three arms; with `rules` ({"st", "src", "exempt", "cache"}): rule 1 where a year applies, then 3, then 2."""
     from retrieval_bench import r4_rules as R
     from retrieval_bench import r4_values as V
@@ -70,7 +70,7 @@ def arms_on(vals, single, year, question, rules: dict | None = None, asked: str 
         res = R.class_filter(rules["src"], question, res, plan_rel, rules["exempt"], rules["cache"])
         if rules.get("valuetype") and pid:                 # rule 3 as Cowork read it: the property's value type
             from retrieval_bench import r4_valuetype as VT
-            res = {**res, **VT.check(rules["src"], pid, res, rules["cache"])}
+            res = {**res, **VT.check(rules["src"], pid, res, rules["cache"], direction)}
         out[a] = {**R.bound(res), **{k: res[k] for k in ("ended", "class", "class_dropped", "value_type", "type_dropped")
                                      if k in res}}
     return out
@@ -107,7 +107,7 @@ def cron_rows(st, n: int, split: str = "dev", rules: dict | None = None) -> list
     for r in sample:
         q, pid, year = r["mentions"][0]["qid"], r["prop"], V.asked_year(r["question"], r["extra"]["times"])
         vals, how, fetched = values_for(st, q, pid)
-        arms = arms_on(vals, st.single(pid), year, r["question"], rules, q, pid_labels(pid) if rules else None, pid)
+        arms = arms_on(vals, st.single(pid), year, r["question"], rules, q, pid_labels(pid) if rules else None, pid, how)
         gold = R.gold_through_merges(set(r["answer_qids"]), merges)
         out.append({"id": r["id"], "pid": pid, "year": year, "direction": how, "fetched": fetched,
                     "n_values": len(V.live(vals)), "gold": sorted(gold),

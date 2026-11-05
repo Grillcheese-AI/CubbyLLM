@@ -173,3 +173,20 @@ def test_rule_3_valuetype_checks_each_value_against_the_propertys_type():
     assert wide["spoken"] == ["Q1410", "Q29"] and wide["value_type"] == "every value of the type"
     assert VT.check(_VSrc(["Q6256"]), "P99", res, {})["value_type"] == "no constraint"
     assert VT.check(_VSrc(["Q6256"]), "P17", {"spoken": ["Q1410"]}, {})["spoken"] is None
+
+
+def test_rule_3_checks_an_incoming_rows_values_against_the_subject_type():
+    """Incoming rows speak the statements' subjects (a post's holders): their type is the subject type's, not the
+    value type's (the first dev reading refused every incoming P39 row)."""
+    from retrieval_bench import r4_valuetype as VT
+    src = _VSrc(["Q6256"])
+    snak = lambda x: {"mainsnak": {"datavalue": {"value": {"id": x}}}, "rank": "normal"}   # noqa: E731
+    subj = {"mainsnak": {"datavalue": {"value": {"id": "Q21503250"}}}, "rank": "normal",
+            "qualifiers": {"P2308": [{"datavalue": {"value": {"id": "Q5"}}}],
+                           "P2309": [{"datavalue": {"value": {"id": "Q21503252"}}}]}}
+    src.claims["P17"]["P2302"].append(subj)
+    src.claims["Q7"] = {"P31": [snak("Q5")]}                              # a person
+    res = {"spoken": ["Q7"], "why": "set"}
+    assert VT.check(src, "P17", res, {})["spoken"] is None                # as a value: not a country
+    assert VT.check(src, "P17", res, {}, "in")["value_type"] == "every value of the type"
+    assert VT.check(src, "P17", {"spoken": ["Q29"]}, {}, "in")["spoken"] is None

@@ -1341,3 +1341,35 @@ Log: `retrieval_R2_dev_2026-11-04_b1q_rules.json` (the same 2,965 dev rows as `.
 - **The rule reads only the question's own words and the name finder's spans,** never the set's gold links (Mintaka's
   linked mentions are gold).
 - Seed 1 is then read once, with every rule frozen.
+
+## B1q's seed-0 rerun with the comparison/choice rule (Claude Code, 2026-11-04 night)
+Log: `retrieval_R2_dev_2026-11-04_b1q_compared.json` (the same 2,965 dev rows; the rule of `acc16df` on top of the three
+of `43715a6`). The rule reads the question's words and the name finder's spans only.
+
+| B1q, every row | right | wrong | refused | undecided | held | single |
+|---|---|---|---|---|---|---|
+| with the three rules | 859 | 45 | 163 | 898 | 998 | 2 |
+| and the compared rule | 849 | 43 | 163 | 910 | 998 | 2 |
+
+- **What the rule was for, met:** Mintaka `941b5290` #0 (California / Rhode Island) is undecided, and so is #1.
+  - No new wrong. 12 rows moved, all to undecided.
+- **One more wrong gone:** `1fa96507` #0, "Who has won more Champions League titles, Messi or Cristiano Ronaldo?"
+  - Before, the other player's name was read as Messi's qualifier.
+- **What it cost, 10 rights to undecided:**
+  - **8 Mintaka comparisons** where the other side had happened to pick the right item:
+    - Virginia / West Virginia;
+    - Oregon / Washington, both rows;
+    - Lennon / McCartney, both rows;
+    - Messi / Ronaldo #1;
+    - Cavaliers / Heat;
+    - May / Cameron.
+  - In these questions the two names are the two things compared, so neither tells which item the other is. Undecided
+    is the reading the rule asks for.
+  - **2 ShadowLink Tail passages** where "than" joins no two names. As specified, "than" needs no name on either side,
+    and "or" alone checks for names.
+    - Tail-506: "more than earned a call up to the UFC", where UFC was the cue.
+    - Tail-611: "the story of Pompe disease than with Joannes Cassianus Pompe", where Pompe was the cue.
+    - A tighter "than" (a name on the far side next to it) would come from these two rows. It is not written; seed 1
+      reads the rule as frozen.
+- The 43 wrongs left: ShadowLink 29, Mintaka 9, WebQSP 5, all of them wrong in the first run.
+- **Seed 1** is being read once now, with every rule frozen (`--fame-set fame_set_seed1 --no-el`).

@@ -8,6 +8,10 @@ check every spoken value against the property's own value-type constraint, as Wi
                   the relation says), then up ``subclass of`` (P279), at most UP steps, every step a statement the
                   source makes (read through the source's cache)
   no constraint   a property without one: nothing to check, the values stand
+  the direction   a value read from the statements naming the item (``in``: CronQuestions' incoming rows) is the
+                  statement's subject, so it is checked against the property's subject-type constraint (Q21503250),
+                  the same way; the value-type constraint is the other end's (the first dev reading checked these
+                  against it and refused every incoming P39 row: the holders of a post are people, not posts)
 A value that reaches no class is dropped; none left: refused ("value_type").
 
 Wired: STANDALONE (R4's bench).
@@ -19,6 +23,7 @@ import re
 __wiring__ = "STANDALONE"
 
 VALUE_TYPE = "Q21510865"
+SUBJECT_TYPE = "Q21503250"
 INSTANCE, SUBCLASS, EITHER = "Q21503252", "Q21514624", "Q30208840"
 UP = 8
 _Q = re.compile(r"Q\d+")
@@ -35,15 +40,15 @@ def _ids(claims: dict, pid: str) -> list[str]:
     return out
 
 
-def constraint(src, pid: str, cache: dict) -> tuple[set, str] | None:
-    """(classes, relation) of the property's value-type constraint, or None when it states none."""
-    key = ("vt", pid)
+def constraint(src, pid: str, cache: dict, kind: str = VALUE_TYPE) -> tuple[set, str] | None:
+    """(classes, relation) of the property's value-type (or subject-type) constraint, or None when it states none."""
+    key = (kind, pid)
     if key not in cache:
         classes, rel = set(), None
         for st in src._claims(pid).get("P2302") or ():
             if st.get("rank") == "deprecated":
                 continue
-            if ((st.get("mainsnak") or {}).get("datavalue") or {}).get("value", {}).get("id") != VALUE_TYPE:
+            if ((st.get("mainsnak") or {}).get("datavalue") or {}).get("value", {}).get("id") != kind:
                 continue
             q = st.get("qualifiers") or {}
             classes |= {x["datavalue"]["value"]["id"] for x in q.get("P2308", []) if x.get("datavalue")}
@@ -78,12 +83,12 @@ def reaches(src, q: str, classes: set, rel: str, cache: dict) -> bool:
     return ok
 
 
-def check(src, pid: str, res: dict, cache: dict) -> dict:
-    """Rule 3's value-type reading on one arm's result."""
+def check(src, pid: str, res: dict, cache: dict, direction: str = "out") -> dict:
+    """Rule 3's value-type reading on one arm's result (``direction`` "in": the values are the statements' subjects)."""
     sp = res.get("spoken")
     if not sp:
         return res
-    c = constraint(src, pid, cache)
+    c = constraint(src, pid, cache, SUBJECT_TYPE if direction == "in" else VALUE_TYPE)
     if c is None:
         return {**res, "value_type": "no constraint"}
     items = [x for x in sp if isinstance(x, str) and _Q.fullmatch(x)]
