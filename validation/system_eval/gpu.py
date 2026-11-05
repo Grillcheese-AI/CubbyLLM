@@ -5,8 +5,8 @@ the stack handed its seat at home, and arm M's answers. No store, no VM, no netw
              as ``Cubby450mEmitter.emit`` writes them (``seats.programs``), the programs adapter on its own base
   m          the questions (``questions.jsonl``, ``bench.py --export``) -> ``m_<bench>.jsonl``: the 450M talk adapter
              alone, closed book, greedy, as the talk seat renders and cuts its answer (``talk_prompt`` /
-             ``talk_answer``); CLUTRR's relations given as its facts. M never refuses: an empty answer is kept
-             and graded as a refusal, and counted apart
+             ``talk_answer``); CLUTRR's relations given as its facts. Its own decline in text is ``declined``
+             (``grade.declined``), counted with the refusals and reported apart
 Both resume: a prompt or question already written is skipped. ``--n`` (the preflight): the first n per benchmark,
 then the time per question and the projected time for the full sets are printed.
 
@@ -90,7 +90,7 @@ def run_m(a, trunk) -> dict:
                 for r, ans in zip(part, m_answers(trunk, part)):
                     f.write(json.dumps({"id": r["id"], "bench": bench, "question": r["question"], "golds": r["golds"][:8],
                                         "seen": r["seen"], "answer": ans, "spoken": bool(ans.strip()),
-                                        "verdict": verdict(bool(ans.strip()), ans, r["golds"], bench)},
+                                        "verdict": verdict(bool(ans.strip()), ans, r["golds"], bench, declines=True)},
                                        ensure_ascii=False) + "\n")
                 print(f"  m {bench} {s + len(part)}/{len(todo)} ({time.time() - t0:.0f}s)", flush=True)
         dt = time.time() - t0

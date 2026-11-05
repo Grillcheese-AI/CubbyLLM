@@ -156,3 +156,12 @@ def test_the_m_arm_makes_no_network_call(monkeypatch):
             {"id": "2", "bench": "clutrr", "question": "How is B related to A?", "golds": ["son"],
              "meta": {"facts": ["b is the son of a"]}}]
     assert len(m_answers(FakeTrunk(), rows)) == 2
+
+
+def test_m_declining_in_text_is_counted_with_the_refusals_and_apart():
+    assert G.verdict(True, "The facts don't say.", ["x"], "simpleqa", declines=True) == "declined"
+    assert G.verdict(True, "I don’t know who received it.", ["x"], "simpleqa", declines=True) == "declined"
+    assert G.verdict(True, "The facts don't say.", ["x"], "simpleqa") == "unmatched"      # only M's arm declines
+    assert G.verdict(True, "Knowing him, Paris", ["Paris"], "simpleqa", declines=True) == "right"
+    r = G.rates(_rows(["declined", "refused", "right"]))
+    assert (r["refused"], r["declined"], r["spoken"]) == (2, 1, 1)
