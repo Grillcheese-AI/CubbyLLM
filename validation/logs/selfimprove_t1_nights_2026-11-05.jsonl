@@ -1,0 +1,39 @@
+{"what": "night", "night": 1, "flagged": [], "loaded": []}
+{"what": "probe", "key": "arithmetic||en|h0|a*|-|fwd|s10", "problems": 36, "right_train": 6, "right_held": 4, "gain": null}
+{"what": "probe", "key": "arithmetic||en|h0|a*|-|fwd|s6", "problems": 34, "right_train": 12, "right_held": 8, "gain": -0.2021}
+{"what": "probe", "key": "arithmetic||en|h0|a*|-|fwd|s8", "problems": 33, "right_train": 11, "right_held": 4, "gain": null}
+{"what": "night", "night": 2, "flagged": [], "loaded": []}
+{"what": "night", "night": 3, "flagged": [], "loaded": []}
+{"what": "probe", "key": "arithmetic||en|h0|a*|-|fwd|s5", "problems": 54, "right_train": 23, "right_held": 8, "gain": -0.124}
+{"what": "probe", "key": "wd|*|en|h1|a0|-|fwd", "problems": 72, "right_train": 6, "right_held": 7, "gain": null}
+{"what": "probe", "key": "wd|*|fr|h1|a0|-|fwd", "problems": 116, "right_train": 3, "right_held": 2, "gain": null}
+{"what": "night", "night": 4, "flagged": [], "loaded": []}
+{"what": "probe", "key": "arithmetic||en|h0|a*|-|fwd|s1", "problems": 60, "right_train": 1, "right_held": 0, "gain": null}
+{"what": "probe", "key": "arithmetic||en|h0|a*|-|fwd|s10", "problems": 67, "right_train": 15, "right_held": 8, "gain": -0.1131}
+{"what": "probe", "key": "arithmetic||en|h0|a*|-|fwd|s3", "problems": 41, "right_train": 15, "right_held": 10, "gain": -0.1681}
+{"what": "probe", "key": "arithmetic||en|h0|a*|-|fwd|s4", "problems": 48, "right_train": 17, "right_held": 6, "gain": -0.2316}
+{"what": "probe", "key": "arithmetic||en|h0|a*|-|fwd|s6", "problems": 57, "right_train": 21, "right_held": 8, "gain": -0.1413}
+{"what": "probe", "key": "arithmetic||en|h0|a*|-|fwd|s7", "problems": 49, "right_train": 19, "right_held": 6, "gain": -0.2596}
+{"what": "probe", "key": "arithmetic||en|h0|a*|-|fwd|s8", "problems": 71, "right_train": 21, "right_held": 10, "gain": -0.1581}
+{"what": "probe", "key": "arithmetic||en|h0|a*|-|fwd|s9", "problems": 67, "right_train": 26, "right_held": 10, "gain": -0.2856}
+{"what": "night", "night": 5, "flagged": [], "loaded": []}
+{"what": "probe", "key": "arithmetic||en|h0|a*|-|fwd|s2", "problems": 36, "right_train": 15, "right_held": 5, "gain": -0.0411}
+{"what": "night", "night": 6, "flagged": [], "loaded": []}
+{"what": "probe", "key": "arithmetic||en|h0|a*|-|fwd|s5", "problems": 50, "right_train": 16, "right_held": 8, "gain": -0.0993}
+{"what": "probe", "key": "wd|*|en|h1|a0|-|fwd", "problems": 62, "right_train": 11, "right_held": 3, "gain": null}
+{"what": "probe", "key": "wd|*|fr|h1|a0|-|fwd", "problems": 121, "right_train": 5, "right_held": 5, "gain": null}
+{"what": "night", "night": 7, "flagged": [], "loaded": []}
+{"what": "probe", "key": "arithmetic||en|h0|a*|-|fwd|s1", "problems": 69, "right_train": 3, "right_held": 1, "gain": null}
+{"what": "probe", "key": "arithmetic||en|h0|a*|-|fwd|s10", "problems": 89, "right_train": 20, "right_held": 10, "gain": -0.1992}
+{"what": "probe", "key": "arithmetic||en|h0|a*|-|fwd|s3", "problems": 43, "right_train": 18, "right_held": 6, "gain": -0.1984}
+{"what": "probe", "key": "arithmetic||en|h0|a*|-|fwd|s4", "problems": 51, "right_train": 11, "right_held": 9, "gain": -0.3288}
+{"what": "probe", "key": "arithmetic||en|h0|a*|-|fwd|s6", "problems": 54, "right_train": 16, "right_held": 7, "gain": -0.3056}
+{"what": "probe", "key": "arithmetic||en|h0|a*|-|fwd|s7", "problems": 71, "right_train": 19, "right_held": 10, "gain": -0.3914}
+{"what": "probe", "key": "arithmetic||en|h0|a*|-|fwd|s8", "problems": 58, "right_train": 18, "right_held": 8, "gain": -0.1971}
+{"what": "probe", "key": "arithmetic||en|h0|a*|-|fwd|s9", "problems": 65, "right_train": 19, "right_held": 12, "gain": -0.1987}
+{"what": "night", "night": 8, "flagged": [], "loaded": []}
+{"what": "night", "night": 9, "flagged": [], "loaded": []}
+{"what": "probe", "key": "arithmetic||en|h0|a*|-|fwd|s5", "problems": 51, "right_train": 13, "right_held": 12, "gain": -0.1738}
+{"what": "probe", "key": "wd|*|en|h1|a0|-|fwd", "problems": 68, "right_train": 11, "right_held": 6, "gain": -0.064}
+{"what": "probe", "key": "wd|*|fr|h1|a0|-|fwd", "problems": 112, "right_train": 8, "right_held": 0, "gain": null}
+{"what": "night", "night": 10, "flagged": [], "loaded": []}

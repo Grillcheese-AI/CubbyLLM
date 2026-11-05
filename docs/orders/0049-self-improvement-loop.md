@@ -271,3 +271,57 @@ The four proposals as Cowork accepted them, and what the build added. Every numb
   - Val level 1 reads 0.00 on its 8 rows against 0.98 held. Those 8 val records are odd; nothing reads them in T1.
 - **Next:** T1 with `LEVEL = 10` (step 2 of the notebook), when Nick runs it. Your reading of the kill above can come
   before or after it; it changes no number of the run.
+
+## T1 on the A100: no gap flagged, two defects of mine (Nick's session; Claude Code's reading, 2026-11-05)
+- **Logs** (55.4 min, 4,837 requests, 10 nights of 500, `LEVEL = 10`):
+  - `selfimprove_t1_2026-11-05.json` (the result);
+  - `..._t1_nights_2026-11-05.jsonl` (every probe);
+  - `..._t1_requests_2026-11-05.jsonl` (every request's mark);
+  - `selfimprove_stream_header_2026-11-05.json`;
+  - `..._t1_2026-11-05.log`.
+- **The result: no gap was flagged, and no adapter was trained.**
+  - Every planted gap missed "flagged within two nights".
+  - The shuffled family was never flagged, but nothing else was either, so that line shows nothing.
+  - Routing: 0 of 4,837 requests went to an adapter (none existed). The key read from the base's own attempt differs
+    from the request's on 232 (4.8%).
+- **The base adapter on the stream** (greedy; right = spoken and matching the gold):
+
+| family | right | | family | right |
+|---|---|---|---|---|
+| plan, role_binding | 1.00 | | arithmetic 2 / 3 / 4 | 0.77 / 0.67 / 0.59 |
+| chain | 0.94 | | arithmetic 5 / 6 / 7 | 0.57 / 0.54 / 0.55 |
+| kernel | 0.86 | | arithmetic 8 / 9 / **10** | 0.50 / 0.49 / **0.40** |
+| **wd/en** | **0.44** | | arithmetic 11 / 12 (22, 15 rows) | 0.45 / 0.40 |
+| **wd/fr** | **0.057** | | the shuffled copy | 0.44 |
+
+- **Defect 1, the probe (mine):** 29 probes ran.
+  - 9 had too few right programs to score.
+  - **All 20 that scored lowered nothing: their gains run from −0.04 to −0.39 nats.** Training made the held right
+    programs less likely.
+  - The probe's held targets are the base adapter's own sampled right programs, which it already rates very likely.
+    And 40 steps of 16 rows over 11-26 programs is 25-60 passes over the same few.
+  - A held loss on the base's own samples can mostly only rise. The instrument cannot show learning progress as
+    built; the result says nothing about whether the gaps are learnable.
+- **Defect 2, the shuffled family (mine):** it is only half noise.
+  - 133 of its 300 requests read right: they are stop rows (`return $S1`), which the step judge marks by their form,
+    not their gold.
+  - 133 more are refused as "another step's value": the original problem's true value counts as neutral, not wrong.
+  - Only 23 read wrong. A noise family has to be judged by its golds alone.
+- **A real limit, not a defect: French cannot bootstrap.**
+  - The base adapter names the gold property in 5.7% of French requests, so practice (8 tries) finds 3-8 right
+    programs in about 120 problems: below the probe's minimum, every time.
+  - The loop learns only from its own right attempts, so a skill near zero has nothing to start from. English, at
+    0.44, gave 6-11.
+- **Proposals, Cowork's to accept before a second T1 (no number of this run changes):**
+  1. **The probe measures what the gate measures:** the held problems' greedy right rate, base against the probe
+     adapter, after one pass over the train part's right programs (at least 10 steps). Flagged at +5 points or more.
+     This replaces the loss and its 0.05 nats.
+  2. **The noise family is judged by its golds alone:** a shuffled copy of a family whose rows all compute a value
+     (no stop rows), with no neutral values. Arithmetic step rows of level 2 and up, step rows only, would do.
+  3. **French gets a bootstrap rule written down:** with fewer than 10 right programs after 8 tries, practice tries
+     up to 32 on that key's problems. The cost is recorded, and the gap stays out of the line if it still cannot
+     start.
+- **T3 does not depend on T1's flags.** It practises the planted gaps directly and reads the held right rate (no
+  probe), so step 3 can run as built. Its French arm will have few right programs, for the reason above.
+
+Status: in progress (T1 to run again after Cowork's word on the three proposals; T3 can run now).
