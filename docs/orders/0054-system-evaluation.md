@@ -1,6 +1,6 @@
-# 0054 — The system evaluation: right, wrong and refused on four public benchmarks, against Cubby without the VM and two frontier models
+# 0054 — The system evaluation: right, wrong and refused on four public benchmarks, against Cubby without the VM, the 450M alone and frontier models' published numbers
 status: open
-written: 2026-11-05 by Cowork · approved: 2026-11-05 by Nick ("best would be to run the tests now"; "Run them via API"; "Full sets on Colab now") · hypothesis: the system paper (H-E14, H-E15, H-E16, H-A11, H-A13)
+written: 2026-11-05 by Cowork · approved: 2026-11-05 by Nick ("best would be to run the tests now"; "Full sets on Colab now"; then "lets use the reported numbers for now and run the frontier model benchmark later with openrouter, 11k questions might cost a lot") · hypothesis: the system paper (H-E14, H-E15, H-E16, H-A11, H-A13)
 
 ## Why
 The system paper (Publication Plan: ICML 2027, go/no-go around January 5; NeSy in March otherwise) needs one
@@ -16,12 +16,13 @@ consolidated run. Nick's abstract waits on its numbers.
 So this run reports who proposed each answer, beside the three rates.
 
 **What it brings, in plain words:** one scoreboard that says how often Cubby is right, how often it is wrong, and how
-often it says "I don't know", next to what the leading chatbots do on the same questions.
+often it says "I don't know", next to what the leading chatbots report on the same benchmarks.
 - **Over a conventional model:** a conventional score counts right answers only. Here the wrong ones are counted
   beside them, so a reader sees how many confident mistakes each system makes, and what refusing costs.
 
 ## Build
-A harness (`validation/system_eval/`, names Claude Code's) and one Colab notebook Nick runs.
+A harness (`validation/system_eval/`, names Claude Code's) and one Colab notebook Nick runs. **No model API is called
+in this run.**
 
 1. **The benchmarks:** full test splits. The counts are checked against the files, and any difference is reported.
    - **SimpleQA** (4,326);
@@ -39,20 +40,22 @@ A harness (`validation/system_eval/`, names Claude Code's) and one Colab noteboo
    - **C−VM:** the same proposals, spoken without certification (the first proposal that yields a value). Read from
      C's own records, with no second pass.
    - **M:** the 450M talk adapter alone, closed book, answering in text, always.
-   - **F:** GPT-6 and Claude Opus 5.5 by API (exact model ids recorded), closed book, tools off, default settings
-     recorded:
-     - every benchmark with an instruction that allows "I don't know" (the comparison the claim is about);
-     - SimpleQA also with the question alone, to match their published numbers;
-     - CLUTRR with the same relations as sentences (the fair input), and with the original story, reported beside.
-3. **The grading,** one rule for every arm:
+   - **F, published numbers only:** each frontier model's own published results on these benchmarks, collected with
+     their sources, every source opened and checked (the citation rule).
+     - Kept as published: correct, incorrect and not attempted where given; accuracy alone where that is all there
+       is, said so.
+     - Where GPT-6 or Claude Opus 5.5 publish nothing on a benchmark, that is said. The newest models that do publish
+       are listed instead, by name and date.
+     - They are labelled in every table as other models, other graders and other settings. They are context, not a
+       matched comparison.
+3. **The grading,** with no judge model:
    - A spoken answer that matches a gold or an alias after normalization is right (`exp_everyday_webq`'s normalizer).
-   - An unmatched spoken answer goes to SimpleQA's published grader prompt (correct / incorrect / not attempted). One
-     pinned grader model scores every arm, recorded. It only scores; nothing it writes becomes a training record.
-   - Refused: Cubby's refusal, and F's "I don't know" or not attempted. M never refuses.
+   - **C's unmatched spoken answers are all read** (C speaks few), with each one's program and certification trace.
+   - **C−VM's and M's unmatched answers:** a seeded sample of 200 per arm and benchmark is read. The rest are reported
+     as unmatched, with the right share estimated from the sample (with its interval).
+   - Refused: Cubby's refusal. M never refuses.
    - WebQuestions' golds are Freebase's of 2013: a mismatch on a value that changes (an office, a team, a currency)
-     is listed for the read, not counted wrong by the normalizer.
-   - **For the read:** a seeded sample of 100 grader verdicts per arm and benchmark, and every C answer graded wrong
-     in full, with its program and its certification trace.
+     is read, not counted wrong by the normalizer.
 4. **Where it runs:**
    - **One Colab notebook Nick runs** (A100), resumable from Drive per benchmark and arm.
    - The trunk and adapters run in torch there. grilly2 is Vulkan, so a parity read at home: C on 100 SimpleQA
@@ -60,32 +63,27 @@ A harness (`validation/system_eval/`, names Claude Code's) and one Colab noteboo
    - The VM: CubeLang cloned at a pinned commit and built, as 0049's notebook does.
    - The Wikidata source: live through the cache on Drive, at a polite rate, with a generic client name. Its time is
      reported.
-   - **The API keys:** from Colab secrets Nick sets himself. Never printed, logged, written or committed.
-   - **The preflight:** 50 questions per benchmark through every arm. It prints the time per question, the projected
-     session time and the projected API cost per arm, then stops for Nick's go.
-   - **Frozen and recorded:** CubbyLLM's commit, every adapter's hash, the VM's commit, the store's snapshot, the model
-     ids, the grader, the date.
+   - **The preflight:** 50 questions per benchmark through every arm. It prints the time per question and the
+     projected session time, then stops for Nick's go.
+   - **Frozen and recorded:** CubbyLLM's commit, every adapter's hash, the VM's commit, the store's snapshot, the date.
 
 ## Acceptance (pre-registered)
 - **Tests:**
-  - the grading rule on fixtures: a right alias, a wrong value, a refusal, an "I don't know", a stale WebQuestions
-    gold;
+  - the grading rule on fixtures: a right alias, a wrong value, a refusal, a stale WebQuestions gold;
   - C−VM read from C's records equals a second pass on 50 questions;
-  - no key in any output: a test scans the notebook's outputs and the logs for key patterns.
+  - the harness makes no request to a model API.
 - **Reported, per benchmark and arm:**
-  - right, wrong and refused (counts and %);
+  - right, wrong and refused (counts and %), with C−VM's and M's estimated from the read where unmatched;
   - the wrong rate among spoken answers, with a 95% interval;
   - time per question;
-  - for C: by proposer, and the VM's time per check;
-  - for F: cost;
-  - the grader's agreement with the read, per arm.
+  - for C: by proposer, and the VM's time per check.
 - **The lines** (the paper's claim, written before the run):
   - **Line:** C's wrong answers at most 1% of its spoken answers on every benchmark (H-E15's line), and fewer than
     C−VM's.
   - **Kill, the claim as stated:** C above 1% on a benchmark. The abstract's claim then narrows to the benchmarks
     where it holds, with the cause.
   - **Reported, no line:**
-    - C against F: the wrong rate at each one's refusal rate;
+    - C beside F's published numbers, labelled as not matched;
     - how many of C's spoken answers the 450M proposed.
 
 ## Constraints
@@ -93,13 +91,17 @@ A harness (`validation/system_eval/`, names Claude Code's) and one Colab noteboo
   the claim).
 - **The stack is frozen for the run, and nothing is tuned on these test sets.** Each number is written once. A rerun
   is for a crash only, and is reported.
-- No external model on Cubby's serving path or writing a training record. F and the grader are measured or score,
-  nothing more.
-- Claude Code does not start a paid run. The notebook is Nick's, and the API spend waits for his go at the preflight.
+- No external model is called, on the serving path or anywhere in this run.
+- Claude Code does not start a paid run. The notebook is Nick's.
 - No secret in a file, log, argument or commit. No local path in a committed file.
 - grilly2 at home in short chunks only.
 
 ## Out of scope
+- **The frontier run** (Nick: later, through OpenRouter). Its own step, after this one. Its likely shape, recorded so
+  the harness is ready for it:
+  - a seeded sample per benchmark, cost printed first;
+  - "I don't know" allowed;
+  - one pinned grader that then re-grades every arm, C and M included.
 - **Cubby reading CLUTRR's stories** (it gets the relations here): a story reader is its own order.
 - **Frontier models with web search or tools.**
 - **Changing the stack because of these numbers:** findings go under Found on the way, then into their own orders.
