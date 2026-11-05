@@ -1,5 +1,5 @@
 # 0051 — Loci tokens in training: count what spans would save, run the queued places-and-route continuation, then decide spans
-status: in progress
+status: review
 written: 2026-11-04 by Cowork · approved: 2026-11-04 by Nick ("what about using loci tokens in training?", then "yes") · hypothesis: H-K10 (with H-S12, H-C2)
 
 ## Why
@@ -71,13 +71,18 @@ spends its compute on language, not on re-reading and memorizing facts.
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
-- **Commits:**
-- **Files:**
-- **Tests:**
-- **Measured:** <against each acceptance line>
-- **Not verified here:**
-- **Found on the way:**
-- **Questions:**
+- **Commits:** `34ab6f2` (A), `6f88418` (B's notebook), `88430d8` (the link arm's read), and this one (the text arm,
+  gates 4 and 2).
+- **Files:** `notebooks/_build_spatial_facts_450m.py` / `spatial_facts_450m.ipynb` (run 6, `ARM`), the logs named in
+  the sections below.
+- **Tests:** no code changed in B; `CB_SPATIAL` off stays bit-identical (`tests/model/test_spatial.py`).
+- **Measured:** A: proper names fold 5.2% of the mix's tokens, under C's line. B: far facts 0.804 (link) against 0.019
+  (text), gate 4 met; text mix 2.2398 against 2.2491, gate 2 met; villages 0.764 (link) and 0.984 (text), gate 1's
+  text clause reported.
+- **Not verified here:** both arms ran on Nick's A100; the reads are from their logs.
+- **Found on the way:** with the question's place removed, the link reads 0.000 far facts: the facts come back only
+  through the place.
+- **Questions:** spans (gate 3) are Cowork's call after A's finding.
 
 ## A, the span count (Claude Code, 2026-11-04)
 - **Log:** `span_count_2026-11-04.json` (`validation/span_count.py`, CPU). 4 windows of 1,024 tokens from each of the
@@ -166,3 +171,34 @@ Status: in progress (B).
 - Villages here (0.764) are not comparable to run 3's 0.953: run 3 trained 2 h from the same start, run 6 one hour.
 
 Status: in progress (B: the text arm next).
+
+## B, run 6: the text arm, and gates 4 and 2 (Nick's session; Claude Code's reading, 2026-11-04 night)
+- **The text arm ran:**
+  - `spatial_text_6` from `base450m_cont_stable_end.pt`;
+  - the link arm's 1,203 steps, 0.16B tokens, so equal tokens;
+  - `spatial_text_here` and `facts_far1k_text` in the mix (`train_spatial_text_6_2026-11-04.log`);
+  - the speed check took `mingru` (about 54,000 tok/s at micro 16, 47% MFU).
+- **Its read on the bench's 400 documents** (`hypertoken_recall_spatial_run6_text_2026-11-04.json`):
+  - **far facts as text (`facts_far1k_text`, 2,002 questions): 0.019 exact**, first token 0.230;
+  - villages as text (`spatial_text_here`, 3,610): 0.984 exact.
+
+| run 6, equal tokens | far facts, exact | first token | villages, exact | text mix (held-out) |
+|---|---|---|---|---|
+| link (places, writes, route, copy ring) | **0.804** | 0.992 | 0.764 | **2.2398** |
+| text (the same facts as plain text) | **0.019** | 0.230 | 0.984 | **2.2491** |
+
+- **Gate 4** (link at least 2x text, and at least 0.5): **met.** 0.804 against 0.019, about 41x.
+  - Past the 512-token window, text alone does not bring the fact back; the link does, through the question's place
+    (with the place removed, the link reads 0.000: the `..._route_` read).
+- **Gate 2** (the text within 0.02 of the control): **met.** The link arm's held-out text mix is 2.2398 against the
+  text arm's 2.2491, 0.009 lower.
+  - On the pieces: wikipedia 2.9639 against 2.9628, fineweb_edu 3.2706 against 3.2712.
+  - Run 4's drift on text is not seen when both arms train from the same start for the same tokens.
+- **Gate 1's text clause, reported, not gated:**
+  - villages read as text 0.984 (the text arm) against the link's 0.764 on placed villages;
+  - in-window, text reads them better: they are inside attention's reach, as runs 1-3 showed.
+  - The link arm's own text-village loss is worse (1.128 against 0.505): it trained on the placed form.
+- **For H-K10 and H-S12 (Cowork records):** at equal tokens and the same start, the link reads facts beyond the window
+  41x the text control, and costs the text nothing measurable.
+
+Status: review (A read and kept; B's gates 4 and 2 met; spans, gate 3, after Cowork's decision).

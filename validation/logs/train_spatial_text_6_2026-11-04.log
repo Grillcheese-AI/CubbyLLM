@@ -1,0 +1,213 @@
+
+=== 2026-11-05 03:47:13 CB_WALL_H=11.22
+device: NVIDIA A100-SXM4-80GB | 85 GB | torch 2.11.0+cu130
+config: D1024/L32 heads 4 window 512 1:3 | vocab 127996->128000 | S1024 micro 16 x accum 8 = 131,072 tok/step | lr 0.0003 b2 0.95 wd 0.1 clip 1.0 warmup 100 decay 30% | mix base | hours 1.0 wall 11.22
+params 576.2M (trainable; embedding + head 262M) | 2.72 GFLOP/token
+initialised from /content/drive/MyDrive/cubbyllm/runs/base450m_cont/base450m_cont_stable_end.pt (its step 19531; not grown) -> step 0, fresh optimizer and schedule
+schedule: 1,203 steps, decay from 842
+  source            tokens(train)  stable%  decay%  epochs this run
+  agent                79,507,054    0.38    0.31      0.01
+  arxiv                11,640,440    0.06    0.05      0.01
+  books               193,986,560    6.91    7.57      0.06
+  facts                10,035,200    0.00    0.00      0.00
+  facts_far1k          20,070,400    0.00    0.00      0.00
+  facts_far1k_lead     20,070,400    0.00    0.00      0.00
+  facts_far1k_text     20,070,400    4.58    3.77      0.34
+  facts_far1k_v2       20,070,400    0.00    0.00      0.00
+  facts_text           10,035,200    0.00    0.00      0.00
+  facts_text_far       40,140,800    0.00    0.00      0.00
+  fineweb_edu         387,973,120   18.42   22.71      0.08
+  instruct             15,520,818    0.07    0.06      0.01
+  kbtxt                68,157,440    2.41    2.64      0.06
+  nemotron_code       254,803,968    6.04    9.92      0.04
+  nemotron_legal      144,703,488    1.72    0.71      0.02
+  nemotron_qa         327,155,712    7.78   12.78      0.04
+  pretrain_ext            846,185    0.00    0.00      0.01
+  program               7,303,480    0.03    0.03      0.01
+  spatial              10,035,200    0.00    0.00      0.00
+  spatial_here         10,035,200    0.00    0.00      0.00
+  spatial_text         10,035,200    0.00    0.00      0.00
+  spatial_text_here     10,035,200    4.58    3.77      0.68
+  unified           1,285,554,176   30.56   25.11      0.04
+  verified_facts      164,626,432    1.96    0.80      0.02
+  wiki_full           609,222,656   10.86    5.95      0.02
+  wikibooks            85,983,232    3.05    3.34      0.06
+  wikipedia           123,395,015    0.59    0.48      0.01
+W1105 03:49:01.822000 2077 torch/_dynamo/variables/tensor.py:1379] [0/0] Graph break from `Tensor.item()`, consider setting:
+W1105 03:49:01.822000 2077 torch/_dynamo/variables/tensor.py:1379] [0/0]     torch._dynamo.config.capture_scalar_outputs = True
+W1105 03:49:01.822000 2077 torch/_dynamo/variables/tensor.py:1379] [0/0] or:
+W1105 03:49:01.822000 2077 torch/_dynamo/variables/tensor.py:1379] [0/0]     env TORCHDYNAMO_CAPTURE_SCALAR_OUTPUTS=1
+W1105 03:49:01.822000 2077 torch/_dynamo/variables/tensor.py:1379] [0/0] to include these operations in the captured graph.
+W1105 03:49:01.822000 2077 torch/_dynamo/variables/tensor.py:1379] [0/0] 
+W1105 03:49:01.822000 2077 torch/_dynamo/variables/tensor.py:1379] [0/0] Graph break: from user code at:
+W1105 03:49:01.822000 2077 torch/_dynamo/variables/tensor.py:1379] [0/0]   File "/content/CubbyLLM/validation/train_base.py", line 535, in loss_fn
+W1105 03:49:01.822000 2077 torch/_dynamo/variables/tensor.py:1379] [0/0]     logits = forward_batch(model, x)
+W1105 03:49:01.822000 2077 torch/_dynamo/variables/tensor.py:1379] [0/0]   File "/content/CubbyLLM/validation/train_base.py", line 500, in forward_batch
+W1105 03:49:01.822000 2077 torch/_dynamo/variables/tensor.py:1379] [0/0]     if not bool(placed.any()):
+W1105 03:49:01.822000 2077 torch/_dynamo/variables/tensor.py:1379] [0/0] 
+W1105 03:49:01.822000 2077 torch/_dynamo/variables/tensor.py:1379] [0/0] 
+/usr/local/lib/python3.13/dist-packages/torch/_dynamo/variables/functions.py:2202: UserWarning: Dynamo detected a call to a `functools.lru_cache`-wrapped function at 'hybrid.py:116'. Dynamo ignores the cache wrapper and directly traces the wrapped function. Silent incorrectness is only a *potential* risk, not something we have observed. Enable TORCH_LOGS=+dynamo for a DEBUG stack trace.
+
+This call originates from:
+  File "/content/CubbyLLM/cubbyllm/model/backbone/hybrid.py", line 116, in _rope_tables
+    inv = _rope_inv_freq(dh, str(device))
+
+  torch._dynamo.utils.warn_once(msg)
+/usr/local/lib/python3.13/dist-packages/torch/_dynamo/variables/functions.py:2202: UserWarning: Dynamo detected a call to a `functools.lru_cache`-wrapped function at 'hybrid.py:173'. Dynamo ignores the cache wrapper and directly traces the wrapped function. Silent incorrectness is only a *potential* risk, not something we have observed. Enable TORCH_LOGS=+dynamo for a DEBUG stack trace.
+
+This call originates from:
+  File "/content/CubbyLLM/cubbyllm/model/backbone/hybrid.py", line 173, in forward
+    bm = _window_block_mask(S, self.window, str(x.device))
+
+  torch._dynamo.utils.warn_once(msg)
+  step      1 warm   loss  2.771  lr 3.00e-06  gnorm 10.86     1,533 tok/s  MFU  1.3%   0.000B tok   0.02 h  eta 28.56 h
+  step     10 warm   loss  2.581  lr 3.00e-05  gnorm  0.64    54,486 tok/s  MFU 47.5%   0.001B tok   0.03 h  eta  0.80 h
+  step     20 warm   loss  2.571  lr 6.00e-05  gnorm  0.40    54,194 tok/s  MFU 47.3%   0.003B tok   0.04 h  eta  0.79 h
+  step     30 warm   loss  2.649  lr 9.00e-05  gnorm  0.42    54,017 tok/s  MFU 47.1%   0.004B tok   0.04 h  eta  0.79 h
+  step     40 warm   loss  2.521  lr 1.20e-04  gnorm  0.42    53,959 tok/s  MFU 47.1%   0.005B tok   0.05 h  eta  0.78 h
+  step     50 warm   loss  2.489  lr 1.50e-04  gnorm  0.41    53,859 tok/s  MFU 47.0%   0.007B tok   0.06 h  eta  0.78 h
+  step     60 warm   loss  2.652  lr 1.80e-04  gnorm  0.42    53,847 tok/s  MFU 47.0%   0.008B tok   0.06 h  eta  0.77 h
+  step     70 warm   loss  2.440  lr 2.10e-04  gnorm  0.43    53,833 tok/s  MFU 47.0%   0.009B tok   0.07 h  eta  0.77 h
+  step     80 warm   loss  2.510  lr 2.40e-04  gnorm  0.43    53,810 tok/s  MFU 46.9%   0.010B tok   0.08 h  eta  0.76 h
+  step     90 warm   loss  2.578  lr 2.70e-04  gnorm  0.46    53,829 tok/s  MFU 46.9%   0.012B tok   0.08 h  eta  0.75 h
+  step    100 warm   loss  2.467  lr 3.00e-04  gnorm  0.45    53,796 tok/s  MFU 46.9%   0.013B tok   0.09 h  eta  0.75 h
+  [val] step 100  mix 2.3032  copy 1.077  | agent:2.16  arxiv:4.05  books:3.13  facts:1.76  facts_far1k:3.01  facts_far1k_lead:3.01  facts_far1k_text:3.10  facts_far1k_v2:3.40  facts_text:1.64  facts_text_far:3.31  fineweb_edu:3.33  instruct:2.84  kbtxt:3.21  nemotron_code:1.54  nemotron_legal:2.42  nemotron_qa:3.20  pretrain_ext:3.35  program:1.06  spatial:0.54  spatial_here:0.50  spatial_text:0.69  spatial_text_here:0.62  unified:1.12  verified_facts:3.83  wiki_full:3.10  wikibooks:1.87  wikipedia:3.02
+  step    110 stable loss  2.529  lr 3.00e-04  gnorm  0.48     7,774 tok/s  MFU  6.8%   0.014B tok   0.14 h  eta  5.12 h
+  step    120 stable loss  2.457  lr 3.00e-04  gnorm  0.44    54,150 tok/s  MFU 47.2%   0.016B tok   0.14 h  eta  0.73 h
+  step    130 stable loss  2.393  lr 3.00e-04  gnorm  0.44    53,996 tok/s  MFU 47.1%   0.017B tok   0.15 h  eta  0.72 h
+  step    140 stable loss  2.760  lr 3.00e-04  gnorm  0.45    53,966 tok/s  MFU 47.1%   0.018B tok   0.16 h  eta  0.72 h
+  step    150 stable loss  2.435  lr 3.00e-04  gnorm  0.45    53,879 tok/s  MFU 47.0%   0.020B tok   0.16 h  eta  0.71 h
+  step    160 stable loss  2.515  lr 3.00e-04  gnorm  0.42    53,817 tok/s  MFU 46.9%   0.021B tok   0.17 h  eta  0.71 h
+  step    170 stable loss  2.477  lr 3.00e-04  gnorm  0.45    53,819 tok/s  MFU 46.9%   0.022B tok   0.18 h  eta  0.70 h
+  step    180 stable loss  2.510  lr 3.00e-04  gnorm  0.42    53,801 tok/s  MFU 46.9%   0.024B tok   0.18 h  eta  0.69 h
+  step    190 stable loss  2.366  lr 3.00e-04  gnorm  0.41    53,808 tok/s  MFU 46.9%   0.025B tok   0.19 h  eta  0.69 h
+  step    200 stable loss  2.528  lr 3.00e-04  gnorm  0.44    53,790 tok/s  MFU 46.9%   0.026B tok   0.20 h  eta  0.68 h
+  [val] step 200  mix 2.3136  copy 1.169  | agent:1.78  arxiv:4.07  books:3.16  facts:1.72  facts_far1k:3.01  facts_far1k_lead:3.01  facts_far1k_text:3.06  facts_far1k_v2:3.41  facts_text:1.60  facts_text_far:3.30  fineweb_edu:3.34  instruct:2.84  kbtxt:3.24  nemotron_code:1.56  nemotron_legal:2.43  nemotron_qa:3.24  pretrain_ext:3.38  program:1.01  spatial:0.56  spatial_here:0.53  spatial_text:0.71  spatial_text_here:0.55  unified:1.14  verified_facts:3.85  wiki_full:3.12  wikibooks:1.91  wikipedia:3.06
+  step    210 stable loss  2.659  lr 3.00e-04  gnorm  0.44    49,812 tok/s  MFU 43.4%   0.028B tok   0.21 h  eta  0.73 h
+  step    220 stable loss  2.484  lr 3.00e-04  gnorm  0.44    53,821 tok/s  MFU 46.9%   0.029B tok   0.21 h  eta  0.66 h
+  step    230 stable loss  2.528  lr 3.00e-04  gnorm  0.43    53,812 tok/s  MFU 46.9%   0.030B tok   0.22 h  eta  0.66 h
+  step    240 stable loss  2.697  lr 3.00e-04  gnorm  0.50    53,850 tok/s  MFU 47.0%   0.031B tok   0.23 h  eta  0.65 h
+  step    250 stable loss  2.664  lr 3.00e-04  gnorm  0.46    53,838 tok/s  MFU 47.0%   0.033B tok   0.23 h  eta  0.64 h
+  step    260 stable loss  2.616  lr 3.00e-04  gnorm  0.44    53,822 tok/s  MFU 46.9%   0.034B tok   0.24 h  eta  0.64 h
+  step    270 stable loss  2.593  lr 3.00e-04  gnorm  0.42    53,820 tok/s  MFU 46.9%   0.035B tok   0.25 h  eta  0.63 h
+  step    280 stable loss  2.745  lr 3.00e-04  gnorm  0.46    53,834 tok/s  MFU 47.0%   0.037B tok   0.25 h  eta  0.62 h
+  step    290 stable loss  2.367  lr 3.00e-04  gnorm  0.43    53,835 tok/s  MFU 47.0%   0.038B tok   0.26 h  eta  0.62 h
+  step    300 stable loss  2.688  lr 3.00e-04  gnorm  0.47    53,823 tok/s  MFU 46.9%   0.039B tok   0.27 h  eta  0.61 h
+  [val] step 300  mix 2.3201  copy 1.808  | agent:1.76  arxiv:4.07  books:3.16  facts:1.73  facts_far1k:2.99  facts_far1k_lead:2.99  facts_far1k_text:3.04  facts_far1k_v2:3.41  facts_text:1.59  facts_text_far:3.28  fineweb_edu:3.34  instruct:2.78  kbtxt:3.24  nemotron_code:1.57  nemotron_legal:2.45  nemotron_qa:3.24  pretrain_ext:3.37  program:0.86  spatial:0.55  spatial_here:0.54  spatial_text:0.71  spatial_text_here:0.54  unified:1.15  verified_facts:3.85  wiki_full:3.14  wikibooks:1.92  wikipedia:3.09
+  step    310 stable loss  2.591  lr 3.00e-04  gnorm  0.46    49,891 tok/s  MFU 43.5%   0.041B tok   0.27 h  eta  0.65 h
+  step    320 stable loss  2.522  lr 3.00e-04  gnorm  0.43    53,939 tok/s  MFU 47.0%   0.042B tok   0.28 h  eta  0.60 h
+  step    330 stable loss  2.340  lr 3.00e-04  gnorm  0.42    53,897 tok/s  MFU 47.0%   0.043B tok   0.29 h  eta  0.59 h
+  step    340 stable loss  2.615  lr 3.00e-04  gnorm  0.43    53,927 tok/s  MFU 47.0%   0.045B tok   0.29 h  eta  0.58 h
+  step    350 stable loss  2.430  lr 3.00e-04  gnorm  0.43    53,894 tok/s  MFU 47.0%   0.046B tok   0.30 h  eta  0.58 h
+  step    360 stable loss  2.589  lr 3.00e-04  gnorm  0.45    53,857 tok/s  MFU 47.0%   0.047B tok   0.31 h  eta  0.57 h
+  step    370 stable loss  2.655  lr 3.00e-04  gnorm  0.47    53,884 tok/s  MFU 47.0%   0.048B tok   0.31 h  eta  0.56 h
+  step    380 stable loss  2.652  lr 3.00e-04  gnorm  0.45    53,863 tok/s  MFU 47.0%   0.050B tok   0.32 h  eta  0.56 h
+  step    390 stable loss  2.490  lr 3.00e-04  gnorm  0.42    53,905 tok/s  MFU 47.0%   0.051B tok   0.33 h  eta  0.55 h
+  step    400 stable loss  2.624  lr 3.00e-04  gnorm  0.44    53,881 tok/s  MFU 47.0%   0.052B tok   0.33 h  eta  0.54 h
+  [val] step 400  mix 2.3170  copy 1.217  | agent:1.72  arxiv:4.09  books:3.17  facts:1.69  facts_far1k:2.97  facts_far1k_lead:2.97  facts_far1k_text:3.02  facts_far1k_v2:3.41  facts_text:1.57  facts_text_far:3.28  fineweb_edu:3.34  instruct:2.77  kbtxt:3.24  nemotron_code:1.55  nemotron_legal:2.45  nemotron_qa:3.24  pretrain_ext:3.38  program:0.89  spatial:0.55  spatial_here:0.56  spatial_text:0.70  spatial_text_here:0.53  unified:1.14  verified_facts:3.87  wiki_full:3.15  wikibooks:1.92  wikipedia:3.05
+  step    410 stable loss  2.675  lr 3.00e-04  gnorm  0.46    49,766 tok/s  MFU 43.4%   0.054B tok   0.34 h  eta  0.58 h
+  step    420 stable loss  2.593  lr 3.00e-04  gnorm  0.44    53,808 tok/s  MFU 46.9%   0.055B tok   0.35 h  eta  0.53 h
+  step    430 stable loss  2.504  lr 3.00e-04  gnorm  0.46    53,807 tok/s  MFU 46.9%   0.056B tok   0.36 h  eta  0.52 h
+  step    440 stable loss  2.382  lr 3.00e-04  gnorm  0.42    53,824 tok/s  MFU 46.9%   0.058B tok   0.36 h  eta  0.52 h
+  step    450 stable loss  2.404  lr 3.00e-04  gnorm  0.42    53,815 tok/s  MFU 46.9%   0.059B tok   0.37 h  eta  0.51 h
+  step    460 stable loss  2.680  lr 3.00e-04  gnorm  0.45    53,885 tok/s  MFU 47.0%   0.060B tok   0.38 h  eta  0.50 h
+  step    470 stable loss  2.512  lr 3.00e-04  gnorm  0.45    53,836 tok/s  MFU 47.0%   0.062B tok   0.38 h  eta  0.50 h
+  step    480 stable loss  2.619  lr 3.00e-04  gnorm  0.46    53,833 tok/s  MFU 47.0%   0.063B tok   0.39 h  eta  0.49 h
+  step    490 stable loss  2.444  lr 3.00e-04  gnorm  0.45    53,823 tok/s  MFU 46.9%   0.064B tok   0.40 h  eta  0.48 h
+  step    500 stable loss  2.603  lr 3.00e-04  gnorm  0.45    53,806 tok/s  MFU 46.9%   0.066B tok   0.40 h  eta  0.48 h
+  [val] step 500  mix 2.3187  copy 1.332  | agent:1.71  arxiv:4.09  books:3.15  facts:1.66  facts_far1k:2.98  facts_far1k_lead:2.98  facts_far1k_text:3.01  facts_far1k_v2:3.40  facts_text:1.56  facts_text_far:3.29  fineweb_edu:3.34  instruct:2.71  kbtxt:3.25  nemotron_code:1.57  nemotron_legal:2.44  nemotron_qa:3.23  pretrain_ext:3.37  program:0.90  spatial:0.57  spatial_here:0.55  spatial_text:0.71  spatial_text_here:0.53  unified:1.15  verified_facts:3.85  wiki_full:3.15  wikibooks:1.91  wikipedia:3.07
+  [gen 500] 'The history of Quebec City begins' -> ' in 1550. In 1603 the French Catholic bishop, François Viète de Richelieu wrote to Charles IX that he had “received a great benefice from France because you have taken good care of us for four years.”\nThe next year in 1600'
+  [gen 500] 'La ville de Lévis est située sur la rive sud' -> " de la vallée du Rhône, à l'est d’Alger.\nSituée au sud-ouest des monts du Lyonnais et dans le versant méridional (à peine près que la Durance ne soit pas en amont), Lévis"
+  [gen 500] 'Question: Why does ice float on water?\nAnswer:' -> ' Ice does not float on seawater. It floats in the center of the ice because it has a small volume and is very thin, which makes it extremely fragile as a solid surface; however, in air at high pressure (such as nitrogen),'
+  [gen 500] 'def is_prime(n):\n' -> '    # Function to check if a number is prime\n    def is_primality(n):\\n        return n <= 1\\nelif (k > 2) then\\t \\\n               for i in range(3, int'
+  step    510 stable loss  2.696  lr 3.00e-04  gnorm  0.45    39,117 tok/s  MFU 34.1%   0.067B tok   0.41 h  eta  0.65 h
+  step    520 stable loss  2.612  lr 3.00e-04  gnorm  0.44    53,844 tok/s  MFU 47.0%   0.068B tok   0.42 h  eta  0.46 h
+  step    530 stable loss  2.460  lr 3.00e-04  gnorm  0.43    53,811 tok/s  MFU 46.9%   0.069B tok   0.43 h  eta  0.46 h
+  step    540 stable loss  2.531  lr 3.00e-04  gnorm  0.43    53,801 tok/s  MFU 46.9%   0.071B tok   0.43 h  eta  0.45 h
+  step    550 stable loss  2.514  lr 3.00e-04  gnorm  0.43    53,782 tok/s  MFU 46.9%   0.072B tok   0.44 h  eta  0.44 h
+  step    560 stable loss  2.588  lr 3.00e-04  gnorm  0.45    53,861 tok/s  MFU 47.0%   0.073B tok   0.45 h  eta  0.43 h
+  step    570 stable loss  2.650  lr 3.00e-04  gnorm  0.45    53,815 tok/s  MFU 46.9%   0.075B tok   0.45 h  eta  0.43 h
+  step    580 stable loss  2.488  lr 3.00e-04  gnorm  0.42    53,809 tok/s  MFU 46.9%   0.076B tok   0.46 h  eta  0.42 h
+  step    590 stable loss  2.648  lr 3.00e-04  gnorm  0.43    53,789 tok/s  MFU 46.9%   0.077B tok   0.47 h  eta  0.41 h
+  step    600 stable loss  2.497  lr 3.00e-04  gnorm  0.44    53,788 tok/s  MFU 46.9%   0.079B tok   0.47 h  eta  0.41 h
+  [val] step 600  mix 2.3214  copy 1.368  | agent:1.67  arxiv:4.11  books:3.16  facts:1.67  facts_far1k:2.96  facts_far1k_lead:2.96  facts_far1k_text:3.01  facts_far1k_v2:3.40  facts_text:1.54  facts_text_far:3.27  fineweb_edu:3.35  instruct:2.71  kbtxt:3.27  nemotron_code:1.58  nemotron_legal:2.46  nemotron_qa:3.23  pretrain_ext:3.38  program:0.92  spatial:0.57  spatial_here:0.57  spatial_text:0.70  spatial_text_here:0.53  unified:1.15  verified_facts:3.84  wiki_full:3.15  wikibooks:1.92  wikipedia:3.07
+  step    610 stable loss  2.570  lr 3.00e-04  gnorm  0.42    49,806 tok/s  MFU 43.4%   0.080B tok   0.48 h  eta  0.43 h
+  step    620 stable loss  2.705  lr 3.00e-04  gnorm  0.47    53,797 tok/s  MFU 46.9%   0.081B tok   0.49 h  eta  0.39 h
+  step    630 stable loss  2.594  lr 3.00e-04  gnorm  0.44    53,822 tok/s  MFU 46.9%   0.083B tok   0.49 h  eta  0.39 h
+  step    640 stable loss  2.649  lr 3.00e-04  gnorm  0.45    53,823 tok/s  MFU 46.9%   0.084B tok   0.50 h  eta  0.38 h
+  step    650 stable loss  2.520  lr 3.00e-04  gnorm  0.43    34,153 tok/s  MFU 29.8%   0.085B tok   0.51 h  eta  0.59 h
+  [ckpt] step 640 -> /content/drive/MyDrive/cubbyllm/runs/spatial_text_6/spatial_text_6_slota.pt
+  step    660 stable loss  2.728  lr 3.00e-04  gnorm  0.46    53,830 tok/s  MFU 46.9%   0.087B tok   0.52 h  eta  0.37 h
+  step    670 stable loss  2.635  lr 3.00e-04  gnorm  0.46    53,812 tok/s  MFU 46.9%   0.088B tok   0.52 h  eta  0.36 h
+  step    680 stable loss  2.626  lr 3.00e-04  gnorm  0.44    53,818 tok/s  MFU 46.9%   0.089B tok   0.53 h  eta  0.35 h
+  step    690 stable loss  2.787  lr 3.00e-04  gnorm  0.46    53,792 tok/s  MFU 46.9%   0.090B tok   0.54 h  eta  0.35 h
+  step    700 stable loss  2.483  lr 3.00e-04  gnorm  0.43    53,925 tok/s  MFU 47.0%   0.092B tok   0.54 h  eta  0.34 h
+  [val] step 700  mix 2.3241  copy 1.431  | agent:1.67  arxiv:4.08  books:3.17  facts:1.65  facts_far1k:2.96  facts_far1k_lead:2.96  facts_far1k_text:2.99  facts_far1k_v2:3.37  facts_text:1.54  facts_text_far:3.27  fineweb_edu:3.35  instruct:2.71  kbtxt:3.26  nemotron_code:1.58  nemotron_legal:2.44  nemotron_qa:3.24  pretrain_ext:3.39  program:0.75  spatial:0.59  spatial_here:0.56  spatial_text:0.72  spatial_text_here:0.52  unified:1.15  verified_facts:3.86  wiki_full:3.17  wikibooks:1.91  wikipedia:3.08
+  step    710 stable loss  2.517  lr 3.00e-04  gnorm  0.48    49,940 tok/s  MFU 43.6%   0.093B tok   0.55 h  eta  0.36 h
+  step    720 stable loss  2.547  lr 3.00e-04  gnorm  0.57    53,942 tok/s  MFU 47.0%   0.094B tok   0.56 h  eta  0.33 h
+  step    730 stable loss  2.576  lr 3.00e-04  gnorm  0.46    53,928 tok/s  MFU 47.0%   0.096B tok   0.57 h  eta  0.32 h
+  step    740 stable loss  2.640  lr 3.00e-04  gnorm  0.46    53,894 tok/s  MFU 47.0%   0.097B tok   0.57 h  eta  0.31 h
+  step    750 stable loss  2.585  lr 3.00e-04  gnorm  0.46    53,885 tok/s  MFU 47.0%   0.098B tok   0.58 h  eta  0.31 h
+  step    760 stable loss  2.633  lr 3.00e-04  gnorm  0.46    53,901 tok/s  MFU 47.0%   0.100B tok   0.59 h  eta  0.30 h
+  step    770 stable loss  2.531  lr 3.00e-04  gnorm  0.45    53,927 tok/s  MFU 47.0%   0.101B tok   0.59 h  eta  0.29 h
+  step    780 stable loss  2.520  lr 3.00e-04  gnorm  0.44    53,896 tok/s  MFU 47.0%   0.102B tok   0.60 h  eta  0.29 h
+  step    790 stable loss  2.750  lr 3.00e-04  gnorm  0.49    53,893 tok/s  MFU 47.0%   0.104B tok   0.61 h  eta  0.28 h
+  step    800 stable loss  2.597  lr 3.00e-04  gnorm  0.45    53,895 tok/s  MFU 47.0%   0.105B tok   0.61 h  eta  0.27 h
+  [val] step 800  mix 2.3240  copy 1.373  | agent:1.67  arxiv:4.07  books:3.17  facts:1.58  facts_far1k:2.95  facts_far1k_lead:2.95  facts_far1k_text:3.00  facts_far1k_v2:3.36  facts_text:1.50  facts_text_far:3.27  fineweb_edu:3.36  instruct:2.73  kbtxt:3.25  nemotron_code:1.56  nemotron_legal:2.44  nemotron_qa:3.25  pretrain_ext:3.40  program:0.78  spatial:0.57  spatial_here:0.53  spatial_text:0.75  spatial_text_here:0.54  unified:1.15  verified_facts:3.85  wiki_full:3.15  wikibooks:1.89  wikipedia:3.07
+  step    810 stable loss  2.525  lr 3.00e-04  gnorm  0.45    49,818 tok/s  MFU 43.4%   0.106B tok   0.62 h  eta  0.29 h
+  step    820 stable loss  2.711  lr 3.00e-04  gnorm  0.48    53,800 tok/s  MFU 46.9%   0.107B tok   0.63 h  eta  0.26 h
+  step    830 stable loss  2.555  lr 3.00e-04  gnorm  0.44    53,765 tok/s  MFU 46.9%   0.109B tok   0.63 h  eta  0.25 h
+  step    840 stable loss  2.562  lr 3.00e-04  gnorm  0.46    53,792 tok/s  MFU 46.9%   0.110B tok   0.64 h  eta  0.25 h
+  step    850 decay  loss  2.765  lr 2.55e-04  gnorm  0.46    32,678 tok/s  MFU 28.5%   0.111B tok   0.65 h  eta  0.39 h
+  [ckpt] step 842 -> /content/drive/MyDrive/cubbyllm/runs/spatial_text_6/spatial_text_6_stable_end.pt
+  step    860 decay  loss  2.489  lr 2.33e-04  gnorm  0.43    53,954 tok/s  MFU 47.1%   0.113B tok   0.66 h  eta  0.23 h
+  step    870 decay  loss  2.739  lr 2.16e-04  gnorm  0.47    53,846 tok/s  MFU 47.0%   0.114B tok   0.67 h  eta  0.23 h
+  step    880 decay  loss  2.590  lr 2.03e-04  gnorm  0.43    53,798 tok/s  MFU 46.9%   0.115B tok   0.67 h  eta  0.22 h
+  step    890 decay  loss  2.733  lr 1.91e-04  gnorm  0.43    53,791 tok/s  MFU 46.9%   0.117B tok   0.68 h  eta  0.21 h
+  step    900 decay  loss  2.662  lr 1.80e-04  gnorm  0.47    53,801 tok/s  MFU 46.9%   0.118B tok   0.69 h  eta  0.21 h
+  [val] step 900  mix 2.2969  copy 1.317  | agent:1.66  arxiv:4.05  books:3.14  facts:1.60  facts_far1k:2.93  facts_far1k_lead:2.93  facts_far1k_text:2.95  facts_far1k_v2:3.34  facts_text:1.49  facts_text_far:3.25  fineweb_edu:3.32  instruct:2.68  kbtxt:3.22  nemotron_code:1.52  nemotron_legal:2.43  nemotron_qa:3.21  pretrain_ext:3.37  program:0.76  spatial:0.56  spatial_here:0.54  spatial_text:0.74  spatial_text_here:0.52  unified:1.14  verified_facts:3.84  wiki_full:3.13  wikibooks:1.89  wikipedia:3.04
+  step    910 decay  loss  2.392  lr 1.70e-04  gnorm  0.44    49,906 tok/s  MFU 43.5%   0.119B tok   0.69 h  eta  0.21 h
+  step    920 decay  loss  2.512  lr 1.61e-04  gnorm  0.43    53,883 tok/s  MFU 47.0%   0.121B tok   0.70 h  eta  0.19 h
+  step    930 decay  loss  2.733  lr 1.52e-04  gnorm  0.44    53,891 tok/s  MFU 47.0%   0.122B tok   0.71 h  eta  0.18 h
+  step    940 decay  loss  2.442  lr 1.44e-04  gnorm  0.41    53,890 tok/s  MFU 47.0%   0.123B tok   0.71 h  eta  0.18 h
+  step    950 decay  loss  2.468  lr 1.36e-04  gnorm  0.42    53,929 tok/s  MFU 47.0%   0.125B tok   0.72 h  eta  0.17 h
+  step    960 decay  loss  2.467  lr 1.28e-04  gnorm  0.46    53,959 tok/s  MFU 47.1%   0.126B tok   0.73 h  eta  0.16 h
+  step    970 decay  loss  2.490  lr 1.21e-04  gnorm  0.42    53,905 tok/s  MFU 47.0%   0.127B tok   0.73 h  eta  0.16 h
+  step    980 decay  loss  2.621  lr 1.15e-04  gnorm  0.41    53,929 tok/s  MFU 47.0%   0.128B tok   0.74 h  eta  0.15 h
+  step    990 decay  loss  2.564  lr 1.08e-04  gnorm  0.41    53,908 tok/s  MFU 47.0%   0.130B tok   0.75 h  eta  0.14 h
+  step   1000 decay  loss  2.567  lr 1.02e-04  gnorm  0.43    53,914 tok/s  MFU 47.0%   0.131B tok   0.75 h  eta  0.14 h
+  [val] step 1000  mix 2.2733  copy 1.274  | agent:1.63  arxiv:4.02  books:3.12  facts:1.56  facts_far1k:2.88  facts_far1k_lead:2.88  facts_far1k_text:2.91  facts_far1k_v2:3.30  facts_text:1.45  facts_text_far:3.21  fineweb_edu:3.30  instruct:2.65  kbtxt:3.18  nemotron_code:1.51  nemotron_legal:2.41  nemotron_qa:3.18  pretrain_ext:3.34  program:0.76  spatial:0.59  spatial_here:0.55  spatial_text:0.78  spatial_text_here:0.51  unified:1.12  verified_facts:3.80  wiki_full:3.09  wikibooks:1.85  wikipedia:2.99
+  [gen 1000] 'The history of Quebec City begins' -> ' in the year 1169, when an army led by King Louis X I of France entered Canada and had a garrison there. The city was governed from the royal palace at St-Denis by a council made up of local residents for one season'
+  [gen 1000] 'La ville de Lévis est située sur la rive sud' -> " du lac Michigan, à l'est de Thunder Bay. Elle regroupe le village d’Abrams où se trouve la gare terminus des trains Urail et United Railway.\nLa ville a été fondée en 1869 par les pionniers Pierre and Robert"
+  [gen 1000] 'Question: Why does ice float on water?\nAnswer:' -> ' Ice floats on water because it has dissolved ice. When the temperature becomes cold, the surface of warm saltwater begins to move away from its original location due to friction between colder and warmer layers at that point in time.\nWhat type of crust'
+  [gen 1000] 'def is_prime(n):\n' -> '    if n <= 1:\n        return False, False  # Both are prime numbers\n    else:\n        i = 2            # Start from the square root of n. The number at index i is found by only adding i'
+  step   1010 decay  loss  2.697  lr 9.53e-05  gnorm  0.43    41,268 tok/s  MFU 36.0%   0.132B tok   0.76 h  eta  0.17 h
+  step   1020 decay  loss  2.392  lr 8.93e-05  gnorm  0.40    53,955 tok/s  MFU 47.1%   0.134B tok   0.77 h  eta  0.12 h
+  step   1030 decay  loss  2.516  lr 8.35e-05  gnorm  0.42    53,886 tok/s  MFU 47.0%   0.135B tok   0.78 h  eta  0.12 h
+  step   1040 decay  loss  2.493  lr 7.78e-05  gnorm  0.44    53,823 tok/s  MFU 46.9%   0.136B tok   0.78 h  eta  0.11 h
+  step   1050 decay  loss  2.383  lr 7.23e-05  gnorm  0.41    53,844 tok/s  MFU 47.0%   0.138B tok   0.79 h  eta  0.10 h
+  step   1060 decay  loss  2.528  lr 6.69e-05  gnorm  0.42    53,825 tok/s  MFU 46.9%   0.139B tok   0.80 h  eta  0.10 h
+  step   1070 decay  loss  2.578  lr 6.16e-05  gnorm  0.42    53,843 tok/s  MFU 47.0%   0.140B tok   0.80 h  eta  0.09 h
+  step   1080 decay  loss  2.439  lr 5.64e-05  gnorm  0.42    53,898 tok/s  MFU 47.0%   0.142B tok   0.81 h  eta  0.08 h
+  step   1090 decay  loss  2.353  lr 5.13e-05  gnorm  0.42    53,921 tok/s  MFU 47.0%   0.143B tok   0.82 h  eta  0.08 h
+  step   1100 decay  loss  2.509  lr 4.64e-05  gnorm  0.41    53,885 tok/s  MFU 47.0%   0.144B tok   0.82 h  eta  0.07 h
+  [val] step 1100  mix 2.2583  copy 1.264  | agent:1.61  arxiv:4.00  books:3.10  facts:1.56  facts_far1k:2.87  facts_far1k_lead:2.87  facts_far1k_text:2.89  facts_far1k_v2:3.31  facts_text:1.45  facts_text_far:3.18  fineweb_edu:3.28  instruct:2.64  kbtxt:3.16  nemotron_code:1.49  nemotron_legal:2.39  nemotron_qa:3.17  pretrain_ext:3.32  program:0.72  spatial:0.58  spatial_here:0.55  spatial_text:0.77  spatial_text_here:0.51  unified:1.11  verified_facts:3.78  wiki_full:3.08  wikibooks:1.82  wikipedia:2.97
+  step   1110 decay  loss  2.532  lr 4.15e-05  gnorm  0.41    49,920 tok/s  MFU 43.5%   0.145B tok   0.83 h  eta  0.07 h
+  step   1120 decay  loss  2.547  lr 3.67e-05  gnorm  0.42    53,836 tok/s  MFU 47.0%   0.147B tok   0.84 h  eta  0.06 h
+  step   1130 decay  loss  2.593  lr 3.20e-05  gnorm  0.42    53,833 tok/s  MFU 47.0%   0.148B tok   0.84 h  eta  0.05 h
+  step   1140 decay  loss  2.625  lr 2.74e-05  gnorm  0.42    53,817 tok/s  MFU 46.9%   0.149B tok   0.85 h  eta  0.04 h
+  step   1150 decay  loss  2.470  lr 2.29e-05  gnorm  0.42    53,859 tok/s  MFU 47.0%   0.151B tok   0.86 h  eta  0.04 h
+  step   1160 decay  loss  2.495  lr 1.84e-05  gnorm  0.41    53,947 tok/s  MFU 47.0%   0.152B tok   0.86 h  eta  0.03 h
+  step   1170 decay  loss  2.450  lr 1.40e-05  gnorm  0.41    53,917 tok/s  MFU 47.0%   0.153B tok   0.87 h  eta  0.02 h
+  step   1180 decay  loss  2.596  lr 9.71e-06  gnorm  0.42    53,927 tok/s  MFU 47.0%   0.155B tok   0.88 h  eta  0.02 h
+  step   1190 decay  loss  2.505  lr 5.45e-06  gnorm  0.42    53,903 tok/s  MFU 47.0%   0.156B tok   0.88 h  eta  0.01 h
+  step   1200 decay  loss  2.410  lr 1.25e-06  gnorm  0.41    53,883 tok/s  MFU 47.0%   0.157B tok   0.89 h  eta  0.00 h
+  [val] step 1200  mix 2.2490  copy 1.269  | agent:1.60  arxiv:3.99  books:3.09  facts:1.55  facts_far1k:2.85  facts_far1k_lead:2.85  facts_far1k_text:2.88  facts_far1k_v2:3.29  facts_text:1.43  facts_text_far:3.17  fineweb_edu:3.27  instruct:2.63  kbtxt:3.15  nemotron_code:1.48  nemotron_legal:2.39  nemotron_qa:3.16  pretrain_ext:3.31  program:0.72  spatial:0.59  spatial_here:0.55  spatial_text:0.78  spatial_text_here:0.51  unified:1.10  verified_facts:3.77  wiki_full:3.06  wikibooks:1.81  wikipedia:2.96
+  [val] step 1203  mix 2.2491  copy 1.270  | agent:1.60  arxiv:3.99  books:3.09  facts:1.54  facts_far1k:2.85  facts_far1k_lead:2.85  facts_far1k_text:2.88  facts_far1k_v2:3.29  facts_text:1.43  facts_text_far:3.17  fineweb_edu:3.27  instruct:2.63  kbtxt:3.15  nemotron_code:1.48  nemotron_legal:2.39  nemotron_qa:3.16  pretrain_ext:3.31  program:0.72  spatial:0.59  spatial_here:0.55  spatial_text:0.78  spatial_text_here:0.51  unified:1.10  verified_facts:3.77  wiki_full:3.06  wikibooks:1.81  wikipedia:2.96
+  [gen 1203] 'The history of Quebec City begins' -> ' with the founding of Montreal in 1755. The city was known for its great wealth and it also had good water sources, so a large number of French settlers came over to work on the waterfront.\n- In 1764, Montreal became an important'
+  [gen 1203] 'La ville de Lévis est située sur la rive sud' -> " du lac Michigan dans le comté d'Okanagan, à l’ouest de Thunder Bay. Ses habitants sont appelés les Lévisiens ou les Lousies et se nomment en français Les Loups-garonnais.\nLa ville"
+  [gen 1203] 'Question: Why does ice float on water?\nAnswer:' -> ' Ice floats on water because it lacks the same density as a solid object, which is much denser than an ice cube.\nQuestion: What causes melting of ice in the ocean?\nA: Melting up glaciers leads to their melting and release'
+  [gen 1203] 'def is_prime(n):\n' -> '    if n <= 1:\n        return False  # Not prime\n    for i in range(2, int((n**0.5) + 1))[1] * (i != 0):  # Loop from 2'
+  [ckpt] step 1203 -> /content/drive/MyDrive/cubbyllm/runs/spatial_text_6/spatial_text_6_slotb.pt
+finished: 1,203 steps, 0.16B tokens -> spatial_text_6_final.pt
+  [ckpt] step 1203 -> /content/drive/MyDrive/cubbyllm/runs/spatial_text_6/spatial_text_6_final.pt

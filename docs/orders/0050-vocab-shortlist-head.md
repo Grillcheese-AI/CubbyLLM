@@ -1,5 +1,5 @@
 # 0050 — The vocabulary at a small head's cost: a real shortlist for the 450M's 128k output head
-status: in progress
+status: review
 written: 2026-11-04 by Cowork · approved: 2026-11-04 by Nick ("I think a priority would be to fix the vocab first") · hypothesis: H-C3 (with H-C1, H-C6)
 
 ## Why
@@ -83,13 +83,19 @@ Its own order, written from stage 1's numbers. 0045's runs are not changed.
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
-- **Commits:**
-- **Files:**
-- **Tests:**
-- **Measured:** <against each acceptance line>
-- **Not verified here:**
-- **Found on the way:**
-- **Questions:**
+- **Commits:** `15353d9`, `50f3f06` (the head's share), `eabbb76` (step 1, killed), `d3d166b`, `88430d8`, `182c881`
+  (2a and its fix), and this one (2a's second read).
+- **Files:** `cubbyllm/model/vocab/fused_ce.py` (`CB_FUSED_CE`, off by default), `validation/train_base.py`,
+  `validation/head_share_torch.py`, `tests/model/test_fused_ce.py`, `notebooks/head_shortlist.ipynb`.
+- **Tests:** `tests/model/test_fused_ce.py`, 6 pass on CPU; the same file passed on the A100 before cell 4's bench.
+- **Measured:** step 1: 0.958 greedy agreement against 0.995, killed. 2a: 10.9 GB freed on both shapes (met); +4.6%
+  on the 450M (the 3% line not met), +1.6% on the grown shape (met); largest micro 24 at 18,221 tok/s against 16 at
+  18,067 (450M), 8 for both on the grown shape. The sections below carry the tables.
+- **Not verified here:** every timing is the A100's; nothing ran on the local card.
+- **Found on the way:** the first read's matmuls ran in fp32 outside autocast (fixed). The 450M's remaining 25 ms are
+  elementwise passes per chunk; larger chunks or a fused kernel are the levers, not tried.
+- **Questions:** whether +4.6% at equal batch, with +0.9% tokens per second at the batch it frees, is enough for the
+  450M, or the 2a line holds and a kernel is tried.
 
 ## Step 1 on grilly2: the head's share of decode (Claude Code, 2026-11-04)
 - **Log:** `head_share_grilly_2026-11-04.json` (`validation/head_share.py`, on grilly2, the RX 6750 XT). The export is
@@ -298,3 +304,34 @@ Status: in progress (2a's second read).
   - **The fix is accepted:** bf16 matmuls as the full head runs them, and the gradients computed in the forward pass.
   - **The lines are unchanged:** the equality test re-run at the new precision (bf16: at most 1e-3 relative), and cell
     4 re-run in Nick's next session. Then the largest micro batch and its tokens per second, for both shapes.
+
+## Stage 2a's second A100 read: the matmuls in bf16 (Nick's session; Claude Code's reading, 2026-11-04 night)
+Cell 4 after the pull (`head_share_train_fused_bf16_cuda_2026-11-05.json`; the first read is
+`..._fused_fp32_...`). The cell runs `tests/model/test_fused_ce.py` on the card first and stops if one fails. The bench
+ran, so the bf16 equality test passed there (the loss within 1e-3 of the full path).
+
+| micro 8, S 1,024 | full | fused | freed | slower |
+|---|---|---|---|---|
+| 450M (L32) | 541.7 ms, 35.8 GB | 566.9 ms, 24.9 GB | **10.9 GB** | **+4.6%** |
+| 1.36B (L64) | 1,389.4 ms, 71.3 GB | 1,412.1 ms, 60.4 GB | **10.9 GB** | **+1.6%** |
+
+- **Largest micro batch under 92% of the card:**
+  - 450M: full 16 at 18,067 tok/s; fused 24 at 18,221 tok/s (+0.9%);
+  - 1.36B: both 8; full 5,887 tok/s, fused 5,781 tok/s (−1.8%). Fused 16 does not fit.
+- **Against the lines:**
+  - at least 10 GB freed: **met** on both shapes (10.9 GB; 0.5 GB less than the first read, the fp32 dW kept for
+    backward, as expected);
+  - at most 3% slower at the same micro batch: **met on the 1.36B (+1.6%), not met on the 450M (+4.6%)**;
+  - the kill (< 5 GB freed, or a mismatch) is not crossed.
+- **Where the 450M's 25 ms go:** the head costs the full path 62 ms over the trunk, and the chunked path 87 ms.
+  - Per chunk of 1,024 positions, the chunked path materialises fp32 logits (0.5 GB), exponentiates them in place,
+    scatters the target, casts to bf16, and adds dW into an fp32 buffer: eight rounds of elementwise passes over
+    1,024 x 128k.
+  - The full path makes one pass over 8,192 x 128k, through cuBLAS and one fused cross-entropy kernel.
+  - Two levers, neither tried, so the line is not tuned on the card it is read on:
+    - larger chunks (fewer, larger passes);
+    - a Triton kernel fusing exp, scatter and cast.
+- **What it buys at the 450M:** the freed memory turns into a larger micro batch (24 against 16), and at that batch the
+  fused path is not slower (+0.9% tokens per second). On the grown shape it frees 10.9 GB at the same batch.
+
+Status: review (2a: memory met; speed met on the grown shape, 1.6 points over on the 450M; step 1 killed earlier).
