@@ -529,7 +529,8 @@ def make_fns(model: CubbyModel, vocab: int, dev):
             ids = x.ids if isinstance(x, Tokens) else x                      # stored (no link: the head is plain h W^T)
             with torch.autocast("cuda", dtype=torch.bfloat16, enabled=amp):
                 h = model.features(ids)
-            return fused_ce.chunked_cross_entropy(h, model.head._codes(), y)
+            return fused_ce.chunked_cross_entropy(h, model.head._codes(), y,      # the matmuls in bf16, as
+                                                  dtype=torch.bfloat16 if amp else None)  # the full head runs
         with torch.autocast("cuda", dtype=torch.bfloat16, enabled=amp):
             logits = forward_batch(model, x)
         loss = F.cross_entropy(logits.float().reshape(-1, vocab), y.reshape(-1))

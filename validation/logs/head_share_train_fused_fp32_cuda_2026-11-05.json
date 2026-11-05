@@ -1,0 +1,94 @@
+{
+ "what": "order 0050 stage 1 (train, torch)",
+ "date": "2026-11-05",
+ "card": "NVIDIA A100-SXM4-80GB",
+ "torch": "2.11.0+cu130",
+ "micro": 8,
+ "seq": 1024,
+ "shapes": [
+  {
+   "ckpt": "base450m_cont_final.pt",
+   "D": 1024,
+   "L": 32,
+   "vocab": 128000,
+   "micro": 8,
+   "params_M": 576.2,
+   "full": {
+    "p50_ms": 536.964,
+    "mean_ms": 540.186,
+    "n": 10,
+    "peak_gb": 35.84
+   },
+   "trunk": {
+    "p50_ms": 475.991,
+    "mean_ms": 475.884,
+    "n": 10,
+    "peak_gb": 22.06
+   },
+   "fused": {
+    "p50_ms": 994.587,
+    "mean_ms": 995.478,
+    "n": 10,
+    "peak_gb": 23.92
+   },
+   "head_share_of_step": 0.1136,
+   "head_peak_gb": 13.78,
+   "fused_freed_gb": 11.92,
+   "fused_slower": 0.8522,
+   "largest_micro": {
+    "full": {
+     "micro": 16,
+     "tok_s": 18059,
+     "peak_gb": 68.72
+    },
+    "fused": {
+     "micro": 24,
+     "tok_s": 9283,
+     "peak_gb": 62.32
+    }
+   }
+  },
+  {
+   "ckpt": "grow_mem_grown_final.pt",
+   "D": 1024,
+   "L": 64,
+   "vocab": 128000,
+   "micro": 8,
+   "params_M": 1328.2,
+   "full": {
+    "p50_ms": 1389.97,
+    "mean_ms": 1407.804,
+    "n": 10,
+    "peak_gb": 71.28
+   },
+   "trunk": {
+    "p50_ms": 1330.891,
+    "mean_ms": 1350.962,
+    "n": 10,
+    "peak_gb": 57.95
+   },
+   "fused": {
+    "p50_ms": 1848.563,
+    "mean_ms": 1870.568,
+    "n": 10,
+    "peak_gb": 59.37
+   },
+   "head_share_of_step": 0.0425,
+   "head_peak_gb": 13.33,
+   "fused_freed_gb": 11.91,
+   "fused_slower": 0.3299,
+   "largest_micro": {
+    "full": {
+     "micro": 8,
+     "tok_s": 5877,
+     "peak_gb": 71.32
+    },
+    "fused": {
+     "micro": 8,
+     "tok_s": 4438,
+     "peak_gb": 59.37
+    }
+   }
+  }
+ ]
+}

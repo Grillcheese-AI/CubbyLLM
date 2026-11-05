@@ -255,3 +255,35 @@ Status: in progress.
   - A shortlist that must match the full head's argmax 99.5% of the time would need either a head trained with it
     (2b's training side) or an exact fallback when the shortlist's best is not confident. Either is a new order, if
     the vocabulary grows.
+
+## Stage 2a's first A100 read: the memory line met, the matmuls in fp32 (Claude Code, 2026-11-04 night)
+Nick's session ran cell 4 (`head_share_train_fused_fp32_cuda_2026-11-05.json`). The tests passed on the card (the
+cell stops before the bench otherwise): the chunked loss agrees with the full path there.
+
+| micro 8, S 1,024 | full | fused | freed | slower |
+|---|---|---|---|---|
+| 450M (L32) | 537 ms, 35.8 GB | 995 ms, 23.9 GB | **11.9 GB** | **+85%** |
+| 1.36B (L64) | 1,390 ms, 71.3 GB | 1,849 ms, 59.4 GB | **11.9 GB** | **+33%** |
+
+- **Largest micro (of 8, 12, 16, 24, 32, 48) under 92% of the card:** 450M full 16 at 18,059 tok/s, fused 24 at
+  9,283 tok/s; 1.36B both 8 (5,877 against 4,438 tok/s).
+- **Lines:** >= 10 GB freed: **met** on both shapes. <= 3% slower: **not met**. The kill (< 5 GB freed, or a mismatch)
+  is not crossed.
+- **Why it was slower: a build defect, not the method.** The added time is the same on both shapes (+458 ms, +459 ms),
+  so it lies in the head, not the trunk. The callers compute `h` under autocast and call the loss outside it, where
+  `h` (after the trunk's last norm) is fp32. The chunked loss ran its four head matmuls in fp32 (TF32 off), against
+  the full path's three in bf16: about 4 x 110 ms of fp32 GEMMs at 8,192 x 1,024 x 128k, which is the gap.
+- **The fix** (`cubbyllm/model/vocab/fused_ce.py`):
+  - the matmuls run in a given dtype; `train_base` and the bench pass bf16, as the full head runs (None: autocast's
+    dtype when it is on, else the state's);
+  - both gradients are computed in the forward pass, chunk by chunk, and backward only scales them: three matmuls, as
+    the full path, no recompute (the loss is the last op, its upstream gradient a scalar). Without grad only the loss
+    is computed.
+  - What is kept for backward: dh (positions x d) and dW in fp32 (128k x d: 0.5 GB), so about 0.5 GB less freed.
+  - Tests: 6 passed on CPU, one new (the matmuls in the asked dtype against the full path on bf16-rounded inputs; eval
+    computes only the loss).
+- **Next:** cell 4 again, after a pull, in Nick's next A100 session. With the matmuls in bf16 and no recompute I
+  expect the step within a few percent of the full path; the 3% line is read there, not assumed.
+
+Status: in progress (2a's second read).
+

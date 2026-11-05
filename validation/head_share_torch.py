@@ -156,7 +156,7 @@ def _train_shape(model, meta, params, ck, micro, a, dev) -> dict:
             from cubbyllm.model.vocab.fused_ce import chunked_cross_entropy
             with torch.autocast("cuda", dtype=torch.bfloat16):
                 h = model.features(inp)
-            chunked_cross_entropy(h, model.head._codes(), y).backward()
+            chunked_cross_entropy(h, model.head._codes(), y, dtype=torch.bfloat16).backward()
             for p in params:
                 p.grad = None
         rec = {"ckpt": os.path.basename(ck), "D": meta["D"], "L": meta["L"], "vocab": meta["vocab"], "micro": micro,
@@ -184,7 +184,7 @@ def _step(model, params, meta, inp, y, fused: bool) -> None:
         logits = None if fused else model.logits_from(h)
     if fused:
         from cubbyllm.model.vocab.fused_ce import chunked_cross_entropy
-        chunked_cross_entropy(h, model.head._codes(), y).backward()
+        chunked_cross_entropy(h, model.head._codes(), y, dtype=torch.bfloat16).backward()
     else:
         F.cross_entropy(logits.float().reshape(-1, meta["vocab"]), y.reshape(-1)).backward()
     for p in params:

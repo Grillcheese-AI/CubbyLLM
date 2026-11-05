@@ -149,3 +149,20 @@ spends its compute on language, not on re-reading and memorizing facts.
   - It goes in `spatial_facts_450m.ipynb` and can share Nick's next A100 session with 0050's notebook.
 
 Status: in progress (B).
+
+## B, run 6: the link arm (Nick's session, 2026-11-04 night; Claude Code's reading)
+- **The link arm ran:** from `base450m_cont_stable_end.pt`, 1,203 steps, 0.16B tokens, the copy ring with run 4's
+  flags (`train_spatial_link_6_2026-11-04.log`). The speed check took `mingru` (37,164 tok/s at micro 16).
+- **Its read on the bench's 400 documents** (`hypertoken_recall_spatial_run6_link_2026-11-04.json`):
+  - **far facts (`facts_far1k_lead`, 2,002 questions): 0.804 exact**, first token 0.992;
+  - villages (`spatial_here`, 3,610): 0.764 exact;
+  - with the questions' place removed (the learned route alone, `..._route_...`): far facts 0.000 (first token 0.014),
+    villages 0.764. The far facts are reached only through the question's place. That is the number gate 4 reads.
+  - The training probe at the end: far facts 0.776 exact, later pieces 0.924; the copy's gate 0.769 where the fact is
+    in the ring, 0.178 where it is not.
+- **The text held-out mix:** 2.2398 at the last step (it was 2.3055 at step 300; the arm's schedule decays).
+- **Gate 4 and gate 2 wait for the text arm.** It is the same notebook with `ARM = 'text'` (RUN stays 6). It takes the
+  link arm's 1,203 steps from its metrics, so the tokens are equal. Gate 1's text clause will be reported beside it.
+- Villages here (0.764) are not comparable to run 3's 0.953: run 3 trained 2 h from the same start, run 6 one hour.
+
+Status: in progress (B: the text arm next).

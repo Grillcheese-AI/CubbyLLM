@@ -72,3 +72,18 @@ def test_a_bf16_state_against_fp32_rows_as_autocast_trains_it():
     ref_w = w.detach().to(torch.bfloat16).float().requires_grad_()
     F.cross_entropy(ref_h @ ref_w.t(), y, ignore_index=-100).backward()
     assert _rel(w.grad, ref_w.grad) <= 2e-2 and _rel(hb.grad, ref_h.grad) <= 2e-2
+
+
+def test_the_matmuls_run_in_the_asked_dtype_as_autocast_runs_the_full_head():
+    """The callers compute h under autocast and call outside it: h is fp32 there, and dtype=bf16 puts the matmuls
+    where the full head runs them (the A100's first read ran them in fp32: +460 ms a step)."""
+    h, w, y = _case(torch.float32)
+    loss = chunked_cross_entropy(h, w, y, chunk=64, dtype=torch.bfloat16)
+    loss.backward()
+    assert h.grad.dtype == torch.float32 and w.grad.dtype == torch.float32
+    hb, wb = h.detach().to(torch.bfloat16).float().requires_grad_(), w.detach().to(torch.bfloat16).float().requires_grad_()
+    ref = F.cross_entropy(hb @ wb.t(), y, ignore_index=-100)
+    ref.backward()
+    assert _rel(loss, ref) <= 1e-2 and _rel(h.grad, hb.grad) <= 2e-2 and _rel(w.grad, wb.grad) <= 2e-2
+    with torch.no_grad():                                                  # eval: the loss alone, nothing saved
+        assert _rel(chunked_cross_entropy(h, w, y, chunk=64, dtype=torch.bfloat16), loss) <= 1e-6
