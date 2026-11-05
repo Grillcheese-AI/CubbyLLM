@@ -1,0 +1,621 @@
+{
+ "what": "order 0051 A: the span count (names; CPU)",
+ "date": "2026-11-04",
+ "cap": 55,
+ "max_words": 8,
+ "windows": 4,
+ "len": 1024,
+ "line_for_C": "at least 10% of the mix's tokens folded",
+ "whole": {
+  "heldout": {
+   "a_every_match": {
+    "tokens": 53248,
+    "folded_share": 0.3228,
+    "saved_share": 0.1899,
+    "positions_left_per_1024": 829.5,
+    "mix_weighted_folded_share": 0.3525,
+    "mix_weighted_saved_share": 0.2068
+   },
+   "b_proper_names": {
+    "tokens": 53248,
+    "folded_share": 0.0605,
+    "saved_share": 0.0387,
+    "positions_left_per_1024": 984.4,
+    "mix_weighted_folded_share": 0.0519,
+    "mix_weighted_saved_share": 0.0338
+   }
+  },
+  "slice0045": {
+   "a_every_match": {
+    "tokens": 53248,
+    "folded_share": 0.3416,
+    "saved_share": 0.2006,
+    "positions_left_per_1024": 818.6,
+    "mix_weighted_folded_share": 0.3523,
+    "mix_weighted_saved_share": 0.2074
+   },
+   "b_proper_names": {
+    "tokens": 53248,
+    "folded_share": 0.0735,
+    "saved_share": 0.047,
+    "positions_left_per_1024": 975.9,
+    "mix_weighted_folded_share": 0.069,
+    "mix_weighted_saved_share": 0.0442
+   }
+  }
+ },
+ "per_source": {
+  "heldout/arxiv": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 441,
+    "folded": 1043,
+    "saved": 602,
+    "folded_share": 0.2546,
+    "saved_share": 0.147,
+    "positions_left_per_1024": 873.5,
+    "unpredicted_share": 0.147
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 109,
+    "folded": 260,
+    "saved": 151,
+    "folded_share": 0.0635,
+    "saved_share": 0.0369,
+    "positions_left_per_1024": 986.2,
+    "unpredicted_share": 0.0369
+   }
+  },
+  "heldout/books": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 654,
+    "folded": 1509,
+    "saved": 855,
+    "folded_share": 0.3684,
+    "saved_share": 0.2087,
+    "positions_left_per_1024": 810.2,
+    "unpredicted_share": 0.2087
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 81,
+    "folded": 196,
+    "saved": 115,
+    "folded_share": 0.0479,
+    "saved_share": 0.0281,
+    "positions_left_per_1024": 995.2,
+    "unpredicted_share": 0.0281
+   }
+  },
+  "heldout/fineweb_edu": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 656,
+    "folded": 1554,
+    "saved": 898,
+    "folded_share": 0.3794,
+    "saved_share": 0.2192,
+    "positions_left_per_1024": 799.5,
+    "unpredicted_share": 0.2192
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 107,
+    "folded": 326,
+    "saved": 219,
+    "folded_share": 0.0796,
+    "saved_share": 0.0535,
+    "positions_left_per_1024": 969.2,
+    "unpredicted_share": 0.0535
+   }
+  },
+  "heldout/kbtxt": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 595,
+    "folded": 1489,
+    "saved": 894,
+    "folded_share": 0.3635,
+    "saved_share": 0.2183,
+    "positions_left_per_1024": 800.5,
+    "unpredicted_share": 0.2183
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 85,
+    "folded": 247,
+    "saved": 162,
+    "folded_share": 0.0603,
+    "saved_share": 0.0396,
+    "positions_left_per_1024": 983.5,
+    "unpredicted_share": 0.0396
+   }
+  },
+  "heldout/nemotron_code": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 396,
+    "folded": 932,
+    "saved": 536,
+    "folded_share": 0.2275,
+    "saved_share": 0.1309,
+    "positions_left_per_1024": 890.0,
+    "unpredicted_share": 0.1309
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 17,
+    "folded": 41,
+    "saved": 24,
+    "folded_share": 0.01,
+    "saved_share": 0.0059,
+    "positions_left_per_1024": 1018.0,
+    "unpredicted_share": 0.0059
+   }
+  },
+  "heldout/nemotron_legal": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 614,
+    "folded": 1485,
+    "saved": 871,
+    "folded_share": 0.3625,
+    "saved_share": 0.2126,
+    "positions_left_per_1024": 806.2,
+    "unpredicted_share": 0.2126
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 105,
+    "folded": 284,
+    "saved": 179,
+    "folded_share": 0.0693,
+    "saved_share": 0.0437,
+    "positions_left_per_1024": 979.2,
+    "unpredicted_share": 0.0437
+   }
+  },
+  "heldout/nemotron_qa": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 662,
+    "folded": 1522,
+    "saved": 860,
+    "folded_share": 0.3716,
+    "saved_share": 0.21,
+    "positions_left_per_1024": 809.0,
+    "unpredicted_share": 0.21
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 78,
+    "folded": 213,
+    "saved": 135,
+    "folded_share": 0.052,
+    "saved_share": 0.033,
+    "positions_left_per_1024": 990.2,
+    "unpredicted_share": 0.033
+   }
+  },
+  "heldout/pretrain_ext": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 600,
+    "folded": 1373,
+    "saved": 773,
+    "folded_share": 0.3352,
+    "saved_share": 0.1887,
+    "positions_left_per_1024": 830.8,
+    "unpredicted_share": 0.1887
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 122,
+    "folded": 304,
+    "saved": 182,
+    "folded_share": 0.0742,
+    "saved_share": 0.0444,
+    "positions_left_per_1024": 978.5,
+    "unpredicted_share": 0.0444
+   }
+  },
+  "heldout/unified": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 609,
+    "folded": 1496,
+    "saved": 887,
+    "folded_share": 0.3652,
+    "saved_share": 0.2166,
+    "positions_left_per_1024": 802.2,
+    "unpredicted_share": 0.2166
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 33,
+    "folded": 86,
+    "saved": 53,
+    "folded_share": 0.021,
+    "saved_share": 0.0129,
+    "positions_left_per_1024": 1010.8,
+    "unpredicted_share": 0.0129
+   }
+  },
+  "heldout/verified_facts": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 556,
+    "folded": 1296,
+    "saved": 740,
+    "folded_share": 0.3164,
+    "saved_share": 0.1807,
+    "positions_left_per_1024": 839.0,
+    "unpredicted_share": 0.1807
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 93,
+    "folded": 250,
+    "saved": 157,
+    "folded_share": 0.061,
+    "saved_share": 0.0383,
+    "positions_left_per_1024": 984.8,
+    "unpredicted_share": 0.0383
+   }
+  },
+  "heldout/wiki_full": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 650,
+    "folded": 1663,
+    "saved": 1013,
+    "folded_share": 0.406,
+    "saved_share": 0.2473,
+    "positions_left_per_1024": 770.8,
+    "unpredicted_share": 0.2473
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 159,
+    "folded": 483,
+    "saved": 324,
+    "folded_share": 0.1179,
+    "saved_share": 0.0791,
+    "positions_left_per_1024": 943.0,
+    "unpredicted_share": 0.0791
+   }
+  },
+  "heldout/wikibooks": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 46,
+    "folded": 138,
+    "saved": 92,
+    "folded_share": 0.0337,
+    "saved_share": 0.0225,
+    "positions_left_per_1024": 1001.0,
+    "unpredicted_share": 0.0225
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 25,
+    "folded": 67,
+    "saved": 42,
+    "folded_share": 0.0164,
+    "saved_share": 0.0103,
+    "positions_left_per_1024": 1013.5,
+    "unpredicted_share": 0.0103
+   }
+  },
+  "heldout/wikipedia": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 598,
+    "folded": 1691,
+    "saved": 1093,
+    "folded_share": 0.4128,
+    "saved_share": 0.2668,
+    "positions_left_per_1024": 750.8,
+    "unpredicted_share": 0.2668
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 145,
+    "folded": 463,
+    "saved": 318,
+    "folded_share": 0.113,
+    "saved_share": 0.0776,
+    "positions_left_per_1024": 944.5,
+    "unpredicted_share": 0.0776
+   }
+  },
+  "slice0045/arxiv": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 490,
+    "folded": 1210,
+    "saved": 720,
+    "folded_share": 0.2954,
+    "saved_share": 0.1758,
+    "positions_left_per_1024": 844.0,
+    "unpredicted_share": 0.1758
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 116,
+    "folded": 266,
+    "saved": 150,
+    "folded_share": 0.0649,
+    "saved_share": 0.0366,
+    "positions_left_per_1024": 986.5,
+    "unpredicted_share": 0.0366
+   }
+  },
+  "slice0045/books": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 630,
+    "folded": 1442,
+    "saved": 812,
+    "folded_share": 0.3521,
+    "saved_share": 0.1982,
+    "positions_left_per_1024": 821.0,
+    "unpredicted_share": 0.1982
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 45,
+    "folded": 105,
+    "saved": 60,
+    "folded_share": 0.0256,
+    "saved_share": 0.0146,
+    "positions_left_per_1024": 1009.0,
+    "unpredicted_share": 0.0146
+   }
+  },
+  "slice0045/fineweb_edu": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 612,
+    "folded": 1464,
+    "saved": 852,
+    "folded_share": 0.3574,
+    "saved_share": 0.208,
+    "positions_left_per_1024": 811.0,
+    "unpredicted_share": 0.208
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 87,
+    "folded": 219,
+    "saved": 132,
+    "folded_share": 0.0535,
+    "saved_share": 0.0322,
+    "positions_left_per_1024": 991.0,
+    "unpredicted_share": 0.0322
+   }
+  },
+  "slice0045/kbtxt": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 683,
+    "folded": 1735,
+    "saved": 1052,
+    "folded_share": 0.4236,
+    "saved_share": 0.2568,
+    "positions_left_per_1024": 761.0,
+    "unpredicted_share": 0.2568
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 255,
+    "folded": 719,
+    "saved": 464,
+    "folded_share": 0.1755,
+    "saved_share": 0.1133,
+    "positions_left_per_1024": 908.0,
+    "unpredicted_share": 0.1133
+   }
+  },
+  "slice0045/nemotron_code": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 438,
+    "folded": 1080,
+    "saved": 642,
+    "folded_share": 0.2637,
+    "saved_share": 0.1567,
+    "positions_left_per_1024": 863.5,
+    "unpredicted_share": 0.1567
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 39,
+    "folded": 106,
+    "saved": 67,
+    "folded_share": 0.0259,
+    "saved_share": 0.0164,
+    "positions_left_per_1024": 1007.2,
+    "unpredicted_share": 0.0164
+   }
+  },
+  "slice0045/nemotron_legal": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 577,
+    "folded": 1299,
+    "saved": 722,
+    "folded_share": 0.3171,
+    "saved_share": 0.1763,
+    "positions_left_per_1024": 843.5,
+    "unpredicted_share": 0.1763
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 102,
+    "folded": 253,
+    "saved": 151,
+    "folded_share": 0.0618,
+    "saved_share": 0.0369,
+    "positions_left_per_1024": 986.2,
+    "unpredicted_share": 0.0369
+   }
+  },
+  "slice0045/nemotron_qa": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 596,
+    "folded": 1354,
+    "saved": 758,
+    "folded_share": 0.3306,
+    "saved_share": 0.1851,
+    "positions_left_per_1024": 834.5,
+    "unpredicted_share": 0.1851
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 89,
+    "folded": 228,
+    "saved": 139,
+    "folded_share": 0.0557,
+    "saved_share": 0.0339,
+    "positions_left_per_1024": 989.2,
+    "unpredicted_share": 0.0339
+   }
+  },
+  "slice0045/pretrain_ext": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 630,
+    "folded": 1495,
+    "saved": 865,
+    "folded_share": 0.365,
+    "saved_share": 0.2112,
+    "positions_left_per_1024": 807.8,
+    "unpredicted_share": 0.2112
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 118,
+    "folded": 354,
+    "saved": 236,
+    "folded_share": 0.0864,
+    "saved_share": 0.0576,
+    "positions_left_per_1024": 965.0,
+    "unpredicted_share": 0.0576
+   }
+  },
+  "slice0045/unified": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 577,
+    "folded": 1382,
+    "saved": 805,
+    "folded_share": 0.3374,
+    "saved_share": 0.1965,
+    "positions_left_per_1024": 822.8,
+    "unpredicted_share": 0.1965
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 95,
+    "folded": 256,
+    "saved": 161,
+    "folded_share": 0.0625,
+    "saved_share": 0.0393,
+    "positions_left_per_1024": 983.8,
+    "unpredicted_share": 0.0393
+   }
+  },
+  "slice0045/verified_facts": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 545,
+    "folded": 1347,
+    "saved": 802,
+    "folded_share": 0.3289,
+    "saved_share": 0.1958,
+    "positions_left_per_1024": 823.5,
+    "unpredicted_share": 0.1958
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 114,
+    "folded": 348,
+    "saved": 234,
+    "folded_share": 0.085,
+    "saved_share": 0.0571,
+    "positions_left_per_1024": 965.5,
+    "unpredicted_share": 0.0571
+   }
+  },
+  "slice0045/wiki_full": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 717,
+    "folded": 1957,
+    "saved": 1240,
+    "folded_share": 0.4778,
+    "saved_share": 0.3027,
+    "positions_left_per_1024": 714.0,
+    "unpredicted_share": 0.3027
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 200,
+    "folded": 642,
+    "saved": 442,
+    "folded_share": 0.1567,
+    "saved_share": 0.1079,
+    "positions_left_per_1024": 913.5,
+    "unpredicted_share": 0.1079
+   }
+  },
+  "slice0045/wikibooks": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 388,
+    "folded": 963,
+    "saved": 575,
+    "folded_share": 0.2351,
+    "saved_share": 0.1404,
+    "positions_left_per_1024": 880.2,
+    "unpredicted_share": 0.1404
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 70,
+    "folded": 189,
+    "saved": 119,
+    "folded_share": 0.0461,
+    "saved_share": 0.0291,
+    "positions_left_per_1024": 994.2,
+    "unpredicted_share": 0.0291
+   }
+  },
+  "slice0045/wikipedia": {
+   "a_every_match": {
+    "tokens": 4096,
+    "spans": 624,
+    "folded": 1462,
+    "saved": 838,
+    "folded_share": 0.3569,
+    "saved_share": 0.2046,
+    "positions_left_per_1024": 814.5,
+    "unpredicted_share": 0.2046
+   },
+   "b_proper_names": {
+    "tokens": 4096,
+    "spans": 86,
+    "folded": 231,
+    "saved": 145,
+    "folded_share": 0.0564,
+    "saved_share": 0.0354,
+    "positions_left_per_1024": 987.8,
+    "unpredicted_share": 0.0354
+   }
+  }
+ }
+}

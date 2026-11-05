@@ -1,5 +1,5 @@
 # 0051 — Loci tokens in training: count what spans would save, run the queued places-and-route continuation, then decide spans
-status: open
+status: in progress
 written: 2026-11-04 by Cowork · approved: 2026-11-04 by Nick ("what about using loci tokens in training?", then "yes") · hypothesis: H-K10 (with H-S12, H-C2)
 
 ## Why
@@ -78,3 +78,54 @@ spends its compute on language, not on re-reading and memorizing facts.
 - **Not verified here:**
 - **Found on the way:**
 - **Questions:**
+
+## A, the span count (Claude Code, 2026-11-04)
+- **Log:** `span_count_2026-11-04.json` (`validation/span_count.py`, CPU). 4 windows of 1,024 tokens from each of the
+  13 held-out tails, and the same from 0045's slice (training region, evenly spaced): 53,248 tokens each.
+- **The spans:** the longest exact matches in R1b's names segment (`cubelang knowledge batch`).
+  - Word-aligned, leftmost first, at most 8 words and 55 pieces, no overlaps.
+  - A span starts and ends on a letter or digit (punctuation is never folded in).
+  - Only spans of two or more pieces fold anything.
+- **Two readings,** since nearly every common word is some item's alias:
+  - **(a) every match:** an upper bound, mostly language words ("the following", "most often", "a file").
+  - **(b) proper names:** first and last words capitalised as written. A single word opening a sentence or a line
+    needs a second word, since every sentence starts with a capital.
+  - What (b) folds: "British Compressed Gases Association", "Raspberry Pi OS", "Redundant Array of Independent
+    Disks", "SSL3". Some title-case heading words remain ("Colour Coding", "Distributors"), so (b) is if anything a
+    little high.
+  - H-K10 says language words stay words, so (b) is the reading for the line.
+
+| | (a) folded | (a) saved | (b) folded | (b) saved | (b) positions left / 1,024 |
+|---|---|---|---|---|---|
+| held-out tails, equal per source | 32.3% | 19.0% | 6.1% | 3.9% | 984 |
+| held-out tails, the mix's weights | 35.3% | 20.7% | **5.2%** | 3.4% | |
+| 0045's slice, equal per source | 34.2% | 20.1% | 7.4% | 4.7% | 976 |
+| 0045's slice, the mix's weights | 35.2% | 20.7% | **6.9%** | 4.4% | |
+
+- **Columns:**
+  - "folded": the pieces inside spans;
+  - "saved": positions saved, the sum of (pieces - 1). It is also the share of loss positions no longer predicted
+    (inside a span nothing is predicted).
+  - "The mix's weights": the stable phase's (`train_base`: size x QUALITY).
+- **Per source, (b) folded** (held-out): wikipedia 11.3% and wiki_full 11.8% at the top; fineweb_edu 8.0%; books
+  4.8%; nemotron_code 1.0%; wikibooks 1.6%.
+- **The projected step-time saving:**
+  - Every part of a step scales with positions: the trunk, and the head too when a span's inner positions carry no
+    loss.
+  - So the saving is at most the saved share: **about 3.4% to 4.4% under (b)**, and about 21% under (a).
+  - 0050's A100 numbers will split it between trunk and head; they cannot raise it above the saved share.
+- **The line for C** (at least 10% of the mix's tokens folded):
+  - **not met under (b), 5.2% to 6.9%.**
+  - Met only under (a), which folds language words, against H-K10's own boundary.
+  - **Spans are recorded as not worth it for training cost by names alone.** They may still be for recall.
+- **Not counted:** the optional fact spans (name, relation word, value). They would add the relation words and values
+  next to the names, which (b) already bounds from below. I can count them if you want the upper side of (b).
+- **Tests:** `tests/validation/test_span_count.py`, 6 passed:
+  - the longest run wins;
+  - no overlaps;
+  - deterministic;
+  - the 55-piece and 8-word caps;
+  - punctuation and whitespace stay out;
+  - a capitalised sentence opener is no name alone;
+  - only runs of two or more pieces fold.
+- **B:** the notebook comes next. `CB_SPATIAL` off is bit-identical by the link's own tests (`tests/model/test_spatial.py`).
