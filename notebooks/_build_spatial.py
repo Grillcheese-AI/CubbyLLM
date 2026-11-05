@@ -90,6 +90,15 @@ exact on the 400 held-out documents, villages ≥ 0.90, every source without pla
 kill: far facts below run 4's 0.761. After it, `validation/diag_frozen_check.py` (CB_RUN = run 5's final, CB_START =
 run 3's) confirms that only the copy's tensors moved.
 
+**Run 6 (order 0051 B): the far facts against their text control, both arms from the same start.** No run since run 1
+had a text arm; runs 2-5 never compared the far facts with text at equal tokens. Both arms start from
+`base450m_cont_stable_end.pt` (before the decay: no re-warm drift, run 4's text cost), about an hour each on an A100,
+equal tokens (the text arm takes the link arm's step count). `link`: run 4's flags (placed, writes binding, the route
+loss, the copy ring; tau 3.04, beta 0.115), the trunk training. `text`: `spatial_text_here` + `facts_far1k_text`.
+**Pre-registered (Cowork, 0051):** H-K10 gate 4 as a real comparison, far facts link >= 2x text and >= 0.50; H-S12 gate
+2, the link's text mix within 0.02 of the text arm's; gate 1's text clause reported, not gated (in-window villages make
+it unmeetable by construction, as runs 1-3 showed).
+
 **The small-scale reads this rests on (2026-10-20, `validation/exp_k10_hypertoken.py`):** a 3.4M trunk, facts shown
 once, questions beyond the window -- 0.94 with the address on the question, 0.82 for the learned route taught by
 the route loss, 0.00 for text, 0.03 for attention over the whole document, 0.00 with a mismatched address.
@@ -125,18 +134,19 @@ assert os.path.exists(f'{REPO}/validation/exp_hypertoken_recall.py'), 'push exp_
 # --- EDIT to your layout ---
 ARM           = 'link'                              # 'link' (places + the route loss) or 'text' (the control)
 SESSION_H     = 12                                  # Colab Pro; 24 on Pro+
-RUN           = 5                                   # 1: facts in-window, one scene a window; 2: roles, a scene per
+RUN           = 6                                   # 1: facts in-window, one scene a window; 2: roles, a scene per
                                                     # document, facts beyond the window; 3: only writers bound, lead;
                                                     # 4: run 3's link + the copy path over the ring (link arm only);
                                                     # 5: run 4's copy trained ALONE on run 3's frozen trunk (order 0005)
-HOURS_PER_ARM = 2.0 if RUN < 4 else 0.5 if RUN == 4 else 0.15   # equal compute for both arms; run 4: 0.5 h; run 5 (copy only): 0.15 h (Cowork)
+                                                    # 6: run 4's link (copy included) vs text, both from stable_end (0051 B)
+HOURS_PER_ARM = 2.0 if RUN < 4 else 0.5 if RUN == 4 else 0.15 if RUN == 5 else 1.0   # equal compute for both arms; run 4: 0.5 h; run 5 (copy only): 0.15 h (Cowork); run 6: ~1 h
                                                     # (run 4's curve: exp_k10_far_facts combo_ring_s*; run 5: run 4's)
 SEQ           = 1024                                # whole documents a window: two villages (512) or one far-facts doc (1024)
 TOKENS_PER_STEP = 131_072                           # the optimizer step; BOTH ARMS MUST MATCH (the readout checks it)
 SHARD_MULT    = 96                                  # ~5% of the tokens each for the two 10M-token shards against the 17.7B
                                                     # cache (size x multiplier draws): ~35M tokens = 3.5 epochs of each at 2 h
 DRIVE         = '/content/drive/MyDrive/cubbyllm'
-START_CKPT    = (f'{DRIVE}/runs/base450m_cont/base450m_cont_stable_end.pt' if RUN < 4   # the continued 450M, before its decay
+START_CKPT    = (f'{DRIVE}/runs/base450m_cont/base450m_cont_stable_end.pt' if RUN < 4 or RUN == 6   # before its decay
                  else f'{DRIVE}/runs/spatial_link_3/spatial_link_3_final.pt')          # run 4: run 3's link, trained
 CORPUS_DRIVE  = f'{DRIVE}/token_cache_cont'
 CORPUS        = '/content/token_cache_cont'                  # LOCAL SSD (Drive-FUSE reads are ~30x slower)
@@ -145,12 +155,12 @@ NAME          = f'spatial_{ARM}' + ('' if RUN == 1 else f'_{RUN}')
 RUN_DIR       = f'{DRIVE}/runs/{NAME}'
 FACTS         = {1: ('facts', 'facts_text'), 2: ('facts_far1k', 'facts_far1k_text'),
                  3: ('facts_far1k_lead', 'facts_far1k_text'), 4: ('facts_far1k_lead', 'facts_far1k_text'),
-                 5: ('facts_far1k_lead', 'facts_far1k_text')}[RUN]
+                 5: ('facts_far1k_lead', 'facts_far1k_text'), 6: ('facts_far1k_lead', 'facts_far1k_text')}[RUN]
 SHARDS        = {'link': ('spatial_here', FACTS[0]), 'text': ('spatial_text_here', FACTS[1])}[ARM]
 MULTS         = {n: (SHARD_MULT if n.startswith('spatial') or RUN == 1 else SHARD_MULT // 2) for n in SHARDS}
                                                     # facts_far1k is 20M tokens, twice the others: half the multiplier
 assert ARM in ('link', 'text'), ARM
-assert RUN < 4 or ARM == 'link', 'runs 4-5 have no text arm: run 3 is their control'
+assert RUN < 4 or RUN == 6 or ARM == 'link', 'runs 4-5 have no text arm: run 3 is their control'
 assert os.path.exists(START_CKPT), START_CKPT
 os.makedirs(RUN_DIR, exist_ok=True); os.makedirs(CORPUS, exist_ok=True)
 
@@ -186,7 +196,7 @@ assert os.path.exists(TOKENIZER), TOKENIZER
 # without addresses, the memory's facts_text_far) at 0 -- size-proportional draws would otherwise give each ~0.1%.
 # Run 5 (the trunk frozen) draws ONLY its two shards: text gives the copy no gradient (every source is still evaluated)
 OTHERS = sorted(n for n in json.load(open(f'{CORPUS}/_sizes.json'))
-                if (RUN >= 5 or n.startswith(('spatial', 'facts'))) and n not in SHARDS)
+                if (RUN == 5 or n.startswith(('spatial', 'facts'))) and n not in SHARDS)
 MIX_JSON = json.dumps({**{n: 0 for n in OTHERS}, **MULTS})
 BASE = dict(
     CUBBY_SPM=TOKENIZER, CB_CORPUS=CORPUS, CB_DRIVE_DIR=RUN_DIR, CB_NAME=NAME,
@@ -211,7 +221,7 @@ if ARM == 'link':
                                                                                # questions scored at every eval
         # torch.compile: the copy gathers the asking positions (nonzero), a shape that changes per batch -- run 4
         # compiled it and held 37% MFU; if a log shows recompiles every step, rerun with CB_COMPILE='0'
-    if RUN >= 5:                                                               # only the copy trains (CB_COPY_LR, its own
+    if RUN == 5:                                                               # only the copy trains (CB_COPY_LR, its own
         BASE.update(CB_TRAIN_ONLY='copy', CB_COPY_LR='3e-3',                   # peak, the same schedule shape); the trunk
                     CB_ROUTE_LOSS='0')                                         # runs forward only: the route loss would
                                                                                # train nothing
@@ -235,7 +245,7 @@ print(f"{ARM} (run {RUN}): {props.name}, {gb:.0f} GB -> micro {BASE['CB_MICRO']}
       f"{OTHERS if RUN < 5 else f'all {len(OTHERS)} others'} x0"
       f"{'; link on, query=placed' if ARM == 'link' else '; no link'}{', route loss 1' if BASE.get('CB_ROUTE_LOSS') == '1' else ''}"
       f"{'; copy path over the ring, probe at every eval' if RUN >= 4 else ''}"
-      f"{'; ONLY the copy trains, the trunk frozen' if RUN >= 5 else ''}")
+      f"{'; ONLY the copy trains, the trunk frozen' if RUN == 5 else ''}")
 
 def run(env_extra, log_name):
     env = dict(os.environ, **BASE, **env_extra)
@@ -308,7 +318,7 @@ def rows_of(path):
     return [json.loads(l) for l in open(path)] if os.path.exists(path) else []
 PROBE = {}
 SUF = '' if RUN == 1 else f'_{RUN}'
-for arm, strip in (('link', '0'), ('link', '1'), ('text', '0')) if RUN < 4 else (('link', '0'),):
+for arm, strip in (('link', '0'), ('link', '1'), ('text', '0')) if RUN < 4 or RUN == 6 else (('link', '0'),):
     final = f'{DRIVE}/runs/spatial_{arm}{SUF}/spatial_{arm}{SUF}_final.pt'
     if not os.path.exists(final):
         print(arm, 'has no final yet'); continue
@@ -331,7 +341,7 @@ for arm in ('link', 'text'):
     mix[arm] = v[-1]['val'].get('_mix') if v else None
 print('\nheld-out text mix:', mix)
 checks = {}
-if RUN >= 4 and link:                              # the control is run 3: far facts 0.021, villages 0.953, its text mix
+if RUN in (4, 5) and link:                         # the control is run 3: far facts 0.021, villages 0.953, its text mix
     r3 = [r for r in rows_of(f'{DRIVE}/runs/spatial_link_3/spatial_link_3_metrics.jsonl') if 'val' in r]
     mix3 = r3[-1]['val'].get('_mix') if r3 else None
     f4, v4 = link[FACTS[0]]['exact'], link['spatial_here']['exact']
@@ -359,10 +369,14 @@ if RUN >= 4 and link:                              # the control is run 3: far f
 if link and text:
     v_link, v_text = link['spatial_here']['exact'], text['spatial_text_here']['exact']
     f_link, f_text = link[FACTS[0]]['exact'], text[FACTS[1]]['exact']
-    checks['1. H-S12 gate 1: villages -- link >= 0.90, text < 0.60'] = v_link >= 0.90 and v_text < 0.60
+    if RUN != 6:
+        checks['1. H-S12 gate 1: villages -- link >= 0.90, text < 0.60'] = v_link >= 0.90 and v_text < 0.60
+    else:                                          # run 6: gate 1's text clause reported, not gated (in-window villages)
+        print(f"  (reported) H-S12 gate 1: villages link {v_link:.3f} (>= 0.90: {v_link >= 0.90}), text {v_text:.3f}")
     checks['2. H-K10 gate 4: facts -- link >= 2x text and >= 0.50'] = f_link >= 2 * f_text and f_link >= 0.50
+    tol = 0.02 if RUN == 6 else 0.01
     if mix['link'] is not None and mix['text'] is not None:
-        checks['3. H-S12 gate 2: text mix of link within 0.01 of text'] = mix['link'] <= mix['text'] + 0.01
+        checks[f'3. H-S12 gate 2: text mix of link within {tol} of text'] = mix['link'] <= mix['text'] + tol
     print(f"villages: link {v_link:.3f} (first token {link['spatial_here']['first_token']:.3f})  text {v_text:.3f}"
           + (f"  route alone {route['spatial_here']['exact']:.3f}" if route else ''))
     print(f"facts:    link {f_link:.3f} (first token {link[FACTS[0]]['first_token']:.3f})  text {f_text:.3f}"
