@@ -1,0 +1,41 @@
+{
+ "what": "order 0054, arm F: frontier models' own published numbers on the five benchmarks, each source opened and checked (2026-11-05). Other models, other graders, other settings: context, not a matched comparison.",
+ "headline": "Neither GPT-6 (Astra, Sol, Luna, Terra) nor Claude Opus 5.5 publishes SimpleQA, NQ open, WebQuestions or CLUTRR. AA-Omniscience's public split is the one benchmark with a current frontier model's three rates (the Claude Opus 5.5 system card).",
+ "aa": [
+  {"source": "System Card: Claude Opus 5.5 (Anthropic, 2026-09-22), section 6.5.4.1, PDF pp. 128-129, figure 6.5.4.1.B",
+   "url": "https://www.anthropic.com/claude-opus-5-5-system-card",
+   "setting": "public split, closed book, no web search or knowledge base; correct / incorrect / abstention; grader not named; split version (v1 600 or later) not stated",
+   "read_from": "bar labels of a figure (no table)",
+   "rows": {"Claude Opus 5.5": [0.76, 0.17, 0.07], "Claude Opus 5": [0.71, 0.22, 0.06], "Claude Sonnet 5": [0.47, 0.24, 0.28],
+            "Claude Mythos 5": [0.75, 0.18, 0.07], "Claude Mythos 5.1": [0.77, 0.21, 0.02]},
+   "columns": ["correct", "incorrect", "declined"],
+   "notes": ["figure 6.5.4.1.A net score for Opus 5.5: 0.58 (0.76 - 0.17 = 0.59: rounding)", "the card says 41 topics; the paper 42"]},
+  {"source": "AA-Omniscience (Jackson et al., arXiv 2511.13029 v1, 2025-11-17)", "url": "https://arxiv.org/abs/2511.13029",
+   "setting": "full 6,000 questions, closed book, judge Gemini 2.5 Flash Preview (09-2025); the public split is 10% (600); no public-split results in the text",
+   "rows": {"Claude 4.1 Opus": "Index 4.8, accuracy 36%", "Grok 4": "accuracy 39%, hallucination rate 64%", "GPT-5 (high)": "accuracy 39%, hallucination rate 81%"}},
+  {"source": "Artificial Analysis leaderboard (the benchmark's authors)", "url": "https://artificialanalysis.ai/evaluations/omniscience",
+   "setting": "v1.1, 3,000 questions: not the public split",
+   "rows": {"Gemini 4 Carbon (High)": "net 54", "Claude Opus 5.5 (Max)": "net 48", "Claude Fable 5.1 (Max)": "accuracy 68%", "Claude Opus 5.5 (Xhigh)": "accuracy 66%"}}
+ ],
+ "simpleqa": [
+  {"source": "GPT-5 System Card (OpenAI, 2025-08-07), section 3.7, table 8, SimpleQA (no web)", "url": "https://deploymentsafety.openai.com/gpt-5",
+   "columns": ["accuracy", "hallucination rate"],
+   "rows": {"gpt-5-thinking": [0.55, 0.40], "gpt-5-main": [0.46, 0.47], "o3": [0.54, 0.46], "GPT-4o": [0.44, 0.52]}},
+  {"source": "SimpleQA (Wei et al., arXiv 2411.04368), table 3", "url": "https://arxiv.org/abs/2411.04368",
+   "setting": "grader: a prompted ChatGPT classifier", "columns": ["correct", "not attempted", "incorrect"],
+   "rows": {"o1-preview": [42.7, 9.2, 48.1], "GPT-4o": [38.2, 1.0, 60.8], "Claude-3.5-sonnet (2024-06-20)": [28.9, 35.0, 36.1], "Claude-3-opus": [23.5, 39.6, 36.9]}}
+ ],
+ "nq": [
+  {"source": "DeepSeek-V3 technical report (arXiv 2412.19437v2), table 3, base models, 5-shot EM", "url": "https://arxiv.org/abs/2412.19437",
+   "rows": {"DeepSeek-V3 Base": 40.0, "LLaMA-3.1 405B Base": 41.5, "Qwen2.5 72B Base": 33.2}},
+  {"source": "PaLM 2 Technical Report (Google, arXiv 2305.10403), table 2, 1-shot EM, closed book", "url": "https://arxiv.org/abs/2305.10403",
+   "rows": {"PaLM 2-L": 37.5, "PaLM 2-M": 32.0, "PaLM 2-S": 25.3, "PaLM": 29.3}}
+ ],
+ "webq": [
+  {"source": "PaLM 2 Technical Report (Google, arXiv 2305.10403), table 2, 1-shot EM, closed book", "url": "https://arxiv.org/abs/2305.10403",
+   "rows": {"PaLM 2-L": 28.2, "PaLM 2-M": 26.9, "PaLM 2-S": 21.8, "PaLM": 22.6}}
+ ],
+ "clutrr": {"found": "no developer card or report (GPT-6, Claude, Gemini, DeepSeek, PaLM 2) reports CLUTRR; third-party papers not opened, so nothing is listed"},
+ "not_found": ["GPT-6: no result on any of the five in OpenAI's own pages", "whether the Claude card's public split is v1's 600 questions",
+               "no frontier source newer than 2024 publishes NQ open, none newer than 2023 WebQuestions"]
+}
