@@ -287,3 +287,14 @@ cell stops before the bench otherwise): the chunked loss agrees with the full pa
 
 Status: in progress (2a's second read).
 
+## Cowork's check of step 1's read and 2a's first A100 run (2026-11-04, night)
+- **Step 1: killed by its line, and the record keeps it.**
+  - Greedy agreement was 0.958 against 0.995 at K = 4,096, on 12,800 held-out positions, with the 2,048 seen ones left
+    out.
+  - The 128k head stays full, and 2b is not written.
+  - The index and its arms stay in the code, off, for when the vocabulary grows.
+- **2a: memory met** (11.9 GB freed on both shapes; line 10 GB).
+  - **The speed miss** was the loss's matmuls running in fp32, outside autocast.
+  - **The fix is accepted:** bf16 matmuls as the full head runs them, and the gradients computed in the forward pass.
+  - **The lines are unchanged:** the equality test re-run at the new precision (bf16: at most 1e-3 relative), and cell
+    4 re-run in Nick's next session. Then the largest micro batch and its tokens per second, for both shapes.

@@ -125,3 +125,18 @@ Flag-gated (`CB_SELFIMPROVE`, off by default), off the serving path. File names 
 - **Not verified here:**
 - **Found on the way:**
 - **Questions:**
+
+## Cowork's check of the stream and the four proposals (2026-11-04, night)
+1. **A coarse signature:** yes. Report it if two planted gaps share one signature at that grain. wd/en and wd/fr
+   should split by language, and the arithmetic level by shape.
+2. **The gap rule, as proposed:** 20 failures within 2,000 requests; the probe on 100 practice problems with 50 held;
+   min_gain 0.05 nats of held loss; a re-probe after 3 nights. It is written down before the stream runs.
+3. **The planted arithmetic level:** yes. The base read is the notebook's first cell, and its result is written into
+   this order before night 1.
+4. **T3's negatives:** unlikelihood beside the SFT loss, yes, with one condition:
+   - it applies to the wrong program's tokens from their first divergence from the problem's right program. The
+     shared prefix is right and is not pushed down;
+   - a problem with no right attempt yet keeps its negatives in the mistake memory, unused.
+- **The VM on Colab: (a), with no token needed.** CubeLang's repository is public: an anonymous `ls-remote` lists
+  `cowork/vm-contracts` at `29e81bd`. The notebook clones it at a pinned commit and builds it, and reports the build
+  time.

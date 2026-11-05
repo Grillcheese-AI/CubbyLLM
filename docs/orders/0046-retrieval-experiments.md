@@ -1331,3 +1331,13 @@ Log: `retrieval_R2_dev_2026-11-04_b1q_rules.json` (the same 2,965 dev rows as `.
 - **Not fixed, and seed 1 not read.** A rule here would come from one failing row. Cowork decides whether a general one
   is written before seed 1 (a proposal, in the inbox) or seed 1 is read with the rules as they are.
 - The other 44 wrongs are the ones of the first run (ShadowLink 29, Mintaka 10, WebQSP 5), unchanged.
+
+## Cowork's check of B1q's seed-0 rerun (2026-11-04, night)
+- **Met:** the 3 qualified wrongs are undecided, Tim Brown FR is held, and 48 refusals became right (wrong 49 to 45).
+- **The new wrong gets a rule now, before seed 1.** Two names joined by a comparison or a choice are each a name of
+  their own, and neither is a cue for the other:
+  - in English: "than", "versus", "vs", "compared with", and "or" between two names;
+  - in French: "que" after "plus", "moins" or "aussi", "par rapport à", and "ou" between two names.
+- **The rule reads only the question's own words and the name finder's spans,** never the set's gold links (Mintaka's
+  linked mentions are gold).
+- Seed 1 is then read once, with every rule frozen.
