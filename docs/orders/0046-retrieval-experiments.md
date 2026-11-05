@@ -1397,3 +1397,35 @@ Log: `retrieval_R2_dev_2026-11-05_seed1.json` (`fame_set_seed1`, frozen before a
 - **What remains of R2:** ShadowLink passes on dev (4.6 points). Mintaka and WebQSP_EL are read on test against the 2%
   line, when you say.
 - **Next here:** R4's dev reading with the value-type fix (running now), then CronQuestions' test once.
+
+## R4's three dev readings of rule 3 (Claude Code, 2026-11-05)
+Logs: `retrieval_R4_dev_2026-11-04_rules_serving.json`, `..._rules_none.json`, `..._rules_valuetype.json` (the first
+value-type reading, with a bug), `retrieval_R4_dev_2026-11-05_rules_valuetype_in.json` (fixed). Every reading has rules
+1, 2 and 4 on; they differ in rule 3.
+
+| rule 3 | board (46): interval arm | CronQuestions simple_entity (500): interval arm | spoken |
+|---|---|---|---|
+| serving (0047's exemption kept) | 37 right, 1 wrong | 305 right, 87 partly, 36 asked, 61 refused, **11 wrong** | 0.806 |
+| none (the exemption dropped) | 37 right, 2 wrong | 292 right, 12 wrong | 0.778 |
+| value type, first reading (bug) | 37 right, 1 wrong | 261 right, 157 refused, 7 wrong | 0.686 |
+| **value type, fixed** | 37 right, 1 wrong | identical to serving, row for row | 0.806 |
+
+- **The bug, mine:** CronQuestions' incoming rows speak the statements' subjects (a post's holders), and I checked them
+  against the property's value type. Every incoming P39 row was refused: 93 rows, 44 of them right, which also hid 4
+  wrongs.
+  - Fixed (`ba76c97`): those values are now checked against the property's subject-type constraint.
+- **The value-type reading, fixed, drops no value on dev.**
+  - Every spoken value reaches its property's constraint, so it neither adds nor removes a wrong.
+  - **Gibraltar stays:** P17's value-type constraint lists "disputed territory" (Q15239622), and Gibraltar is an
+    instance of it. The board's one wrong is that row.
+- **Dropping the exemption** adds a wrong on the board ("what language does greece use?": the dialects of Greek) and
+  one on CronQuestions.
+- **The 11 wrongs left** (the interval arm; the same under serving and the fixed value type):
+  - 6 award rows (P166, outgoing): the award placed at the asked year when the record gives a date that is not the
+    gold's;
+  - 4 position rows (P39, incoming: who held it in year Y), one of them a duplicate id in CronQuestions;
+  - 1 team row (P54).
+- **Not read: CronQuestions' test.** Its line is 0 wrong.
+  - On dev the four rules leave 11 wrong, and the reading it was to be read with changes nothing.
+  - A test read now spends the one held-out reading on rules dev already shows miss the line.
+  - Read anyway, or a fifth rule from the 11 first (on dev, then test once)? Your call.
