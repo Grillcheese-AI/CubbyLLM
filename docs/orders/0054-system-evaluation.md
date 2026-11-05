@@ -85,7 +85,13 @@ in this run.**
   - right, wrong and refused (counts and %), with C−VM's and M's estimated from the read where unmatched;
   - the wrong rate among spoken answers, with a 95% interval;
   - time per question;
-  - for C: by proposer, and the VM's time per check.
+  - for C: by proposer, and the VM's time per check;
+  - **for C, where coverage would come from** (Nick: "cubby's coverage can be improved easily"), read from C's
+    records with no second pass:
+    - refusals by reason: no plan (the question was not turned into a program), a relation the store lacks, a fact
+      missing, the walk failed, not certified;
+    - spoken answers by the source of their facts: the offline store, or live Wikidata;
+    - on AA-Omniscience, 50 refusals for a missing fact, read by hand: is the fact in Wikidata at all?
 - **The lines** (the paper's claim, written before the run):
   - **Line:** C's wrong answers at most 1% of its spoken answers on every benchmark (H-E15's line), and fewer than
     C−VM's.
