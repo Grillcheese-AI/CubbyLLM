@@ -1,5 +1,5 @@
 # 0053 — A spiking fast learner in the loop: STDP gated by the VM's dopamine, a day replayed on CPU
-status: open
+status: in progress
 written: 2026-11-05 by Cowork · approved: 2026-11-05 by Nick ("yes write it up") · hypothesis: H-A16
 
 ## Why
@@ -157,3 +157,54 @@ File names are Claude Code's.
 - **Not verified here:**
 - **Found on the way:**
 - **Questions:**
+
+## Built: the learner, the cache, the days (Claude Code, 2026-11-05)
+**The choices the order left open, recorded before any run:**
+- **Where the cache is built: a cell in Nick's Colab session** (`selfimprove.ipynb` step 4, about 15 min on an A100).
+  It uses the same torch trunk and base adapter as 0049. On this CPU a problem takes about 50 s (the smoke), which is
+  about 10 hours for 700. The VM marks the candidates at home (`fastlearn_mark.py`, seconds).
+- **The candidates:** the property labels of the problem's language whose property is a wd train gold in it (the
+  task's vocabulary: 137 EN, 159 FR), not all 12,684 properties.
+- **A multi-token word's score:** log p(prefix + word + '"') - log p(prefix), the word and its closing quote, exact
+  whatever the BPE does at the boundary.
+- **The rest of the program** after the word is the greedy program's own: a wd program's tail does not depend on the
+  word.
+- **The base's choice (N)** is the top candidate by the trunk's score; during a day N samples from those scores
+  (temperature 1.0).
+- **The encoder:** 8,192 neurons (8 x 1,024), a fixed Gaussian projection of the rms-normalised state, presented for
+  T = 8 steps. GIF with L = 16, tau 10 and alpha 0.01 (cubemind's defaults). One global current offset is calibrated
+  on day 1's states so that 2% of the neurons fire. The activity is each neuron's spike count.
+- **The dense control (D):** the same projection and offset, every value passed on.
+- **The striatum:** its own instance, keyed per skill signature (the signature as the proposer, one shape). Reward:
+  +1 right, 0 refused or caught, -5 wrong.
+- **The settings, set on wd/en's day stream before any held read:** a grid over gain (0.5, 1, 2, 4), eta (0.005,
+  0.02, 0.08), tau (0.25, 1 choices) and the norm (1, 4), by S's day right rate over the 3 seeds. The best are kept
+  for every arm and for wd/fr.
+- **The GIF fixture:** recorded once from cubemind `f21d805` on three settings. cubemind's module imports grilly v1's
+  bridge, so recording it initialised the local card once; no GPU work ran (the neuron is numpy). The port imports
+  neither cubemind nor grilly.
+
+**Files:**
+- `cubbyllm/selfimprove/gif.py` (the port);
+- `cubbyllm/selfimprove/fastlearn.py` (`CB_FASTLEARN`: the encoder, the readout, the trace, the rules, the bounds);
+- `validation/selfimprove/fastlearn_cache.py` (GPU), `fastlearn_mark.py` and `fastlearn_day.py` (CPU);
+- `notebooks/selfimprove.ipynb`, step 4.
+
+**Tests:** 9 pass.
+- `tests/test_fastlearn.py`:
+  - the port gives cubemind's spike counts exactly;
+  - with every weight zero the choice is the base's;
+  - the trace reaches only the chosen candidate's synapses from firing neurons;
+  - right raises the bias, wrong lowers it, and delta = 0 moves nothing;
+  - plain STDP strengthens whatever the verdict;
+  - the bounds hold over 400 random verdicts;
+  - a replay reproduces under its seed;
+  - the calibration reaches 2%.
+- `tests/validation/test_fastlearn_day.py`: the days run on a synthetic cache where, in one cluster, the right
+  candidate is the trunk's second. N's held read is 0.5, S's is above 0.9.
+
+**The smoke** (CPU, the real 450M, base adapter, VM, 2 problems a language):
+- the cache found the slot in all 4, with the held hash matching 0049's;
+- the marks put a right candidate among the 32 for 1 of 2 in each language.
+
+**Next:** the cache in Nick's session (step 4), then the marks and the days at home.

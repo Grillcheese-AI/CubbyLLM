@@ -136,6 +136,25 @@ print(json.dumps({g: {a: {k: v[k] for k in ('held', 'transfer') } for a, v in r.
                   for g, r in json.load(open(f'{RUN_OUT}/t3.json'))['gaps'].items()}, indent=1))
 """),
     md(r"""
+## Step 4 (order 0053): the fast learner's cache
+
+Independent of steps 2 and 3, and short (about 15 min on an A100). For 0049's wd/en and wd/fr problems, the base
+adapter's greedy program up to its HOP1 word, the trunk's state there, and the top 32 property words by the trunk's own
+score. The held problems' hash is checked against the base read's. Written to `selfimprove/run_0049/fastlearn/`; the VM
+marks the candidates at home and the learner's days run there on CPU.
+"""),
+    code(r"""
+FL_OUT = f'{OUT}/fastlearn'
+os.makedirs(FL_OUT, exist_ok=True)
+cmd = [sys.executable, '-u', 'validation/selfimprove/fastlearn_cache.py', '--records', RECORDS, '--ckpt', CKPT,
+       '--tokenizer', TOKENIZER, '--adapter', ADAPTER, '--props', PROPS, '--out', FL_OUT]
+with open(f'{FL_OUT}/cache.log', 'a', encoding='utf-8', buffering=1) as f:
+    p = subprocess.Popen(cmd, cwd=REPO, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+    for line in p.stdout:
+        print(line, end=''); f.write(line)
+    assert p.wait() == 0, f'the cache failed ({p.returncode})'
+"""),
+    md(r"""
 ## Done
 
 **Disconnect the runtime.** At home Claude Code reads `run_0049/` into 0049's report. It also reads the saved adapters
