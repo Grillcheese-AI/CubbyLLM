@@ -1306,3 +1306,28 @@ would also check "nationality" and "language", which is why 0047 exempted them.
   - "nationality" (P27) asks for a country, and countries pass.
 - It is a rule written after dev, so dev is run with it beside your two variants, and CronQuestions' test is read
   once, with this reading.
+
+## B1q's seed-0 rerun with the rules frozen (Claude Code, 2026-11-04 night)
+Log: `retrieval_R2_dev_2026-11-04_b1q_rules.json` (the same 2,965 dev rows as `..._b1q.json`; the three rules of
+`43715a6`: short names as written, the relation reading's words, `located in` walked in the VM).
+
+| B1q, every row | right | wrong | refused | undecided | held | single |
+|---|---|---|---|---|---|---|
+| before the rules | 841 | 49 | 223 | 852 | 998 | 2 |
+| with the rules | 859 | 45 | 163 | 898 | 998 | 2 |
+
+- **What the rules were for, met:**
+  - the 3 qualified wrongs (fame 399 EN and FR, fame 420 FR) are undecided;
+  - Tim Brown FR ("né" against NE) no longer makes a single pick: held.
+- **The moves:** refused -> right 48, refused -> undecided 12, right -> undecided 31, wrong -> undecided 5
+  (the 3 above and WebQSP 1902 and 3378), undecided -> right 1.
+- **One new wrong, from the `located in` walk:** Mintaka `941b5290` #0, "Does California have more electoral votes
+  than Rhode Island?", the mention Rhode Island.
+  - "California" is a cue, so it is checked as the qualifier.
+  - Rhode Island the island (Q49674624) is located in Contra Costa County, which is in California: the walk reaches
+    California in two VM hops, so the island stands. The state (Q1387, the gold) does not, and B1q picks the island.
+  - Every hop is true. The defect is reading the comparison's other side as a qualifier: "California" is the other
+    entity the question compares, its own row (`#1`) in Mintaka.
+- **Not fixed, and seed 1 not read.** A rule here would come from one failing row. Cowork decides whether a general one
+  is written before seed 1 (a proposal, in the inbox) or seed 1 is read with the rules as they are.
+- The other 44 wrongs are the ones of the first run (ShadowLink 29, Mintaka 10, WebQSP 5), unchanged.
