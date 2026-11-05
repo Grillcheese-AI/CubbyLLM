@@ -224,3 +224,34 @@ Status: in progress.
   0.955; the 106k build 0.957).
 - More build data moved it by under a point. The held-out read (frozen at that setting; the first 2,048 held-out
   positions left out; every 4th position after them) is running.
+
+## Step 1's shortlist, read once on the held-out tails: the kill line holds (Claude Code, 2026-11-04 night)
+- **Log:** `head_shortlist_heldout_2026-11-04_final.json`.
+  - The index is frozen from the held-in tuning: built from the 851,968 held-in states, 4,096 context clusters for the
+    screen arm, 2,048 head-row clusters for arms a-c.
+  - Read on the 13 held-out tails, **leaving out their first 2,048 positions** (the ones seen while the build was
+    shaped). Every 4th position after them, across all 13: **12,800 positions**. The full head's NLL on them is 2.676.
+
+| arm | K | greedy agreement | top-10 recall | mass inside | target outside | rows scored |
+|---|---|---|---|---|---|---|
+| (a) clusters | 4,096 | 0.365 | 0.440 | 0.400 | 0.600 | 4,401 |
+| (b) router | 4,096 | 0.876 | 0.762 | 0.785 | 0.220 | 4,751 |
+| (c) router + successors | 4,096 | 0.905 | 0.800 | 0.812 | 0.190 | 4,763 |
+| (d) screen (added) | 4,096 | 0.944 | 0.922 | 0.898 | 0.101 | 4,096 |
+| **(d) + successors** | 1,024 | 0.867 | 0.784 | 0.780 | 0.216 | 1,035 |
+| **(d) + successors** | **4,096** | **0.958** | 0.933 | 0.911 | 0.087 | 4,101 |
+
+- **Gate: not met.** No arm reaches 0.995 greedy agreement at any K; the best is 0.958 (screen + successors, K =
+  4,096). NLL with the outside mass lost is far from the full head's +0.02, since 8.7% of targets fall outside.
+- **Kill: crossed as written.** No arm reaches 99.5% agreement at a K whose time beats a full 32k head, though every
+  K's time beats it (0.12-0.15 ms on the A100 against 0.17-0.27).
+  - **The 128k head stays full;** stage 2b (the shortlist softmax in training) is not written.
+  - Stage 2a (the exact chunked cross-entropy) does not depend on the index and stands.
+- **What it says:**
+  - On the trained rows, an index from the trunk's own states (screen) does far better than one over the head's rows:
+    0.94-0.96 against 0.37 for k-means.
+  - The last 4% are the long tail of the next-token distribution. More build states moved agreement by under a
+    point (106k: 0.957, 852k: 0.964 on held-in), and more clusters by about one.
+  - A shortlist that must match the full head's argmax 99.5% of the time would need either a head trained with it
+    (2b's training side) or an exact fallback when the shortlist's best is not confident. Either is a new order, if
+    the vocabulary grows.
