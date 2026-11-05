@@ -1,0 +1,159 @@
+# 0053 — A spiking fast learner in the loop: STDP gated by the VM's dopamine, a day replayed on CPU
+status: open
+written: 2026-11-05 by Cowork · approved: 2026-11-05 by Nick ("yes write it up") · hypothesis: H-A16
+
+## Why
+Nick, 2026-11-05: the SNN "should be the one involved in the self learning loop like in cubemind", and "I wonder why
+we dont train these".
+
+Read the same day: **nothing has ever taught the spiking part what was right.**
+- cubemind's trained LM builds the GIF neurons and the hormone ODE but does not wire them (`training/vsa_lm.py`).
+- cubemind's live brain runs STDP that strengthens what fires together, whatever the answer was. Its hormones are
+  computed after the SNN and go only to the speaking LLM (`model.py`, `brain/synapsis.py`).
+- Here, the ported ODE's `modulate_tau` has no caller.
+- A correlation rule alone is what H-A1 measured: the Hebbian layer forgot 94%.
+
+**0049 supplies the missing teacher:** a VM verdict on every attempt. That is the third factor.
+- STDP marks the synapses that produced an answer.
+- Dopamine (the striatum's prediction error) decides whether the mark becomes a weight change: up for right, down for
+  wrong.
+
+0049's first T1 also found the limit this could lift. The loop learns only from its own right attempts, so wd/fr
+(5.7% right) could not start. This learner learns from wrong verdicts too.
+
+**What it brings, in plain words:** Cubby gets a quick reflex beside its slow memory. Each time the checker says right
+or wrong, the connections that produced the answer get stronger or weaker on the spot, and overnight the lesson moves
+into a permanent add-on.
+- **Over a conventional model:** a conventional model learns only when it is retrained, from labelled examples, so
+  between retrainings the same mistake comes back every time. Here the correction starts with the next question,
+  needs no GPU, learns from wrong answers as well as right ones (so a skill near zero can still start), and the trunk
+  never changes.
+
+## Build
+Flag-gated (`CB_FASTLEARN`, off by default), off the serving path. The learner is numpy only (no torch, no GPU).
+File names are Claude Code's.
+
+1. **The cache,** built once. Where is Claude Code's choice, recorded: at home on grilly2 in short chunks, or a cell
+   in Nick's next Colab session.
+   - **The problems:** 0049's wd/en and wd/fr keys, in 0049's stream order, with 0049's held problems (hash
+     `ad968cc8de05bf69`). Their counts are reported.
+   - **Per problem,** with the base adapter (`cubby450m_v12e_w_step_cont`) on the frozen trunk:
+     - the greedy program up to its HOP1 word;
+     - the trunk's final hidden state there (d = 1,024);
+     - the top K = 32 property words by the trunk's own score at that slot, and those scores. How a multi-token word
+       is scored is Claude Code's, recorded.
+   - **Per candidate:** the program with that word, run in the VM (CubeLang `29e81bd`) and marked as 0049 marks wd
+     (right, refused, wrong). If the rest of the program depends on the word, it is completed greedily after it;
+     recorded.
+   - **The ceiling,** per key: the share of problems with at least one right candidate among the 32. No arm can pass
+     it.
+2. **The learner:**
+   - **Encoder:** a fixed random 8× up-projection of the cached state (8,192 neurons) drives GIF neurons ported clean
+     from `cubemind/brain/gif_neuron.py` (port, don't link: multi-bit spikes and the adaptive threshold as there; numpy
+     only, without its grilly v1 path).
+     - The state is presented for T steps (Claude Code's value, recorded).
+     - The threshold is set so that about 2% fire at rest (H-A5's sparsity).
+     - The encoder does not learn here.
+   - **Readout:** plastic weights from the neurons to the properties that appear among the cached candidates.
+     - A candidate's bias is its property's; for a word naming several, the largest (recorded).
+     - Its score is the trunk's own plus gain × bias.
+   - **The trace:** each synapse from a firing neuron to the chosen candidate's property is marked, and the mark
+     decays with time constant τ. With one decision per wd request it is the last choice's. It matters for multi-step
+     programs (out of scope).
+   - **The third factor:** the verdict through the striatum's reward (+1 right, 0 refused, −5 wrong).
+     - δ = reward − expected, per skill signature, by the striatum's own update (`cubbyllm/reasoning/striatum.py`; a
+       separate instance, never the serving one).
+     - Δw = η · δ · trace.
+   - **Bounds:** each neuron's outgoing weights are kept within a fixed norm. Growth without limit is H-A1's failure
+     class.
+   - **Choosing:** during the day, sampled from the scores (temperature 1.0, as 0049's practice). Held reads are
+     greedy.
+   - **Set before any held read:** gain, η, τ and the norm, on wd/en's day stream. They are recorded and kept for
+     wd/fr.
+3. **The arms,** on the same cached day, in the same order, with 3 seeds (the projection and the sampling):
+   - **N:** none (the base adapter's choice);
+   - **S:** the spiking learner, three-factor (the proposal);
+   - **P:** plain STDP, no dopamine. The chosen candidate's synapses strengthen at every choice, whatever the verdict
+     (cubemind's rule), with the same bounds;
+   - **D:** dense, three-factor. The same projection without the threshold (every unit's value passed on), the same
+     readout and rule. A size-matched control, as in H-A5.
+4. **The days:**
+   - **Day 1:** wd/en's stream, then wd/en's held read.
+   - **Day 2:** wd/fr's stream with the same learner continuing, then wd/fr's held read, then wd/en's held read again
+     (the retention read).
+   - **The bootstrap read:** wd/fr's stream from a fresh learner, then its held read.
+   - Held problems are never seen by a learner before its read.
+
+## Acceptance (pre-registered)
+- **Tests:**
+  - the GIF port gives the spike counts recorded once from cubemind's neuron on fixed inputs (a fixture; no import of
+    cubemind at test time);
+  - with the flag off, or with every weight zero, the choice is the base's, bit for bit;
+  - the trace reaches only the chosen candidate's synapses from firing neurons;
+  - a right verdict raises the chosen candidate's bias, a wrong one lowers it, and with δ = 0 nothing moves;
+  - the bounds hold over a long random stream;
+  - a replay reproduces under its seed.
+- **A, reported per key and arm:**
+  - the held right rate (mean and spread over the 3 seeds), with held wrongs and refusals;
+  - the day's curve (right rate per 50 requests);
+  - the right programs found during the day, against 0049's practice at the same number of tries (from the second
+    T1's logs where they exist, otherwise N's sampled tries);
+  - the ceiling;
+  - the cost: wall time of the cache and of each arm's day on CPU.
+  - **With up to 100 held problems a key, a difference within the seeds' spread counts as none.**
+- **A, the lines:**
+  - **Line:** S raises the held right rate by at least 5 points over N on at least one key (0049's probe bar), with
+    held wrongs not above N's, and wd/en within 1 point of its day-1 read after day 2.
+  - **Kill, the three-factor claim:** S − P under 1 point on both keys. Then dopamine adds nothing, and the loop keeps
+    its adapters alone.
+  - **Kill, the learner:** S under N + 5 on both keys; or wd/en more than 1 point down after day 2 (H-A1's failure);
+    or held wrongs above N's.
+  - **The spiking part:** if D is within 1 point of S on both keys, the spikes add nothing. The rule survives without
+    them, and H-A16 is narrowed, not killed.
+  - **The bootstrap read,** reported against the same +5 line, with the number of right verdicts S had to learn from.
+- **B, consolidation** (only if A's line is met; one Colab session Nick runs):
+  - 0049's adapter recipe (arm A, right answers only) trains on the right programs S's day found, and again on those
+    N's tries found at the same number of attempts.
+  - The held read: the adapter from S's day alone, the same adapter with S's learner, and the adapter from N's day.
+  - **Line:** removing the learner costs at most 1 point (the night absorbed the day). The S-day adapter's gain over
+    the N-day one is reported: the learner as the way in for French.
+  - **Kill:** removing it costs more than 1 point. Then the learner holds something the night did not absorb and would
+    have to persist, which is H-A1's risk. The consolidation claim is killed.
+- **C, the hormones** (only if A's line is met; CPU):
+  - the ported ODE (`cubbyllm/affect/neurochem.py`, a separate instance) is driven by the day: reward on a right
+    verdict, threat from a run of wrongs, novelty at a new key. The signal sizes are Claude Code's, recorded before
+    the run;
+  - its `modulate_threshold` and `modulate_tau` set the GIF neurons' threshold and leak, per request;
+  - against S with fixed threshold and leak at the best of a 3 × 3 sweep made on wd/en's day (no held reads).
+  - **Line:** at least 3 points held on at least one key over the best fixed setting, with A's other lines still
+    met.
+  - **Kill:** no gain. The hormones stay where they are (manner and routing caution), and the learner keeps fixed
+    values.
+
+## Constraints
+- Rules in `CLAUDE.md` hold (flag-gated, < 300 lines a file, `__wiring__`, tests pin the claim).
+- **The trunk stays frozen.** The learner reads cached states only.
+- **Nothing reaches the serving path.** A passed learner would go in the brain's fast route, its SNN slot
+  (`cubbyllm/brain.py`), later, by its own order.
+- Train splits only, as in 0049.
+- Port, don't link: the GIF neuron is copied into CubbyLLM, and nothing imports cubemind.
+- grilly2 only on the local card, in short chunks. Claude Code does not start a paid run; B is a Colab cell Nick runs.
+- No local path in a committed file.
+
+## Out of scope
+- **Multi-step programs** (arithmetic, plan), where the trace has to span the steps until the verdict: the next
+  order, from A's numbers.
+- **Plasticity in the encoder** (STDP on the input side, neurogenesis).
+- **Serving the learner live** (the SNN slot), and grouping live requests.
+- **cubemind's own fixes** (the gate that never learns, `snn_ratio` through a sigmoid, the hormones computed after the
+  SNN): noted for cubemind's repo, not built here.
+
+## Report
+<!-- Claude Code fills this in, then sets status: review -->
+- **Commits:**
+- **Files:**
+- **Tests:**
+- **Measured:** <against each acceptance line>
+- **Not verified here:**
+- **Found on the way:**
+- **Questions:**
