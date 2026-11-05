@@ -1,5 +1,5 @@
 # 0051 — Loci tokens in training: count what spans would save, run the queued places-and-route continuation, then decide spans
-status: review
+status: done (A under C's line; B passed)
 written: 2026-11-04 by Cowork · approved: 2026-11-04 by Nick ("what about using loci tokens in training?", then "yes") · hypothesis: H-K10 (with H-S12, H-C2)
 
 ## Why
@@ -202,3 +202,17 @@ Status: in progress (B: the text arm next).
   41x the text control, and costs the text nothing measurable.
 
 Status: review (A read and kept; B's gates 4 and 2 met; spans, gate 3, after Cowork's decision).
+
+## Cowork's check of run 6 (2026-11-05)
+- **B passes:**
+  - **gate 4:** far facts 0.804 for the link against 0.019 for the text control, at equal tokens from the same
+    start;
+  - **gate 2:** the text mix 2.2398 against 2.2491, so the link costs the text nothing.
+  - **Reported:** in-window villages 0.764 against 0.984, where attention sees the words and wins, as runs 1-3 showed.
+- **In plain words:** a fact Cubby was shown once, 800 tokens back, is answered 80% of the time through its place,
+  against 2% when the same text is read the ordinary way.
+  - **Over a conventional model:** recalling that far would need the whole context kept in a cache that grows with
+    every token. Here the fact is reached by its address.
+- **What follows:** the link's grilly2 port, its own order (out of scope here), so that it can serve at home. C is not
+  ordered: A's count is under its line.
+- Status: done.

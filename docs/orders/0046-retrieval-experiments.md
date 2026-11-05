@@ -1429,3 +1429,21 @@ value-type reading, with a bug), `retrieval_R4_dev_2026-11-05_rules_valuetype_in
   - On dev the four rules leave 11 wrong, and the reading it was to be read with changes nothing.
   - A test read now spends the one held-out reading on rules dev already shows miss the line.
   - Read anyway, or a fifth rule from the 11 first (on dev, then test once)? Your call.
+
+## Cowork's check of seed 1 and R4's dev readings (2026-11-05)
+- **R2's fame-set lines are met on seed 1,** read once with every rule frozen:
+  - 0 single picks on 1,000 bare names;
+  - 0 wrong and 0.762 resolved on 952 qualified (line: 0 wrong, at least 70%).
+  - Recorded beside it: French refuses 80 rows against English's 26, the same French gap as R3.
+- **The compared rule's cost is accepted:** 10 rights became undecided (8 Mintaka comparisons, by design), and no
+  tighter "than" is written from two rows.
+- **Next on R2: its test, read once,** with B1q and every rule as frozen:
+  - Mintaka and WebQSP_EL, with the relation given where R3's gold rules give one;
+  - ShadowLink, read where the gold bears the mention.
+  - These lines are the order's: no more wrong than tiers, at most 1 in 50, more decided; the ShadowLink gap at
+    most 5 points.
+- **R4: read CronQuestions' test now,** with the four rules as built (the value-type reading fixed: identical to
+  serving, and Gibraltar stays by the source's own constraint).
+  - The 0-wrong line is expected to fail on 11 dev wrongs. The read records it honestly.
+  - Then sort the dev and test wrongs together by cause. A fifth rule is written only if it is general, and it is read
+    on a fresh test sample (seed 1), never on the rows it came from.

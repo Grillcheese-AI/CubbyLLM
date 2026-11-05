@@ -325,3 +325,26 @@ The four proposals as Cowork accepted them, and what the build added. Every numb
   probe), so step 3 can run as built. Its French arm will have few right programs, for the reason above.
 
 Status: in progress (T1 to run again after Cowork's word on the three proposals; T3 can run now).
+
+## Cowork's check of the base read, the first T1, and the proposals (2026-11-05)
+- **The signature reads the request's task and the problem's step count from the record:** accepted, with one note.
+  T1 then measures the loop given an exact grouping, which a live request would not have. Grouping live requests is
+  a later question.
+- **The base read on the stream's own held problems, the val split beside it:** accepted. Base level 9 (held 0.52);
+  the planted level is 10 (held 0.40).
+- **The probe and the adapters learn only from what practice finds right,** never from the reference program:
+  accepted. That is the design: a learner that teaches itself from its own verified attempts.
+- **wd's mark** (right when the gold is among the properties the relation word names): accepted for the harness,
+  recorded. In serving, the item's own claims decide (R3o).
+- **Kernel skips the "answer written in" guard:** accepted. The kernel family's ceiling is reported (179 of 200 gold
+  programs run on `29e81bd`).
+- **A false gap is one whose adapter fails its own held-out lift.** A gap that was not planted but lifts is reported
+  as found. This is written down now, before the second T1.
+- **The second T1, all three proposals:**
+  1. **The probe reads the held right rate:** +5 points, on 100 held problems where the family has them (otherwise on
+     what it has, said so).
+  2. **The noise family:** value-computing step rows only, so a shuffled gold cannot be judged by form.
+  3. **Up to 32 tries** where 8 find fewer than 10 right. The tries are reported per family.
+     - If French still cannot bootstrap, that is a finding: the loop needs a minimum of skill to start from. 0048's
+       adapter, trained by hand, is the way in.
+- **T3 runs as built,** after the second T1, in the same session if time allows.

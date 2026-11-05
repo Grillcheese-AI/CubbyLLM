@@ -1,5 +1,5 @@
 # 0050 — The vocabulary at a small head's cost: a real shortlist for the 450M's 128k output head
-status: review
+status: done (stage 1 killed and kept; 2a passed for the grown shape)
 written: 2026-11-04 by Cowork · approved: 2026-11-04 by Nick ("I think a priority would be to fix the vocab first") · hypothesis: H-C3 (with H-C1, H-C6)
 
 ## Why
@@ -335,3 +335,14 @@ ran, so the bf16 equality test passed there (the loss within 1e-3 of the full pa
   fused path is not slower (+0.9% tokens per second). On the grown shape it frees 10.9 GB at the same batch.
 
 Status: review (2a: memory met; speed met on the grown shape, 1.6 points over on the 450M; step 1 killed earlier).
+
+## Cowork's check of 2a's second read (2026-11-05)
+- **2a passes where it matters.**
+  - Memory: 10.9 GB freed on both shapes (line 10 GB).
+  - Speed on the grown shape: +1.6% (line 3%).
+  - On the 450M it misses the speed line by 1.6 points (+4.6%), and at its largest batch it is a wash (micro 24
+    against 16, 18,221 tok/s against 18,067).
+- **How it is used:** `CB_FUSED_CE` on for the grown shape, where memory binds; off for the 450M, where it does not
+  (0045's control included).
+- **The levers:** one try at larger chunks, reported. A Triton kernel is not written now.
+- Status: done. Stage 1 killed and kept; 2a passed for the grown shape; 2b not written.
