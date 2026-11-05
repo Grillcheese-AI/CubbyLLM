@@ -3,12 +3,16 @@
 Each request: its key (``key_of``: the coarse signature read from its record -- the task, the relation words left out,
 the language, the shape, a stepped problem's step count), the router's adapter, one greedy program, the VM's mark, the
 ledger. Every --night requests, a night:
-  probe     each candidate (>= min_failures in the window, not probed within ``recheck`` nights): its failed problems
-            (up to probe_train + probe_held) practised by the base adapter, 8 sampled attempts each, the VM marking
-            each one (the mistake memory). A probe adapter trains on the right programs of the train part; its gain is
-            the drop of the held part's right programs' loss. Too few right programs (a family whose golds carry no
-            rule): no gain, not flagged. Nothing is learned from a reference program, only from what the VM marks right.
-  adapter   a flagged gap: its failed problems in the window practised (8 tries each), a LoRA from the base adapter
+  probe     each candidate (>= min_failures in the window, not probed within ``recheck`` nights): up to probe_train of
+            its failed problems practised by the base adapter (the VM marking each attempt; the mistake memory), a
+            probe adapter trained one pass over their right programs (at least 10 steps), and its gain read as the
+            gate reads: the greedy right rate on up to probe_held of the key's other problems, probe against base
+            (Cowork, 2026-11-05; the first T1's held loss on the base's own samples could only rise). Too few right
+            programs (a family whose golds carry no rule): no gain, not flagged. Nothing is learned from a reference
+            program, only from what the VM marks right.
+  practice  8 sampled attempts a problem; where those find fewer than ``bootstrap_min`` right programs among a key's
+            problems, the open ones get up to ``max_tries`` in all (32). The tries are reported per key
+  adapter   a flagged gap: its failed problems in the window practised, a LoRA from the base adapter
             trained on the right set (T1's adapter: right programs only, arm A), the gate, the router
   gate      the gap's held-out problems rise; every other key's held-out problems (the emitter families) within 1 point.
             E8 reworded and R3's rows need the full stack: they are read at home on the saved adapters
@@ -64,12 +68,14 @@ class Loop:
     def __init__(self, trunk, marker, stream: list[dict], held: list[dict], out: str, rule: Rule, a) -> None:
         self.t, self.mark, self.out, self.a = trunk, marker, out, a
         self.led, self.gf = Ledger(window=a.window), GapFinder(rule)
-        self.router, self.gate, self.mm = Router(latent_after=a.latent_after), Gate(battery_drop=0.01), MistakeMemory(8)
+        self.router, self.gate = Router(latent_after=a.latent_after), Gate(battery_drop=0.01)
+        self.mm = MistakeMemory(a.max_tries)
         self.by_id = {r["id"]: r for r in stream}
         self.held = {}
         for r in held:
             self.held.setdefault(key_of(r), []).append(r)
-        self.weights, self.base_rates, self.result = {}, {}, {"adapters": {}, "nights": []}
+        self.weights, self.base_rates, self.result = {}, {}, {"adapters": {}, "nights": [], "tries": {}}
+        self.base_ok = {}                                  # request id -> the base adapter's greedy mark (probe reads)
         os.makedirs(os.path.join(out, "adapters"), exist_ok=True)
         self.req_log = open(os.path.join(out, "requests.jsonl"), "a", encoding="utf-8")
         self.night_log = open(os.path.join(out, "nights.jsonl"), "a", encoding="utf-8")
@@ -109,14 +115,36 @@ class Loop:
         self.req_log.flush()
 
     def practice(self, problems: list[dict], key: str, weights) -> None:
-        """Up to 8 sampled attempts a problem, in order, until one is right (the mistake memory keeps the rest)."""
-        todo = [r for r in problems if self.mm.open(r["id"])]
+        """``tries`` sampled attempts a problem, in order, until one is right (the mistake memory keeps the rest); where
+        they find fewer than ``bootstrap_min`` right programs among these problems, the open ones go on to the memory's
+        cap (``max_tries``)."""
+        self._tries(problems, key, weights, min(self.a.tries, self.mm.tries))
+        right = self._right(problems, key)
+        if right < self.a.bootstrap_min and self.mm.tries > self.a.tries:
+            self._tries(problems, key, weights, self.mm.tries)
+            after = self._right(problems, key)
+            t = self.result["tries"].setdefault(key, [])
+            t.append({"problems": len(problems), "right_after_tries": right, "right_after_max": after})
+            self.event(what="bootstrap", key=key, problems=len(problems), right_after_tries=right,
+                       right_after_max=after)
+
+    def _right(self, problems: list[dict], key: str) -> int:
+        got = dict(self.mm.right_set(key))
+        return sum(r["id"] in got for r in problems)
+
+    def _tries(self, problems: list[dict], key: str, weights, upto: int) -> None:
+        """Each open problem's attempts brought up to ``upto`` in all (a problem practised before keeps its count)."""
+        need = {r["id"]: upto - (self.mm.problems[r["id"]].attempts if r["id"] in self.mm.problems else 0)
+                for r in problems if self.mm.open(r["id"])}
+        todo = [r for r in problems if need.get(r["id"], 0) > 0]
         if not todo:
             return
+        k = max(need[r["id"]] for r in todo)
         self.t.use(weights)
-        progs = self.t.programs([r["prompt"] for r in todo], [cap(r) for r in todo], k=self.mm.tries,
-                                temperature=self.a.temperature)
+        progs = self.t.programs([r["prompt"] for r in todo], [cap(r) for r in todo], k=k,
+                                temperature=self.a.temperature, rows=max(64, k * 2))
         for r, ps in zip(todo, progs):
+            ps = ps[:need[r["id"]]]
             for p in ps:
                 if not self.mm.open(r["id"]):
                     break
@@ -132,20 +160,28 @@ class Loop:
         return [(r["prompt"], got[r["id"]]) for r in rows if r["id"] in got]
 
     def probe(self, key: str, n_train: int, n_held: int) -> float | None:
-        probs = self.failed(key, n_train + n_held)
-        if len(probs) < 30:
+        """The gain in the greedy right rate (a share: 0.05 is 5 points) on the key's held problems, or None."""
+        probs = self.failed(key, n_train)
+        used = {r["id"] for r in probs}
+        held = [self.by_id[i] for i in list(dict.fromkeys(self.led.requests(key)))[::-1] if i not in used][:n_held]
+        if len(probs) < 20 or len(held) < 20:
             return None
-        n_h = min(n_held, len(probs) // 3)
         self.practice(probs, key, self.t.base)
-        tr, he = self.rights(probs[:-n_h]), self.rights(probs[-n_h:])
-        gain = None
-        if len(tr) >= self.a.probe_min_right and len(he) >= self.a.probe_min_right // 2:
+        tr = self.rights(probs)
+        gain, base, new = None, None, None
+        if len(tr) >= self.a.probe_min_right:
+            todo = [r for r in held if r["id"] not in self.base_ok]
+            for r, m in zip(todo, self.read(todo, self.t.base)):
+                self.base_ok[r["id"]] = ok(m)
+            base = sum(self.base_ok[r["id"]] for r in held) / len(held)
             self.t.use(self.t.base)
-            before = self.t.loss(he)
-            self.t.train(tr, steps=self.a.probe_steps, batch=self.a.batch, lr=self.a.lr)
-            gain = before - self.t.loss(he)
+            self.t.train(tr, steps=max(self.a.probe_steps, math.ceil(len(tr) / self.a.batch)), batch=self.a.batch,
+                         lr=self.a.lr)
+            new = self.rate(held, self.t.state())
+            gain = new - base
             self.t.use(self.t.base)
-        self.event(what="probe", key=key, problems=len(probs), right_train=len(tr), right_held=len(he),
+        self.event(what="probe", key=key, problems=len(probs), right_train=len(tr), held=len(held),
+                   base=None if base is None else round(base, 4), probe=None if new is None else round(new, 4),
                    gain=None if gain is None else round(gain, 4))
         return gain
 

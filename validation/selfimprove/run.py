@@ -5,8 +5,9 @@
     python validation/selfimprove/run.py t3 --level K ...      (T3's arms on the planted gaps)
 The stream is rebuilt from the records and the seed each time (``stream.build``); its held problems do not depend on
 the level, and the base read's are checked against T1's. The numbers below are the ones written down before the run
-(0049, Cowork's check of the four proposals, 2026-11-04): the gap rule's 20 failures in 2,000 requests, a probe on 100
-problems with 50 held, 0.05 nats, a re-probe after 3 nights; practice's 8 attempts. The rest are the harness's and
+(0049, Cowork's checks of 2026-11-04 and 2026-11-05): the gap rule's 20 failures in 2,000 requests; a probe trained on
+up to 100 failed problems' right programs and read on up to 100 of the key's other problems, flagged at +5 points of
+greedy right rate; a re-probe after 3 nights; practice's 8 attempts, up to 32 where 8 find fewer than 10 right. The rest are the harness's and
 are recorded in each output (``args``).
 
 Wired: STANDALONE (order 0049's harness).
@@ -34,7 +35,7 @@ def args(argv=None):
     for k in ("records", "ckpt", "tokenizer", "adapter", "props", "out"):
         ap.add_argument(f"--{k}", required=True)
     ap.add_argument("--level", type=int, default=0, help="the planted arithmetic level (from the base read)")
-    ap.add_argument("--shuffled", default="arithmetic/steps=1")
+    ap.add_argument("--shuffled", default="arithmetic/steps=2", help="value-computing step rows only (0049, T1 #2)")
     ap.add_argument("--per-family", type=int, default=300)
     ap.add_argument("--held", type=int, default=50)
     ap.add_argument("--night", type=int, default=500)
@@ -42,12 +43,15 @@ def args(argv=None):
     ap.add_argument("--window", type=int, default=2000)
     ap.add_argument("--min-failures", type=int, default=20)
     ap.add_argument("--probe-train", type=int, default=100)
-    ap.add_argument("--probe-held", type=int, default=50)
-    ap.add_argument("--min-gain", type=float, default=0.05)
+    ap.add_argument("--probe-held", type=int, default=100, help="the key's other problems the probe's rate is read on")
+    ap.add_argument("--min-gain", type=float, default=0.05, help="the probe's rise in the held right rate (5 points)")
     ap.add_argument("--recheck", type=int, default=3)
-    ap.add_argument("--probe-steps", type=int, default=40)
+    ap.add_argument("--probe-steps", type=int, default=10, help="at least; one pass over the right programs")
     ap.add_argument("--probe-min-right", type=int, default=10)
     ap.add_argument("--temperature", type=float, default=1.0, help="practice's sampling (top-k 50)")
+    ap.add_argument("--tries", type=int, default=8, help="practice's attempts a problem")
+    ap.add_argument("--max-tries", type=int, default=32, help="where --tries find fewer than --bootstrap-min right")
+    ap.add_argument("--bootstrap-min", type=int, default=10)
     ap.add_argument("--practice-max", type=int, default=300)
     ap.add_argument("--min-right", type=int, default=20)
     ap.add_argument("--epochs", type=float, default=3.0)

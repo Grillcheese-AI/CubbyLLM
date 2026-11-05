@@ -71,7 +71,7 @@ class Marker:
 
     def _step(self, rec: dict, slotted: str) -> dict:
         from cubbyllm.reasoning.school import CORRECT, WRONG
-        row = {**rec, "plan_values": self.plans.get(rec["id"].split("#")[0], [])}
+        row = {**rec, "plan_values": [] if rec.get("shuffled") else self.plans.get(rec["id"].split("#")[0], [])}
         a = self.judge.attempt_step(row, slotted)
         if a["outcome"] == CORRECT:
             return {"verdict": "right", "gold_right": True, "why": ""}

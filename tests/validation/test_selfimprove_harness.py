@@ -164,14 +164,83 @@ def test_the_keys_split_wd_from_plan_and_one_level_from_another():
     assert key_of(a4) != key_of({**a4, "stats": {"k": 0, "K": 5}})
 
 
-def test_a_probe_with_too_few_right_programs_gives_no_gain():
-    from cubbyllm.selfimprove.gaps import Rule
+def _probe_loop(right_programs: int, base_ok: bool, probe_ok: bool):
+    """A Loop with its GPU parts stubbed: 60 failed problems and 120 others of one key."""
+    from cubbyllm.selfimprove.ledger import Ledger
     from selfimprove.loop import Loop
     lp = Loop.__new__(Loop)
-    lp.a = types.SimpleNamespace(probe_min_right=10)
-    lp.failed = lambda key, n: [{"id": f"p{i}", "prompt": "q"} for i in range(60)]
-    lp.practice = lambda probs, key, w: None                    # practice found nothing right (shuffled golds)
-    lp.rights = lambda rows: []
-    lp.t = types.SimpleNamespace(base=None)
-    lp.event = lambda **kw: None
-    assert lp.probe("k", Rule().probe_train, Rule().probe_held) is None
+    lp.a = types.SimpleNamespace(probe_min_right=10, probe_steps=10, batch=16, lr=1e-4)
+    lp.led = Ledger(window=2000)
+    lp.by_id = {}
+    for i in range(180):
+        lp.by_id[f"p{i}"] = {"id": f"p{i}", "prompt": "q"}
+        lp.led.add("k", "refused" if i < 60 else "right", None, request=f"p{i}")
+    lp.practice = lambda probs, key, w: None
+    lp.rights = lambda rows: [("q", "prog")] * right_programs
+    trained = []
+    lp.t = types.SimpleNamespace(base="BASE", use=lambda w: None, state=lambda: "PROBE",
+                                 train=lambda *a, **k: trained.append(k["steps"]))
+    lp.read = lambda rows, w: [{"verdict": "right", "gold_right": base_ok}] * len(rows)
+    lp.rate = lambda rows, w: float(probe_ok)
+    lp.base_ok, lp.event = {}, (lambda **kw: None)
+    return lp, trained
+
+
+def test_a_probe_with_too_few_right_programs_gives_no_gain():
+    from cubbyllm.selfimprove.gaps import Rule
+    lp, trained = _probe_loop(right_programs=3, base_ok=False, probe_ok=True)   # shuffled golds: practice finds ~none
+    assert lp.probe("k", Rule().probe_train, 100) is None and trained == []
+
+
+def test_the_probe_reads_the_held_right_rate_as_the_gate_does():
+    lp, trained = _probe_loop(right_programs=40, base_ok=False, probe_ok=True)
+    assert lp.probe("k", 100, 100) == 1.0 and trained == [10]                   # one pass over 40 rows of 16: 10 steps
+    lp, _ = _probe_loop(right_programs=40, base_ok=True, probe_ok=True)
+    assert lp.probe("k", 100, 100) == 0.0                                       # no rise, no gap
+
+
+def test_practice_tries_more_only_where_eight_find_too_few_and_counts_each_problems_tries():
+    from cubbyllm.selfimprove.mistakes import MistakeMemory
+    from selfimprove.loop import Loop
+    lp = Loop.__new__(Loop)
+    lp.a = types.SimpleNamespace(tries=8, bootstrap_min=10, temperature=1.0)
+    lp.mm, lp.result, lp.event = MistakeMemory(32), {"tries": {}}, (lambda **kw: None)
+    asked = []
+
+    def programs(prompts, caps, k, temperature, rows):
+        asked.append(k)
+        last = "R" if k > 8 else "w-last"                                       # right only past the 8 first tries
+        return [[f"w{j}" for j in range(k - 1)] + [last] for _ in prompts]
+    lp.t = types.SimpleNamespace(use=lambda w: None, programs=programs)
+    lp.mark = lambda r, p: {"verdict": "right", "gold_right": p == "R", "why": ""}
+    probs = [{"id": f"p{i}", "prompt": "q", "task": "wd"} for i in range(5)]
+    lp.practice(probs, "k", None)
+    assert asked == [8, 24] and lp.result["tries"]["k"][0]["right_after_max"] == 5   # 8 found 5 < 10: on to 32
+    lp.practice(probs, "k", None)
+    assert asked == [8, 24]                                                     # solved: nothing more
+    assert all(lp.mm.problems[p["id"]].attempts == 32 for p in probs)                 # 8, then up to 32 in all
+
+
+def test_the_noise_copy_has_no_stop_row_and_no_neutral_value():
+    from selfimprove import stream as S
+    from selfimprove.mark import Marker
+    recs = []
+    for fam, task, lang, sub in (("wd/en", "wd", "en", ""), ("wd/fr", "wd", "fr", ""), ("a4", "arithmetic", None, "steps=4"),
+                                 ("a2", "arithmetic", None, "steps=2")):
+        for i in range(40):
+            recs.append({"id": f"{fam}-{i}#0", "task": task, "lang": lang, "subtype": sub, "split": "train",
+                         "gold": str(i), "prompt": "q", "program": "return $S1;" if i % 2 else "add s0, $N1;",
+                         "stats": {"k": 0, "K": 2}})
+    _, st, _ = S.build(recs, 4, "arithmetic/steps=2", 10, 5, 30, 0)
+    copy = [r for r in st if r["shuffled"]]
+    assert copy and not any(r["program"].startswith("return") for r in copy)
+    seen = []
+
+    class J:
+        def attempt_step(self, row, text):
+            seen.append(row["plan_values"])
+            return {"outcome": "correct", "why": ""}
+    mk = Marker(recs, judge=J(), aliases=_Aliases())
+    mk(copy[0], "x")
+    mk({**copy[0], "shuffled": False, "id": "a2-0#0"}, "x")
+    assert seen[0] == [] and seen[1] != []

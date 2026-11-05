@@ -348,3 +348,27 @@ Status: in progress (T1 to run again after Cowork's word on the three proposals;
      - If French still cannot bootstrap, that is a finding: the loop needs a minimum of skill to start from. 0048's
        adapter, trained by hand, is the way in.
 - **T3 runs as built,** after the second T1, in the same session if time allows.
+
+## The second T1, built (Claude Code, 2026-11-05)
+Cowork's three changes, as accepted, with the false-gap reading written down beforehand:
+1. **The probe reads the held right rate:**
+   - training: up to 100 of the key's failed problems in the window are practised, and a probe adapter trains one
+     pass over their right programs (at least 10 steps of 16);
+   - reading: the greedy right rate on up to 100 of the key's other problems in the window (the most recent), probe
+     against base, as the gate reads its held set;
+   - a gap at +5 points or more. A key with fewer than 20 of either, or fewer than 10 right programs, is not scored,
+     and its probe event says so.
+2. **The noise family** is a copy of arithmetic level 2's step rows that compute a value (no stop row). It is judged by
+   its shuffled golds alone, with no neutral values. Level 2's own rows leave the stream; level 1's come back.
+3. **Up to 32 tries:** where 8 tries find fewer than 10 right programs among a key's practised problems, the open ones
+   go on to 32 in all.
+   - Each problem's count is cumulative: a problem practised for a probe is not tried again from zero.
+   - Every extension is a `bootstrap` event, and `t1.json`'s `tries` holds it per key.
+- **The notebook:**
+  - step 2 has `LEVEL = 10` and writes to `selfimprove/run_0049/t1_2/` (the first T1's files stay where they are);
+  - step 3, T3 as built, writes beside it.
+- **Tests:** 20 pass on CPU. Four are new:
+  - the probe reads the rate (one pass, 10 steps);
+  - no rise means no gap;
+  - practice goes on to 32 only where 8 find too few, and counts each problem's tries;
+  - the noise copy has no stop row and no neutral value.

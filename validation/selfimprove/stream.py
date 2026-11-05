@@ -9,7 +9,10 @@ FR), the arithmetic levels (``steps=k``) and the emitter families (kernel, role_
             header)
   shuffled  a copy of --shuffled's records with their golds permuted among themselves: no rule to learn; must never
             be flagged. The original family leaves the stream (its held problems stay): the copy's prompts are the
-            original's, so both would share one signature, and the copy must be the only family on its key
+            original's, so both would share one signature, and the copy must be the only family on its key. For an
+            arithmetic family only the rows that compute a value are copied (no stop row, ``return $S<K>``, which the
+            judge reads by its form, not its gold: the first T1's copy of level 1 was half stop rows), and the marker
+            gives the copy no neutral values (another step's value would excuse the original's own answer)
   the rest  every other family, as it comes
 Each request carries its family, whether it is planted or shuffled, the prompt, the gold and the reference program
 (the signature is read from the reference, ``cubbyllm.selfimprove.signature``), and the night it falls in. Practice
@@ -63,7 +66,8 @@ def build(records: list[dict], level: int, shuffled: str, per_family: int, held:
         if fam == shuffled:
             continue
         stream += [dict(r, family=fam, planted=fam in planted, shuffled=False) for r in rows[held:held + per_family]]
-    src = rng.sample(by[shuffled], min(len(by[shuffled]), per_family + held))
+    pool = [r for r in by[shuffled] if not (r["task"] == "arithmetic" and r["program"].lstrip().startswith("return"))]
+    src = rng.sample(pool, min(len(pool), per_family + held))
     golds = [r["gold"] for r in src]
     rng.shuffle(golds)
     stream += [dict(r, id=r["id"] + "#shuffled", gold=g, family=shuffled + "#shuffled", planted=False, shuffled=True)
@@ -82,7 +86,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--records", required=True)
     ap.add_argument("--level", type=int, required=True, help="the arithmetic level planted (one above the base's)")
-    ap.add_argument("--shuffled", default="arithmetic/steps=1", help="the family copied with its golds shuffled")
+    ap.add_argument("--shuffled", default="arithmetic/steps=2", help="the family copied with its golds shuffled")
     ap.add_argument("--per-family", type=int, default=300)
     ap.add_argument("--held", type=int, default=50, help="held-out problems per family (never in the stream)")
     ap.add_argument("--night", type=int, default=500, help="requests a night")

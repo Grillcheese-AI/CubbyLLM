@@ -83,10 +83,10 @@ print('VM built in', build_min, 'min')
 !$CUBELANG_EXE --version
 !cd $REPO && python -c "from cubbyllm.bridges import reasoning_pb2; print('VM bridge ok (protobuf runtime matches)')"
 
-def run(step, *extra):
+def run(step, *extra, out=OUT):
     cmd = [sys.executable, '-u', 'validation/selfimprove/run.py', step, '--records', RECORDS, '--ckpt', CKPT,
-           '--tokenizer', TOKENIZER, '--adapter', ADAPTER, '--props', PROPS, '--out', OUT, *map(str, extra)]
-    with open(f'{OUT}/{step}.log', 'a', encoding='utf-8', buffering=1) as f:
+           '--tokenizer', TOKENIZER, '--adapter', ADAPTER, '--props', PROPS, '--out', out, *map(str, extra)]
+    with open(f'{out}/{step}.log', 'a', encoding='utf-8', buffering=1) as f:
         p = subprocess.Popen(cmd, cwd=REPO, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
         for line in p.stdout:
             print(line, end=''); f.write(line)
@@ -108,27 +108,32 @@ print('base level', br['base_level'], '-> planted', br['planted'])
     md(r"""
 ## Step 2: T1, the nights
 
-Set `LEVEL` to the planted level written into 0049 (the base read's `planted`). The stream rebuilds from the records
-and the seed; its held problems are checked against the base read's. Resumable only from the start: if the runtime
-drops, move `requests.jsonl` and `nights.jsonl` aside and run it again.
+`LEVEL` is the planted level written into 0049 (10, from the base read of 2026-11-05). `RUN` names the run's folder:
+`t1_2` is the second T1 (Cowork, 2026-11-05): the probe reads the held right rate (+5 points on up to 100 problems),
+the noise family is value-computing step rows of level 2, and practice tries up to 32 where 8 find fewer than 10 right.
+The stream rebuilds from the records and the seed; its held problems are checked against the base read's. Resumable
+only from the start: if the runtime drops, move the run's folder aside and run it again.
 """),
     code(r"""
-LEVEL = None          # the planted level, as written into 0049
-assert LEVEL, 'set LEVEL from the base read, once it is written into the order'
+LEVEL = 10            # the planted level, written into 0049 (base level 9, held 0.52)
+RUN = 't1_2'          # the second T1
+RUN_OUT = f'{OUT}/{RUN}'
 for f in ('requests.jsonl', 'nights.jsonl'):
-    assert not os.path.exists(f'{OUT}/{f}'), f'{OUT}/{f} exists: move it aside first'
-run('t1', '--level', LEVEL)
+    assert not os.path.exists(f'{RUN_OUT}/{f}'), f'{RUN_OUT}/{f} exists: move it aside first'
+os.makedirs(RUN_OUT, exist_ok=True)
+!cp {OUT}/base_read.json {RUN_OUT}/base_read.json
+run('t1', '--level', LEVEL, out=RUN_OUT)
 """),
     md(r"""
 ## Step 3: T3, the arms
 
-The same planted gaps, from the base adapter: A (right programs only), B (+ the gap's own negatives, unlikelihood from
+After the second T1, in the same session if time allows. The same planted gaps, from the base adapter: A (right programs only), B (+ the gap's own negatives, unlikelihood from
 the first divergence), C (+ the other gaps' negatives too), at equal steps and rows a step.
 """),
     code(r"""
-run('t3', '--level', LEVEL)
+run('t3', '--level', LEVEL, out=RUN_OUT)
 print(json.dumps({g: {a: {k: v[k] for k in ('held', 'transfer') } for a, v in r.get('arms', {}).items()}
-                  for g, r in json.load(open(f'{OUT}/t3.json'))['gaps'].items()}, indent=1))
+                  for g, r in json.load(open(f'{RUN_OUT}/t3.json'))['gaps'].items()}, indent=1))
 """),
     md(r"""
 ## Done
