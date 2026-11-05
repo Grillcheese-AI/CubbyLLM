@@ -1,0 +1,148 @@
+{
+ "held": {
+  "1": {
+   "n": 50,
+   "right": 0.98
+  },
+  "2": {
+   "n": 50,
+   "right": 0.76
+  },
+  "3": {
+   "n": 50,
+   "right": 0.7
+  },
+  "4": {
+   "n": 50,
+   "right": 0.7
+  },
+  "5": {
+   "n": 50,
+   "right": 0.6
+  },
+  "6": {
+   "n": 50,
+   "right": 0.6
+  },
+  "7": {
+   "n": 50,
+   "right": 0.56
+  },
+  "8": {
+   "n": 50,
+   "right": 0.42
+  },
+  "9": {
+   "n": 50,
+   "right": 0.52
+  },
+  "10": {
+   "n": 50,
+   "right": 0.4
+  },
+  "11": {
+   "n": 50,
+   "right": 0.34
+  },
+  "12": {
+   "n": 50,
+   "right": 0.42
+  },
+  "13": {
+   "n": 14,
+   "right": 0.4286
+  },
+  "14": {
+   "n": 15,
+   "right": 0.4
+  },
+  "15": {
+   "n": 16,
+   "right": 0.3125
+  }
+ },
+ "val": {
+  "1": {
+   "n": 8,
+   "right": 0.0
+  },
+  "2": {
+   "n": 228,
+   "right": 0.6798
+  },
+  "3": {
+   "n": 332,
+   "right": 0.5723
+  },
+  "4": {
+   "n": 355,
+   "right": 0.5324
+  },
+  "5": {
+   "n": 252,
+   "right": 0.5317
+  },
+  "6": {
+   "n": 210,
+   "right": 0.4714
+  },
+  "7": {
+   "n": 56,
+   "right": 0.375
+  },
+  "8": {
+   "n": 90,
+   "right": 0.4444
+  },
+  "9": {
+   "n": 30,
+   "right": 0.5333
+  },
+  "10": {
+   "n": 22,
+   "right": 0.2273
+  },
+  "11": {
+   "n": 12,
+   "right": 0.4167
+  }
+ },
+ "base_level": 9,
+ "planted": 10,
+ "args": {
+  "step": "base-read",
+  "records": "/content/drive/MyDrive/cubbyllm/emitter/emitter_sft_v12e_wd.jsonl",
+  "ckpt": "/content/drive/MyDrive/cubbyllm/runs/base450m_cont/base450m_cont_final.pt",
+  "tokenizer": "/content/drive/MyDrive/cubbyllm/token_cache_base/tokenizer/grillcheese_bbpe128k.json",
+  "adapter": "/content/drive/MyDrive/cubbyllm/emitter/cubby450m_v12e_w_step_cont",
+  "props": "/content/drive/MyDrive/cubbyllm/selfimprove/wikidata_properties_en_fr.json",
+  "out": "/content/drive/MyDrive/cubbyllm/selfimprove/run_0049",
+  "level": 0,
+  "shuffled": "arithmetic/steps=1",
+  "per_family": 300,
+  "held": 50,
+  "night": 500,
+  "seed": 0,
+  "window": 2000,
+  "min_failures": 20,
+  "probe_train": 100,
+  "probe_held": 50,
+  "min_gain": 0.05,
+  "recheck": 3,
+  "probe_steps": 40,
+  "probe_min_right": 10,
+  "temperature": 1.0,
+  "practice_max": 300,
+  "min_right": 20,
+  "epochs": 3.0,
+  "min_steps": 50,
+  "max_steps": 400,
+  "batch": 16,
+  "lr": 0.0002,
+  "ul": 1.0,
+  "latent_after": 5000,
+  "t3_problems": 300
+ },
+ "held_ids_sha": "ad968cc8de05bf69",
+ "minutes": 9.2
+}

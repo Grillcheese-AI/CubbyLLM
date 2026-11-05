@@ -239,3 +239,35 @@ The four proposals as Cowork accepted them, and what the build added. Every numb
     - the marker's verdicts are right;
     - the keys split wd from plan and one level from another;
     - a probe with too few right programs gives no gain.
+
+## The base read, step 1 on the A100 (Nick's session, 2026-11-05; written here before night 1)
+- **Logs:** `selfimprove_base_read_2026-11-05.json` (9.2 min) and `selfimprove_vm_build_2026-11-05.json`.
+  - The VM is CubeLang `29e81bd`, cloned without a token and built on the runtime in **1.4 min**.
+  - The held problems' hash is `ad968cc8de05bf69`; T1 and T3 check theirs against it.
+- **The base adapter, greedy, right per arithmetic level:**
+
+| level (steps) | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | **10** | 11 | 12 | 13 | 14 | 15 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| held (the stream's own; n 50, 14-16 above 12) | 0.98 | 0.76 | 0.70 | 0.70 | 0.60 | 0.60 | 0.56 | 0.42 | 0.52 | **0.40** | 0.34 | 0.42 | 0.43 | 0.40 | 0.31 |
+| val (n) | 0.00 (8) | 0.68 (228) | 0.57 (332) | 0.53 (355) | 0.53 (252) | 0.47 (210) | 0.38 (56) | 0.44 (90) | 0.53 (30) | 0.23 (22) | 0.42 (12) | — | — | — | — |
+
+- **By the rule as written:** the highest level right at least half the time on the held problems is 9 (0.52).
+  **The planted level is 10.**
+  - It has 1,001 train records: 50 held, and 300 in the stream.
+  - Its held rate is 0.40, so a promoted adapter must reach 0.55 (+15 points).
+- **What the read also shows, reported before night 1:**
+  - **The level is not a sharp edge.** From level 5 on, the rate falls slowly (0.60 to 0.31), and level 8 (0.42) sits
+    below level 9 (0.52) at n = 50, about ±0.07 each.
+  - The rule picks 9 as the base level; read on val, 6 would already fall under half.
+  - **Every level from 2 up fails 24-60% of its problems.** In the stream (300 a level) each one will pass 20
+    failures within the window and be probed.
+    - Those levels are weaknesses of the base adapter, not noise. If a probe finds them learnable, they will be
+      flagged as gaps that were not planted.
+    - The kill's "false gaps outnumber planted ones" then needs a reading: is a flagged level 3 a false gap, or a real
+      one that was not planted? **My proposal:** a false gap is one the probe flags and whose adapter then fails its
+      own held-out lift (it was noise). Non-planted gaps that lift are reported as found, not counted against the
+      loop.
+    - The shuffled family stays the only family built to be noise.
+  - Val level 1 reads 0.00 on its 8 rows against 0.98 held. Those 8 val records are odd; nothing reads them in T1.
+- **Next:** T1 with `LEVEL = 10` (step 2 of the notebook), when Nick runs it. Your reading of the kill above can come
+  before or after it; it changes no number of the run.
