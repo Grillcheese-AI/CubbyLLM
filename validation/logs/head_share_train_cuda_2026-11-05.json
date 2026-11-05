@@ -1,0 +1,54 @@
+{
+ "what": "order 0050 stage 1 (train, torch)",
+ "date": "2026-11-05",
+ "card": "NVIDIA A100-SXM4-80GB",
+ "torch": "2.11.0+cu130",
+ "micro": 8,
+ "seq": 1024,
+ "shapes": [
+  {
+   "ckpt": "base450m_cont_final.pt",
+   "D": 1024,
+   "L": 32,
+   "vocab": 128000,
+   "micro": 8,
+   "params_M": 576.2,
+   "full": {
+    "p50_ms": 547.037,
+    "mean_ms": 547.219,
+    "n": 30,
+    "peak_gb": 35.84
+   },
+   "trunk": {
+    "p50_ms": 480.017,
+    "mean_ms": 487.338,
+    "n": 30,
+    "peak_gb": 22.06
+   },
+   "head_share_of_step": 0.1225,
+   "head_peak_gb": 13.78
+  },
+  {
+   "ckpt": "grow_mem_grown_final.pt",
+   "D": 1024,
+   "L": 64,
+   "vocab": 128000,
+   "micro": 8,
+   "params_M": 1328.2,
+   "full": {
+    "p50_ms": 1402.882,
+    "mean_ms": 1416.4,
+    "n": 30,
+    "peak_gb": 71.28
+   },
+   "trunk": {
+    "p50_ms": 1346.455,
+    "mean_ms": 1362.631,
+    "n": 30,
+    "peak_gb": 57.95
+   },
+   "head_share_of_step": 0.0402,
+   "head_peak_gb": 13.33
+  }
+ ]
+}

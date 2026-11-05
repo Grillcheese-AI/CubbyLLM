@@ -45,14 +45,16 @@ def head_rows(export: str) -> np.ndarray:
         return np.ascontiguousarray(f.get_tensor("lm_head.weight"), dtype=np.float32)
 
 
-def train_router(idx, held: dict, epochs: int = 3, lr: float = 1e-3, seed: int = 0) -> tuple:
-    """(W, b): cluster scores = h W^T + b, from the centroids, fitted to the full head's top-16 mass per cluster."""
+def train_router(idx, held: dict, epochs: int = 3, lr: float = 1e-3, seed: int = 0, most: int = 150_000) -> tuple:
+    """(W, b): cluster scores = h W^T + b, from the centroids, fitted to the full head's top-16 mass per cluster, on at
+    most `most` held-in positions (drawn by `seed`; the dense targets are positions x clusters)."""
     import torch
     torch.manual_seed(seed)
-    h = torch.from_numpy(held["hidden"].astype(np.float32))
-    p = np.exp(held["toplogit"] - held["lse"][:, None])
+    sel = np.sort(np.random.default_rng(seed).choice(len(held["target"]), min(most, len(held["target"])), replace=False))
+    h = torch.from_numpy(held["hidden"][sel].astype(np.float32))
+    p = np.exp(held["toplogit"][sel] - held["lse"][sel][:, None])
     tgt = np.zeros((len(h), idx.n), dtype=np.float32)
-    np.add.at(tgt, (np.repeat(np.arange(len(h)), p.shape[1]), idx.assign[held["top"]].reshape(-1)), p.reshape(-1))
+    np.add.at(tgt, (np.repeat(np.arange(len(h)), p.shape[1]), idx.assign[held["top"][sel]].reshape(-1)), p.reshape(-1))
     tgt /= np.maximum(tgt.sum(1, keepdims=True), 1e-12)
     tgt = torch.from_numpy(tgt)
     w = torch.nn.Parameter(torch.from_numpy(idx.centroids.copy()))

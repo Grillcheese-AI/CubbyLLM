@@ -115,3 +115,37 @@ Its own order, written from stage 1's numbers. 0045's runs are not changed.
 - **Still to measure:** the A100 (torch, Nick's session), and the training step's share (Cowork's addition).
   - By parameters, the head is 29% of the 450M's per-token matmuls. A training step pays that in full, plus the
     cross-entropy over 128k, so stage 2's case rests on the A100's training number, not on decode at home.
+
+## Step 1 on the A100: decode and the training step (Nick's session, 2026-11-04 night; Claude Code's reading)
+- **Logs:** `head_share_decode_cuda_2026-11-05.json`, `head_share_train_cuda_2026-11-05.json`,
+  `head_share_dump_cuda_2026-11-05.json` (`notebooks/head_shortlist.ipynb`, `validation/head_share_torch.py`; A100
+  SXM4 80 GB). The files carry the runtime's UTC date.
+- **Decode, fp32,** as serving decodes (the step timed with its greedy token read back, p50 of 30):
+
+| | step | 128k head | head's share | full 32k head | K = 256 / 1,024 / 4,096 rows |
+|---|---|---|---|---|---|
+| batch 1 | 25.0 ms | 0.44 ms | **1.8%** | 0.17 ms | 0.13 / 0.12 / 0.12 ms |
+| batch 16 | 26.7 ms | 0.78 ms | **2.9%** | 0.27 ms | 0.13 / 0.13 / 0.15 ms |
+
+- **The training step:**
+  - forward + backward, micro batch 8 x 1,024, bf16 autocast;
+  - "trunk" is the same step through the trunk alone, its loss read off the state;
+  - weights at init (shapes only).
+
+| | params | step with the head + CE | trunk alone | head + CE: time | head + CE: peak memory |
+|---|---|---|---|---|---|
+| 450M (`base450m_cont`) | 576M | 547 ms, 35.8 GB | 480 ms, 22.1 GB | **12.3%** | **13.8 GB** |
+| grown 1.36B (`grow_mem_grown`) | 1,328M | 1,403 ms, 71.3 GB | 1,346 ms, 58.0 GB | **4.0%** | **13.3 GB** |
+
+- **What it says:**
+  - **Decode:** the head is a small share on either card: 1.8 to 2.9% on the A100, 7 to 10% at home (where the step
+    is launch-bound).
+    - Stage 1's decode saving is at most that share; the 32k speed line is met with room on both cards.
+    - So stage 1's case is the vocabulary's growth (the head scales with V, the trunk does not), not today's 128k.
+  - **Training:** the head and its cross-entropy are 12.3% of a 450M step's time and 4.0% of the grown arm's. That
+    caps stage 2's time saving.
+    - **The larger part is memory:** 13.3 to 13.8 GB a micro batch of 8 x 1,024, whatever the trunk (38% of the
+      450M's peak). A shortlist softmax would free most of it: about 1.6x the micro batch at the 450M.
+    - That is the measured case for stage 2, as I read it. Whether to write stage 2 is yours.
+- **Held-in states for the build:** 851,968 positions (64 windows of 1,024 per shard, training region), on Drive. The
+  index built from them is read on the held-in tuning split next, then on the held-out tails once.

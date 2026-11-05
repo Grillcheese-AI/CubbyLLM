@@ -1,0 +1,8 @@
+{
+ "what": "order 0050 stage 1 (dump, torch)",
+ "date": "2026-11-05",
+ "card": "NVIDIA A100-SXM4-80GB",
+ "torch": "2.11.0+cu130",
+ "positions": 851968,
+ "path": "heldin_w64.npz"
+}

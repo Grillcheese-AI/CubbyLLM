@@ -1,0 +1,100 @@
+{
+ "what": "order 0050 stage 1 (decode, torch)",
+ "date": "2026-11-05",
+ "card": "NVIDIA A100-SXM4-80GB",
+ "torch": "2.11.0+cu130",
+ "meta": {
+  "kind": "cubby_base",
+  "D": 1024,
+  "L": 32,
+  "heads": 4,
+  "window": 512,
+  "attn_every": 3,
+  "ctx": 32,
+  "slots": 8,
+  "gen_basis": 16,
+  "gen_rank": 8,
+  "vocab": 128000,
+  "vocab_real": 127996,
+  "mem_every": 0,
+  "tied": false,
+  "causal_ctx": true
+ },
+ "runs": [
+  {
+   "dtype": "float32",
+   "batch": 1,
+   "step": {
+    "p50_ms": 25.033,
+    "mean_ms": 25.357,
+    "n": 30
+   },
+   "head": {
+    "p50_ms": 0.442,
+    "mean_ms": 0.442,
+    "n": 30
+   },
+   "head32k": {
+    "p50_ms": 0.174,
+    "mean_ms": 0.176,
+    "n": 30
+   },
+   "shortlist_rows": {
+    "256": {
+     "p50_ms": 0.126,
+     "mean_ms": 0.126,
+     "n": 30
+    },
+    "1024": {
+     "p50_ms": 0.121,
+     "mean_ms": 0.122,
+     "n": 30
+    },
+    "4096": {
+     "p50_ms": 0.12,
+     "mean_ms": 0.124,
+     "n": 30
+    }
+   },
+   "head_share_of_step": 0.0177
+  },
+  {
+   "dtype": "float32",
+   "batch": 16,
+   "step": {
+    "p50_ms": 26.692,
+    "mean_ms": 27.011,
+    "n": 30
+   },
+   "head": {
+    "p50_ms": 0.782,
+    "mean_ms": 0.784,
+    "n": 30
+   },
+   "head32k": {
+    "p50_ms": 0.272,
+    "mean_ms": 0.274,
+    "n": 30
+   },
+   "shortlist_rows": {
+    "256": {
+     "p50_ms": 0.126,
+     "mean_ms": 0.13,
+     "n": 30
+    },
+    "1024": {
+     "p50_ms": 0.128,
+     "mean_ms": 0.132,
+     "n": 30
+    },
+    "4096": {
+     "p50_ms": 0.151,
+     "mean_ms": 0.154,
+     "n": 30
+    }
+   },
+   "head_share_of_step": 0.0293
+  }
+ ],
+ "head_bytes_fp32": 524288000
+}
