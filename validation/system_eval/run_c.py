@@ -7,6 +7,8 @@ search (no key in a measurement), no books index unless ``CUBBY_BOOKS_INDEX`` is
   --seat record   the first pass: every prompt the seat is handed is written to ``prompts.jsonl`` (for Colab), and
                   the seat proposes nothing; the records are the stack with no model in the seat (``c_none``)
   --seat replay   the second pass: Colab's program for each prompt (``programs.jsonl``); the records are C (``c``)
+  --seat gather   between Colab rounds, into its own folder: the replay where Colab wrote a program, else the prompt
+                  is written down (``prompts.jsonl`` there) and nothing proposed; its records (``c_gather``) are not C
   --seat grilly2  the parity read: the serving seat itself (the 450M on grilly2, the local card; ``--export``,
                   ``--adapter``), on a few questions in short chunks; its records (``c_grilly2``) are compared with C's
   --vm permissive a check of C-VM only (``cvm_check``): the VM's similarity raised to 1 wherever it recovered a value,
@@ -154,10 +156,10 @@ def one(loop, seat, timing, row: dict, run_learned: set) -> dict:
 
 def main(argv=None) -> None:
     from system_eval.bench import BENCHES, load
-    from system_eval.seats import Recorder, Replay
+    from system_eval.seats import Gather, Recorder, Replay
     ap = argparse.ArgumentParser()
     ap.add_argument("--bench", required=True, choices=[b for b in BENCHES if b != "clutrr"])
-    ap.add_argument("--seat", required=True, choices=("record", "replay", "grilly2"))
+    ap.add_argument("--seat", required=True, choices=("record", "replay", "gather", "grilly2"))
     ap.add_argument("--export", default=os.environ.get("CUBBY_450M_EXPORT"), help="grilly2: the base export")
     ap.add_argument("--adapter", default=os.environ.get("CUBBY_450M_EMITTER"), help="grilly2: the programs adapter")
     ap.add_argument("--out", required=True)
@@ -175,7 +177,7 @@ def main(argv=None) -> None:
         rows = [r for r in rows if r["id"] in keep]
     if a.n:
         rows = rows[:a.n]
-    arm = {"record": "c_none", "replay": "c", "grilly2": "c_grilly2"}[a.seat] + ("_permissive" if a.vm == "permissive" else "")
+    arm = {"record": "c_none", "replay": "c", "gather": "c_gather", "grilly2": "c_grilly2"}[a.seat] + ("_permissive" if a.vm == "permissive" else "")
     path = os.path.join(a.out, f"{arm}_{a.bench}.jsonl")
     done = {json.loads(x)["id"] for x in open(path, encoding="utf-8") if x.strip()} if os.path.exists(path) else set()
     if a.seat == "grilly2":
@@ -190,7 +192,7 @@ def main(argv=None) -> None:
             return seat.last_program
         seat.emit = counted
     else:
-        seat = Recorder() if a.seat == "record" else Replay.load(a.programs or os.path.join(a.out, "programs.jsonl"))
+        seat = Recorder() if a.seat == "record" else             (Gather if a.seat == "gather" else Replay).load(a.programs or os.path.join(a.out, "programs.jsonl"))
     t0 = time.perf_counter()
     loop, timing, meta = build(seat, not a.offline, a.vm)
     todo = [r for r in rows if r["id"] not in done]
@@ -201,11 +203,11 @@ def main(argv=None) -> None:
         for i, r in enumerate(todo):
             f.write(json.dumps(one(loop, seat, timing, r, run_learned), ensure_ascii=False) + "\n")
             f.flush()
-            if a.seat == "record" and (i + 1) % 25 == 0:
+            if a.seat in ("record", "gather") and (i + 1) % 25 == 0:
                 seat.save(os.path.join(a.out, "prompts.jsonl"))
             if (i + 1) % 50 == 0:
                 print(f"  {i + 1}/{len(todo)} ({time.perf_counter() - t0:.0f}s)", flush=True)
-    if a.seat == "record":
+    if a.seat in ("record", "gather"):
         seat.save(os.path.join(a.out, "prompts.jsonl"))
     json.dump({**meta, "bench": a.bench, "arm": arm, "rows": len(rows), "wall_s": round(time.perf_counter() - t0, 1)},
               open(os.path.join(a.out, f"{arm}_{a.bench}.meta.json"), "w"), indent=1)

@@ -137,6 +137,14 @@ def test_the_recorder_keeps_each_prompt_once_and_proposes_nothing(tmp_path):
     assert rc.save(str(f)) == 2 and rc.save(str(f)) == 0 and rc.calls == 3
 
 
+def test_gather_replays_what_it_has_and_writes_down_what_it_lacks(tmp_path):
+    g = SE.Gather({"a": "program a"})
+    assert g.emit("a", max_new_tokens=300) == "program a" and g.last_program == "program a"
+    assert g.emit("b", max_new_tokens=300) == SE.NO_PLAN and g.last_program == SE.NO_PLAN
+    f = tmp_path / "prompts.jsonl"
+    assert g.save(str(f)) == 1 and g.calls == 2 and "program a" not in f.read_text(encoding="utf-8")
+
+
 def test_proposer_and_refusal_kinds():
     assert proposer({"restated": "the author of X", "verified": True}, False, None) == "everyday"
     assert proposer({"plan": ["capital"], "verified": True}, True, "function plan() {}") == "450m"

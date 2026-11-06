@@ -7,6 +7,8 @@ question with the names the host knows and hands the annotated prompt to the sea
   ``Replay``     the seat at home, second pass: the program Colab's torch seat wrote for that exact prompt; a prompt
                  with none stops the run (``MissingProgram`` is not an ``Exception``: the loop's own handler cannot
                  turn it into a refusal)
+  ``Gather``     between Colab rounds: the replay where a program exists, the recorder where none does (the online
+                 pass annotates some questions with names the offline pass did not know)
   ``TorchTrunk`` the 450M in torch (Colab), with ``Cubby450mTrunk``'s interface (``generate``, ``tokenizer``,
                  ``eos``, ``adapter_dirs``, ``max_ctx``): ``Cubby450mEmitter`` and the talk seat run on it unchanged.
                  One frozen base per role (the programs adapter is on base450m_cont, the talk adapter on base450m);
@@ -87,6 +89,27 @@ class Replay:
         return self.last_program
 
 
+class Gather(Replay):
+    """Between rounds: Colab's program where it has one, else the prompt is written down (as ``Recorder`` does) and
+    nothing is proposed. Its records are not arm C's; it only collects the prompts the online pass hands the seat
+    that the offline record pass did not, for the next Colab round."""
+    name = "gather"
+
+    def __init__(self, programs: dict[str, str]) -> None:
+        super().__init__(programs)
+        self.prompts: dict[str, int] = {}
+
+    def emit(self, prompt: str, max_new_tokens: int = 768, **kw) -> str:
+        try:
+            return super().emit(prompt, max_new_tokens, **kw)
+        except MissingProgram:
+            self.last_program = NO_PLAN
+            self.prompts.setdefault(prompt, int(max_new_tokens))
+            return NO_PLAN
+
+    save = Recorder.save
+
+
 class TorchTrunk:
     """``roles``: {role: (checkpoint, adapter dir, adapter file name)}. Each role loads its base, frozen, in eval."""
 
@@ -144,4 +167,4 @@ def programs(trunk, prompts: list[str], max_new: list[int], role: str = "program
     return out
 
 
-__all__ = ["MissingProgram", "NO_PLAN", "Recorder", "Replay", "TorchTrunk", "programs"]
+__all__ = ["Gather", "MissingProgram", "NO_PLAN", "Recorder", "Replay", "TorchTrunk", "programs"]
