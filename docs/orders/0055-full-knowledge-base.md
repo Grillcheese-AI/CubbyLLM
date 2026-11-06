@@ -1,0 +1,130 @@
+# 0055 — The full knowledge base at home: Wikidata hot and cold, so the benchmarks read the real ceiling
+status: open
+written: 2026-11-06 by Cowork · approved: 2026-11-06 by Nick ("perfect lets put that as a top priority so we can have the true numbers for the benchmarks. Right now its very low as we do not have the full kb") · hypothesis: the system paper; the design is `docs/research/2026-11-06-fact-store-synthesis.md`
+
+**Priority: top** (Nick). It goes before 0054's full run, the rest of 0053, and every other open order. 0054's full run
+waits for this order, then reads before (today's knowledge base) and after.
+
+## Why
+Today Cubby answers from:
+- a 4.3M-fact Wikidata5M world;
+- a small wiki world;
+- live Wikidata, through its search API.
+
+SimpleQA's "3 of 860" was the wiki world. 0054 run now would measure the store, not the system.
+
+The panel and its check (the synthesis) give the design: **one hot store, Cubby's own, in Rust, and the full graph as
+a cold tier.** The full graph's numbers come from Willerval, Diefenbach and Bonifati (ESWC 2024): 19.2 billion
+triples, built on a 16 GB desktop in about two days, 340 GB.
+
+**What it brings, in plain words:** Cubby keeps a fast pocket edition of what it needs and the complete Wikidata on
+the shelf beside it, so the benchmarks show what the system can do, not what its small store happened to hold.
+- **Over a conventional model:** a model's knowledge is whatever fit in its weights at training. Here every fact is
+  stored exactly, with its source, and is added or corrected in one write, without retraining.
+
+## The machine today (read 2026-11-06)
+- 48 GB of RAM. Five drives with 47-57 GB free each. No Java.
+- **A 2 TB NVMe is needed before the full builds:**
+  - the dump, if stored (100-150 GB compressed);
+  - the cold tier (about 340 GB) and its build space;
+  - the hot store (25-90 GB, estimated).
+
+  This is Nick's purchase. Until it is in, steps 0 and 1 run: they need no local room.
+
+## Build
+0. **The coverage audit** (no dump, outside `cubbyllm/`): 1,000 questions, reading live Wikidata at a polite rate with
+   a generic client name.
+   - **The questions:** SimpleQA 400, Mintaka 300 (with its French), MKQA 300 (French).
+   - **Per question:** is the gold a value of a statement on the asked item, elsewhere in Wikidata, or not in Wikidata?
+   - **Where a set has no gold ids** (SimpleQA): every candidate item for the name is checked (no fame ordering), and
+     ambiguity is counted.
+   - 100 disagreements are read.
+   - **The split is the ceiling the full base can reach.** A low share means text is the next lever, not a stop:
+     Nick's priority stands.
+1. **One streaming pass over the dump,** never unpacked to disk, writing two things:
+   - **Counts:** items; statements by rank; qualifiers and references; EN, FR and `mul` terms; bytes by section. This
+     settles the panel's conflicting sizes.
+   - **A 1% hash sample** (not the first Q-ids). The hot store is built from it, and on it are measured:
+     - bytes per statement, and the build's time and peak RAM;
+     - lookup latency, in memory and from SSD;
+     - name resolution: latency, and EN/FR recall on the audit's entities that fall in the sample;
+     - **measured, not gating:**
+       - inverse, symmetric and chain folding, from Wikidata's own property constraints, with exceptions counted;
+       - place ids in S2 (Hilbert) order against Q-id order: pages read on geography questions;
+       - neighbourhood preloading against a plain cache;
+       - how often a coarse community map prunes a relation search.
+   - **Where:** a Colab session Nick runs (fast network, no home disk) or at home. Claude Code's choice, recorded; it
+     needs Nick's yes for the download either way.
+2. **The full builds, after the NVMe:**
+   - **Hot, Cubby's store** (the synthesis, section 3):
+     - dense ids;
+     - statements at every rank, flagged;
+     - time qualifiers hot, the others cold;
+     - references deduplicated;
+     - exact values (no floats; dates keep their precision and calendar);
+     - EN, FR and `mul` names in an FST, exact and accent-folded, with a bounded typo path;
+     - a reverse index;
+     - a small overlay for live values.
+   - **Cold:** the full Wikidata in HDT. Either built with qEndpoint's k-HDTCat (GPL-3.0, Java 17, used as a
+     separate tool and never linked into Cubby's code), or taken from the prebuilt index its image downloads (its
+     date and contents recorded). Which one is Nick's call at download time.
+   - **Both are resumable in chunks.** This PC has shut down under long jobs before.
+3. **Wiring, behind a flag (off by default):** the VM's hops read the hot store, then the cold tier, then live
+   Wikidata.
+   - The live value wins for time-sensitive facts (the standing rule).
+   - The cold tier is read in-process from the HDT file. If only a server works, that is a question for Nick: the
+     serving code never touches the network.
+4. **0054 reruns with the flag on.** Its full run is the "after"; its 50-question preflight on today's base is the
+   "before".
+
+## Acceptance (pre-registered)
+- **Tests:**
+  - 100,000 entities round-trip with 0 differences against a second, independent parser;
+  - 1,000 items re-fetched at their recorded revision agree;
+  - a rebuild gives identical chunk hashes;
+  - with the flag off, today's answers are unchanged, bit for bit;
+  - no stored value is a float;
+  - no candidate list is ordered by sitelinks, pageviews or Q-id.
+- **Reported:**
+  - the stream's counts;
+  - the hot store's size and bytes per statement;
+  - build time and peak RAM;
+  - lookup latency p50, p95 and p99, in memory and from SSD;
+  - name resolution latency and recall, EN and FR;
+  - the audit's split, per set.
+- **The lines:**
+  - a fact lookup from SSD at most 1 ms p95; name resolution at most 50 ms p95;
+  - every fact the audit found in live Wikidata is found in the store, unless it changed after the dump's date
+    (listed);
+  - with the flag on, 0 wrong on the existing batteries (E8 reworded, the emitter families, the stack's 20, 0038's
+    scoreboard), and more answers spoken.
+  - **Size:** the hot store at most 90 GB, the panel's top estimate. Above that, the projection is reviewed with
+    Cowork before the full build.
+- **Kill:**
+  - any stored value that differs from its source: the build is not faithful;
+  - or, in 0054 with the full base, Cubby's wrong answers above 1% of its spoken ones.
+
+## Constraints
+- Rules in `CLAUDE.md` hold (flag-gated, < 300 lines a file, `__wiring__`, tests pin the claim).
+- **Where the store lives:** in the VM's datastore (the cubelang repository), or in a crate beside it. Claude Code's
+  choice, recorded. Main cubelang's `target/release` binary is never overwritten.
+- `cubbyllm/` never touches the network. The audit, the stream and every download run outside it.
+- **Downloads over 1 GB** (the dump stream, any prebuilt index) wait for Nick's yes in chat.
+- No external model builds stored knowledge.
+- **Licences recorded:** Wikidata CC0; qEndpoint GPL-3.0 as a tool only; every crate's licence checked.
+- No local path in a committed file.
+
+## Out of scope
+- **Text** (Wikipedia, books): passages, extraction, and their compression (hypertokens or zstd). The next order,
+  from this one's numbers.
+- **Following Wikidata's change stream:** after the first full build.
+
+## Report
+<!-- Claude Code fills this in, then sets status: review -->
+- **Commits:**
+- **Files:**
+- **Tests:**
+- **Measured:** <against each acceptance line>
+- **Not verified here:**
+- **Found on the way:**
+- **Questions:**
