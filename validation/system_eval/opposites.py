@@ -199,6 +199,55 @@ def pair_verdict(a: str, b: str) -> str:
     return "refused" if a == b == "refused" else "mixed"
 
 
+def report(c_path: str, m_path: str | None, programs: dict | None = None) -> dict:
+    """Per arm (C, C-VM from C's records, M) and per type and language: pairs both_right / polarity / refused /
+    mixed, sides right / opposite / unmatched / refused; every polarity error and every unmatched side listed (with
+    C's program). The line: 0 polarity errors spoken by C."""
+    import collections
+    from system_eval.bench import load
+    meta = {r["id"]: r["meta"] for r in load("opposites")}
+    arms = collections.defaultdict(dict)
+    for x in open(c_path, encoding="utf-8"):
+        r = json.loads(x)
+        m = meta[r["id"]]
+        arms["C"][r["id"]] = (side_verdict(r["spoken"], r["answer"], r["golds"], m["other_golds"]), r["answer"], r)
+        arms["C-VM"][r["id"]] = (side_verdict(r["cvm_answer"] is not None, r["cvm_answer"], r["golds"], m["other_golds"]),
+                                 r["cvm_answer"], r)
+    if m_path and os.path.exists(m_path):
+        for x in open(m_path, encoding="utf-8"):
+            r = json.loads(x)
+            arms["M"][r["id"]] = (side_verdict(True, r["answer"], r["golds"], meta[r["id"]]["other_golds"], declines=True),
+                                  r["answer"], r)
+    out = {}
+    for arm, got in arms.items():
+        pairs, sides, listed = collections.Counter(), collections.Counter(), []
+        by = collections.defaultdict(dict)
+        for rid, (v, ans, r) in got.items():
+            m = meta[rid]
+            by[m["pair"]][m["side"]] = v
+            sides[f"{m['type']}/{m['lang']}:{v}"] += 1
+            if v in ("opposite", "unmatched"):
+                listed.append({"id": rid, "verdict": v, "question": r["question"], "answer": ans, "gold": r["golds"][:2],
+                               "other": m["other_golds"][:2],
+                               "program": (programs or {}).get(r.get("prompt")) if arm != "M" else None})
+        for pair, s in by.items():
+            if "a" in s and "b" in s:
+                t, lg = pair.split(":")[0], pair.rsplit(":", 1)[1]
+                pairs[f"{t}/{lg}:{pair_verdict(s['a'], s['b'])}"] += 1
+        out[arm] = {"pairs": dict(sorted(pairs.items())), "sides": dict(sorted(sides.items())),
+                    "polarity_errors": sum(1 for x in listed if x["verdict"] == "opposite"), "listed": listed}
+    out["line"] = {"c_polarity_spoken": out.get("C", {}).get("polarity_errors"),
+                   "passes": out.get("C", {}).get("polarity_errors") == 0}
+    return out
+
+
 if __name__ == "__main__":
     if sys.argv[1:] == ["build"]:
         print(json.dumps(build(), indent=1))
+    elif sys.argv[1:2] == ["report"]:                    # report <run dir> <log path>
+        d = sys.argv[2]
+        progs = {r["prompt"]: r["program"] for r in map(json.loads, open(os.path.join(d, "programs.jsonl"), encoding="utf-8"))}
+        rep = report(os.path.join(d, "c_opposites.jsonl"), os.path.join(d, "m", "m_opposites.jsonl"), progs)
+        json.dump(rep, open(sys.argv[3], "w", encoding="utf-8"), indent=1, ensure_ascii=False)
+        print(json.dumps({k: (v if k == "line" else {"pairs": v["pairs"], "polarity_errors": v["polarity_errors"]})
+                          for k, v in rep.items()}, indent=1, ensure_ascii=False))

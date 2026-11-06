@@ -159,3 +159,26 @@ the opposite direction, and the VM then certifies the wrong question. That is a 
   - Every polarity error, C's or C−VM's, is printed with its program.
   - It counts in the paper's error analysis as "interpretation".
 - **It runs now, on today's base:** it does not wait for 0055.
+## Opposite pairs, read (Claude Code, 2026-11-06): 0 polarity errors spoken by C
+Log: `validation/logs/system_eval_opposites_2026-11-06.json` (every pair's verdict per arm; every opposite and
+unmatched side listed, C's with its program). Built by `validation/system_eval/opposites.py` (`25ddc7d`).
+- **The set:** 125 pairs a language, EN and FR, 25 a type: follows/followed by, replaces/replaced by, start/end time,
+  founded/dissolved, highest/lowest point. Each item's names name it alone; each pair's golds differ (dates by year).
+  **Not built:** oldest/youngest, first/last, earliest/latest, largest/smallest: Wikidata states no such property pair
+  on one item and the stack has no superlative form, so they would read coverage, not direction.
+- **How C ran:** the stack online, today's base, the VM certifying; the programs seat is the serving one (the 450M on
+  grilly2, the local card), by the main run's split: the stack's prompts recorded (425), the seat's programs written
+  under grilly2's environment, then replayed (no prompt missing). M: the talk adapter (talk_v2_2, the hash Colab used)
+  on grilly2.
+- **The line passes: C speaks 0 polarity errors; C-VM 0 as well (a tie at 0).**
+  - C, sides: 94 right, 6 unmatched, 400 refused. The 6 unmatched are not opposites: 5 are right years written zero-padded
+    ("0395" for 395, which the grading's matcher misses), and 1 is C-VM's 1966 against 1967 where C refused.
+  - C, pairs: start/end EN 20 both right, 5 mixed; highest/lowest EN 13 both right (the 450M's programs), 1 mixed,
+    11 refused; founded EN 25 mixed (founded right in all 25, dissolved refused in all 25); follows and replaces
+    refused in both languages; **every French pair refused.**
+- **M:** 11 sides right, 273 unmatched, 214 refused or declined; 2 marked polarity, both French: "Qu'est-ce qui suit
+  211 av. J.-C. ?" answered with 212 av. J.-C. (a real one), and "Qui a remplacé Gouvernement Brazauskas II ?" (M
+  repeats the question's name, which contains the other gold "Gouvernement Brazauskas I": the matcher's, not M's).
+- **Found on the way:** run from the repo's environment, the grilly2 seat failed on every call and the stack's loop
+  recorded 125 refusals. That run is moved aside, and a failure inside the live seat now stops the run
+  (`SeatFailure`).

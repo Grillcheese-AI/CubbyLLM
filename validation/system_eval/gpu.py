@@ -41,6 +41,20 @@ def _done(path: str, key: str) -> set:
     return {json.loads(x)[key] for x in open(path, encoding="utf-8") if x.strip()} if os.path.exists(path) else set()
 
 
+class OneByOne:
+    """The serving trunk decodes rows of one length: ragged prompts go one at a time (``--grilly2``, a small set)."""
+    dev = "grilly2"
+
+    def __init__(self, trunk) -> None:
+        self.trunk = trunk
+
+    def __getattr__(self, k):
+        return getattr(self.trunk, k)
+
+    def generate(self, role: str, rows: list, max_new_tokens: int, **kw) -> list:
+        return [self.trunk.generate(role, [r], max_new_tokens, **kw)[0] for r in rows]
+
+
 def m_prompt(row: dict) -> str:
     from cubbyllm.emit.talk import talk_prompt
     facts = (row.get("meta") or {}).get("facts")
@@ -119,8 +133,7 @@ def main(argv=None) -> None:
     role, name = ("programs", "emitter_lora") if a.step == "programs" else ("talk", "talk_lora")
     if a.grilly2:                                        # a small set at home (the opposite pairs): the seat itself
         from cubbyllm.emit.seats_450m import Cubby450mTrunk
-        trunk = Cubby450mTrunk(a.ckpt, a.tokenizer, {role: a.adapter})
-        trunk.dev = "grilly2"
+        trunk = OneByOne(Cubby450mTrunk(a.ckpt, a.tokenizer, {role: a.adapter}))
     else:
         trunk = TorchTrunk({role: (a.ckpt, a.adapter, name)}, a.tokenizer, rows=a.rows)
     print(f"{a.step}: loaded in {time.time() - t0:.0f}s on {trunk.dev}", flush=True)

@@ -1,0 +1,4156 @@
+{
+ "C": {
+  "pairs": {
+   "follows/en:refused": 25,
+   "follows/fr:refused": 25,
+   "founded/en:mixed": 25,
+   "founded/fr:refused": 25,
+   "highest/en:both_right": 13,
+   "highest/en:mixed": 1,
+   "highest/en:refused": 11,
+   "highest/fr:refused": 25,
+   "replaces/en:refused": 25,
+   "replaces/fr:refused": 25,
+   "start_end/en:both_right": 20,
+   "start_end/en:mixed": 5,
+   "start_end/fr:refused": 25
+  },
+  "sides": {
+   "follows/en:refused": 50,
+   "follows/fr:refused": 50,
+   "founded/en:refused": 25,
+   "founded/en:right": 25,
+   "founded/fr:refused": 50,
+   "highest/en:refused": 23,
+   "highest/en:right": 27,
+   "highest/fr:refused": 50,
+   "replaces/en:refused": 50,
+   "replaces/fr:refused": 50,
+   "start_end/en:refused": 2,
+   "start_end/en:right": 42,
+   "start_end/en:unmatched": 6,
+   "start_end/fr:refused": 50
+  },
+  "polarity_errors": 0,
+  "listed": [
+   {
+    "id": "opp:start_end:Q61705180:en:a",
+    "verdict": "unmatched",
+    "question": "When did 395-396 one-year-period start?",
+    "answer": "0395",
+    "gold": [
+     "395"
+    ],
+    "other": [
+     "396"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q61705180:en:b",
+    "verdict": "unmatched",
+    "question": "When did 395-396 one-year-period end?",
+    "answer": "0396",
+    "gold": [
+     "396"
+    ],
+    "other": [
+     "395"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q61705272:en:a",
+    "verdict": "unmatched",
+    "question": "When did 452-453 one-year-period start?",
+    "answer": "0452",
+    "gold": [
+     "452"
+    ],
+    "other": [
+     "453"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q61705272:en:b",
+    "verdict": "unmatched",
+    "question": "When did 452-453 one-year-period end?",
+    "answer": "0453",
+    "gold": [
+     "453"
+    ],
+    "other": [
+     "452"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q61705056:en:a",
+    "verdict": "unmatched",
+    "question": "When did 312-313 one-year-period start?",
+    "answer": "0312",
+    "gold": [
+     "312"
+    ],
+    "other": [
+     "313"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q61705056:en:b",
+    "verdict": "unmatched",
+    "question": "When did 312-313 one-year-period end?",
+    "answer": "0313",
+    "gold": [
+     "313"
+    ],
+    "other": [
+     "312"
+    ],
+    "program": null
+   }
+  ]
+ },
+ "C-VM": {
+  "pairs": {
+   "follows/en:refused": 25,
+   "follows/fr:refused": 25,
+   "founded/en:mixed": 25,
+   "founded/fr:refused": 25,
+   "highest/en:both_right": 13,
+   "highest/en:mixed": 1,
+   "highest/en:refused": 11,
+   "highest/fr:refused": 25,
+   "replaces/en:refused": 25,
+   "replaces/fr:refused": 25,
+   "start_end/en:both_right": 20,
+   "start_end/en:mixed": 5,
+   "start_end/fr:refused": 25
+  },
+  "sides": {
+   "follows/en:refused": 50,
+   "follows/fr:refused": 50,
+   "founded/en:refused": 25,
+   "founded/en:right": 25,
+   "founded/fr:refused": 50,
+   "highest/en:refused": 23,
+   "highest/en:right": 27,
+   "highest/fr:refused": 50,
+   "replaces/en:refused": 50,
+   "replaces/fr:refused": 50,
+   "start_end/en:refused": 1,
+   "start_end/en:right": 42,
+   "start_end/en:unmatched": 7,
+   "start_end/fr:refused": 50
+  },
+  "polarity_errors": 0,
+  "listed": [
+   {
+    "id": "opp:start_end:Q61705180:en:a",
+    "verdict": "unmatched",
+    "question": "When did 395-396 one-year-period start?",
+    "answer": "0395",
+    "gold": [
+     "395"
+    ],
+    "other": [
+     "396"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q61705180:en:b",
+    "verdict": "unmatched",
+    "question": "When did 395-396 one-year-period end?",
+    "answer": "0396",
+    "gold": [
+     "396"
+    ],
+    "other": [
+     "395"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q778770:en:a",
+    "verdict": "unmatched",
+    "question": "When did Jelcz 021 start?",
+    "answer": "1966",
+    "gold": [
+     "1967"
+    ],
+    "other": [
+     "1979"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q61705272:en:a",
+    "verdict": "unmatched",
+    "question": "When did 452-453 one-year-period start?",
+    "answer": "0452",
+    "gold": [
+     "452"
+    ],
+    "other": [
+     "453"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q61705272:en:b",
+    "verdict": "unmatched",
+    "question": "When did 452-453 one-year-period end?",
+    "answer": "0453",
+    "gold": [
+     "453"
+    ],
+    "other": [
+     "452"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q61705056:en:a",
+    "verdict": "unmatched",
+    "question": "When did 312-313 one-year-period start?",
+    "answer": "0312",
+    "gold": [
+     "312"
+    ],
+    "other": [
+     "313"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q61705056:en:b",
+    "verdict": "unmatched",
+    "question": "When did 312-313 one-year-period end?",
+    "answer": "0313",
+    "gold": [
+     "313"
+    ],
+    "other": [
+     "312"
+    ],
+    "program": null
+   }
+  ]
+ },
+ "M": {
+  "pairs": {
+   "follows/en:mixed": 9,
+   "follows/en:refused": 16,
+   "follows/fr:mixed": 24,
+   "follows/fr:polarity": 1,
+   "founded/en:mixed": 5,
+   "founded/en:refused": 20,
+   "founded/fr:mixed": 25,
+   "highest/en:mixed": 8,
+   "highest/en:refused": 17,
+   "highest/fr:mixed": 25,
+   "replaces/en:mixed": 3,
+   "replaces/en:refused": 22,
+   "replaces/fr:mixed": 24,
+   "replaces/fr:polarity": 1,
+   "start_end/en:mixed": 2,
+   "start_end/en:refused": 23,
+   "start_end/fr:both_right": 3,
+   "start_end/fr:mixed": 22
+  },
+  "sides": {
+   "follows/en:refused": 36,
+   "follows/en:unmatched": 14,
+   "follows/fr:opposite": 1,
+   "follows/fr:right": 1,
+   "follows/fr:unmatched": 48,
+   "founded/en:refused": 42,
+   "founded/en:unmatched": 8,
+   "founded/fr:unmatched": 50,
+   "highest/en:refused": 42,
+   "highest/en:unmatched": 8,
+   "highest/fr:right": 1,
+   "highest/fr:unmatched": 49,
+   "replaces/en:refused": 47,
+   "replaces/en:unmatched": 3,
+   "replaces/fr:opposite": 1,
+   "replaces/fr:right": 2,
+   "replaces/fr:unmatched": 47,
+   "start_end/en:refused": 47,
+   "start_end/en:right": 1,
+   "start_end/en:unmatched": 2,
+   "start_end/fr:right": 6,
+   "start_end/fr:unmatched": 44
+  },
+  "polarity_errors": 2,
+  "listed": [
+   {
+    "id": "opp:follows:Q83381:en:a",
+    "verdict": "unmatched",
+    "question": "What came before 1140s?",
+    "answer": "It seems like your message might be incomplete. Could you please clarify or provide more details about what you're asking? I'm here to help!",
+    "gold": [
+     "1130s"
+    ],
+    "other": [
+     "1150s"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q83381:en:b",
+    "verdict": "unmatched",
+    "question": "What came after 1140s?",
+    "answer": "It seems like your message might be incomplete. Could you please clarify or provide more details about what you're asking? I'm here to help!",
+    "gold": [
+     "1150s"
+    ],
+    "other": [
+     "1130s"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q83381:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède années 1140 ?",
+    "answer": "Bien sûr ! Voici une version plus concise, plus concise, et plus gracieuse :",
+    "gold": [
+     "années 1130",
+     "1130s"
+    ],
+    "other": [
+     "années 1150",
+     "1150s"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q83381:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit années 1140 ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus fluide de votre question :",
+    "gold": [
+     "années 1150",
+     "1150s"
+    ],
+    "other": [
+     "années 1130",
+     "1130s"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q963531:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède Grand Prix de Bahrain 2011 ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus fluide de ton sens :",
+    "gold": [
+     "Grand Prix automobile de Bahreïn 2010",
+     "2010 Bahrain Grand Prix"
+    ],
+    "other": [
+     "Grand Prix automobile de Bahreïn 2012",
+     "2012 Bahrain Grand Prix"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q963531:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit Grand Prix de Bahrain 2011 ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus fluide de ton message :",
+    "gold": [
+     "Grand Prix automobile de Bahreïn 2012",
+     "2012 Bahrain Grand Prix"
+    ],
+    "other": [
+     "Grand Prix automobile de Bahreïn 2010",
+     "2010 Bahrain Grand Prix"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q49781:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède We're Almost There ?",
+    "answer": "Je ne peux pas savoir ce que signifie \"I'm Almost There\" — je ne peux pas savoir ce que signifie \"I'm Almost There\" — je ne peux pas savoir ce que signifie \"I'm Almost There\" — je ne peux pas savoir ce que signifie \"I'm Almost There\" — je ne peux pas savoir ce que signifie \"I'm Almost There\" — je ne peux pas savoir ce que signifie \"I'm Almost There\" — je ne peux pas savoir ce que signifie \"I'm Almost There\" — je ne peux pas savoir ce que signifie \"I'm Almost There\" — je ne peux pas savoir ce que signifie \"I'm Almost There\" — je ne peux pas savoir ce que signifie \"I'm Almost There\" — je ne peux pas savoir ce que signifie \"I",
+    "gold": [
+     "Happy"
+    ],
+    "other": [
+     "Just a Little Bit of You"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q49781:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit We're Almost There ?",
+    "answer": "Je ne peux pas répondre à une question de question de genre, ni même de genre, ni même de genre de genre. Je ne peux pas répondre à une question de genre, ni même de genre de genre. Je peux t'aider à répondre à des questions de genre, de genre ou de genre de genre. Je peux t'aider à répondre à des questions de genre, de genre ou de genre de genre.",
+    "gold": [
+     "Just a Little Bit of You"
+    ],
+    "other": [
+     "Happy"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q151189:en:a",
+    "verdict": "unmatched",
+    "question": "What came before 3279 Solon?",
+    "answer": "It seems like your message might be incomplete. Could you please clarify or provide more details about what you're asking? I'm here to help!",
+    "gold": [
+     "3278 Běhounek",
+     "Běhounek"
+    ],
+    "other": [
+     "3280 Grétry",
+     "3280 Gretry"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q151189:en:b",
+    "verdict": "unmatched",
+    "question": "What came after 3279 Solon?",
+    "answer": "It seems like your message might be incomplete. Could you please clarify or provide more details about what you're asking? I'm here to help!",
+    "gold": [
+     "3280 Grétry",
+     "3280 Gretry"
+    ],
+    "other": [
+     "3278 Běhounek",
+     "Běhounek"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q151189:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède (3279) Solon ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus fluide de l'histoire de Solon :",
+    "gold": [
+     "(3278) Běhounek",
+     "3278 Běhounek"
+    ],
+    "other": [
+     "(3280) Grétry",
+     "3280 Grétry"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q151189:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit (3279) Solon ?",
+    "answer": "Bien sûr ! Voici une version plus courte et plus fluide de l'histoire :",
+    "gold": [
+     "(3280) Grétry",
+     "3280 Grétry"
+    ],
+    "other": [
+     "(3278) Běhounek",
+     "3278 Běhounek"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q17231:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède expédition 32 ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus fluide de votre question :",
+    "gold": [
+     "expédition 31",
+     "Expedition 31"
+    ],
+    "other": [
+     "expédition 33",
+     "Expedition 33"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q17231:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit expédition 32 ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus fluide de votre question :",
+    "gold": [
+     "expédition 33",
+     "Expedition 33"
+    ],
+    "other": [
+     "expédition 31",
+     "Expedition 31"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q54421:en:a",
+    "verdict": "unmatched",
+    "question": "What came before 1999 Brazilian Grand Prix?",
+    "answer": "It seems like your message might be incomplete. Could you please clarify or provide more details about what you're asking? I'm here to help!",
+    "gold": [
+     "1998 Brazilian Grand Prix",
+     "XXVII Grande Premio Marlboro do Brasil"
+    ],
+    "other": [
+     "2000 Brazilian Grand Prix",
+     "XXXVI Grande Premio do Brasil"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q54421:en:b",
+    "verdict": "unmatched",
+    "question": "What came after 1999 Brazilian Grand Prix?",
+    "answer": "It seems like your message might be incomplete. Could you please clarify or provide more details about what you're asking? I'm here to help!",
+    "gold": [
+     "2000 Brazilian Grand Prix",
+     "XXXVI Grande Premio do Brasil"
+    ],
+    "other": [
+     "1998 Brazilian Grand Prix",
+     "XXVII Grande Premio Marlboro do Brasil"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q54421:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède Grand Prix automobile du Brésil 1999 ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus fluide de votre question :",
+    "gold": [
+     "Grand Prix automobile du Brésil 1998",
+     "1998 Brazilian Grand Prix"
+    ],
+    "other": [
+     "Grand Prix automobile du Brésil 2000",
+     "2000 Brazilian Grand Prix"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q54421:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit Grand Prix automobile du Brésil 1999 ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus fluide de ton sens :",
+    "gold": [
+     "Grand Prix automobile du Brésil 2000",
+     "2000 Brazilian Grand Prix"
+    ],
+    "other": [
+     "Grand Prix automobile du Brésil 1998",
+     "1998 Brazilian Grand Prix"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q19994:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède Frat Party at the Pankake Festival ?",
+    "answer": "Frat Party at the Pankake Festival is a classic example of a political satire that satirizes the corruption and corruption of the state. It satirizes the corruption and corruption of the state, which is often portrayed as a form of political satire.",
+    "gold": [
+     "In the End"
+    ],
+    "other": [
+     "Meteora"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q19994:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit Frat Party at the Pankake Festival ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus fluide de l'histoire de la Pankake Festival :",
+    "gold": [
+     "Meteora"
+    ],
+    "other": [
+     "In the End"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q5940867:en:b",
+    "verdict": "unmatched",
+    "question": "What came after (74391) 1998 XC41?",
+    "answer": "The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **",
+    "gold": [
+     "(74392) 1998 XN55",
+     "1998 XN55"
+    ],
+    "other": [
+     "(74390) 1998 XK37"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q5940867:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit (74391) 1998 XC41 ?",
+    "answer": "Je ne peux pas répondre à une question de validation, ni à une information non-conformiste. Je suis ici pour une réponse à un sujet de validation, mais je ne peux pas répondre à une question de validation.",
+    "gold": [
+     "(74392) 1998 XN55",
+     "1998 XN55"
+    ],
+    "other": [
+     "(74390) 1998 XK37"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q17056514:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède INQ Mini 3G ?",
+    "answer": "Bien sûr ! Voici une version plus concise, plus concise, et plus complète de l'article :",
+    "gold": [
+     "INQ1"
+    ],
+    "other": [
+     "titulaire",
+     "incumbent"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q17056514:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit INQ Mini 3G ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus fluide de votre question :",
+    "gold": [
+     "titulaire",
+     "incumbent"
+    ],
+    "other": [
+     "INQ1"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q40918:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède 9 av. J.-C. ?",
+    "answer": "Qu'est-ce qui précède 9 av. J.-C.?",
+    "gold": [
+     "10 av. J.-C.",
+     "10 BC"
+    ],
+    "other": [
+     "8 av. J.-C.",
+     "8 BC"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q40918:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit 9 av. J.-C. ?",
+    "answer": "Bien sûr ! Voici une version plus concise, plus fluide et plus accessible :",
+    "gold": [
+     "8 av. J.-C.",
+     "8 BC"
+    ],
+    "other": [
+     "10 av. J.-C.",
+     "10 BC"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q79944:en:b",
+    "verdict": "unmatched",
+    "question": "What came after 211 BC?",
+    "answer": "It seems like your message might be incomplete. Could you please clarify or provide more details about what you're asking? I'm here to help!",
+    "gold": [
+     "210 BC",
+     "210 BCE"
+    ],
+    "other": [
+     "212 BC",
+     "212 BCE"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q79944:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède 211 av. J.-C. ?",
+    "answer": "Bien sûr, mais je ne peux pas répondre à ce question. Je ne peux pas répondre à une question de la même façon, ni dans une autre langue. Je suis ici pour aider, mais je ne peux pas répondre à des questions de la même façon.",
+    "gold": [
+     "212 av. J.-C.",
+     "212 BC"
+    ],
+    "other": [
+     "210 av. J.-C.",
+     "210 BC"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q79944:fr:b",
+    "verdict": "opposite",
+    "question": "Qu'est-ce qui suit 211 av. J.-C. ?",
+    "answer": "Bien sûr, 212 av. J.-C.. Je ne peux pas répondre à 211 av. J.-C.. Je ne peux pas répondre à 211 av. J.-C.. Je peux dire que je suis un ancien membre de l'armée romaine, mais je ne peux pas répondre à 211 av. J.-C.. Je peux dire que je suis un ancien membre de l'armée romaine, mais je ne peux pas répondre à 211 av. J.-C.. Je peux dire que je suis un ancien membre de l'armée romaine, mais je ne peux pas répondre à 211 av. J.-C.. Je peux dire que je suis un ancien membre de l'armée romaine, mais je ne peux pas répondre à 211 av. J.-C.. Je peux dire que je suis un ancien",
+    "gold": [
+     "210 av. J.-C.",
+     "210 BC"
+    ],
+    "other": [
+     "212 av. J.-C.",
+     "212 BC"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q44178:en:a",
+    "verdict": "unmatched",
+    "question": "What came before 129 BC?",
+    "answer": "It seems like your message might be incomplete. Could you please clarify or provide more details about what you're asking? I'm here to help!",
+    "gold": [
+     "130 BC",
+     "130BC"
+    ],
+    "other": [
+     "128 BC",
+     "128 BCE"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q44178:en:b",
+    "verdict": "unmatched",
+    "question": "What came after 129 BC?",
+    "answer": "It seems like your message might be incomplete. Could you please clarify or provide more details about what you're asking? I'm here to help!",
+    "gold": [
+     "128 BC",
+     "128 BCE"
+    ],
+    "other": [
+     "130 BC",
+     "130BC"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q44178:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède 129 av. J.-C. ?",
+    "answer": "Bien sûr ! Voici une version plus concise, plus fluide et plus accessible :",
+    "gold": [
+     "130 av. J.-C.",
+     "130 BC"
+    ],
+    "other": [
+     "128 av. J.-C.",
+     "128 BC"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q44178:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit 129 av. J.-C. ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus fluide de votre question :",
+    "gold": [
+     "128 av. J.-C.",
+     "128 BC"
+    ],
+    "other": [
+     "130 av. J.-C.",
+     "130 BC"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q5303066:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède Down with the Trumpets ?",
+    "answer": "Qu'est-ce qui précède Down with the Trumpets ?",
+    "gold": [
+     "Prophet",
+     "Prophet (Better Watch It)"
+    ],
+    "other": [
+     "Heart Skips a Beat"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q5303066:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit Down with the Trumpets ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus fluide de votre réponse :",
+    "gold": [
+     "Heart Skips a Beat"
+    ],
+    "other": [
+     "Prophet",
+     "Prophet (Better Watch It)"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q45274:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède 14e cérémonie des Florida Film Critics Circle Awards ?",
+    "answer": "Bien sûr ! Voici une version plus concise, plus gracieuse, plus gracieuse, plus gracieuse, plus gracieuse :",
+    "gold": [
+     "13e cérémonie des Florida Film Critics Circle Awards",
+     "Florida Film Critics Circle Awards 2008"
+    ],
+    "other": [
+     "15e cérémonie des Florida Film Critics Circle Awards",
+     "Florida Film Critics Circle Awards 2010"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q45274:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit 14e cérémonie des Florida Film Critics Circle Awards ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus gracieuse de 14e cérémonie des Florida Film Critics Circle Awards :",
+    "gold": [
+     "15e cérémonie des Florida Film Critics Circle Awards",
+     "Florida Film Critics Circle Awards 2010"
+    ],
+    "other": [
+     "13e cérémonie des Florida Film Critics Circle Awards",
+     "Florida Film Critics Circle Awards 2008"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q11521:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède (100) Hécate ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus fluide :",
+    "gold": [
+     "(99) Dicé",
+     "99 Dike"
+    ],
+    "other": [
+     "(101) Hélène",
+     "101 Helena"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q11521:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit (100) Hécate ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus fluide :",
+    "gold": [
+     "(101) Hélène",
+     "101 Helena"
+    ],
+    "other": [
+     "(99) Dicé",
+     "99 Dike"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q38324:en:b",
+    "verdict": "unmatched",
+    "question": "What came after 1840s?",
+    "answer": "It seems like your message might be incomplete. Could you please clarify or provide more details about what you're asking? I'm here to help!",
+    "gold": [
+     "1850s"
+    ],
+    "other": [
+     "1830s"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q38324:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède années 1840 ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus fluide de votre question :",
+    "gold": [
+     "années 1830",
+     "1830s"
+    ],
+    "other": [
+     "années 1850",
+     "1850s"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q38324:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit années 1840 ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus fluide de votre question :",
+    "gold": [
+     "années 1850",
+     "1850s"
+    ],
+    "other": [
+     "années 1830",
+     "1830s"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q26542:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède The Funeral of Hearts ?",
+    "answer": "Je ne peux pas savoir ce que signifie \"le deuil de cœur\" en anglais.",
+    "gold": [
+     "Deep Shadows and Brilliant Highlights"
+    ],
+    "other": [
+     "Buried Alive By Love"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q26542:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit The Funeral of Hearts ?",
+    "answer": "Je ne peux pas savoir ce que suit The Funeral of Hearts. Je suis ici pour aider à répondre à vos questions et aider à répondre à vos questions. 😊",
+    "gold": [
+     "Buried Alive By Love"
+    ],
+    "other": [
+     "Deep Shadows and Brilliant Highlights"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q8122189:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède Catégorie:1897 au Royaume-Uni ?",
+    "answer": "Le Royaume-Uni est avant tout un royaume, mais il n'est pas seulement une monarchie, mais une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle, une monarchie constitutionnelle",
+    "gold": [
+     "Catégorie:1896 au Royaume-Uni",
+     "Category:1896 in the United Kingdom"
+    ],
+    "other": [
+     "Catégorie:1898 au Royaume-Uni",
+     "Category:1898 in the United Kingdom"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q8122189:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit Catégorie:1897 au Royaume-Uni ?",
+    "answer": "Le tableau suivant suit la liste des œuvres du groupe britannique :",
+    "gold": [
+     "Catégorie:1898 au Royaume-Uni",
+     "Category:1898 in the United Kingdom"
+    ],
+    "other": [
+     "Catégorie:1896 au Royaume-Uni",
+     "Category:1896 in the United Kingdom"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q54412:en:b",
+    "verdict": "unmatched",
+    "question": "What came after 1990 Brazilian Grand Prix?",
+    "answer": "It seems like your message might be incomplete. Could you please clarify or provide more details about what you're asking? I'm here to help!",
+    "gold": [
+     "1991 Brazilian Grand Prix"
+    ],
+    "other": [
+     "1989 Brazilian Grand Prix"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q54412:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède Grand Prix automobile du Brésil 1990 ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus fluide de votre question :",
+    "gold": [
+     "Grand Prix automobile du Brésil 1989",
+     "1989 Brazilian Grand Prix"
+    ],
+    "other": [
+     "Grand Prix automobile du Brésil 1991",
+     "1991 Brazilian Grand Prix"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q54412:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit Grand Prix automobile du Brésil 1990 ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus fluide de ton sens :",
+    "gold": [
+     "Grand Prix automobile du Brésil 1991",
+     "1991 Brazilian Grand Prix"
+    ],
+    "other": [
+     "Grand Prix automobile du Brésil 1989",
+     "1989 Brazilian Grand Prix"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q15525:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède Grand Prix automobile d'Autriche 1976 ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus fluide de ton sens :",
+    "gold": [
+     "Grand Prix automobile d'Autriche 1975",
+     "1975 Austrian Grand Prix"
+    ],
+    "other": [
+     "Grand Prix automobile d'Autriche 1977",
+     "1977 Austrian Grand Prix"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q15525:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit Grand Prix automobile d'Autriche 1976 ?",
+    "answer": "Je ne peux pas répondre à une question de \"Qu'est-ce qui suit Grand Prix automobile d'Autriche 1976?\"",
+    "gold": [
+     "Grand Prix automobile d'Autriche 1977",
+     "1977 Austrian Grand Prix"
+    ],
+    "other": [
+     "Grand Prix automobile d'Autriche 1975",
+     "1975 Austrian Grand Prix"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q9994:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède Ming Hongzhi ?",
+    "answer": "Bien sûr, mais je ne peux pas parler de Ming Hongzhi. Je suis un logiciel libre et libre, et je ne peux pas parler de la langue officielle. Si vous avez un question ou besoin d'aide, je peux t'aider à répondre. 😊",
+    "gold": [
+     "Ming Chenghua",
+     "Chenghua Emperor"
+    ],
+    "other": [
+     "Ming Zhengde",
+     "Zhengde Emperor"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q9994:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit Ming Hongzhi ?",
+    "answer": "Bien sûr, mais je ne peux pas répondre à ce question. Je ne peux pas répondre à tout ce qui se passe dans la conversation. 😊",
+    "gold": [
+     "Ming Zhengde",
+     "Zhengde Emperor"
+    ],
+    "other": [
+     "Ming Chenghua",
+     "Chenghua Emperor"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q3454012:en:a",
+    "verdict": "unmatched",
+    "question": "What came before (134339) 5628 T-3?",
+    "answer": "The answer is **The first letter of the word **5628** is **T-3**.",
+    "gold": [
+     "(134338) 5080 T-3"
+    ],
+    "other": [
+     "Pluto",
+     "(134340) Pluto"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q3454012:en:b",
+    "verdict": "unmatched",
+    "question": "What came after (134339) 5628 T-3?",
+    "answer": "The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **The answer is **",
+    "gold": [
+     "Pluto",
+     "(134340) Pluto"
+    ],
+    "other": [
+     "(134338) 5080 T-3"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q3454012:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède (134339) 5628 T-3 ?",
+    "answer": "Qu'est-ce qui précède (13ие) 5628 T-3 ?",
+    "gold": [
+     "(134338) 5080 T-3"
+    ],
+    "other": [
+     "Pluton",
+     "Pluto"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q3454012:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit (134339) 5628 T-3 ?",
+    "answer": "Bien sûr ! Voici une version plus courte et plus fluide de ton texte :",
+    "gold": [
+     "Pluton",
+     "Pluto"
+    ],
+    "other": [
+     "(134338) 5080 T-3"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q2436973:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède Wonderlustre ?",
+    "answer": "Bien sûr ! Voici une version plus concise, plus fluide et plus gracieuse :",
+    "gold": [
+     "Smashes and Trashes"
+    ],
+    "other": [
+     "Black Traffic"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q2436973:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit Wonderlustre ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus fluide de votre question :",
+    "gold": [
+     "Black Traffic"
+    ],
+    "other": [
+     "Smashes and Trashes"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q1194287:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède classe Tango ?",
+    "answer": "Qu'est-ce qui précède classe Tango ?",
+    "gold": [
+     "classe Foxtrot",
+     "Foxtrot-class submarine"
+    ],
+    "other": [
+     "classe Kilo",
+     "Kilo-class submarine"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q1194287:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit classe Tango ?",
+    "answer": "Bien sûr ! Voici une classe de tango :",
+    "gold": [
+     "classe Kilo",
+     "Kilo-class submarine"
+    ],
+    "other": [
+     "classe Foxtrot",
+     "Foxtrot-class submarine"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q9646:fr:a",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui précède Jeux olympiques d'hiver de 1972 ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus gracieuse de ce texte :",
+    "gold": [
+     "Jeux olympiques d'hiver de 1968",
+     "1968 Winter Olympics"
+    ],
+    "other": [
+     "Jeux olympiques d'hiver de 1976",
+     "1976 Winter Olympics"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:follows:Q9646:fr:b",
+    "verdict": "unmatched",
+    "question": "Qu'est-ce qui suit Jeux olympiques d'hiver de 1972 ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus fluide de ton sens :",
+    "gold": [
+     "Jeux olympiques d'hiver de 1976",
+     "1976 Winter Olympics"
+    ],
+    "other": [
+     "Jeux olympiques d'hiver de 1968",
+     "1968 Winter Olympics"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q1525048:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par Gouvernement de Suwałki ?",
+    "answer": "Je ne suis pas correct en termes de remplacement, mais je suis prêt pour une correction. Je suis là pour répondre à vos questions.",
+    "gold": [
+     "Gouvernement d'Augustów",
+     "Augustów Governorate"
+    ],
+    "other": [
+     "district de Bialystok-Grodno",
+     "Bialystok-Grodno District"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q1525048:fr:b",
+    "verdict": "unmatched",
+    "question": "Qui a remplacé Gouvernement de Suwałki ?",
+    "answer": "Je ne peux pas me demander si je suis un gouvernement ou un gouvernement de Suwałki. Je suis ici pour aider et répondre à vos questions. 😊",
+    "gold": [
+     "district de Bialystok-Grodno",
+     "Bialystok-Grodno District"
+    ],
+    "other": [
+     "Gouvernement d'Augustów",
+     "Augustów Governorate"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q739722:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par Sultanat Wahidi de Bir Ali Amaqin ?",
+    "answer": "Je ne suis pas encore correct en termes de remplacement, mais je suis prêt pour une interprétation plus directe. Je suis ici pour une interprétation plus directe. 😊",
+    "gold": [
+     "Fédération des émirats arabes du Sud",
+     "Federation of the Emirates of South Arabia"
+    ],
+    "other": [
+     "République démocratique populaire du Yémen",
+     "South Yemen"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q739722:fr:b",
+    "verdict": "unmatched",
+    "question": "Qui a remplacé Sultanat Wahidi de Bir Ali Amaqin ?",
+    "answer": "Je ne peux pas remplacer Sultanat Wahidi de Bir Ali Amaqin. Je ne peux pas remplacer Sultanat Wahidi de Bir Ali Amaqin.",
+    "gold": [
+     "République démocratique populaire du Yémen",
+     "South Yemen"
+    ],
+    "other": [
+     "Fédération des émirats arabes du Sud",
+     "Federation of the Emirates of South Arabia"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q202590:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par Parti populaire allemand (Empire allemand) ?",
+    "answer": "Je ne suis pas correct en termes de nom, mais je suis prêt pour une interprétation plus directe. Je suis ici pour une interprétation plus directe, et je ne peux pas utiliser des termes tels que « Parti populaire allemand » ou « Parti populaire allemand ».",
+    "gold": [
+     "Parti populaire démocratique",
+     "Democratic People's Party"
+    ],
+    "other": [
+     "Parti populaire progressiste",
+     "Progressive People's Party"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q202590:fr:b",
+    "verdict": "unmatched",
+    "question": "Qui a remplacé Parti populaire allemand (Empire allemand) ?",
+    "answer": "Je ne suis pas un candidat officiel de la République fédérale allemande (RDA), mais je suis un membre de la majorité parlementaire (RDA) et un membre du gouvernement fédéral allemand. Je ne suis pas un candidat officiel de la République fédérale allemande (RDA), mais je suis un membre du gouvernement fédéral allemand.",
+    "gold": [
+     "Parti populaire progressiste",
+     "Progressive People's Party"
+    ],
+    "other": [
+     "Parti populaire démocratique",
+     "Democratic People's Party"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q1112382:en:a",
+    "verdict": "unmatched",
+    "question": "Who did Vieno Johannes Sukselainen's first cabinet replace?",
+    "answer": "Vieno Johannes Sukselainen's first cabinet was replaced by a new cabinet named \"Vieno Johannes Sukselainen\".",
+    "gold": [
+     "Karl-August Fagerholm's second cabinet"
+    ],
+    "other": [
+     "Rainer von Fieandt's cabinet"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q1112382:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par Gouvernement Sukselainen I ?",
+    "answer": "Je ne suis pas correct en termes de remplacement, mais je suis prêt pour une correction. Je suis tout de même un ancien membre de la politique étrangère, et je ne peux pas me donner de nouvelles informations ou de détails sur l'origine ou la date de l'arrêt. Si vous avez de l'information ou des détails sur l'origine ou la date de l'arrêt, je suis là pour me répondre ou me répondre.",
+    "gold": [
+     "Gouvernement Fagerholm II",
+     "Karl-August Fagerholm's second cabinet"
+    ],
+    "other": [
+     "Gouvernement von Fieandt",
+     "Rainer von Fieandt's cabinet"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q1112382:fr:b",
+    "verdict": "unmatched",
+    "question": "Qui a remplacé Gouvernement Sukselainen I ?",
+    "answer": "Je ne peux pas me demander si je suis remplacé par un gouvernement ou un gouvernement. Je ne peux pas me demander si je suis remplacé par un gouvernement ou un gouvernement. Je suis ici pour t'aider à répondre à vos questions. 😊",
+    "gold": [
+     "Gouvernement von Fieandt",
+     "Rainer von Fieandt's cabinet"
+    ],
+    "other": [
+     "Gouvernement Fagerholm II",
+     "Karl-August Fagerholm's second cabinet"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q1143949:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par Gouvernement d'Irkoutsk ?",
+    "answer": "Je ne suis pas correct en termes de remplacement, mais je suis prêt pour une correction. Je suis ici pour répondre à vos questions.",
+    "gold": [
+     "Gouvernement de Sibérie",
+     "Siberia Governorate"
+    ],
+    "other": [
+     "kraï de Sibérie",
+     "Siberia Krai"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q1143949:fr:b",
+    "verdict": "unmatched",
+    "question": "Qui a remplacé Gouvernement d'Irkoutsk ?",
+    "answer": "Je ne peux pas remplacer le Gouvernement d'Irkoutsk, ni le Gouvernement d'Irkoutsk. Je ne peux pas remplacer le Gouvernement d'Irkoutsk, ni le Gouvernement d'Irkoutsk. Je suis ici pour aider à résoudre les problèmes.",
+    "gold": [
+     "kraï de Sibérie",
+     "Siberia Krai"
+    ],
+    "other": [
+     "Gouvernement de Sibérie",
+     "Siberia Governorate"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q1404948:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par université de Landshut ?",
+    "answer": "Je ne suis pas correct en termes de nom, mais je suis prêt pour une interprétation plus directe. Je suis ici pour une interprétation plus directe, et je suis prêt pour une interprétation plus directe. 😊",
+    "gold": [
+     "université d'Ingolstadt",
+     "University of Ingolstadt"
+    ],
+    "other": [
+     "Université Louis-et-Maximilien de Munich",
+     "LMU Munich"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q1404948:fr:b",
+    "verdict": "unmatched",
+    "question": "Qui a remplacé université de Landshut ?",
+    "answer": "Je ne peux pas remplacer une université de Landshut, ni même une université de Landshut. Je suis ici pour une interprétation, mais je ne peux pas remplacer une université de Landshut.",
+    "gold": [
+     "Université Louis-et-Maximilien de Munich",
+     "LMU Munich"
+    ],
+    "other": [
+     "université d'Ingolstadt",
+     "University of Ingolstadt"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q804114:en:b",
+    "verdict": "unmatched",
+    "question": "Who replaced Bittó government?",
+    "answer": "It seems like your message might be incomplete. Could you please clarify or provide more details about what you're asking? I'm here to help!",
+    "gold": [
+     "Wenckheim government"
+    ],
+    "other": [
+     "Szlávy government",
+     "Szlávy cabinet"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q804114:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par Gouvernement Bittó ?",
+    "answer": "Je ne suis pas correct en termes de remplacement, mais je suis prêt pour une correction. Je suis là pour répondre à vos questions.",
+    "gold": [
+     "gouvernement Szlávy",
+     "Szlávy government"
+    ],
+    "other": [
+     "Gouvernement Wenckheim",
+     "Wenckheim government"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q804114:fr:b",
+    "verdict": "unmatched",
+    "question": "Qui a remplacé Gouvernement Bittó ?",
+    "answer": "Je ne peux pas remplacer le Gouvernement Bittó, mais je peux me donner une version plus concise et plus concise.",
+    "gold": [
+     "Gouvernement Wenckheim",
+     "Wenckheim government"
+    ],
+    "other": [
+     "gouvernement Szlávy",
+     "Szlávy government"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q1198163:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par Dynastie des Ming du Sud ?",
+    "answer": "Je ne suis pas de mon avis, mais je suis ici pour aider. 😊",
+    "gold": [
+     "dynastie Ming",
+     "Ming dynasty"
+    ],
+    "other": [
+     "dynastie Qing",
+     "Qing dynasty"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q1198163:fr:b",
+    "verdict": "unmatched",
+    "question": "Qui a remplacé Dynastie des Ming du Sud ?",
+    "answer": "Je ne peux pas Queryer ce message. Je suis désolé, mais je suis là pour t'aider. 😊",
+    "gold": [
+     "dynastie Qing",
+     "Qing dynasty"
+    ],
+    "other": [
+     "dynastie Ming",
+     "Ming dynasty"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q7567738:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par won sud-coréen (1945–1953) ?",
+    "answer": "Qui a été remplacé par won sud-coréen (1945–1953) ?",
+    "gold": [
+     "yen coréen",
+     "Korean yen"
+    ],
+    "other": [
+     "hwan sud-coréen",
+     "South Korean hwan"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q7567738:fr:b",
+    "verdict": "unmatched",
+    "question": "Qui a remplacé won sud-coréen (1945–1953) ?",
+    "answer": "Qui a remplacé won sud-coréen (1945–1953) ?",
+    "gold": [
+     "hwan sud-coréen",
+     "South Korean hwan"
+    ],
+    "other": [
+     "yen coréen",
+     "Korean yen"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q459780:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par Roumélie orientale ?",
+    "answer": "Je ne suis pas encore enregistré, mais je suis ici pour une version plus concise et plus concise. 😊",
+    "gold": [
+     "Empire ottoman",
+     "Ottoman Empire"
+    ],
+    "other": [
+     "principauté de Bulgarie",
+     "Principality of Bulgaria"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q459780:fr:b",
+    "verdict": "unmatched",
+    "question": "Qui a remplacé Roumélie orientale ?",
+    "answer": "Je ne peux pas remplacer Roumélie orientale, ni même une partie de l'Empire russe. Je ne peux pas remplacer une partie de l'Empire russe, ni même une partie de l'Empire russe. Je suis là pour aider à résoudre les problèmes de la division et de la division.",
+    "gold": [
+     "principauté de Bulgarie",
+     "Principality of Bulgaria"
+    ],
+    "other": [
+     "Empire ottoman",
+     "Ottoman Empire"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q1389743:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par royaume des Kotoko ?",
+    "answer": "Je ne suis pas un roi des Kotoko, mais je suis un personnage important dans la série. Je suis un personnage important dans la société, et je suis prêt à aider les gens. Si vous souhaitez me donner une idée ou une histoire, je peux vous aider à comprendre ou à comprendre ce qui se passe dans la série. 😊",
+    "gold": [
+     "Sao",
+     "Sao civilization"
+    ],
+    "other": [
+     "empire Bornu",
+     "Bornu Empire"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q1389743:fr:b",
+    "verdict": "unmatched",
+    "question": "Qui a remplacé royaume des Kotoko ?",
+    "answer": "Je ne peux pas Queryer si tu veux un nouveau royaume des Kotoko. Je suis ici pour aider à répondre à vos questions. 😊",
+    "gold": [
+     "empire Bornu",
+     "Bornu Empire"
+    ],
+    "other": [
+     "Sao",
+     "Sao civilization"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q989048:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par Gouvernement Kaj Leo Johannesen I ?",
+    "answer": "Je ne suis pas correct en termes de remplacement, mais je suis prêt pour une correction. Je suis là pour répondre à vos questions.",
+    "gold": [
+     "Gouvernement Jóannes Eidesgaard II",
+     "Cabinet of Jóannes Eidesgaard II"
+    ],
+    "other": [
+     "Gouvernement Kaj Leo Johannesen II",
+     "Cabinet of Kaj Leo Johannesen II"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q989048:fr:b",
+    "verdict": "unmatched",
+    "question": "Qui a remplacé Gouvernement Kaj Leo Johannesen I ?",
+    "answer": "Je ne peux pas me demander si je suis remplacé par un gouvernement ou un gouvernement de premier plan. Je ne peux pas me demander si je suis remplacé par un gouvernement ou un gouvernement de premier plan. Je suis ici pour aider et répondre à vos questions. 😊",
+    "gold": [
+     "Gouvernement Kaj Leo Johannesen II",
+     "Cabinet of Kaj Leo Johannesen II"
+    ],
+    "other": [
+     "Gouvernement Jóannes Eidesgaard II",
+     "Cabinet of Jóannes Eidesgaard II"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q163801:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par district de l'Alaska ?",
+    "answer": "Je ne suis pas de l'Alaska, mais je suis ici pour indiquer que je suis un district de l'Alaska. Je suis là pour indiquer que je suis un district de l'Alaska. 😊",
+    "gold": [
+     "département de l'Alaska",
+     "Department of Alaska"
+    ],
+    "other": [
+     "Territoire de l'Alaska",
+     "Territory of Alaska"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q163801:fr:b",
+    "verdict": "unmatched",
+    "question": "Qui a remplacé district de l'Alaska ?",
+    "answer": "Je ne peux pas remplacer une district de l'Alaska, ni même une ville, ni même un district de l'Alaska. En effet, la plupart des districts de l'Alaska sont des districts de l'Alaska, et aucun des districts de l'Alaska n'a été supprimé.",
+    "gold": [
+     "Territoire de l'Alaska",
+     "Territory of Alaska"
+    ],
+    "other": [
+     "département de l'Alaska",
+     "Department of Alaska"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q12874467:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par baronnie d'Arcadie ?",
+    "answer": "Je ne suis pas de même que vous pourriez me demander si vous avez été remplacé par baronnie d'Arcadie. Je suis ici pour aider à répondre à vos questions. 😊",
+    "gold": [
+     "principauté d'Achaïe",
+     "Principality of Achaea"
+    ],
+    "other": [
+     "despotat de Morée",
+     "Despotate of the Morea"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q12874467:fr:b",
+    "verdict": "unmatched",
+    "question": "Qui a remplacé baronnie d'Arcadie ?",
+    "answer": "Je ne peux pas remplacer baronnie d'Arcadie, ni même un baronnie d'Arcadie. Je ne peux pas remplacer baronnie d'Arcadie, ni même un baronnie d'Arcadie. Je suis ici pour aider à répondre à vos questions. 😊",
+    "gold": [
+     "despotat de Morée",
+     "Despotate of the Morea"
+    ],
+    "other": [
+     "principauté d'Achaïe",
+     "Principality of Achaea"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q470715:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par Kumarâgupta Ier ?",
+    "answer": "Je ne suis pas encore correct en termes de remplacement, mais je suis prêt pour une interprétation plus directe. Je suis là pour répondre à vos questions et t'aider à répondre à vos questions. 😊",
+    "gold": [
+     "Chandragupta II"
+    ],
+    "other": [
+     "Skandagupta"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q470715:fr:b",
+    "verdict": "unmatched",
+    "question": "Qui a remplacé Kumarâgupta Ier ?",
+    "answer": "Je ne peux pas me souvenir de l'époque où Kumarâgupta Ier, le père de Kumarâgupta, a été déposé. Je ne peux pas me dire de quoi il a été remplacé, mais je peux dire que c'est un ancien membre de la famille royale qui a été déposé.",
+    "gold": [
+     "Skandagupta"
+    ],
+    "other": [
+     "Chandragupta II"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q2713155:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par Coupon moldave ?",
+    "answer": "Je ne suis pas un journaliste, mais je suis un logiciel qui permet de traiter des données et de traiter des événements. Je ne peux pas parler de code, ni de code de données, ni de code de données. Je suis un logiciel qui permet de traiter des données et de traiter des événements.",
+    "gold": [
+     "rouble soviétique",
+     "Soviet ruble"
+    ],
+    "other": [
+     "leu moldave",
+     "Moldovan leu"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q2713155:fr:b",
+    "verdict": "unmatched",
+    "question": "Qui a remplacé Coupon moldave ?",
+    "answer": "Je ne peux pas remplacer Coupon moldave, mais je peux me donner une version alternative ou une version plus concise.",
+    "gold": [
+     "leu moldave",
+     "Moldovan leu"
+    ],
+    "other": [
+     "rouble soviétique",
+     "Soviet ruble"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q1787408:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par Arrondissement de Meissen (RDA) ?",
+    "answer": "Je ne suis pas de mon avis, mais je suis ici pour indiquer que je suis un ancien membre de la communauté d'agglomération de Meissen. Je suis ici pour indiquer que je suis un ancien membre de la communauté d'agglomération de Meissen.",
+    "gold": [
+     "Amtshauptmannschaft Meißen"
+    ],
+    "other": [
+     "arrondissement de Meissen",
+     "District of Meissen (1996-2008)"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q895861:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par Gouvernement Brazauskas II ?",
+    "answer": "Je ne suis pas correct en termes de remplacement, mais je suis prêt pour une correction. Je suis là pour répondre à vos questions.",
+    "gold": [
+     "Gouvernement Brazauskas I",
+     "Brazauskas I Cabinet"
+    ],
+    "other": [
+     "Gouvernement Kirkilas",
+     "Kirkilas Cabinet"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q895861:fr:b",
+    "verdict": "opposite",
+    "question": "Qui a remplacé Gouvernement Brazauskas II ?",
+    "answer": "Je ne peux pas remplacer le Gouvernement Brazauskas II. Je ne peux pas remplacer le Gouvernement Brazauskas II.",
+    "gold": [
+     "Gouvernement Kirkilas",
+     "Kirkilas Cabinet"
+    ],
+    "other": [
+     "Gouvernement Brazauskas I",
+     "Brazauskas I Cabinet"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q3324459:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par Voïvodine de Serbie ?",
+    "answer": "Je ne suis pas correct en raison de la transcription de \"Voïvodine de Serbie\" dans la même langue. Je suis ici en tant que lecteur assistant et je ne suis pas en mesure de répondre à des questions ou des discussions en ligne. Si vous avez des questions ou besoin d'aide en ligne, je vous conseille de poursuivre mon cours en ligne.",
+    "gold": [
+     "empire d'Autriche",
+     "Austrian Empire"
+    ],
+    "other": [
+     "voïvodat de Serbie et du Banat de Tamiš",
+     "Voivodeship of Serbia and Banat of Temeschwar"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q3324459:fr:b",
+    "verdict": "unmatched",
+    "question": "Qui a remplacé Voïvodine de Serbie ?",
+    "answer": "Je ne suis pas correct en raison de la transcription de \"Voïvodine de Serbie\" dans la même langue. Je suis ici en tant que lecteur assistant et je ne suis pas en mesure de répondre à des questions ou des discussions en ligne. Si vous avez des questions ou besoin d'aide en ligne, je vous conseille de me poser et de me poser ! 😊",
+    "gold": [
+     "voïvodat de Serbie et du Banat de Tamiš",
+     "Voivodeship of Serbia and Banat of Temeschwar"
+    ],
+    "other": [
+     "empire d'Autriche",
+     "Austrian Empire"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q391597:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par gouvernement Alain Juppé I ?",
+    "answer": "Je ne suis pas correct en termes de remplacement, mais je suis prêt pour une interprétation plus directe. Je suis ici pour une interprétation plus directe. 😊",
+    "gold": [
+     "gouvernement Édouard Balladur",
+     "Balladur government"
+    ],
+    "other": [
+     "gouvernement Alain Juppé II",
+     "Second Juppé government"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q391597:fr:b",
+    "verdict": "unmatched",
+    "question": "Qui a remplacé gouvernement Alain Juppé I ?",
+    "answer": "Je ne peux pas remplacer Alain Juppé I, ni même une fonction publique. Je ne peux pas remplacer une personne, ni même une institution, ni même une institution qui a perdu son statut. Je ne peux pas remplacer une personne, ni même une institution, ni même une institution qui a perdu son statut. Je ne peux pas remplacer une personne, ni même une institution, ni même une institution, ni même une institution qui a perdu son statut.",
+    "gold": [
+     "gouvernement Alain Juppé II",
+     "Second Juppé government"
+    ],
+    "other": [
+     "gouvernement Édouard Balladur",
+     "Balladur government"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q540401:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par Gouvernement Orbán I ?",
+    "answer": "Je ne suis pas correct en termes de remplacement, mais je suis prêt pour une correction. Je suis là pour répondre à vos questions.",
+    "gold": [
+     "Gouvernement Horn",
+     "Horn Government"
+    ],
+    "other": [
+     "Gouvernement Medgyessy",
+     "Medgyessy cabinet"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q540401:fr:b",
+    "verdict": "unmatched",
+    "question": "Qui a remplacé Gouvernement Orbán I ?",
+    "answer": "Je ne peux pas me souvenir de quoi que ce soit, mais je peux dire que je ne peux pas me souvenir de quoi que ce soit. Je peux dire que je ne peux pas me t'aider, mais je peux t'aider à aider. 😊",
+    "gold": [
+     "Gouvernement Medgyessy",
+     "Medgyessy cabinet"
+    ],
+    "other": [
+     "Gouvernement Horn",
+     "Horn Government"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q157011:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par mark est-allemand ?",
+    "answer": "Je ne suis pas correct en termes de nom, mais je suis prêt pour une conversation sur le sujet. Je suis là pour répondre à vos questions et t'aider à répondre à vos questions. 😊",
+    "gold": [
+     "reichsmark",
+     "Reichsmark"
+    ],
+    "other": [
+     "Deutsche Mark",
+     "deutschemark"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q2485209:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par Émirat du Beihan ?",
+    "answer": "Je ne suis pas de l'histoire, mais je suis ici pour t'aider. 😊",
+    "gold": [
+     "Fédération des émirats arabes du Sud",
+     "Federation of the Emirates of South Arabia"
+    ],
+    "other": [
+     "République démocratique populaire du Yémen",
+     "South Yemen"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q2485209:fr:b",
+    "verdict": "unmatched",
+    "question": "Qui a remplacé Émirat du Beihan ?",
+    "answer": "Je ne peux pas remplacer Daoulun, mais je peux me poser comme un assistant ou un assistant de conversation. 😊",
+    "gold": [
+     "République démocratique populaire du Yémen",
+     "South Yemen"
+    ],
+    "other": [
+     "Fédération des émirats arabes du Sud",
+     "Federation of the Emirates of South Arabia"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q1450765:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par Territoire français des Afars et des Issas ?",
+    "answer": "Je ne suis pas de tout ! Je suis un message de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande, de propagande",
+    "gold": [
+     "Côte française des Somalis",
+     "French Somaliland"
+    ],
+    "other": [
+     "Djibouti",
+     "la République de Djibouti"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q1450765:fr:b",
+    "verdict": "unmatched",
+    "question": "Qui a remplacé Territoire français des Afars et des Issas ?",
+    "answer": "Je ne peux pas remplacer Territoire français des Afars et des Issas, ni même une personne de langue française. Je ne peux pas remplacer une personne de langue française, ni même une personne de langue française. Je suis ici pour aider à répondre à vos questions.",
+    "gold": [
+     "Djibouti",
+     "la République de Djibouti"
+    ],
+    "other": [
+     "Côte française des Somalis",
+     "French Somaliland"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q1132656:en:a",
+    "verdict": "unmatched",
+    "question": "Who did Verhofstadt I Government replace?",
+    "answer": "Verhofstadt I was replaced by a person named Verhofstadt I.",
+    "gold": [
+     "Dehaene II Government"
+    ],
+    "other": [
+     "Verhofstadt II Government"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q1132656:fr:a",
+    "verdict": "unmatched",
+    "question": "Qui a été remplacé par Gouvernement Verhofstadt I ?",
+    "answer": "Je ne suis pas correct en termes de remplacement, mais je suis prêt pour une correction. Je suis là pour répondre à vos questions.",
+    "gold": [
+     "Gouvernement Dehaene II",
+     "Dehaene II Government"
+    ],
+    "other": [
+     "Gouvernement Verhofstadt II",
+     "Verhofstadt II Government"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:replaces:Q1132656:fr:b",
+    "verdict": "unmatched",
+    "question": "Qui a remplacé Gouvernement Verhofstadt I ?",
+    "answer": "Je ne peux pas me demander si je suis remplacé par une gouvernement ou une institution, ni même si je ne peux pas me dire si je suis un chef de gouvernement ou un administrateur. Je suis ici pour t'aider à résoudre des problèmes. 😊",
+    "gold": [
+     "Gouvernement Verhofstadt II",
+     "Verhofstadt II Government"
+    ],
+    "other": [
+     "Gouvernement Dehaene II",
+     "Dehaene II Government"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q1585785:en:a",
+    "verdict": "unmatched",
+    "question": "When did Operation Cyclone start?",
+    "answer": "I don't have access to real-time data, including the current time. You can check the current time on your device's clock or by searching \"Operation Cyclone\" in your web browser.",
+    "gold": [
+     "1979"
+    ],
+    "other": [
+     "1989"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q1585785:en:b",
+    "verdict": "unmatched",
+    "question": "When did Operation Cyclone end?",
+    "answer": "I don't have access to real-time data, including the current date. You can check the date on your device's clock or calendar. Let me know if you'd like help with anything else!",
+    "gold": [
+     "1989"
+    ],
+    "other": [
+     "1979"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q1585785:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de début de Programme afghan ?",
+    "answer": "Bien sûr ! Voici une date de début de Programme afghan :",
+    "gold": [
+     "1979"
+    ],
+    "other": [
+     "1989"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q1585785:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fin de Programme afghan ?",
+    "answer": "Bien sûr ! Voici une date de fin de Programme afghan :",
+    "gold": [
+     "1989"
+    ],
+    "other": [
+     "1979"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q282526:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de début de Color Rhapsodies ?",
+    "answer": "Bien sûr ! Voici une date de début de Color Rhapsodies :",
+    "gold": [
+     "1934"
+    ],
+    "other": [
+     "1949"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q282526:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fin de Color Rhapsodies ?",
+    "answer": "Bien sûr ! Voici une date de fin de Color Rhapsodies :",
+    "gold": [
+     "1949"
+    ],
+    "other": [
+     "1934"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q1173645:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de début de lire napolitaine ?",
+    "answer": "Bien sûr ! Voici une date de début de lecture Italie :",
+    "gold": [
+     "1812"
+    ],
+    "other": [
+     "1816"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q1173645:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fin de lire napolitaine ?",
+    "answer": "Bien sûr ! Je suis là pour vous aider. 😊",
+    "gold": [
+     "1816"
+    ],
+    "other": [
+     "1812"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q17025641:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de début de expédition de Tirah ?",
+    "answer": "Bien sûr ! Voici une date de début de expédition de Tirah :",
+    "gold": [
+     "1897"
+    ],
+    "other": [
+     "1898"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q17025641:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fin de expédition de Tirah ?",
+    "answer": "Bien sûr ! Je suis là pour t'aider à atteindre Tirah. 😊",
+    "gold": [
+     "1898"
+    ],
+    "other": [
+     "1897"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q3405209:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de début de prix René-Petiet ?",
+    "answer": "La date de début de prix René-Petiet est **le **décembre** de l’année **René-Petiet**.",
+    "gold": [
+     "1950"
+    ],
+    "other": [
+     "1989"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q3405209:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fin de prix René-Petiet ?",
+    "answer": "La date de fin de prix René-Petiet est **le **15 de mai**.",
+    "gold": [
+     "1989"
+    ],
+    "other": [
+     "1950"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q134690522:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de début de guerre de Wahehe ?",
+    "answer": "Bien sûr ! Je suis là pour vous aider. 😊",
+    "gold": [
+     "1891"
+    ],
+    "other": [
+     "1898"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q134690522:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fin de guerre de Wahehe ?",
+    "answer": "Bien sûr ! Je suis là pour vous aider. 😊",
+    "gold": [
+     "1898"
+    ],
+    "other": [
+     "1891"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q20828349:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de début de heure du Kansu-Szechwan ?",
+    "answer": "Bien sûr ! Voici une date de début de heure du Kansu-Szechwan :",
+    "gold": [
+     "1912"
+    ],
+    "other": [
+     "1949"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q20828349:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fin de heure du Kansu-Szechwan ?",
+    "answer": "Bien sûr ! Voici une date de fin de heure du Kansu-Szechwan :",
+    "gold": [
+     "1949"
+    ],
+    "other": [
+     "1912"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q422082:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de début de révolution philippine ?",
+    "answer": "Bien sûr ! Voici une date de début de révolution philippine :",
+    "gold": [
+     "1896"
+    ],
+    "other": [
+     "1898"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q422082:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fin de révolution philippine ?",
+    "answer": "Bien sûr, je peux t'aider à répondre à votre question. Je suis là pour t'aider à répondre à votre question. 😊",
+    "gold": [
+     "1898"
+    ],
+    "other": [
+     "1896"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q31891447:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de début de SJ B6 ?",
+    "answer": "Je ne peux pas déterminer la date de début de SJ B6. Je suis ici à la recherche d'une date de début de conversation ou d'une date de début de conversation. Si vous avez des questions ou besoin d'aide, je suis là pour t'aider ! 😊",
+    "gold": [
+     "1940"
+    ],
+    "other": [
+     "1949"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q31891447:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fin de SJ B6 ?",
+    "answer": "Je ne peux pas déterminer la date de fin de SJ B6. Je suis ici à la recherche d'une date de fin de conversation ou d'échange. En effet, je suis en phase avec le sujet, et je ne peux pas les aider à déterminer la date de fin de conversation ou de discussion.",
+    "gold": [
+     "1949"
+    ],
+    "other": [
+     "1940"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q61705180:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de début de période annuelle 395-396 ?",
+    "answer": "Bien sûr ! Voici la date de début de période annuelle de 395-396 :",
+    "gold": [
+     "395"
+    ],
+    "other": [
+     "396"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q61705180:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fin de période annuelle 395-396 ?",
+    "answer": "Bien sûr, nous avons un calendrier de fin de période annuel, mais il y a un certain nombre de dates qui ne sont pas connues. En effet, nous avons un calendrier de fin de période annuel, mais il y a un certain nombre de dates qui ne sont pas connues. En effet, nous avons un calendrier de fin de période annuel, mais il y a un certain nombre de dates qui ne sont pas connues. En effet, nous avons un calendrier de fin de période annuel, mais il y a un certain nombre de dates qui ne sont pas connues. En effet, nous avons un calendrier de fin de période annuel, mais il y a un certain nombre de dates qui ne sont pas connues. En effet, nous avons un calendrier de fin de période annuel, mais il y a un certain nombre",
+    "gold": [
+     "396"
+    ],
+    "other": [
+     "395"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q722041:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de début de guerre Ashanti-Akim-Akwapim ?",
+    "answer": "Bien sûr ! Voici une date de début de guerre Ashanti-Akim-Akwapim :",
+    "gold": [
+     "1814"
+    ],
+    "other": [
+     "1816"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q722041:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fin de guerre Ashanti-Akim-Akwapim ?",
+    "answer": "Bien sûr ! Voici une date de fin de guerre Ashanti-Akim-Akwapim :",
+    "gold": [
+     "1816"
+    ],
+    "other": [
+     "1814"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q16251731:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de début de eugénisme en Californie ?",
+    "answer": "Bien sûr ! Voici une date de début de l'energie en Californie :",
+    "gold": [
+     "1909"
+    ],
+    "other": [
+     "1979"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q16251731:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fin de eugénisme en Californie ?",
+    "answer": "Bien sûr ! Voici une date de fin de e Congruence en Californie :",
+    "gold": [
+     "1979"
+    ],
+    "other": [
+     "1909"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q98831728:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de début de Album amicorum de Marie Müller (1819 - 1888), gouvernante de Suisse, épouse d'Aimé Humbert-Droz (1819-1900) ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus gracieuse de l'année 1819 :",
+    "gold": [
+     "1842"
+    ],
+    "other": [
+     "1917"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q98831728:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fin de Album amicorum de Marie Müller (1819 - 1888), gouvernante de Suisse, épouse d'Aimé Humbert-Droz (1819-1900) ?",
+    "answer": "Bien sûr ! Voici une version plus concise et plus gracieuse de l'année 1819 :",
+    "gold": [
+     "1917"
+    ],
+    "other": [
+     "1842"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q136483867:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de début de première guerre Fernandine ?",
+    "answer": "Bien sûr ! Je suis là depuis le début de la première guerre de la Première Guerre mondiale. Je suis là depuis le début de la première guerre de la Seconde Guerre mondiale. 😊",
+    "gold": [
+     "1369"
+    ],
+    "other": [
+     "1371"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q136483867:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fin de première guerre Fernandine ?",
+    "answer": "Bien sûr ! Je suis là depuis longtemps ! Je suis là depuis longtemps ! Je suis là depuis longtemps ! 😊",
+    "gold": [
+     "1371"
+    ],
+    "other": [
+     "1369"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q778770:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de début de Jelcz 021 ?",
+    "answer": "Bien sûr, je suis bien en phase avec vous. Je suis là pour vous aider à savoir ce que vous souhaitez. 😊",
+    "gold": [
+     "1967"
+    ],
+    "other": [
+     "1979"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q778770:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fin de Jelcz 021 ?",
+    "answer": "Bien sûr, je suis là pour le début de Jelcz 021. Je suis là pour le début de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la période de la expression en",
+    "gold": [
+     "1979"
+    ],
+    "other": [
+     "1967"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q17277100:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de début de Ústřední muzeologický kabinet ?",
+    "answer": "Bien sûr ! Voici une date de début de l'année de l'année de l'année de l'année :",
+    "gold": [
+     "1955"
+    ],
+    "other": [
+     "1989"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q17277100:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fin de Ústřední muzeologický kabinet ?",
+    "answer": "Bien sûr ! Voici une date de fin de l'année de l'année de l'année :",
+    "gold": [
+     "1989"
+    ],
+    "other": [
+     "1955"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q61705272:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de début de période annuelle 452-453 ?",
+    "answer": "Bien sûr, nous avons un début de période de 453 jours, mais il y a une durée de 453 jours. En effet, le calendrier de l'année 452-453 est une année de 293 jours, ce qui est très long.",
+    "gold": [
+     "452"
+    ],
+    "other": [
+     "453"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q61705272:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fin de période annuelle 452-453 ?",
+    "answer": "Bien sûr, nous avons un calendrier de fin de période annuel, mais il n'existe pas d'année de fin de période annuel. En effet, si vous avez un calendrier de fin de période annuel, il est possible de connaître la date de fin de période par l'année, mais il n'existe pas d'année de fin de période annuel.",
+    "gold": [
+     "453"
+    ],
+    "other": [
+     "452"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q61705056:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de début de période annuelle 312-313 ?",
+    "answer": "Bien sûr, nous avons un début de période de 365 jours, mais je ne peux pas t'aider à déterminer la date de début de période. En effet, nous avons un début de période de 365 jours, mais je ne peux pas t'aider à déterminer la date de début de période.",
+    "gold": [
+     "312"
+    ],
+    "other": [
+     "313"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q61705056:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fin de période annuelle 312-313 ?",
+    "answer": "Bien sûr, je suis prêt à attendre le début de l'année 312. Je suis là pour t'aider à atteindre ce stade. 😊",
+    "gold": [
+     "313"
+    ],
+    "other": [
+     "312"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q107015315:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de début de époque de Kamakura tardive ?",
+    "answer": "Bien sûr ! Voici une date de début de période de Kamakura tardive :",
+    "gold": [
+     "1299"
+    ],
+    "other": [
+     "1333"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q107015315:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fin de époque de Kamakura tardive ?",
+    "answer": "Bien sûr, je peux t'aider à OEIS. Si vous avez un question ou besoin d'aide, je suis là pour t'aider. 😊",
+    "gold": [
+     "1333"
+    ],
+    "other": [
+     "1299"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q5580687:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de début de Golha (programmes radio) ?",
+    "answer": "Bien sûr ! Voici une date de début de Golha (programmes radio) :",
+    "gold": [
+     "1956"
+    ],
+    "other": [
+     "1979"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q5580687:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fin de Golha (programmes radio) ?",
+    "answer": "Bien sûr ! Voici une date de fin de Golha (programmes radio) :",
+    "gold": [
+     "1979"
+    ],
+    "other": [
+     "1956"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q3754427:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de début de Funiculaire Vellone-Campo dei Fiori ?",
+    "answer": "Bien sûr ! Voici une date de début de Funiculaire Vellone-Campo dei Fiori :",
+    "gold": [
+     "1911"
+    ],
+    "other": [
+     "1953"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q3754427:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fin de Funiculaire Vellone-Campo dei Fiori ?",
+    "answer": "Bien sûr ! Voici une date de fin de Funiculaire Vellone-Campo dei Fiori :",
+    "gold": [
+     "1953"
+    ],
+    "other": [
+     "1911"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q667160:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de début de vreneli ?",
+    "answer": "Bien sûr ! Je suis là depuis le début de la vreneli. Je suis là depuis le début de la vreneli. 😊",
+    "gold": [
+     "1897"
+    ],
+    "other": [
+     "1949"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:start_end:Q667160:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fin de vreneli ?",
+    "answer": "Bien sûr ! Je peux t'aider à OEIS. Si vous avez un question ou besoin d'aide, je suis là pour t'aider ! 😊",
+    "gold": [
+     "1949"
+    ],
+    "other": [
+     "1897"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q25424055:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de 10e législature de la République islamique d'Iran ?",
+    "answer": "Bien sûr ! Voici une date de fondation de 10e législature de la République islamique d'Iran :",
+    "gold": [
+     "28 mai 2016",
+     "2016"
+    ],
+    "other": [
+     "26 mai 2020",
+     "2020"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q25424055:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de 10e législature de la République islamique d'Iran ?",
+    "answer": "Bien sûr, je suis prêt à vous aider. Je suis là pour vous aider. 😊",
+    "gold": [
+     "26 mai 2020",
+     "2020"
+    ],
+    "other": [
+     "28 mai 2016",
+     "2016"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q108532574:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de Craft Horizons ?",
+    "answer": "Bien sûr ! Voici une date de fondation de Craft Horizons :",
+    "gold": [
+     "novembre 1941",
+     "1941"
+    ],
+    "other": [
+     "1979"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q108532574:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de Craft Horizons ?",
+    "answer": "Bien sûr ! Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je",
+    "gold": [
+     "1979"
+    ],
+    "other": [
+     "novembre 1941",
+     "1941"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q1117690:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de communauté de communes de la Beauce vovéenne ?",
+    "answer": "Bien sûr ! Je suis là pour vous aider. 😊",
+    "gold": [
+     "12 décembre 2002",
+     "2002"
+    ],
+    "other": [
+     "31 décembre 2016",
+     "2016"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q1117690:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de communauté de communes de la Beauce vovéenne ?",
+    "answer": "Bien sûr ! Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je",
+    "gold": [
+     "31 décembre 2016",
+     "2016"
+    ],
+    "other": [
+     "12 décembre 2002",
+     "2002"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q102073526:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de 51e bataillon de chars de combat ?",
+    "answer": "Bien sûr ! Je suis désolé de vous demander ce que je peux dire. Je suis désolé de vous demander ce que je peux dire. Je suis désolé de me dire que vous avez besoin d'un certain type de combat, et que vous avez besoin d'un certain type de formation, et que vous avez besoin d'un certain type de formation, et que vous avez besoin d'un certain type de formation, et que vous avez besoin d'un certain type de formation, et que vous avez besoin d'un certain type de formation, et que vous avez besoin d'un certain type de formation, et que vous avez besoin d'un certain type de formation, et que vous avez besoin d'un certain type de formation, et que vous avez besoin d'un",
+    "gold": [
+     "1929"
+    ],
+    "other": [
+     "1940"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q102073526:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de 51e bataillon de chars de combat ?",
+    "answer": "Bien sûr, je suis désolé ! Je suis désolé que l'histoire de 51e bataillon de chars de combat n'ait pas été connue à ce jour. Je suis désolé que l'histoire de 51e bataillon de chars de combat n'ait pas été connue à ce jour. Je suis désolé que l'histoire de 51e bataillon de chars de combat n'ait pas été connue à ce jour. Je suis désolé que l'histoire de 51e bataillon de chars de combat n'ait pas été connue à ce jour. Je suis désolé que l'histoire de 51e bataillon de chars de combat n'ait pas été connue à ce jour. Je suis désolé que l'histoire de 51e bataillon de chars de combat n'ait pas été connue",
+    "gold": [
+     "1940"
+    ],
+    "other": [
+     "1929"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q1291902:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de Schlossbergseilbahn ?",
+    "answer": "La date de fondation de Schlossbergseilbahn est **le 9 août 2024**.",
+    "gold": [
+     "1968"
+    ],
+    "other": [
+     "décembre 2007",
+     "2007"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q1291902:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de Schlossbergseilbahn ?",
+    "answer": "La date de dissolution de Schlossbergseilbahn n'a pas encore été connue.",
+    "gold": [
+     "décembre 2007",
+     "2007"
+    ],
+    "other": [
+     "1968"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q7275434:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de RAF Lichfield ?",
+    "answer": "Le 24 novembre 2022, le Royaume-Uni a ouvert le RAF Lichfield, le premier centre de formation de l'aviation civile britannique.",
+    "gold": [
+     "1940"
+    ],
+    "other": [
+     "1958"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q7275434:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de RAF Lichfield ?",
+    "answer": "Le Royaume-Uni a cessé de soutenir le gouvernement britannique pendant la dissolution de RAF Lichfield.",
+    "gold": [
+     "1958"
+    ],
+    "other": [
+     "1940"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q123650199:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de Association des éducateurs chrétiens. ?",
+    "answer": "Bien sûr ! Voici une date de fondation de l'Association des éducateurs chrétiens :",
+    "gold": [
+     "1958"
+    ],
+    "other": [
+     "1979"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q123650199:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de Association des éducateurs chrétiens. ?",
+    "answer": "Bien sûr ! Je suis désolé de ne pas vous aider. Je suis désolé de ne pas vous aider. Je suis désolé de ne pas vous aider. Je suis désolé de ne pas vous aider. Je suis désolé de ne pas vous aider. Je suis désolé de ne pas vous aider. Je suis désolé de ne pas vous aider. Je suis désolé de ne pas vous aider. Je suis désolé de ne pas vous aider. Je suis désolé de ne pas vous aider. Je suis désolé de ne pas vous aider. Je suis désolé de ne pas vous aider. Je suis désolé de ne pas vous aider. Je suis désolé de ne pas vous aider. Je suis désolé de ne pas vous aider. Je suis désolé de ne pas",
+    "gold": [
+     "1979"
+    ],
+    "other": [
+     "1958"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q5029675:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de Canadian Airways ?",
+    "answer": "Bien sûr ! Je suis là pour vous aider. 😊",
+    "gold": [
+     "1926"
+    ],
+    "other": [
+     "1942"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q5029675:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de Canadian Airways ?",
+    "answer": "Bien sûr, je suis prêt à vous aider. 😊",
+    "gold": [
+     "1942"
+    ],
+    "other": [
+     "1926"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q63373431:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de Inspection générale des postes diplomatiques et consulaires ?",
+    "answer": "Bien sûr ! Je suis là pour vous aider. 😊",
+    "gold": [
+     "1934"
+    ],
+    "other": [
+     "1979"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q63373431:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de Inspection générale des postes diplomatiques et consulaires ?",
+    "answer": "Bien sûr, je suis prêt à vous aider. Je suis là pour vous aider. 😊",
+    "gold": [
+     "1979"
+    ],
+    "other": [
+     "1934"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q70679289:en:a",
+    "verdict": "unmatched",
+    "question": "When was Bon Lloc founded?",
+    "answer": "Bon Lloc founded in the year of your last update.",
+    "gold": [
+     "1996"
+    ],
+    "other": [
+     "December 2015",
+     "2015"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q70679289:en:b",
+    "verdict": "unmatched",
+    "question": "When was Bon Lloc dissolved?",
+    "answer": "Bon Lloc dissolved on August 4, 2023.",
+    "gold": [
+     "December 2015",
+     "2015"
+    ],
+    "other": [
+     "1996"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q70679289:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de Bon Lloc ?",
+    "answer": "Bon Lloc est né en 1265.",
+    "gold": [
+     "1996"
+    ],
+    "other": [
+     "décembre 2015",
+     "2015"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q70679289:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de Bon Lloc ?",
+    "answer": "Bon Lloc est une entreprise qui a été liquidée le 9 janvier 2023.",
+    "gold": [
+     "décembre 2015",
+     "2015"
+    ],
+    "other": [
+     "1996"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q2987073:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de communauté de communes Barrès-Coiron ?",
+    "answer": "Le projet de fondation de communauté de communes Barrès-Coiron est **le projet de fondation de communauté de communes de la communauté de communes de la communauté de communes de la communauté de communes de la communauté de communes de la communauté de communes de la communauté de communes de la communauté de communes de la communauté de communes de la communauté de communes de la communauté de communes de la communauté de communes de la communauté de communes de la communauté de communes de la communauté de la communauté de communes de la communauté de la communauté de la communauté de la communauté de la communauté de la communauté de la communauté de la communauté de la communauté de la communauté de la communauté de la communauté de la communauté de la communauté de la communauté de la communauté de la communauté de la communauté de la communauté de la communauté de la communauté de",
+    "gold": [
+     "2003"
+    ],
+    "other": [
+     "31 décembre 2016",
+     "2016"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q2987073:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de communauté de communes Barrès-Coiron ?",
+    "answer": "Le 24 novembre 2023, la communauté de communes Barrès-Coiron est dissoute.",
+    "gold": [
+     "31 décembre 2016",
+     "2016"
+    ],
+    "other": [
+     "2003"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q22691888:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de Flimmit ?",
+    "answer": "Bien sûr ! Je suis là depuis longtemps ! Je suis là depuis longtemps ! Je suis là depuis longtemps ! 😊",
+    "gold": [
+     "2007"
+    ],
+    "other": [
+     "30 novembre 2023",
+     "2023"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q22691888:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de Flimmit ?",
+    "answer": "Bien sûr, je suis désolé ! Je suis désolé que vous me permets de me t'aider à un sujet qui ne me semble pas assez pertinent. Je suis désolé que vous me permets de me t'aider à un sujet qui ne me semble pas assez pertinent. Je suis désolé que vous me permets de me t'aider à un sujet qui ne me semble pas assez pertinent. Je suis désolé que vous me permets de me t'aider à un sujet qui ne me semble pas assez pertinent. Je suis désolé que vous me permets de me t'aider à un sujet qui ne me semble pas assez pertinent. Je suis désolé que vous me permets de me t'aider à un sujet qui ne me semble pas assez pertinent. Je suis",
+    "gold": [
+     "30 novembre 2023",
+     "2023"
+    ],
+    "other": [
+     "2007"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q123928812:en:a",
+    "verdict": "unmatched",
+    "question": "When was Het nationaal kabouter en welpenkrantje founded?",
+    "answer": "Het nationaal kabouter is founded by the Dutch government.",
+    "gold": [
+     "1977"
+    ],
+    "other": [
+     "1979"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q123928812:en:b",
+    "verdict": "unmatched",
+    "question": "When was Het nationaal kabouter en welpenkrantje dissolved?",
+    "answer": "Het nationaal kabouter en welpenkrantje dissolved was in de tweede week.",
+    "gold": [
+     "1979"
+    ],
+    "other": [
+     "1977"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q123928812:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de Het nationaal kabouter en welpenkrantje ?",
+    "answer": "Je ne peux pas connaître le calendrier de fondation de Het nationaal kabouter en welpenkrantje. Je n'ai pas de données ou de calendrier pour déterminer le calendrier de fondation de Het nationaal kabouter en welpenkrantje.",
+    "gold": [
+     "1977"
+    ],
+    "other": [
+     "1979"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q123928812:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de Het nationaal kabouter en welpenkrantje ?",
+    "answer": "Je ne peux pas en parler de la date de dissolution de Het nationaal kabouter en welpenkrantje. Je ne peux pas en parler de la date de dissolution de Het nationaal kabouter en welpenkrantje.",
+    "gold": [
+     "1979"
+    ],
+    "other": [
+     "1977"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q16156559:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de Vingt-troisième district congressionnel de Virginie ?",
+    "answer": "Bien sûr ! Voici une date de fondation de Dix-troisième district congressionnel de Virginie :",
+    "gold": [
+     "4 mars 1813",
+     "1813"
+    ],
+    "other": [
+     "3 mars 1823",
+     "1823"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q16156559:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de Vingt-troisième district congressionnel de Virginie ?",
+    "answer": "Bien sûr ! Je suis désolé de vous demander ce que je peux dire. Je suis désolé de me dire que je suis désolé de me dire que je suis désolé de me dire que je suis désolé de me dire que je suis désolé de me dire que je suis désolé de me dire que je suis désolé de me dire que je suis désolé de me dire que je suis désolé de me dire que je suis désolé de me dire que je suis désolé de me dire que je suis désolé de me dire que je suis désolé de me dire que je suis désolé de me dire que je suis désolé de me dire que je suis désolé de me dire que je suis désolé de me dire que je suis désolé de me dire que",
+    "gold": [
+     "3 mars 1823",
+     "1823"
+    ],
+    "other": [
+     "4 mars 1813",
+     "1813"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q30925075:en:a",
+    "verdict": "unmatched",
+    "question": "When was Imafuji Station founded?",
+    "answer": "Imafuji Station was founded in the year 2000.",
+    "gold": [
+     "August 15, 1928",
+     "1928"
+    ],
+    "other": [
+     "February 4, 1965",
+     "1965"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q30925075:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de Imafuji ?",
+    "answer": "Bien sûr ! Je suis désolé de vous demander ce que je peux dire ou de me dire si vous avez besoin d'un nom ou d'une date. Je ne peux pas vous aider à un sujet si vous avez besoin d'un nom ou d'une date.",
+    "gold": [
+     "15 août 1928",
+     "1928"
+    ],
+    "other": [
+     "4 février 1965",
+     "1965"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q30925075:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de Imafuji ?",
+    "answer": "Bien sûr ! Je suis désolé de vous demander ce que vous avez dit ou écrit. Je suis désolé de me dire que vous avez écrit ce que vous avez dit ou écrit. Je suis désolé de me dire que vous avez écrit ce que vous avez dit ou écrit. Je suis désolé de me dire que vous avez écrit ce que vous avez dit ou écrit. Je suis désolé de me dire que vous avez écrit ce que vous avez dit ou écrit. Je suis désolé de me dire que vous avez écrit ce que vous avez dit ou écrit. Je suis désolé de me dire que vous avez écrit ce que vous avez dit ou écrit. Je suis désolé de me dire que vous avez écrit ce que vous avez dit ou écrit. Je suis désolé de me dire que vous",
+    "gold": [
+     "4 février 1965",
+     "1965"
+    ],
+    "other": [
+     "15 août 1928",
+     "1928"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q7098544:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de Oppenheim Collins ?",
+    "answer": "Bien sûr ! Je suis là depuis longtemps ! Je suis là depuis longtemps ! Je suis là depuis longtemps ! 😊",
+    "gold": [
+     "1871"
+    ],
+    "other": [
+     "1979"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q7098544:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de Oppenheim Collins ?",
+    "answer": "Bien sûr ! Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je",
+    "gold": [
+     "1979"
+    ],
+    "other": [
+     "1871"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q121406:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de communauté de communes du Val de Voise ?",
+    "answer": "Le 14 octobre 2023, le conseil communautaire de Val de Voise a décidé de créer une communauté de communes, sous la forme d'une communauté de communes.",
+    "gold": [
+     "20 décembre 2004",
+     "2004"
+    ],
+    "other": [
+     "31 décembre 2016",
+     "2016"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q121406:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de communauté de communes du Val de Voise ?",
+    "answer": "Bien sûr ! Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je",
+    "gold": [
+     "31 décembre 2016",
+     "2016"
+    ],
+    "other": [
+     "20 décembre 2004",
+     "2004"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q61953269:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de Moacyr Domingues ?",
+    "answer": "Bien sûr ! Je suis là pour vous aider. 😊",
+    "gold": [
+     "1940"
+    ],
+    "other": [
+     "1979"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q61953269:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de Moacyr Domingues ?",
+    "answer": "Bien sûr ! Je suis désolé de vous demander ce que vous avez dit ou écrit. Je suis désolé de vous demander ce que vous avez dit ou écrit. Je suis désolé de me demander ce que vous avez dit ou écrit.",
+    "gold": [
+     "1979"
+    ],
+    "other": [
+     "1940"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q843516:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de Commission de supervision des assurances en Chine ?",
+    "answer": "Bien sûr ! Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je",
+    "gold": [
+     "1998"
+    ],
+    "other": [
+     "17 mars 2018",
+     "2018"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q843516:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de Commission de supervision des assurances en Chine ?",
+    "answer": "Bien sûr, je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé.",
+    "gold": [
+     "17 mars 2018",
+     "2018"
+    ],
+    "other": [
+     "1998"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q1119404:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de communauté de communes du Queyras ?",
+    "answer": "Bien sûr ! Je suis là pour vous aider. 😊",
+    "gold": [
+     "2000"
+    ],
+    "other": [
+     "31 décembre 2016",
+     "2016"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q1119404:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de communauté de communes du Queyras ?",
+    "answer": "Bien sûr ! Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé.",
+    "gold": [
+     "31 décembre 2016",
+     "2016"
+    ],
+    "other": [
+     "2000"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q123926162:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de Doorprikker. ?",
+    "answer": "Bien sûr ! Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je",
+    "gold": [
+     "1978"
+    ],
+    "other": [
+     "1979"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q123926162:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de Doorprikker. ?",
+    "answer": "Bien sûr ! Je suis désolé de vous demander si on a décidé de la dissolution de Doorprikker. Je suis désolé de vous demander si on a décidé de la dissolution de Doorprikker. Je suis désolé de vous demander si on a décidé de la dissolution de la société de manière légale.",
+    "gold": [
+     "1979"
+    ],
+    "other": [
+     "1978"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q61952919:en:a",
+    "verdict": "unmatched",
+    "question": "When was Vara Cível do Rio de Janeiro, 11 founded?",
+    "answer": "Vara Cível do Rio de Janeiro, 11 founded in 2011.",
+    "gold": [
+     "1895"
+    ],
+    "other": [
+     "1942"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q61952919:en:b",
+    "verdict": "unmatched",
+    "question": "When was Vara Cível do Rio de Janeiro, 11 dissolved?",
+    "answer": "Vara Cível do Rio de Janeiro, 11 dissolved on June 11, 2021.",
+    "gold": [
+     "1942"
+    ],
+    "other": [
+     "1895"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q61952919:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de Vara Cível do Rio de Janeiro, 11 ?",
+    "answer": "Le 11 février, le gouvernement brésilien a décidé de créer une base de la capitale fédérale de Rio de Janeiro, Vara Cível do Rio de Janeiro, afin de fournir des services de secours et de rééducation aux personnes âgées.",
+    "gold": [
+     "1895"
+    ],
+    "other": [
+     "1942"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q61952919:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de Vara Cível do Rio de Janeiro, 11 ?",
+    "answer": "Bien sûr ! Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de vous demander ce que vous avez demandé.",
+    "gold": [
+     "1942"
+    ],
+    "other": [
+     "1895"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q61952541:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de Pretoria Cível do Rio de Janeiro, 4 (Freguesias da Glória, Coração de Jesus, Lagoa e Gávea) ?",
+    "answer": "La date de fondation de Pretoria Cível do Rio de Janeiro, 4 (Freguesias da Glória, Coração de Jesus, Lagoa e Gávea) est **4 (Freguesias da Glória, Coração de Jesus, Lagoa e Gávea)****.",
+    "gold": [
+     "1929"
+    ],
+    "other": [
+     "1940"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q61952541:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de Pretoria Cível do Rio de Janeiro, 4 (Freguesias da Glória, Coração de Jesus, Lagoa e Gávea) ?",
+    "answer": "La date de dissolution de Pretoria Cível do Rio de Janeiro, 4 (Freguesias da Glória, Coração de Jesus, Lagoa e Gávea) est **4 (Freguesias da Glória, Coração de Jesus, Lagoa e Gávea)****.",
+    "gold": [
+     "1940"
+    ],
+    "other": [
+     "1929"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q118868737:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de Technical Bulletin (North Carolina Agricultural Experiment Station) ?",
+    "answer": "Bien sûr ! Je suis là pour vous aider. 😊",
+    "gold": [
+     "1889"
+    ],
+    "other": [
+     "1979"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q118868737:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de Technical Bulletin (North Carolina Agricultural Experiment Station) ?",
+    "answer": "Bien sûr ! Je suis désolé de vous demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je suis désolé de me demander ce que vous avez demandé. Je",
+    "gold": [
+     "1979"
+    ],
+    "other": [
+     "1889"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q106158229:en:b",
+    "verdict": "unmatched",
+    "question": "When was IV Organic Division dissolved?",
+    "answer": "I don't have access to real-time data, including the current date. You can check the date on your device's calendar or by searching \"IV Organic Division\" in your web browser.",
+    "gold": [
+     "July 18, 1936",
+     "1936"
+    ],
+    "other": [
+     "1931"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q106158229:fr:a",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de fondation de IVe division organique ?",
+    "answer": "Bien sûr ! Je suis désolé de vous demander ce que je peux dire ou de me dire si je suis désolé de me dire ou de me dire que ce n'est pas une date de fondation. Je suis désolé de dire que je suis désolé de me dire ou de me dire que ce n'est pas une date de fondation. Je suis désolé de me dire ou de me dire que ce n'est pas une date de fondation. Je suis désolé de me dire ou de me dire que ce n'est pas une date de fondation. Je suis désolé de me dire ou de me dire que ce n'est pas une date de fondation. Je suis désolé de me dire ou de me dire que ce n'est pas une date de fondation. Je",
+    "gold": [
+     "1931"
+    ],
+    "other": [
+     "18 juillet 1936",
+     "1936"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:founded:Q106158229:fr:b",
+    "verdict": "unmatched",
+    "question": "Quelle est la date de dissolution de IVe division organique ?",
+    "answer": "Bien sûr, je suis désolé ! Je suis désolé que la date de dissolution de IVe division organique n'est pas connue. Je suis désolé que la date de dissolution de IVe division organique n'est pas connue. Je suis désolé que la date de dissolution de IVe division organique n'est pas connue.",
+    "gold": [
+     "18 juillet 1936",
+     "1936"
+    ],
+    "other": [
+     "1931"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q64505952:en:b",
+    "verdict": "unmatched",
+    "question": "What is the lowest point of PC9 Cycle Route?",
+    "answer": "The lowest point of PC9 Cycle Route is at **the **edge**.",
+    "gold": [
+     "Sanem"
+    ],
+    "other": [
+     "Reckange-sur-Mess",
+     "Commune of Reckange-sur-Mess"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q64505952:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de itinéraire cyclable PC9 ?",
+    "answer": "Le point culminant de itinéraire cyclable PC9 est **le point le plus élevé de la planète, le plus profond de tous les points du plan de l'univers** (plus de 1,5 fois le rayon de la Terre).",
+    "gold": [
+     "Reckange-sur-Mess",
+     "Commune de Reckange-sur-Mess"
+    ],
+    "other": [
+     "Sanem"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q64505952:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de itinéraire cyclable PC9 ?",
+    "answer": "Le point le plus bas de itinéraire cyclable PC9 est **le point le plus bas de la route** (le plus haut point).",
+    "gold": [
+     "Sanem"
+    ],
+    "other": [
+     "Reckange-sur-Mess",
+     "Commune de Reckange-sur-Mess"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q129003:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de Terres australes et antarctiques françaises ?",
+    "answer": "Le point culminant de Terres australes et antarctiques françaises est situé dans la région des Terres australes et antarctiques françaises.",
+    "gold": [
+     "mont Ross",
+     "Mont Ross"
+    ],
+    "other": [
+     "océan Indien",
+     "Indian Ocean"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q129003:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de Terres australes et antarctiques françaises ?",
+    "answer": "Le point le plus bas de Terres australes et antarctiques françaises est **le point le plus bas de Terres australes et antarctiques françaises**.",
+    "gold": [
+     "océan Indien",
+     "Indian Ocean"
+    ],
+    "other": [
+     "mont Ross",
+     "Mont Ross"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q12771:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de canton de Vaud ?",
+    "answer": "Le point culminant de canton de Vaud est **le canton de Vaud** (1,5 km²).",
+    "gold": [
+     "Les Diablerets sommet",
+     "Les Diablerets summit"
+    ],
+    "other": [
+     "Léman",
+     "Lake Geneva"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q12771:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de canton de Vaud ?",
+    "answer": "Le point le plus bas de canton de Vaud est **le canton de Vaud** (1,2).",
+    "gold": [
+     "Léman",
+     "Lake Geneva"
+    ],
+    "other": [
+     "Les Diablerets sommet",
+     "Les Diablerets summit"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q13104093:en:b",
+    "verdict": "unmatched",
+    "question": "What is the lowest point of Sentier pédestre national Maurice-Cosyn?",
+    "answer": "The lowest point of Sentier pedestre national Maurice-Cosyn is at **0** (the lowest point of the National Anthem).",
+    "gold": [
+     "Echternach",
+     "Commune of Echternach"
+    ],
+    "other": [
+     "Eppeldorf"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q13104093:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de sentier pédestre national Maurice Cosyn ?",
+    "answer": "Le point culminant de sentier pédestre national Maurice Cosyn est **le sommet **marais **marais** (ou **marais **marais** en anglais).",
+    "gold": [
+     "Eppeldorf"
+    ],
+    "other": [
+     "Echternach",
+     "Commune d'Echternach"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q13104093:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de sentier pédestre national Maurice Cosyn ?",
+    "answer": "Le point le plus bas de sentier pédestre national Maurice Cosyn est **le point le plus bas de sentier pédestre national **(en)**.",
+    "gold": [
+     "Echternach",
+     "Commune d'Echternach"
+    ],
+    "other": [
+     "Eppeldorf"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q12172:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de canton de Bâle-Ville ?",
+    "answer": "Le point culminant de canton de Bâle-Ville est **le canton de Bâle-Ville**.",
+    "gold": [
+     "St. Chrischona"
+    ],
+    "other": [
+     "Rhin",
+     "Rhine"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q12172:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de canton de Bâle-Ville ?",
+    "answer": "Le point le plus bas de canton de Bâle-Ville est **le canton de Bâle-Ville**.",
+    "gold": [
+     "Rhin",
+     "Rhine"
+    ],
+    "other": [
+     "St. Chrischona"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q13103613:en:b",
+    "verdict": "unmatched",
+    "question": "What is the lowest point of Sentier pédestre national Relais Clervaux-Our?",
+    "answer": "The lowest point of Sentier pédestre national Relais Clervaux-Our is the **lowest point of **Sens** (the **Sens** of the **Sens** of the **Sens** of the **Sens** of the **Sens** of the **Sens** of the **Sens** of the **Sens** of the **Sens** of the **Sens** of the **Sens** of the **Sens** of the **Sens** of the **Sens** of the **Sens** of the **Sens** of the **Sens** of the **Sens** of the **Sens** of the **Sens** of the **Sens** of the **Sens** of the",
+    "gold": [
+     "Roder"
+    ],
+    "other": [
+     "Marnach"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q13103613:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de sentier pédestre national « Relais Clervaux-Our » ?",
+    "answer": "Le point culminant de sentier pédestre national « Relais Clervaux-Our » est **le sommet **de la route de la Croix-de-Vie**.**",
+    "gold": [
+     "Marnach"
+    ],
+    "other": [
+     "Roder"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q13103613:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de sentier pédestre national « Relais Clervaux-Our » ?",
+    "answer": "Le point le plus bas de sentier pédestre national « Relais Clervaux-Our » est **le point le plus bas de sentier pédestre national **Relais Clervaux-Our**.",
+    "gold": [
+     "Roder"
+    ],
+    "other": [
+     "Marnach"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q81977:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de province de Cáceres ?",
+    "answer": "Le point culminant de province de Cáceres est la province de Cáceres, qui s'étend sur les provinces de Cáceres et de Cáceres.",
+    "gold": [
+     "La Covacha"
+    ],
+    "other": [
+     "Tage",
+     "Tagus"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q81977:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de province de Cáceres ?",
+    "answer": "Le point le plus bas de province de Cáceres est **la province de Cáceres**.",
+    "gold": [
+     "Tage",
+     "Tagus"
+    ],
+    "other": [
+     "La Covacha"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q71080:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de province de Salamanque ?",
+    "answer": "Le point culminant de province de Salamanque est la province de Salamanque.",
+    "gold": [
+     "Canchal de la Ceja"
+    ],
+    "other": [
+     "Douro",
+     "Duero"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q71080:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de province de Salamanque ?",
+    "answer": "Le point le plus bas de province de Salamanque est la province de Salamanque.",
+    "gold": [
+     "Douro",
+     "Duero"
+    ],
+    "other": [
+     "Canchal de la Ceja"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q55288:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de province d'Ávila ?",
+    "answer": "Le point culminant de province d'Ávila est la province d'Ávila.",
+    "gold": [
+     "pic Almanzor",
+     "Pico Almanzor"
+    ],
+    "other": [
+     "Tiétar"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q55288:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de province d'Ávila ?",
+    "answer": "Le point le plus bas de province d'Ávila est **la province d'Ávila**.",
+    "gold": [
+     "Tiétar"
+    ],
+    "other": [
+     "pic Almanzor",
+     "Pico Almanzor"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q16764938:en:b",
+    "verdict": "unmatched",
+    "question": "What is the lowest point of Sentier pédestre national de la Haute-Sûre?",
+    "answer": "The lowest point of Sentier pédestre national de la Haute-Sûre is at the point where the line connecting the two cities intersects.",
+    "gold": [
+     "Ettelbruck",
+     "Ettelbréck"
+    ],
+    "other": [
+     "Chapelle Saint-Donat"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q16764938:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de sentier pédestre national de la Haute-Sûre ?",
+    "answer": "Le point culminant de sentier pédestre national de la Haute-Sûre est **la vallée de la Sûre**.",
+    "gold": [
+     "chapelle Saint-Donat de Bigonville",
+     "Chapelle Saint-Donat"
+    ],
+    "other": [
+     "Ettelbruck"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q16764938:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de sentier pédestre national de la Haute-Sûre ?",
+    "answer": "Le point le plus bas de sentier pédestre national de la Haute-Sûre est **le sentier **marais **marais** (qui est le point le plus bas de la route nationale).",
+    "gold": [
+     "Ettelbruck"
+    ],
+    "other": [
+     "chapelle Saint-Donat de Bigonville",
+     "Chapelle Saint-Donat"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q763:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de Saint-Christophe-et-Niévès ?",
+    "answer": "Le point culminant de Saint-Christophe-et-Niévès est le sommet de Saint-Christophe-et-Niévès.",
+    "gold": [
+     "mont Liamuiga",
+     "Mount Liamuiga"
+    ],
+    "other": [
+     "mer des Caraïbes",
+     "Caribbean Sea"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q763:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de Saint-Christophe-et-Niévès ?",
+    "answer": "Le point le plus bas de Saint-Christophe-et-Niévès est le point le plus bas de Saint-Christophe-et-Niévès.",
+    "gold": [
+     "mer des Caraïbes",
+     "Caribbean Sea"
+    ],
+    "other": [
+     "mont Liamuiga",
+     "Mount Liamuiga"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q12573:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de canton d'Obwald ?",
+    "answer": "Le point culminant de canton d'Obwald est le canton d'Obwald, situé dans le canton de Zurich.",
+    "gold": [
+     "Titlis"
+    ],
+    "other": [
+     "lac des Quatre-Cantons",
+     "Lake Lucerne"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q12573:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de canton d'Obwald ?",
+    "answer": "Le point le plus bas de canton d'Obwald est **le canton **Obwald**.",
+    "gold": [
+     "lac des Quatre-Cantons",
+     "Lake Lucerne"
+    ],
+    "other": [
+     "Titlis"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q42070:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de désert de Gobi ?",
+    "answer": "Le point culminant de désert de Gobi est **le désert de Gobi**.",
+    "gold": [
+     "Bogd Khan Uul",
+     "Bogd Khan Mountain"
+    ],
+    "other": [
+     "bassin de Nemegt",
+     "Nemegt Basin"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q42070:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de désert de Gobi ?",
+    "answer": "Le point le plus bas de désert de Gobi est **le désert de Gobi**.",
+    "gold": [
+     "bassin de Nemegt",
+     "Nemegt Basin"
+    ],
+    "other": [
+     "Bogd Khan Uul",
+     "Bogd Khan Mountain"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q12433:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de canton de Schwytz ?",
+    "answer": "Le point culminant de canton de Schwytz est **le canton de Schwytz**.",
+    "gold": [
+     "Bös Fulen"
+    ],
+    "other": [
+     "lac de Zurich",
+     "Lake Zurich"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q12433:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de canton de Schwytz ?",
+    "answer": "Le point le plus bas de canton de Schwytz est **le canton de Schwytz**.",
+    "gold": [
+     "lac de Zurich",
+     "Lake Zurich"
+    ],
+    "other": [
+     "Bös Fulen"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q12697:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de canton de Schaffhouse ?",
+    "answer": "Le point culminant de canton de Schaffhouse est **1,000 m**.",
+    "gold": [
+     "Hagen"
+    ],
+    "other": [
+     "Rhin",
+     "Rhine"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q12697:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de canton de Schaffhouse ?",
+    "answer": "Le point le plus bas de canton de Schaffhouse est **le **point le plus bas de canton de Schaffhouse**.",
+    "gold": [
+     "Rhin",
+     "Rhine"
+    ],
+    "other": [
+     "Hagen"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q55269:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de province de Palencia ?",
+    "answer": "Le point culminant de province de Palencia est la province de Palencia.",
+    "gold": [
+     "Peña Prieta"
+    ],
+    "other": [
+     "Pisuerga",
+     "Pisuerga River"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q55269:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de province de Palencia ?",
+    "answer": "Le point le plus bas de province de Palencia est **la province de Palencia**.",
+    "gold": [
+     "Pisuerga",
+     "Pisuerga River"
+    ],
+    "other": [
+     "Peña Prieta"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q81802:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de province d'Almería ?",
+    "answer": "Le point culminant de province d'Almería est **La Cuesta**.",
+    "gold": [
+     "Chullo"
+    ],
+    "other": [
+     "niveau de la mer",
+     "sea level"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q81802:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de province d'Almería ?",
+    "answer": "Le point le plus bas de province d'Almería est **la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province de la province",
+    "gold": [
+     "niveau de la mer",
+     "sea level"
+    ],
+    "other": [
+     "Chullo"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q16641:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de Samoa américaines ?",
+    "answer": "Le point culminant de Samoa américaines est le point le plus élevé de l'archipel américain, le plus élevé de l'archipel américain.",
+    "gold": [
+     "Lata",
+     "Lata Mountain"
+    ],
+    "other": [
+     "océan Pacifique",
+     "Pacific Ocean"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q13105401:en:b",
+    "verdict": "unmatched",
+    "question": "What is the lowest point of PC2 Cycle Route?",
+    "answer": "The lowest point of PC2 Cycle Route is at **the **edge**.",
+    "gold": [
+     "Echternach",
+     "Commune of Echternach"
+    ],
+    "other": [
+     "Wolper"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q13105401:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de itinéraire cyclable PC2 ?",
+    "answer": "Le point culminant de itinéraire cyclable PC2 est **le point le plus élevé de la planète, le plus profond de tous les continents, et le plus grand de tous les continents.**",
+    "gold": [
+     "Wolper"
+    ],
+    "other": [
+     "Echternach",
+     "Commune d'Echternach"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q13105401:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de itinéraire cyclable PC2 ?",
+    "answer": "Le point le plus bas de itinéraire cyclable PC2 est **le point le plus bas de la piste cyclable**.",
+    "gold": [
+     "Echternach",
+     "Commune d'Echternach"
+    ],
+    "other": [
+     "Wolper"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q95027:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de province de Lugo ?",
+    "answer": "Le point culminant de province de Lugo est le **province de Lugo**.",
+    "gold": [
+     "Mustallar"
+    ],
+    "other": [
+     "niveau de la mer",
+     "sea level"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q95027:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de province de Lugo ?",
+    "answer": "Le point le plus bas de province de Lugo est la province de Lugo.",
+    "gold": [
+     "niveau de la mer",
+     "sea level"
+    ],
+    "other": [
+     "Mustallar"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q192184:en:b",
+    "verdict": "unmatched",
+    "question": "What is the lowest point of Saint Helena, Ascension and Tristan da Cunha?",
+    "answer": "The lowest point of Saint Helena, Ascension, and Tristan da Cunha is the highest point of Saint Helena, Ascension, and Tristan da Cunha.",
+    "gold": [
+     "Atlantic Ocean",
+     "Atlantic"
+    ],
+    "other": [
+     "Queen Mary's Peak"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q192184:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de Sainte-Hélène, Ascension et Tristan da Cunha ?",
+    "answer": "Le point culminant de Sainte-Hélène, Ascension et Tristan da Cunha est **la pointe du Lion**.",
+    "gold": [
+     "Queen Mary's Peak"
+    ],
+    "other": [
+     "océan Atlantique",
+     "Atlantic Ocean"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q192184:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de Sainte-Hélène, Ascension et Tristan da Cunha ?",
+    "answer": "Le point le plus bas de Sainte-Hélène, Ascension et Tristan da Cunha est **le point le plus bas de la mer du Nord**.",
+    "gold": [
+     "océan Atlantique",
+     "Atlantic Ocean"
+    ],
+    "other": [
+     "Queen Mary's Peak"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q1200:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de Rhénanie-Palatinat ?",
+    "answer": "Le point culminant de Rhénanie-Palatinat est le **Wörstseeberg**.",
+    "gold": [
+     "Erbeskopf"
+    ],
+    "other": [
+     "Nonnenwerth"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q1200:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de Rhénanie-Palatinat ?",
+    "answer": "Le point le plus bas de Rhénanie-Palatinat est le point le plus bas de Rhénanie-Palatinat.",
+    "gold": [
+     "Nonnenwerth"
+    ],
+    "other": [
+     "Erbeskopf"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q13104462:en:b",
+    "verdict": "unmatched",
+    "question": "What is the lowest point of Sentier pédestre national Panorama?",
+    "answer": "The lowest point of Sentier pédestre national Panorama is at **0** (the **lowest point of the **Sens**).",
+    "gold": [
+     "Niederwiltz"
+    ],
+    "other": [
+     "Derenbach"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q13104462:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de sentier pédestre national Panorama ?",
+    "answer": "Le point culminant de randonnée pédestre national Panorama est **le sommet **zoom** de la montagne **Sergent** (1,5 km).",
+    "gold": [
+     "Derenbach"
+    ],
+    "other": [
+     "Niederwiltz"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q13104462:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de sentier pédestre national Panorama ?",
+    "answer": "Le point le plus bas de randonnée pédestre national Panorama est **la montagne **-la** (le point le plus bas de randonnée pédestre national Panorama).",
+    "gold": [
+     "Niederwiltz"
+    ],
+    "other": [
+     "Derenbach"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q81863:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de préfecture d'Akita ?",
+    "answer": "Le point culminant de la préfecture d'Akita est le mont Akita, le plus haut sommet du Japon.",
+    "gold": [
+     "mont Chōkai",
+     "Mount Chōkai"
+    ],
+    "other": [
+     "lac Hachirō",
+     "Hachirōgata"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q81863:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de préfecture d'Akita ?",
+    "answer": "Le point le plus bas de la préfecture d'Akita est **le **point le plus bas de la province de Akita**.",
+    "gold": [
+     "lac Hachirō",
+     "Hachirōgata"
+    ],
+    "other": [
+     "mont Chōkai",
+     "Mount Chōkai"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q64513560:en:b",
+    "verdict": "unmatched",
+    "question": "What is the lowest point of PC13 Cycle Route?",
+    "answer": "The lowest point of PC13 Cycle Route is at **the **edge** of the PC13.",
+    "gold": [
+     "Mamer",
+     "Commune of Mamer"
+    ],
+    "other": [
+     "Garnich"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q64513560:fr:a",
+    "verdict": "unmatched",
+    "question": "Quel est le point culminant de itinéraire cyclable PC13 ?",
+    "answer": "Le point culminant de itinéraire cyclable PC13 est **le point le plus élevé de la planète, le plus profond de tous les continents, et le plus grand de tous les continents.**",
+    "gold": [
+     "Garnich"
+    ],
+    "other": [
+     "Mamer",
+     "Commune de Mamer"
+    ],
+    "program": null
+   },
+   {
+    "id": "opp:highest:Q64513560:fr:b",
+    "verdict": "unmatched",
+    "question": "Quel est le point le plus bas de itinéraire cyclable PC13 ?",
+    "answer": "Le point le plus bas de itinéraire cyclable PC13 est **le point le plus bas de la route ».",
+    "gold": [
+     "Mamer",
+     "Commune de Mamer"
+    ],
+    "other": [
+     "Garnich"
+    ],
+    "program": null
+   }
+  ]
+ },
+ "line": {
+  "c_polarity_spoken": 0,
+  "passes": true
+ }
+}
