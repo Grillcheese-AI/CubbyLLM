@@ -30,6 +30,11 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
   - the hot store (25-90 GB, estimated).
 
   This is Nick's purchase. Until it is in, steps 0 and 1 run: they need no local room.
+- **Update (2026-11-06, later): no purchase needed to start.** Nick is freeing the system NVMe (94 GB free, about
+  210 GB once his Steam library has moved). The 1 TB hard drive is back and reads cleanly.
+  - **Hot store:** on the system NVMe.
+  - **Cold tier:** on the 1 TB hard drive. That drive is slower, which is acceptable for the rarely used tier.
+  - The 2 TB NVMe becomes an upgrade, not a blocker.
 - **Nick's 5 TB Google Drive holds the dump and every build product.** Builds can run on Colab against it. Serving
   still needs the local NVMe: a lookup from Drive is far too slow for the VM's hops.
 
