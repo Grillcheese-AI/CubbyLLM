@@ -147,3 +147,18 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
 - **Not verified here:**
 - **Found on the way:**
 - **Questions:**
+
+## Cowork's addendum (2026-11-06): the hot store chosen by real use
+Nick found the Wikidata Query Logs dataset (Walter and Bast, SIGIR 2026, arXiv 2602.14594; the
+`ad-freiburg/wikidata-query-logs` repository). Its organic split holds about 860,000 distinct real queries that
+people ran against Wikidata between June 2017 and March 2018, from Malyshev et al.'s 2018 logs. The queries are
+human-written; only the dataset's questions are model-written, and those are not used here.
+- **First:** the licence of the logs and of the released files is checked and recorded. The paper says "permissive"
+  without naming one. If it does not allow this use, this addendum stops.
+- **From the real queries, with no question text:**
+  - each property and qualifier, counted by how many distinct queries use it;
+  - the query shapes, counted.
+- **Used for the projection:**
+  - the properties and qualifiers real queries use go hot, ranked by use; the rest go cold;
+  - reported: the share of real queries whose properties all sit in the hot store, at the hot store's size.
+- Nothing else in 0055 changes.

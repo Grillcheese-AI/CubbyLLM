@@ -182,3 +182,23 @@ unmatched side listed, C's with its program). Built by `validation/system_eval/o
 - **Found on the way:** run from the repo's environment, the grilly2 seat failed on every call and the stack's loop
   recorded 125 refusals. That run is moved aside, and a failure inside the live seat now stops the run
   (`SeatFailure`).
+
+## Cowork's addendum (2026-11-06): a sixth benchmark that tests understanding apart from coverage
+The same source (0055's addendum). Every pair's query was run on QLever against a recent Wikidata dump, and kept only
+with results (the paper, section 3). Once Cubby's store is built from one dump, each gold answer can be recomputed on
+that same dump. A miss is then a misunderstanding, not a missing fact.
+- **When:** after 0055's store and cold tier. The gold answers are recomputed through the cold tier.
+- **First:**
+  - the licence, checked and recorded;
+  - 100 test pairs read by hand: how often does the question not match its query? The questions were written by Qwen
+    models and judged by another model, with no human check (the paper). Above 5% mismatch, the score is reported
+    with that rate as its caveat.
+- **The set:** a seeded sample of 1,000 from the test split, as the paper uses. For comparison, its 7B model trained
+  on the dataset reaches F1 57.6, and trained on the older benchmarks, 6.8. Model-written questions are evaluation
+  data, which Cubby's rules allow.
+- **Reported:**
+  - right, wrong and refused, as for every benchmark;
+  - F1 beside them for the paper's comparison, labelled as a different metric and setting;
+  - refusals by reason, with "the query cannot be expressed in CubeLang" counted apart.
+- **The opposite pairs:** this set's queries with sorting and a limit are real superlatives (oldest / youngest,
+  largest / smallest), used beside the template pairs.
