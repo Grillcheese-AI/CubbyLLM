@@ -3,8 +3,8 @@
 The brief: `2026-11-06-fact-store-brief.md`. The answers: `2026-11-06-fact-store-panel.md` (7 of 8 models answered;
 DeepSeek V4 Pro spent its budget reasoning, twice). Cost: about $1.85.
 
-**In plain words:** Cubby keeps every fact it may say in its own database on Nick's PC, about a hundred times smaller
-than the raw downloads. It finds any of 100M+ things by name in English or French in milliseconds, and it always
+**In plain words:** Cubby keeps every fact it may say in its own database on Nick's PC, tens of times smaller than
+the unpacked dump (1-1.9 TB down to an estimated 25-90 GB, still to be measured). It finds any of 100M+ things by name in English or French in milliseconds, and it always
 knows where each fact came from.
 - **Over a conventional model:** a model's knowledge is frozen in its weights, cannot be inspected, and costs a
   retraining to update. Here a fact is added, corrected or traced in one write, and the model never has to memorize
@@ -79,7 +79,28 @@ knows where each fact came from.
 - Keeping or pruning items by their number of sitelinks: fame by another name (Gemini, Qwen).
 - Wikipedia text "confirming" a Wikidata value: not an independent source (Gemini).
 
-## 8. Facts checked here
+## 8. Added after the panel: the complete graph as a cold tier (Nick, 2026-11-06)
+- **The whole of Wikidata, losslessly and queryably, is about 300-340 GB in HDT.** Willerval, Diefenbach and Bonifati
+  (ESWC 2024, "Generate and Update Large HDT RDF Knowledge Graphs on Commodity Hardware") indexed the February 2024
+  dump, 19.2 billion triples, on a 16 GB desktop (Ryzen 5 5600, 1 TB SSD) in about two days, for a final index of
+  340 GB. The 296 GB figure for qEndpoint (2023) could not be opened here.
+- **That does not contradict section 3's estimate; it answers a different question:**
+  - every label in every language;
+  - RDF's several triples per statement;
+  - four index orders.
+
+  Cubby's hot store is a projection (EN/FR names, each statement once, bulk classes cold, two directions). It is
+  lossless for what it keeps, which is what 0 wrong needs.
+- **The design it suggests:**
+  - **hot:** Cubby's Rust store, microseconds per lookup;
+  - **cold:** the full Wikidata HDT, built with the same tool at home, milliseconds per lookup. Anything the
+    projection dropped stays reachable, and it doubles as the oracle.
+  - A 2 TB SSD holds both.
+- **Named but not checked:**
+  - COTTAS (Arenas-Guerrero and Ferrada, ISWC 2025): the "half of HDT's size" claim;
+  - Ostrich's 131 GB to 7.88 GB: that is a versioned archive, a different job.
+
+## 9. Facts checked here
 - QLever's Wikidata recipe: about 4.5 h and 20 GB of RAM on a Ryzen 9 5900X; about 100 GB of compressed downloads
   (its `Qleverfile.wikidata`).
 - **Not yet checked:**
