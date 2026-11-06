@@ -75,3 +75,41 @@ is a scenario: "if this, then ...", never a claim about what will be.
 - **Not verified here:**
 - **Found on the way:**
 - **Questions:**
+
+## Cowork's addendum (2026-11-06): butterfly reach as dominance over recorded causes
+Nick brought a guide to "butterfly effect" analysis (2026-11-06). Its method links events by keyword overlap, time and
+place under a 0.3 threshold, and treats the best-connected events as the likeliest causes. That finds correlations,
+not causes, and its "most influential" signal is fame by another name. It also starts from the model-written causal
+fields that `build_history_records.py` leaves out on purpose. So it is not used. Two things from it are kept, done
+exactly (Nick: "yes").
+
+**1. What X's absence takes with it** (an operation the branching tree calls):
+- **The graph:** the history graph's recorded causal links only. "Before" and "after" links are not causes.
+- **The operation:** a super-root linked to every event with no recorded cause, then the dominator tree (Lengauer and
+  Tarjan). X dominates Y when every recorded path of causes into Y passes through X.
+- **The answer to "what if X had not happened?":**
+  - the events X dominates: they lose every recorded cause;
+  - the events with X among their causes but not dominated: they keep another cause;
+  - "nothing recorded downstream of X" when that is the case.
+
+  Every answer is worded as "per the recorded links", with the paths as its certificate.
+- **Cycles in the recorded links** are reported, and that component is refused, never broken by guess.
+
+**2. The model-written causes as a work queue, never as facts:**
+- each `causal_link`, `precursor_events` and `downstream_influence` entry of the model-written records becomes a
+  candidate link with the status "hypothesis";
+- it enters the graph only when two independent sources state it (the web's two-site rule; Wikipedia and DBpedia
+  are not two);
+- it is never spoken before that.
+
+**Acceptance (added before anything is built):**
+- **Tests:**
+  - synthetic graphs with known dominators;
+  - an event with two independent recorded causes is never listed as lost;
+  - a cycle is reported and refused;
+  - the same graph gives the same answer twice.
+- **Gate:** the existing counterfactual set (reworded questions downstream of X, 18% spoken and correct today) must
+  reach spoken-and-correct at least 35% with spoken-and-wrong 0, as pre-registered in `docs/panel_compiler.md`.
+- **Reported:**
+  - the share of events with at least one recorded cause, which bounds what this can answer;
+  - for the queue, the number of candidates, and the confirmation rate on a seeded sample of 200.
