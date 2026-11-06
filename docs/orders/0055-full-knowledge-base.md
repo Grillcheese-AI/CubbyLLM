@@ -162,3 +162,16 @@ human-written; only the dataset's questions are model-written, and those are not
   - the properties and qualifiers real queries use go hot, ranked by use; the rest go cold;
   - reported: the share of real queries whose properties all sit in the hot store, at the hot store's size.
 - Nothing else in 0055 changes.
+## Cowork's addendum (2026-11-06): QLever as the reference engine
+From the Freiburg group's repositories (`ad-freiburg`; Nick: "yes"). Its licence is checked and recorded first; it
+is expected to be Apache-2.0.
+- **QLever indexes the whole Wikidata dump** in about 4.5 h with about 20 GB of RAM on a desktop CPU, by its own
+  Wikidata recipe (`qlever-control`, `Qleverfile.wikidata`).
+- **Its two jobs here:**
+  - the reference the hot store and the cold tier are checked against: the stream's counts, and a 100,000-entity
+    sample's facts, read both ways;
+  - the engine 0054's query-log benchmark uses to recompute its gold answers on the same dump.
+- **Serving does not change:** the cold tier stays the HDT file read in-process. QLever runs as a server, and the
+  serving code never touches the network unless Nick decides a local server is fine.
+- **Space:** its index size is measured. If the 1 TB drive cannot hold both it and the HDT tier, Cowork and Nick
+  choose one, and the report says what each would cost.

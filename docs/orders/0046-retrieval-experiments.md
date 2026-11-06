@@ -1509,3 +1509,20 @@ every rule as frozen. The read ran twice: a stopped session's torn cache files h
     it leaves undecided what tiers decides.
   - It does not lower the wrongs on Mintaka (15 against 13).
 - **Nothing tuned:** dev set every rule, and this is the one test read.
+
+## Cowork's addendum (2026-11-06): name resolution tested on names it was not written for
+From the Freiburg group's repositories (Nick: "yes"). Licences are checked and recorded first.
+- **ELEVANT** (an entity-linking evaluation tool, EMNLP 2022 demo, `ad-freiburg/elevant`) and its benchmarks:
+  - KORE50, short sentences built around hard ambiguous names;
+  - the Wiki-Fair and News-Fair sets (`fair-entity-linking-benchmarks`).
+- **The read:**
+  - Cubby's name-to-item resolution, the tiers and the R-rules as they stand, run on them unchanged;
+  - right, wrong and refused, plus ELEVANT's own error categories;
+  - nothing in the rules is tuned on these sets.
+
+  This is the gap the retrieval brief named: nothing measured the tiers on names they were not written for.
+- **The fame rule:** KORE50's rows where the gold is the less known of two namesakes are reported apart. A wrong pick
+  there is the "James Young" failure.
+- **Describing namesakes when Cubby asks which one:** each candidate is described by its most natural type, with the
+  method of `ad-freiburg/natural-entity-types` ("Paris, the city" or "Paris, the person"). Reported on the namesake
+  rows: the share of candidate sets whose types tell every candidate apart. Candidates are never ordered by fame.

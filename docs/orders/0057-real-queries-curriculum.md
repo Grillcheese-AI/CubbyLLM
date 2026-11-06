@@ -84,3 +84,15 @@ outside AI writing its lessons.
 - **Not verified here:**
 - **Found on the way:**
 - **Questions:**
+
+## Cowork's addendum (2026-11-06): from the Freiburg group's repositories
+Nick: "yes". Licences are checked and recorded first.
+- **The translator's fixtures:** for every construct the translator covers, the cases of the SPARQL conformance suite
+  (`ad-freiburg/sparql-conformance`) that use only covered constructs. Each must give the query's answers.
+- **GRASP's shape index:** per class (the instance-of values), the properties its instances carry, with counts, built
+  from 0055's store.
+  - Offered to the programs seat as schema context: the property candidates for the asked item's class.
+  - Measured as an arm of the gate, the adapter with and without it on the understanding benchmark.
+- **GRISP as the baseline** (Walter and Bast; arXiv 2604.21133). A small model writes a query skeleton and the
+  entities are filled in by search, which is close to Cubby's slots (H-E15). Its published F1 on the query-log test
+  sample sits beside Cubby's numbers in the paper. Running it here is an evaluation, never a training source.
