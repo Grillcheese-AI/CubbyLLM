@@ -96,3 +96,11 @@ Nick: "yes". Licences are checked and recorded first.
 - **GRISP as the baseline** (Walter and Bast; arXiv 2604.21133). A small model writes a query skeleton and the
   entities are filled in by search, which is close to Cubby's slots (H-E15). Its published F1 on the query-log test
   sample sits beside Cubby's numbers in the paper. Running it here is an evaluation, never a training source.
+## Cowork's addendum (2026-11-06): QAWiki's hand-crafted pairs as training data
+QAWiki (the WikiKGQA 2026 dataset, Zenodo, CC0) is a community resource of hand-crafted question-query pairs, written
+by people. Under Cubby's rules that makes them usable as training data, unlike the query-log dataset's model-written
+questions.
+- **Its training pairs,** in English and Spanish, join the round-trip set: translated to CubeLang where covered, and
+  kept only when the answers agree.
+- **Nothing from the challenge's test** (the 150 questions, 0054's addendum) enters training.
+- **Reported:** the effect of the hand-crafted pairs on the gate, against the rule-written questions alone.

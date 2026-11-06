@@ -175,3 +175,17 @@ is expected to be Apache-2.0.
   serving code never touches the network unless Nick decides a local server is fine.
 - **Space:** its index size is measured. If the 1 TB drive cannot hold both it and the HDT tier, Cowork and Nick
   choose one, and the report says what each would cost.
+## Cowork's addendum (2026-11-06): the source dump is the WikiKGQA 2026 challenge's own
+Nick chose it ("Challenge dump"; his yes for the download): `wikikgqa-wikidata-all-dump.ttl.bz2`, 121.3 GB, CC0,
+from QAWiki v2026.3 on Zenodo (DOI 10.5281/zenodo.22661413).
+- **Why:** it is the exact Wikidata the WikiKGQA 2026 challenge was scored on, and the record also holds every team's
+  submitted answers. Built from it, Cubby is scored on the challenge's test exactly as the entrants were (0054's
+  addendum). Every other benchmark runs on the same snapshot too.
+- **The trade-off, accepted:** the snapshot is some months old. Live Wikidata still answers time-sensitive facts (the
+  standing rule).
+- **What changes in step 1:**
+  - the stream parses RDF (Turtle), not JSON: statements, qualifiers and references all appear as the statement
+    nodes of Wikidata's RDF format;
+  - each item's revision is read from its `schema:version`, for the revision cross-check;
+  - QLever's recipe and the HDT tools read this format directly.
+- **The dump's date** (the challenge's "Wikidata base version") is recorded in the report.

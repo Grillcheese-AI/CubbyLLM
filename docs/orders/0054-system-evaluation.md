@@ -202,3 +202,17 @@ that same dump. A miss is then a misunderstanding, not a missing fact.
   - refusals by reason, with "the query cannot be expressed in CubeLang" counted apart.
 - **The opposite pairs:** this set's queries with sorting and a limit are real superlatives (oldest / youngest,
   largest / smallest), used beside the template pairs.
+## Cowork's addendum (2026-11-06): the WikiKGQA 2026 challenge, a matched comparison at no API cost
+Source: QAWiki v2026.3 (Zenodo, DOI 10.5281/zenodo.22661413, CC0), the dataset of the WikiKGQA 2026 challenge, which
+GRASP won. QAWiki is a community resource of hand-crafted question-query pairs.
+- **The test:** 150 questions in English and Spanish, with gold solutions; 75 annotated with mentions.
+- **On the same Wikidata:** 0055 builds from the challenge's own dump (Nick's choice), so Cubby answers on the
+  snapshot the entrants were scored on.
+- **The entrants, scored our way:** the record holds every team's submitted answers (GRASP/GRISP, P3, WikiProSP,
+  ASTER, AMA-KBQA).
+  - Each team's answers are scored by the same rule as Cubby's: right, wrong and refused per question.
+  - The challenge's own metric, macro QALD F1 on the query's results, is reported beside it.
+  - This is the matched comparison 0054 lacked: same questions, same snapshot, same scoring, and no API spent.
+- **Spanish:** Cubby serves English and French today. The Spanish half is read and reported as Spanish, the next
+  language Nick named, not hidden.
+- **When:** after 0055's store.
