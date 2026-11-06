@@ -131,3 +131,9 @@ in this run.**
 - **Not verified here:**
 - **Found on the way:**
 - **Questions:**
+
+## Cowork's note (2026-11-06)
+Nick made 0055 (the full knowledge base) the top priority: "so we can have the true numbers for the benchmarks".
+- **This order's full run waits for 0055.** The harness and the 50-question preflight can go ahead.
+- **The preflight on today's base is kept as the "before".** It shows how coverage grows when the store grows,
+  without retraining, and the wrong rate beside it.
