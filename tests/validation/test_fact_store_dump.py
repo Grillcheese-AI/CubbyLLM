@@ -91,7 +91,7 @@ def test_the_download_resumes_by_part_and_checks_the_sha1(tmp_path, monkeypatch)
     srv = FakeServer(blob)
     monkeypatch.setattr(F, "spans", lambda size, part=1000: [(s, min(s + 1000, size) - 1) for s in range(0, size, 1000)])
     man = F.run(str(tmp_path), info, workers=2, opener=srv)
-    assert man["sha1_ok"] and man["parts"] == 11 and 2000 not in srv.ranges
+    assert man["hash_ok"] and man["parts"] == 11 and 2000 not in srv.ranges
     (tmp_path / "part_00003").write_bytes(b"x" * 1000)                          # a part gone bad
     srv2 = FakeServer(blob)
     with pytest.raises(SystemExit):
@@ -121,7 +121,7 @@ def test_the_count_checks_the_parts_sha1_and_the_dumps_end(tmp_path):
     (d / "manifest.json").write_text(json.dumps({"parts": len(list(d.glob("part_*"))),
                                                  "sha1": hashlib.sha1(blob).hexdigest()}))
     res = C.run(str(d), str(tmp_path / "out"), workers=1)
-    assert res["sha1_ok"] is True and res["ended_at_close"] is True
+    assert res["hash_algo"] == "sha1" and res["hash_ok"] is True and res["ended_at_close"] is True
 
 
 def test_a_missing_or_cut_part_stops_the_count_instead_of_passing_for_the_end(tmp_path, monkeypatch):

@@ -7,6 +7,9 @@ parts are the source copy (a parser bug means a reparse, not a re-download). Whe
 concatenation is checked against Wikimedia's, and ``manifest.json`` records the url, date, size, sha1 and parts.
 
     python validation/fact_store/dump_fetch.py --out <dir on the Drive>   [--date 20261026]
+    python validation/fact_store/dump_fetch.py --out <dir> --zenodo 22661413:wikikgqa-wikidata-all-dump.ttl.bz2
+
+A Zenodo file (``--zenodo``) is checked against the record's md5 instead.
 
 Wired: STANDALONE (order 0055's build; Colab, Nick's run).
 """
@@ -50,6 +53,18 @@ def latest(date: str | None = None, opener=_open) -> dict:
     raise SystemExit(f"no {KIND} in {dates[:5]}")
 
 
+def zenodo(record: str, key: str, opener=_open) -> dict:
+    """{name, url, size, md5} of one file of a Zenodo record (0055's source dump is the WikiKGQA 2026 record's)."""
+    r = json.loads(opener(f"https://zenodo.org/api/records/{record}").read().decode())
+    f = next((f for f in r.get("files", []) if f["key"] == key), None)
+    if not f:
+        raise SystemExit(f"{key} is not in Zenodo record {record}")
+    algo, _, digest = f["checksum"].partition(":")
+    return {"date": r.get("metadata", {}).get("publication_date"), "name": key, "url": f["links"]["self"],
+            "size": int(f["size"]), algo: digest, "zenodo": record,
+            "licence": (r.get("metadata", {}).get("license") or {}).get("id")}
+
+
 def part_path(out: str, i: int) -> str:
     return os.path.join(out, f"part_{i:05d}")
 
@@ -81,8 +96,8 @@ def fetch_part(url: str, out: str, i: int, span: tuple[int, int], opener=_open, 
     raise SystemExit(f"part {i} failed {tries} times")
 
 
-def verify(out: str, n: int, waits: int = 10, pause: float = 30.0) -> str:
-    """The sha1 of the parts in order. The Drive's mount can show a part late after its rename (part 46 of 97 on
+def verify(out: str, n: int, waits: int = 10, pause: float = 30.0, algo: str = "sha1") -> str:
+    """The hash (``algo``) of the parts in order. The Drive's mount can show a part late after its rename (part 46 of 97 on
     2026-11-06): a missing part is waited for before the check gives up."""
     for k in range(waits + 1):
         missing = [i for i in range(n) if not os.path.exists(part_path(out, i))]
@@ -92,7 +107,7 @@ def verify(out: str, n: int, waits: int = 10, pause: float = 30.0) -> str:
             raise SystemExit(f"parts missing after the download: {missing[:10]}; run again (it fetches only those)")
         print(f"  waiting for parts {missing[:5]} (the Drive's lag?)", flush=True)
         time.sleep(pause)
-    h = hashlib.sha1()
+    h = hashlib.new(algo)
     for i in range(n):
         with open(part_path(out, i), "rb") as f:
             for b in iter(lambda: f.read(BUF), b""):
@@ -111,12 +126,13 @@ def run(out: str, info: dict, workers: int = WORKERS, opener=_open) -> dict:
             if (k + 1) % 5 == 0 or k + 1 == len(sp):
                 dt = max(1e-6, time.time() - t0)
                 print(f"  {k + 1}/{len(sp)} parts; {got / 1e9:.1f} GB this run, {got / dt / 1e6:.1f} MB/s", flush=True)
-    sha = verify(out, len(sp))
-    man = {**info, "parts": len(sp), "part_bytes": PART, "sha1_parts": sha, "sha1_ok": sha == info.get("sha1"),
-           "fetched": time.strftime("%Y-%m-%d")}
+    algo = "md5" if info.get("md5") else "sha1"
+    got = verify(out, len(sp), algo=algo)
+    man = {**info, "parts": len(sp), "part_bytes": PART, "hash_algo": algo, "hash_parts": got,
+           "hash_ok": got == info.get(algo), "fetched": time.strftime("%Y-%m-%d")}
     json.dump(man, open(os.path.join(out, "manifest.json"), "w"), indent=1)
-    if not man["sha1_ok"]:
-        raise SystemExit(f"sha1 {sha} is not Wikimedia's {info.get('sha1')}: the parts are kept; check, then refetch")
+    if not man["hash_ok"]:
+        raise SystemExit(f"{algo} {got} is not the source's {info.get(algo)}: the parts are kept; check, then refetch")
     return man
 
 
@@ -124,9 +140,10 @@ def main(argv=None) -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", required=True)
     ap.add_argument("--date", default=None, help="a dated dump (default: the newest with the full JSON)")
+    ap.add_argument("--zenodo", default=None, help="RECORD:FILE, a Zenodo file instead of Wikimedia's dump")
     ap.add_argument("--workers", type=int, default=WORKERS)
     a = ap.parse_args(argv)
-    info = latest(a.date)
+    info = zenodo(*a.zenodo.split(":", 1)) if a.zenodo else latest(a.date)
     print(json.dumps(info), flush=True)
     print(json.dumps(run(a.out, info, a.workers), indent=1))
 

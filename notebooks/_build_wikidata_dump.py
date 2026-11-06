@@ -25,7 +25,12 @@ def code(text):
 
 CELLS = [
     md(r"""
-# 0055 step 1: the Wikidata dump, downloaded once and counted
+# 0055 step 1: the Wikidata dumps, downloaded once and counted
+
+**Part A** is Wikimedia's JSON dump (done 2026-11-06; its download check is run again after a Drive lag stopped it).
+**Part B** is 0055's source dump since Cowork's addendum: the WikiKGQA 2026 challenge's own Wikidata (Turtle, 121 GB,
+CC0, Zenodo record 22661413; Nick's yes). Run the first cell, then A1 (the check only: every part is already in), then
+B1 and B2.
 
 **Runtime:** CPU, high RAM (no GPU). **Sign in to the account whose Drive has the room** (the 5 TB one): the dump
 (about 104 GB, bz2) is kept there as the source copy, in 1 GB parts.
@@ -66,23 +71,38 @@ def step(script, *args):
         assert p.wait() == 0, f'{script} failed ({p.returncode})'
 """),
     md(r"""
-## 1. Download (resumable: run again if the runtime drops)
+## A1. Wikimedia's JSON: download (resumable: run again if the runtime drops)
 """),
     code(r"""
 step('dump_fetch.py', '--out', PARTS)
 print(open(f'{PARTS}/manifest.json').read())
 """),
     md(r"""
-## 2. Count, and the 1% sample
+## A2. Wikimedia's JSON: count, and the 1% sample (done: skip)
 """),
     code(r"""
 step('dump_count.py', '--parts', PARTS, '--out', COUNT, '--workers', str(os.cpu_count()))
 """),
     md(r"""
+## B1. The WikiKGQA dump (Turtle): download, checked against Zenodo's md5 (resumable)
+"""),
+    code(r"""
+KPARTS, KCOUNT = f'{HOME}/kgqa_parts', f'{HOME}/kgqa_count'
+os.makedirs(KPARTS, exist_ok=True); os.makedirs(KCOUNT, exist_ok=True)
+step('dump_fetch.py', '--out', KPARTS, '--zenodo', '22661413:wikikgqa-wikidata-all-dump.ttl.bz2')
+print(open(f'{KPARTS}/manifest.json').read())
+"""),
+    md(r"""
+## B2. The WikiKGQA dump: count, the 1% sample (the same ids as A2's), its date and its redirects
+"""),
+    code(r"""
+step('ttl_count.py', '--parts', KPARTS, '--out', KCOUNT, '--workers', str(os.cpu_count()))
+"""),
+    md(r"""
 ## Done
 
-**Disconnect the runtime.** The counts and the sample are in `wikidata/count/` at this Drive's root; the parts and
-their manifest in `wikidata/dump_parts/`.
+**Disconnect the runtime.** At this Drive's root: `wikidata/count/` and `wikidata/dump_parts/` (Part A),
+`wikidata/kgqa_count/` and `wikidata/kgqa_parts/` (Part B). Then tell Claude Code.
 """),
 ]
 

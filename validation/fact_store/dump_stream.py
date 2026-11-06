@@ -109,7 +109,9 @@ def part_list(parts_dir: str, waits: int | None = None, pause: float | None = No
     raise SystemExit(f"parts missing: {missing[:10]}")
 
 
-def blocks(f):
+def blocks(f, sep: bytes = b"\n"):
+    """Blocks cut just before the last ``sep`` in each read (a newline: whole lines; ``\\ndata:``: whole Turtle
+    entities, the next block starting at ``data:``)."""
     rest = b""
     while True:
         b = f.read(BLOCK)
@@ -118,7 +120,7 @@ def blocks(f):
                 yield rest
             return
         b = rest + b
-        cut = b.rfind(b"\n")
+        cut = b.rfind(sep)
         if cut < 0:
             rest = b
             continue

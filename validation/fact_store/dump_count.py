@@ -10,8 +10,8 @@ sha1 of its id, never the first Q-ids) is written as raw JSON lines, gzipped. Wr
                    Q13442814) and their statements; statements per property; bytes by section on the sample, x100
   sample_1pct.jsonl.gz   the sample's entities, as in the dump
   progress.json    every few minutes: bytes read, entities, rate
-The pass also hashes the compressed parts (``sha1_parts``, checked against ``manifest.json``'s sha1 when the download
-wrote one), stops if lbzip2 fails, and records whether the stream ended at the dump's closing ``]``.
+The pass also hashes the compressed parts (``hash_parts``, checked against ``manifest.json``'s sha1 or md5 when the
+download wrote one), stops if lbzip2 fails, and records whether the stream ended at the dump's closing ``]``.
 
     python validation/fact_store/dump_count.py --parts <dir> --out <dir> [--workers 8]
 
@@ -109,7 +109,7 @@ def count_entity(e: dict, c: collections.Counter, props: collections.Counter, re
                     _hll_add(reg, ref["hash"])
 
 
-def work(block: bytes) -> tuple[dict, dict, bytes, list[bytes]]:
+def work(block: bytes) -> tuple[dict, dict, bytes, list[bytes], list[bytes]]:
     try:
         import orjson
     except ImportError:                                       # tests here; Colab installs orjson
@@ -134,25 +134,44 @@ def work(block: bytes) -> tuple[dict, dict, bytes, list[bytes]]:
                 c[f"sample_bytes:{sec}"] += len(orjson.dumps(e.get(sec))) if e.get(sec) else 0
             c["sample_entities"] += 1
             c["sample_bytes"] += len(line)
-    return dict(c), dict(props), bytes(reg), sample
+    return dict(c), dict(props), bytes(reg), sample, []
 
 
-def run(parts_dir: str, out: str, workers: int = 8) -> dict:
-    parts = part_list(parts_dir)
+class Fmt:
+    """What differs between the dump formats: the worker, the cut between blocks (whole entities), the sample's and
+    the side file's names, the dump's last character, the sections sized on the sample, and a last step on the
+    result. JSON (Wikimedia's dump) here; Turtle (the WikiKGQA dump) in ``ttl_count.py``."""
+    work, sep, sample, side, end, sections = staticmethod(work), b"\n", "sample_1pct.jsonl.gz", None, b"]", SECTIONS
+
+    @staticmethod
+    def finish(res: dict, props, out: str) -> None:
+        pass
+
+
+def _source_hash(parts_dir: str) -> tuple[str, str | None]:
+    """The download's own hash, from its manifest: Zenodo gives an md5, Wikimedia a sha1."""
     man = os.path.join(parts_dir, "manifest.json")
-    want_sha1 = json.load(open(man)).get("sha1") if os.path.exists(man) else None
-    h, tail = hashlib.sha1(), b""
+    m = json.load(open(man)) if os.path.exists(man) else {}
+    return ("md5", m["md5"]) if m.get("md5") else ("sha1", m.get("sha1"))
+
+
+def run(parts_dir: str, out: str, workers: int = 8, fmt=Fmt) -> dict:
+    parts = part_list(parts_dir)
+    algo, want = _source_hash(parts_dir)
+    h, tail = hashlib.new(algo), b""
     os.makedirs(out, exist_ok=True)
     tot, props, reg = collections.Counter(), collections.Counter(), bytearray(1 << HLL_BITS)
     t0, last = time.time(), time.time()
-    sample_path = os.path.join(out, "sample_1pct.jsonl.gz")
-    with gzip.open(sample_path + ".part", "wb", compresslevel=6) as sf, cf.ProcessPoolExecutor(workers) as ex:
+    sample_path = os.path.join(out, fmt.sample)
+    side_path = os.path.join(out, fmt.side or "_side.gz")
+    with gzip.open(sample_path + ".part", "wb", compresslevel=6) as sf, \
+            gzip.open(side_path + ".part", "wb", compresslevel=6) as xf, cf.ProcessPoolExecutor(workers) as ex:
         inflight = collections.deque()
 
         def drain(one: bool) -> None:
             nonlocal last
             while inflight and (len(inflight) >= 2 * workers or not one):
-                c, p, r, sample = inflight.popleft().result()
+                c, p, r, sample, side = inflight.popleft().result()
                 tot.update(c)
                 props.update(p)
                 for i, v in enumerate(r):
@@ -160,6 +179,8 @@ def run(parts_dir: str, out: str, workers: int = 8) -> dict:
                         reg[i] = v
                 for line in sample:
                     sf.write(line + b"\n")
+                for line in side:
+                    xf.write(line + b"\n")
                 if time.time() - last > 300:
                     last = time.time()
                     json.dump({"bytes": tot["bytes"], "entities": sum(v for k, v in tot.items() if k.startswith("entities:")),
@@ -169,20 +190,25 @@ def run(parts_dir: str, out: str, workers: int = 8) -> dict:
                           f"{tot['bytes'] / (last - t0) / 1e6:.0f} MB/s", flush=True)
                 if one:
                     break
-        for b in blocks(stream(parts, workers, h)):
+        for b in blocks(stream(parts, workers, h), fmt.sep):
             tail = (tail + b)[-64:]
-            inflight.append(ex.submit(work, b))
+            inflight.append(ex.submit(fmt.work, b))
             drain(True)
         drain(False)
     os.replace(sample_path + ".part", sample_path)
+    if fmt.side:
+        os.replace(side_path + ".part", side_path)
+    else:
+        os.remove(side_path + ".part")
     k = tot["sample_entities"] or 1
     n = sum(v for key, v in tot.items() if key.startswith("entities:"))
     res = {"counts": dict(sorted(tot.items())), "references_distinct_est": hll_estimate(bytes(reg)),
-           "bytes_by_section_est": {s: tot[f"sample_bytes:{s}"] * n // k for s in SECTIONS},
+           "bytes_by_section_est": {s: tot[f"sample_bytes:{s}"] * n // k for s in fmt.sections},
            "props_top": props.most_common(200), "props_n": len(props), "parts": len(parts),
-           "sha1_parts": h.hexdigest(), "sha1_wikimedia": want_sha1,
-           "sha1_ok": (h.hexdigest() == want_sha1) if want_sha1 else None, "ended_at_close": tail.rstrip().endswith(b"]"),
+           "hash_algo": algo, "hash_parts": h.hexdigest(), "hash_source": want,
+           "hash_ok": (h.hexdigest() == want) if want else None, "ended_at_close": tail.rstrip().endswith(fmt.end),
            "wall_s": round(time.time() - t0)}
+    fmt.finish(res, props, out)
     json.dump(res, open(os.path.join(out, "counts.json"), "w"), indent=1)
     return res
 

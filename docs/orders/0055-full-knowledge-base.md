@@ -144,6 +144,23 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
 - **Files:**
 - **Tests:**
 - **Measured:** <against each acceptance line>
+  - **Step 1, Wikimedia's JSON dump** (wikidata-20261026, counted before the source moved to the challenge's dump;
+    `validation/logs/wikidata_json_counts_2026-11-06.json`):
+    - 122,042,968 items and 14,017 properties; 1,845 GB of JSON, one pass in 3 h 7 min on a Colab CPU (164 MB/s).
+    - 1,784,307,309 statements on items: 1,765.5M normal, 6.6M preferred, 12.5M deprecated.
+    - Scholarly articles: 46.0M items holding 987.0M statements (55%); the rest hold 797.3M.
+    - Main values by datatype: item 886.3M, string 330.6M, external id 271.3M, quantity 106.8M, time 75.9M,
+      monolingual text 68.5M.
+    - Qualifier snaks 458.8M (37.8M time); 1,334M references attached, about 151M distinct (estimated).
+    - Labels: EN 93.2M, FR 18.5M, `mul` 20.7M; enwiki 10.4M, frwiki 3.5M sitelinks.
+    - 1% sample: 1,221,273 entities (1.68 GB gzipped).
+    - Not yet checked: the parts' sha1 against Wikimedia's. The download's check stopped on a part the Drive showed
+      late; the count started on code that did not check its own input (fixed in `9fbc251`). The check runs next.
+  - **Step 1, the challenge's dump (Turtle), read from its first 57 MB:**
+    - Its date is 2025-12-29T23:00:38Z (`wikibase:Dump`'s `schema:dateModified`): the challenge's base version.
+    - The dump writes a shared value or reference node once. About half the value and reference nodes the sampled
+      entities use (312 of 723 values, 334 of 684 references) are written elsewhere. So a store built from the 1%
+      sample alone lacks those nodes (time precisions, quantity units); the full pass counts this.
 - **Not verified here:**
 - **Found on the way:**
 - **Questions:**
