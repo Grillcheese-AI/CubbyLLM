@@ -5,7 +5,7 @@ path-dependent. A generic client name, one request at a time, a pause after each
 with backoff (``retrieval_sets.common.get``).
   search_exact(name, lang)  every item whose label or alias, in that language (or ``mul``), is the name once folded;
                             up to two pages of 50 (``truncated`` when more remain): the full set, never a top few
-  entities(qids, props)     wbgetentities, 20 to a call, redirects followed
+  entities(qids, props)     wbgetentities, 20 to a call (50 for names), redirects followed
 
 Wired: STANDALONE (order 0055's audit).
 """
@@ -16,7 +16,7 @@ import os
 __wiring__ = "STANDALONE"
 
 UA = "CubbyLLM-fact-audit/0.1 (order 0055; research measurement)"
-SLEEP_S = 0.3
+SLEEP_S = 0.1
 
 
 class Wd:
@@ -50,8 +50,9 @@ class Wd:
 
     def entities(self, qids, props: str = "claims", langs: str = "en|fr|mul") -> dict:
         out, ids = {}, [q for q in dict.fromkeys(qids) if q]
-        for i in range(0, len(ids), 20):
-            chunk = ids[i:i + 20]
+        size = 20 if "claims" in props else 50                # claims are heavy; names fit 50 to a call
+        for i in range(0, len(ids), size):
+            chunk = ids[i:i + size]
             d = self._get({"action": "wbgetentities", "ids": "|".join(chunk), "props": props, "languages": langs}) or {}
             ents = d.get("entities") or {}
             for k, e in ents.items():

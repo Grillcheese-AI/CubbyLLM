@@ -39,8 +39,14 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
   still needs the local NVMe: a lookup from Drive is far too slow for the VM's hops.
 
 ## Build
-0. **The coverage audit** (no dump, outside `cubbyllm/`): 1,000 questions, reading live Wikidata at a polite rate with
-   a generic client name.
+0. **The coverage audit** (outside `cubbyllm/`): 1,000 questions.
+   - **Amended 2026-11-06 (Nick: "stop it now", "amend step 0").** Read live, the audit costs about 13 hours (about
+     50 s a question on Wikidata's API), and neither of its jobs needs the live API: the split does not gate the
+     download (below), and the store check needs a reference, which the same audit gives against the dump. So:
+     - **Step 0 is the audit's code** (`validation/fact_store/`, `e41d481`) **and the 51-question live sample** it read
+       before it was stopped (SimpleQA only, kept off-repo). The sample is the live reference for the store check.
+     - **The 1,000-question split is read in step 1, from the dump** (its statements in place of the API), in
+       minutes.
    - **The questions:** SimpleQA 400, Mintaka 300 (with its French), MKQA 300 (French).
    - **Per question:** is the gold a value of a statement on the asked item, elsewhere in Wikidata, or not in Wikidata?
    - **Where a set has no gold ids** (SimpleQA): every candidate item for the name is checked (no fame ordering), and
@@ -104,8 +110,8 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
   - the audit's split, per set.
 - **The lines:**
   - a fact lookup from SSD at most 1 ms p95; name resolution at most 50 ms p95;
-  - every fact the audit found in live Wikidata is found in the store, unless it changed after the dump's date
-    (listed);
+  - every fact the audit found in live Wikidata (step 0's live sample) is found in the store, unless it changed after
+    the dump's date (listed);
   - with the flag on, 0 wrong on the existing batteries (E8 reworded, the emitter families, the stack's 20, 0038's
     scoreboard), and more answers spoken.
   - **Size:** the hot store at most 90 GB, the panel's top estimate. Above that, the projection is reviewed with

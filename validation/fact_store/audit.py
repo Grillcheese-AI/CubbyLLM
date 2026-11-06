@@ -139,9 +139,10 @@ def pointing_at(ents: dict, asked) -> list[dict]:
 
 def by_label(wd, ents: dict, items, golds: list[dict], cap: int = 500) -> list[dict]:
     """Item values of ``items`` whose label or alias (English, French, ``mul``) states a text gold: for a gold that no
-    item bears as its exact name. At most ``cap`` values are named (``capped`` in the row when cut)."""
-    from fact_store.audit_values import match
-    texts = [g for g in golds if g.get("text") and not g.get("qids")]
+    item bears as its exact name. At most ``cap`` values are named."""
+    from fact_store.audit_values import MONTHS, fold, match
+    texts = [g for g in golds if g.get("text") and not g.get("qids") and                 # a date or a number is
+             any(w not in MONTHS and not w.isdigit() for w in fold(g["text"]).split())]  # never an item's name
     vals = {}
     for q in items:
         for pid, sts in ((ents.get(q) or {}).get("claims") or {}).items():
