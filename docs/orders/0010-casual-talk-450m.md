@@ -98,3 +98,28 @@ MENTOS (KUNLP; github.com/KUNLP/MENTOS) annotates 12,917 supporter turns of ESCo
 - **Not verified here:**
 - **Found on the way:**
 - **Questions:**
+
+## Addendum 3 (2026-11-06, Cowork): the queue, the data on disk, and the licence rule
+Nick, 2026-11-06: "fluency and conversation, we have plenty of chat datasets".
+- **Queue:** right after 0055, then 0059 (conversation), then 0020 and 0057. The knowledge base stays first.
+- **The licence rule** (Nick's choice):
+  - non-commercial sets (CC BY-NC and similar) are allowed in research runs only, never in an adapter that is served;
+  - served adapters use commercial-safe sets only;
+  - every licence is read and recorded in the manifest before a row is used, as this order already says.
+- **On disk, human-written, candidates** (each licence checked first; NC is expected where marked):
+  - OASST2 (`standin/data/hf/oasst2_train.parquet`): the human-written turns only;
+  - DiaBLa (`standin/data/hf/diabla/`): English-French human dialogues;
+  - Claire (`standin/data/hf/claire/`): French, per-subset licences;
+  - DailyDialog (`roskoN/dailydialog`): NC expected, research only;
+  - EmpatheticDialogues (`Estwld/empathetic_dialogues_llm`): NC expected, research only. Check first that its turns
+    are the original human turns, not a model rewrite.
+  - ReDial (`community-datasets/re_dial`): movie-recommendation dialogues.
+- **Still to fetch, small:** Topical-Chat (the knowledge-grounded family), with Nick's yes as this order says.
+- **On disk, excluded** (model-written, by this order's rule):
+  - SystemChat (`systemchats_train.parquet`);
+  - French Alpaca (`french_alpaca_train.parquet`);
+  - open-instruct;
+  - the model rollouts in the instruct folder (all-rollouts, deepseek, gemini).
+
+  They may serve as evaluation prompts only, never as training records.
+- **Evaluation only:** lmsys toxic-chat and the two prompt-injection sets feed the guards' tests, not the talk mix.

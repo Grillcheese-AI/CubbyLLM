@@ -131,6 +131,7 @@ heading (INT. / EXT.), and each line of dialogue under its speaker's name in cap
 - **Questions:**
 
 ## Cowork's note (2026-11-06)
-- **Queue:** next after 0055 (Nick, 2026-11-06).
+- **Queue:** next after 0055 (Nick, 2026-11-06). Updated the same day: after 0055, 0010 and 0059 (Nick put fluency and
+  conversation right after 0055).
 - Nick's research note on change-point detection, which he thought lost with its code, is this order's "Why". No
   earlier code exists in any repository, so the build starts from this order.
