@@ -189,3 +189,26 @@ from QAWiki v2026.3 on Zenodo (DOI 10.5281/zenodo.22661413).
   - each item's revision is read from its `schema:version`, for the revision cross-check;
   - QLever's recipe and the HDT tools read this format directly.
 - **The dump's date** (the challenge's "Wikidata base version") is recorded in the report.
+## Cowork's addendum (2026-11-06): the folding step done by an exact rule engine
+Nick: "yes". `reasonable` (gtfierro/reasonable; Rust, BSD-3) is an OWL 2 RL reasoner built on DataFrog, a small
+Datalog engine. Licences are checked first.
+- **The mapping:** Wikidata states its rules in its own vocabulary, not OWL, so they are mapped to OWL RL axioms:
+  - inverse properties (P1696);
+  - the symmetric and inverse constraints (P2302 with Q21510862 and Q21510855);
+  - transitive properties (instances of Q18647515);
+  - subclass of (P279);
+  - disjoint union of (P2738);
+  - any other mapped constraint, recorded.
+- **Schema level only, at build time:**
+  - the subclass closure, for the VM's single type check;
+  - the inverse, symmetric and chain folding of the 1% sample.
+
+  Deriving everything over every item would explode, so per-item checks stay in the VM, at question time.
+- **Measured on the sample,** against the hand-written folding:
+  - the derived facts must agree exactly, and every disagreement is listed;
+  - time and memory;
+  - each derived fact keeps its derivation as its certificate.
+- **Violations** (disjoint classes, asymmetry) are reported, never repaired by the build.
+- **Check before relying on it:** its README marks some consistency rules as raising exceptions. Whether that means
+  "reports a violation" or "fails" is checked and recorded. If the OWL layer adds nothing over DataFrog alone, the
+  lighter one is kept.
