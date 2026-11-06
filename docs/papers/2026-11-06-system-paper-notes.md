@@ -19,6 +19,16 @@ cover, not draft text; the prose is Nick's own. Numbers marked *pending* wait on
   or says it does not know.
 
 ## 2. Related work
+### GRL's own prior work (cite)
+Both are on Zenodo, in the Neuro-Symbolic Computing Society community (zenodo.org/communities/nscs); take the DOIs from
+the record pages.
+- **MoWM: Mixture of World Models via Hypernetwork-Generated VSA Transitions** (Cloutier, March 2026):
+  - the world-model component;
+  - a dated record of GRL's own sense of "world model", to cite when telling it apart from Utopia's "enterprise world
+    model".
+- **Learnable Reasoning Rules for Neuro-Vector-Symbolic Architectures via Hidden Markov Models** (HMM-VSA; Cloutier,
+  March 2026, v2): learnable reasoning rules on hypervectors.
+
 ### Knowledge-graph platforms (closest in surface)
 - **TrustGraph** (trustgraph-ai/trustgraph):
   - the graph is extracted by an LLM, and answers are written by an LLM over graph context;
@@ -148,7 +158,19 @@ cover, not draft text; the prose is Nick's own. Numbers marked *pending* wait on
 - **Domain worlds, finance then automotive,** 0 wrong per domain: 0058. *Pending.*
 - **One certificate in PROV-O,** as a worked example: 0054's addendum. *Pending.*
 
-## 7. Keep out of the paper
+## 7. Where and when to publish (to decide)
+- **Zenodo, in the NSCS community:**
+  - a DOI the same day, and versions under one concept DOI (v1, v2…), as with the HMM-VSA record;
+  - not peer reviewed.
+- **arXiv:** a first submission in a category may need an endorsement; check before counting on dates.
+- **A peer-reviewed venue** for the full results, later.
+- **One possible order:**
+  1. v1 on Zenodo now: the method, the pre-registered pass lines and protocol (the orders' acceptance lines), and the
+     preflight results. This dates the claim, and publishing the pass lines before the results makes "0 wrong" harder
+     to dismiss.
+  2. v2 with the full-store numbers from 0055 and 0054.
+
+## 8. Keep out of the paper
 - Private projects and internal-only sources.
 - Local paths, drive letters and account details.
 - Any claim of GeoSPARQL, OWL or SHACL conformance that has not been tested.
