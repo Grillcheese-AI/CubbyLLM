@@ -31,10 +31,12 @@ CELLS = [
 (about 104 GB, bz2) is kept there as the source copy, in 1 GB parts.
 
 1. **Download:** two connections at a time (Wikimedia's limit), in parts. If the runtime drops, run the cell again: it
-   resumes at the first missing part. At the end the parts' sha1 is checked against Wikimedia's.
+   resumes at the first missing part. At the end the parts' sha1 is checked against Wikimedia's (a part the Drive
+   shows late after its rename is waited for; if the check still stops on a missing part, run the cell again).
 2. **Count:** one pass over the parts, never unpacked to disk: the counts (`counts.json`) and the 1% sample
    (`sample_1pct.jsonl.gz`), written to the Drive. If the runtime drops here, the pass starts over (the download is
-   kept).
+   kept). The pass hashes the parts too (checked against the download's `manifest.json` when there is one) and stops if
+   a part is missing or corrupt.
 
 Keep this tab open while it runs. **Disconnect when the count prints its summary.** Then tell Claude Code.
 """),

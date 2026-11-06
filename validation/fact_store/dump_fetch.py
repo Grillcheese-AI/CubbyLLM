@@ -81,7 +81,17 @@ def fetch_part(url: str, out: str, i: int, span: tuple[int, int], opener=_open, 
     raise SystemExit(f"part {i} failed {tries} times")
 
 
-def verify(out: str, n: int) -> str:
+def verify(out: str, n: int, waits: int = 10, pause: float = 30.0) -> str:
+    """The sha1 of the parts in order. The Drive's mount can show a part late after its rename (part 46 of 97 on
+    2026-11-06): a missing part is waited for before the check gives up."""
+    for k in range(waits + 1):
+        missing = [i for i in range(n) if not os.path.exists(part_path(out, i))]
+        if not missing:
+            break
+        if k == waits:
+            raise SystemExit(f"parts missing after the download: {missing[:10]}; run again (it fetches only those)")
+        print(f"  waiting for parts {missing[:5]} (the Drive's lag?)", flush=True)
+        time.sleep(pause)
     h = hashlib.sha1()
     for i in range(n):
         with open(part_path(out, i), "rb") as f:

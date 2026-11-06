@@ -10,6 +10,8 @@ sha1 of its id, never the first Q-ids) is written as raw JSON lines, gzipped. Wr
                    Q13442814) and their statements; statements per property; bytes by section on the sample, x100
   sample_1pct.jsonl.gz   the sample's entities, as in the dump
   progress.json    every few minutes: bytes read, entities, rate
+The pass also hashes the compressed parts (``sha1_parts``, checked against ``manifest.json``'s sha1 when the download
+wrote one), stops if lbzip2 fails, and records whether the stream ended at the dump's closing ``]``.
 
     python validation/fact_store/dump_count.py --parts <dir> --out <dir> [--workers 8]
 
@@ -20,18 +22,19 @@ from __future__ import annotations
 import argparse
 import collections
 import concurrent.futures as cf
-import glob
 import gzip
 import hashlib
 import json
 import os
-import shutil
-import subprocess
 import time
+
+try:
+    from .dump_stream import blocks, part_list, stream
+except ImportError:                                           # run as a script from its folder (Colab)
+    from dump_stream import blocks, part_list, stream
 
 __wiring__ = "STANDALONE"
 
-BLOCK = 32 << 20
 SAMPLE_MOD = 100
 TIME_Q = {"P580", "P582", "P585"}
 SCHOLARLY = "Q13442814"
@@ -134,58 +137,11 @@ def work(block: bytes) -> tuple[dict, dict, bytes, list[bytes]]:
     return dict(c), dict(props), bytes(reg), sample
 
 
-def stream(parts: list[str], workers: int):
-    """The decompressed dump, as a binary file."""
-    if shutil.which("lbzip2"):
-        cat = subprocess.Popen(["cat", *parts], stdout=subprocess.PIPE)
-        dec = subprocess.Popen(["lbzip2", "-dc", "-n", str(workers)], stdin=cat.stdout, stdout=subprocess.PIPE,
-                               bufsize=BLOCK)
-        cat.stdout.close()
-        return dec.stdout
-    import bz2
-    import io
-
-    class Cat(io.RawIOBase):
-        def __init__(self):
-            self.fs, self.f = iter(parts), None
-
-        def readable(self):
-            return True
-
-        def readinto(self, b):
-            while True:
-                if self.f is None:
-                    nxt = next(self.fs, None)
-                    if nxt is None:
-                        return 0
-                    self.f = open(nxt, "rb")
-                n = self.f.readinto(b)
-                if n:
-                    return n
-                self.f.close()
-                self.f = None
-    return bz2.BZ2File(io.BufferedReader(Cat()))
-
-
-def blocks(f):
-    rest = b""
-    while True:
-        b = f.read(BLOCK)
-        if not b:
-            if rest:
-                yield rest
-            return
-        b = rest + b
-        cut = b.rfind(b"\n")
-        if cut < 0:
-            rest = b
-            continue
-        rest = b[cut + 1:]
-        yield b[:cut]
-
-
 def run(parts_dir: str, out: str, workers: int = 8) -> dict:
-    parts = sorted(glob.glob(os.path.join(parts_dir, "part_[0-9][0-9][0-9][0-9][0-9]")))
+    parts = part_list(parts_dir)
+    man = os.path.join(parts_dir, "manifest.json")
+    want_sha1 = json.load(open(man)).get("sha1") if os.path.exists(man) else None
+    h, tail = hashlib.sha1(), b""
     os.makedirs(out, exist_ok=True)
     tot, props, reg = collections.Counter(), collections.Counter(), bytearray(1 << HLL_BITS)
     t0, last = time.time(), time.time()
@@ -213,7 +169,8 @@ def run(parts_dir: str, out: str, workers: int = 8) -> dict:
                           f"{tot['bytes'] / (last - t0) / 1e6:.0f} MB/s", flush=True)
                 if one:
                     break
-        for b in blocks(stream(parts, workers)):
+        for b in blocks(stream(parts, workers, h)):
+            tail = (tail + b)[-64:]
             inflight.append(ex.submit(work, b))
             drain(True)
         drain(False)
@@ -223,6 +180,8 @@ def run(parts_dir: str, out: str, workers: int = 8) -> dict:
     res = {"counts": dict(sorted(tot.items())), "references_distinct_est": hll_estimate(bytes(reg)),
            "bytes_by_section_est": {s: tot[f"sample_bytes:{s}"] * n // k for s in SECTIONS},
            "props_top": props.most_common(200), "props_n": len(props), "parts": len(parts),
+           "sha1_parts": h.hexdigest(), "sha1_wikimedia": want_sha1,
+           "sha1_ok": (h.hexdigest() == want_sha1) if want_sha1 else None, "ended_at_close": tail.rstrip().endswith(b"]"),
            "wall_s": round(time.time() - t0)}
     json.dump(res, open(os.path.join(out, "counts.json"), "w"), indent=1)
     return res

@@ -67349,7 +67349,7 @@
   "no_450m": false,
   "no_qfhrr": true,
   "tag": "_450m_wd",
-  "adapter": "D:\\CUBBY-TRAINED-MODELS\\emitter\\cubby450m_wd_cont",
+  "adapter": "$CUBBY_MODELS\\emitter\\cubby450m_wd_cont",
   "arm": null
  }
 }

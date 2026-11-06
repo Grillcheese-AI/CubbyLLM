@@ -105,3 +105,53 @@ def test_latest_reads_the_index_and_wikimedias_sha1():
              f"{F.BASE}/20261026/wikidata-20261026-sha1sums.txt": "abc123  wikidata-20261026-all.json.bz2\n"}
     info = F.latest(opener=lambda u, h=None, timeout=120: io.BytesIO(pages[u].encode()))
     assert info["date"] == "20261026" and info["size"] == 103565615653 and info["sha1"] == "abc123"
+
+
+def _parts(tmp_path, blob, cut=97, name="p"):
+    d = tmp_path / name
+    d.mkdir()
+    for k in range(0, len(blob), cut):
+        (d / f"part_{k // cut:05d}").write_bytes(blob[k:k + cut])
+    return d
+
+
+def test_the_count_checks_the_parts_sha1_and_the_dumps_end(tmp_path):
+    _, blob = _dump()
+    d = _parts(tmp_path, blob)
+    (d / "manifest.json").write_text(json.dumps({"parts": len(list(d.glob("part_*"))),
+                                                 "sha1": hashlib.sha1(blob).hexdigest()}))
+    res = C.run(str(d), str(tmp_path / "out"), workers=1)
+    assert res["sha1_ok"] is True and res["ended_at_close"] is True
+
+
+def test_a_missing_or_cut_part_stops_the_count_instead_of_passing_for_the_end(tmp_path, monkeypatch):
+    from fact_store import dump_stream as S
+    monkeypatch.setattr(S, "WAITS", 0)
+    _, blob = _dump()
+    d = _parts(tmp_path, blob, name="gap")
+    (d / "part_00002").rename(d / "part_00002.part")                              # a part the mount does not show
+    with pytest.raises(SystemExit):
+        C.run(str(d), str(tmp_path / "o1"), workers=1)
+    d2 = _parts(tmp_path, blob[:len(blob) - 40], name="cut")                    # the last part short
+    with pytest.raises((EOFError, SystemExit, OSError)):
+        C.run(str(d2), str(tmp_path / "o2"), workers=1)
+    assert not (tmp_path / "o1" / "counts.json").exists() and not (tmp_path / "o2" / "counts.json").exists()
+
+
+def test_lbzip2_failing_stops_the_pass():
+    from fact_store import dump_stream as S
+
+    class Dec:
+        stdout, returncode = io.BytesIO(b"[\n{}\n"), 2
+
+        def wait(self):
+            return self.returncode
+
+    class Done:
+        def join(self):
+            pass
+    r = S._Checked(Dec(), Done(), [])
+    assert r.read(4) == b"[\n{}"
+    with pytest.raises(SystemExit):
+        while r.read(4):
+            pass
