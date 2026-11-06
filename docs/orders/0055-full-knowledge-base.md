@@ -30,6 +30,8 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
   - the hot store (25-90 GB, estimated).
 
   This is Nick's purchase. Until it is in, steps 0 and 1 run: they need no local room.
+- **Nick's 5 TB Google Drive holds the dump and every build product.** Builds can run on Colab against it. Serving
+  still needs the local NVMe: a lookup from Drive is far too slow for the VM's hops.
 
 ## Build
 0. **The coverage audit** (no dump, outside `cubbyllm/`): 1,000 questions, reading live Wikidata at a polite rate with
@@ -41,7 +43,10 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
    - 100 disagreements are read.
    - **The split is the ceiling the full base can reach.** A low share means text is the next lever, not a stop:
      Nick's priority stands.
-1. **One streaming pass over the dump,** never unpacked to disk, writing two things:
+1. **The dump, downloaded once to Nick's 5 TB Google Drive** (Nick, 2026-11-06, answering where the download may go:
+   his 5 TB Drive). This is done from a Colab session signed in to the account that owns that Drive. The compressed
+   dump is kept there as the source copy, so a parser bug means a reparse, not a re-download. Then one pass over it,
+   never unpacked to disk, writes two things:
    - **Counts:** items; statements by rank; qualifiers and references; EN, FR and `mul` terms; bytes by section. This
      settles the panel's conflicting sizes.
    - **A 1% hash sample** (not the first Q-ids). The hot store is built from it, and on it are measured:
@@ -53,8 +58,8 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
        - place ids in S2 (Hilbert) order against Q-id order: pages read on geography questions;
        - neighbourhood preloading against a plain cache;
        - how often a coarse community map prunes a relation search.
-   - **Where:** a Colab session Nick runs (fast network, no home disk) or at home. Claude Code's choice, recorded; it
-     needs Nick's yes for the download either way.
+   - **Where:** a Colab session Nick runs, reading the dump from his Drive. The counts and the sample are written
+     back to Drive.
 2. **The full builds, after the NVMe:**
    - **Hot, Cubby's store** (the synthesis, section 3):
      - dense ids;
@@ -109,7 +114,10 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
 - **Where the store lives:** in the VM's datastore (the cubelang repository), or in a crate beside it. Claude Code's
   choice, recorded. Main cubelang's `target/release` binary is never overwritten.
 - `cubbyllm/` never touches the network. The audit, the stream and every download run outside it.
-- **Downloads over 1 GB** (the dump stream, any prebuilt index) wait for Nick's yes in chat.
+- **Downloads over 1 GB:**
+  - The dump to Nick's Drive has his yes (2026-11-06).
+  - Any other large download (a prebuilt HDT index, a second dump) waits for his yes in chat.
+  - The Drive's account is named in no committed file.
 - No external model builds stored knowledge.
 - **Licences recorded:** Wikidata CC0; qEndpoint GPL-3.0 as a tool only; every crate's licence checked.
 - No local path in a committed file.
