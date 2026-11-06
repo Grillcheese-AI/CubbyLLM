@@ -156,9 +156,9 @@ def one(loop, seat, timing, row: dict, run_learned: set) -> dict:
 
 def main(argv=None) -> None:
     from system_eval.bench import BENCHES, load
-    from system_eval.seats import Gather, Recorder, Replay
+    from system_eval.seats import Gather, Recorder, Replay, SeatFailure
     ap = argparse.ArgumentParser()
-    ap.add_argument("--bench", required=True, choices=[b for b in BENCHES if b != "clutrr"])
+    ap.add_argument("--bench", required=True, choices=[b for b in BENCHES if b != "clutrr"] + ["opposites"])
     ap.add_argument("--seat", required=True, choices=("record", "replay", "gather", "grilly2"))
     ap.add_argument("--export", default=os.environ.get("CUBBY_450M_EXPORT"), help="grilly2: the base export")
     ap.add_argument("--adapter", default=os.environ.get("CUBBY_450M_EMITTER"), help="grilly2: the programs adapter")
@@ -188,7 +188,10 @@ def main(argv=None) -> None:
         def counted(prompt, **kw):                       # the replay's bookkeeping, on the live seat
             seat.calls += 1
             seat.last = prompt
-            seat.last_program = inner_emit(prompt, **kw)
+            try:
+                seat.last_program = inner_emit(prompt, **kw)
+            except Exception as e:                       # the model never ran (2026-11-06: a missing module made
+                raise SeatFailure(repr(e)) from e        #   125 refusals): the run stops, as a missing program does
             return seat.last_program
         seat.emit = counted
     else:

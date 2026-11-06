@@ -12,6 +12,7 @@ then the time per question and the projected time for the full sets are printed.
 
     python validation/system_eval/gpu.py programs --prompts P --out O --ckpt C --adapter A --tokenizer T
     python validation/system_eval/gpu.py m --questions Q --out O --ckpt C --adapter A --tokenizer T [--n 50]
+    python validation/system_eval/gpu.py m ... --grilly2 --ckpt <export dir>   (the local card: a small set)
 
 Wired: STANDALONE (order 0054's harness).
 """
@@ -112,10 +113,16 @@ def main(argv=None) -> None:
     ap.add_argument("--tokenizer", required=True)
     ap.add_argument("--n", type=int, default=0, help="the preflight: the first n (per benchmark for m)")
     ap.add_argument("--rows", type=int, default=64, help="rows decoded together")
+    ap.add_argument("--grilly2", action="store_true", help="the serving trunk on the local card: --ckpt is the export")
     a = ap.parse_args(argv)
     t0 = time.time()
     role, name = ("programs", "emitter_lora") if a.step == "programs" else ("talk", "talk_lora")
-    trunk = TorchTrunk({role: (a.ckpt, a.adapter, name)}, a.tokenizer, rows=a.rows)
+    if a.grilly2:                                        # a small set at home (the opposite pairs): the seat itself
+        from cubbyllm.emit.seats_450m import Cubby450mTrunk
+        trunk = Cubby450mTrunk(a.ckpt, a.tokenizer, {role: a.adapter})
+        trunk.dev = "grilly2"
+    else:
+        trunk = TorchTrunk({role: (a.ckpt, a.adapter, name)}, a.tokenizer, rows=a.rows)
     print(f"{a.step}: loaded in {time.time() - t0:.0f}s on {trunk.dev}", flush=True)
     if a.step == "m":
         os.makedirs(a.out, exist_ok=True)

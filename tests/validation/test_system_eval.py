@@ -173,3 +173,18 @@ def test_m_declining_in_text_is_counted_with_the_refusals_and_apart():
     assert G.verdict(True, "Knowing him, Paris", ["Paris"], "simpleqa", declines=True) == "right"
     r = G.rates(_rows(["declined", "refused", "right"]))
     assert (r["refused"], r["declined"], r["spoken"]) == (2, 1, 1)
+
+
+def test_opposite_pairs_golds_differ_and_a_polarity_error_is_caught():
+    from system_eval import opposites as O
+    d = {"type": "time", "value": {"time": "+1914-07-28T00:00:00Z", "precision": 11}}
+    assert O.date_golds(d, "en") == ["July 28, 1914", "1914"] and O.date_golds(d, "fr") == ["28 juillet 1914", "1914"]
+    assert O.date_golds({"type": "time", "value": {"time": "+1914-00-00T00:00:00Z", "precision": 8}}, "en") is None
+    assert not O.differ(["July 1914", "1914"], ["November 1914", "1914"], "time")      # a year cannot tell them apart
+    assert not O.differ(["Mount Kosciuszko"], ["Kosciuszko"], "item") and O.differ(["Paris"], ["Lyon"], "item")
+    assert O.side_verdict(True, "Lyon", ["Paris"], ["Lyon"]) == "opposite"
+    assert O.side_verdict(True, "Paris", ["Paris"], ["Lyon"]) == "right"
+    assert O.side_verdict(True, "The facts don't say.", ["Paris"], ["Lyon"], declines=True) == "refused"
+    assert O.side_verdict(False, None, ["Paris"], ["Lyon"]) == "refused"
+    assert O.pair_verdict("right", "opposite") == "polarity" and O.pair_verdict("right", "right") == "both_right"
+    assert O.pair_verdict("refused", "refused") == "refused" and O.pair_verdict("right", "refused") == "mixed"

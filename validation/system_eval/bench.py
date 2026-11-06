@@ -33,7 +33,8 @@ __wiring__ = "STANDALONE"
 
 BENCHES = ("simpleqa", "nq", "webq", "clutrr", "aa")
 EXPECTED = {"simpleqa": 4326, "nq": 3610, "webq": 2032, "clutrr": 1146, "aa": 600}
-LICENCES = {"simpleqa": "MIT", "nq": "CC BY-SA 3.0", "webq": "CC BY 4.0", "clutrr": "CC BY-NC 4.0", "aa": "Apache 2.0"}
+LICENCES = {"simpleqa": "MIT", "nq": "CC BY-SA 3.0", "webq": "CC BY 4.0", "clutrr": "CC BY-NC 4.0", "aa": "Apache 2.0",
+            "opposites": "CC0 (Wikidata's statements)"}
 CLUTRR_TASK = "gen_train23_test2to10"
 
 
@@ -118,12 +119,16 @@ def load(bench: str) -> list[dict]:
         return [{"id": f"aa:{r['question_id']}", "bench": bench, "question": r["question"], "golds": [r["answer"]],
                  "seen": False, "meta": {k: r[k] for k in ("domain", "topic", "subtopic")}}
                 for r in _parquet(_path("aa"))]
+    if bench == "opposites":                             # 0054's addendum, built by opposites.py from Wikidata
+        from system_eval.opposites import out_path
+        return [json.loads(x) for x in open(out_path(), encoding="utf-8") if x.strip()]
     raise KeyError(bench)
 
 
 def check(rows_by_bench: dict[str, list[dict]]) -> dict:
     """{bench: {"rows": n, "expected": m}} for every count that is not the order's."""
-    return {b: {"rows": len(rs), "expected": EXPECTED[b]} for b, rs in rows_by_bench.items() if len(rs) != EXPECTED[b]}
+    return {b: {"rows": len(rs), "expected": EXPECTED[b]} for b, rs in rows_by_bench.items()
+            if b in EXPECTED and len(rs) != EXPECTED[b]}
 
 
 def export(path: str, benches=BENCHES) -> dict:

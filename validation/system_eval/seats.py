@@ -38,6 +38,10 @@ class MissingProgram(BaseException):
     """A prompt the replay has no program for: the record is not the stack's, so the run stops."""
 
 
+class SeatFailure(BaseException):
+    """The live seat raised inside its own call (the model never ran): not a refusal, so the run stops."""
+
+
 class Recorder:
     """The seat's first pass: each prompt handed to it, kept in order of first sight; proposes nothing."""
     name = "recorder"
@@ -167,4 +171,4 @@ def programs(trunk, prompts: list[str], max_new: list[int], role: str = "program
     return out
 
 
-__all__ = ["Gather", "MissingProgram", "NO_PLAN", "Recorder", "Replay", "TorchTrunk", "programs"]
+__all__ = ["Gather", "MissingProgram", "NO_PLAN", "Recorder", "Replay", "SeatFailure", "TorchTrunk", "programs"]
