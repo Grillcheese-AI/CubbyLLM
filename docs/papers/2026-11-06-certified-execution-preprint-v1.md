@@ -1,4 +1,5 @@
 ---
+# v1 published on Zenodo, 2026-11-06: doi:10.5281/zenodo.24020073 (CC BY 4.0). Upload v2 as "New version" on that record.
 title: "From probabilistic Chain-of-Thoughts to Certified Execution"
 subtitle: "A language model that proposes programs, and a virtual machine that decides what may be said"
 author: "Nicolas Cloutier, GrillCheese Research Lab (Lévis, Québec)"

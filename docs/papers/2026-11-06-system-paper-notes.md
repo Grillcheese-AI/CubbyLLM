@@ -158,7 +158,14 @@ the record pages.
 - **Domain worlds, finance then automotive,** 0 wrong per domain: 0058. *Pending.*
 - **One certificate in PROV-O,** as a worked example: 0054's addendum. *Pending.*
 
-## 7. Where and when to publish (to decide)
+## 7. Where and when to publish
+- **v1 is published** (2026-11-06): Zenodo, doi:10.5281/zenodo.24020073, preprint, CC BY 4.0.
+  - Source: `2026-11-06-certified-execution-preprint-v1.md` in this folder; the uploaded PDF's checksum matches the
+    final build.
+  - v2 goes up as "New version" on that record, so every version stays linked under one concept DOI.
+  - The record does not list the NSCS community yet; accept or add it from the community's side.
+
+The original options, kept for reference:
 - **Zenodo, in the NSCS community:**
   - a DOI the same day, and versions under one concept DOI (v1, v2…), as with the HMM-VSA record;
   - not peer reviewed.
