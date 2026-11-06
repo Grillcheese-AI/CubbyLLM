@@ -48,7 +48,7 @@ else:
 !pip -q install orjson
 from google.colab import drive; drive.mount('/content/drive')
 REPO = '/content/CubbyLLM'
-HOME = '/content/drive/MyDrive/cubbyllm/wikidata'
+HOME = '/content/drive/MyDrive/wikidata'                 # a folder at the Drive's root (Nick)
 PARTS, COUNT = f'{HOME}/dump_parts', f'{HOME}/count'
 os.makedirs(PARTS, exist_ok=True); os.makedirs(COUNT, exist_ok=True)
 free = shutil.disk_usage('/content/drive').free / 1e9
@@ -79,8 +79,8 @@ step('dump_count.py', '--parts', PARTS, '--out', COUNT, '--workers', str(os.cpu_
     md(r"""
 ## Done
 
-**Disconnect the runtime.** The counts and the sample are in `cubbyllm/wikidata/count/` on this Drive; the parts and
-their manifest in `cubbyllm/wikidata/dump_parts/`.
+**Disconnect the runtime.** The counts and the sample are in `wikidata/count/` at this Drive's root; the parts and
+their manifest in `wikidata/dump_parts/`.
 """),
 ]
 
