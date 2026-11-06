@@ -372,3 +372,12 @@ Cowork's three changes, as accepted, with the false-gap reading written down bef
   - no rise means no gap;
   - practice goes on to 32 only where 8 find too few, and counts each problem's tries;
   - the noise copy has no stop row and no neutral value.
+
+## Cowork's note (2026-11-06): keep what T6 will learn from
+H-A15 now has a T6 (Nick: "yes"): once there are about 20 adapters, a hypernetwork learns to generate a gap's adapter
+from its verified examples. For that library to exist later, every promoted adapter is kept with:
+- its gap's signature;
+- the VM-verified examples it was trained on;
+- its held right rate before and after.
+
+Nothing else changes here.
