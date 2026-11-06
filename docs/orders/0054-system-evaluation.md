@@ -137,3 +137,25 @@ Nick made 0055 (the full knowledge base) the top priority: "so we can have the t
 - **This order's full run waits for 0055.** The harness and the 50-question preflight can go ahead.
 - **The preflight on today's base is kept as the "before".** It shows how coverage grows when the store grows,
   without retraining, and the wrong rate beside it.
+## Cowork's addendum (2026-11-06): opposite pairs
+Nick, 2026-11-06, from his note on opposites: word embeddings place antonyms close together, so a program can pick
+the opposite direction, and the VM then certifies the wrong question. That is a certified wrong answer, the case
+0 wrong has to catch.
+- **The set:** question pairs that differ only by an opposite:
+  - oldest / youngest, first / last, earliest / latest, largest / smallest, highest / lowest;
+  - before / after, start / end;
+  - an inverse relation (what came before or after X: "follows" / "followed by");
+  - English and French (le plus âgé / le plus jeune, premier / dernier, avant / après, ...).
+- **How it is built:**
+  - at least 100 pairs per language, by templates, from facts the stack reaches today, so it reads direction and not
+    coverage;
+  - each pair's two golds differ;
+  - no external model writes them.
+- **Read through C, C−VM and M,** by opposite type and language. Per pair:
+  - both right;
+  - one answered as the other (a polarity error);
+  - refused.
+- **Line:** 0 polarity errors spoken by C.
+  - Every polarity error, C's or C−VM's, is printed with its program.
+  - It counts in the paper's error analysis as "interpretation".
+- **It runs now, on today's base:** it does not wait for 0055.

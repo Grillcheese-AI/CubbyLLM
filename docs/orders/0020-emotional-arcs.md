@@ -129,3 +129,8 @@ heading (INT. / EXT.), and each line of dialogue under its speaker's name in cap
 - **Not verified here:**
 - **Found on the way:**
 - **Questions:**
+
+## Cowork's note (2026-11-06)
+- **Queue:** next after 0055 (Nick, 2026-11-06).
+- Nick's research note on change-point detection, which he thought lost with its code, is this order's "Why". No
+  earlier code exists in any repository, so the build starts from this order.

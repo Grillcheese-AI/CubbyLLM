@@ -208,3 +208,18 @@ File names are Claude Code's.
 - the marks put a right candidate among the 32 for 1 of 2 in each language.
 
 **Next:** the cache in Nick's session (step 4), then the marks and the days at home.
+
+## Cowork's addendum (2026-11-06): the reversal read
+Nick, 2026-11-06, from his note on how the brain represents opposites: when what was good becomes bad, the amygdala
+remaps the cue onto the opposite valence's ensemble, and the remapping comes before the change in behaviour. A
+three-factor rule should do the same. Plain STDP cannot.
+- **The read** (reported; after A's day 1, the same cache, on CPU):
+  - on a fixed subset of wd/en's keys, the cached marks are swapped: the candidate that was right is now wrong, and
+    one named other candidate is now right (a world where a relation word changed meaning);
+  - the learner continues from day 1.
+- **Measured, per arm (S, P, D):**
+  - verdicts until the swapped keys' right rate is back at its day-1 level;
+  - how often the old answer is still chosen after the swap (perseveration);
+  - the keys not swapped stay within 1 point.
+- **Expected:** P never recovers, since it strengthens whatever it chose. There is no line: it is reported beside A, in
+  H-A16's terms.
