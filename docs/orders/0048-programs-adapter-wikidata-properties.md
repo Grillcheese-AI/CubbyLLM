@@ -1,5 +1,5 @@
 # 0048 — The programs adapter names Wikidata's properties (EN and FR), and refuses the wrong base
-status: in progress
+status: review
 written: 2026-11-04 by Cowork · approved: 2026-11-04 by Nick ("Yes, write the order") · hypothesis: H-E15 (the programs seat)
 
 ## Why
@@ -175,3 +175,32 @@ adapter is trained by Nick (`notebooks/emitter_wd.ipynb`), then read at home.
   CC BY-SA 3.0 and stay off-repo.
 - **Nick runs `notebooks/emitter_wd.ipynb`** on an A100. The read follows at home, as the order says. If French
   coverage stays far below English, the report says by how much; more French data is then a decision, not a rerun.
+
+## The read, dev (Claude Code, 2026-11-06): coverage rose, the gate fails, the wrong rate rose
+**The adapter:** `cubby450m_wd_cont`, trained by Nick on Colab (5,155 steps, 38.8 min; about one pass over the 163,907
+records), on `base450m_cont_final.pt` (its `ckpt_sha256` 7d4bf9d6...), with the serving adapter's settings. Its dev
+programs were written on grilly2 (1,450 rows, in chunks of 200), then read by R3's harness as arm `450m_wd`. Logs:
+`validation/logs/retrieval_R3_dev_2026-11-06_450m_wd.json` (R3; qFHRR arms not rerun) and
+`validation/logs/retrieval_R3o_dev_2026-11-06_450m_wd.json` (R3o).
+
+- **Kill line (coverage): not met; the labels taught the wordings.** Share of rows whose `HOP1` names a property, the
+  serving adapter (R3, 2026-11-03) -> `450m_wd`:
+
+  | | SimpleQuestions | QALD EN | QALD FR | Mintaka EN | Mintaka FR |
+  |---|---|---|---|---|---|
+  | serving | 0.533 | 0.423 | 0.288 | 0.277 | 0.210 |
+  | 450m_wd | 0.977 | 0.903 | 0.904 | 0.930 | 0.937 |
+
+- **Gate (R3o, the item's own properties): fails.**
+  - recall@5: SimpleQuestions 0.800 (gate 0.85; serving 0.470, lexicon_content 0.563); QALD FR 0.241 (gate 0.80;
+    serving 0.115, lexicon_content 0.217). On rows whose gold the items hold: 0.805 and 0.260.
+  - Wrong rate, above lexicon_content's on every set: SimpleQuestions 0.073 (0.040), QALD EN 0.345 (0.175), QALD FR
+    0.392 (0.151), Mintaka EN 0.463 (0.281), Mintaka FR 0.397 (0.215); pooled 0.286 against 0.145 (serving 0.094).
+  - Missing-fact handovers (38 rows whose gold the items lack): 16, against lexicon_content's 6.
+- **So:** the adapter now names a property on nearly every question, and names the right one more often than the
+  serving adapter (recall@5 pooled 0.474 against 0.279), but it also names a wrong one far more often. It is not a
+  candidate for the seat. **Test is not read** (dev did not pass).
+- **French:** coverage reached English's (0.90-0.94), recall did not (QALD FR 0.241 against SimpleQuestions 0.800).
+  As Cowork's check says, more French data is a decision, not a rerun.
+- **Not run:** H-E15's no-regression battery, and `adapter_base_hash.py` for the pairing. Both decide whether an adapter
+  that passes may serve; this one does not pass. Say if you want them anyway.
