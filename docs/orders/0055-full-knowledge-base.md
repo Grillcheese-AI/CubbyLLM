@@ -1,5 +1,5 @@
 # 0055 — The full knowledge base at home: Wikidata hot and cold, so the benchmarks read the real ceiling
-status: open
+status: in progress
 written: 2026-11-06 by Cowork · approved: 2026-11-06 by Nick ("perfect lets put that as a top priority so we can have the true numbers for the benchmarks. Right now its very low as we do not have the full kb") · hypothesis: the system paper; the design is `docs/research/2026-11-06-fact-store-synthesis.md`
 
 **Priority: top** (Nick). It goes before 0054's full run, the rest of 0053, and every other open order. 0054's full run
