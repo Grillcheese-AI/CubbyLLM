@@ -21,6 +21,7 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import time
 import urllib.request
 
@@ -73,22 +74,41 @@ def spans(size: int, part: int = PART) -> list[tuple[int, int]]:
     return [(s, min(s + part, size) - 1) for s in range(0, size, part)]
 
 
-def fetch_part(url: str, out: str, i: int, span: tuple[int, int], opener=_open, tries: int = 6) -> int:
-    """One part, whole or not at all; returns its bytes (0 when already there)."""
+def _landed(path: str, want: int, waits: int = 10, pause: float = 30.0) -> None:
+    """The copy on the Drive shows its full size (the mount can lag behind a closed file), or the part is refetched."""
+    for k in range(waits + 1):
+        if os.path.exists(path) and os.path.getsize(path) == want:
+            return
+        if k < waits:
+            time.sleep(pause)
+    raise IOError(f"{os.path.basename(path)} not on the Drive at {want} bytes after the copy")
+
+
+def fetch_part(url: str, out: str, i: int, span: tuple[int, int], opener=_open, tries: int = 6,
+               stage: str | None = None) -> int:
+    """One part, whole or not at all; returns its bytes (0 when already there). With ``stage`` (a local disk), the part
+    is written and size-checked there, then copied whole to ``out``: the Drive's mount lost freshly written ``.part``
+    files on 2026-11-06 (each loss cost a 1 GB refetch). A copy cut short leaves a short file, which a rerun refetches."""
     path, want = part_path(out, i), span[1] - span[0] + 1
     if os.path.exists(path) and os.path.getsize(path) == want:
         return 0
+    tmp = os.path.join(stage, f"part_{i:05d}.part") if stage else path + ".part"
     for k in range(tries):
         try:
-            with opener(url, {"Range": f"bytes={span[0]}-{span[1]}"}) as r, open(path + ".part", "wb") as f:
+            with opener(url, {"Range": f"bytes={span[0]}-{span[1]}"}) as r, open(tmp, "wb") as f:
                 while True:
                     b = r.read(BUF)
                     if not b:
                         break
                     f.write(b)
-            if os.path.getsize(path + ".part") != want:
-                raise IOError(f"part {i}: {os.path.getsize(path + '.part')} of {want} bytes")
-            os.replace(path + ".part", path)
+            if os.path.getsize(tmp) != want:
+                raise IOError(f"part {i}: {os.path.getsize(tmp)} of {want} bytes")
+            if stage:
+                shutil.copyfile(tmp, path)
+                _landed(path, want)
+                os.remove(tmp)
+            else:
+                os.replace(tmp, path)
             return want
         except Exception as e:                                # noqa: BLE001 -- retried with a pause, then raised
             print(f"  part {i}: {e}; retry {k + 1}", flush=True)
@@ -115,12 +135,14 @@ def verify(out: str, n: int, waits: int = 10, pause: float = 30.0, algo: str = "
     return h.hexdigest()
 
 
-def run(out: str, info: dict, workers: int = WORKERS, opener=_open) -> dict:
+def run(out: str, info: dict, workers: int = WORKERS, opener=_open, stage: str | None = None) -> dict:
     os.makedirs(out, exist_ok=True)
+    if stage:
+        os.makedirs(stage, exist_ok=True)
     sp = spans(info["size"])
     t0, got = time.time(), 0
     with cf.ThreadPoolExecutor(workers) as ex:
-        futs = {ex.submit(fetch_part, info["url"], out, i, s, opener): i for i, s in enumerate(sp)}
+        futs = {ex.submit(fetch_part, info["url"], out, i, s, opener, stage=stage): i for i, s in enumerate(sp)}
         for k, fu in enumerate(cf.as_completed(futs)):
             got += fu.result()
             if (k + 1) % 5 == 0 or k + 1 == len(sp):
@@ -142,10 +164,11 @@ def main(argv=None) -> None:
     ap.add_argument("--date", default=None, help="a dated dump (default: the newest with the full JSON)")
     ap.add_argument("--zenodo", default=None, help="RECORD:FILE, a Zenodo file instead of Wikimedia's dump")
     ap.add_argument("--workers", type=int, default=WORKERS)
+    ap.add_argument("--stage", default=None, help="a local folder each part is written to before its copy to --out")
     a = ap.parse_args(argv)
     info = zenodo(*a.zenodo.split(":", 1)) if a.zenodo else latest(a.date)
     print(json.dumps(info), flush=True)
-    print(json.dumps(run(a.out, info, a.workers), indent=1))
+    print(json.dumps(run(a.out, info, a.workers, stage=a.stage), indent=1))
 
 
 if __name__ == "__main__":

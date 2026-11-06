@@ -155,3 +155,13 @@ def test_lbzip2_failing_stops_the_pass():
     with pytest.raises(SystemExit):
         while r.read(4):
             pass
+
+
+def test_a_staged_download_lands_whole_parts_and_leaves_the_stage_empty(tmp_path, monkeypatch):
+    blob = bytes(range(256)) * 40
+    info = {"url": "u", "size": len(blob), "md5": hashlib.md5(blob).hexdigest()}
+    monkeypatch.setattr(F, "spans", lambda size, part=1000: [(s, min(s + 1000, size) - 1) for s in range(0, size, 1000)])
+    out, stage = tmp_path / "drive", tmp_path / "local"
+    man = F.run(str(out), info, workers=2, opener=FakeServer(blob), stage=str(stage))
+    assert man["hash_algo"] == "md5" and man["hash_ok"] and not list(stage.iterdir())
+    assert not list(out.glob("*.part")) and len(list(out.glob("part_*"))) == 11

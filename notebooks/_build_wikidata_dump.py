@@ -74,7 +74,7 @@ def step(script, *args):
 ## A1. Wikimedia's JSON: download (resumable: run again if the runtime drops)
 """),
     code(r"""
-step('dump_fetch.py', '--out', PARTS)
+step('dump_fetch.py', '--out', PARTS, '--stage', '/content/stage')
 print(open(f'{PARTS}/manifest.json').read())
 """),
     md(r"""
@@ -89,7 +89,10 @@ step('dump_count.py', '--parts', PARTS, '--out', COUNT, '--workers', str(os.cpu_
     code(r"""
 KPARTS, KCOUNT = f'{HOME}/kgqa_parts', f'{HOME}/kgqa_count'
 os.makedirs(KPARTS, exist_ok=True); os.makedirs(KCOUNT, exist_ok=True)
-step('dump_fetch.py', '--out', KPARTS, '--zenodo', '22661413:wikikgqa-wikidata-all-dump.ttl.bz2')
+# each part is written to this runtime's own disk, checked, then copied whole to the Drive (the Drive's mount lost
+# freshly written parts); 4 connections (Zenodo states no limit; Wikimedia's dump, A1, keeps 2)
+step('dump_fetch.py', '--out', KPARTS, '--zenodo', '22661413:wikikgqa-wikidata-all-dump.ttl.bz2',
+     '--stage', '/content/stage', '--workers', '4')
 print(open(f'{KPARTS}/manifest.json').read())
 """),
     md(r"""
