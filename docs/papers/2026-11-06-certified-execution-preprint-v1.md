@@ -37,11 +37,11 @@ or a gold answer contradicting the graph. A refusal, on the other hand, names th
 store or the rules, without retraining the model.
 
 This paper makes four contributions. We describe an architecture where the model proposes and never judges, with the
-VM as the only truth gate (Section 3), and we define what certification means and where it stops (Section 4). We then
-report the results measured so far with who proposed each answer: a learned rule library on CLUTRR with 0 wrong on
-two splits, a reasoning pipeline on a Wikidata world of 552,297 facts, SimpleQA through the gate, and a failure on
-real Wikidata families that we report as it is (Section 5). Finally, we give the protocol of the full evaluation, with
-its pass and kill lines written before the run (Section 6).
+VM as the only truth gate (Section 3). We also define what certification means and where it stops (Section 4). We then
+report the results measured so far, with who proposed each answer (Section 5). They include a learned rule library on
+CLUTRR with 0 wrong on two splits, a reasoning pipeline on a Wikidata world of 552,297 facts, SimpleQA through the
+gate, and a failure on real Wikidata families that we report as it is. Finally, we give the protocol of the full
+evaluation, with its pass and kill lines written before the run (Section 6).
 
 # 2. Related Work
 
@@ -59,7 +59,7 @@ we measure an alternative in the hypervector space, where a reworded n-gram stil
 
 The most popular models, Claude Opus 5.5 and GPT-6 [4, 5], answer from an opaque context window and from factual
 knowledge synthesized in their weights. This is expensive and prone to prompt injection and silent hallucination,
-since nothing checks the answer before it's given, and their behaviour changes with updates the user doesn't control.
+since nothing checks the answer before it's given. Their behaviour also changes with updates the user doesn't control.
 
 Program-aided language models [6] and Program of Thoughts [7] let a model write code an interpreter runs, and Logic-LM
 [8] and LINC [9] translate problems into logic for a symbolic solver. These come closest to our work in spirit, since
@@ -76,12 +76,12 @@ comparison on the challenge's own Wikidata snapshot (Section 6).
 Several open-source systems released in 2026 converge on a similar store, with facts on two timelines, ontology rules
 run forward and provenance for each fact. TrustGraph builds its graph with an LLM and answers with an LLM over the
 graph's context [13]. Semantica adds deterministic reasoning, two timelines and W3C PROV-O lineage, and it settles
-conflicting sources by voting or by source credibility [14]. Utopia compiles ontology axioms into forward-chained rules
-over a graph with two timelines, but its answers are still written by an LLM with citations [15]. PULSE-S, from the
-same group, is a deterministic language for executable knowledge graphs with Lean 4 proofs of some of its properties
-[16], and its repository shows no question answering from natural language. As far as their public pages show, none
-of these systems refuses with a reason or publishes a measured wrong rate. The main problem with a citation is that it
-only tells the reader where to look, while a certificate lets the reader check the answer.
+conflicting sources by voting or by source credibility [14]. Utopia compiles ontology axioms into forward-chained
+rules over a graph with two timelines, but its answers are still written by an LLM with citations [15]. PULSE-S, from
+the same group, is a deterministic language for executable knowledge graphs with Lean 4 proofs of some of its
+properties [16]. Its repository shows no question answering from natural language. As far as their public pages show,
+none of these systems refuses with a reason or publishes a measured wrong rate. The main problem with a citation is
+that it only tells the reader where to look, while a certificate lets the reader check the answer.
 
 SimpleQA already grades answers as correct, incorrect or not attempted [17], and we use the same three outcomes
 everywhere in this paper, never accuracy alone. Finally, CubeLang builds on holographic reduced representations [18],
@@ -168,9 +168,9 @@ every application of a rule is certified in the VM with its facts. No language m
 
 The null control shows that the system does not speak when the evidence isn't there, and the shuffled library shows
 that our measure does catch wrong answers when the rules are wrong, so the 0 wrong is not the result of a test that
-cannot fail. The zero-counterexample gate also rejected 8 rules that the 2-hop records alone support; for example,
-(son, grandfather) is *father* 156 times and *father-in-law* 16 times, which is a real ambiguity that only the 3-hop
-records show.
+cannot fail. The zero-counterexample gate also rejected 8 rules that the 2-hop records alone support. For example,
+(son, grandfather) is *father* 156 times and *father-in-law* 16 times, a real ambiguity that only the 3-hop records
+show.
 
 Of the 319 refusals, 206 are true answers recovered just under the served threshold (0.447 to 0.473, threshold
 0.4736). A diagnostic threshold of 0.2 reads 1,033 of 1,146 correct, still 0 wrong, but we did not adopt it, as
@@ -237,22 +237,21 @@ This is the intended behaviour, as free text against a store that cannot answer 
 
 With Wikidata as a source on 600 SimpleQA questions, it certifies 6 answers, with 5 correct, 1 counted as near the
 gold and 0 wrong, and no model API called. As a ceiling probe, we also put a frontier model, Gemini 3.8 Flash, in the
-emitter's seat behind the same disposer, walk and VM, and it certified 4 answers, 3 of them correct and no false
-facts. The ceiling on free text is not the proposer but the store, which is what the full knowledge base addresses
-(Section 6). The everyday table, with no model in the proposer's seat, answers 65 of 187 WebQuestions questions with 0
-wrong.
+emitter's seat behind the same disposer, walk and VM. It certified 4 answers, 3 of them correct and no false facts.
+The ceiling on free text is not the proposer but the store, which is what the full knowledge base addresses (Section
+6). The everyday table, with no model in the proposer's seat, answers 65 of 187 WebQuestions questions with 0 wrong.
 
 ## 5.5 A model as a fact source
 
 On the same 600 SimpleQA questions, we used the 2.6B stand-in as a source of facts in the latent tier. It proposed 450
 facts, the system held 7 answers from them, and all 7 were wrong. Against Wikidata's facts, the model's facts agreed
-once and disagreed 28 times, and none of its 22 dates of birth agreed. A model's parametric facts on this long tail are
-nearly always wrong, and the latent tier is what made that safe to measure, since nothing it said was spoken.
+once and disagreed 28 times, and none of its 22 dates of birth agreed. A model's parametric facts on this long tail
+are nearly always wrong. The latent tier is what made that safe to measure, since nothing it said was spoken.
 
 ## 5.6 GRL's own model
 
 For arithmetic, the emitter never writes the whole program. Each turn, it proposes one operation on numbers the host
-placed, the VM runs it and the host writes the value back, so every intermediate number is the VM's and never the
+placed, the VM runs it and the host writes the value back. Every intermediate number is the VM's and never the
 model's.
 
 | 236 held-out word problems (base450m with the emitter adapter) | result |
@@ -281,8 +280,8 @@ run yet.
 ## 5.7 What isolation costs
 
 We run one resident CubeLang process per user session, so no user's frame, knowledge path or program can reach another
-user's. With 256 sessions on one machine, each user costs 1.69 MB of marginal memory, a spawn and first call take 19
-ms, and the VM runs 5,211 programs per second from 8 threads with a p99 of 2.77 ms. Isolation is not the expensive
+user's. With 256 sessions on one machine, each user costs 1.69 MB of marginal memory, and a spawn and first call take
+19 ms. The VM runs 5,211 programs per second from 8 threads, with a p99 of 2.77 ms. Isolation is not the expensive
 part of serving; the shared language model is.
 
 # 6. The full evaluation, pre-registered
@@ -298,12 +297,12 @@ The benchmarks are the full test splits of SimpleQA (4,326 questions) [17], Natu
 WebQuestions (2,032) [25], CLUTRR (1,146) [23] and the public split of AA-Omniscience (600) [26]. There are four arms.
 Arm C is the full stack with every proposer and the VM certifying, and it speaks only what is certified. The second
 arm is C without the VM, the same proposals spoken without certification, read from C's own records with no second
-pass. Arm M is the 450M model alone, closed book and always answering, and arm F is the frontier models' own published
+pass. Arm M is the 450M model alone, closed book and always answering. Arm F is the frontier models' own published
 numbers, labelled as other models, other graders and other settings.
 
 The grading uses no judge model. A spoken answer is right when it matches a gold answer or an alias after
-normalization, and every unmatched answer that C speaks is read by hand with its program and its certification trace.
-For each benchmark and arm we report right, wrong and refused, the wrong rate among spoken answers with a 95% interval,
+normalization. Every unmatched answer that C speaks is read by hand, with its program and its certification trace. For
+each benchmark and arm we report right, wrong and refused, the wrong rate among spoken answers with a 95% interval,
 the refusals by reason (no plan, a relation the store lacks, a missing fact, a failed walk, not certified) and the
 answers by proposer.
 
@@ -335,8 +334,8 @@ measure does catch wrong answers. On real Wikidata families it does not hold yet
 The next version adds the full evaluation of Section 6. After that, we are working on time in the store, where every
 fact keeps both its validity period and its recording date so any past answer replays exactly, and on interval
 questions, refused when dates are too coarse to decide. We also plan certificates in W3C PROV-O, readable by standard
-provenance tools, domain worlds for finance (FIBO with GLEIF records) and automotive, added as data rather than
-training, and mutation tests planting small faults in the VM and rules, each of which must be caught.
+provenance tools, and domain worlds for finance (FIBO with GLEIF records) and automotive, added as data rather than
+training. Finally, mutation tests will plant small faults in the VM and the rules, each of which must be caught.
 
 # References
 
