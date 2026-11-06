@@ -104,3 +104,28 @@ questions.
   kept only when the answers agree.
 - **Nothing from the challenge's test** (the 150 questions, 0054's addendum) enters training.
 - **Reported:** the effect of the hand-crafted pairs on the gate, against the rule-written questions alone.
+## Cowork's addendum (2026-11-06): questions about two periods of time
+Nick: "yes". The idea comes from Semantica (MIT), which implements Allen's interval relations; only the idea is taken.
+
+**What it brings, in plain words:** Cubby answers "did this happen while she was in office?" exactly, and says "can't
+tell" when the dates are too vague.
+- **Over a conventional model:** a model guesses at overlaps between dates and gives no sign when the dates cannot
+  decide.
+
+- **The relations:** Allen's 13 relations between two periods (before, meets, overlaps, starts, during, finishes,
+  equals, and their inverses), plus a date against a period.
+  - They are computed exactly from the statements' dates: start (P580), end (P582) and point in time (P585).
+- **Precision decides:** Wikidata dates carry their precision (year, month, day).
+  - A relation is answered only when it holds for every date the precision allows.
+  - When the precision leaves it open, Cubby refuses with the reason "dates too coarse". For example, a year against a
+    month of that same year.
+- **A missing end date is unknown, not "still true".** "Still true" needs the live source (the standing rule for
+  time-sensitive facts).
+- **The question shapes:**
+  - "who held office X when Y happened";
+  - "was A still in office when B was founded";
+  - "did A and B overlap".
+
+  They are written by rule from held-out statements, in EN and FR. A seeded sample of 100 is read by hand.
+- **Measured:** right, wrong and refused, with "dates too coarse" counted apart.
+- **Line:** 0 wrong.

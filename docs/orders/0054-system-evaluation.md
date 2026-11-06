@@ -216,3 +216,20 @@ GRASP won. QAWiki is a community resource of hand-crafted question-query pairs.
 - **Spanish:** Cubby serves English and French today. The Spanish half is read and reported as Spanish, the next
   language Nick named, not hidden.
 - **When:** after 0055's store.
+## Cowork's addendum (2026-11-06): certificates in the W3C provenance format, and new refusal reasons
+Nick: "yes". The ideas come from Semantica and Utopia, which both use PROV-O; only the ideas are taken.
+
+**What it brings, in plain words:** the proof behind each answer comes in a standard format that auditors' tools
+already read.
+- **Over a conventional model:** a model's answer comes with no proof at all. At best it has a citation that says
+  where to look.
+
+- **Certificates in PROV-O:** each answer's certificate can also be written in PROV-O, the W3C's provenance vocabulary:
+  - the answer, as an entity;
+  - the program run, as an activity;
+  - each statement read, with its source and revision;
+  - each rule applied.
+- **Test:** a standard RDF library reads the file back, and its statements equal the native certificate's.
+- **Refusals by reason** gain the kinds of conflict from 0058's addendum (value, type, temporal, logical, recorded
+  against derived), and "dates too coarse" from 0057's.
+- **For the paper:** one PROV-O certificate is shown as a worked example.

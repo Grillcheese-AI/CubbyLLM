@@ -84,3 +84,47 @@ car?" from official records, step by step and sourced, and says "not on record" 
 - **Not verified here:**
 - **Found on the way:**
 - **Questions:**
+
+## Cowork's addendum (2026-11-06): checks before and while loading a domain
+Nick: "yes". The ideas come from Utopia and Semantica (both open source); only the ideas are taken.
+
+**What it brings, in plain words:**
+- Cubby checks an industry's rulebook for contradictions before trusting anything built from it.
+- It shows which parts of the data it does not understand yet.
+- When records disagree, it says how they disagree instead of quietly picking one.
+- **Over a conventional model:** a model blends conflicting sources without saying so, and cannot tell you what it
+  does not understand.
+
+### 1. The ontology checked on its own first
+- Before any record is loaded, the module (FIBO's legal entities, AUTO's vehicle classes) goes through the rule engine
+  alone.
+- Any inconsistency stops that domain until it is fixed, and is reported. For example, a class placed both under and
+  disjoint from another.
+
+### 2. Terms the module does not cover
+- Every property or class in the records that the module does not cover is counted and listed, with its record count.
+- None is mapped by guess. Each joins the mapping only with Nick's yes, and the mapping file records the approval.
+
+### 3. Record checks written as SHACL shapes
+- Each domain's record rules are written in the manifest as SHACL shapes, the W3C's standard format for data checks.
+  Domain people can read and edit them. For example:
+  - one LEI per company;
+  - a recorded parent is itself a registered entity;
+  - a recall names a make and a model year.
+- **The candidate checker:** rudof. It is Rust, MIT or Apache-2.0, and usable as a library. It also checks ShEx, the
+  format of Wikidata's entity schemas.
+  - Its project marks versions 0.2.19 to 0.3.0 as unreliable, so the version is pinned and recorded.
+  - Its licence is recorded.
+- Violations are counted (the existing "rule violations" line) and never repaired by the build.
+
+### 4. Kinds of conflict
+A disagreement is reported with its kind:
+- **value:** two values where one is allowed;
+- **type:** the item is of a class the property does not allow;
+- **temporal:** two periods that cannot both hold;
+- **logical:** a rule violated;
+- **recorded against derived:** for example, GLEIF's ultimate-parent record against the chain of direct parents.
+
+Cubby does not answer a question that rests on a conflict. It says the records disagree, and how.
+- Only the records' own signals decide (Wikidata's ranks, a record's validity dates), as before.
+- Voting, source credibility and "the most recent source wins" are not used.

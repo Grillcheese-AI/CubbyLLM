@@ -212,3 +212,64 @@ Datalog engine. Licences are checked first.
 - **Check before relying on it:** its README marks some consistency rules as raising exceptions. Whether that means
   "reports a violation" or "fails" is checked and recorded. If the OWL layer adds nothing over DataFrog alone, the
   lighter one is kept.
+
+## Cowork's addendum (2026-11-06): time, change and merged items in the store
+Nick: "yes". These ideas come from three open-source systems with the same store design: Semantica (MIT), CocoIndex
+(Apache-2.0) and Utopia (Apache-2.0). Only the ideas are taken; no code, no dependency.
+
+**What it brings, in plain words:** Cubby can replay any past answer exactly, never answers from a fact that has since
+changed, and still recognises an entry after Wikidata merges it with a duplicate.
+- **Over a conventional model:** a model cannot say what it knew last month, nor which of its answers relied on a fact
+  that changed.
+
+**What the first build needs, and what can wait:**
+- The fields (two clocks, input hashes) go into the store format now. Adding them later means a rebuild.
+- Retirement and merges in the overlay matter from the first overlay change.
+- Redirects matter for the benchmarks, because gold answers can use old ids.
+- None of it delays the base store, which stays one immutable file built from the dump.
+
+### 1. Two clocks per statement
+- **Valid time:** when the fact held in the world. Wikidata's start, end and point-in-time qualifiers (P580, P582,
+  P585) already carry it, with their precision.
+- **Recorded time:** when the store learned it.
+  - For the base: the dump's date and the item's revision.
+  - For the overlay: when the change was applied, and the revision it came from.
+- **A corrected or removed statement is closed, never overwritten.** It gets a recorded end and stays readable.
+- **Queries can be pinned to a recorded date:**
+  - benchmarks run pinned to the dump;
+  - users get the latest.
+- **Test:** an answer given before a seeded overlay change is reproduced exactly when the query is pinned to its date.
+
+### 2. Derived facts retired by their inputs
+- **Each derived fact lists the statements it used** (folded inverses, symmetric pairs, chains, the subclass closure).
+  This is its certificate already.
+- **An overlay change to a statement closes every derived fact that used it.** The rules are then re-run for the
+  entities involved only.
+- **DataFrog only adds facts.** It cannot take one back, so a re-run covers that small set, not the whole store.
+- **Test:** after a seeded batch of overlay changes, the store equals a full rebuild from the changed data, exactly.
+
+### 3. Merged items (redirects)
+Wikidata merges duplicate items. The old id then redirects to the one that remains.
+- **Where redirects come from:** Wikidata's RDF links a redirected id to its target with `owl:sameAs` (the design is
+  in Wikimedia's task T93767).
+  - Whether the challenge dump carries redirects is checked on the dump and recorded.
+  - If it does not, Claude Code reports it under Questions. The source for redirects is then Cowork's call.
+- **The store resolves an old id to the item that remains:** at question time, and when reading benchmark gold answers.
+- **A merge in the overlay is a recorded change like any other.** It can be undone, and both ids keep answering.
+- **Reported:** how many benchmark gold ids resolve only through a redirect.
+
+### 4. Cached build steps
+- Each build step's output is stored with the hash of its input, its code and its parameters.
+- A step whose hashes all match is skipped. Any change re-runs that step and every step after it.
+- The report lists the hashes behind every number: 0054's "frozen and recorded" line, made checkable.
+
+### 5. The change log
+- **Append-only:** one line per change to the store. Each line gives what changed, the source revision, the loader's
+  code hash and the time.
+- **It is the recorded-time side of the two clocks.** It outlives the statements it describes.
+
+### Out of scope
+The rest of those systems:
+- extraction by an LLM;
+- merging duplicates by embeddings or by a model's judgement;
+- answers written by an LLM.
