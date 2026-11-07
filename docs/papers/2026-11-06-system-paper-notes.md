@@ -123,6 +123,9 @@ the record pages.
   run through OpenRouter comes later.
 - **Frozen and recorded with every number:** the commit, the adapter hashes, the VM's commit, the store's snapshot and
   the hash of each build step.
+- **A reproducibility package with v2:** 0054's run as a Workflow Run RO-Crate, and each hypothesis verdict
+  (killed ones included) as a nanopublication. It certifies that each number follows from its inputs, code and
+  settings, not that a hypothesis is true.
 - **Agreement with a reference engine, as counts:** rows compared and mismatches, against QLever. PULSE-S reports its
   cross-checks the same way.
 - **Worth adding (not yet ordered):** a mutation test, as PULSE-S does. Seed small faults into the VM and the rules;

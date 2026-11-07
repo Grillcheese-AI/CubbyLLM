@@ -246,3 +246,34 @@ a W3C incubator group's sample ontology, re-published by Nicholas Car):
 PROV-O says which facts and rules the answer used; this adds which alternatives were considered and why the winner won,
 or why everything was refused. The licence is recorded before use. The test is the PROV-O one: a standard RDF library
 reads the file back, and it matches the native record.
+
+## Cowork's addendum (2026-11-07): the reproducibility package for the paper's v2
+Nick: "yes". The full run is packaged so that anyone can re-run its numbers, and the package goes up with v2 of the
+preprint on Zenodo (doi:10.5281/zenodo.24020073, as a new version).
+
+**What it brings, in plain words:** every result in the paper comes with the exact data, code and settings that
+produced it, so anyone can check it, including a reviewer.
+- **Over a conventional model:** an AI-written analysis gives a conclusion. This gives a result you can re-run, with
+  the failures on record.
+
+- **A Workflow Run RO-Crate** (RO-Crate 1.1, JSON-LD on schema.org, with its Workflow Run profile, which records the
+  run in PROV). It holds:
+  - the inputs: each benchmark file with its hash and licence, and the store snapshot's hash;
+  - the code: CubbyLLM's commit, the VM's commit, every adapter's hash, and the harness;
+  - the settings: the frozen thresholds and the pre-registered lines, as written before the run;
+  - the outputs: right, wrong and refused per benchmark and arm, with the logs and every read wrong answer.
+- **Each hypothesis verdict as a nanopublication:** one claim (for example, "the gated rule library speaks 0 wrong
+  on CLUTRR gen_train23_test2to10", or "killed as built on real Wikidata families"), its provenance (the run, the
+  log, the commit) and its publication record.
+  - A killed result is published like a surviving one.
+  - Statistics terms come from STATO.
+- **What is claimed, and what is not:**
+  - the package certifies that each number follows from these inputs, this code and these settings, and that the
+    analysis matches its pre-registration;
+  - it does not certify that a hypothesis is true, and no p-value or rate is turned into a truth score.
+- **Left out of the package:**
+  - anything whose licence forbids redistribution, which is pointed to by its source and hash instead;
+  - private material and local paths.
+- **Tests:**
+  - the crate validates against the RO-Crate 1.1 and Workflow Run profile checks;
+  - re-running the harness from the crate on 50 questions per benchmark reproduces the recorded answers exactly.
