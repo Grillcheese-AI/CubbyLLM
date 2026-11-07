@@ -135,3 +135,30 @@ heading (INT. / EXT.), and each line of dialogue under its speaker's name in cap
   conversation right after 0055).
 - Nick's research note on change-point detection, which he thought lost with its code, is this order's "Why". No
   earlier code exists in any repository, so the build starts from this order.
+## Cowork's addendum (2026-11-07): export in EmotionML
+Nick: "yes". EmotionML 1.0 is a W3C Recommendation (22 May 2014). It is an export format only; nothing inside Cubby
+changes.
+
+**What it brings, in plain words:** Cubby can show how it reads the mood of a book or a conversation, and how sure it
+is, in a standard format other tools can read and plot.
+- **Over a conventional model:** a model's sense of mood is hidden inside it. Here every reading is written down with
+  its confidence and its source.
+
+- **Scales:** every value maps to EmotionML's [0, 1], with 0.5 neutral on bipolar scales. The lexicons' 1-to-9
+  ratings (Warriner, labMT) map as (x - 1) / 8.
+- **Vocabulary:** pleasure (valence), arousal and dominance, as the "pad-dimensions" set of the Vocabularies for
+  EmotionML note. Any other set is declared in the file itself.
+- **Books:** a trace in EmotionML is timed in Hz, and a book has positions, not times. So a book's arc is one
+  `<emotion>` per window instead of a trace. Each points to its text span with a `<reference>` using the plain-text
+  fragment identifiers of RFC 5147 (`#char=start,end`).
+- **Conversations:**
+  - each turn's reading of the user's emotion is one `<emotion>` with its GoEmotions category (declared as a custom
+    category set), its `confidence`, and a `<reference role="expressedBy">` to the turn;
+  - Cubby's own hormone state goes in a separate custom dimension set, labelled as Cubby's internal state and never
+    as the user's;
+  - a conversation's arc can be a `<trace>`, since turns have times.
+- **Change points** are listed in the file's `<info>` with their position and probability.
+- **Tests:**
+  - every export validates against the EmotionML 1.0 schema;
+  - reading an export back gives the internal series, to rounding.
+- **The rule:** a reading of someone's emotion is an inference with a confidence, never a fact in the store.
