@@ -1,7 +1,7 @@
-﻿# 0020 â€” Emotional arcs: a book (or a conversation) as a time series of feeling, and the change points where it turns
+# 0020 — Emotional arcs: a book (or a conversation) as a time series of feeling, and the change points where it turns
 status: open
-written: 2026-10-22 by Cowork Â· approved: 2026-10-22 by Nick ("yes open 0020") Â· hypothesis: H-K11 (affect, order 0019), with K2 (surprise-gated
-writing: a change-point probability is a boundary signal) Â· **the pipeline can start now on the human lexicons; the
+written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("yes open 0020") · hypothesis: H-K11 (affect, order 0019), with K2 (surprise-gated
+writing: a change-point probability is a boundary signal) · **the pipeline can start now on the human lexicons; the
 0019 readers plug in when they pass**
 
 ## Why
