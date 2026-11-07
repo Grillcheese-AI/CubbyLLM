@@ -71,3 +71,13 @@ tells you which part it couldn't do.
 - **Not verified here:**
 - **Found on the way:**
 - **Questions:**
+
+## Cowork's note (2026-11-07): containers and wiring compile to nothing today
+Measured on Nick's `bridge_mesh.cube` with the main checkout's release binary (built 2026-09-29; see 0062's addendum
+for the full list). It passes `check`, but `compile` reports "no programs found": `container`, `io`,
+`vm.start_from_file`, `vm.wire` and `vm.bridge` produce no bytecode. Until a build from the current source shows
+otherwise, the parallel parts of this order run as separate VM sessions driven by the host, not as wired containers.
+
+Records about containers and bridges, such as Nick's JSON-LD draft for the bridge, are written by the host from what
+actually ran (the observed status, rate-limit counts and audit log), never declared by hand. A bridge that never
+started must not be recorded as "Active".
