@@ -69,12 +69,13 @@ itself.
   Brie, Cheddar, Danablu, … to Zamorano. The name goes in release notes and tag messages. Tags, versions and IRIs
   stay technical (`v0.1.0`; `owl:versionIRI` as in the draft, such as `https://w3id.org/cheezml/core/v0.1`),
   and the change log says which release ships which CheezML version.
-- **Protocols** (names in documents only, never in an IRI or an identifier): the first suggestions (Cheddar
-  certificates, Emmental refusals and gaps, Brie conversation, Halloumi sandboxed helpers, Mozza MoWM worlds) collide
-  with release names B, C, E and H. **Proposed instead, from cheeses outside the list:** Comté (certificates; a
-  cheese with a certified origin), Maasdam (refusals and gaps; the holes), Mozza (MoWM world records), Paneer
-  (sandboxed helpers; it keeps its shape under heat), Raclette (conversation; eaten together). **Nick picks**; until
-  then documents use the technical names.
+- **Protocols** (names in documents only, never in an IRI or an identifier), taken from cheeses outside the
+  release list so that no name means two things (Nick: "sounds good", 2026-11-07):
+  - **Comté:** certificates (a cheese with a certified origin);
+  - **Maasdam:** refusals and gaps (the holes);
+  - **Mozza:** MoWM world records;
+  - **Paneer:** sandboxed helpers (it keeps its shape under heat);
+  - **Raclette:** conversation (eaten together).
 
 ## Acceptance (pre-registered)
 - **The draft's checks pass as tests:** 6 of 6 examples conform; 10 of 10 broken records fail with their expected

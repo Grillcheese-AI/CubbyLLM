@@ -82,9 +82,9 @@ from a real run yet; that is order 0064's acceptance.
 ## 4. Not settled
 
 The open questions are in `disagreements.md` §3 and §5. The ones only the code can answer (Claude Code reads them off
-the repositories in 0064 step 4): whether "clears" is > or ≥; what a world's tau is compared with, and whether it is
+the repositories in 0064 step 1): whether "clears" is > or ≥; what a world's tau is compared with, and whether it is
 `tau_spawn`; which counter issues a bridge-spawned world's id; whether router pruning deletes; the hash algorithm; how
-the store holds statement content. The ones that are Nick's: the second-approval amount, and the protocol names (0064).
+the store holds statement content. The one that is Nick's: the second-approval amount.
 
 ## 5. Files
 
