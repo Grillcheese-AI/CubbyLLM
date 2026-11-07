@@ -132,9 +132,10 @@ heading (INT. / EXT.), and each line of dialogue under its speaker's name in cap
 
 ## Cowork's note (2026-11-06)
 - **Queue:** next after 0055 (Nick, 2026-11-06). Updated the same day: after 0055, 0010 and 0059 (Nick put fluency and
-  conversation right after 0055).
+  conversation right after 0055). Updated 2026-11-07: also after 0060 (story worlds).
 - Nick's research note on change-point detection, which he thought lost with its code, is this order's "Why". No
   earlier code exists in any repository, so the build starts from this order.
+
 ## Cowork's addendum (2026-11-07): export in EmotionML
 Nick: "yes". EmotionML 1.0 is a W3C Recommendation (22 May 2014). It is an export format only; nothing inside Cubby
 changes.

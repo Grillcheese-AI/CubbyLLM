@@ -1,5 +1,5 @@
 # 0057 — Real Wikidata queries as curriculum: CubeLang's constructs ranked by real use, and training pairs written by rule
-status: open (queue: after 0055, 0010, 0059 and 0020)
+status: open (queue: after 0055, 0010, 0059, 0060 and 0020)
 written: 2026-11-06 by Cowork · approved: 2026-11-06 by Nick ("yes") · hypothesis: H-E18 (program first, words second), with H-A15
 
 ## Why
