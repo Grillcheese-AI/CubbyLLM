@@ -1,7 +1,7 @@
-# 0020 — Emotional arcs: a book (or a conversation) as a time series of feeling, and the change points where it turns
+﻿# 0020 â€” Emotional arcs: a book (or a conversation) as a time series of feeling, and the change points where it turns
 status: open
-written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("yes open 0020") · hypothesis: H-K11 (affect, order 0019), with K2 (surprise-gated
-writing: a change-point probability is a boundary signal) · **the pipeline can start now on the human lexicons; the
+written: 2026-10-22 by Cowork Â· approved: 2026-10-22 by Nick ("yes open 0020") Â· hypothesis: H-K11 (affect, order 0019), with K2 (surprise-gated
+writing: a change-point probability is a boundary signal) Â· **the pipeline can start now on the human lexicons; the
 0019 readers plug in when they pass**
 
 ## Why
@@ -132,7 +132,7 @@ heading (INT. / EXT.), and each line of dialogue under its speaker's name in cap
 
 ## Cowork's note (2026-11-06)
 - **Queue:** next after 0055 (Nick, 2026-11-06). Updated the same day: after 0055, 0010 and 0059 (Nick put fluency and
-  conversation right after 0055). Updated 2026-11-07: also after 0060 (story worlds).
+  conversation right after 0055). Updated 2026-11-07: also after 0060 (story worlds) and 0061 (documents).
 - Nick's research note on change-point detection, which he thought lost with its code, is this order's "Why". No
   earlier code exists in any repository, so the build starts from this order.
 

@@ -1,6 +1,6 @@
-# 0057 — Real Wikidata queries as curriculum: CubeLang's constructs ranked by real use, and training pairs written by rule
-status: open (queue: after 0055, 0010, 0059, 0060 and 0020)
-written: 2026-11-06 by Cowork · approved: 2026-11-06 by Nick ("yes") · hypothesis: H-E18 (program first, words second), with H-A15
+﻿# 0057 â€” Real Wikidata queries as curriculum: CubeLang's constructs ranked by real use, and training pairs written by rule
+status: open (queue: after 0055, 0010, 0059, 0060, 0061 and 0020)
+written: 2026-11-06 by Cowork Â· approved: 2026-11-06 by Nick ("yes") Â· hypothesis: H-E18 (program first, words second), with H-A15
 
 ## Why
 - **The data:** the Wikidata Query Logs dataset (Walter and Bast, SIGIR 2026, arXiv 2602.14594). About 860,000
