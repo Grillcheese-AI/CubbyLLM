@@ -69,3 +69,54 @@ ever passed before it is used for real. A broken skill is caught in a sandbox an
 - **Not verified here:**
 - **Found on the way:**
 - **Questions:**
+
+## Cowork's addendum (2026-11-07): watching the proposers, and what the CubeLang compiler accepts today
+Nick: "yes", with his drafts of an orchestrator (`orchestrator.cube`) and a bridge between containers
+(`bridge_mesh.cube`).
+
+**What it brings, in plain words:** Cubby keeps an eye on its own skill-writers. One that keeps getting it wrong is
+slowed down; one that tries to break out is stopped at once, and Nick is told.
+- **Over a conventional model:** when an agent misbehaves, you find out from the damage. Here every attempt is on
+  record and counted.
+
+### Two standing checks over the records
+- **Quality:** each proposer's rejection rate, meaning helpers rejected divided by helpers proposed over a recent
+  window, never a raw count. Counts are distinct helpers, so one rejected helper is one, whatever its opcodes or
+  failed checks.
+- **Safety:** sandbox escape attempts per proposer (network, file, knowledge-base write, budget overrun). This should
+  always be 0.
+- **The rules:**
+  - one escape attempt pauses that proposer at once and alerts Nick;
+  - a rejection rate above a threshold Nick sets slows the proposer (fewer proposals per cycle);
+  - a paused proposer returns only with Nick's yes.
+- **The records:** paused and slowed proposers stay in the records with their history (retire, never delete).
+- **Where they run:** as queries over 0062's records on QLever (0055's reference engine) or the in-process store,
+  shown in the 0054 report. An answer refusal ("fact missing") is never counted against a proposer; only its helpers'
+  gate results are.
+
+### The compiler, measured on Nick's drafts (Cowork, 2026-11-07)
+Measured with `cubelang check` on the main checkout's release binary, built 2026-09-29. The source has moved since
+(last commit 2026-10-31), so step 0 re-runs this against a build from the current source, in a separate target
+directory: the main `target/release` binary is never overwritten.
+- **`orchestrator.cube` fails to compile.** The errors found, in order, each fixed in a scratch copy to reach the
+  next:
+  1. `@hook(*.error)`: no wildcard in a hook target ("expected identifier, got Star"). `@hook` itself is listed as a
+     strict compile error in CubeLang's README.
+  2. A parameter named `event`: a reserved word.
+  3. `??` (null coalescing) is not parsed, though the README uses it in an example.
+  4. `revoke ... from ...` inside a function body is not parsed, though the README documents it.
+
+  Later lines were not reached.
+- **`bridge_mesh.cube` passes `check`, but compiles to nothing.** `compile` warns "no programs found", so the
+  `container`, its `io` block, `vm.start_from_file`, `vm.wire` and `vm.bridge` produce no bytecode. A strict check
+  that passes on code that never runs is itself a defect, and it is reported to the cubelang job.
+- **The design notes** for when these compile:
+  - the orchestrator should count a rate over a window, not a lifetime total, and treat an escape attempt as an
+    immediate pause;
+  - its `cooldown_period_ms` is declared but never used;
+  - quarantine needs a way back (Nick's yes);
+  - `revoke ... from SwarmRootOrchestrator` names a program that doesn't exist (the program is `SwarmOrchestrator`);
+  - routing by cosine to the single words "algebra" and "calculus" at 0.65 should use MoWM's centroid-and-margin
+    rule, with thresholds calibrated per deployment;
+  - the fallback solver's answers still go through the VM.
+- **CubeLang changes** go to the cubelang repo as their own job, only with Nick's yes.
