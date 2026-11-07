@@ -381,3 +381,23 @@ from its verified examples. For that library to exist later, every promoted adap
 - its held right rate before and after.
 
 Nothing else changes here.
+## Cowork's note (2026-11-07): each refusal goes to the part that can fix it
+Nick: "yes". The idea comes from EvoOntology (Renmin University, MIT, arXiv 2609.15779), which traces each recurring
+failure to the part of its ontology layer that caused it. Cubby already names its reason for each refusal; the loop
+should route each reason to the part that can fix it.
+
+| refusal reason | goes to | gate |
+|---|---|---|
+| fact missing | the source and the store (0055's overlay) | the provenance gate |
+| relation missing | the property table or a domain's mapping (0058) | 0058's versions that earn their place |
+| no plan, or a plan that doesn't cover the question | the emitter's next round (this loop) | this order's promotion rule |
+| not certified, just under the threshold | the threshold study (Nick's decision, on a separate set) | none here |
+| ambiguous | nothing to fix: refusing is the right behaviour | |
+
+- **Reported each cycle:**
+  - refusals by reason;
+  - how many each fix turned into right answers;
+  - the wrong count, which must stay 0.
+- **What it brings, in plain words:** every "I don't know" becomes a to-do item for the part of Cubby that can fix it.
+
+Nothing else changes here.
