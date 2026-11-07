@@ -233,3 +233,16 @@ already read.
 - **Refusals by reason** gain the kinds of conflict from 0058's addendum (value, type, temporal, logical, recorded
   against derived), and "dates too coarse" from 0057's.
 - **For the paper:** one PROV-O certificate is shown as a worked example.
+
+## Cowork's note (2026-11-07): the decision step in the certificate
+Nick: "yes". To the PROV-O certificate above, add the decision step, in the Decision Ontology's terms (do-ont, CC BY 4.0;
+a W3C incubator group's sample ontology, re-published by Nicholas Car):
+- `Question`: the user's question;
+- `Option`: each proposer's program;
+- the criteria: the VM's certification, the guards and the threshold;
+- `Decision`: the answer, or the refusal with its reason;
+- `is_satisfied_by` and `is_violated_by`: which check each option passed or failed.
+
+PROV-O says which facts and rules the answer used; this adds which alternatives were considered and why the winner won,
+or why everything was refused. The licence is recorded before use. The test is the PROV-O one: a standard RDF library
+reads the file back, and it matches the native record.
