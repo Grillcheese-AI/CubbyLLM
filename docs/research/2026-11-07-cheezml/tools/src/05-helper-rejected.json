@@ -1,0 +1,80 @@
+{
+  "@context": "@@CONTEXT@@",
+  "@graph": [
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000501",
+      "@type": ["cheez:Record", "cubby:HelperRejection", "cheez:Retirement", "prov:Activity"],
+      "cheez:writtenBy": "urn:uuid:00000000-0000-0000-0000-000000000001",
+      "dcterms:type": "cheez:Rejected",
+      "prov:invalidated": "urn:uuid:00000000-0000-0000-0000-000000000502",
+      "prov:wasInformedBy": "urn:uuid:00000000-0000-0000-0000-000000000504",
+      "cheez:retirementReason": "cubby:ReproductionCheck",
+      "cubby:breakingCase": "urn:uuid:00000000-0000-0000-0000-000000000505",
+      "prov:endedAtTime": "2026-11-07T03:00:05Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000502",
+      "@type": ["cubby:Helper", "cube:Program", "prov:Entity"],
+      "cheez:hash": "PLACEHOLDER: helper program hash",
+      "cheez:hashAlgorithm": "PLACEHOLDER: hash algorithm",
+      "cubby:proposer": "cubby:OvernightRuleLibrary",
+      "cubby:scope": "urn:uuid:00000000-0000-0000-0000-000000000503"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000503",
+      "@type": "prov:Collection"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000504",
+      "@type": ["cubby:SandboxRun", "cube:ProgramRun", "prov:Activity"],
+      "prov:wasAssociatedWith": "urn:uuid:00000000-0000-0000-0000-000000000002",
+      "prov:used": [
+        "urn:uuid:00000000-0000-0000-0000-000000000502",
+        "urn:uuid:00000000-0000-0000-0000-000000000503"
+      ],
+      "cheez:outcome": "cube:Return",
+      "cheez:check": [
+        "urn:uuid:00000000-0000-0000-0000-000000000510",
+        "urn:uuid:00000000-0000-0000-0000-000000000511",
+        "urn:uuid:00000000-0000-0000-0000-000000000512"
+      ],
+      "prov:startedAtTime": "2026-11-07T03:00:00Z",
+      "prov:endedAtTime": "2026-11-07T03:00:04Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000505",
+      "@type": "prov:Entity"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000510",
+      "@type": ["cheez:CheckRun", "prov:Activity"],
+      "dcterms:type": "cubby:ReproductionCheck",
+      "cheez:outcome": "cheez:Violated",
+      "prov:used": "urn:uuid:00000000-0000-0000-0000-000000000505",
+      "prov:endedAtTime": "2026-11-07T03:00:03Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000511",
+      "@type": ["cheez:CheckRun", "prov:Activity"],
+      "dcterms:type": "cubby:ScopeCheck",
+      "cheez:outcome": "cheez:Satisfied",
+      "prov:endedAtTime": "2026-11-07T03:00:04Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000512",
+      "@type": ["cheez:CheckRun", "prov:Activity"],
+      "dcterms:type": "cubby:EscapeCheck",
+      "cheez:observedValue": "0",
+      "cheez:outcome": "cheez:Satisfied",
+      "prov:endedAtTime": "2026-11-07T03:00:04Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000001",
+      "@type": ["cheez:Host", "prov:SoftwareAgent"]
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000002",
+      "@type": ["cube:VM", "prov:SoftwareAgent"]
+    }
+  ]
+}

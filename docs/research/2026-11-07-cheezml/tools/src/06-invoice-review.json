@@ -1,0 +1,177 @@
+{
+  "@context": "@@CONTEXT@@",
+  "@graph": [
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000601",
+      "@type": [
+        "cheez:Record",
+        "cubby:FieldCommit",
+        "prov:Activity"
+      ],
+      "cheez:writtenBy": "urn:uuid:00000000-0000-0000-0000-000000000001",
+      "prov:used": "urn:uuid:00000000-0000-0000-0000-000000000604",
+      "prov:wasInformedBy": "urn:uuid:00000000-0000-0000-0000-000000000605",
+      "cheez:check": [
+        "urn:uuid:00000000-0000-0000-0000-000000000610",
+        "urn:uuid:00000000-0000-0000-0000-000000000611",
+        "urn:uuid:00000000-0000-0000-0000-000000000612",
+        "urn:uuid:00000000-0000-0000-0000-000000000613",
+        "urn:uuid:00000000-0000-0000-0000-000000000614",
+        "urn:uuid:00000000-0000-0000-0000-000000000615"
+      ],
+      "prov:generated": "urn:uuid:00000000-0000-0000-0000-000000000620",
+      "prov:endedAtTime": "2026-11-07T15:30:00Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000602",
+      "@type": [
+        "schema:DigitalDocument",
+        "cheez:Artifact",
+        "prov:Entity"
+      ],
+      "cheez:hash": "PLACEHOLDER: invoice file hash",
+      "cheez:hashAlgorithm": "PLACEHOLDER: hash algorithm"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000603",
+      "@type": [
+        "cubby:DocumentRegion",
+        "prov:Entity"
+      ],
+      "schema:isPartOf": "urn:uuid:00000000-0000-0000-0000-000000000602",
+      "schema:text": "PLACEHOLDER region text as read: TOTAL DUE 1250.00",
+      "cubby:readerVersion": "PLACEHOLDER: reader version"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000604",
+      "@type": [
+        "cubby:FieldSuggestion",
+        "prov:Entity"
+      ],
+      "schema:name": "PLACEHOLDER: field name (invoice total)",
+      "prov:value": "1250.00",
+      "cubby:region": "urn:uuid:00000000-0000-0000-0000-000000000603",
+      "prov:generatedAtTime": "2026-11-07T15:00:00Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000605",
+      "@type": [
+        "cubby:Review",
+        "prov:Activity"
+      ],
+      "prov:used": "urn:uuid:00000000-0000-0000-0000-000000000604",
+      "cubby:region": "urn:uuid:00000000-0000-0000-0000-000000000603",
+      "prov:qualifiedAssociation": {
+        "@type": "prov:Association",
+        "prov:agent": "urn:uuid:00000000-0000-0000-0000-000000000606",
+        "prov:hadRole": "cubby:FirstApprover"
+      },
+      "cheez:outcome": "cubby:Approved",
+      "prov:startedAtTime": "2026-11-07T15:18:00Z",
+      "prov:endedAtTime": "2026-11-07T15:20:00Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000606",
+      "@type": [
+        "prov:Person",
+        "prov:Agent",
+        "prov:Entity"
+      ],
+      "schema:identifier": "PLACEHOLDER: reviewer staff id"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000610",
+      "@type": [
+        "cheez:CheckRun",
+        "prov:Activity"
+      ],
+      "dcterms:type": "cubby:NumberInRegionCheck",
+      "cheez:outcome": "cheez:Satisfied",
+      "prov:used": "urn:uuid:00000000-0000-0000-0000-000000000604",
+      "prov:endedAtTime": "2026-11-07T15:00:01Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000611",
+      "@type": [
+        "cheez:CheckRun",
+        "prov:Activity"
+      ],
+      "dcterms:type": "cubby:FormatCheck",
+      "cheez:outcome": "cheez:Satisfied",
+      "prov:used": "urn:uuid:00000000-0000-0000-0000-000000000604",
+      "prov:endedAtTime": "2026-11-07T15:00:01Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000612",
+      "@type": [
+        "cheez:CheckRun",
+        "prov:Activity"
+      ],
+      "dcterms:type": "cubby:ArithmeticCheck",
+      "cheez:outcome": "cheez:Satisfied",
+      "prov:used": "urn:uuid:00000000-0000-0000-0000-000000000604",
+      "prov:endedAtTime": "2026-11-07T15:00:01Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000613",
+      "@type": [
+        "cheez:CheckRun",
+        "prov:Activity"
+      ],
+      "dcterms:type": "cubby:PurchaseOrderCheck",
+      "cheez:outcome": "cheez:Satisfied",
+      "prov:used": "urn:uuid:00000000-0000-0000-0000-000000000604",
+      "prov:endedAtTime": "2026-11-07T15:00:02Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000614",
+      "@type": [
+        "cheez:CheckRun",
+        "prov:Activity"
+      ],
+      "dcterms:type": "cubby:SupplierCheck",
+      "cheez:outcome": "cheez:Satisfied",
+      "prov:used": "urn:uuid:00000000-0000-0000-0000-000000000604",
+      "prov:endedAtTime": "2026-11-07T15:00:02Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000615",
+      "@type": [
+        "cheez:CheckRun",
+        "prov:Activity"
+      ],
+      "dcterms:type": "cubby:DuplicateCheck",
+      "cheez:outcome": "cheez:Satisfied",
+      "prov:used": "urn:uuid:00000000-0000-0000-0000-000000000604",
+      "prov:endedAtTime": "2026-11-07T15:00:02Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000620",
+      "@type": [
+        "cheez:FactVersion",
+        "prov:Entity"
+      ],
+      "schema:about": "urn:uuid:00000000-0000-0000-0000-000000000602",
+      "schema:name": "PLACEHOLDER: field name (invoice total)",
+      "prov:value": "1250.00",
+      "prov:wasDerivedFrom": "urn:uuid:00000000-0000-0000-0000-000000000604",
+      "prov:hadPrimarySource": "urn:uuid:00000000-0000-0000-0000-000000000606",
+      "prov:wasGeneratedBy": "urn:uuid:00000000-0000-0000-0000-000000000601",
+      "cheez:validTime": {
+        "@type": "time:Interval",
+        "time:hasBeginning": {
+          "@type": "time:Instant",
+          "time:inXSDDateTimeStamp": "2026-11-01T00:00:00Z"
+        }
+      },
+      "prov:generatedAtTime": "2026-11-07T15:30:00Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000001",
+      "@type": [
+        "cheez:Host",
+        "prov:SoftwareAgent"
+      ]
+    }
+  ]
+}

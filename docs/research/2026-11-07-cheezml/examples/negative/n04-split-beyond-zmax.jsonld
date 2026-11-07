@@ -1,0 +1,337 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@protected": true,
+    "cheez": "https://w3id.org/cheezml/core#",
+    "cubby": "https://w3id.org/cheezml/cubby#",
+    "mowm": "https://w3id.org/cheezml/mowm#",
+    "cube": "https://w3id.org/cheezml/cubelang#",
+    "prov": "http://www.w3.org/ns/prov#",
+    "schema": "https://schema.org/",
+    "time": "http://www.w3.org/2006/time#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "cheez:writtenBy": {
+      "@type": "@id"
+    },
+    "cheez:encoder": {
+      "@type": "@id"
+    },
+    "cheez:screen": {
+      "@type": "@id"
+    },
+    "cheez:calibrationData": {
+      "@type": "@id"
+    },
+    "cheez:deployment": {
+      "@type": "@id"
+    },
+    "cheez:check": {
+      "@type": "@id"
+    },
+    "cheez:outcome": {
+      "@type": "@id"
+    },
+    "cheez:retirementReason": {
+      "@type": "@id"
+    },
+    "cheez:threshold": {
+      "@type": "@id"
+    },
+    "cheez:certifies": {
+      "@type": "@id"
+    },
+    "cheez:option": {
+      "@type": "@id"
+    },
+    "cheez:chosenOption": {
+      "@type": "@id"
+    },
+    "cheez:hasResult": {
+      "@type": "@id"
+    },
+    "cheez:isSatisfiedBy": {
+      "@type": "@id"
+    },
+    "cheez:isViolatedBy": {
+      "@type": "@id"
+    },
+    "cheez:template": {
+      "@type": "@id"
+    },
+    "cheez:validTime": {
+      "@type": "@id"
+    },
+    "cheez:thresholdValue": {
+      "@type": "xsd:decimal"
+    },
+    "cheez:observedValue": {
+      "@type": "xsd:decimal"
+    },
+    "cubby:dialogueAct": {
+      "@type": "@id"
+    },
+    "cubby:decision": {
+      "@type": "@id"
+    },
+    "cubby:proposer": {
+      "@type": "@id"
+    },
+    "cubby:refusalReason": {
+      "@type": "@id"
+    },
+    "cubby:conflictKind": {
+      "@type": "@id"
+    },
+    "cubby:scope": {
+      "@type": "@id"
+    },
+    "cubby:breakingCase": {
+      "@type": "@id"
+    },
+    "cubby:region": {
+      "@type": "@id"
+    },
+    "cubby:turnIndex": {
+      "@type": "xsd:integer"
+    },
+    "mowm:worldId": {
+      "@type": "xsd:integer"
+    },
+    "mowm:zDepth": {
+      "@type": "xsd:integer"
+    },
+    "mowm:zMax": {
+      "@type": "xsd:integer"
+    },
+    "mowm:worldCount": {
+      "@type": "xsd:integer"
+    },
+    "mowm:parentWorld": {
+      "@type": "@id"
+    },
+    "mowm:tau": {
+      "@type": "@id"
+    },
+    "mowm:mergeStrategy": {
+      "@type": "@id"
+    },
+    "mowm:queryVector": {
+      "@type": "@id"
+    },
+    "mowm:bestWorld": {
+      "@type": "@id"
+    },
+    "mowm:runnerUpWorld": {
+      "@type": "@id"
+    },
+    "mowm:routedTo": {
+      "@type": "@id"
+    },
+    "mowm:floorThreshold": {
+      "@type": "@id"
+    },
+    "mowm:marginThreshold": {
+      "@type": "@id"
+    },
+    "mowm:residual": {
+      "@type": "@id"
+    },
+    "mowm:bestScore": {
+      "@type": "xsd:decimal"
+    },
+    "mowm:runnerUpScore": {
+      "@type": "xsd:decimal"
+    },
+    "mowm:margin": {
+      "@type": "xsd:decimal"
+    },
+    "prov:used": {
+      "@type": "@id"
+    },
+    "prov:generated": {
+      "@type": "@id"
+    },
+    "prov:wasGeneratedBy": {
+      "@type": "@id"
+    },
+    "prov:wasInformedBy": {
+      "@type": "@id"
+    },
+    "prov:wasAssociatedWith": {
+      "@type": "@id"
+    },
+    "prov:wasDerivedFrom": {
+      "@type": "@id"
+    },
+    "prov:wasRevisionOf": {
+      "@type": "@id"
+    },
+    "prov:hadPrimarySource": {
+      "@type": "@id"
+    },
+    "prov:invalidated": {
+      "@type": "@id"
+    },
+    "prov:agent": {
+      "@type": "@id"
+    },
+    "prov:hadRole": {
+      "@type": "@id"
+    },
+    "prov:startedAtTime": {
+      "@type": "xsd:dateTime"
+    },
+    "prov:endedAtTime": {
+      "@type": "xsd:dateTime"
+    },
+    "prov:generatedAtTime": {
+      "@type": "xsd:dateTime"
+    },
+    "prov:invalidatedAtTime": {
+      "@type": "xsd:dateTime"
+    },
+    "time:hasBeginning": {
+      "@type": "@id"
+    },
+    "time:hasEnd": {
+      "@type": "@id"
+    },
+    "time:inXSDDateTimeStamp": {
+      "@type": "xsd:dateTimeStamp"
+    },
+    "schema:isPartOf": {
+      "@type": "@id"
+    },
+    "schema:about": {
+      "@type": "@id"
+    },
+    "dcterms:type": {
+      "@type": "@id"
+    }
+  },
+  "@graph": [
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000401",
+      "@type": [
+        "cheez:Record",
+        "mowm:WorldSplit",
+        "prov:Activity"
+      ],
+      "cheez:writtenBy": "urn:uuid:00000000-0000-0000-0000-000000000001",
+      "prov:used": "urn:uuid:00000000-0000-0000-0000-000000000402",
+      "prov:generated": "urn:uuid:00000000-0000-0000-0000-000000000403",
+      "mowm:residual": "urn:uuid:00000000-0000-0000-0000-000000000404",
+      "cheez:check": "urn:uuid:00000000-0000-0000-0000-000000000405",
+      "prov:startedAtTime": "2026-11-07T14:20:00Z",
+      "prov:endedAtTime": "2026-11-07T14:20:01Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000402",
+      "@type": [
+        "mowm:World",
+        "prov:Entity"
+      ],
+      "mowm:worldId": 1004,
+      "mowm:zDepth": 3,
+      "mowm:zMax": 3,
+      "mowm:tau": "urn:uuid:00000000-0000-0000-0000-000000000410",
+      "mowm:mergeStrategy": "mowm:BindComposeMerge"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000403",
+      "@type": [
+        "mowm:World",
+        "prov:Entity"
+      ],
+      "mowm:worldId": 1019,
+      "mowm:zDepth": 4,
+      "mowm:zMax": 3,
+      "mowm:parentWorld": "urn:uuid:00000000-0000-0000-0000-000000000402",
+      "mowm:mergeStrategy": "mowm:BindComposeMerge"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000404",
+      "@type": [
+        "cheez:Artifact",
+        "prov:Entity"
+      ],
+      "cheez:hash": "PLACEHOLDER: residual block-code hash",
+      "cheez:hashAlgorithm": "PLACEHOLDER: hash algorithm"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000405",
+      "@type": [
+        "cheez:CheckRun",
+        "prov:Activity"
+      ],
+      "dcterms:type": "mowm:ZMaxCheck",
+      "cheez:outcome": "cheez:Satisfied",
+      "prov:used": "urn:uuid:00000000-0000-0000-0000-000000000402",
+      "prov:endedAtTime": "2026-11-07T14:20:00Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000410",
+      "@type": [
+        "cheez:Threshold",
+        "prov:Entity"
+      ],
+      "dcterms:type": "mowm:Tau",
+      "cheez:thresholdValue": "0.60",
+      "prov:wasGeneratedBy": "urn:uuid:00000000-0000-0000-0000-000000000411"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000411",
+      "@type": [
+        "cheez:Calibration",
+        "prov:Activity"
+      ],
+      "cheez:screen": "urn:uuid:00000000-0000-0000-0000-000000000412",
+      "cheez:calibrationData": "urn:uuid:00000000-0000-0000-0000-000000000413",
+      "cheez:encoder": "urn:uuid:00000000-0000-0000-0000-000000000414",
+      "cheez:deployment": "urn:uuid:00000000-0000-0000-0000-000000000415",
+      "prov:endedAtTime": "2026-11-01T00:00:00Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000412",
+      "@type": [
+        "cheez:Artifact",
+        "prov:Entity"
+      ],
+      "cheez:hash": "PLACEHOLDER: calibration screen hash",
+      "cheez:hashAlgorithm": "PLACEHOLDER: hash algorithm"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000413",
+      "@type": [
+        "cheez:Artifact",
+        "prov:Entity"
+      ],
+      "cheez:hash": "PLACEHOLDER: calibration data hash",
+      "cheez:hashAlgorithm": "PLACEHOLDER: hash algorithm"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000414",
+      "@type": [
+        "cheez:Artifact",
+        "prov:Entity"
+      ],
+      "schema:name": "HYLA encoder",
+      "cheez:hash": "PLACEHOLDER: HYLA encoder weights hash",
+      "cheez:hashAlgorithm": "PLACEHOLDER: hash algorithm"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000415",
+      "@type": "prov:Entity",
+      "schema:identifier": "PLACEHOLDER: deployment id"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000001",
+      "@type": [
+        "cheez:Host",
+        "prov:SoftwareAgent"
+      ]
+    }
+  ]
+}

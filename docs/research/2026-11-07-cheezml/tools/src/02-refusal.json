@@ -1,0 +1,66 @@
+{
+  "@context": "@@CONTEXT@@",
+  "@graph": [
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000201",
+      "@type": ["cheez:Record", "cubby:Turn", "prov:Entity"],
+      "cheez:writtenBy": "urn:uuid:00000000-0000-0000-0000-000000000001",
+      "cubby:dialogueAct": "cubby:RefusalAct",
+      "cubby:turnIndex": 6,
+      "schema:isPartOf": "urn:uuid:00000000-0000-0000-0000-000000000003",
+      "cubby:decision": "urn:uuid:00000000-0000-0000-0000-000000000203",
+      "prov:generatedAtTime": "2026-11-07T14:05:01Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000202",
+      "@type": ["cheez:Question", "prov:Entity"],
+      "cheez:option": "urn:uuid:00000000-0000-0000-0000-000000000204",
+      "cheez:hasResult": "urn:uuid:00000000-0000-0000-0000-000000000203"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000203",
+      "@type": ["cubby:Refusal", "cheez:Decision", "prov:Entity"],
+      "cubby:refusalReason": "cubby:FactMissing",
+      "cubby:proposer": "cubby:EverydayTable",
+      "prov:wasGeneratedBy": "urn:uuid:00000000-0000-0000-0000-000000000205",
+      "prov:generatedAtTime": "2026-11-07T14:05:01Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000204",
+      "@type": ["cube:Program", "cheez:Option", "prov:Entity"],
+      "cheez:hash": "PLACEHOLDER: program hash",
+      "cheez:hashAlgorithm": "PLACEHOLDER: hash algorithm",
+      "cubby:proposer": "cubby:EverydayTable"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000205",
+      "@type": ["cube:ProgramRun", "prov:Activity"],
+      "prov:wasAssociatedWith": "urn:uuid:00000000-0000-0000-0000-000000000002",
+      "prov:used": "urn:uuid:00000000-0000-0000-0000-000000000204",
+      "cheez:outcome": "cube:Return",
+      "prov:startedAtTime": "2026-11-07T14:05:00Z",
+      "prov:endedAtTime": "2026-11-07T14:05:01Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000206",
+      "@type": ["cheez:RenderedText", "prov:Entity"],
+      "cheez:template": "urn:uuid:00000000-0000-0000-0000-000000000207",
+      "prov:wasDerivedFrom": "urn:uuid:00000000-0000-0000-0000-000000000203",
+      "schema:text": "PLACEHOLDER: sentence produced by the template from the code cubby:FactMissing"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000207",
+      "@type": ["cheez:Template", "prov:Entity"],
+      "cheez:hash": "PLACEHOLDER: template hash",
+      "cheez:hashAlgorithm": "PLACEHOLDER: hash algorithm"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000001",
+      "@type": ["cheez:Host", "prov:SoftwareAgent"]
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000002",
+      "@type": ["cube:VM", "prov:SoftwareAgent"]
+    }
+  ]
+}

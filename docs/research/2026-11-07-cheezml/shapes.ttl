@@ -1,0 +1,907 @@
+# CheezML v0.1 SHACL shapes (draft synthesis, 2026-11-07)
+# Six main shapes (one per example record type) plus the supporting shapes they rely on.
+# Validate with inference "none": no RDFS reasoning is assumed, so every node states its classes.
+
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix schema:  <https://schema.org/> .
+@prefix time:    <http://www.w3.org/2006/time#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix cheez:   <https://w3id.org/cheezml/core#> .
+@prefix cubby:   <https://w3id.org/cheezml/cubby#> .
+@prefix mowm:    <https://w3id.org/cheezml/mowm#> .
+@prefix cube:    <https://w3id.org/cheezml/cubelang#> .
+
+<https://w3id.org/cheezml/shapes>
+  sh:declare
+    [ sh:prefix "rdf"     ; sh:namespace "http://www.w3.org/1999/02/22-rdf-syntax-ns#"^^xsd:anyURI ] ,
+    [ sh:prefix "xsd"     ; sh:namespace "http://www.w3.org/2001/XMLSchema#"^^xsd:anyURI ] ,
+    [ sh:prefix "prov"    ; sh:namespace "http://www.w3.org/ns/prov#"^^xsd:anyURI ] ,
+    [ sh:prefix "schema"  ; sh:namespace "https://schema.org/"^^xsd:anyURI ] ,
+    [ sh:prefix "dcterms" ; sh:namespace "http://purl.org/dc/terms/"^^xsd:anyURI ] ,
+    [ sh:prefix "cheez"   ; sh:namespace "https://w3id.org/cheezml/core#"^^xsd:anyURI ] ,
+    [ sh:prefix "cubby"   ; sh:namespace "https://w3id.org/cheezml/cubby#"^^xsd:anyURI ] ,
+    [ sh:prefix "mowm"    ; sh:namespace "https://w3id.org/cheezml/mowm#"^^xsd:anyURI ] ,
+    [ sh:prefix "cube"    ; sh:namespace "https://w3id.org/cheezml/cubelang#"^^xsd:anyURI ] .
+
+#################################################################
+# Supporting shapes
+#################################################################
+
+cheez:RecordShape
+  a sh:NodeShape ;
+  sh:targetClass cheez:Record ;
+  sh:property [
+    sh:path cheez:writtenBy ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cheez:Host ;
+    sh:message "Every record names exactly one host that wrote it from what ran (cheez:writtenBy a cheez:Host)."
+  ] .
+
+cheez:ArtifactShape
+  a sh:NodeShape ;
+  sh:targetClass cheez:Artifact , cheez:Rule , cheez:Template , cube:Program , cubby:Helper , mowm:WordTableEncoder ;
+  sh:property [
+    sh:path cheez:hash ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ;
+    sh:message "An artifact (program, rule, template, vector, weights, data, encoder table) is identified by exactly one content hash."
+  ] ;
+  sh:property [
+    sh:path cheez:hashAlgorithm ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ;
+    sh:message "An artifact names the algorithm of its hash."
+  ] ;
+  sh:property [
+    sh:path prov:value ; sh:maxCount 0 ;
+    sh:message "An artifact is referenced by hash: its bytes (vectors, weights, blobs) are never embedded in a record."
+  ] .
+
+cheez:CheckRunShape
+  a sh:NodeShape ;
+  sh:targetClass cheez:CheckRun ;
+  sh:property [
+    sh:path dcterms:type ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:in ( cubby:ConflictCheck cubby:DatePrecisionCheck cubby:EntityGuardCheck cubby:PrerequisiteCheck cubby:ToneCheck
+            cubby:NumberInRegionCheck cubby:FormatCheck cubby:ArithmeticCheck cubby:PurchaseOrderCheck cubby:SupplierCheck cubby:DuplicateCheck
+            cubby:ReproductionCheck cubby:ScopeCheck cubby:EscapeCheck cubby:RejectionRateCheck
+            cubby:NoNewWrongAnswerCheck cubby:GainCheck
+            mowm:ZMaxCheck mowm:AnswerSupportCheck mowm:ResidualCheck ) ;
+    sh:message "A check run names exactly one check kind from cheez:CheckKinds."
+  ] ;
+  sh:property [
+    sh:path cheez:outcome ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( cheez:Satisfied cheez:Violated ) ;
+    sh:message "A check that ran records exactly one outcome, cheez:Satisfied or cheez:Violated. A check that never ran has no record and no outcome."
+  ] ;
+  sh:property [
+    sh:path prov:endedAtTime ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ;
+    sh:message "A check run records when it ended."
+  ] ;
+  sh:property [
+    sh:path cheez:observedValue ; sh:maxCount 1 ; sh:datatype xsd:decimal ;
+    sh:message "A check run records at most one observed value, as an xsd:decimal (a measurement, never a threshold)."
+  ] ;
+  sh:property [
+    sh:path cheez:threshold ; sh:maxCount 1 ; sh:class cheez:Threshold ;
+    sh:message "A check compared against a threshold points to one cheez:Threshold, which carries its calibration."
+  ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:prefixes <https://w3id.org/cheezml/shapes> ;
+    sh:message "Escape attempts must be 0: an escape check that observed any attempt must be recorded as violated." ;
+    sh:select """
+      SELECT $this WHERE {
+        $this dcterms:type cubby:EscapeCheck ; cheez:observedValue ?n ; cheez:outcome cheez:Satisfied .
+        FILTER (?n > 0)
+      }"""
+  ] .
+
+cheez:SatisfiedCheckShape
+  a sh:NodeShape ;
+  sh:property [
+    sh:path cheez:outcome ; sh:hasValue cheez:Satisfied ;
+    sh:message "This check must be satisfied."
+  ] .
+
+cheez:ThresholdShape
+  a sh:NodeShape ;
+  sh:targetClass cheez:Threshold ;
+  sh:property [
+    sh:path cheez:thresholdValue ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ;
+    sh:message "A threshold has exactly one value, as an xsd:decimal."
+  ] ;
+  sh:property [
+    sh:path dcterms:type ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:in ( mowm:AbsoluteFloor mowm:TauMargin mowm:TauAnswer mowm:TauSpawn mowm:Tau mowm:TauPruneSteps ) ;
+    sh:message "A threshold names the one parameter it sets (absolute floor, tau_margin, tau_answer, tau_spawn, tau, tau_prune_steps)."
+  ] ;
+  sh:property [
+    sh:path prov:wasGeneratedBy ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cheez:Calibration ;
+    sh:message "Scores are not thresholds: every threshold carries its calibration (prov:wasGeneratedBy one cheez:Calibration)."
+  ] .
+
+cheez:CalibrationShape
+  a sh:NodeShape ;
+  sh:targetClass cheez:Calibration ;
+  sh:property [
+    sh:path cheez:screen ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cheez:Artifact ;
+    sh:message "A calibration names the one screen that set the threshold, as a hashed artifact."
+  ] ;
+  sh:property [
+    sh:path cheez:calibrationData ; sh:minCount 1 ; sh:class cheez:Artifact ;
+    sh:message "A calibration names the data it was run on, as hashed artifacts."
+  ] ;
+  sh:property [
+    sh:path prov:endedAtTime ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ;
+    sh:message "A calibration records its date (prov:endedAtTime)."
+  ] ;
+  sh:property [
+    sh:path cheez:encoder ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+    sh:message "A calibration names the exact encoder: thresholds do not transfer between encoders."
+  ] ;
+  sh:property [
+    sh:path cheez:deployment ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+    sh:message "A calibration names the deployment it holds for: thresholds are calibrated per deployment."
+  ] .
+
+cheez:FactVersionShape
+  a sh:NodeShape ;
+  sh:targetClass cheez:FactVersion ;
+  sh:property [
+    sh:path cheez:validTime ; sh:minCount 1 ; sh:maxCount 1 ; sh:node cheez:IntervalShape ;
+    sh:message "Clock 1: a fact version records when it held, as one OWL-Time interval with a beginning instant."
+  ] ;
+  sh:property [
+    sh:path prov:generatedAtTime ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ;
+    sh:message "Clock 2: a fact version records when the store learned it (prov:generatedAtTime)."
+  ] ;
+  sh:property [
+    sh:path prov:invalidatedAtTime ; sh:maxCount 1 ; sh:datatype xsd:dateTime ;
+    sh:message "A correction closes a fact version once (prov:invalidatedAtTime); it is never overwritten."
+  ] ;
+  sh:property [
+    sh:path prov:hadPrimarySource ; sh:minCount 1 ;
+    sh:message "Every fact version names its source (prov:hadPrimarySource)."
+  ] .
+
+cheez:IntervalShape
+  a sh:NodeShape ;
+  sh:class time:Interval ;
+  sh:message "A valid time is a time:Interval." ;
+  sh:property [
+    sh:path time:hasBeginning ; sh:minCount 1 ; sh:maxCount 1 ; sh:node cheez:InstantShape ;
+    sh:message "A valid-time interval has exactly one beginning instant."
+  ] ;
+  sh:property [
+    sh:path time:hasEnd ; sh:maxCount 1 ; sh:node cheez:InstantShape ;
+    sh:message "A valid-time interval has at most one end instant."
+  ] .
+
+cheez:InstantShape
+  a sh:NodeShape ;
+  sh:class time:Instant ;
+  sh:message "An interval boundary is a time:Instant." ;
+  sh:property [
+    sh:path time:inXSDDateTimeStamp ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTimeStamp ;
+    sh:message "An instant carries one xsd:dateTimeStamp (a timestamp with its time zone)."
+  ] .
+
+cheez:RenderedTextShape
+  a sh:NodeShape ;
+  sh:targetClass cheez:RenderedText ;
+  sh:property [
+    sh:path schema:text ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ;
+    sh:message "Rendered text holds exactly one sentence."
+  ] ;
+  sh:property [
+    sh:path cheez:template ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cheez:Template ;
+    sh:message "Readable text exists only as the output of one hashed cheez:Template."
+  ] ;
+  sh:property [
+    sh:path prov:wasDerivedFrom ; sh:minCount 1 ;
+    sh:message "Rendered text names the coded record it was produced from."
+  ] .
+
+cube:ProgramRunShape
+  a sh:NodeShape ;
+  sh:targetClass cube:ProgramRun ;
+  sh:property [
+    sh:path cheez:outcome ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( cube:Return cube:Error cube:Ask ) ;
+    sh:message "A program run records exactly one execution outcome: cube:Return, cube:Error or cube:Ask (suspended)."
+  ] ;
+  sh:property [
+    sh:path prov:wasAssociatedWith ;
+    sh:qualifiedValueShape [ sh:class cube:VM ] ; sh:qualifiedMinCount 1 ;
+    sh:message "A program run is executed by the CubeLang VM (prov:wasAssociatedWith a cube:VM)."
+  ] ;
+  sh:property [
+    sh:path prov:endedAtTime ; sh:maxCount 1 ; sh:datatype xsd:dateTime ;
+    sh:message "A program run records at most one end time."
+  ] .
+
+mowm:WorldShape
+  a sh:NodeShape ;
+  sh:targetClass mowm:World ;
+  sh:property [
+    sh:path mowm:worldId ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ; sh:minInclusive 1000 ;
+    sh:message "A world carries exactly one counter-issued integer id (the world counter starts at 1000, the router counter at 5000)."
+  ] ;
+  sh:property [
+    sh:path mowm:zDepth ; sh:maxCount 1 ; sh:datatype xsd:integer ; sh:minInclusive 0 ;
+    sh:message "A world has at most one depth z, a non-negative integer."
+  ] ;
+  sh:property [
+    sh:path mowm:zMax ; sh:maxCount 1 ; sh:datatype xsd:integer ; sh:minInclusive 0 ;
+    sh:message "A world has at most one z_max, a non-negative integer."
+  ] ;
+  sh:property [
+    sh:path mowm:tau ; sh:maxCount 1 ; sh:class cheez:Threshold ;
+    sh:message "A world's spawn-confidence tau is one cheez:Threshold, carrying its calibration."
+  ] ;
+  sh:property [
+    sh:path mowm:parentWorld ; sh:maxCount 1 ; sh:class mowm:World ;
+    sh:message "A world has at most one parent world."
+  ] ;
+  sh:property [
+    sh:path mowm:mergeStrategy ; sh:maxCount 1 ; sh:in ( mowm:BindComposeMerge ) ;
+    sh:message "A world names at most one merge strategy from mowm:MergeStrategies."
+  ] .
+
+mowm:WorldSpawnShape
+  a sh:NodeShape ;
+  sh:targetClass mowm:WorldSpawn ;
+  sh:property [
+    sh:path prov:generated ; sh:minCount 1 ; sh:maxCount 1 ; sh:class mowm:World ;
+    sh:message "A spawn that ran generated exactly one world; a requested spawn that did not run has no WorldSpawn record."
+  ] ;
+  sh:property [
+    sh:path prov:endedAtTime ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ;
+    sh:message "A spawn records when it ended."
+  ] .
+
+#################################################################
+# 1. Certified answer turn with its certificate
+#################################################################
+
+cubby:TurnShape
+  a sh:NodeShape ;
+  sh:targetClass cubby:Turn ;
+  sh:property [
+    sh:path cubby:dialogueAct ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:in ( cubby:QuestionAct cubby:CertifiedAnswerAct cubby:RefusalAct cubby:ClarifyingQuestionAct cubby:FollowUpAct cubby:SmallTalkAct ) ;
+    sh:message "A turn carries exactly one dialogue act from cubby:DialogueActs."
+  ] ;
+  sh:property [
+    sh:path schema:text ; sh:maxCount 0 ;
+    sh:message "A turn carries no prose: any readable sentence is a cheez:RenderedText produced by a template from codes."
+  ] ;
+  sh:property [
+    sh:path cubby:decision ; sh:maxCount 1 ; sh:class cheez:Decision ;
+    sh:message "A turn delivers at most one decision (an answer or a refusal)."
+  ] .
+
+cubby:CertifiedAnswerTurnShape
+  a sh:NodeShape ;
+  sh:targetClass cubby:Turn ;
+  sh:or (
+    [ sh:not [ sh:path cubby:dialogueAct ; sh:hasValue cubby:CertifiedAnswerAct ; sh:message "The turn is coded cubby:CertifiedAnswerAct." ] ]
+    [ sh:path cubby:decision ; sh:minCount 1 ; sh:class cubby:Answer ; sh:message "The turn delivers a cubby:Answer." ]
+  ) ;
+  sh:message "A turn coded cubby:CertifiedAnswerAct must deliver a cubby:Answer (cubby:decision)." .
+
+cubby:AnswerShape
+  a sh:NodeShape ;
+  sh:targetClass cubby:Answer ;
+  sh:property [
+    sh:path cubby:proposer ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:in ( cubby:HostGrammar cubby:EverydayTable cubby:OvernightRuleLibrary cubby:EpisodicMemory cubby:LMProgramEmitter ) ;
+    sh:message "Every answer records its proposer, from cubby:Proposers."
+  ] ;
+  sh:property [
+    sh:path cheez:chosenOption ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cheez:Option ;
+    sh:message "An answer is the Decision for exactly one Option: the proposer's program that produced it."
+  ] ;
+  sh:property [
+    sh:path prov:wasGeneratedBy ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cube:ProgramRun ;
+    sh:message "An answer is generated by exactly one VM program run."
+  ] ;
+  sh:property [
+    sh:path [ sh:inversePath cheez:hasResult ] ; sh:minCount 1 ; sh:class cheez:Question ;
+    sh:message "An answer is the result (Decision) of a recorded cheez:Question."
+  ] ;
+  sh:property [
+    sh:path [ sh:inversePath cheez:certifies ] ; sh:minCount 1 ; sh:class cheez:Certificate ;
+    sh:message "A delivered answer has a certificate; an answer that cannot be certified is a refusal with reason cubby:NotCertified."
+  ] .
+
+cheez:CertificateShape
+  a sh:NodeShape ;
+  sh:targetClass cheez:Certificate ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:message "A certificate holds only its writer, the answer it certifies, the VM run, its checks and its time: no truth score, no rationale, no status." ;
+  sh:property [
+    sh:path cheez:writtenBy ; sh:maxCount 1 ;
+    sh:message "A certificate names at most one writing host."
+  ] ;
+  sh:property [
+    sh:path cheez:certifies ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubby:Answer ;
+    sh:message "A certificate certifies exactly one answer. It says the answer follows from the facts and rules used under the recorded checks, not that the answer is correct."
+  ] ;
+  sh:property [
+    sh:path prov:wasGeneratedBy ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cube:ProgramRun ;
+    sh:message "Only the VM certifies: a certificate is generated by one CubeLang program run, never by agreement between models or agents."
+  ] ;
+  sh:property [
+    sh:path prov:wasGeneratedBy ; sh:node cheez:CertifyingRunShape ;
+    sh:message "The certifying run must be a VM run that returned, used the chosen program, and read at least one statement version with its source and revision."
+  ] ;
+  sh:property [
+    sh:path cheez:check ; sh:minCount 1 ; sh:class cheez:CheckRun ;
+    sh:message "A certificate lists the checks (criteria) it was made under; a certificate with no recorded check certifies nothing."
+  ] ;
+  sh:property [
+    sh:path cheez:check ; sh:node cheez:SatisfiedCheckShape ;
+    sh:message "Every check on a certificate must be satisfied."
+  ] ;
+  sh:property [
+    sh:path prov:generatedAtTime ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ;
+    sh:message "A certificate records when it was generated."
+  ] .
+
+cheez:CertificateConsistencyShape
+  a sh:NodeShape ;
+  sh:targetClass cheez:Certificate ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:prefixes <https://w3id.org/cheezml/shapes> ;
+    sh:message "The certified answer must be generated by the same VM run that generated the certificate." ;
+    sh:select """
+      SELECT $this WHERE {
+        $this cheez:certifies ?a ; prov:wasGeneratedBy ?run .
+        FILTER NOT EXISTS { ?a prov:wasGeneratedBy ?run . }
+      }"""
+  ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:prefixes <https://w3id.org/cheezml/shapes> ;
+    sh:message "Each check (criterion) on a certificate must be satisfied by the certified answer's chosen option (cheez:isSatisfiedBy)." ;
+    sh:select """
+      SELECT $this WHERE {
+        $this cheez:certifies ?a ; cheez:check ?c .
+        ?a cheez:chosenOption ?o .
+        FILTER NOT EXISTS { ?c cheez:isSatisfiedBy ?o . }
+      }"""
+  ] .
+
+cheez:CertifyingRunShape
+  a sh:NodeShape ;
+  sh:property [
+    sh:path prov:wasAssociatedWith ;
+    sh:qualifiedValueShape [ sh:class cube:VM ] ; sh:qualifiedMinCount 1 ;
+    sh:message "The certifying run is executed by the CubeLang VM."
+  ] ;
+  sh:property [
+    sh:path cheez:outcome ; sh:hasValue cube:Return ;
+    sh:message "The certifying run returned (not cube:Error, not suspended on cube:Ask)."
+  ] ;
+  sh:property [
+    sh:path prov:used ;
+    sh:qualifiedValueShape [ sh:class cube:Program ] ; sh:qualifiedMinCount 1 ; sh:qualifiedMaxCount 1 ;
+    sh:message "The certifying run used exactly one program."
+  ] ;
+  sh:property [
+    sh:path prov:used ;
+    sh:qualifiedValueShape [
+      sh:class cheez:FactVersion ;
+      sh:property [ sh:path ( prov:hadPrimarySource schema:version ) ; sh:minCount 1 ; sh:message "The statement's source records its revision." ]
+    ] ;
+    sh:qualifiedMinCount 1 ;
+    sh:message "The certifying run read at least one statement version whose source records its revision (schema:version)."
+  ] .
+
+#################################################################
+# 2. Refusal with its reason
+#################################################################
+
+cubby:RefusalTurnShape
+  a sh:NodeShape ;
+  sh:targetClass cubby:Turn ;
+  sh:or (
+    [ sh:not [ sh:path cubby:dialogueAct ; sh:hasValue cubby:RefusalAct ; sh:message "The turn is coded cubby:RefusalAct." ] ]
+    [ sh:path cubby:decision ; sh:minCount 1 ; sh:class cubby:Refusal ; sh:message "The turn delivers a cubby:Refusal." ]
+  ) ;
+  sh:message "A turn coded cubby:RefusalAct must deliver a cubby:Refusal (cubby:decision)." .
+
+cubby:RefusalShape
+  a sh:NodeShape ;
+  sh:targetClass cubby:Refusal ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:message "A refusal holds only coded fields (reason, conflict kind, proposer, run, checks, time): no prose rationale, no truth score." ;
+  sh:property [
+    sh:path cubby:refusalReason ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:in ( cubby:NoPlan cubby:RelationMissing cubby:FactMissing cubby:WalkFailed cubby:NotCertified cubby:Ambiguous
+            cubby:Conflict cubby:DatesTooCoarse cubby:UnreadableSource ) ;
+    sh:message "A refusal records exactly one reason code from cubby:RefusalReasons."
+  ] ;
+  sh:property [
+    sh:path cubby:conflictKind ; sh:maxCount 1 ;
+    sh:in ( cubby:ValueConflict cubby:TypeConflict cubby:TemporalConflict cubby:LogicalConflict cubby:RecordedVsDerivedConflict ) ;
+    sh:message "A refusal names at most one conflict kind from cubby:ConflictKinds."
+  ] ;
+  sh:property [
+    sh:path cubby:proposer ; sh:maxCount 1 ;
+    sh:in ( cubby:HostGrammar cubby:EverydayTable cubby:OvernightRuleLibrary cubby:EpisodicMemory cubby:LMProgramEmitter ) ;
+    sh:message "A refusal names at most one proposer, from cubby:Proposers."
+  ] ;
+  sh:property [
+    sh:path prov:wasGeneratedBy ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+    sh:message "A refusal names at most one activity that produced it."
+  ] ;
+  sh:property [
+    sh:path prov:generatedAtTime ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ;
+    sh:message "A refusal records when it was generated."
+  ] ;
+  sh:property [
+    sh:path cheez:check ; sh:class cheez:CheckRun ;
+    sh:message "Evidence on a refusal is a recorded check run."
+  ] ;
+  sh:property [
+    sh:path cheez:chosenOption ; sh:maxCount 0 ;
+    sh:message "A refusal chooses no option."
+  ] ;
+  sh:property [
+    sh:path [ sh:inversePath cheez:hasResult ] ; sh:minCount 1 ; sh:class cheez:Question ;
+    sh:message "A refusal is the result (Decision) of a recorded cheez:Question."
+  ] .
+
+cubby:RefusalConflictShape
+  a sh:NodeShape ;
+  sh:targetClass cubby:Refusal ;
+  sh:xone (
+    [ sh:property [ sh:path cubby:refusalReason ; sh:hasValue cubby:Conflict ; sh:message "The reason is cubby:Conflict." ] ;
+      sh:property [ sh:path cubby:conflictKind ; sh:minCount 1 ; sh:message "A conflict kind is named." ] ]
+    [ sh:not [ sh:path cubby:refusalReason ; sh:hasValue cubby:Conflict ; sh:message "The reason is cubby:Conflict." ] ;
+      sh:property [ sh:path cubby:conflictKind ; sh:maxCount 0 ; sh:message "No conflict kind is named." ] ]
+  ) ;
+  sh:message "A refusal with reason cubby:Conflict names its conflict kind; a refusal with any other reason names none." .
+
+#################################################################
+# 3. MoWM routing decision (route or spawn)
+#################################################################
+
+mowm:RoutingDecisionShape
+  a sh:NodeShape ;
+  sh:targetClass mowm:RoutingDecision ;
+  sh:property [
+    sh:path dcterms:type ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( mowm:CentroidRouting mowm:BestMemberRouting ) ;
+    sh:message "A routing decision names its routing mode (centroid or best member); thresholds for one mode do not carry over to the other."
+  ] ;
+  sh:property [
+    sh:path cheez:encoder ; sh:minCount 1 ; sh:maxCount 1 ; sh:class mowm:WordTableEncoder ;
+    sh:message "No neural model on MoWM's routing path: the decision names the word-table encoder (FastWordEncoder) it used."
+  ] ;
+  sh:property [
+    sh:path mowm:queryVector ; sh:maxCount 1 ; sh:class cheez:Artifact ;
+    sh:message "The query vector is referenced by hash (one cheez:Artifact), never embedded."
+  ] ;
+  sh:property [
+    sh:path mowm:worldCount ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ; sh:minInclusive 0 ;
+    sh:message "A routing decision records how many worlds were in the pool."
+  ] ;
+  sh:property [
+    sh:path cheez:outcome ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( mowm:Route mowm:Spawn ) ;
+    sh:message "A routing decision records exactly one outcome: mowm:Route or mowm:Spawn."
+  ] ;
+  sh:property [
+    sh:path mowm:bestScore ; sh:maxCount 1 ; sh:datatype xsd:decimal ;
+    sh:message "The best world's score is one xsd:decimal (a score, not a threshold)."
+  ] ;
+  sh:property [
+    sh:path mowm:runnerUpScore ; sh:maxCount 1 ; sh:datatype xsd:decimal ;
+    sh:message "The runner-up's score is one xsd:decimal (a score, not a threshold)."
+  ] ;
+  sh:property [
+    sh:path mowm:margin ; sh:maxCount 1 ; sh:datatype xsd:decimal ; sh:minInclusive 0 ;
+    sh:message "The margin is one non-negative xsd:decimal."
+  ] ;
+  sh:property [
+    sh:path mowm:bestWorld ; sh:maxCount 1 ; sh:class mowm:World ; sh:disjoint mowm:runnerUpWorld ;
+    sh:message "The best world is one mowm:World, distinct from the runner-up."
+  ] ;
+  sh:property [
+    sh:path mowm:floorThreshold ; sh:maxCount 1 ; sh:class cheez:Threshold ;
+    sh:node [ sh:property [ sh:path dcterms:type ; sh:hasValue mowm:AbsoluteFloor ; sh:message "The floor threshold sets mowm:AbsoluteFloor." ] ] ;
+    sh:message "The floor is one cheez:Threshold for the parameter mowm:AbsoluteFloor."
+  ] ;
+  sh:property [
+    sh:path mowm:marginThreshold ; sh:maxCount 1 ; sh:class cheez:Threshold ;
+    sh:node [ sh:property [ sh:path dcterms:type ; sh:hasValue mowm:TauMargin ; sh:message "The margin threshold sets mowm:TauMargin." ] ] ;
+    sh:message "The margin threshold is one cheez:Threshold for the parameter mowm:TauMargin."
+  ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:prefixes <https://w3id.org/cheezml/shapes> ;
+    sh:message "The recorded margin must equal the best score minus the runner-up score." ;
+    sh:select """
+      SELECT $this WHERE {
+        $this mowm:margin ?m ; mowm:bestScore ?b ; mowm:runnerUpScore ?r .
+        FILTER (ABS(?m - (?b - ?r)) > 0.0000001)
+      }"""
+  ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:prefixes <https://w3id.org/cheezml/shapes> ;
+    sh:message "The outcome must follow from the values: route only if the best score clears the floor and, with two or more worlds, the margin clears tau_margin; otherwise spawn. (Equality is accepted either way until the brief settles what 'clears' means.)" ;
+    sh:select """
+      SELECT $this WHERE {
+        $this mowm:bestScore ?b ; mowm:floorThreshold/cheez:thresholdValue ?f ;
+              cheez:outcome ?o ; mowm:worldCount ?n .
+        OPTIONAL { $this mowm:margin ?m ; mowm:marginThreshold/cheez:thresholdValue ?t . }
+        FILTER (
+          ( ?o = mowm:Route && ( ?b < ?f || ( ?n >= 2 && ( !BOUND(?m) || ?m < ?t ) ) ) )
+          ||
+          ( ?o = mowm:Spawn && ?b > ?f && ( ?n < 2 || ( BOUND(?m) && ?m > ?t ) ) )
+        )
+      }"""
+  ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:prefixes <https://w3id.org/cheezml/shapes> ;
+    sh:message "Thresholds do not transfer between encoders: every threshold used must have been calibrated with the decision's own encoder." ;
+    sh:select """
+      SELECT $this WHERE {
+        $this cheez:encoder ?e ;
+              (mowm:floorThreshold|mowm:marginThreshold)/prov:wasGeneratedBy/cheez:encoder ?ce .
+        FILTER (?ce != ?e)
+      }"""
+  ] .
+
+mowm:RoutingBestShape
+  a sh:NodeShape ;
+  sh:targetClass mowm:RoutingDecision ;
+  sh:or (
+    [ sh:path mowm:worldCount ; sh:maxInclusive 0 ; sh:message "The pool is empty." ]
+    [ sh:property [ sh:path mowm:bestWorld ; sh:minCount 1 ; sh:message "The best world is recorded." ] ;
+      sh:property [ sh:path mowm:bestScore ; sh:minCount 1 ; sh:message "The best score is recorded." ] ;
+      sh:property [ sh:path mowm:floorThreshold ; sh:minCount 1 ; sh:message "The calibrated absolute floor is recorded." ] ]
+  ) ;
+  sh:message "With one or more worlds, a routing decision records the best world, its score and the calibrated absolute floor it was compared with." .
+
+mowm:RoutingRunnerUpShape
+  a sh:NodeShape ;
+  sh:targetClass mowm:RoutingDecision ;
+  sh:or (
+    [ sh:path mowm:worldCount ; sh:maxInclusive 1 ; sh:message "The pool has fewer than two worlds." ]
+    [ sh:property [ sh:path mowm:runnerUpWorld ; sh:minCount 1 ; sh:message "The runner-up world is recorded." ] ;
+      sh:property [ sh:path mowm:runnerUpScore ; sh:minCount 1 ; sh:message "The runner-up score is recorded." ] ;
+      sh:property [ sh:path mowm:margin ; sh:minCount 1 ; sh:message "The margin is recorded." ] ;
+      sh:property [ sh:path mowm:marginThreshold ; sh:minCount 1 ; sh:message "The calibrated tau_margin is recorded." ] ]
+  ) ;
+  sh:message "With two or more worlds, a routing decision records the runner-up world, its score, the margin and the calibrated tau_margin." .
+
+mowm:RoutingOutcomeShape
+  a sh:NodeShape ;
+  sh:targetClass mowm:RoutingDecision ;
+  sh:xone (
+    [ sh:property [ sh:path cheez:outcome ; sh:hasValue mowm:Route ; sh:message "The outcome is mowm:Route." ] ;
+      sh:property [ sh:path mowm:routedTo ; sh:minCount 1 ; sh:maxCount 1 ; sh:class mowm:World ; sh:message "One world is routed to." ] ;
+      sh:property [ sh:path [ sh:inversePath prov:wasInformedBy ] ;
+                    sh:qualifiedValueShape [ sh:class mowm:WorldSpawn ] ; sh:qualifiedMaxCount 0 ; sh:message "No spawn follows a route." ] ]
+    [ sh:property [ sh:path cheez:outcome ; sh:hasValue mowm:Spawn ; sh:message "The outcome is mowm:Spawn." ] ;
+      sh:property [ sh:path mowm:routedTo ; sh:maxCount 0 ; sh:message "A spawn routes nowhere." ] ;
+      sh:property [ sh:path [ sh:inversePath prov:wasInformedBy ] ;
+                    sh:qualifiedValueShape [ sh:class mowm:WorldSpawn ] ; sh:qualifiedMinCount 1 ; sh:message "A mowm:WorldSpawn that ran follows the decision." ] ]
+  ) ;
+  sh:message "A route names the one world it routed to and informs no spawn; a spawn is followed by a mowm:WorldSpawn that ran (prov:wasInformedBy this decision) and routes nowhere." .
+
+#################################################################
+# 4. World split: a child world at z+1
+#################################################################
+
+mowm:WorldSplitShape
+  a sh:NodeShape ;
+  sh:targetClass mowm:WorldSplit ;
+  sh:property [
+    sh:path prov:used ;
+    sh:qualifiedValueShape [ sh:class mowm:World ] ; sh:qualifiedMinCount 1 ; sh:qualifiedMaxCount 1 ;
+    sh:message "A split names exactly one parent world (prov:used)."
+  ] ;
+  sh:property [
+    sh:path prov:generated ; sh:minCount 1 ; sh:maxCount 1 ; sh:class mowm:World ;
+    sh:message "A split generated exactly one child world."
+  ] ;
+  sh:property [
+    sh:path prov:generated ;
+    sh:node [ sh:property [ sh:path mowm:zDepth ; sh:minCount 1 ; sh:message "The child world records its depth z." ] ;
+              sh:property [ sh:path mowm:parentWorld ; sh:minCount 1 ; sh:message "The child world records its parent world." ] ] ;
+    sh:message "The child world records its depth and its parent world."
+  ] ;
+  sh:property [
+    sh:path mowm:residual ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cheez:Artifact ;
+    sh:message "The residual the child handles is referenced by hash (one cheez:Artifact), never embedded."
+  ] ;
+  sh:property [
+    sh:path cheez:check ;
+    sh:qualifiedValueShape [
+      sh:property [ sh:path dcterms:type ; sh:hasValue mowm:ZMaxCheck ; sh:message "The check is the z_max check." ] ;
+      sh:property [ sh:path cheez:outcome ; sh:hasValue cheez:Satisfied ; sh:message "The z_max check was satisfied." ]
+    ] ;
+    sh:qualifiedMinCount 1 ;
+    sh:message "A split records the z_max check that ran before it, and that check was satisfied (spawn_subworld refuses at z_max)."
+  ] ;
+  sh:property [
+    sh:path prov:endedAtTime ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ;
+    sh:message "A split records when it ended."
+  ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:prefixes <https://w3id.org/cheezml/shapes> ;
+    sh:message "The parent world used by a split must record both its depth z and its z_max." ;
+    sh:select """
+      SELECT $this WHERE {
+        $this prov:used ?p . ?p a mowm:World .
+        FILTER NOT EXISTS { ?p mowm:zDepth ?z ; mowm:zMax ?zmax . }
+      }"""
+  ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:prefixes <https://w3id.org/cheezml/shapes> ;
+    sh:message "The child's parentWorld must be the world the split used." ;
+    sh:select """
+      SELECT $this WHERE {
+        $this prov:generated ?c ; prov:used ?p . ?p a mowm:World .
+        FILTER NOT EXISTS { ?c mowm:parentWorld ?p . }
+      }"""
+  ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:prefixes <https://w3id.org/cheezml/shapes> ;
+    sh:message "The child sits at z+1: its depth is the parent's depth plus one." ;
+    sh:select """
+      SELECT $this WHERE {
+        $this prov:generated ?c ; prov:used ?p . ?p a mowm:World .
+        ?p mowm:zDepth ?zp . ?c mowm:zDepth ?zc .
+        FILTER (?zc != ?zp + 1)
+      }"""
+  ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:prefixes <https://w3id.org/cheezml/shapes> ;
+    sh:message "No split at or beyond z_max: the parent's depth must be below its z_max, and the child's depth may not exceed its own z_max." ;
+    sh:select """
+      SELECT $this WHERE {
+        $this prov:generated ?c ; prov:used ?p . ?p a mowm:World .
+        ?p mowm:zDepth ?zp ; mowm:zMax ?zmaxp .
+        OPTIONAL { ?c mowm:zDepth ?zc ; mowm:zMax ?zmaxc . }
+        FILTER ( ?zp >= ?zmaxp || ( BOUND(?zmaxc) && ?zc > ?zmaxc ) )
+      }"""
+  ] .
+
+#################################################################
+# 5. Helper rejected in its sandbox (order 0062)
+#################################################################
+
+cubby:HelperRejectionShape
+  a sh:NodeShape ;
+  sh:targetClass cubby:HelperRejection ;
+  sh:property [
+    sh:path dcterms:type ; sh:minCount 1 ; sh:maxCount 1 ; sh:hasValue cheez:Rejected ;
+    sh:message "A helper rejection is a retirement of kind cheez:Rejected: the helper is kept, never deleted."
+  ] ;
+  sh:property [
+    sh:path prov:invalidated ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubby:Helper ;
+    sh:message "A helper rejection names exactly one rejected cubby:Helper, which stays in the store."
+  ] ;
+  sh:property [
+    sh:path prov:invalidated ;
+    sh:node [ sh:property [ sh:path cubby:proposer ; sh:minCount 1 ; sh:maxCount 1 ;
+              sh:in ( cubby:HostGrammar cubby:EverydayTable cubby:OvernightRuleLibrary cubby:EpisodicMemory cubby:LMProgramEmitter ) ;
+              sh:message "The helper names exactly one proposer from cubby:Proposers." ] ] ;
+    sh:message "The rejected helper records which of Cubby's own proposers proposed it."
+  ] ;
+  sh:property [
+    sh:path prov:wasInformedBy ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubby:SandboxRun ;
+    sh:message "A helper is rejected on the evidence of exactly one run in the locked-down sandbox (cubby:SandboxRun)."
+  ] ;
+  sh:property [
+    sh:path prov:wasInformedBy ;
+    sh:node [ sh:property [ sh:path cheez:check ; sh:minCount 1 ; sh:message "The sandbox run records its gate checks." ] ;
+              sh:property [ sh:path cheez:check ;
+                            sh:qualifiedValueShape [ sh:property [ sh:path cheez:outcome ; sh:hasValue cheez:Violated ; sh:message "The gate was violated." ] ] ;
+                            sh:qualifiedMinCount 1 ; sh:message "At least one gate check was violated." ] ] ;
+    sh:message "The sandbox run records its gate checks, and at least one gate was violated."
+  ] ;
+  sh:property [
+    sh:path cubby:breakingCase ; sh:minCount 1 ;
+    sh:message "A rejected helper is kept with the case that broke it (cubby:breakingCase)."
+  ] ;
+  sh:property [
+    sh:path cheez:retirementReason ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:in ( cubby:ReproductionCheck cubby:ScopeCheck cubby:EscapeCheck ) ;
+    sh:message "The rejection reason is the code of the gate that failed (reproduction, scope or escape)."
+  ] ;
+  sh:property [
+    sh:path prov:endedAtTime ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ;
+    sh:message "A helper rejection records when it ended."
+  ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:prefixes <https://w3id.org/cheezml/shapes> ;
+    sh:message "The sandbox run must have used (executed) the rejected helper." ;
+    sh:select """
+      SELECT $this WHERE {
+        $this prov:invalidated ?h ; prov:wasInformedBy ?s .
+        FILTER NOT EXISTS { ?s prov:used ?h . }
+      }"""
+  ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:prefixes <https://w3id.org/cheezml/shapes> ;
+    sh:message "The breaking case must be an input of a violated gate check in that sandbox run." ;
+    sh:select """
+      SELECT $this WHERE {
+        $this cubby:breakingCase ?case ; prov:wasInformedBy ?s .
+        FILTER NOT EXISTS { ?s cheez:check ?c . ?c cheez:outcome cheez:Violated ; prov:used ?case . }
+      }"""
+  ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:prefixes <https://w3id.org/cheezml/shapes> ;
+    sh:message "The rejection reason must be the kind of a gate check that was violated in that sandbox run." ;
+    sh:select """
+      SELECT $this WHERE {
+        $this cheez:retirementReason ?r ; prov:wasInformedBy ?s .
+        FILTER NOT EXISTS { ?s cheez:check ?c . ?c cheez:outcome cheez:Violated ; dcterms:type ?r . }
+      }"""
+  ] .
+
+#################################################################
+# 6. Invoice field sent to human review, then committed (order 0061)
+#################################################################
+
+cubby:DocumentRegionShape
+  a sh:NodeShape ;
+  sh:targetClass cubby:DocumentRegion ;
+  sh:property [
+    sh:path schema:text ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ;
+    sh:message "A document region carries the text exactly as read."
+  ] ;
+  sh:property [
+    sh:path cubby:readerVersion ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ;
+    sh:message "A document region records the reader's version."
+  ] ;
+  sh:property [
+    sh:path schema:isPartOf ; sh:maxCount 1 ; sh:class cheez:Artifact ;
+    sh:message "A region belongs to at most one document, referenced by hash."
+  ] .
+
+cubby:FieldSuggestionShape
+  a sh:NodeShape ;
+  sh:targetClass cubby:FieldSuggestion ;
+  sh:property [
+    sh:path prov:value ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ;
+    sh:message "A field suggestion holds exactly one value, as read."
+  ] ;
+  sh:property [
+    sh:path cubby:region ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubby:DocumentRegion ;
+    sh:message "A field suggestion names the one region it was read from."
+  ] .
+
+cubby:ReviewShape
+  a sh:NodeShape ;
+  sh:targetClass cubby:Review ;
+  sh:property [
+    sh:path cheez:outcome ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( cubby:Approved ) ;
+    sh:message "A review records exactly one outcome code from cubby:ReviewOutcomes."
+  ] ;
+  sh:property [
+    sh:path prov:endedAtTime ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ;
+    sh:message "A review records its time."
+  ] ;
+  sh:property [
+    sh:path cubby:region ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubby:DocumentRegion ;
+    sh:message "A review records the region the reviewer looked at."
+  ] ;
+  sh:property [
+    sh:path prov:qualifiedAssociation ; sh:minCount 1 ; sh:node cubby:ReviewerAssociationShape ;
+    sh:message "A review names its reviewer by id and role (prov:qualifiedAssociation)."
+  ] .
+
+cubby:ReviewerAssociationShape
+  a sh:NodeShape ;
+  sh:property [
+    sh:path prov:agent ; sh:minCount 1 ; sh:maxCount 1 ; sh:class prov:Person ; sh:nodeKind sh:IRI ;
+    sh:message "The reviewer is one prov:Person identified by an IRI."
+  ] ;
+  sh:property [
+    sh:path prov:hadRole ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( cubby:FirstApprover cubby:SecondApprover ) ;
+    sh:message "The reviewer's role is one code from cubby:ReviewerRoles."
+  ] .
+
+cubby:FieldCommitShape
+  a sh:NodeShape ;
+  sh:targetClass cubby:FieldCommit ;
+  sh:property [
+    sh:path prov:used ;
+    sh:qualifiedValueShape [ sh:class cubby:FieldSuggestion ] ; sh:qualifiedMinCount 1 ; sh:qualifiedMaxCount 1 ;
+    sh:message "A commit uses exactly one field suggestion."
+  ] ;
+  sh:property [
+    sh:path prov:wasInformedBy ;
+    sh:qualifiedValueShape [ sh:class cubby:Review ; sh:property [ sh:path cheez:outcome ; sh:hasValue cubby:Approved ; sh:message "The review approved the field." ] ] ;
+    sh:qualifiedMinCount 1 ;
+    sh:message "Derived and read values are suggestions only: a field is committed only after a human review approved it (prov:wasInformedBy an approving cubby:Review)."
+  ] ;
+  sh:property [
+    sh:path cheez:check ; sh:minCount 1 ; sh:class cheez:CheckRun ;
+    sh:message "A commit lists the checks that ran on the field."
+  ] ;
+  sh:property [
+    sh:path cheez:check ; sh:node cheez:SatisfiedCheckShape ;
+    sh:message "A field is committed only when every check that ran on it was satisfied."
+  ] ;
+  sh:property [
+    sh:path cheez:check ;
+    sh:qualifiedValueShape [ sh:property [ sh:path dcterms:type ; sh:hasValue cubby:NumberInRegionCheck ; sh:message "The check is the number-in-region check." ] ] ;
+    sh:qualifiedMinCount 1 ;
+    sh:message "The number-in-region check ran before the commit (every number in a field must appear in its region's text)."
+  ] ;
+  sh:property [
+    sh:path prov:generated ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cheez:FactVersion ;
+    sh:message "A commit generated exactly one fact version."
+  ] ;
+  sh:property [
+    sh:path prov:generated ;
+    sh:node [ sh:property [ sh:path prov:hadPrimarySource ; sh:minCount 1 ; sh:class prov:Person ;
+                            sh:message "The committed fact version names the reviewer (a prov:Person) as its source." ] ;
+              sh:property [ sh:path prov:wasDerivedFrom ; sh:minCount 1 ; sh:class cubby:FieldSuggestion ;
+                            sh:message "The committed fact version derives from the field suggestion." ] ] ;
+    sh:message "The committed fact version names the reviewer as its source (prov:hadPrimarySource a prov:Person) and derives from the field suggestion."
+  ] ;
+  sh:property [
+    sh:path prov:endedAtTime ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ;
+    sh:message "A commit records when it ended."
+  ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:prefixes <https://w3id.org/cheezml/shapes> ;
+    sh:message "The committed fact version's source must be the reviewer of an approving review that this commit used." ;
+    sh:select """
+      SELECT $this WHERE {
+        $this prov:generated ?fv . ?fv a cheez:FactVersion .
+        FILTER NOT EXISTS {
+          ?fv prov:hadPrimarySource ?p .
+          $this prov:wasInformedBy ?r .
+          ?r a cubby:Review ; cheez:outcome cubby:Approved ; prov:qualifiedAssociation/prov:agent ?p .
+        }
+      }"""
+  ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:prefixes <https://w3id.org/cheezml/shapes> ;
+    sh:message "The field value must appear in its region's text as read." ;
+    sh:select """
+      SELECT $this WHERE {
+        $this prov:used ?s . ?s a cubby:FieldSuggestion ; prov:value ?v ; cubby:region/schema:text ?t .
+        FILTER (!CONTAINS(STR(?t), STR(?v)))
+      }"""
+  ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:prefixes <https://w3id.org/cheezml/shapes> ;
+    sh:message "Each review used by the commit must name the same region as the field suggestion." ;
+    sh:select """
+      SELECT $this WHERE {
+        $this prov:used ?s ; prov:wasInformedBy ?r . ?s a cubby:FieldSuggestion ; cubby:region ?g . ?r a cubby:Review .
+        FILTER NOT EXISTS { ?r cubby:region ?g . }
+      }"""
+  ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:prefixes <https://w3id.org/cheezml/shapes> ;
+    sh:message "The committed fact version must derive from the field suggestion this commit used." ;
+    sh:select """
+      SELECT $this WHERE {
+        $this prov:generated ?fv ; prov:used ?s . ?s a cubby:FieldSuggestion .
+        FILTER NOT EXISTS { ?fv prov:wasDerivedFrom ?s . }
+      }"""
+  ] .

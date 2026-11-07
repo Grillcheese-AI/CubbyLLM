@@ -1,0 +1,318 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@protected": true,
+    "cheez": "https://w3id.org/cheezml/core#",
+    "cubby": "https://w3id.org/cheezml/cubby#",
+    "mowm": "https://w3id.org/cheezml/mowm#",
+    "cube": "https://w3id.org/cheezml/cubelang#",
+    "prov": "http://www.w3.org/ns/prov#",
+    "schema": "https://schema.org/",
+    "time": "http://www.w3.org/2006/time#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "cheez:writtenBy": {
+      "@type": "@id"
+    },
+    "cheez:encoder": {
+      "@type": "@id"
+    },
+    "cheez:screen": {
+      "@type": "@id"
+    },
+    "cheez:calibrationData": {
+      "@type": "@id"
+    },
+    "cheez:deployment": {
+      "@type": "@id"
+    },
+    "cheez:check": {
+      "@type": "@id"
+    },
+    "cheez:outcome": {
+      "@type": "@id"
+    },
+    "cheez:retirementReason": {
+      "@type": "@id"
+    },
+    "cheez:threshold": {
+      "@type": "@id"
+    },
+    "cheez:certifies": {
+      "@type": "@id"
+    },
+    "cheez:option": {
+      "@type": "@id"
+    },
+    "cheez:chosenOption": {
+      "@type": "@id"
+    },
+    "cheez:hasResult": {
+      "@type": "@id"
+    },
+    "cheez:isSatisfiedBy": {
+      "@type": "@id"
+    },
+    "cheez:isViolatedBy": {
+      "@type": "@id"
+    },
+    "cheez:template": {
+      "@type": "@id"
+    },
+    "cheez:validTime": {
+      "@type": "@id"
+    },
+    "cheez:thresholdValue": {
+      "@type": "xsd:decimal"
+    },
+    "cheez:observedValue": {
+      "@type": "xsd:decimal"
+    },
+    "cubby:dialogueAct": {
+      "@type": "@id"
+    },
+    "cubby:decision": {
+      "@type": "@id"
+    },
+    "cubby:proposer": {
+      "@type": "@id"
+    },
+    "cubby:refusalReason": {
+      "@type": "@id"
+    },
+    "cubby:conflictKind": {
+      "@type": "@id"
+    },
+    "cubby:scope": {
+      "@type": "@id"
+    },
+    "cubby:breakingCase": {
+      "@type": "@id"
+    },
+    "cubby:region": {
+      "@type": "@id"
+    },
+    "cubby:turnIndex": {
+      "@type": "xsd:integer"
+    },
+    "mowm:worldId": {
+      "@type": "xsd:integer"
+    },
+    "mowm:zDepth": {
+      "@type": "xsd:integer"
+    },
+    "mowm:zMax": {
+      "@type": "xsd:integer"
+    },
+    "mowm:worldCount": {
+      "@type": "xsd:integer"
+    },
+    "mowm:parentWorld": {
+      "@type": "@id"
+    },
+    "mowm:tau": {
+      "@type": "@id"
+    },
+    "mowm:mergeStrategy": {
+      "@type": "@id"
+    },
+    "mowm:queryVector": {
+      "@type": "@id"
+    },
+    "mowm:bestWorld": {
+      "@type": "@id"
+    },
+    "mowm:runnerUpWorld": {
+      "@type": "@id"
+    },
+    "mowm:routedTo": {
+      "@type": "@id"
+    },
+    "mowm:floorThreshold": {
+      "@type": "@id"
+    },
+    "mowm:marginThreshold": {
+      "@type": "@id"
+    },
+    "mowm:residual": {
+      "@type": "@id"
+    },
+    "mowm:bestScore": {
+      "@type": "xsd:decimal"
+    },
+    "mowm:runnerUpScore": {
+      "@type": "xsd:decimal"
+    },
+    "mowm:margin": {
+      "@type": "xsd:decimal"
+    },
+    "prov:used": {
+      "@type": "@id"
+    },
+    "prov:generated": {
+      "@type": "@id"
+    },
+    "prov:wasGeneratedBy": {
+      "@type": "@id"
+    },
+    "prov:wasInformedBy": {
+      "@type": "@id"
+    },
+    "prov:wasAssociatedWith": {
+      "@type": "@id"
+    },
+    "prov:wasDerivedFrom": {
+      "@type": "@id"
+    },
+    "prov:wasRevisionOf": {
+      "@type": "@id"
+    },
+    "prov:hadPrimarySource": {
+      "@type": "@id"
+    },
+    "prov:invalidated": {
+      "@type": "@id"
+    },
+    "prov:agent": {
+      "@type": "@id"
+    },
+    "prov:hadRole": {
+      "@type": "@id"
+    },
+    "prov:startedAtTime": {
+      "@type": "xsd:dateTime"
+    },
+    "prov:endedAtTime": {
+      "@type": "xsd:dateTime"
+    },
+    "prov:generatedAtTime": {
+      "@type": "xsd:dateTime"
+    },
+    "prov:invalidatedAtTime": {
+      "@type": "xsd:dateTime"
+    },
+    "time:hasBeginning": {
+      "@type": "@id"
+    },
+    "time:hasEnd": {
+      "@type": "@id"
+    },
+    "time:inXSDDateTimeStamp": {
+      "@type": "xsd:dateTimeStamp"
+    },
+    "schema:isPartOf": {
+      "@type": "@id"
+    },
+    "schema:about": {
+      "@type": "@id"
+    },
+    "dcterms:type": {
+      "@type": "@id"
+    }
+  },
+  "@graph": [
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000501",
+      "@type": [
+        "cheez:Record",
+        "cubby:HelperRejection",
+        "cheez:Retirement",
+        "prov:Activity"
+      ],
+      "cheez:writtenBy": "urn:uuid:00000000-0000-0000-0000-000000000001",
+      "dcterms:type": "cheez:Rejected",
+      "prov:invalidated": "urn:uuid:00000000-0000-0000-0000-000000000502",
+      "prov:wasInformedBy": "urn:uuid:00000000-0000-0000-0000-000000000504",
+      "cheez:retirementReason": "cubby:ReproductionCheck",
+      "prov:endedAtTime": "2026-11-07T03:00:05Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000502",
+      "@type": [
+        "cubby:Helper",
+        "cube:Program",
+        "prov:Entity"
+      ],
+      "cheez:hash": "PLACEHOLDER: helper program hash",
+      "cheez:hashAlgorithm": "PLACEHOLDER: hash algorithm",
+      "cubby:proposer": "cubby:OvernightRuleLibrary",
+      "cubby:scope": "urn:uuid:00000000-0000-0000-0000-000000000503"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000503",
+      "@type": "prov:Collection"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000504",
+      "@type": [
+        "cubby:SandboxRun",
+        "cube:ProgramRun",
+        "prov:Activity"
+      ],
+      "prov:wasAssociatedWith": "urn:uuid:00000000-0000-0000-0000-000000000002",
+      "prov:used": [
+        "urn:uuid:00000000-0000-0000-0000-000000000502",
+        "urn:uuid:00000000-0000-0000-0000-000000000503"
+      ],
+      "cheez:outcome": "cube:Return",
+      "cheez:check": [
+        "urn:uuid:00000000-0000-0000-0000-000000000510",
+        "urn:uuid:00000000-0000-0000-0000-000000000511",
+        "urn:uuid:00000000-0000-0000-0000-000000000512"
+      ],
+      "prov:startedAtTime": "2026-11-07T03:00:00Z",
+      "prov:endedAtTime": "2026-11-07T03:00:04Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000505",
+      "@type": "prov:Entity"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000510",
+      "@type": [
+        "cheez:CheckRun",
+        "prov:Activity"
+      ],
+      "dcterms:type": "cubby:ReproductionCheck",
+      "cheez:outcome": "cheez:Violated",
+      "prov:used": "urn:uuid:00000000-0000-0000-0000-000000000505",
+      "prov:endedAtTime": "2026-11-07T03:00:03Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000511",
+      "@type": [
+        "cheez:CheckRun",
+        "prov:Activity"
+      ],
+      "dcterms:type": "cubby:ScopeCheck",
+      "cheez:outcome": "cheez:Satisfied",
+      "prov:endedAtTime": "2026-11-07T03:00:04Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000512",
+      "@type": [
+        "cheez:CheckRun",
+        "prov:Activity"
+      ],
+      "dcterms:type": "cubby:EscapeCheck",
+      "cheez:observedValue": "0",
+      "cheez:outcome": "cheez:Satisfied",
+      "prov:endedAtTime": "2026-11-07T03:00:04Z"
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000001",
+      "@type": [
+        "cheez:Host",
+        "prov:SoftwareAgent"
+      ]
+    },
+    {
+      "@id": "urn:uuid:00000000-0000-0000-0000-000000000002",
+      "@type": [
+        "cube:VM",
+        "prov:SoftwareAgent"
+      ]
+    }
+  ]
+}
