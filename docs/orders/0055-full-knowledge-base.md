@@ -161,8 +161,19 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
     - The dump writes a shared value or reference node once. About half the value and reference nodes the sampled
       entities use (312 of 723 values, 334 of 684 references) are written elsewhere. So a store built from the 1%
       sample alone lacks those nodes (time precisions, quantity units); the full pass counts this.
+  - **Step 1, the challenge's dump, the full count (notebook cell B2), first run (2026-11-06):** stopped at 961 GB and
+    116,245,182 entities after 3 h 20 min (80 MB/s; its `progress.json` on the Drive), with no summary and nothing
+    kept. The count is resumable since this report's line (below); B2 runs again.
 - **Not verified here:**
 - **Found on the way:**
+  - **The count lost the whole pass when the runtime dropped,** and Colab's Drive mount uploads a file only once it is
+    closed: the first run's 1% sample, written into one file left open for 3 h 20 min, never reached the Drive (the
+    side file shows there at 0 bytes). `validation/fact_store/dump_resume.py` now checkpoints the count every 15
+    minutes (`resume.json`: the decompressed offset at a cut between entities, the counters, the HLL registers), and
+    the sample and side files are written in closed segments, staged on the local disk and copied whole. A rerun
+    decompresses up to the checkpoint without counting, then goes on; the parts' hash still covers every byte. Tests:
+    a pass stopped after a checkpoint and resumed gives the same counts, hash, sample and side files as a pass never
+    stopped, on both formats (`tests/validation/test_fact_store_resume.py`).
 - **Questions:**
 
 ## Cowork's addendum (2026-11-06): the hot store chosen by real use

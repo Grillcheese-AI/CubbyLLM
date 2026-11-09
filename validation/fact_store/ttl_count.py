@@ -15,7 +15,9 @@ Turtle only:
   sample_dangling  in the sampled entities, value and reference nodes used but written elsewhere in the dump (the
                    dump writes a shared node once): what a store built from the sample alone would miss
 
-    python validation/fact_store/ttl_count.py --parts <dir> --out <dir> [--workers 8]
+    python validation/fact_store/ttl_count.py --parts <dir> --out <dir> [--workers 8] [--stage <local dir>]
+
+Resumable: a rerun after a dropped runtime goes on from the last checkpoint (``dump_resume.py``).
 
 Wired: STANDALONE (order 0055's build; Colab, Nick's run).
 """
@@ -185,8 +187,10 @@ def main(argv=None) -> None:
     ap.add_argument("--parts", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--workers", type=int, default=os.cpu_count() or 4)
+    ap.add_argument("--stage", default=None, help="a local disk: each segment is written there, then copied whole")
+    ap.add_argument("--every", type=float, default=None, help="seconds between checkpoints (default 900)")
     a = ap.parse_args(argv)
-    res = run(a.parts, a.out, a.workers, fmt=Ttl)
+    res = run(a.parts, a.out, a.workers, fmt=Ttl, stage=a.stage, every=a.every)
     print(json.dumps({k: v for k, v in res.items() if k != "props_top"}, indent=1))
 
 

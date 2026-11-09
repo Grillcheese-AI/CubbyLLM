@@ -10,10 +10,12 @@ sha1 of its id, never the first Q-ids) is written as raw JSON lines, gzipped. Wr
                    Q13442814) and their statements; statements per property; bytes by section on the sample, x100
   sample_1pct.jsonl.gz   the sample's entities, as in the dump
   progress.json    every few minutes: bytes read, entities, rate
+  resume.json      every 15 minutes: a checkpoint; a rerun resumes from it (``dump_resume.py``), then it is renamed
+                   resume.done.json. The sample is written in closed segments meanwhile, joined at the end.
 The pass also hashes the compressed parts (``hash_parts``, checked against ``manifest.json``'s sha1 or md5 when the
 download wrote one), stops if lbzip2 fails, and records whether the stream ended at the dump's closing ``]``.
 
-    python validation/fact_store/dump_count.py --parts <dir> --out <dir> [--workers 8]
+    python validation/fact_store/dump_count.py --parts <dir> --out <dir> [--workers 8] [--stage <local dir>]
 
 Wired: STANDALONE (order 0055's build; Colab, Nick's run).
 """
@@ -22,15 +24,16 @@ from __future__ import annotations
 import argparse
 import collections
 import concurrent.futures as cf
-import gzip
 import hashlib
 import json
 import os
 import time
 
 try:
+    from . import dump_resume as R
     from .dump_stream import blocks, part_list, stream
 except ImportError:                                           # run as a script from its folder (Colab)
+    import dump_resume as R
     from dump_stream import blocks, part_list, stream
 
 __wiring__ = "STANDALONE"
@@ -155,51 +158,70 @@ def _source_hash(parts_dir: str) -> tuple[str, str | None]:
     return ("md5", m["md5"]) if m.get("md5") else ("sha1", m.get("sha1"))
 
 
-def run(parts_dir: str, out: str, workers: int = 8, fmt=Fmt) -> dict:
+def run(parts_dir: str, out: str, workers: int = 8, fmt=Fmt, stage: str | None = None, every: float | None = None) -> dict:
+    """One pass; resumes from ``out``'s checkpoint when there is one (``dump_resume``), checkpointing every ``every``
+    seconds. ``stage``: a local disk where each segment is written before it is copied whole to ``out``."""
     parts = part_list(parts_dir)
     algo, want = _source_hash(parts_dir)
-    h, tail = hashlib.new(algo), b""
+    h = hashlib.new(algo)
     os.makedirs(out, exist_ok=True)
-    tot, props, reg = collections.Counter(), collections.Counter(), bytearray(1 << HLL_BITS)
-    t0, last = time.time(), time.time()
-    sample_path = os.path.join(out, fmt.sample)
-    side_path = os.path.join(out, fmt.side or "_side.gz")
-    with gzip.open(sample_path + ".part", "wb", compresslevel=6) as sf, \
-            gzip.open(side_path + ".part", "wb", compresslevel=6) as xf, cf.ProcessPoolExecutor(workers) as ex:
+    names = [fmt.sample] + ([fmt.side] if fmt.side else [])
+    ck_key = R.key(parts, names, want)
+    st = R.load(out, ck_key) or {"offset": 0, "counts": {}, "props": {}, "reg": "00" * (1 << HLL_BITS), "tail": "",
+                                  "s": 0.0, "segments": [], "resumed_from": []}
+    tot, props, reg = collections.Counter(st["counts"]), collections.Counter(st["props"]), bytearray.fromhex(st["reg"])
+    off, tail, before, resumed = st["offset"], bytes.fromhex(st["tail"]), st["s"], list(st["resumed_from"])
+    every = R.EVERY if every is None else every
+    segs = R.Segments(out, names, stage, st["segments"])
+    src = stream(parts, workers, h)
+    skip_s = 0.0
+    if off:
+        resumed.append(off)
+        skip_s = R.skip(src, off)
+    t0 = last = last_ck = time.time()
+    bytes0 = tot["bytes"]
+    with cf.ProcessPoolExecutor(workers) as ex:
         inflight = collections.deque()
+        done = {"off": off, "tail": tail}
 
         def drain(one: bool) -> None:
-            nonlocal last
+            nonlocal last, last_ck
             while inflight and (len(inflight) >= 2 * workers or not one):
-                c, p, r, sample, side = inflight.popleft().result()
+                fut, b_off, b_tail = inflight.popleft()
+                c, p, r, sample, side = fut.result()
                 tot.update(c)
                 props.update(p)
                 for i, v in enumerate(r):
                     if v > reg[i]:
                         reg[i] = v
                 for line in sample:
-                    sf.write(line + b"\n")
+                    segs.write(0, line)
                 for line in side:
-                    xf.write(line + b"\n")
-                if time.time() - last > 300:
-                    last = time.time()
+                    segs.write(1, line)
+                done["off"], done["tail"] = b_off, b_tail
+                now = time.time()
+                if now - last > 300:
+                    last = now
+                    rate = (tot["bytes"] - bytes0) / max(now - t0, 1e-9) / 1e6
                     json.dump({"bytes": tot["bytes"], "entities": sum(v for k, v in tot.items() if k.startswith("entities:")),
-                               "s": round(last - t0), "MB_s": round(tot["bytes"] / (last - t0) / 1e6, 1)},
+                               "s": round(before + now - t0), "MB_s": round(rate, 1)},
                               open(os.path.join(out, "progress.json"), "w"))
-                    print(f"  {tot['bytes'] / 1e9:.0f} GB, {tot['entities:item']:,} items, "
-                          f"{tot['bytes'] / (last - t0) / 1e6:.0f} MB/s", flush=True)
+                    print(f"  {tot['bytes'] / 1e9:.0f} GB, {tot['entities:item']:,} items, {rate:.0f} MB/s", flush=True)
+                if one and now - last_ck >= every:              # never in the last drain: the last block's offset is
+                    last_ck = now                               # one past the end
+                    segs.close()
+                    R.save(out, {"key": ck_key, "offset": done["off"], "counts": dict(tot), "props": dict(props),
+                                 "reg": bytes(reg).hex(), "tail": done["tail"].hex(), "s": before + now - t0,
+                                 "segments": segs.sizes, "resumed_from": resumed})
                 if one:
                     break
-        for b in blocks(stream(parts, workers, h), fmt.sep):
+        for b in blocks(src, fmt.sep):
+            off += len(b) + 1                                   # the cut drops the separator's first byte
             tail = (tail + b)[-64:]
-            inflight.append(ex.submit(fmt.work, b))
+            inflight.append((ex.submit(fmt.work, b), off, tail))
             drain(True)
         drain(False)
-    os.replace(sample_path + ".part", sample_path)
-    if fmt.side:
-        os.replace(side_path + ".part", side_path)
-    else:
-        os.remove(side_path + ".part")
+    segs.join()
     k = tot["sample_entities"] or 1
     n = sum(v for key, v in tot.items() if key.startswith("entities:"))
     res = {"counts": dict(sorted(tot.items())), "references_distinct_est": hll_estimate(bytes(reg)),
@@ -207,9 +229,10 @@ def run(parts_dir: str, out: str, workers: int = 8, fmt=Fmt) -> dict:
            "props_top": props.most_common(200), "props_n": len(props), "parts": len(parts),
            "hash_algo": algo, "hash_parts": h.hexdigest(), "hash_source": want,
            "hash_ok": (h.hexdigest() == want) if want else None, "ended_at_close": tail.rstrip().endswith(fmt.end),
-           "wall_s": round(time.time() - t0)}
+           "wall_s": round(before + time.time() - t0), "resumed_from": resumed, "skip_s": round(skip_s)}
     fmt.finish(res, props, out)
     json.dump(res, open(os.path.join(out, "counts.json"), "w"), indent=1)
+    R.finish(out)
     return res
 
 
@@ -218,8 +241,10 @@ def main(argv=None) -> None:
     ap.add_argument("--parts", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--workers", type=int, default=os.cpu_count() or 4)
+    ap.add_argument("--stage", default=None, help="a local disk: each segment is written there, then copied whole")
+    ap.add_argument("--every", type=float, default=None, help="seconds between checkpoints (default 900)")
     a = ap.parse_args(argv)
-    res = run(a.parts, a.out, a.workers)
+    res = run(a.parts, a.out, a.workers, stage=a.stage, every=a.every)
     print(json.dumps({k: v for k, v in res.items() if k != "props_top"}, indent=1))
 
 

@@ -29,8 +29,8 @@ CELLS = [
 
 **Part A** is Wikimedia's JSON dump (done 2026-11-06; its download check is run again after a Drive lag stopped it).
 **Part B** is 0055's source dump since Cowork's addendum: the WikiKGQA 2026 challenge's own Wikidata (Turtle, 121 GB,
-CC0, Zenodo record 22661413; Nick's yes). Run the first cell, then A1 (the check only: every part is already in), then
-B1 and B2.
+CC0, Zenodo record 22661413; Nick's yes). B1 is done (113 parts, the md5 matches Zenodo's). B2's first count stopped at
+961 GB of about 1 TB (2026-11-06) and kept nothing: **run the first cell, then B2.**
 
 **Runtime:** CPU, high RAM (no GPU). **Sign in to the account whose Drive has the room** (the 5 TB one): the dump
 (about 104 GB, bz2) is kept there as the source copy, in 1 GB parts.
@@ -39,9 +39,11 @@ B1 and B2.
    resumes at the first missing part. At the end the parts' sha1 is checked against Wikimedia's (a part the Drive
    shows late after its rename is waited for; if the check still stops on a missing part, run the cell again).
 2. **Count:** one pass over the parts, never unpacked to disk: the counts (`counts.json`) and the 1% sample
-   (`sample_1pct.jsonl.gz`), written to the Drive. If the runtime drops here, the pass starts over (the download is
-   kept). The pass hashes the parts too (checked against the download's `manifest.json` when there is one) and stops if
-   a part is missing or corrupt.
+   (`sample_1pct.jsonl.gz`), written to the Drive. **If the runtime drops here, run the cell again:** it resumes from
+   its last checkpoint (`resume.json`, every 15 minutes; the sample is kept in closed segments meanwhile). A resumed
+   pass first decompresses up to the checkpoint without counting (faster than counting), then goes on. The pass
+   hashes the parts too (checked against the download's `manifest.json` when there is one) and stops if a part is
+   missing or corrupt.
 
 Keep this tab open while it runs. **Disconnect when the count prints its summary.** Then tell Claude Code.
 """),
@@ -81,7 +83,7 @@ print(open(f'{PARTS}/manifest.json').read())
 ## A2. Wikimedia's JSON: count, and the 1% sample (done: skip)
 """),
     code(r"""
-step('dump_count.py', '--parts', PARTS, '--out', COUNT, '--workers', str(os.cpu_count()))
+step('dump_count.py', '--parts', PARTS, '--out', COUNT, '--workers', str(os.cpu_count()), '--stage', '/content/stage_count')
 """),
     md(r"""
 ## B1. The WikiKGQA dump (Turtle): download, checked against Zenodo's md5 (resumable)
@@ -96,10 +98,10 @@ step('dump_fetch.py', '--out', KPARTS, '--zenodo', '22661413:wikikgqa-wikidata-a
 print(open(f'{KPARTS}/manifest.json').read())
 """),
     md(r"""
-## B2. The WikiKGQA dump: count, the 1% sample (the same ids as A2's), its date and its redirects
+## B2. The WikiKGQA dump: count, the 1% sample (the same ids as A2's), its date and its redirects (resumable: run again if the runtime drops)
 """),
     code(r"""
-step('ttl_count.py', '--parts', KPARTS, '--out', KCOUNT, '--workers', str(os.cpu_count()))
+step('ttl_count.py', '--parts', KPARTS, '--out', KCOUNT, '--workers', str(os.cpu_count()), '--stage', '/content/stage_count')
 """),
     md(r"""
 ## Done
