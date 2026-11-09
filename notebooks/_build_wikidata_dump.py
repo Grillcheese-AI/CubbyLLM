@@ -29,8 +29,10 @@ CELLS = [
 
 **Part A** is Wikimedia's JSON dump (done 2026-11-06; its download check is run again after a Drive lag stopped it).
 **Part B** is 0055's source dump since Cowork's addendum: the WikiKGQA 2026 challenge's own Wikidata (Turtle, 121 GB,
-CC0, Zenodo record 22661413; Nick's yes). B1 is done (113 parts, the md5 matches Zenodo's). B2's first count stopped at
-961 GB of about 1 TB (2026-11-06) and kept nothing: **run the first cell, then B2.**
+CC0, Zenodo record 22661413; Nick's yes). B1 is done (113 parts, the md5 matches Zenodo's). B2 stalled three times at
+about 958 GB, past the dump's last entity, where its cutter found no entity header; it now cuts there at blank lines
+and resumes from its checkpoint (920.6 GB, 2026-11-09). **Restart the session (Runtime > Restart session) so no old
+count runs underneath, run the first cell (it pulls the fix), then B2.**
 
 **Runtime:** CPU, high RAM (no GPU). **Sign in to the account whose Drive has the room** (the 5 TB one): the dump
 (about 104 GB, bz2) is kept there as the source copy, in 1 GB parts.
@@ -68,8 +70,11 @@ def step(script, *args):
     cmd = [sys.executable, '-u', f'validation/fact_store/{script}', *args]
     with open(f'{HOME}/{script}.log', 'a', encoding='utf-8', buffering=1) as f:
         p = subprocess.Popen(cmd, cwd=REPO, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
-        for line in p.stdout:
-            print(line, end=''); f.write(line)
+        try:
+            for line in p.stdout:
+                print(line, end=''); f.write(line)
+        except KeyboardInterrupt:                        # a stopped cell stops its script too (it ran on, unseen)
+            p.kill(); p.wait(); print(f'{script} stopped'); raise
         assert p.wait() == 0, f'{script} failed ({p.returncode})'
 """),
     md(r"""

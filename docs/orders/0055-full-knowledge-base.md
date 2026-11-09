@@ -164,6 +164,9 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
   - **Step 1, the challenge's dump, the full count (notebook cell B2), first run (2026-11-06):** stopped at 961 GB and
     116,245,182 entities after 3 h 20 min (80 MB/s; its `progress.json` on the Drive), with no summary and nothing
     kept. The count is resumable since this report's line (below); B2 runs again.
+  - **Second and third runs (2026-11-09):** the second checkpointed every 15 minutes to 920.6 GB (111,037,712 items,
+    1,186,646 sampled) and stalled at about 958 GB; the third resumed from 920.6 GB (skipping at 150 MB/s) and stalled
+    at 957 GB. Same place each time: past the dump's last entity (below). The cutter is fixed; B2 resumes from 920.6 GB.
 - **Not verified here:**
 - **Found on the way:**
   - **The count lost the whole pass when the runtime dropped,** and Colab's Drive mount uploads a file only once it is
@@ -174,6 +177,23 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
     decompresses up to the checkpoint without counting, then goes on; the parts' hash still covers every byte. Tests:
     a pass stopped after a checkpoint and resumed gives the same counts, hash, sample and side files as a pass never
     stopped, on both formats (`tests/validation/test_fact_store_resume.py`).
+  - **The stall at about 958 GB is the count's block cutter, at the dump's end.** It cut only before an entity header
+    (`data:`); with none in sight the buffer grew without end, each 32 MB read copying all of it, until the runtime
+    ran out of memory or crawled. `dump_stream.blocks` now cuts at a blank line (the end of a subject's triples) once
+    128 MB pass with no header, keeps the first MB of the first three such stretches beside the counts
+    (`stretch_<offset>.bin`: what the tail holds), counts their bytes (`headerless_bytes`), and stops with a message,
+    never hangs, if 2 GB pass with no cut at all. A sampled entity followed by such a stretch is kept to 16 MB
+    (`sample_capped`). Tests (`tests/validation/test_fact_store_cut.py`): a header-free tail of 3,000 redirects counts
+    the same, side and sample files byte for byte, cut by the fallback or not; the cut loses no byte; a buffer with no
+    cut stops the pass.
+  - **The dump is 8 shards one after another, split by the hash the sample uses.** Wikibase's dumper puts an entity in
+    shard `int(sha1(id)[:8], 16) % 8`; the sample takes `int(sha1(id)[:8], 16) % 100 == 0`, which is only ever shard 0
+    or 4. So the sampled entities sit in two stretches of the dump (0-160 GB and about 430-650 GB), and the sample
+    segments in between are empty (53 bytes, an empty gzip). Checked: the 17 segments hold 1,186,646 distinct
+    entities, exactly the counter, every one in the sample by its hash; segment 2's are all shard 0, segment 8's all
+    shard 4. The sample is the 1% hash sample it was meant to be (the same ids as the JSON dump's); only its place in
+    the file is uneven. The side file is small for the same kind of reason: few redirects before the tail.
+  - **A stopped notebook cell left its script running** underneath (`subprocess.Popen`); the cell now kills it.
 - **Questions:**
 
 ## Cowork's addendum (2026-11-06): the hot store chosen by real use

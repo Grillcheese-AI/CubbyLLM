@@ -145,6 +145,7 @@ class Fmt:
     the side file's names, the dump's last character, the sections sized on the sample, and a last step on the
     result. JSON (Wikimedia's dump) here; Turtle (the WikiKGQA dump) in ``ttl_count.py``."""
     work, sep, sample, side, end, sections = staticmethod(work), b"\n", "sample_1pct.jsonl.gz", None, b"]", SECTIONS
+    fallback = None                                         # JSON: every line is one entity
 
     @staticmethod
     def finish(res: dict, props, out: str) -> None:
@@ -178,6 +179,22 @@ def run(parts_dir: str, out: str, workers: int = 8, fmt=Fmt, stage: str | None =
     if off:
         resumed.append(off)
         skip_s = R.skip(src, off)
+    cuts = {"fallback": 0, "kept": []}
+
+    def note(kind: str, at: int, data) -> None:
+        """The cutter's news: a fallback cut (its first three stretches' first MB kept), a stop, a long wait."""
+        if kind == "waiting":
+            print(f"  no cut yet: {data >> 20} MB buffered from byte {at:,}", flush=True)
+            return
+        cuts["fallback"] += kind == "fallback"
+        if kind == "stopped" or cuts["fallback"] <= 3:
+            path = os.path.join(out, f"stretch_{at}.bin")
+            with open(path, "wb") as f:
+                f.write(data)
+            cuts["kept"].append(os.path.basename(path))
+            print(f"  {kind}: a long stretch with no entity header from byte {at:,}; its first MB kept as "
+                  f"{os.path.basename(path)}", flush=True)
+
     t0 = last = last_ck = time.time()
     bytes0 = tot["bytes"]
     with cf.ProcessPoolExecutor(workers) as ex:
@@ -215,7 +232,7 @@ def run(parts_dir: str, out: str, workers: int = 8, fmt=Fmt, stage: str | None =
                                  "segments": segs.sizes, "resumed_from": resumed})
                 if one:
                     break
-        for b in blocks(src, fmt.sep):
+        for b in blocks(src, fmt.sep, fmt.fallback, off, note):
             off += len(b) + 1                                   # the cut drops the separator's first byte
             tail = (tail + b)[-64:]
             inflight.append((ex.submit(fmt.work, b), off, tail))
@@ -229,7 +246,8 @@ def run(parts_dir: str, out: str, workers: int = 8, fmt=Fmt, stage: str | None =
            "props_top": props.most_common(200), "props_n": len(props), "parts": len(parts),
            "hash_algo": algo, "hash_parts": h.hexdigest(), "hash_source": want,
            "hash_ok": (h.hexdigest() == want) if want else None, "ended_at_close": tail.rstrip().endswith(fmt.end),
-           "wall_s": round(before + time.time() - t0), "resumed_from": resumed, "skip_s": round(skip_s)}
+           "wall_s": round(before + time.time() - t0), "resumed_from": resumed, "skip_s": round(skip_s),
+           "fallback_cuts": cuts["fallback"], "stretches_kept": cuts["kept"]}
     fmt.finish(res, props, out)
     json.dump(res, open(os.path.join(out, "counts.json"), "w"), indent=1)
     R.finish(out)

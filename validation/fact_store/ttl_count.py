@@ -47,6 +47,7 @@ NODE = re.compile(rb"(?<=[ \t])(wdv:[0-9a-f]+|wdref:[0-9a-f]+)")
 NODE_DEF = re.compile(rb"^(wdv:[0-9a-f]+|wdref:[0-9a-f]+)", re.M)
 REF = re.compile(rb"wdref:([0-9a-f]+)")
 NOVALUE = re.compile(rb"wdno:(P[0-9]+)")
+SAMPLE_CAP = 16 << 20                                         # the largest sampled entity so far: 0.8 MB
 
 
 def triples(text: bytes):
@@ -144,13 +145,22 @@ def count_block(text: bytes, c: collections.Counter, props: collections.Counter,
     return eid if kind else None
 
 
-def work(block: bytes):
+def work(block: bytes, cap: int | None = None):
+    """One block's counts. A sampled entity is kept whole up to ``cap`` bytes (``SAMPLE_CAP``); past it (an entity
+    followed by a stretch with no ``data:`` header, cut by the fallback) its text is kept to the last blank line
+    before ``cap``, and counted as ``sample_capped``."""
+    cap = SAMPLE_CAP if cap is None else cap
     c, props, reg, sample, side = collections.Counter(), collections.Counter(), bytearray(1 << HLL_BITS), [], []
     for k, piece in enumerate(block.split(b"\ndata:")):
         text = piece if k == 0 else b"data:" + piece
         c["bytes"] += len(text) + 1
+        if k == 0 and not text.startswith(b"data:"):
+            c["headerless_bytes"] += len(text) + 1             # a fallback block's text before its first header
         eid = count_block(text, c, props, reg, side)
         if eid and in_sample(eid):
+            if len(text) > cap:
+                text = text[:max(text.rfind(b"\n\n", 0, cap), 0)]
+                c["sample_capped"] += 1
             sample.append(text)
             c["sample_entities"] += 1
             c["sample_bytes"] += len(text)
@@ -164,6 +174,7 @@ def work(block: bytes):
 
 class Ttl(Fmt):
     work, sep, sample, side, end, sections = staticmethod(work), b"\ndata:", "sample_1pct.ttl.gz", "side.tsv.gz", b".", ()
+    fallback = b"\n\n"                                         # a blank line: the end of a subject's triples
 
     @staticmethod
     def finish(res: dict, props: collections.Counter, out: str) -> None:

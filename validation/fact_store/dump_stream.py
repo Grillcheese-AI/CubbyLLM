@@ -3,7 +3,7 @@
 
 ``part_list``: the parts, none missing (a gap the Drive's mount shows late is waited out). ``stream``: the decompressed
 dump (``lbzip2`` on every core, Python's ``bz2`` for tests), hashing the compressed bytes on the way; a failed lbzip2
-stops the pass instead of passing for the dump's end. ``blocks``: whole lines, in blocks of ``BLOCK`` bytes.
+stops the pass instead of passing for the dump's end. ``blocks``: whole lines, in blocks of ``BLOCK`` bytes (cut at a fallback where the separator is long absent).
 
 Wired: STANDALONE (imported by dump_count.py).
 """
@@ -19,6 +19,7 @@ import time
 __wiring__ = "STANDALONE"
 
 BLOCK = 32 << 20
+FALLBACK_BLOCKS, MAX_BLOCKS = 4, 64                           # no separator in 128 MB: the fallback cut; no cut in 2 GB: stop
 WAITS, PAUSE = 10, 30.0                                       # the Drive's lag: up to 5 minutes
 
 
@@ -109,20 +110,40 @@ def part_list(parts_dir: str, waits: int | None = None, pause: float | None = No
     raise SystemExit(f"parts missing: {missing[:10]}")
 
 
-def blocks(f, sep: bytes = b"\n"):
+def blocks(f, sep: bytes = b"\n", fallback: bytes | None = None, start: int = 0, note=None):
     """Blocks cut just before the last ``sep`` in each read (a newline: whole lines; ``\\ndata:``: whole Turtle
-    entities, the next block starting at ``data:``)."""
-    rest = b""
+    entities, the next block starting at ``data:``).
+
+    Where ``sep`` has not appeared in ``FALLBACK_BLOCKS`` reads, the block is cut at the last ``fallback`` instead
+    (Turtle: a blank line, the end of a subject's triples). The challenge dump's count stalled twice at about 958 GB:
+    with no cut, the buffer grows without end, each read copying all of it. ``MAX_BLOCKS`` reads with no cut at all
+    stop the pass, never hang it. ``note(kind, at, data)`` hears of each fallback cut ("fallback", the buffer's first
+    MB), of a stop ("stopped", the same) and of every 5 minutes without a cut ("waiting", the buffer's size); ``at`` is
+    the buffer's offset in the decompressed dump (``start``: where this read began)."""
+    rest, pos, last = b"", start, time.time()
     while True:
         b = f.read(BLOCK)
         if not b:
             if rest:
                 yield rest
             return
+        pos += len(b)
         b = rest + b
         cut = b.rfind(sep)
+        if cut < 0 and fallback and len(b) >= FALLBACK_BLOCKS * BLOCK:
+            cut = b.rfind(fallback)
+            if cut >= 0 and note:
+                note("fallback", pos - len(b), b[:1 << 20])
         if cut < 0:
+            if len(b) >= MAX_BLOCKS * BLOCK:
+                if note:
+                    note("stopped", pos - len(b), b[:1 << 20])
+                raise SystemExit(f"no cut in {len(b) >> 20} MB from byte {pos - len(b):,} of the dump (its first MB "
+                                 "is kept beside the counts)")
             rest = b
+            if note and time.time() - last > 300:
+                last = time.time()
+                note("waiting", pos - len(b), len(b))
             continue
-        rest = b[cut + 1:]
+        rest, last = b[cut + 1:], time.time()
         yield b[:cut]
