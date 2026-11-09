@@ -116,3 +116,25 @@ itself.
 - **Not verified here:**
 - **Found on the way:**
 - **Questions:**
+
+## Cowork's note (2026-11-09): CheezML has its own repository, and the w3id request is open
+Nick: "go ahead" (new public repo, GitHub Pages until ns.grillcheeseai.com exists, the w3id pull request opened
+after his review).
+- **The vocabulary now lives in Grillcheese-AI/cheezml** (public). It holds the source (`src/`: the term tables, the
+  context, the shapes and the examples), the built site (`docs/`, on GitHub Pages at
+  grillcheese-ai.github.io/cheezml) and the checks (`tools/`). Changes to the vocabulary are made there.
+  `docs/research/2026-11-07-cheezml/` in this repo stays as the dated draft.
+- **What that changes in this order:**
+  - **Step 0:** CubbyLLM takes the vocabulary from that repo at a pinned commit (a submodule or a vendored copy;
+    Claude Code's call). The tests run its `validate.py` and `check_site.py`.
+  - **Step 6 is done:** one OWL module per namespace in Turtle, JSON-LD and RDF/XML, an HTML page with an anchor
+    per term, the context, the shapes and a frozen v0.1 copy. Each module gives the same graph in all three formats,
+    and every term the records use is declared and documented.
+  - **The shapes moved to their own namespace,** `https://w3id.org/cheezml/shapes#` (they were in the module
+    namespaces). Validation is unchanged: 6 examples conform, 10 broken records fail with their messages.
+- **w3id.org:** pull request perma-id/w3id.org#7120 adds `ids/cheezml/`. The module and version IRIs are
+  content-negotiated (303), and any other path goes to the file of that name (302). It passed w3id's checker and a
+  test on a local Apache built with their scripts. Until it is merged, records keep the context inline.
+- **Later:** when ns.grillcheeseai.com becomes the site's custom domain, a follow-up pull request points the
+  redirects there.
+- **Licences:** CC BY 4.0 for the vocabulary, shapes, examples and documentation; MIT for the scripts.
