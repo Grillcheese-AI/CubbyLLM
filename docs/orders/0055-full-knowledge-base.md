@@ -290,3 +290,40 @@ The rest of those systems:
 - extraction by an LLM;
 - merging duplicates by embeddings or by a model's judgement;
 - answers written by an LLM.
+
+## Cowork's addendum (2026-11-09): certificates re-checked by a separate checker, and probes for late facts
+Nick: "yes", after the field watch's summary. Each source below was re-read on 2026-11-09.
+
+### 1. A second, independent check of the rules applied (from Open Ontologies, MIT)
+**What it brings, in plain words:** a second program, written separately from the reasoner, re-checks every step
+behind every derived fact, the way a second accountant re-adds the books.
+- **Over a conventional model:** a model's reasoning cannot be re-checked step by step at all.
+
+- **How Open Ontologies does it** (fabio-rovai/open-ontologies; Rust engine, Lean 4 checker):
+  - a certificate is two tab-separated files and a digest: `asserted.tsv` (the asserted triples), `derivations.tsv`
+    (one line per step: the rule, the conclusion, the premises) and `asserted.sha256`;
+  - `oo-cert`, a Lean 4 program that shares no code with the engine, re-applies each rule to its premises, checks
+    that every premise is asserted or derived on an earlier line, and refuses a forged step by its line number;
+  - its stated limit: a digest binds a certificate to bytes, not to a state of the world.
+- **For Cubby:**
+  - write the rules-applied part of each certificate in the same shape: one line per derivation, with the rule's id
+    and the ids of its premises and conclusion, bound to the store snapshot by its hash;
+  - re-check the derivations the folding step keeps (the addendum on the exact rule engine) with a checker that
+    shares no code with that engine. Whether it is oo-cert itself (MIT, Lean 4 toolchain) or a small separate
+    checker is Claude Code's call, measured;
+  - in CheezML (0064), the derivation file is an artefact referenced by its hash, never embedded.
+- **Tests:**
+  - an unchanged run passes;
+  - one planted forged step per rule family is refused, with its line;
+  - on every derived fact of the folding step, the engine and the checker disagree 0 times.
+
+### 2. Late facts, retractions and as-of reads: memory-over-time (tonydzi; MIT code, CC BY 4.0 data)
+- **What it is:** a benchmark of agent memory over time (paper under review at TGDK), comparing Mem0, Graphiti and a
+  bitemporal fact log.
+- **Its probes, used as store fixtures:**
+  - the room-402 probe: four changes, a late fact and a retraction, with `--broken` controls that must fail;
+  - the CRM as-of set: 30 as-of questions over 15 real changes.
+- **For Cubby:** the two-clock store answers every probe exactly (an as-of read, a late fact placed where it belongs
+  in the history, a retraction closing a version), and the broken controls fail on Cubby's store too.
+- **Licence:** the files derived from LoCoMo are CC BY-NC 4.0. They are research only and never go into a release or
+  the reproducibility package.

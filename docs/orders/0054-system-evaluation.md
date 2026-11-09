@@ -277,3 +277,58 @@ produced it, so anyone can check it, including a reviewer.
 - **Tests:**
   - the crate validates against the RO-Crate 1.1 and Workflow Run profile checks;
   - re-running the harness from the crate on 50 questions per benchmark reproduces the recorded answers exactly.
+
+## Cowork's addendum (2026-11-09): the AA-Omniscience refresh, refusal causes and temporal questions
+Nick: "yes", after the field watch's summary. Each source below was found by the watch and re-read on 2026-11-09.
+
+**What it brings, in plain words:** Cubby is scored on the newest version of the hardest public honesty test, and on
+whether it gives the right reason when it says "I don't know", not only on whether it says it.
+- **Over a conventional model:** benchmarks score a refusal as a refusal. Here a refusal with the wrong reason counts
+  against Cubby.
+
+### AA-Omniscience v1.1 (Artificial Analysis, October 2026)
+- **What changed:** the full set went from 6,000 to 3,000 questions, with the saturated ones removed. The public set
+  is `ArtificialAnalysis/AA-Omniscience-Public-v1.1` on the Hub: **300 questions**, Apache 2.0, updated 2026-10-28.
+  Artificial Analysis says v1 and v1.1 scores are not comparable.
+- **Keep v1's public split (600)**, because the frontier numbers already collected (Claude Opus 5.5's system card)
+  are on v1. **Add v1.1's public set (300) beside it.** Every table names the version.
+- **AA's own metrics, computed exactly from Cubby's counts,** beside Cubby's wrong rate among spoken answers:
+  - the Omniscience Index, 100 × (correct − incorrect) ÷ total;
+  - AA's hallucination rate, incorrect ÷ (incorrect + partial + not attempted): the share of questions not answered
+    correctly that got a wrong answer instead of a refusal. Its denominator differs from Cubby's, so both are
+    labelled.
+- **The leaderboard** (lowest hallucination rate 4%, Gemini 4 Carbon (Medium); highest accuracy 68%, Claude Fable 5.1
+  (Max)) is on AA's full set with AA's grader. It is context, not a matched comparison.
+- **Same read as v1:** 50 refusals for a missing fact are read by hand. Is the fact in Wikidata at all?
+
+### Refusal causes: HopRefusalBench (arXiv 2608.01358, August 2026)
+- **What it is:** 889 multi-hop questions that cannot be answered, built on KILT entity paths. Three causes (the
+  answer is unknown, a false premise, underspecified context) cross three positions (the first hop, a middle hop, the
+  last hop). Its main metric is target-aware correct halting; the best model tested reaches 42.9%.
+- **For Cubby:** score whether each refusal names the right cause and the hop where it applies.
+  - "Not in the store" stands for "the answer is unknown", and "ambiguous entity" for underspecified context.
+  - **A false premise has no reason of its own today** (it would be refused as "not in the store"). Report how often
+    that happens. A new reason is Nick's decision, not this order's.
+  - Spoken answers on this set are all wrong by construction, and they are read one by one.
+- **Status:** the abstract page gives no code or data link (checked 2026-11-09). Use it once the data is released,
+  licence first. Coverage of its KILT entities in Wikidata is read before the run.
+
+### As-of questions: the AIT Wikidata benchmark (KG-NeSy 2026, CEUR Vol-4313)
+- **What it is:** Andresel, Hurst and Schlarb (AIT). 100 questions over six tasks: a birthplace's historical
+  sovereignty, member countries of an organisation in a year, countries to cross overland, a city's historical
+  countries, presidential successors, and years a person held a role. Each gold answer comes from a hand-written
+  SPARQL template over Wikidata.
+- **For Cubby:** an as-of set scored right, wrong and refused, with "dates too coarse" counted apart. It sits beside
+  0057's two-period questions. "Countries to cross" is spatial: expect refusals, and report them under their reason.
+- **Data and code:** zenodo.org/records/22644304. The record states no licence; check it before use.
+
+### The WikiKGQA 2026 entrants' papers (CEUR Vol-4284)
+- **Who did best:**
+  - GRASP had the best result in both without-mentions tracks: English 85.0 and Spanish 83.0, macro QALD F1. Its
+    paper reports a Claude Code baseline at 85.0 as well.
+  - ASTER (IBM; code IBM/agentic-text2sparql) was first on English with mentions (0.88) and second on English
+    without mentions (0.81). On dev, 6 and 7 of 100 questions were wrong; English only.
+  - AMA-KBQA reached 0.87 and 0.79, WikiProSP 0.63 and 0.11, and a TF-IDF few-shot system 0.65.
+- **None of them abstains.** Each writes one query per question with an LLM. Rescoring their submitted answers from
+  the challenge record (the addendum above) needs no re-run and no API.
+- **The papers' own numbers are cited beside the rescoring,** labelled as the challenge's metric.

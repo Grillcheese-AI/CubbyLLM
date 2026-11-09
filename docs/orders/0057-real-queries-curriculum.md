@@ -129,3 +129,30 @@ tell" when the dates are too vague.
   They are written by rule from held-out statements, in EN and FR. A seeded sample of 100 is read by hand.
 - **Measured:** right, wrong and refused, with "dates too coarse" counted apart.
 - **Line:** 0 wrong.
+
+## Cowork's addendum (2026-11-09): templates only from what the store holds
+Nick: "yes", after the field watch's summary.
+
+**What it brings, in plain words:** Cubby is only trained and tested on questions its records can actually answer
+or properly refuse, so the curriculum never wastes questions on links that don't exist.
+- **Over a conventional model:** training questions are written without knowing what the data holds. A model then
+  learns to answer questions it has no facts for.
+
+- **From QRAKEN** (GLOW workshop, ISWC 2026; Grillo, Klic and Colavizza; re-read 2026-11-09):
+  - a distiller summarises a populated RDF graph as its recurring multi-hop paths, with how often each occurs. It
+    counts every class-property pair exhaustively, not by sampling;
+  - a candidate query that uses an edge with a count of 0 is rejected before it runs;
+  - an LLM writes its queries, so it is not a threat. Code: RemoGrillo/qraken_ck25 (the licence is not stated).
+- **For 0057:**
+  - **count the paths in 0055's store** (exact counts per class, property and path up to the depth the templates
+    use) and write question templates only for paths with instances;
+  - **the same counts as a pre-check:** a program that walks a path with a count of 0 can be refused as "not in the
+    store" before it runs. Measured: the time saved, and 0 cases where the pre-check refuses a question the full run
+    would have answered.
+- **From ONTOS** (an OpenReview submission; the field watch read it on 2026-11-08; OpenReview blocked a re-read on
+  2026-11-09, so check it before citing): program candidates are filled into skeletons taken from annotated training
+  questions and type-checked against the ontology.
+  - **For 0057:** take skeletons from QAWiki's hand-crafted pairs (the addendum above). Type-check each filled-in
+    program against the ontology's domains and ranges before it becomes a training pair, and count the rejects.
+- **Also for 0057's two-period questions:** the AIT Wikidata benchmark (0054's addendum of 2026-11-09) is a ready
+  external set of as-of questions.
