@@ -1,0 +1,44 @@
+/* Cubby's one look (Nick, 2026-11-10: "unify everything", the board's navy): the tokens every Cubby page uses --
+   the board, /panel, /brain, /map, the console, cubby-auth's sign-in and CubbyConsul. Each repo keeps a copy (no
+   page loads another repo's file); change it here first, then copy it over.
+
+   Dark only. System fonts only (a page calls nothing but its own server). Accents come from the logo. */
+:root {
+  /* stage */
+  --cb-bg: #0A111D;                  /* the page */
+  --cb-bg-top: #132238;              /* the light at the top of the stage */
+  --cb-bg-mid: #0D1726;
+  --cb-dots: rgba(148, 163, 184, .06); /* the faint dot grid, 22 px */
+
+  /* panels */
+  --cb-panel: rgba(15, 26, 42, .88); /* a panel over the stage */
+  --cb-panel-solid: #0F1A2A;
+  --cb-well: rgba(2, 8, 16, .45);    /* fields, tiles and wells inside a panel */
+  --cb-line: rgba(148, 163, 184, .14);
+  --cb-line-2: rgba(148, 163, 184, .24);
+  --cb-shadow: 0 10px 28px rgba(0, 0, 0, .28);
+
+  /* ink */
+  --cb-ink: #E6EDF5;
+  --cb-ink-2: #A9B7C8;
+  --cb-ink-3: #8FA0B4;
+
+  /* accents: the logo's three colours, and the interface's cyan and teal */
+  --cb-logo-cyan: #00C1FA;
+  --cb-logo-green: #64F592;
+  --cb-logo-amber: #F0B42E;
+  --cb-cyan: #38BDF8;                /* links, selection, ids */
+  --cb-teal: #2DD4BF;                /* eyebrows, timings, live */
+  --cb-amber: #F5B84C;               /* warnings, qualifiers */
+  --cb-ok: #6EE7B7;                  /* "live", "verified" */
+  --cb-bad: #FF8A7A;                 /* errors, refused writes */
+
+  /* type */
+  --cb-font: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --cb-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  /* shape */
+  --cb-radius: 18px;                 /* panels */
+  --cb-radius-sm: 12px;              /* tiles, fields, buttons */
+  color-scheme: dark;
+}

@@ -11,13 +11,14 @@
      palette. Amber = running now, teal = certified / learned, red = refused (a result here, not an
      error), violet = a question framed or a branch opened. */
   :root{
-    --ground:#070b16; --glass:rgba(13,19,34,.72); --line:rgba(120,150,210,.18);
-    --ink:#dfe7f5; --dim:#8492ad; --live:#ffb648; --yes:#45d3c0; --no:#ff6b6b; --wonder:#a594ff;
+    /* Cubby's one look (dashboard/brand/cubby-tokens.css, 2026-11-10) */
+    --ground:#0A111D; --glass:rgba(15,26,42,.80); --line:rgba(148,163,184,.18);
+    --ink:#E6EDF5; --dim:#8FA0B4; --live:#F5B84C; --yes:#2DD4BF; --no:#FF8A7A; --wonder:#A594FF;
   }
   *{box-sizing:border-box}
   html,body{height:100%;margin:0;background:var(--ground);color:var(--ink);overflow:hidden;
-    font:13px/1.45 ui-sans-serif,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
-  .mono{font-family:ui-monospace,"Cascadia Mono","JetBrains Mono",Consolas,monospace}
+    font:13px/1.45 "Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif}
+  .mono{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace}
   #stage{position:fixed;inset:0}
   #tags,#cards{position:fixed;inset:0;pointer-events:none}
   .tag{position:absolute;transform:translate(-50%,0);font-size:11px;letter-spacing:.06em;text-transform:uppercase;
