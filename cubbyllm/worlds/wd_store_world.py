@@ -58,6 +58,7 @@ __wiring__ = "WIRED"
 
 OBJECT_CAP = 200                                         # subjects read for an object's facts
 NAMESAKE_CAP = 25                                        # more items than this under one name: none read
+SERVED_MAX = 200_000                                     # the facts handed out that `in` remembers (oldest dropped)
 META = {"Q4167410", "Q22808320", "Q4167836", "Q11266439", "Q13406463", "Q14204246", "Q15184295", "Q17633526",
         "Q15407973", "Q16695773"}                        # disambiguation pages, categories, templates, lists, modules ...
 _QID = re.compile(r"^q[1-9][0-9]*$")
@@ -95,12 +96,28 @@ class WdStoreWorld(Refined, Crowded, HdcWorld):
         self.time_sensitive = {normalize(self._pid_label[p]) for p in self._ts_pids}
         self._n = statements
         self._p31: dict = {}                             # an item read -> its classes (ids), for the fictional rule
+        self._served: dict = {}                          # the facts this world handed out (an ordered set): `in`
         self._entity = functools.lru_cache(maxsize=cache)(self._entity_rows)
         self._tiers = functools.lru_cache(maxsize=cache)(self._tiers)
         self._named = functools.lru_cache(maxsize=cache)(self._named_rows)
         self._applies = functools.lru_cache(maxsize=4096)(self._applies_rows)
         self._rows = functools.lru_cache(maxsize=cache)(self._query)
         self._by_subj, self._by_obj = _Rows(self._subject), _Rows(lambda k: self._rows("okey", k))
+
+    def _triples(self, rows) -> list:
+        out = super()._triples(rows)
+        for f, _t in out:                                # remembered, so `in` names this world as the fact's holder
+            self._served[" ".join(f.split())] = None
+        while len(self._served) > SERVED_MAX:
+            self._served.pop(next(iter(self._served)))
+        return out
+
+    def __contains__(self, fact: str) -> bool:
+        """A fact this world handed out is held, whatever its name's count: past NAMESAKE_CAP (France's 50 items,
+        Albert Einstein's 27) the name reads none, while the hop's kinds narrowed it (`wd_store_crowd`). Without
+        this the loop took the store's facts for no world's, and said Paris "was a capital of France at one point"
+        instead of "as of 2025" (`ask_memory._undated`). Else the Wikidata5M world's rule (any item of the name)."""
+        return " ".join(fact.split()) in self._served or super().__contains__(fact)
 
     # ---- the store's answers, as rows (subj, rel, obj) ----
 

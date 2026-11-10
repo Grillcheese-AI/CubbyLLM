@@ -792,6 +792,44 @@ defines, so Wikidata5M's rule is unchanged; change 3 is `wd_store_cues`, above):
   shares the name; new: Thespis asks back, Twinland's two items agree). tests/worlds, reasoning, serve: 481 pass (the
   known red, 0002, as before).
 
+**Claude Code, 2026-11-10: the Marie Curie test met** (the addendum's test of change 3; the answer step's, behind a
+new flag, `CB_ANSWER_CLASS=1`, off by default, for 0054's rerun to turn on with the store's):
+- **Where it failed:** not the store. Through the loop, her "award received" holds 16 values; the walk refuses a last
+  hop with several values (`ambiguous_hop`, naming them: a set of answers is not a path to choose), and with 16 it
+  could not even explore them (12 branches at most). The cue table decides among namesakes, never among one item's
+  values.
+- **What was built:** `cubbyllm/reasoning/answer_values.py`, hooked into `pipeline._walk` and `pipeline.answer`. A
+  question that names its answer's class ("What/Which **Nobel Prize** did/is ...": its capitalised words, as
+  `ask_namesake_answer.class_words` reads them) keeps, at the last hop only, the values whose label holds every word
+  of it. One left: the answer. Two or three left: each walked and certified in the VM as its own branch, then said
+  together in their labels' order ("Nobel Prize in Chemistry and Nobel Prize in Physics"), the trace holding each
+  value's own fact. None left: refused as before. More than three: refused, the narrowed values named. A branch the
+  VM rejects keeps the whole refusal. It runs only where the walk would refuse (after a year the question names and a
+  date the source gives), so on, it never changes an answer the walk already gives. Only a capitalised class: "which
+  city" names none, so "Quezon City" is never kept over "Manila" for holding the word. A known gap: a value is matched
+  by its label, so "Ig Nobel Prize" would read as a Nobel Prize.
+- **Through the loop, on the store** (template emitter, `CB_WD_KINDS=1`, `CB_ANSWER_CLASS=1`): "Which Nobel Prize is
+  the award received of Marie Curie?" -> "Nobel Prize in Chemistry and Nobel Prize in Physics", then the closing line
+  (a charitable organization and a comic strip named Marie Curie); Albert Einstein -> "Nobel Prize in Physics"; "What
+  is the award received of Marie Curie?" (no class named) -> refused, the 16 values named, as before.
+- **A bug found and fixed on the way:** the store's world said it did not hold its own facts for a name of more than
+  25 items ("Paris is the capital of France" in the world: False; France has 50 items, Albert Einstein 27). The loop
+  then took them for no world's and said "Paris was a capital of France at one point." instead of "As of 2025,
+  Paris." (`ask_memory._undated`). The world now remembers the facts it hands out (at most 200,000; the oldest dropped)
+  and holds those (`WdStoreWorld.__contains__`); France and Japan read "As of 2025, Paris/Tokyo." The test fails on
+  the old code.
+- **The 50 hops again, with the narrowing on** (`validation/logs/audit_wd_kinds_2026-11-10-class.json` and `.md`):
+  every hop and every probe row as in the refined run; **0 wrong picks**. The fixed checks: Marie Curie -> her two
+  Nobel Prizes.
+- **Not met in the loop, for your reading:** the closing line on a name of more than 25 items. The audit's France says
+  "Paris." and names the Star Trek location; the loop says "As of 2025, Paris." alone, because a crowded name lists
+  no namesakes (`Namesakes.namesakes` reads none past the cap). No wrong answer; a line missing.
+- Tests: `tests/reasoning/test_answer_values.py` 8 (off unchanged; the two said together; one; no class or none of
+  it; more than three; a VM rejection; the last hop only; capitalised words only); `tests/worlds/test_wd_store_world.py`
+  15 (new: a fact handed out is held past the cap). tests/reasoning, worlds, serve, guards, package rules, local paths:
+  490 pass (the known red, 0002). `pipeline.py` grew from 582 to 602 lines for the two hooks (the rule is in its own
+  module).
+
 **Nick's decisions on the report's open questions (2026-11-10: "yes" to Cowork's recommendations):**
 - **The 1 ms line:** no work on it now. It stays recorded as missed (1.5 ms p95). The 50-question preflight says
   whether 1.5 ms matters next to the rest of an answer, and the line is decided then.

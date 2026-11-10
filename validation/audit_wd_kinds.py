@@ -37,9 +37,11 @@ for p in (os.path.dirname(HERE), HERE):
     if p not in sys.path:
         sys.path.insert(0, p)
 os.environ["CB_WD_KINDS"] = "1"
+os.environ["CB_ANSWER_CLASS"] = "1"                     # the answer step's class narrowing, as 0054's rerun runs it
 
 import audit_namesake_relation as A0  # noqa: E402  (sets CB_NAMESAKE_RELATION=1: the rule under audit)
 
+from cubbyllm.reasoning import answer_values as V  # noqa: E402
 from cubbyllm.reasoning.planner import normalize  # noqa: E402
 from cubbyllm.worlds.hdc_relation import PLACING  # noqa: E402
 from cubbyllm.worlds.hdc_store import HdcWorld  # noqa: E402
@@ -63,6 +65,10 @@ def one(w, rel: str, name: str, cues=()) -> dict:
     by, n = store_by(w, name, rel)
     reads, d, ms = A0.hop(w, rel, name, cues)
     q = "What Nobel Prize did Marie Curie win?" if cues else f"What is the {rel} of {name}?"
+    want = V.wanted(q, f"{rel} of {name}")               # the class the question names (CB_ANSWER_CLASS=1, as in the loop)
+    kept = [r for r in reads if V.fits(r, want)]
+    if want and 1 <= len(kept) <= V.SAY_MAX and d and len(d["fit"]) == 1:
+        reads = kept                                     # her two Nobel Prizes, not every award
     if d and d.get("agree"):                             # every fitting item gives the same value: said once (no pick)
         outcome, reply = "one answer, every item agrees", f"{', '.join(reads)}. ({len(d['agree'])} items named {name} agree)"
     else:

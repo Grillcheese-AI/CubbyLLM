@@ -207,6 +207,14 @@ def test_a_crowded_name_is_narrowed_to_what_the_rule_could_pick(kinds_world):
     assert {t.obj for _f, t in w.item_facts("rome", "Q405")} == {"painting", "London"}    # the asker's choice reads it
 
 
+def test_a_fact_the_world_handed_out_is_held_whatever_its_names_count(kinds_world):
+    w, _path = kinds_world                                       # Rome: 31 items, past the cap, so its name reads none
+    assert "Paris is the capital of Rome" not in w               # not yet handed out: the name's rule, as before
+    assert capital(w, "Rome") == {"Paris"}
+    assert "Paris is the capital of Rome" in w                   # the loop names this world as its holder ("as of 2025")
+    assert "Lyon is the capital of Rome" not in w
+
+
 def test_a_table_from_another_state_of_the_store_is_not_read(kinds_world):
     _w, path = kinds_world
     from cubbyllm.worlds.wd_store_kinds import for_store

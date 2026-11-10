@@ -11,6 +11,7 @@ from dataclasses import dataclass, field, replace
 
 from ..core.protocols import Wiring
 from . import simlog
+from .answer_values import narrow as _narrow, said as _said, several as _several, wanted as _wanted
 from .plan_verify import answer_type_mismatch, verify_plan
 from .planner import (QuestionPlan, Triple, accepts, normalize, parse_fact,
                       parse_question)
@@ -86,10 +87,11 @@ def _exact_tail(plan: QuestionPlan, t: Triple) -> bool:
 
 class _Ambiguous(Exception):
     """The walk found several facts with different objects for one hop (see `_walk`)."""
-    def __init__(self, hop: int, objects: list[str], facts: list[str], cands=None) -> None:
+    def __init__(self, hop: int, objects: list[str], facts: list[str], cands=None, narrowed: bool = False) -> None:
         super().__init__(f"hop {hop}: {len(objects)} candidate objects")
         self.hop, self.objects, self.facts = hop, objects, facts
         self.cands = list(cands or [])             # [(fact, triple)], for the branches
+        self.narrowed = narrowed                   # narrowed to the class the question names (answer_values)
 
 
 _AS_OF = __import__("re").compile(r"\b(?:in|as of|during|by|back in)\s+(1[0-9]{3}|2[0-9]{3})\b", __import__("re").I)
@@ -164,7 +166,7 @@ def _walk(plan: QuestionPlan, retrieve, tau_ret: float, top_k: int,
           budget: list[int], trace: list[HopTrace],
           banned: set[str], lookup=None, times: dict | None = None,
           as_of: int | None = None, start: tuple | None = None,
-          choose: dict | None = None) -> list[Triple] | None:
+          choose: dict | None = None, want: tuple = ()) -> list[Triple] | None:
     """Pick one accepted triple per hop; None when the budget dies.
     Bounded by `budget` alone (the spec's 3-per-question repair budget);
     `banned` holds facts a failed VM verify blacklisted.
@@ -228,6 +230,16 @@ def _walk(plan: QuestionPlan, retrieve, tau_ret: float, top_k: int,
                         picked = covering[0]
                 if picked is None:
                     picked = _latest_dated(cands, times)
+                if picked is None and want and hop == plan.n_hop - 1:
+                    # where the walk would refuse: the class the question names for its answer
+                    # (answer_values, CB_ANSWER_CLASS=1) keeps that class's values; on, it never
+                    # changes an answer the walk already gives
+                    kept = _narrow(cands, want)
+                    if len({normalize(t.obj) for _f, t in kept}) == 1:
+                        picked = kept[0]
+                    elif kept:
+                        raise _Ambiguous(hop, sorted({normalize(t.obj) for _f, t in kept}), [f for f, _t in kept],
+                                         kept, narrowed=True)
                 if picked is None:
                     raise _Ambiguous(hop, objects, [f for f, _t in cands], cands)
                 cands = [picked]
@@ -320,7 +332,7 @@ def _check_chain(plan: QuestionPlan, triples: list[Triple], trace: list[HopTrace
 
 def _explore(question: str, plan: QuestionPlan, amb: _Ambiguous, prefix: list[HopTrace],
              retrieve, run_fn, tau_vm: float, tau_ret: float, top_k: int, max_repairs: int,
-             banned: set[str], lookup, times, as_of, choose, chunk: int, max_branches: int):
+             banned: set[str], lookup, times, as_of, choose, chunk: int, max_branches: int, want: tuple = ()):
     """Graph-of-thought over an ambiguous hop: follow EVERY candidate object as its own
     branch, to the end of the chain, and certify each branch in the VM exactly like the
     greedy chain. A branch that meets another ambiguous hop splits again. Bounded by
@@ -357,7 +369,7 @@ def _explore(question: str, plan: QuestionPlan, amb: _Ambiguous, prefix: list[Ho
             try:
                 triples = _walk(plan, retrieve, tau_ret, top_k, [max_repairs], trace, banned,
                                 lookup=lookup, times=times, as_of=as_of,
-                                start=(hop + 1, t.obj, [h.triple for h in trace]), choose=choose)
+                                start=(hop + 1, t.obj, [h.triple for h in trace]), choose=choose, want=want)
             except _Ambiguous as nested:
                 work.append((nested, trace, path))
                 continue
@@ -457,6 +469,7 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
         return CoTResult(answer=None, verified=False, reason="unparseable")
     m_asof = _AS_OF.search(question or "")
     as_of = int(m_asof.group(1)) if m_asof else None     # the year the QUESTION named, if it named one
+    want = _wanted(question, plan.tail)                  # the class it names for its answer (CB_ANSWER_CLASS=1)
     if known is not None:
         # The coverage check reads the question WITHOUT its year phrase, because that is the
         # question the plan was made for. 2026-09-14, live: with the year left in, a perfectly
@@ -490,16 +503,23 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
         trace: list[HopTrace] = []
         try:
             triples = _walk(plan, retrieve, tau_ret, top_k, budget, trace, banned, lookup=lookup,
-                            times=times, as_of=as_of, choose=choose)
+                            times=times, as_of=as_of, choose=choose, want=want)
         except _Ambiguous as amb:
             refused = {"hop": amb.hop, "objects": amb.objects, "facts": amb.facts}
             branches = None
             if branch > 0 and amb.cands:
                 explored, overflow = _explore(question, plan, amb, trace, retrieve, run_fn, tau_vm,
                                               tau_ret, top_k, max_repairs, banned, lookup, times,
-                                              as_of, choose, chunk, branch)
+                                              as_of, choose, chunk, branch, want=want)
                 branches = _public(explored)
                 live = _converged(explored, overflow, closed_world)
+                every = _several(explored, overflow) if live is None and amb.narrowed else None
+                if every:                                # each value of the class asked, certified: said together
+                    for b in every:
+                        assert all(h.similarity is not None and h.similarity >= tau_vm for h in b["_trace"])
+                    said, joined = _said(every)
+                    return CoTResult(answer=said, verified=True, trace=joined, repairs_used=max_repairs - budget[0],
+                                     source=every[0]["_source"], repairs=repairs, branches=branches)
                 if live is not None:
                     # the branches' claimed-answer invariant, at the second verified=True site
                     for b in live:
