@@ -63,6 +63,8 @@ REPO = '/content/CubbyLLM'
 HOME = '/content/drive/MyDrive/wikidata'                 # a folder at the Drive's root (Nick)
 PARTS, COUNT = f'{HOME}/dump_parts', f'{HOME}/count'
 os.makedirs(PARTS, exist_ok=True); os.makedirs(COUNT, exist_ok=True)
+KPARTS, KCOUNT = f'{HOME}/kgqa_parts', f'{HOME}/kgqa_count'   # Part B's (here, so B2 runs without B1)
+os.makedirs(KPARTS, exist_ok=True); os.makedirs(KCOUNT, exist_ok=True)
 free = shutil.disk_usage('/content/drive').free / 1e9
 print(f'Drive free: {free:.0f} GB; cores: {os.cpu_count()}; lbzip2: {bool(shutil.which("lbzip2"))}')
 assert free > 250, 'this Drive is too small: sign in to the account with the room'
@@ -95,8 +97,6 @@ step('dump_count.py', '--parts', PARTS, '--out', COUNT, '--workers', str(os.cpu_
 ## B1. The WikiKGQA dump (Turtle): download, checked against Zenodo's md5 (resumable)
 """),
     code(r"""
-KPARTS, KCOUNT = f'{HOME}/kgqa_parts', f'{HOME}/kgqa_count'
-os.makedirs(KPARTS, exist_ok=True); os.makedirs(KCOUNT, exist_ok=True)
 # each part is written to this runtime's own disk, checked, then copied whole to the Drive (the Drive's mount lost
 # freshly written parts); 4 connections (Zenodo states no limit; Wikimedia's dump, A1, keeps 2)
 step('dump_fetch.py', '--out', KPARTS, '--zenodo', '22661413:wikikgqa-wikidata-all-dump.ttl.bz2',

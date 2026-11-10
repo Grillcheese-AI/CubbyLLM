@@ -31,9 +31,11 @@ import time
 
 try:
     from . import dump_resume as R
+    from .dump_beat import beat
     from .dump_stream import blocks, part_list, stream
 except ImportError:                                           # run as a script from its folder (Colab)
     import dump_resume as R
+    from dump_beat import beat
     from dump_stream import blocks, part_list, stream
 
 __wiring__ = "STANDALONE"
@@ -172,6 +174,15 @@ def pool(workers: int) -> cf.ProcessPoolExecutor:
 def run(parts_dir: str, out: str, workers: int = 8, fmt=Fmt, stage: str | None = None, every: float | None = None) -> dict:
     """One pass; resumes from ``out``'s checkpoint when there is one (``dump_resume``), checkpointing every ``every``
     seconds. ``stage``: a local disk where each segment is written before it is copied whole to ``out``."""
+    live = {"phase": "checking the parts"}
+    stop_beat = beat(live)                                  # a line a minute: what the pass is doing (dump_beat)
+    try:
+        return _run(parts_dir, out, workers, fmt, stage, every, live)
+    finally:
+        stop_beat.set()
+
+
+def _run(parts_dir, out, workers, fmt, stage, every, live) -> dict:
     parts = part_list(parts_dir)
     algo, want = _source_hash(parts_dir)
     h = hashlib.new(algo)
@@ -184,11 +195,13 @@ def run(parts_dir: str, out: str, workers: int = 8, fmt=Fmt, stage: str | None =
     off, tail, before, resumed = st["offset"], bytes.fromhex(st["tail"]), st["s"], list(st["resumed_from"])
     every = R.EVERY if every is None else every
     segs = R.Segments(out, names, stage, st["segments"])
-    src = stream(parts, workers, h)
+    src = stream(parts, workers, h, live)
     skip_s = 0.0
     if off:
         resumed.append(off)
-        skip_s = R.skip(src, off)
+        live["phase"] = f"skipping to the checkpoint at {off / 1e9:.1f} GB (decompressing, not counting)"
+        skip_s = R.skip(src, off, live=live)
+    live["phase"] = "counting"
     cuts = {"fallback": 0, "kept": []}
 
     def note(kind: str, at: int, data) -> None:
@@ -244,11 +257,16 @@ def run(parts_dir: str, out: str, workers: int = 8, fmt=Fmt, stage: str | None =
                     break
         for b in blocks(src, fmt.sep, fmt.fallback, off, note):
             off += len(b) + 1                                   # the cut drops the separator's first byte
+            live["at"] = off
             tail = (tail + b)[-64:]
             inflight.append((ex.submit(fmt.work, b), off, tail))
             drain(True)
+        live["phase"] = "the dump's end reached: counting the last blocks"
         drain(False)
+    live["phase"] = "joining the sample and side segments on the Drive"
+    print("  " + live["phase"], flush=True)
     segs.join()
+    live["phase"] = "writing counts.json"
     k = tot["sample_entities"] or 1
     n = sum(v for key, v in tot.items() if key.startswith("entities:"))
     res = {"counts": dict(sorted(tot.items())), "references_distinct_est": hll_estimate(bytes(reg)),

@@ -145,7 +145,7 @@ def load(out: str, want_key: dict) -> dict | None:
     return st
 
 
-def skip(f, n: int, every: float = 300.0) -> float:
+def skip(f, n: int, every: float = 300.0, live: dict | None = None) -> float:
     """Reads and drops the stream's first ``n`` decompressed bytes (never past them); the seconds it took."""
     t0 = last = time.time()
     done = 0
@@ -154,6 +154,8 @@ def skip(f, n: int, every: float = 300.0) -> float:
         if not b:
             raise SystemExit(f"the stream ended at {done:,} bytes, before the checkpoint's {n:,}")
         done += len(b)
+        if live is not None:
+            live["at"] = done
         if time.time() - last > every:
             last = time.time()
             print(f"  skipping: {done / 1e9:.0f} of {n / 1e9:.0f} GB, {done / (last - t0) / 1e6:.0f} MB/s", flush=True)

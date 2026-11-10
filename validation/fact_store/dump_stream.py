@@ -41,16 +41,21 @@ class _Checked:
         return b
 
 
-def stream(parts: list[str], workers: int, h=None):
+def stream(parts: list[str], workers: int, h=None, live: dict | None = None):
     """The decompressed dump, as a binary file; ``h`` (a hashlib object) takes the compressed bytes on the way, so the
-    pass also checks the parts against Wikimedia's sha1."""
+    pass also checks the parts against Wikimedia's sha1. ``live`` (``dump_beat``) hears which part is being read."""
+    live = {} if live is None else live
+    live["parts"] = len(parts)
+
     def chunks():
-        for p in parts:
+        for i, p in enumerate(parts):
+            live["part"] = i
             with open(p, "rb") as f:
                 for b in iter(lambda: f.read(8 << 20), b""):
                     if h is not None:
                         h.update(b)
                     yield b
+        live["fed_all"] = True
     if shutil.which("lbzip2"):
         import threading
         dec = subprocess.Popen(["lbzip2", "-dc", "-n", str(workers)], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
