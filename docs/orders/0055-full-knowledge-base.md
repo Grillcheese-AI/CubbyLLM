@@ -200,7 +200,27 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
     shard 4. The sample is the 1% hash sample it was meant to be (the same ids as the JSON dump's); only its place in
     the file is uneven. The side file is small: the checkpoint at 920.6 GB counts no redirect at all.
   - **A stopped notebook cell left its script running** underneath (`subprocess.Popen`); the cell now kills it.
+  - **The hot store by real use (Cowork's addendum), first projection** (`validation/fact_store/query_logs.py`;
+    `validation/logs/wikidata_query_logs_projection_2026-11-10.json`). Licence: the logs are CC0 (TU Dresden: "All of
+    the above are published under License CC-0"); Freiburg's code is Apache-2.0, and its processed `organic.tar.gz`
+    (20 MB) states nothing further. Read: 859,305 distinct queries (2017-06-12 to 2018-03-25), the queries only;
+    3,618 properties named, 3,364 of them in the challenge's dump; 89,476 queries name none. Statements per property
+    from B2's checkpoint at 920.6 GB (1,639.9M statements, about 95% of the dump; rerun on the final count).
+    | hot properties (by queries using them) | statements hot | share | queries whose properties are all hot |
+    |---|---|---|---|
+    | 100 | 858M | 52% | 74.8% |
+    | 300 | 1,198M | 73% | 87.7% |
+    | 500 | 1,357M | 83% | 92.9% |
+    | 1,000 | 1,414M | 86% | 97.5% |
+    | 2,000 | 1,477M | 90% | 99.5% |
+    Ranking by use alone shrinks the store little: the scholarly properties are large and rarely asked. P2860 (cites
+    work) holds 306M statements (19%) and is used by 5,579 queries (0.65%; rank 41); P2093 (author name string)
+    141M, 1,128 queries (rank 148). Which of them go hot is the size line's call (Questions).
 - **Questions:**
+  - **The hot store's size line.** By real use, 1,000 properties cover 97.5% of the logged queries but hold 86% of
+    the statements, because the scholarly properties rank high enough by use (P2860 at 41, P2093 at 148) to get in.
+    Should the hot store keep them by rank, or keep scholarly articles' citation and author-string statements cold
+    whatever their rank (about 450M statements, 27%)? Nick's or Cowork's call; nothing is built on it yet.
 
 ## Cowork's addendum (2026-11-06): the hot store chosen by real use
 Nick found the Wikidata Query Logs dataset (Walter and Bast, SIGIR 2026, arXiv 2602.14594; the
