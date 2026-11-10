@@ -747,7 +747,7 @@ Read by hand: `validation/logs/audit_wd_kinds_2026-11-10.md`, the five fixed che
   - Marie Curie: the right person, but the whole award list for a question about the Nobel Prize. A benchmark
     would score that answer wrong.
 
-**Proposed changes (each waits for Nick's yes; none is needed for the flag to go on):**
+**Changes approved by Nick on 2026-11-10 ("yes"). None is needed for the flag to go on:**
 1. **Properties that fit anything never decide a pick.** "Different from", "said to be the same as", the topic's
    main category, the Commons category and "described by source" do not make an item fit by themselves. With only
    such a property to go on, the rule asks back or labels each item.
@@ -760,6 +760,16 @@ Read by hand: `validation/logs/audit_wd_kinds_2026-11-10.md`, the five fixed che
    items in the certificate (hop 8: four Calhoun Townships, all in the United States; the given name of every
    Andrew Blake). No pick is made, so no pick can be wrong.
 
-**Tests for the four, when approved:** hop 42 asks back or labels; "capital of France" answers Paris once and names
+**Tests for the four:** hop 42 asks back or labels; "capital of France" answers Paris once and names
 the fictional item only in the closing line; the Marie Curie check answers her two Nobel Prizes; hop 8 answers
 "United States" once. The 50 hops are run again and the count of wrong picks must not rise.
+
+**Nick's decisions on the report's open questions (2026-11-10: "yes" to Cowork's recommendations):**
+- **The 1 ms line:** no work on it now. It stays recorded as missed (1.5 ms p95). The 50-question preflight says
+  whether 1.5 ms matters next to the rest of an answer, and the line is decided then.
+- **Scholarly statements:** they stay cold, as built. One comes back hot only when a benchmark or real use needs it.
+- **The cold tier:** it stays in the store's own format, read in-process. No HDT build for now.
+
+**Order for the four approved changes:** 1, 4 and 2 first (they are changes to the picking rule), then 3 (the cue
+table). All four land before 0054's rerun (step 4). The fictional classes are the class tree under Wikidata's
+"fictional entity" class; Claude Code confirms its id on the store and records it.
