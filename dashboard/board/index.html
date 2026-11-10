@@ -25,9 +25,13 @@
     <a href="#plugins" data-v="plugins" title="Plugins"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3v4M15 3v4M7 7h10v5a5 5 0 0 1-10 0z"/><path d="M12 17v4"/></svg><span class="sr">Plugins</span></a>
     <a href="#agents" data-v="agents" title="Agents (planned)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg><span class="sr">Agents (planned)</span></a>
   </nav>
+  <div class="acct">
+  <span class="chip" id="me" hidden></span>
+  <button class="pill glass" id="lock" hidden title="Lock now: the cubby-auth sign-in locks, every app's session ends">Lock</button>
   <button class="pill glass" id="pub" aria-pressed="true" title="Public: the server sends what any user may see">
     <span>Public</span><span class="sw on" id="pub-sw"><i></i></span>
   </button>
+  </div>
 </header>
 <main id="views">
   <section class="view" id="v-home" aria-label="Home"></section>

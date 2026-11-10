@@ -90,6 +90,15 @@ def parser() -> argparse.ArgumentParser:
     ap.add_argument("--board", action=argparse.BooleanOptionalAction, default=True,
                     help="serve the control board at /board (dashboard/board/, cubby_serve/board/; order 0027), on by "
                          "default (Nick, 2026-11-10); --no-board turns it off, and every /board path answers 404")
+    ap.add_argument("--auth-issuer", default=os.environ.get("CUBBY_AUTH_ISSUER") or None,
+                    help="cubby-auth's address (its policy's issuer): every dashboard path then needs its sign-in, and the "
+                         "audit view comes from the account's board:audit permission, not the token (cubby_serve/auth_gate.py). "
+                         "Off by default. The client's secret: CUBBY_AUTH_SECRET")
+    ap.add_argument("--auth-client", default=os.environ.get("CUBBY_AUTH_CLIENT") or "board", help="this server's client id in cubby-auth's policy")
+    ap.add_argument("--auth-backchannel", default=os.environ.get("CUBBY_AUTH_BACKCHANNEL") or None,
+                    help="cubby-auth's back channel (http://127.0.0.1:8791) when it runs on this machine")
+    ap.add_argument("--auth-redirect", default=os.environ.get("CUBBY_AUTH_REDIRECT") or None,
+                    help="the redirect URI in the policy (default http://<host>:<port>/auth/callback)")
     ap.add_argument("--news-archive", default=os.environ.get("CUBBY_NEWS_ARCHIVE") or None,
                     help="poll the feed manifest's active feeds hourly into this archive folder (standin/news_archive.py, "
                          "order 0024; default CUBBY_NEWS_ARCHIVE; off when unset)")
@@ -181,6 +190,11 @@ def boot(args, ap: argparse.ArgumentParser):
             print(f"  every record appended to {args.history} (the sleep cycle's input)", flush=True)
         print(f"  POST /ask {{\"text\": ...}} -> the loop's record; watch it at http://{args.host}:{args.port}/panel", flush=True)
     brain.board = bool(args.board)
+    from cubby_serve.auth_gate import from_args as auth_from_args
+    brain.auth = auth_from_args(args)                   # None unless --auth-issuer: the dashboards behind cubby-auth
+    if brain.auth is not None:
+        print(f"dashboards behind cubby-auth ({brain.auth.issuer}, client {brain.auth.client_id}): sign in at "
+              f"{brain.auth.origin}/auth/login", flush=True)
     brain.news_archive = args.news_archive              # the board's poller tile reads the archive this server polls
     if args.plugins:
         from cubby_serve.plugins import mount as mount_plugins
@@ -191,7 +205,7 @@ def boot(args, ap: argparse.ArgumentParser):
     if args.board:
         from cubby_serve.board.api import start_refresh
         start_refresh(brain)                            # Home / System built in the background: no request pays for them
-        print(f"control board: http://{args.host}:{args.port}/board (add ?token=<audit token> for the audit view)", flush=True)
+        print(f"control board: http://{args.host}:{args.port}/board" + ("" if brain.auth else " (add ?token=<audit token> for the audit view)"), flush=True)
     if args.news_archive:
         from cubby_serve.sources.news import start_poller
         start_poller(args.news_archive, log=lambda m: print(m, flush=True))

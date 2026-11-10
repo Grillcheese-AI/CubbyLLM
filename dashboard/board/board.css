@@ -13,6 +13,8 @@ button{font:inherit}
 .shell{position:relative;z-index:1;padding:22px 28px 28px;display:flex;flex-direction:column;gap:16px}
 .glass{background:rgba(15,26,42,.88);border:1px solid var(--line);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 10px 28px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.03)}
 .top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.acct{display:flex;align-items:center;gap:10px}
+.acct .chip{text-transform:none;letter-spacing:.02em;font-size:12px}
 .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink)}
 .brand b{font-size:28px;font-weight:400;letter-spacing:-.01em}
 .chip{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#C7D4DD;border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:4px 10px}

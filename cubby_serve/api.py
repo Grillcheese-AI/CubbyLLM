@@ -60,9 +60,22 @@ def make_handler(brain):
             self.end_headers()
 
         def _who(self) -> str:
-            """'user' (the default) or 'audit' (the token in CUBBY_AUDIT_TOKEN; order 0016)."""
+            """'user' (the default) or 'audit' (the token in CUBBY_AUDIT_TOKEN; order 0016). Behind cubby-auth
+            (`--auth-issuer`), a dashboard path's audience is its account's instead (`auth_gate.audience`)."""
+            if getattr(brain, "auth", None) is not None:
+                from cubby_serve.auth_gate import audience as signed_in
+                got = signed_in(self)
+                if got is not None:
+                    return got
             from cubbyllm.speech.audience import audience, token_of
             return audience(token_of(self.headers, self.path))
+
+        def _gate(self) -> bool:
+            """True when cubby-auth answered the request itself (off: never)."""
+            if getattr(brain, "auth", None) is None:
+                return False
+            from cubby_serve.auth_gate import answer
+            return answer(self, brain.auth)
 
         def _page(self, name: str) -> None:
             page = os.path.join(os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "standin")), name)
@@ -89,10 +102,14 @@ def make_handler(brain):
             self.wfile.write(body)
 
         def do_GET(self):
+            if self._gate():
+                return
             from cubby_serve.get import handle_get
             handle_get(self, brain)
 
         def do_POST(self):
+            if self._gate():
+                return
             from cubby_serve.post import handle_post
             handle_post(self, brain)
 

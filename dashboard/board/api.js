@@ -1,24 +1,47 @@
 // The board's one door to the server it came from (order 0027). The audience is decided on the server: an audit
 // token (opened as /board?token=...) is sent only while the Public switch is off; with no token the page is public.
+// Behind cubby-auth (the server's --auth-issuer) the sign-in decides instead: an account with board:audit is asked
+// for as audit while the switch is off, as the public while it is on; a 401 (locked, signed out, idle) goes to the
+// sign-in; calls made within 30 s of the person's own input count as activity for cubby-auth's idle lock.
 let token = null;
 try { token = new URLSearchParams(location.search).get('token') || sessionStorage.getItem('cubby-board-token'); } catch (e) { token = null; }
 try { if (token) sessionStorage.setItem('cubby-board-token', token); } catch (e) { /* private window: keep it in memory */ }
-let pub = true;
+let pub = true, me = null, lastInput = Date.now();
 const listeners = [];
+for (const ev of ['pointerdown', 'keydown', 'wheel', 'touchstart']) addEventListener(ev, () => { lastInput = Date.now(); }, { passive: true, capture: true });
 
-export const hasToken = () => !!token;
-export const isPublic = () => pub || !token;
-export function setPublic(v) { pub = !!v || !token; listeners.forEach((f) => f(isPublic())); }
+// Who is signed in (cubby-auth), or null when the server has no sign-in.
+export async function initAuth() {
+  try {
+    const r = await fetch('/auth/me', { cache: 'no-store', headers: { 'X-Cubby-Activity': '1' } });
+    if (r.status === 401) { toSignIn(); return null; }
+    if (r.ok) me = await r.json();
+  } catch (e) { me = null; }
+  return me;
+}
+export const signedIn = () => me;
+function toSignIn() { location.assign('/auth/login?next=' + encodeURIComponent(location.pathname + location.search + location.hash)); }
+export async function lockNow() {
+  try { await fetch('/auth/lock', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' }); } finally { toSignIn(); }
+}
+
+export const hasToken = () => !!token || !!(me && me.audit);
+export const isPublic = () => pub || !hasToken();
+export function setPublic(v) { pub = !!v || !hasToken(); listeners.forEach((f) => f(isPublic())); }
 export function onAudience(f) { listeners.push(f); }
 
 function headers(extra) {
   const h = Object.assign({}, extra || {});
-  if (!isPublic()) h['X-Audit-Token'] = token;
+  if (me) {
+    h['X-Cubby-Audience'] = isPublic() ? 'user' : 'audit';
+    if (Date.now() - lastInput < 30000) h['X-Cubby-Activity'] = '1';
+  } else if (!isPublic()) h['X-Audit-Token'] = token;
   return h;
 }
 
 export async function get(path) {
   const r = await fetch(path, { headers: headers(), cache: 'no-store' });
+  if (r.status === 401 && me) toSignIn();
   let body = null;
   try { body = await r.json(); } catch (e) { body = { error: 'not JSON' }; }
   return { ok: r.ok, status: r.status, body };
@@ -26,6 +49,7 @@ export async function get(path) {
 
 export async function post(path, data) {
   const r = await fetch(path, { method: 'POST', headers: headers({ 'Content-Type': 'application/json' }), body: JSON.stringify(data) });
+  if (r.status === 401 && me) toSignIn();
   let body = null;
   try { body = await r.json(); } catch (e) { body = { error: 'not JSON' }; }
   return { ok: r.ok, status: r.status, body };

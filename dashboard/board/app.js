@@ -1,5 +1,5 @@
 // The board's router (order 0027): one page, a view per section, chosen by the URL's hash.
-import { get, el, hasToken, isPublic, setPublic, onAudience } from './api.js';
+import { get, el, hasToken, isPublic, setPublic, onAudience, initAuth, lockNow } from './api.js';
 import * as home from './home.js';
 import * as chat from './chat.js';
 import * as system from './system.js';
@@ -39,15 +39,26 @@ function audienceUi(pub) {
   b.setAttribute('aria-pressed', String(pub));
   sw.classList.toggle('on', pub);
   b.disabled = !hasToken();
-  b.title = hasToken() ? (pub ? 'Public: the server sends what any user may see' : 'Audit: sources are shown') : 'Open the board with ?token= for the audit view';
+  b.title = hasToken() ? (pub ? 'Public: the server sends what any user may see' : 'Audit: sources are shown')
+    : (signed ? 'This account has no board:audit permission' : 'Open the board with ?token= for the audit view');
   document.getElementById('aud-chip').textContent = pub ? 'public' : 'audit';
   const chip = document.getElementById('store-chip');
   chip.hidden = true;                                   // the store is named only to the audit audience
   if (!pub) get('/board/store').then((r) => { chip.hidden = !(r.body && r.body.configured && r.body.snapshot && !r.body.error); });
 }
 
+let signed = null;                                   // the cubby-auth account, when the server has the sign-in
 document.getElementById('pub').addEventListener('click', () => { setPublic(!isPublic()); });
+document.getElementById('lock').addEventListener('click', () => lockNow());
 onAudience((pub) => { audienceUi(pub); route(); });
 window.addEventListener('hashchange', route);
-audienceUi(isPublic());
-route();
+initAuth().then((m) => {
+  signed = m;
+  if (m) {
+    const chip = document.getElementById('me');
+    chip.textContent = m.name || m.sub; chip.title = `${m.user_type}${m.tenant_name ? ' · ' + m.tenant_name : ''} · ${(m.roles || []).join(', ')}`;
+    chip.hidden = false; document.getElementById('lock').hidden = false;
+  }
+  audienceUi(isPublic());
+  route();
+});
