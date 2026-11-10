@@ -138,3 +138,63 @@ after his review).
 - **Later:** when ns.grillcheeseai.com becomes the site's custom domain, a follow-up pull request points the
   redirects there.
 - **Licences:** CC BY 4.0 for the vocabulary, shapes, examples and documentation; MIT for the scripts.
+
+## Cowork's addendum (2026-11-10): records kept private, and what the VM must report
+Nick: "it should also be encrypted so not everyone can see the answers". The VM's side is a new job in the cubelang
+repo, `CUBELANG_FIXES.md` section P4: which facts were read, which checks ran, which rules were applied, error codes,
+hashes of what ran, and no values in logs or over a network. This addendum is the host's side.
+
+**What it brings, in plain words:** every answer still comes with a receipt anyone can check is genuine, but only
+the people allowed to see it can read what it says.
+- **Over a conventional model:** chat logs are usually stored in clear, readable by whoever can reach the server,
+  and nothing proves they weren't edited.
+
+### 1. From the run report to the record
+Map each field of the P4 report to its CheezML term, in a table in this order's report:
+- facts read → `cheez:FactVersion`, with `prov:hadPrimarySource` and the revision;
+- checks → `cheez:CheckRun`, with `cheez:outcome`;
+- rules → the derivations artefact, by hash;
+- error codes → `cube:RunOutcomes`;
+- the source and bytecode hashes, strict mode and the VM commit → the program run.
+
+A field the VM doesn't report yet is left out of the record, never filled in.
+
+### 2. Who may read what
+This follows Nick's decisions for CubbyConsul (tenants are companies; viewers, members and admins; sources go to
+the audit view only):
+- **The conversation part** (the question, the answer, the turn) is readable by the tenant's members and viewers in
+  the sessions they share.
+- **The provenance part** (facts read, sources, revisions, rules, checks) is readable only through the audit view
+  (owner, auditor). Regular users never see where Cubby learned something.
+- **Nobody else.** Real records are never published. Only the vocabulary, the shapes and the made-up examples are
+  public.
+
+### 3. How
+- **Two layers per record:**
+  - a public envelope: the record's `urn:uuid`, its type, the recorded time, the key ids, a signature and the
+    commitments below;
+  - an encrypted body: the full JSON-LD record, split into the two parts above, each encrypted for its readers.
+- **Standard formats only, no home-made cryptography:** JWE (RFC 7516) with AES-256-GCM for the bodies, JWS with
+  Ed25519 for the signature, through maintained libraries (Python `cryptography` or `joserfc`).
+- **Sign, then encrypt.** The host signs the plain record, so a reader who decrypts it can check that nobody changed
+  it, and anyone can check the signature on the envelope.
+- **Commitments for selective proof.** For the answer value and each fact read, the envelope holds a salted hash
+  (HMAC-SHA-256, with a random salt per record). An owner can reveal one value and its salt to prove it matches the
+  certificate, without revealing anything else. Plain hashes are not used: a short answer (a year, a yes) can be
+  guessed from its hash.
+- **Keys:**
+  - one data key per tenant and part, wrapped by a master key that comes from the OS key store or a key service;
+    never in a file, a log, an argument or a commit (the standing rule);
+  - key ids in the envelope, so keys can be rotated by re-wrapping them, without re-encrypting every record;
+  - destroying a tenant's key makes its records unreadable for good. That is never done without Nick's yes; it
+    conflicts with "retire, never delete" and is his decision.
+- **Validation:** SHACL runs on the decrypted record inside the host. The envelope gets its own shape. The new terms
+  (envelope, key id, commitment, signature) are added in Grillcheese-AI/cheezml, through its checks.
+
+### 4. Tests
+- A record encrypted for tenant A cannot be decrypted with tenant B's key, and a member cannot open the provenance
+  part.
+- One changed byte in the envelope or the body fails verification.
+- A revealed value with its salt matches its commitment; any other value fails.
+- After a run over planted secret strings, none of them appears in any host or VM log, nor in the envelope.
+- No key material in any file the repository tracks (extend `test_local_paths`' scan).
