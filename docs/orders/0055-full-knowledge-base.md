@@ -224,6 +224,17 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
     Ranking by use alone shrinks the store little: the scholarly properties are large and rarely asked. P2860 (cites
     work) holds 306M statements (19%) and is used by 5,579 queries (0.65%; rank 41); P2093 (author name string)
     141M, 1,128 queries (rank 148). Which of them go hot is the size line's call (Questions).
+  - **Step 2 begun: the hot store, format 1** (`wdstore/` in the cubelang repository, branch `cowork/wd-store` of
+    the `cubelang-cowork` worktree, commit 842994a, local). **Where it lives (the order's choice for Claude Code):** a
+    crate of its own beside the VM's datastore, with its own workspace and target folder, so cubelang's
+    `target/release` is never touched; the VM depends on it in step 3. Ids are Wikidata's own numbers (no id map,
+    no ordering but the id). Every statement at every rank with its exact value (no float type in the code; a test
+    fails on one), valid-time qualifiers hot and the rest apart, references, each entity's revision (recorded
+    time), EN/FR/mul names, enwiki/frwiki titles, value and reference nodes, redirects; a rebuild writes the same
+    bytes (`wdstore check`); the manifest carries the inputs', chunks' and code's hashes (cached build steps).
+    Measured on one segment of the 1% sample: 121,169 entities, 1,108,786 statements, 0 blocks failed, **104.6 bytes
+    a statement**, 10 s. That is about 180 GB for the dump, twice the 90 GB line: format 2 (statement ids as bytes,
+    nodes by 32-bit number in their own files) comes before any full build; `wdstore/FORMAT.md` has the plan.
 - **Questions:**
   - **The hot store's size line.** By real use, 1,000 properties cover 97.5% of the logged queries but hold 86% of
     the statements, because the scholarly properties rank high enough by use (P2860 at 41, P2093 at 148) to get in.
