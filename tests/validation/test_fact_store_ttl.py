@@ -94,6 +94,10 @@ data:P1448 a schema:Dataset ;
 wd:P1448 a wikibase:Property ;
 \twikibase:propertyType wikibase:Monolingualtext .
 
+data:Q99999 a schema:Dataset ;
+\tschema:about wd:Q99999 ;
+\tschema:version "9"^^xsd:integer .
+
 wd:Q99999 owl:sameAs wd:Q3 .
 """
 
@@ -113,7 +117,7 @@ def test_the_turtle_count_counts_what_the_json_pass_counts_however_the_parts_are
         (d / "manifest.json").write_text(json.dumps({"md5": hashlib.md5(blob).hexdigest()}))
         res = C.run(str(d), str(tmp_path / f"o{cut}"), workers=2, fmt=T.Ttl)
         c = res["counts"]
-        assert c["entities:item"] == 60 and c["entities:property"] == 2 and c["revisions"] == 62
+        assert c["entities:item"] == 60 and c["entities:property"] == 2 and c["revisions"] == 63   # + the redirect's header
         assert c["statements:item"] == 180 and c["rank:deprecated"] == 8 and c["rank:normal"] == 172
         assert c["snak:value"] == 120 and c["snak:novalue"] == 60
         assert c["qualifier_snaks"] == 180 and c["qualifier_snaks:time"] == 120      # 60 P580, 60 P642, 60 no P582

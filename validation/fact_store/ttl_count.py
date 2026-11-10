@@ -83,7 +83,10 @@ def count_block(text: bytes, c: collections.Counter, props: collections.Counter,
     me = b"wd:" + eid.encode() if eid else None
     kind, scholarly, stmts, prop_of = None, False, 0, {}
     for s, p, o in triples(text):
-        if s == me:
+        if p == b"owl:sameAs":                       # a redirect: its own data: header (the old id), then this line
+            c["redirects"] += 1
+            side.append(b"redirect\t" + s + b"\t" + _first(o))
+        elif s == me:
             if p == b"a":
                 kind = KINDS.get(_first(o), kind)
             elif p in LABELS:
@@ -131,9 +134,6 @@ def count_block(text: bytes, c: collections.Counter, props: collections.Counter,
             c["revisions"] += 1
         elif p == b"schema:isPartOf" and _first(o) in SITES:
             c[f"sitelinks:{SITES[_first(o)]}"] += 1
-        elif p == b"owl:sameAs":
-            c["redirects"] += 1
-            side.append(b"redirect\t" + s + b"\t" + _first(o))
         elif s == b"wikibase:Dump" and p == b"schema:dateModified":
             side.append(b"dump_date\t" + o.split(b'"')[1])
     if kind:

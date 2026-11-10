@@ -198,7 +198,15 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
     segments in between are empty (53 bytes, an empty gzip). Checked: the 17 segments hold 1,186,646 distinct
     entities, exactly the counter, every one in the sample by its hash; segment 2's are all shard 0, segment 8's all
     shard 4. The sample is the 1% hash sample it was meant to be (the same ids as the JSON dump's); only its place in
-    the file is uneven. The side file is small: the checkpoint at 920.6 GB counts no redirect at all.
+    the file is uneven. The side file is small for another reason, a bug, below.
+  - **B2 counts no redirect, wrongly; the dump has them.** The dump writes a redirect as its own block: a `data:`
+    header for the old id (with a revision), then `wd:Qold owl:sameAs wd:Qnew`. The Turtle count took the old id for
+    the block's entity and skipped the line (43 such lines in the dump's last 21.7 MB alone). Fixed
+    (`ttl_count.count_block` reads `owl:sameAs` first; the test's redirect is now in the dump's layout). The running
+    B2 keeps the old code, and its resume does not recount the first 920.6 GB, so its `redirects` stays 0; the
+    count is still in it: every entity and every redirect has one `data:` header, so redirects = revisions -
+    entities, 115,664,225 - 111,050,029 = **4,614,196 at the checkpoint**. The list itself comes from the store's
+    full build, which reads every block.
   - **A stopped notebook cell left its script running** underneath (`subprocess.Popen`); the cell now kills it.
   - **The hot store by real use (Cowork's addendum), first projection** (`validation/fact_store/query_logs.py`;
     `validation/logs/wikidata_query_logs_projection_2026-11-10.json`). Licence: the logs are CC0 (TU Dresden: "All of
