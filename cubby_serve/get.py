@@ -1,6 +1,7 @@
 """serve_get -- every GET route of the stand-in server (split out of serve_api.py, order 0030): the board, the
 audit chain, the pac maze, /health /state /worlds, the dashboards, the loop's events and stream.
-`handle_get(h, brain)` runs on the request handler `h` (its `_send`, `_raw`, `_page`, `_who`).
+`handle_get(h, brain)` runs on the request handler `h` (its `_send`, `_raw`, `_page`, `_who`). The brand mark
+(`dashboard/brand/`, Nick's logos, 2026-11-10) is served at /brand/<file> and /favicon.ico, to every audience.
 
 Wired: WIRED (cubby_serve.api's handler).
 """
@@ -12,6 +13,7 @@ import queue as _queue
 import sys
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+BRAND = __import__("pathlib").Path(ROOT) / "dashboard" / "brand"
 
 from cubby_serve.events import _LOOP_CLIENTS, _LOOP_LOCK, _LOOP_RING, _json_safe, ring_times  # noqa: E402
 
@@ -21,6 +23,13 @@ __wiring__ = "WIRED"
 def handle_get(h, brain) -> None:
     from cubbyllm.speech.audience import audit_chain, audit_only
     live = getattr(brain, "pac_live", None)
+    route = h.path.split("?", 1)[0]
+    if route == "/favicon.ico" or route.startswith("/brand/"):      # the logos: public, every page's mark
+        from cubby_serve.board.api import _file
+        got = _file(BRAND, "cubby-logo.png" if route == "/favicon.ico" else route[len("/brand/"):],
+                    {".svg": "image/svg+xml", ".png": "image/png"})
+        h._raw(*((200, *got) if got else (404, b"not found", "text/plain")))
+        return
     who = h._who()
     if h.path.startswith("/board"):                # the control board (order 0027): off = 404
         from cubby_serve.board.api import handle

@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Cubby Loop Panel</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/brand/cubby-logo.svg" type="image/svg+xml">
 </head>
 <body>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -23,6 +25,7 @@ body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--f-ui);
 .app{display:grid;grid-template-rows:auto 1fr auto;grid-template-columns:280px 1fr 340px;height:100vh;min-height:520px}
 header{grid-column:1/-1;display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
 header h1{font-size:15px;font-weight:600;margin:0;letter-spacing:.01em}
+header .logo{width:28px;height:28px;display:block}
 header .sub{color:var(--muted);font-family:var(--f-mono);font-size:11px}
 header .spacer{flex:1}
 .btn{font:inherit;font-size:12.5px;color:var(--ink);background:var(--panel-2);border:1px solid var(--line-2);border-radius:4px;padding:5px 10px;cursor:pointer}
@@ -88,6 +91,7 @@ footer .now{min-width:260px;color:var(--ink-2);overflow:hidden;text-overflow:ell
 
 <div class="app">
 <header>
+  <img class="logo" src="/brand/cubby-logo-white.svg" alt="">
   <div><h1>Cubby Loop Panel</h1><div class="sub" id="status">sample run · hdc rephrased, host planner</div></div>
   <div class="spacer"></div>
   <form class="ask" id="ask" hidden autocomplete="off">

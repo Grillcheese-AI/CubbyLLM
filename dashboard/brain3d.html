@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cubby Brain</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/brand/cubby-logo.svg" type="image/svg+xml">
 <style>
   /* A monitor piece: one dark world on purpose (it plays full-screen behind a talk), so a single
      palette. Amber = running now, teal = certified / learned, red = refused (a result here, not an
@@ -28,6 +30,7 @@
   .card span{display:block;font-size:12.5px;overflow-wrap:anywhere}
   header{position:fixed;top:14px;left:18px;display:flex;align-items:center;gap:12px;z-index:3}
   header h1{margin:0;font-size:17px;font-weight:650;letter-spacing:-.01em}
+  header .logo{width:26px;height:26px;display:block}
   header h1 em{font-style:normal;color:var(--live)}
   .status{display:flex;align-items:center;gap:7px;color:var(--dim);font-size:12px}
   .dot{width:8px;height:8px;border-radius:50%;background:var(--dim)}
@@ -69,6 +72,7 @@
 <div id="tags"></div>
 <div id="cards"></div>
 <header>
+  <img class="logo" src="/brand/cubby-logo-white.svg" alt="">
   <h1>Cubby<em>LLM</em> · live brain</h1>
   <div class="status" id="status" data-s="off"><span class="dot"></span><span id="statusText">connecting…</span></div>
 </header>

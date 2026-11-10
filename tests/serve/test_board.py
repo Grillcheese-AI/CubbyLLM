@@ -139,3 +139,17 @@ def test_the_page_calls_no_other_host_and_files_stay_in_their_folder(server):
               "/board/assets/..%2F..%2FREADME.md"]:
         assert fetch(base, p)[0] == 404, p
     assert fetch(base, "/board/static/app.js")[0] == 200 and fetch(base, "/board/assets/system_still.webp")[0] == 200
+
+
+def test_the_brand_mark_is_served_to_everyone(server):
+    """Nick's logos (dashboard/brand/, 2026-11-10): every page's mark and the favicon, public, nothing else."""
+    base = server(False)                                       # served with the board off too
+    for path, kind in (("/brand/cubby-logo.svg", "image/svg+xml"), ("/brand/cubby-logo-white.svg", "image/svg+xml"),
+                       ("/favicon.ico", "image/png")):
+        with urllib.request.urlopen(base + path, timeout=10) as r:
+            assert (r.status, r.headers["Content-Type"]) == (200, kind), path
+    assert fetch(base, "/brand/..%2Fboard%2Findex.html")[0] == 404
+    for page in ("dashboard/board/index.html", "dashboard/brain3d.html", "dashboard/control_panel.html",
+                 "dashboard/component_map.html", "standin/demo.html"):
+        text = (ROOT / page).read_text(encoding="utf-8")
+        assert "/brand/cubby-logo.svg" in text and "/brand/cubby-logo-white.svg" in text, page

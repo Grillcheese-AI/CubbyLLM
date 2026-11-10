@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cubby Component Map</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/brand/cubby-logo.svg" type="image/svg+xml">
 <style>
   /* An instrument panel, so: a cool dark ground with a warm signal on it.
      Amber is "this ran just now", teal is "something was confirmed or
@@ -49,6 +51,9 @@
     text-wrap:balance;
   }
   .sub{color:var(--dim); font-size:13px; max-width:62ch; margin:4px 0 18px}
+  .logo{width:30px;height:30px;align-self:center} .logo.on-light{display:none}   /* white on dark, colour on light */
+  @media (prefers-color-scheme: light){ :root:not([data-theme="dark"]) .logo.on-dark{display:none} :root:not([data-theme="dark"]) .logo.on-light{display:block} }
+  :root[data-theme="light"] .logo.on-dark{display:none} :root[data-theme="light"] .logo.on-light{display:block}
   .sub code{font-family:ui-monospace,monospace; color:var(--ink); font-size:12px}
 
   .status{margin-left:auto; display:flex; align-items:center; gap:9px; font-size:12.5px; color:var(--dim)}
@@ -145,6 +150,7 @@
 <body>
 <div class="wrap">
   <header>
+    <img class="logo on-dark" src="/brand/cubby-logo-white.svg" alt=""><img class="logo on-light" src="/brand/cubby-logo.svg" alt="">
     <div>
       <h1>Cubby Component Map</h1>
     </div>
