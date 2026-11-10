@@ -16,6 +16,8 @@ search (no key in a measurement), no books index unless ``CUBBY_BOOKS_INDEX`` is
 Each record (one jsonl line a question, resumable: a question already written is skipped) keeps the verdict, the
 proposer, the refusal's kind, where its facts came from, the VM's calls and time, and C-VM's value
 (``CB_RECORD_UNCERTIFIED=1``, set here). CLUTRR is ``clutrr_c.py``.
+With ``CB_WD_STORE=1`` (``CB_WD_KINDS``, ``CB_ANSWER_CLASS`` as set) the full Wikidata store is mounted ahead of the
+hdc world, as ``cubby_serve/cli.py`` mounts it (order 0055 step 4, the "after"); its snapshot and the flags go in the meta.
 
     python validation/system_eval/run_c.py --bench simpleqa --seat record --out <dir> [--n 50]
 
@@ -117,11 +119,18 @@ def build(seat, online: bool, vm: str):
     else:
         source = "wikidata-offline"                      # the cache only (no network; the cache is not written)
     skills = str(data_dir("sleep", "skills.jsonl"))
-    loop = AskLoop(em, world=Stores(wiki, HdcWorld()), source=source, lexicon=True, history_path=None,
+    others, wd = [], None
+    if os.environ.get("CB_WD_STORE") == "1":             # order 0055 step 4: the full store ahead of Wikidata5M, as
+        from cubby_serve.wd_world import build as build_wd   # cubby_serve/cli.py mounts it (the "after")
+        wd = build_wd(lambda m: print(m, flush=True))
+        others.append(wd)
+    loop = AskLoop(em, world=Stores(wiki, *others, HdcWorld()), source=source, lexicon=True, history_path=None,
                    skills=skills if os.path.exists(skills) else None, books=os.environ.get("CUBBY_BOOKS_INDEX") or None)
     timing = {"vm_calls": 0, "vm_s": 0.0}
     loop._run_fn = timed(loop._run_fn, timing, vm == "permissive")
-    meta = {"skills": len(loop.skills), "books": bool(os.environ.get("CUBBY_BOOKS_INDEX")), "online": online,
+    meta = {"wd_store": wd.state if wd else None, "wd_dump": wd.provenance_name if wd else None,
+            "flags": {k: os.environ.get(k) for k in ("CB_WD_STORE", "CB_WD_KINDS", "CB_ANSWER_CLASS")},
+            "skills": len(loop.skills), "books": bool(os.environ.get("CUBBY_BOOKS_INDEX")), "online": online,
             "everyday": loop._everyday is not None, "tense": loop.tense, "vm": vm}
     return loop, timing, meta
 
