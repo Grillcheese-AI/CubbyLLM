@@ -1,0 +1,906 @@
+{
+ "counts": {
+  "aliases:en": 14422594,
+  "aliases:fr": 3006293,
+  "aliases:mul": 587186,
+  "bytes": 971846171568,
+  "descriptions:en": 100533021,
+  "descriptions:fr": 64485684,
+  "entities:item": 118589950,
+  "entities:property": 13142,
+  "items:scholarly": 45397160,
+  "labels:en": 91147281,
+  "labels:fr": 18154495,
+  "labels:mul": 17890739,
+  "qualifier_snaks": 434246989,
+  "qualifier_snaks:time": 35339529,
+  "rank:deprecated": 12363943,
+  "rank:normal": 1712275315,
+  "rank:preferred": 6404588,
+  "reference_blocks": 1303488672,
+  "reference_nodes": 148060296,
+  "reference_snaks:written": 472656386,
+  "revisions": 123382722,
+  "sample_bytes": 9722797857,
+  "sample_dangling:wdref": 1439379,
+  "sample_dangling:wdv": 2327418,
+  "sample_entities": 1186646,
+  "sample_used:wdref": 2919536,
+  "sample_used:wdv": 3734529,
+  "sitelinks:enwiki": 10144021,
+  "sitelinks:frwiki": 3436794,
+  "snak:novalue": 195376,
+  "snak:somevalue": 861886,
+  "snak:value": 1729986622,
+  "statements:item": 1730739604,
+  "statements:property": 304242,
+  "statements:scholarly": 972433809,
+  "value_nodes": 140647490
+ },
+ "references_distinct_est": 137684117,
+ "bytes_by_section_est": {},
+ "props_top": [
+  [
+   "P2860",
+   312441499
+  ],
+  [
+   "P2093",
+   150127627
+  ],
+  [
+   "P31",
+   124983668
+  ],
+  [
+   "P1476",
+   54359390
+  ],
+  [
+   "P577",
+   51488457
+  ],
+  [
+   "P1433",
+   46434434
+  ],
+  [
+   "P478",
+   40286458
+  ],
+  [
+   "P304",
+   40222943
+  ],
+  [
+   "P433",
+   38551966
+  ],
+  [
+   "P407",
+   36865944
+  ],
+  [
+   "P50",
+   35472477
+  ],
+  [
+   "P356",
+   33985061
+  ],
+  [
+   "P921",
+   33971841
+  ],
+  [
+   "P1215",
+   33138501
+  ],
+  [
+   "P698",
+   32208735
+  ],
+  [
+   "P528",
+   28975316
+  ],
+  [
+   "P17",
+   19863707
+  ],
+  [
+   "P131",
+   14725338
+  ],
+  [
+   "P106",
+   12654373
+  ],
+  [
+   "P953",
+   12633199
+  ],
+  [
+   "P625",
+   11944900
+  ],
+  [
+   "P21",
+   10755625
+  ],
+  [
+   "P735",
+   8613506
+  ],
+  [
+   "P6259",
+   8174239
+  ],
+  [
+   "P6257",
+   8096080
+  ],
+  [
+   "P6258",
+   8095949
+  ],
+  [
+   "P3083",
+   8067635
+  ],
+  [
+   "P569",
+   7815667
+  ],
+  [
+   "P2671",
+   7626661
+  ],
+  [
+   "P59",
+   7370987
+  ],
+  [
+   "P932",
+   6609374
+  ],
+  [
+   "P373",
+   6260060
+  ],
+  [
+   "P18",
+   6170410
+  ],
+  [
+   "P27",
+   6062226
+  ],
+  [
+   "P734",
+   6017605
+  ],
+  [
+   "P2214",
+   5868997
+  ],
+  [
+   "P361",
+   5277589
+  ],
+  [
+   "P10752",
+   5250750
+  ],
+  [
+   "P10751",
+   5245733
+  ],
+  [
+   "P279",
+   5160919
+  ],
+  [
+   "P276",
+   4793076
+  ],
+  [
+   "P2216",
+   4614194
+  ],
+  [
+   "P13228",
+   4606217
+  ],
+  [
+   "P5875",
+   4586519
+  ],
+  [
+   "P6216",
+   4578117
+  ],
+  [
+   "P214",
+   4448497
+  ],
+  [
+   "P646",
+   4425601
+  ],
+  [
+   "P684",
+   4381258
+  ],
+  [
+   "P1082",
+   4349417
+  ],
+  [
+   "P1566",
+   4029927
+  ],
+  [
+   "P571",
+   3995812
+  ],
+  [
+   "P171",
+   3950171
+  ],
+  [
+   "P105",
+   3944063
+  ],
+  [
+   "P225",
+   3943890
+  ],
+  [
+   "P19",
+   3805701
+  ],
+  [
+   "P195",
+   3785751
+  ],
+  [
+   "P973",
+   3771830
+  ],
+  [
+   "P570",
+   3764872
+  ],
+  [
+   "P69",
+   3545686
+  ],
+  [
+   "P2583",
+   3519622
+  ],
+  [
+   "P1412",
+   3401735
+  ],
+  [
+   "P971",
+   3397886
+  ],
+  [
+   "P846",
+   3321759
+  ],
+  [
+   "P1087",
+   3087118
+  ],
+  [
+   "P6769",
+   3060794
+  ],
+  [
+   "P495",
+   2902514
+  ],
+  [
+   "P703",
+   2888843
+  ],
+  [
+   "P1813",
+   2799152
+  ],
+  [
+   "P527",
+   2726140
+  ],
+  [
+   "P227",
+   2706884
+  ],
+  [
+   "P1104",
+   2651558
+  ],
+  [
+   "P1435",
+   2593671
+  ],
+  [
+   "P108",
+   2508235
+  ],
+  [
+   "P1448",
+   2490111
+  ],
+  [
+   "P136",
+   2439115
+  ],
+  [
+   "P641",
+   2425931
+  ],
+  [
+   "P275",
+   2397413
+  ],
+  [
+   "P856",
+   2369500
+  ],
+  [
+   "P213",
+   2326702
+  ],
+  [
+   "P281",
+   2297626
+  ],
+  [
+   "P10585",
+   2289752
+  ],
+  [
+   "P6375",
+   2223806
+  ],
+  [
+   "P186",
+   2216194
+  ],
+  [
+   "P13046",
+   2148761
+  ],
+  [
+   "P421",
+   2132929
+  ],
+  [
+   "P2326",
+   2111884
+  ],
+  [
+   "P9157",
+   2035850
+  ],
+  [
+   "P496",
+   1947493
+  ],
+  [
+   "P40",
+   1918452
+  ],
+  [
+   "P1343",
+   1910552
+  ],
+  [
+   "P217",
+   1808214
+  ],
+  [
+   "P166",
+   1805204
+  ],
+  [
+   "P39",
+   1783595
+  ],
+  [
+   "P161",
+   1732550
+  ],
+  [
+   "P54",
+   1729677
+  ],
+  [
+   "P244",
+   1723936
+  ],
+  [
+   "P155",
+   1719707
+  ],
+  [
+   "P2067",
+   1715607
+  ],
+  [
+   "P156",
+   1686319
+  ],
+  [
+   "P20",
+   1629190
+  ],
+  [
+   "P2044",
+   1570527
+  ],
+  [
+   "P6179",
+   1540725
+  ],
+  [
+   "P170",
+   1464354
+  ],
+  [
+   "P274",
+   1426880
+  ],
+  [
+   "P5055",
+   1383556
+  ],
+  [
+   "P662",
+   1376487
+  ],
+  [
+   "P2048",
+   1373451
+  ],
+  [
+   "P10832",
+   1369985
+  ],
+  [
+   "P235",
+   1366354
+  ],
+  [
+   "P233",
+   1365194
+  ],
+  [
+   "P234",
+   1364845
+  ],
+  [
+   "P5008",
+   1358442
+  ],
+  [
+   "P101",
+   1355945
+  ],
+  [
+   "P1090",
+   1279210
+  ],
+  [
+   "P13591",
+   1243906
+  ],
+  [
+   "P1705",
+   1238887
+  ],
+  [
+   "P793",
+   1215914
+  ],
+  [
+   "P680",
+   1207681
+  ],
+  [
+   "P1889",
+   1193710
+  ],
+  [
+   "P682",
+   1190837
+  ],
+  [
+   "P13049",
+   1188347
+  ],
+  [
+   "P22",
+   1188082
+  ],
+  [
+   "P819",
+   1165520
+  ],
+  [
+   "P150",
+   1161576
+  ],
+  [
+   "P8608",
+   1157555
+  ],
+  [
+   "P345",
+   1157541
+  ],
+  [
+   "P1001",
+   1154087
+  ],
+  [
+   "P2049",
+   1153464
+  ],
+  [
+   "P127",
+   1140532
+  ],
+  [
+   "P6104",
+   1116539
+  ],
+  [
+   "P830",
+   1106379
+  ],
+  [
+   "P644",
+   1085130
+  ],
+  [
+   "P645",
+   1085130
+  ],
+  [
+   "P2548",
+   1069896
+  ],
+  [
+   "P11089",
+   1065523
+  ],
+  [
+   "P585",
+   1063925
+  ],
+  [
+   "P5572",
+   1058471
+  ],
+  [
+   "P11699",
+   1050934
+  ],
+  [
+   "P215",
+   1049111
+  ],
+  [
+   "P179",
+   1033301
+  ],
+  [
+   "P269",
+   1025573
+  ],
+  [
+   "P702",
+   981257
+  ],
+  [
+   "P688",
+   978244
+  ],
+  [
+   "P180",
+   975112
+  ],
+  [
+   "P4224",
+   954816
+  ],
+  [
+   "P159",
+   950460
+  ],
+  [
+   "P231",
+   946433
+  ],
+  [
+   "P47",
+   941197
+  ],
+  [
+   "P123",
+   931308
+  ],
+  [
+   "P710",
+   931289
+  ],
+  [
+   "P580",
+   929430
+  ],
+  [
+   "P348",
+   923502
+  ],
+  [
+   "P7715",
+   920944
+  ],
+  [
+   "P282",
+   912348
+  ],
+  [
+   "P961",
+   908401
+  ],
+  [
+   "P681",
+   897887
+  ],
+  [
+   "P1344",
+   895066
+  ],
+  [
+   "P26",
+   894677
+  ],
+  [
+   "P5037",
+   891826
+  ],
+  [
+   "P3382",
+   884216
+  ],
+  [
+   "P3117",
+   882556
+  ],
+  [
+   "P7959",
+   878187
+  ],
+  [
+   "P7902",
+   867568
+  ],
+  [
+   "P590",
+   853368
+  ],
+  [
+   "P691",
+   852630
+  ],
+  [
+   "P3151",
+   851236
+  ],
+  [
+   "P8494",
+   848733
+  ],
+  [
+   "P137",
+   847097
+  ],
+  [
+   "P8189",
+   843250
+  ],
+  [
+   "P582",
+   813836
+  ],
+  [
+   "P1843",
+   811833
+  ],
+  [
+   "P2046",
+   807015
+  ],
+  [
+   "P351",
+   794132
+  ],
+  [
+   "P301",
+   788961
+  ],
+  [
+   "P910",
+   784390
+  ],
+  [
+   "P8687",
+   775603
+  ],
+  [
+   "P1559",
+   771864
+  ],
+  [
+   "P637",
+   771549
+  ],
+  [
+   "P6879",
+   769301
+  ],
+  [
+   "P442",
+   753642
+  ],
+  [
+   "P268",
+   744200
+  ],
+  [
+   "P2892",
+   737826
+  ],
+  [
+   "P25",
+   737669
+  ],
+  [
+   "P1454",
+   734983
+  ],
+  [
+   "P4638",
+   719945
+  ],
+  [
+   "P1207",
+   710272
+  ],
+  [
+   "P3368",
+   706075
+  ],
+  [
+   "P291",
+   705644
+  ],
+  [
+   "P452",
+   698411
+  ],
+  [
+   "P850",
+   696301
+  ],
+  [
+   "P7937",
+   688994
+  ],
+  [
+   "P463",
+   678521
+  ],
+  [
+   "P126",
+   662096
+  ],
+  [
+   "P639",
+   656760
+  ],
+  [
+   "P815",
+   652135
+  ],
+  [
+   "P140",
+   647926
+  ],
+  [
+   "P1225",
+   645167
+  ],
+  [
+   "P7015",
+   643067
+  ],
+  [
+   "P175",
+   637031
+  ],
+  [
+   "P1057",
+   635057
+  ]
+ ],
+ "props_n": 12552,
+ "parts": 113,
+ "hash_algo": "md5",
+ "hash_parts": "7adbd7665360b6c0c3882108011263e4",
+ "hash_source": "7adbd7665360b6c0c3882108011263e4",
+ "hash_ok": true,
+ "ended_at_close": true,
+ "wall_s": 16412,
+ "resumed_from": [
+  920632948155
+ ],
+ "skip_s": 8253,
+ "fallback_cuts": 0,
+ "stretches_kept": [],
+ "statements_by_datatype": {
+  "<http://wikiba.se/ontology#WikibaseItem>": 861245271,
+  "<http://wikiba.se/ontology#String>": 327141010,
+  "<http://wikiba.se/ontology#ExternalId>": 258338654,
+  "<http://wikiba.se/ontology#Quantity>": 105375879,
+  "<http://wikiba.se/ontology#Time>": 71716264,
+  "<http://wikiba.se/ontology#Monolingualtext>": 66444126,
+  "<http://wikiba.se/ontology#Url>": 20588667,
+  "<http://wikiba.se/ontology#GlobeCoordinate>": 12051301,
+  "<http://wikiba.se/ontology#CommonsMedia>": 7829201,
+  "<http://wikiba.se/ontology#Math>": 146807,
+  "<http://wikiba.se/ontology#GeoShape>": 61130,
+  "<http://wikiba.se/ontology#WikibaseProperty>": 58266,
+  "<http://wikiba.se/ontology#TabularData>": 23257,
+  "<http://wikiba.se/ontology#WikibaseLexeme>": 11751,
+  "<http://wikiba.se/ontology#WikibaseForm>": 10853,
+  "<http://wikiba.se/ontology#MusicalNotation>": 1048,
+  "<http://wikiba.se/ontology#WikibaseEntitySchema>": 234,
+  "<http://wikiba.se/ontology#WikibaseSense>": 117,
+  "?": 10
+ },
+ "property_types": {
+  "<http://wikiba.se/ontology#ExternalId>": 9920,
+  "<http://wikiba.se/ontology#WikibaseItem>": 1722,
+  "<http://wikiba.se/ontology#Quantity>": 681,
+  "<http://wikiba.se/ontology#String>": 348,
+  "<http://wikiba.se/ontology#Url>": 118,
+  "<http://wikiba.se/ontology#CommonsMedia>": 89,
+  "<http://wikiba.se/ontology#Time>": 70,
+  "<http://wikiba.se/ontology#Monolingualtext>": 64,
+  "<http://wikiba.se/ontology#Math>": 36,
+  "<http://wikiba.se/ontology#WikibaseProperty>": 22,
+  "<http://wikiba.se/ontology#WikibaseSense>": 19,
+  "<http://wikiba.se/ontology#WikibaseLexeme>": 16,
+  "<http://wikiba.se/ontology#WikibaseForm>": 10,
+  "<http://wikiba.se/ontology#GlobeCoordinate>": 10,
+  "<http://wikiba.se/ontology#TabularData>": 6,
+  "<http://wikiba.se/ontology#MusicalNotation>": 6,
+  "<http://wikiba.se/ontology#GeoShape>": 3,
+  "<http://wikiba.se/ontology#WikibaseEntitySchema>": 2
+ },
+ "dump_date": "2025-12-29T23:00:38Z",
+ "what": "order 0055 step 1, the WikiKGQA 2026 challenge's Wikidata dump (Zenodo 22661413, CC0; wikikgqa-wikidata-all-dump.ttl.bz2, 113 parts of 1 GiB, md5 as Zenodo's), counted in one pass on Colab (B2, validation/fact_store/ttl_count.py; resumed from its checkpoint at 920.6 GB after the forked-pool stall fix a4e85c3). The 1% sample: sample_1pct.ttl.gz on the Drive (1,186,646 entities).",
+ "redirects_derived": {
+  "value": 4779630,
+  "how": "every entity and every redirect has one data: header with a revision; revisions - entities. The count's own redirects field is 0 by a bug (fixed in f3c3771): a redirect block's owl:sameAs line was read as its entity's own."
+ },
+ "non_scholarly_item_statements": 758305795
+}

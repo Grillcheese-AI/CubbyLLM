@@ -168,6 +168,16 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
     1,186,646 sampled) and stalled at about 958 GB; the third resumed from 920.6 GB (skipping at 150 MB/s) and stalled
     at 957 GB. A fourth (after the cutter's change below) resumed and stopped writing progress at 948 GB, short of the
     same place. Same place each time: the dump's last byte (below). Fixed; B2 resumes from 920.6 GB.
+  - **Step 1, the challenge's dump, counted (B2, 2026-11-10, 02:26)** (`validation/logs/wikidata_kgqa_counts_2026-11-10.json`):
+    113 parts, md5 as Zenodo's, the stream ended at its closing `.`, the cutter's fallback never used; 971.8 GB of
+    Turtle; the dump's date 2025-12-29T23:00:38Z. 118,589,950 items and 13,142 properties; 1,730,739,604 statements
+    on items (normal 1,712.3M, preferred 6.4M, deprecated 12.4M; 1,730.0M with a value, 0.86M some value, 0.20M no
+    value); scholarly articles 45,397,160 items with 972,433,809 statements (56%), the rest 758,305,795; qualifier
+    snaks 434.2M (35.3M time); references attached 1,303.5M, about 137.7M distinct; labels EN 91.1M, FR 18.2M, `mul`
+    17.9M; enwiki 10.1M, frwiki 3.4M sitelinks; 140.6M value nodes. **Redirects: 4,779,630** (revisions -
+    entities; every entity and every redirect has one revision; the count's own `redirects` field says 0 by the
+    bug fixed in f3c3771). Against Wikimedia's JSON dump ten months later: 3.5M fewer items, 53.6M fewer statements.
+    At 82 bytes a statement (format 3 on the dump's last part), the hot store is about 62 GB.
 - **Not verified here:**
 - **Found on the way:**
   - **The count lost the whole pass when the runtime dropped,** and Colab's Drive mount uploads a file only once it is
