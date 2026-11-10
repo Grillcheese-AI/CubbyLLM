@@ -247,6 +247,15 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
     over 64 near keys it answers "too many", never a guess. Same segment: 80.2 bytes a statement with every file.
     From memory: an entity by id p95 15.4 us, a name p95 5.8 us (the lines, 1 ms and 50 ms p95, are from SSD:
     measured on the full build).
+  - **The full build's pieces** (local commits d6e3cce, 7600e51). bzip2 decoded on every core, block by block (the
+    dump's last part: 238 MB/s out on 12 threads, byte for byte the earlier decode). Format 3 builds in the dump's
+    order without sorting it (the shards' ids rise, but not strictly), with an id table, nodes numbered by first
+    sighting and the indexes sorted in runs on a scratch disk; scholarly articles go to a cold set of the same format
+    (`--cold`, the synthesis's default). On the dump's real last part (1.05 GB of bzip2): 1,235,092 hot and 614,755
+    cold entities, 16.5M statements, 32,919 redirects resolved, 2 of 1,021,047 references undefined (written in the
+    part before), `check` clean; 50.5 bytes a hot statement in the chunks, 82.0 with the nodes and indexes; p95 13.9
+    us by id, 4.1 us by name; 135 s, so about 4.2 h for the dump. Projected hot store: about 75-80 GB, under the 90
+    GB line. Before the full run: resuming after a stop, and Nick's yes for a run of hours on his PC.
 - **Questions:**
   - **The hot store's size line.** By real use, 1,000 properties cover 97.5% of the logged queries but hold 86% of
     the statements, because the scholarly properties rank high enough by use (P2860 at 41, P2093 at 148) to get in.
