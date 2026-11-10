@@ -764,6 +764,34 @@ Read by hand: `validation/logs/audit_wd_kinds_2026-11-10.md`, the five fixed che
 the fictional item only in the closing line; the Marie Curie check answers her two Nobel Prizes; hop 8 answers
 "United States" once. The 50 hops are run again and the count of wrong picks must not rise.
 
+**Claude Code, 2026-11-10: the four changes built** (changes 1, 4 and 2 in `cubbyllm/worlds/wd_store_refine.py`,
+applied after `hdc_relation.decide` through a hook in `hdc_namesakes.Namesakes.hop_rows` that only the store's world
+defines, so Wikidata5M's rule is unchanged; change 3 is `wd_store_cues`, above):
+- **(1)** "different from" (P1889), "said to be the same as" (P460), "topic's main category" (P910), "Commons
+  category" (P373) and "described by source" (P1343): with only these to go on, every item fits, so none is picked.
+- **(4)** two or more fitting items holding the same values for the hop: said once, the items listed in the decision
+  (`agree`) and in the record (`ask_namesakes.after_walk`, rule "agree").
+- **(2)** an item of a fictional class leaves the fitting items when a real one fits the same relation; it stays among
+  the name's items (named in the closing line, readable when chosen) and fits when no real item does. This replaces
+  the broader set-aside built before (a fictional item dropped whenever a real one shared the name), which had cost
+  hop 9 (Demon Hunter, from narrative universe) its fictional candidates.
+- **The fictional root, confirmed on the store:** Q14897293, "fictional entity"; the class tree under it by subclass of
+  is 10,121 classes (the Star Trek locations named France and Italy are two steps below it).
+- **The 50 hops run again** (`validation/logs/audit_wd_kinds_2026-11-10-refined.json` and `.md`; the same questions
+  as the first run): one item 4, one answer because every item agrees 6, each labelled 13, asking back 23, nothing
+  read 4. **Wrong picks: 0** (was 1): hop 42 (Thespis) now asks back; the four single picks are hops 3, 11, 25 and
+  27, read right. The probe: 0 wrong picks, as before. A decision 39 ms p50, 263 ms at most.
+- **The tests the addendum lists:** hop 42 asks back: yes. "Capital of France": Paris once, the Star Trek location
+  named only in the closing line: yes. Hop 8: "United States" once (four Calhoun Townships agree): yes. **Marie
+  Curie's two Nobel Prizes: not met.** The right person is read; her answer still lists every award. Narrowing a
+  hop's values to the question's class name ("Nobel Prize") is the answer step's (`ask_namesake_answer.one_fits`
+  checks the class words against the whole answer and keeps every value), not the store's or the cue table's. Not
+  built here; the next change if Nick wants it before 0054's rerun.
+- Tests: `tests/worlds/test_wd_store_world.py` 14 (the fictional test rewritten for change 2: Albion's real country
+  fits and the Star Trek one steps aside but stays among the items, Vulcan's fictional item fits when only a painting
+  shares the name; new: Thespis asks back, Twinland's two items agree). tests/worlds, reasoning, serve: 481 pass (the
+  known red, 0002, as before).
+
 **Nick's decisions on the report's open questions (2026-11-10: "yes" to Cowork's recommendations):**
 - **The 1 ms line:** no work on it now. It stays recorded as missed (1.5 ms p95). The 50-question preflight says
   whether 1.5 ms matters next to the rest of an answer, and the line is decided then.

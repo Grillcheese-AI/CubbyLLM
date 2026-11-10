@@ -63,8 +63,11 @@ def one(w, rel: str, name: str, cues=()) -> dict:
     by, n = store_by(w, name, rel)
     reads, d, ms = A0.hop(w, rel, name, cues)
     q = "What Nobel Prize did Marie Curie win?" if cues else f"What is the {rel} of {name}?"
-    outcome, reply = A0.spoken(w, d, by, reads, q, name) if d else (
-        ("one item", f"{', '.join(reads)}.") if reads else ("nothing read", "I don't know."))
+    if d and d.get("agree"):                             # every fitting item gives the same value: said once (no pick)
+        outcome, reply = "one answer, every item agrees", f"{', '.join(reads)}. ({len(d['agree'])} items named {name} agree)"
+    else:
+        outcome, reply = A0.spoken(w, d, by, reads, q, name) if d else (
+            ("one item", f"{', '.join(reads)}.") if reads else ("nothing read", "I don't know."))
     return {"question": q, "label": name, "relation": rel, "items_n": n, "weighed": len(by), "outcome": outcome,
             "reply": reply, "fit": (d or {}).get("fit"), "ms": ms, "items": A0.items_of(w, d, by)[:8]}
 

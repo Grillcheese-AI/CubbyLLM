@@ -176,9 +176,13 @@ class Namesakes:
             from .hdc_relation import decide
             d = decide(by, self._world_rels(rel), getattr(self._pins, "cues", None) or [], self._kinds,
                        getattr(self, "_cues", None))
+            if hasattr(self, "_refine"):                     # a world's own refinements (the Wikidata store's, 0055);
+                d = self._refine(d, by, held)                #   none here: Wikidata5M's rule as it was
             self._decisions()[normalize(name)] = d
             d["holds"] = [q for q in d["fit"] if held.get(q)]
             if len(d["fit"]) == 1 and d["holds"]:            # (one that fits and holds none decides nothing: the audit)
+                return held[d["fit"][0]]
+            if d.get("agree"):                               # every fitting item gives the same value: said once
                 return held[d["fit"][0]]
             self._notes()[normalize(name)] = d["fit"] if len(d["fit"]) > 1 else [h for h, rows in held.items() if rows]
             return []

@@ -31,9 +31,8 @@ being famous. What differs:
 - an object's facts (who points at an item) are read up to `OBJECT_CAP` subjects, each checked against the subject's
   own truthy statements (a deprecated one, or an ended one on a relation whose value changes, is left out);
 - a Wikimedia page (a disambiguation page, a category, a template, a list) is never one of a name's items: it is not
-  a thing a question is about. With the cue file read (`wd_store_cues`), an item of a fictional class (one under
-  "fictional entity" by subclass of) is set aside when a real item shares its name ("France", the Star Trek
-  location, beside the country); a name only fictional items carry still stands for them ("Sherlock Holmes"). Without the kinds table, a name standing for more than `NAMESAKE_CAP` items gives none
+  a thing a question is about. The decision itself is refined for this world (`wd_store_refine`: a property that
+  fits anything never picks; a fictional item steps aside when a real one fits; every item agreeing is said once). Without the kinds table, a name standing for more than `NAMESAKE_CAP` items gives none
   of them and lists none (full Wikidata: "Paris" is 248 items, paintings and albums among them).
 
 Names are shared far more in the full Wikidata than in Wikidata5M ("Douglas Adams" is 10 people here, "France" 50
@@ -53,6 +52,7 @@ from . import wd_store_values as vals
 from .hdc_store import HdcWorld, _Rows
 from .hdc_world import TIME_SENSITIVE
 from .wd_store_crowd import Crowded
+from .wd_store_refine import Refined
 
 __wiring__ = "WIRED"
 
@@ -63,7 +63,7 @@ META = {"Q4167410", "Q22808320", "Q4167836", "Q11266439", "Q13406463", "Q1420424
 _QID = re.compile(r"^q[1-9][0-9]*$")
 
 
-class WdStoreWorld(Crowded, HdcWorld):
+class WdStoreWorld(Refined, Crowded, HdcWorld):
     name = "wdstore"
     NAMESAKE_CAP = NAMESAKE_CAP
 
@@ -94,6 +94,7 @@ class WdStoreWorld(Crowded, HdcWorld):
         self._ts_pids = {int(p[1:]) for p in TIME_SENSITIVE if int(p[1:]) in self._pid_label}
         self.time_sensitive = {normalize(self._pid_label[p]) for p in self._ts_pids}
         self._n = statements
+        self._p31: dict = {}                             # an item read -> its classes (ids), for the fictional rule
         self._entity = functools.lru_cache(maxsize=cache)(self._entity_rows)
         self._tiers = functools.lru_cache(maxsize=cache)(self._tiers)
         self._named = functools.lru_cache(maxsize=cache)(self._named_rows)
@@ -127,6 +128,8 @@ class WdStoreWorld(Crowded, HdcWorld):
         subj = next((n[2] for lang in ("en", "mul") for n in names if n[0] == lang and n[1] == 0), None)
         if subj is None:
             return None, [], keys                        # an item with no English or mul label is never named here
+        self._p31[qid.upper()] = {s["value"]["entity"] for s in e.get("statements", []) if s.get("pid") == 31 and s.get("best")
+                                  and s.get("rank") != 0 and isinstance(s.get("value"), dict) and "entity" in s["value"]}
         sts = [s for s in e.get("statements", []) if s.get("pid") in self._pid_label and vals.kept(s, s["pid"] in self._ts_pids)]
         nodes = e.get("nodes", {})
         labels = self._labels(vals.entity_ids(sts) | vals.unit_ids(sts, nodes))
@@ -164,9 +167,6 @@ class WdStoreWorld(Crowded, HdcWorld):
             brief = self.ask({"op": "brief", "ids": sorted(found)}) or {}
             found = {q: k for q, k in found.items()                     # a Wikimedia page is not a thing
                      if q in brief and not set(brief[q].get("types", [])) & META}
-            fiction = {q for q in found if set(brief[q].get("types", [])) & self._fictional}
-            if fiction and set(found) - fiction:         # a fictional item set aside beside a real one of its name
-                found = {q: k for q, k in found.items() if q not in fiction}
         order = sorted(found, key=lambda x: int(x[1:]))
         return [q for q in order if found[q] == 0], [q for q in order if found[q] == 1]
 

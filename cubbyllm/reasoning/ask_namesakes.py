@@ -130,6 +130,9 @@ def after_walk(loop, rec: dict, seed: str, learn=None) -> None:
     shared = bool(hasattr(world, "namesakes") and world.namesakes(seed))
     held = loop.facts_about(seed)                    # the first world holds the name as one thing: the worlds' rule
     d = world.decision(seed) if shared and not held and answer.on() and hasattr(world, "decision") else None   # stands aside
+    if d and d.get("agree") and rec.get("verified"):  # every fitting item gave the same value (a world's rule: the
+        rec["namesakes"] = {"rule": "agree", "items": list(d["agree"]), "kinds": d["kinds"], "cues": d["cues"]}   # store's)
+        return
     if d and len(d["fit"]) == 1 and d.get("holds"):
         answer.one_fits(loop, rec, seed, d, world.namesakes(seed))
         return

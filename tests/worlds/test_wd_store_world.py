@@ -227,6 +227,19 @@ ITEMS.update({
 })
 NAMES.update({"curie": [("Q500", 0, "exact"), ("Q501", 0, "exact")], "albion": [("Q600", 0, "exact"), ("Q601", 0, "exact")],
               "holmes": [("Q602", 0, "exact")]})
+# the refinements (wd_store_refine): a property that fits anything, items that agree, a fictional item alone fitting
+PROPS["P1889"] = ("different from", "wikibase:WikibaseItem")
+ITEMS.update({
+    "Q700": ([("en", 0, "opera")], [], {}, []),
+    "Q710": ([("en", 0, "Thespis")], [st(31, {"entity": "Q700"}), st(1889, {"entity": "Q60"})], {}, ["Q700"]),
+    "Q711": ([("en", 0, "Thespis")], [st(31, {"entity": "Q5"}), st(19, {"entity": "Q60"})], {}, ["Q5"]),
+    "Q720": ([("en", 0, "Twinland")], [st(31, {"entity": "Q41"}), st(36, {"entity": "Q60"})], {}, ["Q41"]),
+    "Q721": ([("en", 0, "Twinland")], [st(31, {"entity": "Q41"}), st(36, {"entity": "Q60"})], {}, ["Q41"]),
+    "Q730": ([("en", 0, "Vulcan")], [st(31, {"entity": "Q44"}), st(19, {"entity": "Q60"})], {}, ["Q44"]),
+    "Q731": ([("en", 0, "Vulcan")], [st(31, {"entity": "Q610"}), st(36, {"entity": "Q61"})], {}, ["Q610"]),
+})
+NAMES.update({"thespis": [("Q710", 0, "exact"), ("Q711", 0, "exact")], "twinland": [("Q720", 0, "exact"), ("Q721", 0, "exact")],
+              "vulcan": [("Q730", 0, "exact"), ("Q731", 0, "exact")]})
 
 
 @pytest.fixture()
@@ -235,9 +248,11 @@ def full_world(tmp_path):
     raw = tmp_path / "raw_full"
     raw.mkdir()
     (raw / "kind_rels.tsv").write_text("Q41\tP31\t10\nQ41\tP36\t9\nQ44\tP31\t100\nQ5\tP31\t50\nQ5\tP166\t40\n"
-                                       "Q520\tP31\t20\nQ520\tP166\t15\nQ610\tP31\t5\nQ610\tP36\t4\n", encoding="utf-8")
+                                       "Q520\tP31\t20\nQ520\tP166\t15\nQ610\tP31\t5\nQ610\tP36\t4\n"
+                                       "Q700\tP31\t10\nQ700\tP1889\t8\n", encoding="utf-8")
     (raw / "labels.tsv").write_text("Q41\tcountry\nQ44\tpainting\nQ5\thuman\nQ520\tship\nQ610\tStar Trek location\n"
-                                    "P31\tinstance of\nP36\tcapital\nP166\taward received\n", encoding="utf-8")
+                                    "Q700\topera\nP31\tinstance of\nP36\tcapital\nP166\taward received\nP1889\tdifferent from\n",
+                                    encoding="utf-8")
     (raw / "meta.tsv").write_text("snapshot\tabc123\nitems\t200\ntyped\t185\n", encoding="utf-8")
     wd_store_kinds.build(str(raw), str(tmp_path / "s.kinds.sqlite"))
     cues = tmp_path / "cues"
@@ -262,9 +277,25 @@ def test_a_cue_word_rules_a_kind_out(full_world):
     assert awards(full_world, "Curie", ["nobel"]) == {"Nobel Prize in Physics"}   # "Nobel" never goes with a ship
 
 
-def test_a_fictional_item_is_set_aside_beside_a_real_one_and_stands_alone(full_world, kinds_world):
-    assert capital(full_world, "Albion") == {"London"}            # the Star Trek location set aside
-    assert full_world.namesakes("albion") == {}                   # the name now stands for one item
-    w, _path = kinds_world                                        # (without the cue file: both compete)
-    assert set(w.namesakes("albion")) == {"Q600", "Q601"}
-    assert capital(full_world, "Holmes") == {"London"}            # only fictional items carry it: it stands
+def test_a_fictional_item_steps_aside_only_when_a_real_one_fits(full_world):
+    assert capital(full_world, "Albion") == {"London"}            # the real country fits: the Star Trek location steps aside
+    d = full_world.decision("albion")
+    assert (d["fit"], d["stepped_aside"]) == (["Q600"], ["Q601"])
+    assert set(full_world.namesakes("albion")) == {"Q600", "Q601"}  # still among the name's items (the closing line)
+    assert capital(full_world, "Vulcan") == {"Paris"}            # no real item fits (a painting): the fictional one does
+    assert capital(full_world, "Holmes") == {"London"}            # only a fictional item carries the name: it stands
+
+
+def rel_of(world, rel, name):
+    world.clear_withheld()
+    return {t.obj for _f, t in world.hop(QuestionPlan(relations=[None], tail=f"{rel} of {name}", n_hop=1), 0, None)}
+
+
+def test_a_property_that_fits_anything_never_picks(full_world):
+    assert rel_of(full_world, "different from", "Thespis") == set()      # hop 42: the opera alone holds it, no pick
+    assert full_world.decision("thespis")["neutral"] and set(full_world.withheld("thespis")) == {"Q710", "Q711"}
+
+
+def test_items_that_agree_are_said_once(full_world):
+    assert capital(full_world, "Twinland") == {"London"}
+    assert full_world.decision("twinland")["agree"] == ["Q720", "Q721"]
