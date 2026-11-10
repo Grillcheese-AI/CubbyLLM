@@ -332,3 +332,53 @@ whether it gives the right reason when it says "I don't know", not only on wheth
 - **None of them abstains.** Each writes one query per question with an LLM. Rescoring their submitted answers from
   the challenge record (the addendum above) needs no re-run and no API.
 - **The papers' own numbers are cited beside the rescoring,** labelled as the challenge's metric.
+
+## Cowork's addendum (2026-11-10): QALD-10, TimeQuestions, and scoring by how new each question is
+Nick pointed at the KGQA-datasets catalogue (Jiang and Usbeck, arXiv 2205.06573) and said "alright", noting the sets
+could come from Hugging Face. Every fact below was checked on 2026-11-10.
+
+**What it brings, in plain words:** Cubby is tested on two more standard Wikidata benchmarks, and every score is
+split by how unlike the development questions each test question is. That shows whether "0 wrong" still holds on
+questions Cubby has never seen the like of.
+- **Over a conventional model:** a model is scored on one number. Nobody can tell whether it is right because it
+  understood or because it saw something close in training.
+
+### Two benchmarks
+- **QALD-10, test (394 questions).** Wikidata; English, German, Chinese and Russian; MIT licence; gold SPARQL and
+  answers. Take it from the official repository (github.com/KGQA/QALD-10, `data/`), not from Hugging Face: the only
+  copy there (`Hieuman/qald_10_en`) has 387 rows, no SPARQL and no licence.
+  - English is scored. The other languages are not run (Cubby serves English and French), and that is said.
+  - Its gold answers come from a Wikidata dump of 2022 (Zenodo doi:10.5281/zenodo.7496690). Score against the
+    published gold, and also against the gold SPARQL re-run on 0055's snapshot through QLever. Report both; a
+    question whose two golds differ is read, never counted wrong by the normalizer.
+  - Questions with an empty gold answer are reported apart. Whether Cubby should answer "none" or refuse is read
+    from those cases, not assumed.
+- **TimeQuestions, test (3,237 questions).** Temporal questions linked to Wikidata (EXAQT, Max Planck Institute for
+  Informatics; CC BY 4.0; exaqt.mpi-inf.mpg.de, `data/test.json`). It is not on Hugging Face.
+  - Answers are Wikidata ids or values (dates as ISO timestamps); there is no gold SPARQL. The gold dates from an
+    April 2020 dump and was checked by hand, so a mismatch on a value that changes is read, as for WebQuestions.
+  - Scored by its own four types (explicit, implicit, ordinal, time as the answer), with "dates too coarse"
+    counted apart. It sits beside 0057's two-period questions.
+  - **Overlap:** its questions were drawn from eight older benchmarks, WebQuestions among them. Any question also in
+    0054's WebQuestions test is flagged and counted once.
+- **Later, not now:** LC-QuAD 2.0 (30,000 template-built questions over the Wikidata of 2018; on the Hub as
+  `mohnish/lc_quad`, tagged CC BY 3.0; check the licence at the source). Its golds are older and its questions
+  written from templates, so it waits until the two above have been read.
+
+### Scoring by how new each question is
+The levels come from Gu et al. (GrailQA), as Jiang and Usbeck apply them. A question's schema items are the
+Wikidata properties, the classes and the operators (counting, comparison, ordering) in its gold SPARQL.
+- **Familiar:** every schema item, and their combination, was seen in development.
+- **New combination:** every item was seen, but not together.
+- **Unseen item:** at least one property, class or operator never appeared in development.
+
+"Seen in development" means the programs behind everything Cubby's proposers learned from or were tuned on: the
+450M emitter's training pairs, the questions behind the everyday table and the host grammar, the rule library's
+training data, and every question read during development (0038's scoreboard, the WebQSP reads of 0046). The set is
+frozen and hashed with the run.
+
+- **Applied to** every benchmark with gold SPARQL: QALD-10, the WikiKGQA 2026 test, and the query-log benchmark.
+- **Reported:** right, wrong and refused per level and benchmark. Refusals are expected to rise from familiar to
+  unseen. The 1% line on wrong answers holds at every level; if wrong answers appear only at one level, the claim
+  is narrowed to the levels where it holds, with the cause.
+- **Tests:** the classifier on fixtures (one question per level, by hand); the development set's hash recorded.
