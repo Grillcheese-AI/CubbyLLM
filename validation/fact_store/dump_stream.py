@@ -115,8 +115,8 @@ def blocks(f, sep: bytes = b"\n", fallback: bytes | None = None, start: int = 0,
     entities, the next block starting at ``data:``).
 
     Where ``sep`` has not appeared in ``FALLBACK_BLOCKS`` reads, the block is cut at the last ``fallback`` instead
-    (Turtle: a blank line, the end of a subject's triples). The challenge dump's count stalled twice at about 958 GB:
-    with no cut, the buffer grows without end, each read copying all of it. ``MAX_BLOCKS`` reads with no cut at all
+    (Turtle: a blank line, the end of a subject's triples): a guard, since with no cut the buffer would grow without
+    end, each read copying all of it (B2's stall was not this but the pool's pipe; ``dump_count.pool``). ``MAX_BLOCKS`` reads with no cut at all
     stop the pass, never hang it. ``note(kind, at, data)`` hears of each fallback cut ("fallback", the buffer's first
     MB), of a stop ("stopped", the same) and of every 5 minutes without a cut ("waiting", the buffer's size); ``at`` is
     the buffer's offset in the decompressed dump (``start``: where this read began)."""

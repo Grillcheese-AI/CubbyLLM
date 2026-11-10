@@ -29,10 +29,11 @@ CELLS = [
 
 **Part A** is Wikimedia's JSON dump (done 2026-11-06; its download check is run again after a Drive lag stopped it).
 **Part B** is 0055's source dump since Cowork's addendum: the WikiKGQA 2026 challenge's own Wikidata (Turtle, 121 GB,
-CC0, Zenodo record 22661413; Nick's yes). B1 is done (113 parts, the md5 matches Zenodo's). B2 stalled three times at
-about 958 GB, past the dump's last entity, where its cutter found no entity header; it now cuts there at blank lines
-and resumes from its checkpoint (920.6 GB, 2026-11-09). **Restart the session (Runtime > Restart session) so no old
-count runs underneath, run the first cell (it pulls the fix), then B2.**
+CC0, Zenodo record 22661413; Nick's yes). B1 is done (113 parts, the md5 matches Zenodo's). B2 stalled four times at
+the dump's very end: its forked workers held lbzip2's input pipe open, so lbzip2 never saw the end of its input. The
+workers now start from a forkserver; B2 first runs the check that the pipe ends (a few seconds), then resumes from its
+checkpoint (920.6 GB, 2026-11-09). **Restart the session (Runtime > Restart session) so no old count runs underneath,
+run the first cell (it pulls the fix), then B2.**
 
 **Runtime:** CPU, high RAM (no GPU). **Sign in to the account whose Drive has the room** (the 5 TB one): the dump
 (about 104 GB, bz2) is kept there as the source copy, in 1 GB parts.
@@ -106,6 +107,10 @@ print(open(f'{KPARTS}/manifest.json').read())
 ## B2. The WikiKGQA dump: count, the 1% sample (the same ids as A2's), its date and its redirects (resumable: run again if the runtime drops)
 """),
     code(r"""
+# the workers must not hold lbzip2's input pipe open (the stall at the dump's end): checked here, on Linux, first
+chk = subprocess.run([sys.executable, '-m', 'pytest', '-p', 'no:cacheprovider',
+                      'tests/validation/test_fact_store_pool.py'], cwd=REPO, capture_output=True, text=True)
+print(chk.stdout[-600:]); assert chk.returncode == 0 and 'skipped' not in chk.stdout, 'the pool check failed: tell Claude Code'
 step('ttl_count.py', '--parts', KPARTS, '--out', KCOUNT, '--workers', str(os.cpu_count()), '--stage', '/content/stage_count')
 """),
     md(r"""

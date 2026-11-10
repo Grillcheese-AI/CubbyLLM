@@ -166,7 +166,8 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
     kept. The count is resumable since this report's line (below); B2 runs again.
   - **Second and third runs (2026-11-09):** the second checkpointed every 15 minutes to 920.6 GB (111,037,712 items,
     1,186,646 sampled) and stalled at about 958 GB; the third resumed from 920.6 GB (skipping at 150 MB/s) and stalled
-    at 957 GB. Same place each time: past the dump's last entity (below). The cutter is fixed; B2 resumes from 920.6 GB.
+    at 957 GB. A fourth (after the cutter's change below) resumed and stopped writing progress at 948 GB, short of the
+    same place. Same place each time: the dump's last byte (below). Fixed; B2 resumes from 920.6 GB.
 - **Not verified here:**
 - **Found on the way:**
   - **The count lost the whole pass when the runtime dropped,** and Colab's Drive mount uploads a file only once it is
@@ -177,22 +178,27 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
     decompresses up to the checkpoint without counting, then goes on; the parts' hash still covers every byte. Tests:
     a pass stopped after a checkpoint and resumed gives the same counts, hash, sample and side files as a pass never
     stopped, on both formats (`tests/validation/test_fact_store_resume.py`).
-  - **The stall at about 958 GB is the count's block cutter, at the dump's end.** It cut only before an entity header
-    (`data:`); with none in sight the buffer grew without end, each 32 MB read copying all of it, until the runtime
-    ran out of memory or crawled. `dump_stream.blocks` now cuts at a blank line (the end of a subject's triples) once
-    128 MB pass with no header, keeps the first MB of the first three such stretches beside the counts
-    (`stretch_<offset>.bin`: what the tail holds), counts their bytes (`headerless_bytes`), and stops with a message,
-    never hangs, if 2 GB pass with no cut at all. A sampled entity followed by such a stretch is kept to 16 MB
-    (`sample_capped`). Tests (`tests/validation/test_fact_store_cut.py`): a header-free tail of 3,000 redirects counts
-    the same, side and sample files byte for byte, cut by the fallback or not; the cut loses no byte; a buffer with no
-    cut stops the pass.
+  - **The stall is at the dump's last byte: the workers held lbzip2's input pipe open.** The pool's workers were
+    forked after the pipe into lbzip2 was opened, so each held a copy of its write end; when the feeder closed the
+    parent's copy, lbzip2 still had writers, never saw the end of its input and never ended, and the pass waited on
+    it with every entity counted. The JSON pass (2026-11-06) ended because it predates the feeder (the pipe came with
+    the parts' hash); the tests run on Windows, where nothing forks. `dump_count.pool` now starts the workers from a
+    forkserver, which holds none of the parent's files. Tests (`tests/validation/test_fact_store_pool.py`): the pool
+    never forks; on Linux, a pipe fed and closed while the pool runs ends, and with a forked pool it does not (the
+    cause, pinned). B2 runs them on Colab before the count.
+  - **The dump's tail is ordinary entities.** Its last 40 bzip2 blocks (21.7 MB, read from the last part by
+    bzip2recover's method) are entities with `data:` headers to the end, the last `Q137645055` (modified
+    2025-12-31T06:38:11Z), and the file ends with the stream's end marker. So the earlier reading of the stall (a
+    header-free stretch past the last entity, its buffer growing without end) was wrong; that cutter change stays as
+    a guard (a fallback cut at a blank line after 128 MB with no header, a stop after 2 GB with no cut; tests in
+    `tests/validation/test_fact_store_cut.py`), and `fallback_cuts` in counts.json says whether it ever fired.
   - **The dump is 8 shards one after another, split by the hash the sample uses.** Wikibase's dumper puts an entity in
     shard `int(sha1(id)[:8], 16) % 8`; the sample takes `int(sha1(id)[:8], 16) % 100 == 0`, which is only ever shard 0
     or 4. So the sampled entities sit in two stretches of the dump (0-160 GB and about 430-650 GB), and the sample
     segments in between are empty (53 bytes, an empty gzip). Checked: the 17 segments hold 1,186,646 distinct
     entities, exactly the counter, every one in the sample by its hash; segment 2's are all shard 0, segment 8's all
     shard 4. The sample is the 1% hash sample it was meant to be (the same ids as the JSON dump's); only its place in
-    the file is uneven. The side file is small for the same kind of reason: few redirects before the tail.
+    the file is uneven. The side file is small: the checkpoint at 920.6 GB counts no redirect at all.
   - **A stopped notebook cell left its script running** underneath (`subprocess.Popen`); the cell now kills it.
 - **Questions:**
 

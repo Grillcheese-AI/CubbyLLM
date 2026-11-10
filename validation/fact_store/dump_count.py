@@ -159,6 +159,16 @@ def _source_hash(parts_dir: str) -> tuple[str, str | None]:
     return ("md5", m["md5"]) if m.get("md5") else ("sha1", m.get("sha1"))
 
 
+def pool(workers: int) -> cf.ProcessPoolExecutor:
+    """The worker processes, never started by a bare fork. A forked worker holds a copy of every file the parent has
+    open, the write end of lbzip2's input pipe among them: when the feeder closes it, lbzip2 still has writers, never
+    sees the end of its input and never ends, and the pass waits on it forever at the dump's last byte (B2's stall,
+    four runs, 2026-11-06 to 11-09). ``forkserver`` workers come from a fresh process that holds none of them."""
+    import multiprocessing as mp
+    ok = "forkserver" in mp.get_all_start_methods()
+    return cf.ProcessPoolExecutor(workers, mp_context=mp.get_context("forkserver") if ok else None)
+
+
 def run(parts_dir: str, out: str, workers: int = 8, fmt=Fmt, stage: str | None = None, every: float | None = None) -> dict:
     """One pass; resumes from ``out``'s checkpoint when there is one (``dump_resume``), checkpointing every ``every``
     seconds. ``stage``: a local disk where each segment is written before it is copied whole to ``out``."""
@@ -197,7 +207,7 @@ def run(parts_dir: str, out: str, workers: int = 8, fmt=Fmt, stage: str | None =
 
     t0 = last = last_ck = time.time()
     bytes0 = tot["bytes"]
-    with cf.ProcessPoolExecutor(workers) as ex:
+    with pool(workers) as ex:
         inflight = collections.deque()
         done = {"off": off, "tail": tail}
 
