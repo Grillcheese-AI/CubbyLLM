@@ -198,3 +198,27 @@ the audit view only):
 - A revealed value with its salt matches its commitment; any other value fails.
 - After a run over planted secret strings, none of them appears in any host or VM log, nor in the envelope.
 - No key material in any file the repository tracks (extend `test_local_paths`' scan).
+
+## Addendum (2026-11-10): CheezML v0.2 is published
+**In plain words:** a receipt now also says which copy of the knowledge base it read, which date the question was
+about, and which outside source it looked at.
+- **Over a conventional model:** a model's answer never says which database release or which day's data it came
+  from. A v0.2 record that leaves this out fails validation.
+
+- **What changed** (cheezml repo, commit `0e14aa2`; `https://w3id.org/cheezml/core/v0.2`; v0.1 stays frozen):
+  - `cheez:SourceRead`: a remote source read during a run, with its endpoint, its query and response by hash, its
+    time and the source's licence. The run `prov:wasInformedBy` it.
+  - Releases: a `cheez:Artifact` coded `cheez:OntologyRelease` or `cheez:DatasetRelease` must state its
+    `schema:version`.
+  - `cheez:asOf` and `cheez:storeSnapshot` on a run: the date the question was evaluated at, and the store state
+    read, by hash.
+- **What the record writers must do** (step 3):
+  - every run that reads a fact version records its store snapshot and its as-of date. Without both, the run fails
+    validation;
+  - each live source read (order 0007) is written as a `cheez:SourceRead`;
+  - each ontology or dataset release a domain world relies on (order 0058) is cited as a release with its version
+    and hash.
+- **Tests:** 7 examples conform and 13 broken records fail, up from 6 and 10. The first acceptance line uses these
+  counts.
+- **Domains:** the list and the rule for adding a module are in the cheezml repo's `DOMAINS.md`. Finance (`czfin`)
+  is the first module, with order 0058.

@@ -200,7 +200,10 @@ the record pages.
 - **v1 is published** (2026-11-06): Zenodo, doi:10.5281/zenodo.24020073, preprint, CC BY 4.0.
   - Source: `2026-11-06-certified-execution-preprint-v1.md` in this folder; the uploaded PDF's checksum matches the
     final build.
+  - **The DOI for all versions is doi:10.5281/zenodo.24020072** (given by Nick, 2026-11-10). It always opens the
+    latest version, so the website and the READMEs link to it. A citation of v1's exact text uses …24020073.
   - v2 goes up as "New version" on that record, so every version stays linked under one concept DOI.
+  - The record's description field is empty on Zenodo. A short abstract there helps search and the NSCS listing.
   - The record does not list the NSCS community yet; accept or add it from the community's side.
   - **For v2:** v1 cites "the public split of AA-Omniscience (600)". v2 names it as v1's public split and adds v1.1's.
 
