@@ -149,11 +149,11 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
   stays `in progress` until step 4.
 - **Commits:**
   - CubbyLLM: b440256, 9fbc251, 4aeb97b, c8f1bda, a6ffd4b, 1df13c7 (wrong, see below), a4e85c3, 87a40ea, f2775a4,
-    f3c3771, d91763f, a259fdb, ecd2bc4, 0936d0f, bacab67, 80b4641, 68d9abf, 1ca2c61, d66cd0c; the board's Knowledge
+    f3c3771, d91763f, a259fdb, ecd2bc4, 0936d0f, bacab67, 80b4641, 68d9abf, 1ca2c61, d66cd0c, 8e78b78, 430497d (step 3); the board's Knowledge
     section 13c5551, 9d55930; the sign-in in front of it 2f4a614. Step 0: e41d481, 3d52130.
   - wdstore (cubelang-cowork, branch `cowork/wd-store`, local, BUSL-1.1): 842994a, 52e7bdd, 07b0c80, adc82b1,
     d6e3cce, 7600e51, adce34a, 0c02844, 057bb39, 74c277e, 3589c23, 36dc8e1, 269964a, 2ff5bf7, dccff36, 43c3738,
-    6e67789, 0c675a5, 2055bc5, 17fd715.
+    6e67789, 0c675a5, 2055bc5, 17fd715, ebb7a3d, b04b36a.
 - **Files:** `validation/fact_store/` (the audit, the dump count and its resume, the pool, the cutter, the query-log
   projection, QAWiki's golds, the round-trip check); `notebooks/wikidata_dump.ipynb` (+ its builder);
   `cubby_serve/board/store*.py` and `dashboard/board/store*.js`, `graph.js` (the Knowledge section); the store itself
