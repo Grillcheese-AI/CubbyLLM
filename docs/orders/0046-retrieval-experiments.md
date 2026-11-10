@@ -1526,3 +1526,31 @@ From the Freiburg group's repositories (Nick: "yes"). Licences are checked and r
 - **Describing namesakes when Cubby asks which one:** each candidate is described by its most natural type, with the
   method of `ad-freiburg/natural-entity-types` ("Paris, the city" or "Paris, the person"). Reported on the namesake
   rows: the share of candidate sets whose types tell every candidate apart. Candidates are never ordered by fame.
+## Cowork's addendum (2026-11-10): R9, which kind of vector the VM should use
+Nick: "yes", to measuring before choosing. The Rust VM's vectors are MAP-bipolar (D = 4096), while MoWM, cubemind
+and the qFHRR work use block codes (k = 80, l = 128). For now each vector carries its kind, and mixing the two fails
+(cubelang P5-9). This experiment decides the long-term choice, and it runs **before any arm puts the store's
+vectors inside the VM.**
+
+**What it brings, in plain words:** Cubby's parts will speak one vector language only if a measurement shows it
+costs nothing, rather than by habit.
+- **Over a conventional model:** a network's internal representation is fixed by training and never compared
+  against an alternative on the system's own tasks.
+
+- **The tasks** are the VM's own memory, not R2's choosing task. R2's qFHRR arm was killed as built on the bare-name
+  line; that was retrieval quality, and is not this question.
+  - **Recall by key:** store N items, recall each by its key, for N = 1k, 10k, 100k. Report recall@1 and the margin
+    over the runner-up.
+  - **Role recovery:** frames with 2, 4, 8 and 16 role-filler pairs. Report the right filler's share, and the margin.
+  - **Cost:** time per bind, bundle and similarity on the CPU, and bytes per vector.
+- **The arms:**
+  - MAP-bipolar at D = 4096 (today's VM);
+  - block codes at k = 80, l = 128 (MoWM's);
+  - each at its native size, and again at equal storage per vector (stated in bytes for each).
+- **Seeds:** 3 per arm. Report the mean and the spread.
+- **The decision rule (pre-registered):**
+  - if block codes are at least as accurate as MAP-bipolar on both tasks at equal storage, and no more than 2× slower,
+    the VM moves to block codes. Then there is one kind of vector across the three repos.
+  - Otherwise the VM keeps MAP-bipolar for its own memory, and block codes enter it only as retrieval vectors that
+    come from the store's index, labelled as such.
+- **Either way:** the opcode bytes don't change, and a switch is a cubelang job with Nick's yes.
