@@ -233,8 +233,13 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
     time), EN/FR/mul names, enwiki/frwiki titles, value and reference nodes, redirects; a rebuild writes the same
     bytes (`wdstore check`); the manifest carries the inputs', chunks' and code's hashes (cached build steps).
     Measured on one segment of the 1% sample: 121,169 entities, 1,108,786 statements, 0 blocks failed, **104.6 bytes
-    a statement**, 10 s. That is about 180 GB for the dump, twice the 90 GB line: format 2 (statement ids as bytes,
-    nodes by 32-bit number in their own files) comes before any full build; `wdstore/FORMAT.md` has the plan.
+    a statement**, 10 s. That is about 180 GB for the dump, twice the 90 GB line.
+  - **Format 2** (52e7bdd, local): statement ids as 16 bytes, every value and reference node once in its own
+    numbered file, redirects in a sorted file, `resolve` through them. Same segment: **65.5 bytes a statement**
+    (54.8 in the entity chunks), 0 failed, a rebuild byte-identical. About 113 GB for the whole dump; about 50-55 GB
+    with the scholarly articles cold, under the 90 GB line. Found on the way: the dump may write one value node's
+    triples in two places (a quantity's amount and unit in one block, its `quantityNormalized` link in another;
+    2,373 such nodes in the segment); format 1 kept one part only, format 2 merges them by hash.
 - **Questions:**
   - **The hot store's size line.** By real use, 1,000 properties cover 97.5% of the logged queries but hold 86% of
     the statements, because the scholarly properties rank high enough by use (P2860 at 41, P2093 at 148) to get in.
