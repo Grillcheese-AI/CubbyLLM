@@ -9,6 +9,8 @@
     GET /board/journey/<id>        one answer's steps and the question's spans (``board_data.journey``)
     GET /board/system              orders, the news poller, copy-or-refuse rates, training runs
     GET /board/mood                today's chemistry (``/state``), a display heartbeat and the cube point; arcs wait for 0020
+    GET /board/store/...           the Knowledge section: order 0055's store, searched, read, drawn, queried (audit only;
+                                   ``cubby_serve/board/store.py``)
     GET /board/watch | worlds | forecast | agents   "not built yet (order NNNN)" until their orders are done
 
 The audience is 0016's, decided on the server from the request's token: the public one (``user``) never gets a
@@ -176,6 +178,9 @@ def handle(brain, path: str, who: str, ring_times=None):
         out = board_get(brain, route, path.split("?", 1)[1] if "?" in path else "", who)
         if out is None:
             return 404, {"error": "unknown board path"}
+    elif route.startswith("/board/store"):                   # order 0055's store: the Knowledge section (audit only)
+        from cubby_serve.board.store import board_store
+        out = board_store(route, path.split("?", 1)[1] if "?" in path else "", who)
     elif route == "/board/mood":
         out = bd.mood(brain, who)
     elif route in ("/board/watch", "/board/worlds", "/board/forecast", "/board/agents"):

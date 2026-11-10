@@ -1,0 +1,28 @@
+/* The Knowledge section (order 0055's store): the query bar, the list, the graph and the entity card. */
+.kstat{margin:8px 0 4px}
+.kbar{border-radius:20px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.kbar .pill.on{background:rgba(255,255,255,.18);color:#FFF}
+.krow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.kin{flex:1;min-width:140px;height:42px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(15,26,34,.45);color:var(--ink);padding:0 14px;font-size:14px}
+.kgrid{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);gap:14px;align-items:start}
+.klist{border-radius:20px;padding:14px;max-height:860px;overflow:auto;display:flex;flex-direction:column;gap:8px}
+.khit{padding:6px 2px;border-bottom:1px solid rgba(255,255,255,.06)}
+.kright{display:flex;flex-direction:column;gap:14px;min-width:0}
+.kgraph{border-radius:20px;height:540px;overflow:hidden}
+.kgraph canvas{width:100%;height:100%;display:block;cursor:grab;touch-action:none}
+.kcard{border-radius:20px;padding:16px 18px}
+.khead{display:flex;flex-direction:column;gap:6px;position:relative}
+.kh2{margin:0;font-size:26px;font-weight:400}
+.kdesc{margin:2px 0;color:var(--ink2)}
+.kexp{position:absolute;right:0;top:0;height:36px}
+.kgroups{margin-top:12px;display:flex;flex-direction:column}
+.kgroup{display:grid;grid-template-columns:minmax(150px,220px) minmax(0,1fr);gap:12px;padding:8px 0;border-top:1px solid rgba(255,255,255,.07)}
+.kprop{color:var(--ink2);font-size:13px}
+.kvals{display:flex;flex-direction:column;gap:4px;min-width:0}
+.kval{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;overflow-wrap:anywhere}
+.kval.dep{opacity:.6;text-decoration:line-through}
+.kqual{flex-basis:100%;padding-left:10px}
+.klink{background:none;border:0;padding:0;color:var(--cyan);cursor:pointer;font:inherit;text-align:left}
+.klink:hover{text-decoration:underline}
+.kid{font-size:11px;color:#A9BAC7}
+@media (max-width:900px){.kgrid{grid-template-columns:1fr}.kgroup{grid-template-columns:1fr}}

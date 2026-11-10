@@ -5,9 +5,10 @@ import * as chat from './chat.js';
 import * as system from './system.js';
 import * as plugins from './plugins.js';
 import * as mood from './mood.js';
+import * as store from './store.js';
 
-const NAMES = { home: 'Home', watch: 'World Watch', chat: 'Chat', worlds: 'Worlds', forecast: 'Forecast', mood: 'Mood', system: 'System', plugins: 'Plugins', agents: 'Agents' };
-const views = { home: ['v-home', home.show], chat: ['v-chat', chat.show], system: ['v-system', system.show], plugins: ['v-plugins', plugins.show], mood: ['v-mood', mood.show] };
+const NAMES = { home: 'Home', watch: 'World Watch', chat: 'Chat', worlds: 'Worlds', forecast: 'Forecast', mood: 'Mood', system: 'System', plugins: 'Plugins', agents: 'Agents', store: 'Knowledge' };
+const views = { home: ['v-home', home.show], chat: ['v-chat', chat.show], system: ['v-system', system.show], plugins: ['v-plugins', plugins.show], mood: ['v-mood', mood.show], store: ['v-store', store.show] };
 
 async function emptyView(node, id) {
   const r = await get('/board/' + id);

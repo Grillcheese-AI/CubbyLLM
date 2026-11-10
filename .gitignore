@@ -227,3 +227,6 @@ paths.local.json
 validation/logs/_*
 _discard/
 /_*.err
+
+# browser-test screenshots and page snapshots (tool output)
+.playwright-mcp/
