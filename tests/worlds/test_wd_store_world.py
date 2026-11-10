@@ -158,3 +158,56 @@ def test_the_flag_on_with_no_store_stops_the_server(monkeypatch):
     monkeypatch.setattr(wd_world, "value", lambda k: None)
     with pytest.raises(SystemExit):
         wd_world.build(lambda m: None)
+
+
+# ---- option (a): the store's kinds table, order 0037's rule on its shared names ----
+
+PROPS["P36"] = ("capital", "wikibase:WikibaseItem")
+ITEMS.update({
+    "Q41": ([("en", 0, "country")], [], {}, []), "Q44": ([("en", 0, "painting")], [], {}, []),
+    "Q40": ([("en", 0, "Gaul")], [st(31, {"entity": "Q41"}), st(36, {"entity": "Q60"})], {}, ["Q41"]),
+    "Q43": ([("en", 0, "Gaul")], [st(31, {"entity": "Q44"}), st(19, {"entity": "Q61"})], {}, ["Q44"]),
+    "Q300": ([("en", 0, "Rome")], [st(31, {"entity": "Q41"}), st(36, {"entity": "Q61"})], {}, ["Q41"]),
+})
+NAMES["gaul"] = [("Q40", 0, "exact"), ("Q43", 0, "exact")]
+NAMES["rome"] = [("Q300", 0, "exact")] + [(f"Q{400 + i}", 0, "exact") for i in range(30)]
+for i in range(30):
+    ITEMS[f"Q{400 + i}"] = ([("en", 0, "Rome")], [st(31, {"entity": "Q44"}), st(19, {"entity": "Q60"})], {}, ["Q44"])
+
+
+@pytest.fixture()
+def kinds_world(tmp_path):
+    from cubbyllm.worlds.wd_store_kinds import build
+    raw = tmp_path / "raw"
+    raw.mkdir()
+    (raw / "kind_rels.tsv").write_text("Q41\tP31\t10\nQ41\tP36\t9\nQ44\tP31\t100\nQ44\tP19\t60\n", encoding="utf-8")
+    (raw / "labels.tsv").write_text("Q41\tcountry\nQ44\tpainting\nP31\tinstance of\nP36\tcapital\nP19\tplace of birth\n", encoding="utf-8")
+    (raw / "meta.tsv").write_text("snapshot\tabc123\nitems\t200\ntyped\t110\n", encoding="utf-8")
+    out = str(tmp_path / "store.kinds.sqlite")
+    build(str(raw), out)
+    return wsw.WdStoreWorld(FakeStore(), "2025-12-29T23:00:38Z", kinds=out), out
+
+
+def capital(world, name):
+    world.clear_withheld()
+    return {t.obj for _f, t in world.hop(QuestionPlan(relations=[None], tail=f"capital of {name}", n_hop=1), 0, None)}
+
+
+def test_the_kinds_table_decides_a_shared_name_as_in_wikidata5m(world, kinds_world):
+    w, _path = kinds_world
+    assert w._kinds.carries("country", "capital") and not w._kinds.carries("painting", "capital")
+    assert capital(w, "Gaul") == {"London"}                      # the country: the only kind that carries a capital
+    assert capital(world, "Gaul") == set() and set(world.withheld("gaul")) == {"Q40"}   # no table: held, as before
+
+
+def test_a_crowded_name_is_narrowed_to_what_the_rule_could_pick(kinds_world):
+    w, _path = kinds_world
+    assert capital(w, "Rome") == {"Paris"}                       # 31 items: the country read, no painting read
+    assert w._entity.cache_info().currsize < 10                  # (of 31 items: the country and its values)
+    assert {t.obj for _f, t in w.item_facts("rome", "Q405")} == {"painting", "London"}    # the asker's choice reads it
+
+
+def test_a_table_from_another_state_of_the_store_is_not_read(kinds_world):
+    _w, path = kinds_world
+    from cubbyllm.worlds.wd_store_kinds import for_store
+    assert for_store(path, "abc123") is not None and for_store(path, "another") is None

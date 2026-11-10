@@ -18,21 +18,23 @@ being famous. What differs:
   when one of its own English, French or `mul` labels (the label tier) or aliases (the alias tier) normalizes
   (`planner.normalize`) to the very key asked. The store's typo path is never read: a misspelt name finds nothing
   rather than something near;
-- the relation-decision rule (0037) needs a kinds table this world does not have: a shared name is held, as under
-  ``CB_NAMESAKE_RELATION=0``; ``CB_NAMESAKE_TIER=1``'s `applies` answers True (a kind may carry any relation), so its
-  hop pick never decides here either. Both err towards asking, never towards an item;
+- the relation-decision rule (0037) reads the store's own kinds table (`wd_store_kinds`, built from every hot item's
+  classes and properties) when the server is started with ``CB_WD_KINDS=1`` and the table was built from this state
+  of the store; then a shared name is decided as in Wikidata5M (the one item whose kind carries the asked relation),
+  and a name with more items than `NAMESAKE_CAP` is first narrowed to the items the rule could pick
+  (`wd_store_crowd`). There are no cue words here (no cue table): a cue rules nothing out. Without the table, a
+  shared name is held, as under ``CB_NAMESAKE_RELATION=0``, and ``CB_NAMESAKE_TIER=1``'s `applies` answers True (a
+  kind may carry any relation), so its hop pick never decides either. Both err towards asking, never towards an item;
 - the facts are the truthy statements, said exactly (`wd_store_values`), dated by the dump: a time-sensitive
   relation (`hdc_world.TIME_SENSITIVE`) is said "as of 2025" by the loop's snapshot rule (`ask_memory._snapshot`);
 - an object's facts (who points at an item) are read up to `OBJECT_CAP` subjects, each checked against the subject's
   own truthy statements (a deprecated one, or an ended one on a relation whose value changes, is left out);
 - a Wikimedia page (a disambiguation page, a category, a template, a list) is never one of a name's items: it is not
-  a thing a question is about. A name standing for more than `NAMESAKE_CAP` items gives none of them and lists none
-  (full Wikidata: "Paris" is 248 items, paintings and albums among them); the loop then asks or refuses.
+  a thing a question is about. Without the kinds table, a name standing for more than `NAMESAKE_CAP` items gives none
+  of them and lists none (full Wikidata: "Paris" is 248 items, paintings and albums among them).
 
-Names are shared far more in the full Wikidata than in Wikidata5M ("Douglas Adams" is 10 people here), so under the
-strict rule above this world answers few questions by a well-known name alone; it answers by a Q-id, a pinned item
-(the asker's choice, a qualifier) or a name only one item has. Choosing among namesakes otherwise is a rule for an
-order to set (0055's report, Questions), never fame.
+Names are shared far more in the full Wikidata than in Wikidata5M ("Douglas Adams" is 10 people here, "France" 50
+items), which is why the kinds table matters here; never fame.
 
 Wired: WIRED (`cubby_serve/cli.py`, with ``CB_WD_STORE=1``).
 """
@@ -47,6 +49,7 @@ from cubbyllm.reasoning.planner import normalize
 from . import wd_store_values as vals
 from .hdc_store import HdcWorld, _Rows
 from .hdc_world import TIME_SENSITIVE
+from .wd_store_crowd import Crowded
 
 __wiring__ = "WIRED"
 
@@ -57,17 +60,20 @@ META = {"Q4167410", "Q22808320", "Q4167836", "Q11266439", "Q13406463", "Q1420424
 _QID = re.compile(r"^q[1-9][0-9]*$")
 
 
-class WdStoreWorld(HdcWorld):
+class WdStoreWorld(Crowded, HdcWorld):
     name = "wdstore"
+    NAMESAKE_CAP = NAMESAKE_CAP
 
-    def __init__(self, ask, dump_date: str, statements: int = 0, cache: int = 50_000) -> None:
-        """`ask`: one `wdstore serve` request -> its answer (a dict). `dump_date`: the dump's date (its manifest's)."""
+    def __init__(self, ask, dump_date: str, statements: int = 0, cache: int = 50_000, kinds: str | None = None) -> None:
+        """`ask`: one `wdstore serve` request -> its answer (a dict). `dump_date`: the dump's date (its manifest's).
+        `kinds`: the kinds table's path (`wd_store_kinds`), read when built from this state of the store."""
         self.ask = ask
         self._lock, self._pins = threading.Lock(), threading.local()
         self.snapshot = dump_date[:4]                    # the loop's snapshot rule compares a year
         self.provenance_name = f"wikidata (the WikiKGQA 2026 dump, {dump_date[:10]})"
         self.state = (ask({"op": "snapshot"}) or {}).get("snapshot")
-        self._kinds = self._cues = None                  # no kinds table: shared names are held (module doc)
+        from .wd_store_kinds import for_store
+        self._kinds, self._cues = for_store(kinds, self.state), None   # (no table: shared names are held; no cue table)
         self._pid_label, self._datatype = {}, {}
         for lo in range(1, 14_001, 1000):                # every property: its label and datatype (2.6 s, full store)
             got = ask({"op": "brief", "ids": [f"P{i}" for i in range(lo, lo + 1000)], "lang": "en"})
@@ -199,4 +205,6 @@ class WdStoreWorld(HdcWorld):
         return self._entity(ids[0])[0] if len(ids) == 1 else None
 
     def _applies_rows(self, kind: str, rel: str) -> bool:
+        if self._kinds is not None:
+            return self._kinds.applies(kind, rel)
         return True                                      # no kinds table: a kind may carry any relation (module doc)

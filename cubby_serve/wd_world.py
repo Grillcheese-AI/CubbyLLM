@@ -5,7 +5,9 @@ The world (`cubbyllm/worlds/wd_store_world.py`) gets a function, not a process: 
 `wdstore serve` pipe (`board.store_client.StoreClient`, apart from the board's, so a walk never waits on a board
 request) and hands the world that pipe's `ask`. The dump's date and the statement count come from the store's
 manifest. Where the store and the binary are: `CUBBY_WD_STORE`, `CUBBY_WDSTORE_EXE` (the environment or
-`paths.local.json`; never a committed file).
+`paths.local.json`; never a committed file). With ``CB_WD_KINDS=1`` the world also reads the store's kinds table
+(`<store dir>.kinds.sqlite`, or `CUBBY_WD_KINDS_TABLE`), so order 0037's rule decides its shared names; off until
+that rule's audit on the store is read (``validation/audit_wd_kinds.py``).
 
 Wired: WIRED (`cubby_serve/cli.py`, ``CB_WD_STORE=1``).
 """
@@ -31,7 +33,12 @@ def build(log=print):
         man = json.load(f)
     c = man.get("counts", {})
     t0 = time.perf_counter()
-    world = WdStoreWorld(StoreClient(exe, store).ask, man.get("dump_date") or "", c.get("statements_hot", 0) + c.get("statements_cold", 0))
+    kinds = (value("CUBBY_WD_KINDS_TABLE") or os.path.normpath(store) + ".kinds.sqlite") if os.environ.get("CB_WD_KINDS") == "1" else None
+    world = WdStoreWorld(StoreClient(exe, store).ask, man.get("dump_date") or "", c.get("statements_hot", 0) + c.get("statements_cold", 0),
+                         kinds=kinds)
+    if kinds and world._kinds is None:
+        raise SystemExit(f"CB_WD_KINDS=1: no kinds table built from this store at {kinds} (wd_store_kinds)")
     log(f"  wikidata store: {len(world.relations())} relations, snapshot {str(world.state)[:12]}, dump {man.get('dump_date')}, "
-        f"ready in {time.perf_counter() - t0:.1f} s (ahead of the Wikidata5M world)")
+        f"kinds table {'read' if world._kinds is not None else 'off'}, ready in {time.perf_counter() - t0:.1f} s "
+        f"(ahead of the Wikidata5M world)")
     return world

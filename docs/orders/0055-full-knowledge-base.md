@@ -287,6 +287,37 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
       read and listed none, an object's facts its subjects' own, the date and time-sensitive relations, the flag on
       with no store stops the server. tests/worlds, tests/reasoning, tests/serve: 474 pass (the known red, 0002, as
       before).
+  - **Option (a) built (Nick, 2026-11-10): the store's kinds table, order 0037's rule on its shared names,** behind
+    ``CB_WD_KINDS=1`` (off until the audit below is read; with the flag on and no table built from this store, the
+    server stops).
+    - `wdstore kinds` (wdstore 4db01af): one pass over the hot set, 10 min 11 s: 73,205,306 items, 70,873,679 with a
+      class (97%), 3,388,998 (class, property) pairs; `cubbyllm/worlds/wd_store_kinds.py` turns them into the words
+      the facts use (3,268,440 pairs; 67,216 dropped, their class or property with no English or `mul` label), the
+      same table as Wikidata5M's (`hdc_kinds.Table`), stamped with the store's snapshot (328 MB, beside the store).
+      Read sensibly: country and sovereign state carry "capital", painting does not; human carries "country of
+      citizenship" and not "director"; film carries "director". One difference: reading an untyped item's kind
+      from its facts finds less (in the full store "country of citizenship" is held by more than 50 kinds, so it no
+      longer says "a person"); 97% of hot items record a class, so it matters little.
+    - **Crowded names** (`cubbyllm/worlds/wd_store_crowd.py`): a name of more than 25 items is first narrowed, from
+      one `brief` request, to the items the rule could pick (a kind that carries the relation, no recorded kind, or a
+      kind shared with one of those); only they are read (at most 25). The rule's outcome is the one it reaches over
+      every item, since the others cannot fit. Not narrowed: a place relation (any placed item competes, whatever its
+      kind) and a name of more than 400 items. The asker's choice reads the chosen item whatever the count.
+    - **The audit** (`validation/audit_wd_kinds.py`; `validation/logs/audit_wd_kinds_2026-11-10.json` and `.md`, the
+      lists to read): 0037's method and 0037's names (the Wikidata5M world's shared labels, seed 1), on the store.
+      50 hops (9 on crowded names): one item 5, each item labelled 17, asking back 24, nothing read 4; a decision in
+      38 ms p50, 525 ms at most. Fixed checks: Japan's currency -> the yen (33 items, 1 weighed); France's and
+      Italy's capitals -> each labelled, the country and a "Star Trek location" of the same name (fictional items
+      carry a capital too in the full store); Marie Curie -> the person, Q7186, with her whole award list (no cue
+      table, as in 0037); Steve Mills -> asking back (10 people). **Claude Code's reading of the 5 single picks, for
+      Cowork's by hand:** flashforward's opposite (the narrative technique), Chen's capital (the ancient state, of 29
+      items), Pearl Jam's place of formation (the band), CBGB's distributor (the film, not the venue): right;
+      Thespis's "different from" (the opera): questionable, the relation itself odd. The 4 "nothing read": two place
+      relations on crowded names (KATA, Greenfield), two crowded names of more than 25 people (Andrew Blake, Charles
+      Allen): "I don't know", a cost, never a wrong answer. The line (0037's): at most 1 wrong pick in 50.
+    - Tests: `tests/worlds/test_wd_store_world.py` 10 (3 new: the table decides "capital of Gaul" as the country,
+      held without it; a crowded "Rome" narrowed to the country with no painting read; a table from another state not
+      read). tests/worlds, tests/reasoning, tests/serve: 461 pass (the known red, 0002, as before).
   - **The dump date corrected in place** (Nick, 2026-11-10): both copies' manifests (the NVMe store and the build
     folder) now say 2025-12-29T23:00:38Z; only that field changed (checked by a diff), the originals kept aside on
     the data disk. The snapshot hash is the same (8a2041cff56d...): it covers the files' names and hashes only, not
@@ -437,13 +468,12 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
   - **The 1 ms line.** A fact from SSD is 1.5 ms p95 on this NVMe. Work on the store's reads (the node pages of one
     entity read together, or small nodes inline), a faster disk, or the line moved to what the walk needs (a hop is
     one entity read; the 50-question preflight would say whether 1.5 ms matters next to the rest of an answer)?
-  - **Choosing among a name's items in the full store.** Today: the asker, a qualifier, or a name only one item has.
-    Options, each needing an order or Nick's yes: (a) a kinds table built from the store's own classes (P31, P279),
-    so 0037's relation rule decides here as it does on Wikidata5M (the item whose kind carries the asked relation and
-    fits the question's cue words, no other's does); (b) read the name in Wikidata5M first and the store by the one
-    Q-id it gives (fresh values for the 2019 world's items), which is a notability filter, so a fame rule by another
-    name, against this order's own line; (c) leave it strict and let step 4 say what it costs. Claude Code's view:
-    (a), measured as 0037 was (an audit before it speaks).
+  - **Option (a)'s audit, to read** (Cowork): `validation/logs/audit_wd_kinds_2026-11-10.md`, 50 hops and the fixed
+    checks. At most 1 wrong pick in 50 turns ``CB_WD_KINDS=1`` on with the store. Two things for that reading:
+    fictional items (a "Star Trek location" named France) compete for real relations in the full store; should a
+    fictional class (P31 of a fictional-entity class) be set aside the way Wikimedia pages are? And without a cue
+    table, "What Nobel Prize did Marie Curie win?" answers her whole award list: build the store's cue table
+    (0037's `hdc_cues`, over the store's values) next?
   - **The cold tier:** the scholarly articles' cold set in the store's own format, read in-process from the hard
     drive (16.6 ms p95), instead of the full Wikidata in HDT. Keep it, or build the HDT as well?
 
