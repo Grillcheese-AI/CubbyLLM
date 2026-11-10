@@ -1,0 +1,33 @@
+{
+ "questions": {
+  "wikikgqa": 497,
+  "wikikgqa2026_test_with_mentions_solutions": 75,
+  "wikikgqa2026_test_without_mentions_solutions": 75
+ },
+ "by_role": {
+  "query": {
+   "ids": 643,
+   "hot": 643
+  },
+  "mention": {
+   "ids": 899,
+   "hot": 894,
+   "redirect": 5
+  },
+  "answer": {
+   "ids": 989208,
+   "cold": 141,
+   "hot": 989067
+  }
+ },
+ "through_a_redirect": {
+  "Q103239474": "-> Q52946 hot",
+  "Q20937557": "-> Q133250 hot",
+  "Q6958747": "-> Q268378 hot",
+  "Q9200127": "-> Q8191099 hot",
+  "Q97453439": "-> Q21096945 hot"
+ },
+ "missing": [],
+ "store": "the full hot store, format 3 (wdstore 2055bc5), built 2026-11-10 from the WikiKGQA 2026 dump (2025-12-29)",
+ "note": "every gold id of QAWiki's questions (query, mention, answer) resolved by `wdstore resolve`; none missing"
+}

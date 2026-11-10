@@ -1,0 +1,29 @@
+# wdstore bench, full store, 2026-11-10T16:30:25Z
+# binary: wdstore 2055bc5 (release); store: $CUBBY_WD_STORE (hot on the system NVMe), cold set on the data disk
+# machine: 12th Gen Intel(R) Core(TM) i5-12400F, 47.8 GB RAM, 25.2 GB free
+# disk: Msft Virtual Disk SSD 0 GB
+# disk: WDS100T3X0C-00SJG0 SSD 932 GB
+# disk: ST1000LX015-1U7172 HDD 932 GB
+# disk: Samsung SSD 860 EVO 500GB SSD 466 GB
+# disk: Samsung SSD 870 EVO 500GB SSD 466 GB
+get by id, from disk: p50 840 us, p95 15912 us, p99 26111 us (n 20001)
+get by id, cached: p50 5 us, p95 13 us, p99 22 us (n 20001)
+name, from disk: p50 371 us, p95 1140 us, p99 1571 us (n 10088)
+name, cached: p50 2 us, p95 4 us, p99 15 us (n 10088)
+
+# run 2, 2026-11-10T16:33:03Z: hot and cold apart, offset 2965 (another spread: none of run 1's ids); binary wdstore 2055bc5 + the split bench
+# disks: hot store on C: (WD SN750 NVMe), cold set on F: (Seagate ST1000LX015, 5,400 rpm laptop HDD)
+get by id, hot, from disk: p50 423 us, p95 1554 us, p99 2771 us (n 12337)
+get by id, cold set, from disk: p50 9933 us, p95 16595 us, p99 18685 us (n 7664)
+get by id, hot, cached: p50 5 us, p95 14 us, p99 25 us (n 12337)
+get by id, cold set, cached: p50 4 us, p95 13 us, p99 20 us (n 7664)
+name, from disk: p50 358 us, p95 796 us, p99 1090 us (n 10062)
+name, cached: p50 2 us, p95 5 us, p99 22 us (n 10062)
+
+# run 3, 2026-11-10T16:34:42Z: offset 1482 (a third spread), same binary
+get by id, hot, from disk: p50 409 us, p95 1530 us, p99 2619 us (n 12353)
+get by id, cold set, from disk: p50 10080 us, p95 16614 us, p99 18372 us (n 7648)
+get by id, hot, cached: p50 5 us, p95 14 us, p99 23 us (n 12353)
+get by id, cold set, cached: p50 5 us, p95 14 us, p99 23 us (n 7648)
+name, from disk: p50 203 us, p95 744 us, p99 930 us (n 10098)
+name, cached: p50 2 us, p95 5 us, p99 24 us (n 10098)

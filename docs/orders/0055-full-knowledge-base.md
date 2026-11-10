@@ -140,9 +140,33 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
+- **Where it stands (2026-11-10):** steps 0-2 built and measured: the full hot store (73.2M entities, 758.6M
+  statements, 77.2 GB) on the system NVMe, the scholarly articles' cold set (45.4M entities, 972.4M statements,
+  47.0 GB) on the hard drive, checked clean, read by the board's Knowledge section. Step 3 is designed, not wired
+  (`CB_WD_STORE`); step 4 (0054 with the flag on) waits for it. One line is missed: a fact lookup from SSD is 1.5 ms
+  p95, the line 1 ms (below). Status stays `in progress` until steps 3-4.
 - **Commits:**
-- **Files:**
-- **Tests:**
+  - CubbyLLM: b440256, 9fbc251, 4aeb97b, c8f1bda, a6ffd4b, 1df13c7 (wrong, see below), a4e85c3, 87a40ea, f2775a4,
+    f3c3771, d91763f, a259fdb, ecd2bc4, 0936d0f, bacab67, 80b4641, 68d9abf, 1ca2c61, d66cd0c; the board's Knowledge
+    section 13c5551, 9d55930; the sign-in in front of it 2f4a614. Step 0: e41d481, 3d52130.
+  - wdstore (cubelang-cowork, branch `cowork/wd-store`, local, BUSL-1.1): 842994a, 52e7bdd, 07b0c80, adc82b1,
+    d6e3cce, 7600e51, adce34a, 0c02844, 057bb39, 74c277e, 3589c23, 36dc8e1, 269964a, 2ff5bf7, dccff36, 43c3738,
+    6e67789, 0c675a5, 2055bc5, 17fd715.
+- **Files:** `validation/fact_store/` (the audit, the dump count and its resume, the pool, the cutter, the query-log
+  projection, QAWiki's golds, the round-trip check); `notebooks/wikidata_dump.ipynb` (+ its builder);
+  `cubby_serve/board/store*.py` and `dashboard/board/store*.js`, `graph.js` (the Knowledge section); the store itself
+  in `wdstore/` (FORMAT.md; src: model, turtle, ingest, codec, chunk, nodes, reverse, names, spill, writer, resume,
+  build, bz2par, store, snapshot, asof, serve, export). Logs: `validation/logs/wikidata_json_counts_2026-11-06.json`,
+  `wikidata_kgqa_counts_2026-11-10.json`, `wikidata_query_logs_projection_2026-11-10.json`,
+  `wdstore_roundtrip_rdflib_2026-11-10.json`, `qawiki_store_resolve_2026-11-10.json`, `wdstore_bench_2026-11-10.txt`.
+- **Tests (run 2026-11-10):** CubbyLLM `tests/validation/test_fact_store_*.py` (the audit, the count and its resume,
+  the pool, the cutter, the Turtle count with redirects, QAWiki, the query logs): 33 passed, 2 skipped (Linux-only
+  pipe tests, run on Colab); `tests/serve/test_board_store.py` passes. wdstore `cargo test`: 21 pass, among them
+  `no_stored_value_is_a_float`, `a_name_finds_every_entity_it_may_mean_in_id_order_exact_then_folded_then_typo`
+  (never by fame), `a_built_store_reads_back_what_was_ingested_and_a_rebuild_writes_the_same_bytes`,
+  `a_stopped_build_resumed_writes_the_same_store_as_one_never_stopped`, `one_changed_byte_fails_the_check`,
+  `a_triple_the_dump_writes_twice_is_kept_once`, the snapshot's and `serve`'s as-of tests. The round trip against
+  rdflib: 100,000 entities, 0 differences.
 - **Measured:** <against each acceptance line>
   - **Step 1, Wikimedia's JSON dump** (wikidata-20261026, counted before the source moved to the challenge's dump;
     `validation/logs/wikidata_json_counts_2026-11-06.json`):
@@ -178,7 +202,71 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
     entities; every entity and every redirect has one revision; the count's own `redirects` field says 0 by the
     bug fixed in f3c3771). Against Wikimedia's JSON dump ten months later: 3.5M fewer items, 53.6M fewer statements.
     At 82 bytes a statement (format 3 on the dump's last part), the hot store is about 62 GB.
+  - **Step 2, the full build (2026-11-10)** (format 3, wdstore 43c3738 with mimalloc; the manifest beside the store):
+    - Read: the 113 parts (121.3 GB of bzip2, md5 as Zenodo's, re-checked after the copy to the data disk), 123,382,723
+      blocks, **0 failed**.
+    - **Entities: 73,205,306 hot and 45,397,786 cold** (the scholarly articles), 118,603,092 in all. Statements
+      758,600,624 hot and 972,443,219 cold, 1,731,043,843 in all: 3 more than B2's count, whose Turtle reader counts
+      a `p:` link written twice once (the store keeps each triple once since 3589c23). Qualifiers 36.1M hot (the time
+      ones) and 398.1M cold; references attached 1,303.5M; 139,262,077 reference nodes and 69,587,410 value nodes,
+      **0 undefined** of either; 310.2M names; **4,779,630 redirects** (B2's figure exactly); 29.7M reverse keys;
+      67.0M exact and 65.4M accent-folded name keys.
+    - **Size: hot 77.24 GB** (chunks 37.4, nodes 33.1, indexes 6.7), **under the 90 GB line**; cold chunks 47.0 GB
+      on the hard drive. Bytes a statement: 49.3 in the hot chunks, 101.8 with the nodes and indexes (the nodes are
+      the whole dump's, shared with the cold set); 48.3 in the cold chunks.
+    - **Time: about 3 h 10 min of building** (three sessions, resumed from checkpoints: 1,661 s, 7,950 s, 1,808 s;
+      4 h of wall time with the stops). **Peak RAM about 26-27 GB** (read from Task Manager: the runner's own
+      recorder wrote 0.00, a bug in its script; the store's code has no limit set). The stops: the session ran
+      inside Claude Code's process and its memory guard ended it at 95% of RAM; run outside it, the system disk's
+      page file then filled C: (8.8 GB left), so the build moved to the data disk and the hot files were copied to
+      the NVMe after (robocopy, 855 files, 73 GB; build logs and the per-number logs left behind).
+    - **The dump's date in this store's manifest is wrong:** 2025-12-31T06:44:46Z, the last shard's header; the dump
+      is 8 shards with a header each, and its date is the first's, 2025-12-29T23:00:38Z (B2's). Fixed for the next
+      build (6e67789); this build's manifest still says the 31st, and the board's stats strip shows it (Questions).
+  - **The check: clean** (`wdstore check`, 2026-11-10 09:01-10:26, 1 h 25 min, about 31 GB of RAM at its peak): every
+    chunk re-encoded to the same bytes (843 hot, 587 cold), every index the entities' own, every hash as the manifest
+    records it, 0 undefined value or reference nodes. This is the acceptance's "a rebuild gives identical chunk
+    hashes", done on the full store.
+  - **Lookup latency, the full store** (`wdstore bench`, about 20,000 ids spread over the store, each read first from
+    disk, then cached; three spreads that share no ids; `validation/logs/wdstore_bench_2026-11-10.txt`). The hot store
+    on the system NVMe (WD SN750), the cold set on the data disk (a 5,400 rpm laptop hard drive):
+    | | p50 | p95 | p99 |
+    |---|---|---|---|
+    | a fact by id, hot, from SSD | 409-423 us | **1,530-1,554 us** | 2.6-2.8 ms |
+    | a fact by id, cold set, from the hard drive | 9.9-10.1 ms | 16.6 ms | 18.4-18.7 ms |
+    | a fact by id, cached (either) | 5 us | 13-14 us | 20-25 us |
+    | a name, from SSD | 203-371 us | **744-1,140 us** | 0.9-1.6 ms |
+    | a name, cached | 2 us | 4-5 us | 15-24 us |
+    - **Line missed: a fact lookup from SSD is 1.5 ms p95, the line 1 ms.** Stable across the three spreads. An
+      entity read touches several pages that are not next to each other (the id table, the chunk's record, then
+      each value and reference node it names, in the node files), each a random 4 KB read at queue depth 1; the
+      large entities' tail sets the p95. Not changed here; the levers, for Cowork and Nick: read the node pages of
+      one entity together (prefetch, or several reads in flight), store each entity's small nodes inline (larger
+      store), keep the id table (1.9 GB) and the node files' index in memory, or move to a faster disk. Once read, an
+      entity is cached: the board's repeated reads are 5-14 us.
+    - **Name resolution: 0.74-1.14 ms p95 from SSD, the line 50 ms: met.**
+    - The first run mixed the hot store and the cold set (p95 15.9 ms, the hard drive's seeks); `bench` now reports
+      them apart (17fd715).
+  - **QAWiki's gold ids against the full store** (`validation/logs/qawiki_store_resolve_2026-11-10.json`): 990,750 ids
+    by role (643 in queries, 899 in mentions, 989,208 in answers): **0 missing**; 141 answer ids in the cold set;
+    **5 mentions resolve only through a redirect** (Q6958747 -> Q268378, Q9200127 -> Q8191099, Q20937557 -> Q133250,
+    Q97453439 -> Q21096945, Q103239474 -> Q52946), each followed by the store and said.
+  - **The first reader:** the board's Knowledge section (audit view only: the store names its dataset) reads the full
+    store through `wdstore serve`: an entity 341 ms with its labels (the board's own round trips), the 12,937,830
+    entities with P31 = Q5 counted in 7 ms, a two-step path Q42 -> Q35 in 9 entity reads.
 - **Not verified here:**
+  - **1,000 items re-fetched at their recorded revision agree:** not run (it reads live Wikidata, by revision).
+  - **Name recall, EN and FR, on the audit's entities:** not run on the full store. The bench resolves each sampled
+    entity's own first label (10,062 to 10,098 a run, 100% found), which is latency, not recall.
+  - **The audit's split per set** (the 1,000 questions read from the dump) and **every fact of step 0's live sample
+    found in the store:** not run yet; both read the store and go with step 3's wiring.
+  - **With the flag off, today's answers unchanged; with it on, 0 wrong on the batteries; 0054's rerun:** steps 3-4,
+    not built.
+  - **The cold tier is not HDT.** The order's step 2 names a cold tier in HDT (qEndpoint); what exists is the
+    scholarly articles' cold set in the hot store's own format, on the hard drive, which the store reads in-process
+    with no other tool. The full Wikidata in HDT is not built. A change to the order: Cowork's call.
+  - The parts' sha1 against Wikimedia's JSON dump (step 1's first source): not checked; that dump is no longer the
+    source.
 - **Found on the way:**
   - **The count lost the whole pass when the runtime dropped,** and Colab's Drive mount uploads a file only once it is
     closed: the first run's 1% sample, written into one file left open for 3 h 20 min, never reached the Drive (the
@@ -303,7 +391,17 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
   - **The hot store's size line.** By real use, 1,000 properties cover 97.5% of the logged queries but hold 86% of
     the statements, because the scholarly properties rank high enough by use (P2860 at 41, P2093 at 148) to get in.
     Should the hot store keep them by rank, or keep scholarly articles' citation and author-string statements cold
-    whatever their rank (about 450M statements, 27%)? Nick's or Cowork's call; nothing is built on it yet.
+    whatever their rank (about 450M statements, 27%)? Nick's or Cowork's call; nothing is built on it yet. (The full
+    build took the synthesis's default meanwhile: every scholarly article cold, so the question is now whether any
+    scholarly statement should come back hot.)
+  - **The 1 ms line.** A fact from SSD is 1.5 ms p95 on this NVMe. Work on the store's reads (the node pages of one
+    entity read together, or small nodes inline), a faster disk, or the line moved to what the walk needs (a hop is
+    one entity read; the 50-question preflight would say whether 1.5 ms matters next to the rest of an answer)?
+  - **This build's dump date.** Its manifest says 2025-12-31T06:44:46Z (the last shard's header); the dump's date is
+    2025-12-29T23:00:38Z. Correct the manifest in place (the store's snapshot hash then changes once, before anything
+    pins it), or leave it until the next build?
+  - **The cold tier:** the scholarly articles' cold set in the store's own format, read in-process from the hard
+    drive (16.6 ms p95), instead of the full Wikidata in HDT. Keep it, or build the HDT as well?
 
 ## Cowork's addendum (2026-11-06): the hot store chosen by real use
 Nick found the Wikidata Query Logs dataset (Walter and Bast, SIGIR 2026, arXiv 2602.14594; the
