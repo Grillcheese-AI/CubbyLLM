@@ -429,3 +429,52 @@ behind every derived fact, the way a second accountant re-adds the books.
   in the history, a retraction closing a version), and the broken controls fail on Cubby's store too.
 - **Licence:** the files derived from LoCoMo are CC BY-NC 4.0. They are research only and never go into a release or
   the reproducibility package.
+
+## Cowork's addendum (2026-11-10): the store names its state, for CheezML v0.2
+Nick: "Carry it into the VM and store". CheezML v0.2 (0064's addendum) records, for every run that read a fact, the
+store state it read (`cheez:storeSnapshot`) and the date the question was about (`cheez:asOf`). These are the store's
+two clocks seen from the answer: recorded time and valid time. The store has to give both.
+
+**What it brings, in plain words:** every answer names the exact copy of the knowledge base behind it, so it can be
+asked again next year against that same copy.
+- **Over a conventional model:** a model's knowledge has no version an answer can point to.
+
+**What it costs the first build:** nothing in the base file, whose manifest already carries its hashes. The chain
+below is in the change log, which starts with the first overlay change.
+
+### 1. A snapshot hash
+- **The change log is chained:** each line carries the hash of the line before it, so the last line's hash stands
+  for the whole log.
+- **`wdstore snapshot` gives** the base manifest's hash, the change log's length and its head hash, and one snapshot
+  hash over the three. With no overlay change, the snapshot is the base's.
+- **A pin to a recorded date** resolves to a position in the log and gives that position's snapshot hash. The
+  benchmarks' pin (the dump) is the base's snapshot.
+- **A read against a named snapshot** reads that state or fails with a code. It never reads the latest instead.
+
+### 2. One snapshot per question
+- The host's walk and the VM's run for one question read the same snapshot. The host passes it to the VM as
+  `expect_snapshot` (cubelang P4-10), and a mismatch refuses the run.
+- A fact admitted between two runs (0007's gate) makes a new snapshot. The second run names the new one.
+
+### 3. The as-of date
+- Every read takes the date the question is about, passed explicitly. The store never reads the clock itself.
+- A statement is returned as holding only when its valid time covers that date. "Dates too coarse" stays a refusal
+  reason, counted apart (0054's as-of sets).
+- A question that names no date uses the time it was asked, and the record says so.
+
+### 4. The releases behind the store
+- The manifest names the dump as a release: its name, its version (the dump's date and id) and its hash. 0064's
+  writers cite it as a `cheez:DatasetRelease`.
+- The folding rules are cited by their code hash, which the manifest already holds. Ontology releases (FIBO, AUTO)
+  come with the domain worlds (0058).
+
+### Tests
+- An identical rebuild gives the same snapshot hash.
+- One overlay change gives a new head hash, and a read pinned to the old snapshot returns exactly what it did before.
+- A read pinned to a snapshot the store does not hold fails with a code.
+- One line changed in the middle of the change log makes the chain check fail.
+
+### Acceptance (added by this addendum)
+- **Every answer in 0054's replay** names one snapshot hash and one as-of date: 0 runs without both.
+- **Replay:** 100 answers run again against their recorded snapshot and as-of date give the same answer and the same
+  report hash.
