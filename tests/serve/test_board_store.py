@@ -54,6 +54,15 @@ class Fake:
             hits = [[src, s["rank"], s["best"]] for src, ss in sorted(E.items()) for s in ss
                     if s["pid"] == r["pid"] and s["value"] == {"entity": r["value"]}]
             return {"total": len(hits), "hits": hits[:r.get("limit", 1000)]}
+        if op == "brief":
+            out = {}
+            for x in r["ids"]:
+                i = "Q1" if x == "Q7" else x
+                if i in E:
+                    out[x] = {"id": i, "label": LABELS["en"].get(i) or LABELS["mul"].get(i), "description": f"about {i}",
+                              "types": [s["value"]["entity"] for s in E[i] if s["pid"] == 31 and s["rank"] != 0], "cold": i == "Q9",
+                              "statements": len(E[i])}
+            return out
         if op == "name":
             return {"hits": [{"id": "Q1", "lang": "en", "kind": 0, "how": "exact", "key": "ada"}]} if r["text"].lower() == "ada" else {"too_many": 65}
         return {"error": "unknown op"}
@@ -77,7 +86,9 @@ def test_status_reads_the_manifest_and_the_snapshot(tmp_path):
 def test_search_entity_graph_who_path_resolve():
     f = Fake("x")
     s = board_store("/board/store/search", "q=Ada", "audit", f)
-    assert s["hits"] == [{"id": "Q1", "how": "exact", "lang": "en", "matched": "ada", "description": "about Q1", "statements": 2, "label": "Ada"}]
+    assert s["hits"] == [{"id": "Q1", "how": "exact", "lang": "en", "matched": "ada", "description": "about Q1", "statements": 2,
+                          "label": "Ada", "types": [{"id": "Q5", "label": "human"}], "cold": False}]
+    assert "get" not in f.asked and s["ms"] >= 0                         # a brief, not the whole entity
     assert board_store("/board/store/search", "q=xyz", "audit", f)["too_many"] == 65
     e = board_store("/board/store/entity/Q7", "as_of=2019", "audit", f)
     assert (e["id"], e["redirected_from"], e["as_of"], e["label"]) == ("Q1", "Q7", "2019", "Ada")
@@ -85,8 +96,10 @@ def test_search_entity_graph_who_path_resolve():
     assert (g26["label"], g26["statements"][0]["value"], g26["statements"][0]["holds"]) == ("spouse", "Bea (Q2)", "holds")
     assert g26["statements"][0]["qualifiers"][0] == {"pid": "P580", "label": "start time", "value": "2001-01-01T00:00:00Z", "time": True}
     assert next(g for g in e["groups"] if g["pid"] == "P31")["statements"][0]["value"] == "human (Q5)"     # a mul label
+    assert (e["types"], e["statements_total"], e["key"][:2]) == ([{"id": "Q5", "label": "human"}], 2, ["P26", "P31"])
     gr = board_store("/board/store/graph/Q1", "", "audit", f)
     assert {(x["from"], x["pid"], x["to"]) for x in gr["edges"]} == {("Q1", "P31", "Q5"), ("Q1", "P26", "Q2"), ("Q3", "P40", "Q1")}
+    assert next(n for n in gr["nodes"] if n["id"] == "Q2")["types"] == [{"id": "Q5", "label": "human"}]
     w = board_store("/board/store/who", "p=P31&v=Q5", "audit", f)
     assert ([h["id"] for h in w["hits"]], w["p_label"], w["v_label"]) == (["Q1", "Q2"], "instance of", "human")
     w1 = board_store("/board/store/who", "p=P31&v=Q5&limit=1", "audit", f)
@@ -95,9 +108,15 @@ def test_search_entity_graph_who_path_resolve():
     assert (len(g1["edges"]), g1["more"]["in"]) == (1, 1)
     p = board_store("/board/store/path", "from=Q3&to=Q5", "audit", f)
     assert [(x["from"], x["pid"], x["to"]) for x in p["steps"]] == [("Q3", "P40", "Q1"), ("Q1", "P31", "Q5")]
+    assert (p["steps"][1]["rank"], p["steps"][1]["references"], [n["id"] for n in p["nodes"] if n["on_path"]]) == ("normal", 1, ["Q1", "Q3", "Q5"])
+    pc = board_store("/board/store/path", "from=Q1&to=Q5&context=1", "audit", f)
+    assert [(x["from"], x["to"]) for x in pc["edges"] if not x["on_path"]] == [("Q1", "Q2")]                    # one hop more
+    sp = board_store("/board/store/path", "from=Q1&to=Q2", "audit", f)["steps"][0]
+    assert sp["qualifiers"] == [{"pid": "P580", "label": "start time", "value": "2001-01-01T00:00:00Z"}]
     assert board_store("/board/store/path", "from=Q5&to=Q3", "audit", f)["steps"] is None          # no chain that way
     assert board_store("/board/store/path", "from=Q3&to=Q9", "audit", f)["steps"] is None          # deprecated: not a step
-    assert board_store("/board/store/resolve", "id=Q7", "audit", f) == {"id": "Q1"}
+    assert board_store("/board/store/resolve", "id=Q7", "audit", f)["id"] == "Q1"
+    assert board_store("/board/store/brief", "ids=Q7,Q2,x", "audit", f)["briefs"]["Q7"]["id"] == "Q1"
     assert "error" in board_store("/board/store/entity/nope", "", "audit", f)
 
 

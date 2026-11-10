@@ -1,15 +1,17 @@
-/* The control board (order 0027): Cowork's mockup's look -- a dark slate stage, frosted glass, light numbers.
+/* The control board (order 0027): a deep navy stage, dark panels with thin borders, teal and cyan accents, mono ids
+   (Nick's mockup, 2026-11-10; before it, Cowork's slate and frosted glass).
    System fonts only: the page calls nothing but the server it came from. */
-:root{--ink:#EEF3F6;--ink2:#C3D0DA;--ink3:#B9C7D1;--amber:#F4B860;--cyan:#8ED8E8;--coral:#FF9C80;--bg:#1B2833}
+:root{--ink:#E6EDF5;--ink2:#A9B7C8;--ink3:#8FA0B4;--amber:#F5B84C;--cyan:#38BDF8;--teal:#2DD4BF;--coral:#FF9C80;--bg:#0A111D;
+  --panel:#0F1A2A;--panel2:#13203300;--line:rgba(148,163,184,.14);--line2:rgba(148,163,184,.24)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;font-variant-numeric:tabular-nums}
 a{color:#DCE8F0}a:hover{color:#FFF}
 button{font:inherit}
 .mono{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace}
-.cb{position:relative;min-height:100vh;overflow-x:hidden;background:radial-gradient(120% 75% at 50% 40%,#4C6578 0%,#354B5D 36%,#25353F 68%,#1B2833 100%)}
-.cb::before{content:"";position:absolute;top:-30%;right:4%;width:46%;height:150%;background:linear-gradient(100deg,rgba(255,255,255,0) 30%,rgba(214,232,245,.09) 48%,rgba(255,255,255,0) 64%);transform:rotate(14deg);pointer-events:none}
+.cb{position:relative;min-height:100vh;overflow-x:hidden;background:radial-gradient(110% 70% at 50% 0%,#132238 0%,#0D1726 45%,#0A111D 100%)}
+.cb::before{content:"";position:absolute;inset:0;background:radial-gradient(rgba(148,163,184,.06) 1px,transparent 1px) 0 0/22px 22px;pointer-events:none}
 .shell{position:relative;z-index:1;padding:22px 28px 28px;display:flex;flex-direction:column;gap:16px}
-.glass{background:rgba(60,82,100,.40);border:1px solid rgba(255,255,255,.09);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 12px 32px rgba(6,14,22,.22),inset 0 1px 0 rgba(255,255,255,.06)}
+.glass{background:rgba(15,26,42,.88);border:1px solid var(--line);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 10px 28px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.03)}
 .top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink)}
 .brand b{font-size:28px;font-weight:400;letter-spacing:-.01em}
@@ -131,7 +133,8 @@ table{width:100%;border-collapse:collapse;font-size:13px}
 th{font-weight:500;color:var(--ink3);text-align:left;padding:6px 8px;font-size:12px;white-space:nowrap}
 td{padding:9px 8px;border-top:1px solid rgba(255,255,255,.08);vertical-align:top}
 td.num{white-space:nowrap}
-.tag{font-size:11px;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.08);color:#C9D5DD;white-space:nowrap}
+.tag{font-size:11px;padding:2px 8px;border-radius:999px;background:rgba(148,163,184,.12);color:#C9D5DD;white-space:nowrap}
+.chip.ok{color:#6EE7B7;border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.08);letter-spacing:.04em;text-transform:none;font-size:12px}
 .tag.int{background:rgba(244,184,96,.16);color:#F7D29C}
 .ord{display:grid;grid-template-columns:52px minmax(0,1fr);gap:8px;padding:8px 0;border-top:1px solid rgba(255,255,255,.08);font-size:13px}
 .grp{font-size:12px;color:#F7D29C;margin-top:6px}

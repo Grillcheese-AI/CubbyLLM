@@ -41,6 +41,9 @@ function audienceUi(pub) {
   b.disabled = !hasToken();
   b.title = hasToken() ? (pub ? 'Public: the server sends what any user may see' : 'Audit: sources are shown') : 'Open the board with ?token= for the audit view';
   document.getElementById('aud-chip').textContent = pub ? 'public' : 'audit';
+  const chip = document.getElementById('store-chip');
+  chip.hidden = true;                                   // the store is named only to the audit audience
+  if (!pub) get('/board/store').then((r) => { chip.hidden = !(r.body && r.body.configured && r.body.snapshot && !r.body.error); });
 }
 
 document.getElementById('pub').addEventListener('click', () => { setPublic(!isPublic()); });

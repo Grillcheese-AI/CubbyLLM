@@ -1,9 +1,20 @@
-// The Knowledge section's graph (order 0055's store): entities as nodes, statements as labelled arrows, laid out by a
-// small force simulation on a canvas. Drag a node to move it, drag the background to pan, wheel to zoom; a click
-// selects a node, a double-click expands it (its own neighbours are fetched and merged). Plain canvas, no library.
+// The Knowledge section's graph (order 0055's store): entities as rounded squares (a class icon, the id, a label pill, a
+// HOT / COLD mark), statements as arrows with their property in a box. A path's chain is laid left to right and drawn
+// cyan; its context (one hop more) dashed. Other nodes settle by a small force simulation. Drag a node to move it,
+// drag the background to pan, wheel or the buttons to zoom, Fit to see all; a click selects, a double-click expands.
+// Plain canvas, no library.
 import { reduced } from './api.js';
+import { ICONS, kind } from './store_views.js';
 
-const COL = { node: '#B9CBD8', center: '#F4B860', sel: '#8ED8E8', edge: 'rgba(214,230,240,.38)', text: '#EEF3F6', sub: '#C3D0DA' };
+const C = { box: '#13233A', line: 'rgba(148,163,184,.35)', path: '#38BDF8', ctx: 'rgba(148,163,184,.45)', text: '#E6EDF5',
+  sub: '#8FA0B4', sel: '#2DD4BF', hot: '#10B981', cold: '#94A3B8', pill: 'rgba(10,17,29,.92)' };
+const S = 22, GAP = 230;   // half a node's side; the spacing of a path's chain
+const icons = Object.fromEntries(Object.entries(ICONS).map(([k, d]) => [k, new Path2D(d)]));
+
+function rrect(ctx, x, y, w, h, r) {
+  ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+}
 
 export function graphView(canvas, { onSelect, onExpand } = {}) {
   const ctx = canvas.getContext('2d');
@@ -18,19 +29,23 @@ export function graphView(canvas, { onSelect, onExpand } = {}) {
   const W = () => canvas.getBoundingClientRect().width, H = () => canvas.getBoundingClientRect().height;
   const toWorld = (px, py) => ({ x: (px - W() / 2 - view.x) / view.k, y: (py - H() / 2 - view.y) / view.k });
 
-  function setData(g, merge) {
+  // g: {center, nodes:[{id,label,types,cold,on_path}], edges:[{from,to,pid,label,on_path}]}; chain: the path's ids in order
+  function setData(g, merge, chain) {
     if (!merge) { nodes.clear(); edges.clear(); view = { x: 0, y: 0, k: 1 }; }
     const anchor = nodes.get(g.center);
+    const at = new Map((chain || []).map((id, i) => [id, { x: (i - (chain.length - 1) / 2) * GAP, y: 0 }]));
     for (const n of g.nodes) {
-      if (nodes.has(n.id)) { if (n.label) nodes.get(n.id).label = n.label; continue; }
-      const a = Math.random() * Math.PI * 2, r = 60 + Math.random() * 80;
-      nodes.set(n.id, { id: n.id, label: n.label, x: (anchor ? anchor.x : 0) + Math.cos(a) * r, y: (anchor ? anchor.y : 0) + Math.sin(a) * r, vx: 0, vy: 0, pin: false });
+      const old = nodes.get(n.id), fix = at.get(n.id);
+      if (old) { Object.assign(old, { label: n.label || old.label, types: n.types || old.types, cold: n.cold ?? old.cold }); continue; }
+      const a = Math.random() * Math.PI * 2, r = 90 + Math.random() * 90, o = anchor || { x: 0, y: 0 };
+      nodes.set(n.id, { id: n.id, label: n.label, types: n.types || [], cold: n.cold, x: fix ? fix.x : o.x + Math.cos(a) * r,
+        y: fix ? fix.y : o.y + Math.sin(a) * r, vx: 0, vy: 0, pin: !!fix, path: !!fix });
     }
     for (const e of g.edges) edges.set(`${e.from}|${e.pid}|${e.to}`, e);
-    if (!merge) centerId = g.center;
-    selected = g.center;
+    if (!merge) centerId = chain && chain.length ? null : g.center;
+    selected = g.center || (chain || [])[0];
     heat = 1;
-    if (reduced()) { for (let i = 0; i < 300; i++) step(); draw(); } else kick();
+    if (reduced()) { for (let i = 0; i < 300; i++) step(); fit(); } else { for (let i = 0; i < 120; i++) step(); fit(); kick(); }
   }
 
   function step() {
@@ -38,19 +53,19 @@ export function graphView(canvas, { onSelect, onExpand } = {}) {
     for (let i = 0; i < ns.length; i++) {
       const a = ns[i];
       for (let j = i + 1; j < ns.length; j++) {
-        const b = ns[j]; let dx = a.x - b.x, dy = a.y - b.y; const d2 = dx * dx + dy * dy + 0.01, f = 5200 / d2;
+        const b = ns[j]; let dx = a.x - b.x, dy = a.y - b.y; const d2 = dx * dx + dy * dy + 0.01, f = 9000 / d2;
         const d = Math.sqrt(d2); dx /= d; dy /= d;
         a.vx += dx * f; a.vy += dy * f; b.vx -= dx * f; b.vy -= dy * f;
       }
     }
     for (const e of edges.values()) {
       const a = nodes.get(e.from), b = nodes.get(e.to); if (!a || !b) continue;
-      const dx = b.x - a.x, dy = b.y - a.y, d = Math.sqrt(dx * dx + dy * dy) + 0.01, f = (d - 170) * 0.02;
+      const dx = b.x - a.x, dy = b.y - a.y, d = Math.sqrt(dx * dx + dy * dy) + 0.01, f = (d - (e.on_path === false ? 150 : 200)) * 0.02;
       a.vx += dx / d * f; a.vy += dy / d * f; b.vx -= dx / d * f; b.vy -= dy / d * f;
     }
     for (const n of ns) {
       if (n.pin || (drag && drag.node === n)) { n.vx = n.vy = 0; continue; }
-      n.vx = (n.vx - n.x * 0.004) * 0.82; n.vy = (n.vy - n.y * 0.004) * 0.82;
+      n.vx = (n.vx - n.x * 0.003) * 0.82; n.vy = (n.vy - n.y * 0.003) * 0.82;
       n.x += Math.max(-30, Math.min(30, n.vx)); n.y += Math.max(-30, Math.min(30, n.vy));
     }
     heat *= 0.985;
@@ -59,44 +74,68 @@ export function graphView(canvas, { onSelect, onExpand } = {}) {
   function kick() { if (!raf) raf = requestAnimationFrame(tick); }
   function tick() { raf = 0; step(); draw(); if (heat > 0.02 || drag) kick(); }
 
-  function arrow(a, b, color) {
+  function edge(e, a, b, few) {
+    const on = selected && (e.from === selected || e.to === selected), path = e.on_path === true, ctxe = e.on_path === false;
     const dx = b.x - a.x, dy = b.y - a.y, d = Math.sqrt(dx * dx + dy * dy) || 1, ux = dx / d, uy = dy / d;
-    const ex = b.x - ux * 13, ey = b.y - uy * 13;
-    ctx.strokeStyle = color; ctx.beginPath(); ctx.moveTo(a.x + ux * 10, a.y + uy * 10); ctx.lineTo(ex, ey); ctx.stroke();
-    ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(ex, ey);
-    ctx.lineTo(ex - ux * 8 - uy * 4, ey - uy * 8 + ux * 4); ctx.lineTo(ex - ux * 8 + uy * 4, ey - uy * 8 - ux * 4); ctx.fill();
+    const sx = a.x + ux * (S + 4), sy = a.y + uy * (S + 4), ex = b.x - ux * (S + 6), ey = b.y - uy * (S + 6);
+    const col = path ? C.path : on ? C.sel : ctxe ? C.ctx : C.line;
+    ctx.strokeStyle = col; ctx.lineWidth = (path ? 2.2 : 1.2) / Math.max(view.k, 0.6);
+    ctx.setLineDash(ctxe ? [6, 5] : []); ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(ex, ey); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(ex, ey);
+    ctx.lineTo(ex - ux * 9 - uy * 4.5, ey - uy * 9 + ux * 4.5); ctx.lineTo(ex - ux * 9 + uy * 4.5, ey - uy * 9 - ux * 4.5); ctx.fill();
+    if (!(few || on || path)) return;
+    const t = `${e.label || e.pid}  ${e.pid}`, mx = (sx + ex) / 2, my = (sy + ey) / 2;
+    ctx.font = '11px Segoe UI, system-ui, sans-serif'; const w = ctx.measureText(t).width + 14;
+    rrect(ctx, mx - w / 2, my - 10, w, 20, 6); ctx.fillStyle = C.pill; ctx.fill();
+    ctx.strokeStyle = path ? 'rgba(56,189,248,.55)' : 'rgba(148,163,184,.3)'; ctx.lineWidth = 1; ctx.stroke();
+    ctx.fillStyle = path ? C.path : on ? C.sel : C.sub; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, mx, my + 0.5);
+  }
+
+  function node(n) {
+    const sel = n.id === selected, main = n.id === centerId || n.path;
+    rrect(ctx, n.x - S, n.y - S, 2 * S, 2 * S, 11); ctx.fillStyle = C.box; ctx.fill();
+    ctx.lineWidth = sel ? 2.4 : main ? 1.8 : 1; ctx.strokeStyle = sel ? C.sel : main ? C.path : n === hover ? '#CBD5E1' : 'rgba(148,163,184,.35)'; ctx.stroke();
+    ctx.save(); ctx.translate(n.x - 12, n.y - 15); ctx.strokeStyle = main || sel ? C.sel : C.sub; ctx.lineWidth = 1.7; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.stroke(icons[kind(n.types)]); ctx.restore();
+    ctx.font = '9px Cascadia Mono, Consolas, monospace'; ctx.fillStyle = C.sub; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(n.id, n.x, n.y + 14);
+    if (n.cold !== undefined && n.cold !== null) {
+      ctx.fillStyle = n.cold ? C.cold : C.hot; ctx.beginPath(); ctx.arc(n.x + S - 3, n.y - S + 3, 4, 0, Math.PI * 2); ctx.fill();
+    }
+    const label = n.label || n.id, short = label.length > 28 ? label.slice(0, 27) + '…' : label;
+    ctx.font = `${main ? 600 : 500} 12px Segoe UI, system-ui, sans-serif`; const w = ctx.measureText(short).width + 16;
+    rrect(ctx, n.x - w / 2, n.y + S + 6, w, 22, 11); ctx.fillStyle = C.pill; ctx.fill();
+    ctx.strokeStyle = main || sel ? 'rgba(56,189,248,.45)' : 'rgba(148,163,184,.25)'; ctx.lineWidth = 1; ctx.stroke();
+    ctx.fillStyle = C.text; ctx.fillText(short, n.x, n.y + S + 17.5);
   }
 
   function draw() {
     const w = W(), h = H();
     ctx.clearRect(0, 0, w, h);
     ctx.save(); ctx.translate(w / 2 + view.x, h / 2 + view.y); ctx.scale(view.k, view.k);
-    ctx.lineWidth = 1.2 / view.k;
-    const few = edges.size <= 30;   // more than that: only the selected node's edges say their property
-    for (const e of edges.values()) {
-      const a = nodes.get(e.from), b = nodes.get(e.to); if (!a || !b) continue;
-      const on = selected && (e.from === selected || e.to === selected);
-      arrow(a, b, on ? 'rgba(142,216,232,.8)' : COL.edge);
-      if (few || on) {
-        ctx.fillStyle = on ? COL.sel : COL.sub; ctx.font = `${11 / view.k}px Segoe UI, system-ui, sans-serif`; ctx.textAlign = 'center';
-        ctx.fillText(e.label || e.pid, (a.x + b.x) / 2, (a.y + b.y) / 2 - 4 / view.k);
-      }
-    }
-    for (const n of nodes.values()) {
-      const c = n.id === selected ? COL.sel : n.id === centerId ? COL.center : COL.node;
-      ctx.fillStyle = c; ctx.beginPath(); ctx.arc(n.x, n.y, (n.id === centerId ? 9 : 7) / Math.sqrt(view.k), 0, Math.PI * 2); ctx.fill();
-      if (n === hover) { ctx.strokeStyle = '#FFF'; ctx.stroke(); }
-      ctx.fillStyle = COL.text; ctx.font = `${12 / view.k}px Segoe UI, system-ui, sans-serif`; ctx.textAlign = 'left';
-      ctx.fillText(n.label ? `${n.label}` : n.id, n.x + 11 / view.k, n.y + 4 / view.k);
-    }
+    const few = edges.size <= 24;   // more than that: only the selected node's and the path's edges say their property
+    for (const e of edges.values()) { const a = nodes.get(e.from), b = nodes.get(e.to); if (a && b) edge(e, a, b, few); }
+    for (const n of nodes.values()) node(n);
     ctx.restore();
+  }
+
+  function fit() {
+    if (!nodes.size) { draw(); return; }
+    const xs = [...nodes.values()].map((n) => n.x), ys = [...nodes.values()].map((n) => n.y);
+    const x0 = Math.min(...xs) - 80, x1 = Math.max(...xs) + 80, y0 = Math.min(...ys) - 60, y1 = Math.max(...ys) + 90;
+    const k = Math.max(0.25, Math.min(1.4, Math.min(W() / (x1 - x0), H() / (y1 - y0))));
+    view = { k, x: -(x0 + x1) / 2 * k, y: -(y0 + y1) / 2 * k };
+    draw();
+  }
+  function zoom(f, px = W() / 2, py = H() / 2) {
+    const k = Math.max(0.25, Math.min(4, view.k * f)), mx = px - W() / 2, my = py - H() / 2;
+    view.x = mx - (mx - view.x) * (k / view.k); view.y = my - (my - view.y) * (k / view.k); view.k = k; draw();
   }
 
   function hit(px, py) {
     const p = toWorld(px, py);
-    let best = null, bd = (14 / view.k) ** 2;
-    for (const n of nodes.values()) { const d = (n.x - p.x) ** 2 + (n.y - p.y) ** 2; if (d < bd) { bd = d; best = n; } }
-    return best;
+    for (const n of [...nodes.values()].reverse()) if (Math.abs(n.x - p.x) <= S + 2 && Math.abs(n.y - p.y) <= S + 30) return n;
+    return null;
   }
   const local = (ev) => { const r = canvas.getBoundingClientRect(); return [ev.clientX - r.left, ev.clientY - r.top]; };
 
@@ -117,14 +156,9 @@ export function graphView(canvas, { onSelect, onExpand } = {}) {
     drag = null;
   });
   canvas.addEventListener('dblclick', (ev) => { const n = hit(...local(ev)); if (n && onExpand) onExpand(n.id); });
-  canvas.addEventListener('wheel', (ev) => {
-    ev.preventDefault();
-    const f = Math.exp(-ev.deltaY * 0.0015), k = Math.max(0.25, Math.min(4, view.k * f));
-    const [px, py] = local(ev), mx = px - W() / 2, my = py - H() / 2;
-    view.x = mx - (mx - view.x) * (k / view.k); view.y = my - (my - view.y) * (k / view.k); view.k = k; draw();
-  }, { passive: false });
+  canvas.addEventListener('wheel', (ev) => { ev.preventDefault(); zoom(Math.exp(-ev.deltaY * 0.0015), ...local(ev)); }, { passive: false });
   window.addEventListener('resize', () => { size(); draw(); });
   size();
 
-  return { setData, select(id) { selected = id; draw(); }, count: () => nodes.size, redraw() { size(); draw(); } };
+  return { setData, fit, zoom, select(id) { selected = id; draw(); }, count: () => [nodes.size, edges.size], redraw() { size(); fit(); } };
 }
