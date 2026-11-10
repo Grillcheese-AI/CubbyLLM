@@ -22,7 +22,8 @@ being famous. What differs:
   classes and properties) when the server is started with ``CB_WD_KINDS=1`` and the table was built from this state
   of the store; then a shared name is decided as in Wikidata5M (the one item whose kind carries the asked relation),
   and a name with more items than `NAMESAKE_CAP` is first narrowed to the items the rule could pick
-  (`wd_store_crowd`). There are no cue words here (no cue table): a cue rules nothing out. Without the table, a
+  (`wd_store_crowd`); the store's cue table (`wd_store_cues`, read with it) lets a question's words rule a kind
+  out, as 0037's do ("Nobel" goes with people). Without the table, a
   shared name is held, as under ``CB_NAMESAKE_RELATION=0``, and ``CB_NAMESAKE_TIER=1``'s `applies` answers True (a
   kind may carry any relation), so its hop pick never decides either. Both err towards asking, never towards an item;
 - the facts are the truthy statements, said exactly (`wd_store_values`), dated by the dump: a time-sensitive
@@ -30,7 +31,9 @@ being famous. What differs:
 - an object's facts (who points at an item) are read up to `OBJECT_CAP` subjects, each checked against the subject's
   own truthy statements (a deprecated one, or an ended one on a relation whose value changes, is left out);
 - a Wikimedia page (a disambiguation page, a category, a template, a list) is never one of a name's items: it is not
-  a thing a question is about. Without the kinds table, a name standing for more than `NAMESAKE_CAP` items gives none
+  a thing a question is about. With the cue file read (`wd_store_cues`), an item of a fictional class (one under
+  "fictional entity" by subclass of) is set aside when a real item shares its name ("France", the Star Trek
+  location, beside the country); a name only fictional items carry still stands for them ("Sherlock Holmes"). Without the kinds table, a name standing for more than `NAMESAKE_CAP` items gives none
   of them and lists none (full Wikidata: "Paris" is 248 items, paintings and albums among them).
 
 Names are shared far more in the full Wikidata than in Wikidata5M ("Douglas Adams" is 10 people here, "France" 50
@@ -64,16 +67,20 @@ class WdStoreWorld(Crowded, HdcWorld):
     name = "wdstore"
     NAMESAKE_CAP = NAMESAKE_CAP
 
-    def __init__(self, ask, dump_date: str, statements: int = 0, cache: int = 50_000, kinds: str | None = None) -> None:
+    def __init__(self, ask, dump_date: str, statements: int = 0, cache: int = 50_000, kinds: str | None = None,
+                 cues: str | None = None) -> None:
         """`ask`: one `wdstore serve` request -> its answer (a dict). `dump_date`: the dump's date (its manifest's).
-        `kinds`: the kinds table's path (`wd_store_kinds`), read when built from this state of the store."""
+        `kinds`: the kinds table's path (`wd_store_kinds`); `cues`: the cue table and fictional classes' path
+        (`wd_store_cues`); each read when built from this state of the store."""
         self.ask = ask
         self._lock, self._pins = threading.Lock(), threading.local()
         self.snapshot = dump_date[:4]                    # the loop's snapshot rule compares a year
         self.provenance_name = f"wikidata (the WikiKGQA 2026 dump, {dump_date[:10]})"
         self.state = (ask({"op": "snapshot"}) or {}).get("snapshot")
         from .wd_store_kinds import for_store
-        self._kinds, self._cues = for_store(kinds, self.state), None   # (no table: shared names are held; no cue table)
+        from .wd_store_cues import for_store as cues_for
+        self._kinds = for_store(kinds, self.state)       # (no table: shared names are held)
+        self._cues, self._fictional = cues_for(cues, self.state)   # (none: no cue rules out; nothing set aside)
         self._pid_label, self._datatype = {}, {}
         for lo in range(1, 14_001, 1000):                # every property: its label and datatype (2.6 s, full store)
             got = ask({"op": "brief", "ids": [f"P{i}" for i in range(lo, lo + 1000)], "lang": "en"})
@@ -157,6 +164,9 @@ class WdStoreWorld(Crowded, HdcWorld):
             brief = self.ask({"op": "brief", "ids": sorted(found)}) or {}
             found = {q: k for q, k in found.items()                     # a Wikimedia page is not a thing
                      if q in brief and not set(brief[q].get("types", [])) & META}
+            fiction = {q for q in found if set(brief[q].get("types", [])) & self._fictional}
+            if fiction and set(found) - fiction:         # a fictional item set aside beside a real one of its name
+                found = {q: k for q, k in found.items() if q not in fiction}
         order = sorted(found, key=lambda x: int(x[1:]))
         return [q for q in order if found[q] == 0], [q for q in order if found[q] == 1]
 

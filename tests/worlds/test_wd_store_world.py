@@ -211,3 +211,60 @@ def test_a_table_from_another_state_of_the_store_is_not_read(kinds_world):
     _w, path = kinds_world
     from cubbyllm.worlds.wd_store_kinds import for_store
     assert for_store(path, "abc123") is not None and for_store(path, "another") is None
+
+
+# ---- the cue table and the fictional classes (wd_store_cues) ----
+
+PROPS["P166"] = ("award received", "wikibase:WikibaseItem")
+ITEMS.update({
+    "Q520": ([("en", 0, "ship")], [], {}, []), "Q610": ([("en", 0, "Star Trek location")], [], {}, []),
+    "Q510": ([("en", 0, "Nobel Prize in Physics")], [], {}, []), "Q511": ([("en", 0, "Blue Riband")], [], {}, []),
+    "Q500": ([("en", 0, "Curie")], [st(31, {"entity": "Q5"}), st(166, {"entity": "Q510"})], {}, ["Q5"]),
+    "Q501": ([("en", 0, "Curie")], [st(31, {"entity": "Q520"}), st(166, {"entity": "Q511"})], {}, ["Q520"]),
+    "Q600": ([("en", 0, "Albion")], [st(31, {"entity": "Q41"}), st(36, {"entity": "Q60"})], {}, ["Q41"]),
+    "Q601": ([("en", 0, "Albion")], [st(31, {"entity": "Q610"}), st(36, {"entity": "Q61"})], {}, ["Q610"]),
+    "Q602": ([("en", 0, "Holmes")], [st(31, {"entity": "Q610"}), st(36, {"entity": "Q60"})], {}, ["Q610"]),
+})
+NAMES.update({"curie": [("Q500", 0, "exact"), ("Q501", 0, "exact")], "albion": [("Q600", 0, "exact"), ("Q601", 0, "exact")],
+              "holmes": [("Q602", 0, "exact")]})
+
+
+@pytest.fixture()
+def full_world(tmp_path):
+    from cubbyllm.worlds import wd_store_cues, wd_store_kinds
+    raw = tmp_path / "raw_full"
+    raw.mkdir()
+    (raw / "kind_rels.tsv").write_text("Q41\tP31\t10\nQ41\tP36\t9\nQ44\tP31\t100\nQ5\tP31\t50\nQ5\tP166\t40\n"
+                                       "Q520\tP31\t20\nQ520\tP166\t15\nQ610\tP31\t5\nQ610\tP36\t4\n", encoding="utf-8")
+    (raw / "labels.tsv").write_text("Q41\tcountry\nQ44\tpainting\nQ5\thuman\nQ520\tship\nQ610\tStar Trek location\n"
+                                    "P31\tinstance of\nP36\tcapital\nP166\taward received\n", encoding="utf-8")
+    (raw / "meta.tsv").write_text("snapshot\tabc123\nitems\t200\ntyped\t185\n", encoding="utf-8")
+    wd_store_kinds.build(str(raw), str(tmp_path / "s.kinds.sqlite"))
+    cues = tmp_path / "cues"
+    cues.mkdir()
+    (cues / "word_kinds.tsv").write_text("nobel\tQ5\t150\nriband\tQ520\t120\n", encoding="utf-8")
+    (cues / "fictional.tsv").write_text("Q14897293\nQ610\n", encoding="utf-8")
+    (cues / "meta.tsv").write_text("snapshot\tabc123\n", encoding="utf-8")
+    wd_store_cues.build(str(cues), str(raw / "labels.tsv"), str(tmp_path / "s.cues.sqlite"))
+    return wsw.WdStoreWorld(FakeStore(), "2025-12-29T23:00:38Z", kinds=str(tmp_path / "s.kinds.sqlite"),
+                            cues=str(tmp_path / "s.cues.sqlite"))
+
+
+def awards(world, name, cues=()):
+    world.clear_withheld()
+    with world.cued(list(cues)):
+        return {t.obj for _f, t in world.hop(QuestionPlan(relations=[None], tail=f"award received of {name}", n_hop=1), 0, None)}
+
+
+def test_a_cue_word_rules_a_kind_out(full_world):
+    assert awards(full_world, "Curie") == set()                   # a person and a ship both hold awards: no pick alone
+    assert full_world.decision("curie")["fit"] == ["Q500", "Q501"]
+    assert awards(full_world, "Curie", ["nobel"]) == {"Nobel Prize in Physics"}   # "Nobel" never goes with a ship
+
+
+def test_a_fictional_item_is_set_aside_beside_a_real_one_and_stands_alone(full_world, kinds_world):
+    assert capital(full_world, "Albion") == {"London"}            # the Star Trek location set aside
+    assert full_world.namesakes("albion") == {}                   # the name now stands for one item
+    w, _path = kinds_world                                        # (without the cue file: both compete)
+    assert set(w.namesakes("albion")) == {"Q600", "Q601"}
+    assert capital(full_world, "Holmes") == {"London"}            # only fictional items carry it: it stands

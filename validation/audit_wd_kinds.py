@@ -12,9 +12,12 @@ The same audit as 0037's (`audit_namesake_relation.py`, whose functions this reu
    their kinds, a few values, the outcome and the reply as the loop phrases it.
    The line (0037's): at most 1 wrong pick in 50. A wrong pick is one item chosen when a person asking could as well
    mean another. Asking back where the question was obvious is a cost, counted apart.
-There is no cue-word probe: the store's world has no cue table (a cue rules nothing out there).
+3. **The cue-word probe** (0037's): 20 shared names among those with two or more items of a known kind, each asked
+   about a relation one item (the target) holds, with a cue word from the target's own values, read against the
+   store's cue table (`wd_store_cues`). Each must pick the target or ask back: 0 wrong picks.
+Fictional items are set aside beside a real namesake (`wd_store_cues`), as in serving.
 
-    python validation/audit_wd_kinds.py [--n 50] [--seed 1]
+    python validation/audit_wd_kinds.py [--n 50] [--probe 20] [--seed 1]
 -> validation/logs/audit_wd_kinds_<date>.json (and .md: the lists to read)
 
 Wired: STANDALONE (a measurement).
@@ -88,18 +91,21 @@ def audit(w, hdc: HdcWorld, n: int, seed: int) -> list[dict]:
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--n", type=int, default=50)
+    ap.add_argument("--probe", type=int, default=20)
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--date", default=_dt.date.today().isoformat())
     a = ap.parse_args()
     from cubby_serve.wd_world import build
     w = build()
-    if w._kinds is None:
-        sys.exit("no kinds table for this store (wd_store_kinds)")
+    if w._kinds is None or w._cues is None:
+        sys.exit("no kinds table or cue table for this store (wd_store_kinds, wd_store_cues)")
+    hdc = HdcWorld()
     out = {"what": "order 0055 step 3 (a): order 0037's relation rule on the store's shared names, for a reading by hand",
            "date": a.date, "seed": a.seed, "store": w.state, "fixed": [one(w, r, nm, c) for r, nm, c in A0.FIXED],
-           "audit": audit(w, HdcWorld(), a.n, a.seed), "probe": []}
-    ms = [r["ms"] for part in ("fixed", "audit") for r in out[part]]
+           "audit": audit(w, hdc, a.n, a.seed), "probe": A0.probe(w, A0.shared_labels(hdc, a.seed), a.probe, a.seed)}
+    ms = [r["ms"] for part in ("fixed", "audit", "probe") for r in out[part]]
     out["counts"] = {"audit_outcomes": {o: sum(r["outcome"] == o for r in out["audit"]) for o in sorted({r["outcome"] for r in out["audit"]})},
+                     "probe_verdicts": {v: sum(r["verdict"] == v for r in out["probe"]) for v in sorted({r["verdict"] for r in out["probe"]})},
                      "crowded": sum(r["items_n"] > w.NAMESAKE_CAP for r in out["audit"]),
                      "decision_ms": {"p50": statistics.median(ms), "max": max(ms), "n": len(ms)}}
     path = os.path.join(HERE, "logs", f"audit_wd_kinds_{a.date}.json")

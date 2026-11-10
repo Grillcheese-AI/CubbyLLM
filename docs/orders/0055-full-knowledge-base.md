@@ -315,7 +315,31 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
       Thespis's "different from" (the opera): questionable, the relation itself odd. The 4 "nothing read": two place
       relations on crowded names (KATA, Greenfield), two crowded names of more than 25 people (Andrew Blake, Charles
       Allen): "I don't know", a cost, never a wrong answer. The line (0037's): at most 1 wrong pick in 50.
-    - Tests: `tests/worlds/test_wd_store_world.py` 10 (3 new: the table decides "capital of Gaul" as the country,
+    - **The cue table and the fictional classes (Nick, 2026-11-10: "build the cue table and set aside fictional
+      items")**, read with the kinds table under ``CB_WD_KINDS=1``. `wdstore cues` (wdstore 1385700): two passes over
+      the hot set, 23 min 49 s, 10 GB of private memory at its peak; per typed item, the words of its values (an item
+      value's label, English or `mul` text, a plain string; cut as `hdc_cues.words`, checked against it) against its
+      kinds: 12,962,393 words, 36,475,908 (word, kind) pairs; and 10,121 fictional classes (every class under
+      "fictional entity", Q14897293, by subclass of). `cubbyllm/worlds/wd_store_cues.py` writes them beside the store
+      (9,840,589 words and 36,285,175 pairs in the kinds' words; 1.8 GB), read by 0037's own `hdc_cues.Cues`.
+      - **Found: a cue word rules out far less in the full store.** 0037's rule is "a kind goes with a word when any
+        of its members carries it", and with 70.9M typed items almost every large kind has one: "nobel" goes with
+        341 kinds, ship and country among them (a ship named after Alfred Nobel). Specific words still narrow
+        ("football": 2,129 kinds, not ship, not country; "grunge" 66). Not tuned here (a share threshold like the
+        kinds table's LIFT would change 0037's rule; that is for the audit's reader).
+      - **Fictional items set aside** beside a real namesake (`wd_store_world._tiers`); a name only fictional items
+        carry still stands ("Holmes" in the tests).
+      - **The audit again** (`validation/logs/audit_wd_kinds_2026-11-10-cues.json` and `.md`), now with 0037's cue
+        probe: fixed checks: France's capital -> Paris (48 items, the two fictional Frances set aside), Italy's ->
+        Rome, Japan's currency -> the yen, Steve Mills -> asking back (9 people); Marie Curie -> Q7186 with her whole
+        award list still: that list is how the answer is phrased (every "award received" value), not which item is
+        read, so the cue table does not change it (this report was wrong to say it would). The 50 hops: the same
+        outcomes as before but one: "Demon Hunter", from narrative universe, lost its fictional candidates beside a
+        real namesake and asks back (a cost: a fictional relation on a shared name). The probe (20): picks the target
+        2, asks back with the target among them 11, each labelled with the target among them 6, asks back 1; **0
+        wrong picks**. A decision 38 ms p50, 399 ms at most.
+    - Tests: `tests/worlds/test_wd_store_world.py` 12 (2 for the cue file: "nobel" rules a ship out of "Curie"; a
+      fictional "Albion" set aside beside the real one, a fictional "Holmes" standing alone; earlier, 3: the table decides "capital of Gaul" as the country,
       held without it; a crowded "Rome" narrowed to the country with no painting read; a table from another state not
       read). tests/worlds, tests/reasoning, tests/serve: 461 pass (the known red, 0002, as before).
   - **The dump date corrected in place** (Nick, 2026-11-10): both copies' manifests (the NVMe store and the build
@@ -468,12 +492,14 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
   - **The 1 ms line.** A fact from SSD is 1.5 ms p95 on this NVMe. Work on the store's reads (the node pages of one
     entity read together, or small nodes inline), a faster disk, or the line moved to what the walk needs (a hop is
     one entity read; the 50-question preflight would say whether 1.5 ms matters next to the rest of an answer)?
-  - **Option (a)'s audit, to read** (Cowork): `validation/logs/audit_wd_kinds_2026-11-10.md`, 50 hops and the fixed
-    checks. At most 1 wrong pick in 50 turns ``CB_WD_KINDS=1`` on with the store. Two things for that reading:
-    fictional items (a "Star Trek location" named France) compete for real relations in the full store; should a
-    fictional class (P31 of a fictional-entity class) be set aside the way Wikimedia pages are? And without a cue
-    table, "What Nobel Prize did Marie Curie win?" answers her whole award list: build the store's cue table
-    (0037's `hdc_cues`, over the store's values) next?
+  - **Option (a)'s audit, to read** (Cowork): `validation/logs/audit_wd_kinds_2026-11-10-cues.md` (with the cue table
+    and the fictional set-aside; the first run, without them, `audit_wd_kinds_2026-11-10.md`). At most 1 wrong pick in
+    50 and 0 in the probe turns ``CB_WD_KINDS=1`` on with the store. For that reading: (1) a cue word rules out little
+    in the full store ("nobel" goes with 341 kinds): keep 0037's "any member" rule, or a share threshold for the
+    store's cues? (2) a question on a fictional relation ("from narrative universe", "present in work") on a name a
+    real item shares now asks back: keep the fictional items in for those relations? (3) "What Nobel Prize did Marie
+    Curie win?" lists every award: narrowing an answer's values to the question's class words is the loop's phrasing
+    (`ask_namesake_answer`), not the store's.
   - **The cold tier:** the scholarly articles' cold set in the store's own format, read in-process from the hard
     drive (16.6 ms p95), instead of the full Wikidata in HDT. Keep it, or build the HDT as well?
 
