@@ -1,0 +1,12 @@
+{
+ "entities": 100000,
+ "statements": 1226463,
+ "same": 100000,
+ "different": 0,
+ "missing_from_store": 0,
+ "first_differences": [],
+ "first_missing": [],
+ "parser": "rdflib 7.6.0",
+ "what": "order 0055 acceptance: entities round-trip with 0 differences against a second, independent parser. Store: wdstore 3589c23 (cubelang-cowork, branch cowork/wd-store), built from the 1% sample's segment 0 of the WikiKGQA 2026 dump (shard 0; 200,388 entities, 0 failed). Second parser: rdflib's Turtle reader, literal normalization off, under the dump's own prefixes. The first 100,000 entities of the segment, compared field by field: revision, timestamp, datatype, EN/FR/mul names, enwiki/frwiki titles, every statement (id, property, rank, best rank, main value and its value node, hot and cold qualifiers and their value nodes, references). validation/fact_store/roundtrip_check.py.",
+ "found_and_fixed_on_the_way": "Q212222: a statement whose reference the dump writes three times; RDF reads it once, the store kept three. Fixed in the store (each triple once)."
+}

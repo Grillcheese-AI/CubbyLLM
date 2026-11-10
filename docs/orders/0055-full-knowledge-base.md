@@ -260,7 +260,18 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
     64 MB of text (each file's length, the bzip2 block the text resumes from), never by the clock. On the dump's last
     part, a build stopped after 8 checkpoints and run again gives the same 72 files, byte for byte, as one never
     stopped; 87 s, so about 2.7 h and about 135 GB written for the whole dump (hot, cold, nodes, indexes, logs).
-    The full run waits for Nick's yes (hours on his PC; where it reads the parts from and writes to).
+    Nick's yes (2026-11-10): parts copied to a local data disk, built there, hot files to the system NVMe,
+    scholarly articles cold. The full run follows the copy.
+  - **Acceptance, the second parser: 100,000 entities, 0 differences** (`validation/fact_store/roundtrip_check.py`;
+    `validation/logs/wdstore_roundtrip_rdflib_2026-11-10.json`). rdflib's Turtle reader (shares no code with the
+    store's), literal normalization off, against `wdstore dump`, field by field, on the first 100,000 entities of
+    the sample's segment 0: 1,226,463 statements. Found on the way, on the first 2,000: Q212222's statement lists
+    the same reference three times in the dump's Turtle; RDF reads it once, the store kept three; the store now
+    keeps each triple once (3589c23).
+  - **The snapshot addendum's store side** (36dc8e1, local): `wdstore snapshot` (the base's content hash, the
+    change log's length and head, one hash over them; `--at N` pins), a chained change log (each line carries the
+    previous line's hash), a read against an unheld snapshot fails with `snapshot_not_held`; the manifest names the
+    dump as a release and carries its date. Its four tests pass.
 - **Questions:**
   - **The hot store's size line.** By real use, 1,000 properties cover 97.5% of the logged queries but hold 86% of
     the statements, because the scholarly properties rank high enough by use (P2860 at 41, P2093 at 148) to get in.
