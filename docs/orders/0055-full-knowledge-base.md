@@ -700,3 +700,40 @@ below is in the change log, which starts with the first overlay change.
 - **Every answer in 0054's replay** names one snapshot hash and one as-of date: 0 runs without both.
 - **Replay:** 100 answers run again against their recorded snapshot and as-of date give the same answer and the same
   report hash.
+
+## Cowork's reading of option (a)'s audit (2026-11-10)
+Read by hand: `validation/logs/audit_wd_kinds_2026-11-10.md`, the five fixed checks and the 50 hops.
+
+**Verdict: 1 wrong pick in 50. The line (at most 1) is met, so `CB_WD_KINDS=1` goes on with the store.**
+
+| Outcome | Count | Cowork's reading |
+|---|---:|---|
+| one item picked | 5 | 4 right (hops 3, 11, 25, 27), 1 wrong (hop 42) |
+| each item labelled | 17 | no pick made; nothing wrong found |
+| asked back | 24 | right by the strict rule; 1 where a person would find it obvious (hop 29, Giuseppe Garibaldi) |
+| nothing read | 4 | no pick made |
+
+- **The wrong pick, hop 42** ("different from" of Thespis): the opera was chosen because it alone carries that
+  statement. "Different from" says nothing about what kind of thing is meant, so a person could as well mean the
+  poet. The reply did name the other items, which limits the harm.
+- **The fixed checks:** no wrong pick. Two defects, both already raised in the report's questions:
+  - France and Italy: a "Star Trek location" is labelled beside the country;
+  - Marie Curie: the right person, but the whole award list for a question about the Nobel Prize. A benchmark
+    would score that answer wrong.
+
+**Proposed changes (each waits for Nick's yes; none is needed for the flag to go on):**
+1. **Properties that fit anything never decide a pick.** "Different from", "said to be the same as", the topic's
+   main category, the Commons category and "described by source" do not make an item fit by themselves. With only
+   such a property to go on, the rule asks back or labels each item.
+2. **Fictional items step aside when a real item fits.** An item whose class is a kind of fictional entity is not
+   labelled beside a real one for the same relation. It stays in the "if you meant something else" line and is
+   read when the asker chooses it, or when no real item fits.
+3. **The store's cue table next** (0037's `hdc_cues`, over the store's values), before 0054's rerun, so "which
+   Nobel Prize" answers the Nobel Prizes and not every award.
+4. **One answer when every item agrees.** When every fitting item gives the same value, say it once and list the
+   items in the certificate (hop 8: four Calhoun Townships, all in the United States; the given name of every
+   Andrew Blake). No pick is made, so no pick can be wrong.
+
+**Tests for the four, when approved:** hop 42 asks back or labels; "capital of France" answers Paris once and names
+the fictional item only in the closing line; the Marie Curie check answers her two Nobel Prizes; hop 8 answers
+"United States" once. The 50 hops are run again and the count of wrong picks must not rise.
