@@ -1,7 +1,8 @@
 """serve_get -- every GET route of the stand-in server (split out of serve_api.py, order 0030): the board, the
 audit chain, the pac maze, /health /state /worlds, the dashboards, the loop's events and stream.
 `handle_get(h, brain)` runs on the request handler `h` (its `_send`, `_raw`, `_page`, `_who`). The brand mark
-(`dashboard/brand/`, Nick's logos, 2026-11-10) is served at /brand/<file> and /favicon.ico, to every audience.
+(`dashboard/brand/`, Nick's logos, 2026-11-10) is served at /brand/<file> and /favicon.ico, to every audience. Pages
+use the 4x PNGs: the `_1` SVGs are traced from a bitmap and show hairline cracks at header size.
 
 Wired: WIRED (cubby_serve.api's handler).
 """
