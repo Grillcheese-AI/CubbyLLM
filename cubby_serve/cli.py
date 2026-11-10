@@ -164,9 +164,16 @@ def boot(args, ap: argparse.ArgumentParser):
         print(f"mounting the ask loop (source {args.ask}, lexicon on, news {'on' if args.news else 'off'}) ...", flush=True)
         web = build_web(args) if args.web != "off" else None
         world = brain.worlds["wiki"]
-        if "hdc" in args.world:                          # the stores first: the wiki world, then the hdc world (order 0014)
-            from cubbyllm.worlds.hdc_store import HdcWorld, Stores
-            world = Stores(world, HdcWorld())
+        others = []                                      # the stores: the wiki world, then the read-only worlds in order
+        if os.environ.get("CB_WD_STORE") == "1":         # order 0055 step 3: the full Wikidata store, ahead of Wikidata5M
+            from cubby_serve.wd_world import build as build_wd
+            others.append(build_wd(lambda m: print(m, flush=True)))
+        if "hdc" in args.world:                          # the hdc world (order 0014)
+            from cubbyllm.worlds.hdc_store import HdcWorld
+            others.append(HdcWorld())
+        if others:
+            from cubbyllm.worlds.hdc_store import Stores
+            world = Stores(world, *others)
         source = args.ask
         if source == "wikidata":                        # online: the server hands the source its fetch (order 0031)
             from cubbyllm.sources.wikidata import WikidataSource

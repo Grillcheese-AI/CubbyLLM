@@ -142,9 +142,11 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
 <!-- Claude Code fills this in, then sets status: review -->
 - **Where it stands (2026-11-10):** steps 0-2 built and measured: the full hot store (73.2M entities, 758.6M
   statements, 77.2 GB) on the system NVMe, the scholarly articles' cold set (45.4M entities, 972.4M statements,
-  47.0 GB) on the hard drive, checked clean, read by the board's Knowledge section. Step 3 is designed, not wired
-  (`CB_WD_STORE`); step 4 (0054 with the flag on) waits for it. One line is missed: a fact lookup from SSD is 1.5 ms
-  p95, the line 1 ms (below). Status stays `in progress` until steps 3-4.
+  47.0 GB) on the hard drive, checked clean, read by the board's Knowledge section. Step 3 is wired behind
+  `CB_WD_STORE=1` (below): the store is a world ahead of Wikidata5M. Step 4 (0054 with the flag on) is next, and is
+  where step 3's finding (full Wikidata shares most well-known names, so the strict namesake rule reads little by
+  name) gets its number. One line is missed: a fact lookup from SSD is 1.5 ms p95, the line 1 ms (below). Status
+  stays `in progress` until step 4.
 - **Commits:**
   - CubbyLLM: b440256, 9fbc251, 4aeb97b, c8f1bda, a6ffd4b, 1df13c7 (wrong, see below), a4e85c3, 87a40ea, f2775a4,
     f3c3771, d91763f, a259fdb, ecd2bc4, 0936d0f, bacab67, 80b4641, 68d9abf, 1ca2c61, d66cd0c; the board's Knowledge
@@ -251,6 +253,44 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
     by role (643 in queries, 899 in mentions, 989,208 in answers): **0 missing**; 141 answer ids in the cold set;
     **5 mentions resolve only through a redirect** (Q6958747 -> Q268378, Q9200127 -> Q8191099, Q20937557 -> Q133250,
     Q97453439 -> Q21096945, Q103239474 -> Q52946), each followed by the store and said.
+  - **Step 3, wired (2026-11-10)** behind `CB_WD_STORE=1` (off: the server builds exactly the worlds it built before,
+    the same `Stores(wiki, hdc)`; the new code is never imported). `cubbyllm/worlds/wd_store_world.py` (the world: a
+    subclass of the Wikidata5M world `HdcWorld`, so its namesake rules (0033, 0036, 0037) and its hop are the same
+    code; only the reads differ), `cubbyllm/worlds/wd_store_values.py` (how a value is said), `cubby_serve/wd_world.py`
+    (its own `wdstore serve` pipe, the manifest's date and counts), `cubby_serve/cli.py` (the world goes ahead of
+    Wikidata5M in `Stores`). `cubbyllm/` opens no socket and starts no process: it is handed the pipe's `ask`.
+    - **Facts:** the truthy statements (best rank, never deprecated) of the 2,877 properties whose values can be said
+      (item 1,717, quantity 679, string 348, time 69, monolingual text 64; 9,886 external ids and the rest left out),
+      said exactly: a date at its precision ("11 March 1952", "March 1952", "1952", "500 BC"; a Julian date its year
+      only; a decade or vaguer not said), a quantity with its unit's label ("1.96 metre"), English or `mul` text. An
+      ended statement is dropped only on a relation whose value changes (the time-sensitive list: spouse, employer,
+      position held, ...), which the loop says "as of 2025"; "educated at" stays true after the degree. Q42 picked:
+      67 facts, among them born 11 March 1952 in Cambridge, died 11 May 2001, educated at St John's College and
+      Brentwood School, 1.96 metre.
+    - **The store side** (wdstore ebb7a3d, b04b36a): `get` with `"nodes": true` gives the value nodes (a time's
+      precision and calendar, a quantity's unit), and `brief` a property's datatype; the world loads all 13,099
+      properties in about 0.5 s (2.6 s cold).
+    - **Names, as the Wikidata5M world matches them:** label tier, then alias tier; "the" + the name (the planner
+      drops the article); an accent or punctuation form kept only when the item's own name normalizes to the key;
+      never the store's typo path; a Wikimedia page (disambiguation, category, template, list) is never an item.
+    - **Found: full Wikidata shares most well-known names.** "Douglas Adams" is 10 people (and a disambiguation
+      page), "Ada Lovelace" 3 items, "Angela Merkel" 6, "Marie Curie" 17, "The Beatles" 20 under the label tier;
+      "Paris" is 248 items (24 paintings, 23 photographs, 10 albums, 7 US towns ...), "Canada" 50 and "Albert
+      Einstein" 28, all above the 25-item cap. Under the strict rule (carried over unchanged), such a name gives none of its
+      items' facts and the loop asks which one (or, above the cap, lists none); a name only one item has works
+      ("Justin Trudeau": 74 facts), as do a Q-id, the asker's choice and a qualifier. So by name alone the store
+      answers far less than its size suggests; step 4 measures how much, and the rule is a question below.
+    - Times on the full store: a name 10-300 ms (the first read of an item from disk is most of it), Q90 (Paris,
+      212 facts) 195 ms; before the Wikimedia-page filter and the cap, "Paris" took 31 s (every one of 248 items read).
+    - Tests: `tests/worlds/test_wd_store_world.py` (7, over a fake that speaks `wdstore serve`): values said exactly,
+      names by tier with the article, punctuation and never a typo, a shared name read only once chosen, a crowded name
+      read and listed none, an object's facts its subjects' own, the date and time-sensitive relations, the flag on
+      with no store stops the server. tests/worlds, tests/reasoning, tests/serve: 474 pass (the known red, 0002, as
+      before).
+  - **The dump date corrected in place** (Nick, 2026-11-10): both copies' manifests (the NVMe store and the build
+    folder) now say 2025-12-29T23:00:38Z; only that field changed (checked by a diff), the originals kept aside on
+    the data disk. The snapshot hash is the same (8a2041cff56d...): it covers the files' names and hashes only, not
+    the manifest's other fields, so this report's question was wrong to say it would change.
   - **The first reader:** the board's Knowledge section (audit view only: the store names its dataset) reads the full
     store through `wdstore serve`: an entity 341 ms with its labels (the board's own round trips), the 12,937,830
     entities with P31 = Q5 counted in 7 ms, a two-step path Q42 -> Q35 in 9 entity reads.
@@ -397,9 +437,13 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
   - **The 1 ms line.** A fact from SSD is 1.5 ms p95 on this NVMe. Work on the store's reads (the node pages of one
     entity read together, or small nodes inline), a faster disk, or the line moved to what the walk needs (a hop is
     one entity read; the 50-question preflight would say whether 1.5 ms matters next to the rest of an answer)?
-  - **This build's dump date.** Its manifest says 2025-12-31T06:44:46Z (the last shard's header); the dump's date is
-    2025-12-29T23:00:38Z. Correct the manifest in place (the store's snapshot hash then changes once, before anything
-    pins it), or leave it until the next build?
+  - **Choosing among a name's items in the full store.** Today: the asker, a qualifier, or a name only one item has.
+    Options, each needing an order or Nick's yes: (a) a kinds table built from the store's own classes (P31, P279),
+    so 0037's relation rule decides here as it does on Wikidata5M (the item whose kind carries the asked relation and
+    fits the question's cue words, no other's does); (b) read the name in Wikidata5M first and the store by the one
+    Q-id it gives (fresh values for the 2019 world's items), which is a notability filter, so a fame rule by another
+    name, against this order's own line; (c) leave it strict and let step 4 say what it costs. Claude Code's view:
+    (a), measured as 0037 was (an audit before it speaks).
   - **The cold tier:** the scholarly articles' cold set in the store's own format, read in-process from the hard
     drive (16.6 ms p95), instead of the full Wikidata in HDT. Keep it, or build the HDT as well?
 
@@ -467,6 +511,16 @@ Datalog engine. Licences are checked first.
 - **Check before relying on it:** its README marks some consistency rules as raising exceptions. Whether that means
   "reports a violation" or "fails" is checked and recorded. If the OWL layer adds nothing over DataFrog alone, the
   lighter one is kept.
+- **Borrow note (Nick, 2026-11-10): HornDB**, a Rust OWL 2 RL reasoner queried with SPARQL; an early prototype (6
+  stars). Two things may help the folding step; neither is a dependency:
+  - **A conformance suite:** it passes 100 of the 115 W3C OWL 2 RL test cases. The cases are W3C's own (the OWL 2
+    test suite), so whichever engine does the folding (`reasonable`, or DataFrog alone) is run on them, and its pass
+    count recorded beside HornDB's 100 / 115; a case it fails is listed, never hidden.
+  - **Its join method** (said to be fast): an idea to read only if the folding's measured time on the sample is the
+    problem. Its licence is checked before its code is read.
+  - **Not relied on:** "every inferred fact traces back to its premises" is listed as a design goal, and the page does
+    not say it works yet. Each derived fact keeps its own certificate here (above), whatever HornDB does.
+  - Nothing is built yet: the folding step has not started.
 
 ## Cowork's addendum (2026-11-06): time, change and merged items in the store
 Nick: "yes". These ideas come from three open-source systems with the same store design: Semantica (MIT), CocoIndex
