@@ -1,6 +1,6 @@
 """standin/board_api.py -- the control board's routes (order 0027): one static page and read-only JSON.
 
-``serve_api.py --board`` (default off: every ``/board`` path answers 404) mounts it:
+The server mounts it, on by default since 2026-11-10 (Nick); ``--no-board`` turns it off and every ``/board`` path answers 404:
 
     GET /board                     the page (``dashboard/board/index.html``)
     GET /board/static/<file>       its CSS and JS (``dashboard/board/``)
@@ -23,7 +23,7 @@ it asks as; it can never show what the server did not send.
 ``start_refresh(brain)`` (the server's ``--board``) rebuilds Home, System and the name list in a background thread, so
 no request pays for reading run logs on a synced drive; a request then reads the last build.
 
-Wired: WIRED (``serve_api.py``, behind ``--board``).
+Wired: WIRED (the server; on unless ``--no-board``).
 """
 from __future__ import annotations
 

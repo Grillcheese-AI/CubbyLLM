@@ -99,3 +99,11 @@ def test_search_entity_graph_who_path_resolve():
     assert board_store("/board/store/path", "from=Q3&to=Q9", "audit", f)["steps"] is None          # deprecated: not a step
     assert board_store("/board/store/resolve", "id=Q7", "audit", f) == {"id": "Q1"}
     assert "error" in board_store("/board/store/entity/nope", "", "audit", f)
+
+
+def test_the_board_is_on_by_default_and_no_board_turns_it_off():
+    from cubby_serve.cli import parser
+    ap = parser()
+    assert ap.parse_args([]).board is True                      # on by default (Nick, 2026-11-10)
+    assert ap.parse_args(["--no-board"]).board is False
+    assert ap.parse_args(["--board"]).board is True             # the old switch still parses

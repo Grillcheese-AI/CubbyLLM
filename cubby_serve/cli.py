@@ -87,9 +87,9 @@ def parser() -> argparse.ArgumentParser:
     ap.add_argument("--plugin-router", choices=["minilm", "nearest"], default="minilm",
                     help="which router wakes plugins (standin/plugins_route.py): 'minilm', the question encoder and a "
                          "logistic head per plugin (order 0028 review 2), or 'nearest', the nearest example line")
-    ap.add_argument("--board", action="store_true",
-                    help="serve the control board at /board (dashboard/board/, standin/board_api.py; order 0027); "
-                         "off, every /board path answers 404")
+    ap.add_argument("--board", action=argparse.BooleanOptionalAction, default=True,
+                    help="serve the control board at /board (dashboard/board/, cubby_serve/board/; order 0027), on by "
+                         "default (Nick, 2026-11-10); --no-board turns it off, and every /board path answers 404")
     ap.add_argument("--news-archive", default=os.environ.get("CUBBY_NEWS_ARCHIVE") or None,
                     help="poll the feed manifest's active feeds hourly into this archive folder (standin/news_archive.py, "
                          "order 0024; default CUBBY_NEWS_ARCHIVE; off when unset)")
