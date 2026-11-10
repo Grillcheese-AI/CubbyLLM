@@ -255,7 +255,12 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
     cold entities, 16.5M statements, 32,919 redirects resolved, 2 of 1,021,047 references undefined (written in the
     part before), `check` clean; 50.5 bytes a hot statement in the chunks, 82.0 with the nodes and indexes; p95 13.9
     us by id, 4.1 us by name; 135 s, so about 4.2 h for the dump. Projected hot store: about 75-80 GB, under the 90
-    GB line. Before the full run: resuming after a stop, and Nick's yes for a run of hours on his PC.
+    GB line.
+  - **The build resumes after a stop** (adce34a, local): every file append-only, a checkpoint every 32 batches of
+    64 MB of text (each file's length, the bzip2 block the text resumes from), never by the clock. On the dump's last
+    part, a build stopped after 8 checkpoints and run again gives the same 72 files, byte for byte, as one never
+    stopped; 87 s, so about 2.7 h and about 135 GB written for the whole dump (hot, cold, nodes, indexes, logs).
+    The full run waits for Nick's yes (hours on his PC; where it reads the parts from and writes to).
 - **Questions:**
   - **The hot store's size line.** By real use, 1,000 properties cover 97.5% of the logged queries but hold 86% of
     the statements, because the scholarly properties rank high enough by use (P2860 at 41, P2093 at 148) to get in.
