@@ -431,7 +431,8 @@ behind every derived fact, the way a second accountant re-adds the books.
   the reproducibility package.
 
 ## Cowork's addendum (2026-11-10): the store names its state, for CheezML v0.2
-Nick: "Carry it into the VM and store". CheezML v0.2 (0064's addendum) records, for every run that read a fact, the
+Nick: "Carry it into the VM and store", then "all good" on this addendum as written, acceptance lines included
+(2026-11-10). CheezML v0.2 (0064's addendum) records, for every run that read a fact, the
 store state it read (`cheez:storeSnapshot`) and the date the question was about (`cheez:asOf`). These are the store's
 two clocks seen from the answer: recorded time and valid time. The store has to give both.
 
@@ -460,7 +461,8 @@ below is in the change log, which starts with the first overlay change.
 - Every read takes the date the question is about, passed explicitly. The store never reads the clock itself.
 - A statement is returned as holding only when its valid time covers that date. "Dates too coarse" stays a refusal
   reason, counted apart (0054's as-of sets).
-- A question that names no date uses the time it was asked, and the record says so.
+- A question that names no date uses the time it was asked, and the record says so. On a store pinned to a recorded
+  date (the benchmarks, pinned to the dump), it uses that date, so a later run gives the same answer.
 
 ### 4. The releases behind the store
 - The manifest names the dump as a release: its name, its version (the dump's date and id) and its hash. 0064's
