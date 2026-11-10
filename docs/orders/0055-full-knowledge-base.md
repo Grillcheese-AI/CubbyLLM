@@ -240,6 +240,13 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
     with the scholarly articles cold, under the 90 GB line. Found on the way: the dump may write one value node's
     triples in two places (a quantity's amount and unit in one block, its `quantityNormalized` link in another;
     2,373 such nodes in the segment); format 1 kept one part only, format 2 merges them by hash.
+  - **The reverse index and the names** (07b0c80, then the names commit, local). Reverse: (property, value entity)
+    -> the entities that have it, in id order, each hit with its statement's rank (deprecated ones filtered by the
+    caller without reading entities). Names: labels and aliases (EN, FR, `mul`) under exact and accent-folded keys
+    in two FSTs, then a typo path (one edit from 5 characters, two from 9); candidates in id order, never by fame;
+    over 64 near keys it answers "too many", never a guess. Same segment: 80.2 bytes a statement with every file.
+    From memory: an entity by id p95 15.4 us, a name p95 5.8 us (the lines, 1 ms and 50 ms p95, are from SSD:
+    measured on the full build).
 - **Questions:**
   - **The hot store's size line.** By real use, 1,000 properties cover 97.5% of the logged queries but hold 86% of
     the statements, because the scholarly properties rank high enough by use (P2860 at 41, P2093 at 148) to get in.
