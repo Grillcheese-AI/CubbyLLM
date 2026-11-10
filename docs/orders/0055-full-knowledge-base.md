@@ -282,6 +282,23 @@ the shelf beside it, so the benchmarks show what the system can do, not what its
     change log's length and head, one hash over them; `--at N` pins), a chained change log (each line carries the
     previous line's hash), a read against an unheld snapshot fails with `snapshot_not_held`; the manifest names the
     dump as a release and carries its date. Its four tests pass.
+  - **Step 3's store side** (wdstore 269964a, 2ff5bf7, local): `wdstore serve` answers JSON requests on a pipe
+    (stdin, stdout; never a socket): snapshot, get (a redirect followed and said; with `as_of`, each statement's
+    holds / does_not / too_coarse / undated, from its start, end and point-in-time qualifiers with their precision
+    and calendar, Julian dates converted exactly; with a snapshot the store is not in, only `snapshot_not_held`),
+    name, who, pointing_at (every entity pointing at a value, whatever the property: a second key table over the
+    reverse index's postings), resolve, labels. The store never reads a clock.
+  - **Step 3's wiring, the plan** (from a read of the fact path): the walk resolves every hop through
+    `Stores.lookup` (`cubbyllm/worlds/hdc_store.py`), wiki world first, then the Wikidata5M world; live Wikidata
+    comes only after a refusal (`learn.py`). The store goes in as a read-only world ahead of Wikidata5M, built in
+    `cubby_serve/cli.py` behind `CB_WD_STORE=1` (off: today's answers unchanged, bit for bit), handed a query
+    function over `wdstore serve` the way the live source is handed its fetch function (`cubbyllm/` opens no
+    socket). The Wikidata5M world's namesake rules (0033) read five kinds of query (facts by subject name, by object
+    name, the ids a name stands for, an id's label, an object's members under a relation); they go behind one small
+    interface with two backends, today's SQLite one unchanged and the store's. Its `snapshot` (the dump's date) and
+    `time_sensitive` let the existing rule (`AskMemory._snapshot`, `source_wins`) keep live Wikidata winning on
+    time-sensitive facts. Names stay in id order; the live resolver's search keeps its own `limit: 5` (the API's
+    relevance order: a fame cut the store's path does not have; noted, not changed here).
 - **Questions:**
   - **The hot store's size line.** By real use, 1,000 properties cover 97.5% of the logged queries but hold 86% of
     the statements, because the scholarly properties rank high enough by use (P2860 at 41, P2093 at 148) to get in.
