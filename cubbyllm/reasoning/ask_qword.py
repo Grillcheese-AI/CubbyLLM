@@ -60,6 +60,23 @@ def store_item(loop, triple) -> str | None:
     return None
 
 
+def store_is_a(loop, item: str, cls: set) -> bool | None:
+    """`ask_class.is_a` read in the store that linked the value: the item's classes and one subclass-of step above
+    them (the same depth as the class check's own rule), from the dump, not from live Wikidata, which may have been
+    edited since ("city in the United States" is no longer a subclass of "city" there). None: no store holds it."""
+    for w in _stores(getattr(loop, "world", None)):
+        if w._entity(item)[0] is None and item not in w._p31:
+            continue
+        kinds = set(w._p31.get(item, set()))
+        up = set()
+        for k in kinds:
+            e = w.ask({"op": "get", "id": k}) or {}
+            up |= {s["value"]["entity"] for s in e.get("statements", []) if s.get("pid") == 279 and s.get("best")
+                   and s.get("rank") != 0 and isinstance(s.get("value"), dict) and "entity" in s["value"]}
+        return bool((kinds | up) & set(cls))
+    return None
+
+
 def kind_of(loop, fact: str, triple) -> set | None:
     """The kinds of the answer's value as the store reads them, or None (unknown)."""
     stores = _stores(getattr(loop, "world", None))

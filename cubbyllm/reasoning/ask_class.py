@@ -126,8 +126,9 @@ def check(loop, question: str, lr, rec: dict) -> bool:
         cw = (head, cw[1]) if cls else cw
     linked = ask_qword.store_item(loop, h.triple) if cls and ask_qword.on() else None    # the item the store
     items = [linked] if linked else value_items(loop, h.fact, value) if cls else []      # handed out (0066)
-    if not cls or not items or any(is_a(src, q, cls) for q in items):
-        return True
+    in_store = ask_qword.store_is_a(loop, linked, cls) if linked else None   # a store-linked value: its classes as
+    if not cls or not items or (in_store if in_store is not None else any(is_a(src, q, cls) for q in items)):
+        return True                     # that store's dump holds them (0066); else the live source, as before
     kinds = [src._labels_for([k]).get(k) for k in _ids(src._claims(items[0]), "P31")][:1]
     path = walk_up(loop, items[0], cls)
     if not walk_on():                   # what the walk would have done, for the nightly count (Cowork, 2026-10-31); never said

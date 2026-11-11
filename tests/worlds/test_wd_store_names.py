@@ -272,7 +272,9 @@ def test_an_unknown_value_given_as_a_plain_string_is_read_without_error(world, m
 
 
 def test_check_1b_reads_the_item_the_store_linked_not_a_label_search(world, monkeypatch):
-    class Missing(Src):                                       # the label search's first hits: a namesake, no city
+    class Missing(Src):                                       # the label search's first hits: a namesake, no city;
+        CL = {**Src.CL, "Q9104": {"P31": ["Q9031"]}}          # and live Wikidata, edited since the dump, disagrees
+
         def _get(self, params):
             if params.get("search") == "Lyon":
                 return {"search": [{"id": "Q9109", "label": "Lyon"}]}
@@ -285,5 +287,5 @@ def test_check_1b_reads_the_item_the_store_linked_not_a_label_search(world, monk
         lr = SimpleNamespace(result=SimpleNamespace(trace=[SimpleNamespace(fact=f, triple=t)]))
         return ask_class.check(SimpleNamespace(world=SimpleNamespace(others=[world]), source=Missing(), _everyday=None),
                                "In which Rhone city did he die?", lr, rec)
-    assert run(on=True)                                       # Q9104 is a city: passes through the store's link
+    assert run(on=True)                                       # Q9104 is a city in the store's dump: passes
     assert run(on=False)                                      # off: "rhone city" has no class, unchecked, as before
