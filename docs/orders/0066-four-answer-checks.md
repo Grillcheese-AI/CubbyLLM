@@ -263,3 +263,40 @@ read the kind asked.
   which no check here reads. It goes to the relation reader with the proposer's order.
 - **Status: open again, for three changes:** question 1's alternative, check 3's two tiers, and check 2's item
   carried to the live source. Then the flags-on run and the audit once more. The lines do not change.
+
+## Report, second run (Claude Code, 2026-11-11): Cowork's three changes
+- **Built** (`a1b55eb`): (1) check 2: only the works that point at another of the name's works step aside; the works
+  pointed at stand in the label tier; unrelated works and non-works stay; (2) check 3: the bare name's label and alias
+  tiers together; (3) when check 2 leaves a name one item (`decided`), the live source is asked about that item, never
+  the name (`WikidataSource.resolve`; `AskLoop` hands it every mounted store's decision). Tests: 11 in
+  `tests/worlds/test_wd_store_names.py`; the full suite passes but for the known red (order 0002).
+- **Measured** (`validation/logs/answer_checks_0066_2026-11-11-r2.json`; runs `run_0066_off3`, `run_0066_r2`; audit
+  `audit_wd_kinds_2026-11-11-0066r2`):
+  - **Flags off: every answer of all four benchmarks is the "after"'s** (verdict, reply, refusal), NQ included.
+  - **Wrong among spoken:** SimpleQA 0 of 6; NQ 2 of 13 (unchanged); WebQuestions **3 (+2 debatable) of 64**; AA 0.
+  - **Against the first checks-on run, three answers moved:** Constantine is now refused (both tiers gather
+    Constantine the Great; several emperors: asked, `name_unresolved`); Elvis Costello's closing line names the
+    painting and the lithograph again (question 1 as you ruled); **the Gospel according to John is said wrong again**
+    ("D. A. Carson").
+  - **Line 1: met** (Fayetteville "As of 2020"; nothing right turned wrong). **Line 3: met, 0 lost.** **Line 4: met,
+    0 wrong picks** (the single picks: Flashforward the technique, Chen the state, Pearl Jam the band, CBGB the film).
+  - **Line 2: 3 of 6, not met.** Refused: Dirty Dancing, Germany, Constantine. Said: the Gospel, Jana Gana Mana,
+    Auschwitz.
+- **Why the Gospel came back, and why change 3 does not reach Jana Gana Mana: the same cause.** Under the amended
+  check 2, a name keeps several items once only the pointing works leave:
+  - "gospel according to john": the Gospel and three unrelated articles (the commentary and its edition step aside).
+    The store asks rather than answer, and the walk goes on to the Wikidata5M world, which holds the name for the
+    commentary alone (Q7737359, the same id) and answers "D. A. Carson". In the first run the store stood for the
+    Gospel and the walk stopped there (`ambiguous_hop`).
+  - "jana gana mana": the anthem, three films and a radio performance (the sheet music and an article step aside).
+    Nothing is decided, so the live source is asked by name, and its own namesake rule picks the sheet music
+    (Herbert Murrill), the item the store set aside.
+- **A proposal, built and measured apart** (`CB_ORIGINAL_ASIDE=1`, off by default; `run_0066_aside`, WebQuestions;
+  `answer_checks_0066_2026-11-11-aside.json`): the live source's candidates for a name drop the works the store set
+  aside for it. Jana Gana Mana is refused (`fact_missing`); nothing else changes. WebQuestions 2 (+2) of 63; **line 2
+  then 4 of 6.** Applied to the other worlds too (Wikidata5M uses the same ids), it would also refuse the Gospel;
+  not built.
+- **Questions:** (1) Keep `CB_ORIGINAL_ASIDE` as part of check 2? (2) Extend it to the read-only worlds below the
+  store, so a name the store holds is never answered by a lower world with an item the store set aside? (3) Or,
+  wider: when the store asks about a name, no lower world answers that name by itself (the Gospel's case, whatever
+  was set aside).

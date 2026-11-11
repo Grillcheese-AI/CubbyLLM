@@ -1,0 +1,92 @@
+{
+ "what": "order 0066: arm C as the 'after' ran it, with the four checks on (CB_QWORD_KIND, CB_ORIGINAL_FIRST, CB_ALIAS_OPEN, CB_VALUE_DATE); every changed answer read by hand; for Cowork to check",
+ "date": "2026-11-11",
+ "commit": "a1b55eb",
+ "run": "run_0066_aside",
+ "roots_table": "Cowork's 13 ids (7f5541d)",
+ "programs": "the first round's 9,508 + the second round's 2 (A100, equal on an L4)",
+ "benches": {
+  "webq": {
+   "after": {
+    "spoken": 65,
+    "wrong": 4,
+    "debatable": 2,
+    "unread": 0,
+    "wrong_rate": 0.0615,
+    "wrong_rate_95": [
+     0.0242,
+     0.1478
+    ],
+    "wall_s": 366.2,
+    "wall_p50": 0.1
+   },
+   "checks_on": {
+    "spoken": 63,
+    "wrong": 2,
+    "debatable": 2,
+    "unread": 0,
+    "wrong_rate": 0.0317,
+    "wrong_rate_95": [
+     0.0087,
+     0.1086
+    ],
+    "wall_s": 240.2,
+    "wall_p50": 0.09
+   },
+   "checks_records": {
+    "kind_unknown:where:spoken": 1
+   }
+  }
+ },
+ "changed": [
+  {
+   "bench": "webq",
+   "question": "who wrote the jana gana mana?",
+   "golds": [
+    "Ram Singh Thakur",
+    "Rabindranath Tagore"
+   ],
+   "after": {
+    "verdict": "unmatched",
+    "said": "Herbert Murrill",
+    "refusal": null,
+    "read": "wrong"
+   },
+   "now": {
+    "verdict": "refused",
+    "said": null,
+    "refusal": "fact_missing",
+    "reason": "retrieval_exhausted",
+    "checks": null,
+    "trace": []
+   },
+   "read": "refused",
+   "check": "proposal CB_ORIGINAL_ASIDE",
+   "why": "the live source's candidates lose the sheet music the store set aside; fact_missing"
+  },
+  {
+   "bench": "webq",
+   "question": "where did emperor constantine die?",
+   "golds": [
+    "Constantinople"
+   ],
+   "after": {
+    "verdict": "unmatched",
+    "said": "Aquileia",
+    "refusal": null,
+    "read": "wrong"
+   },
+   "now": {
+    "verdict": "refused",
+    "said": null,
+    "refusal": "name_unresolved",
+    "reason": "ambiguous_entity",
+    "checks": null,
+    "trace": []
+   },
+   "read": "refused",
+   "check": "check 3",
+   "why": "both tiers of the bare name: Constantine the Great joins; several emperors, asked (name_unresolved)"
+  }
+ ]
+}
