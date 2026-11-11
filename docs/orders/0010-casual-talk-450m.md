@@ -595,3 +595,38 @@ Logs: `validation/logs/talk_ab_2026-11-11_{voice,control,sheet,key}.json`, `_run
   `3e5cdb0aab9156fc...`.
 - **For `talk_v3b`, against the plan above:** greetings stay bare, as the rows have them. Added: greetings by
   the time of day; the four question shapes above, with the record as the block once the host sends it.
+
+### The blind A/B, judged (Nick, 2026-11-11): 23 of 36. The line was 24. Not met.
+- **What was judged:** the 35 pairs of the third run's sheet, on the page, after the page changed (the ids picked
+  are that sheet's). His choices, with the key's hash: `validation/logs/talk_ab_2026-11-11c_choices.json`.
+- **The count:** the voice chosen as more casual on **23**; the control on 8; "about the same" on 4; and the 1
+  identical pair. That is 23 of 36, one short of the line. A coin flip reaches 23 of 36 6.6% of the time.
+- **`talk_v3a` does not pass.** It stays off the served talk seat. The gates E6 to E9 stand as read.
+- **Read after the fact. None of these is a line:**
+
+  | turns | pairs | voice | control | same |
+  |---|---|---|---|---|
+  | chat | 26 | 19 | 6 | 1 |
+  | fact (lists, one fact) | 9, and the identical pair | 4 | 2 | 3, and the identical pair |
+  | English | 26, and the identical pair | 14 | 8 | 4, and the identical pair |
+  | French | 9 | 9 | 0 | 0 |
+
+  - By kind, for the voice: about Cubby 6 of 6; a thanks or a goodbye 4 of 5; what Cubby can do 4 of 6; a joke 3
+    of 5; a hello 2 of 4; a list 3 of 8 and the identical pair; one fact 1 of 1.
+  - The French count says little about the voice: the control's French replies are broken.
+- **Where the 13 went:**
+  - **6 on lists** (2 to the control, 3 the same, 1 identical). The two adapters write nearly the same sentence
+    there (finding 3). In one the voice says a name three times. In one it garbles a member's name, and the guard
+    lets a lower-case word through, as noted.
+  - **2 where the voice fell back to the base's stock talk** on a turn the host sends bare: "good morning!" (the
+    same) and "how can you help me?" (the control).
+  - **1 where a list lost to a sentence:** "what can you do?" The voice gives the record's four lines; the control
+    gives one.
+  - **2 jokes that do not land.** One says the same thing twice.
+  - **2 where the control's stock line, warm and with emoji, was preferred to the voice's own line** ("hey Cubby,
+    I'm Maya"; "thanks, that helped a lot"). The voice's rows have no emoji.
+- **Next: `talk_v3b`, then the same test again.** New turns, since Nick has read these 60; the same rule; the line
+  set before he reads. Added to the plan above:
+  - what Cubby can do is said in a sentence, and as a list only when a list is asked for;
+  - the jokes wait for Nick's open calls on the templates and the rate;
+  - whether the voice may use emoji is Nick's call.

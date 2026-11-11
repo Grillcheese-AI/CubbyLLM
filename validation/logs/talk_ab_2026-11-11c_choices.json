@@ -1,0 +1,274 @@
+{
+ "what": "order 0010, the blind A/B (voice talk_v3a against control talk_v2_2_cont, both Cubby): Nick's choices on the third run's sheet, counted against the key",
+ "tag": "talk_ab_2026-11-11c",
+ "key_sha256": "3e5cdb0aab9156fcc22b1582cfeee6488990f1258090245076c58bf81c4e59f3",
+ "judge": "Nick",
+ "judged_utc": {
+  "first": "2026-11-11T20:34:10Z",
+  "last": "2026-11-11T20:42:33Z"
+ },
+ "question": "which reply is the more casual one, or are they about the same",
+ "line": {
+  "of": 36,
+  "voice_at_least": 24,
+  "set": "before any reply was read; 'the same' and an identical pair count against the voice"
+ },
+ "count": {
+  "pairs_judged": 35,
+  "voice": 23,
+  "control": 8,
+  "same": 4,
+  "identical_not_shown": 1,
+  "of": 36
+ },
+ "met": false,
+ "coin_flip_reaches_this": 0.0662,
+ "note": "ab25 was picked twice; the last pick counts",
+ "pairs": [
+  {
+   "id": "ab00",
+   "kind": "hello",
+   "lang": "en",
+   "pick": "a",
+   "chosen": "voice"
+  },
+  {
+   "id": "ab01",
+   "kind": "hello",
+   "lang": "en",
+   "pick": "b",
+   "chosen": "control"
+  },
+  {
+   "id": "ab02",
+   "kind": "hello",
+   "lang": "en",
+   "pick": "same",
+   "chosen": "same"
+  },
+  {
+   "id": "ab04",
+   "kind": "hello",
+   "lang": "fr",
+   "pick": "a",
+   "chosen": "voice"
+  },
+  {
+   "id": "ab06",
+   "kind": "thanks",
+   "lang": "en",
+   "pick": "b",
+   "chosen": "control"
+  },
+  {
+   "id": "ab07",
+   "kind": "thanks",
+   "lang": "en",
+   "pick": "a",
+   "chosen": "voice"
+  },
+  {
+   "id": "ab08",
+   "kind": "thanks",
+   "lang": "en",
+   "pick": "b",
+   "chosen": "voice"
+  },
+  {
+   "id": "ab10",
+   "kind": "thanks",
+   "lang": "fr",
+   "pick": "b",
+   "chosen": "voice"
+  },
+  {
+   "id": "ab11",
+   "kind": "thanks",
+   "lang": "fr",
+   "pick": "a",
+   "chosen": "voice"
+  },
+  {
+   "id": "ab12",
+   "kind": "who",
+   "lang": "en",
+   "pick": "b",
+   "chosen": "voice"
+  },
+  {
+   "id": "ab13",
+   "kind": "who",
+   "lang": "en",
+   "pick": "a",
+   "chosen": "voice"
+  },
+  {
+   "id": "ab14",
+   "kind": "who",
+   "lang": "en",
+   "pick": "a",
+   "chosen": "voice"
+  },
+  {
+   "id": "ab15",
+   "kind": "who",
+   "lang": "en",
+   "pick": "b",
+   "chosen": "voice"
+  },
+  {
+   "id": "ab16",
+   "kind": "who",
+   "lang": "fr",
+   "pick": "b",
+   "chosen": "voice"
+  },
+  {
+   "id": "ab17",
+   "kind": "who",
+   "lang": "fr",
+   "pick": "b",
+   "chosen": "voice"
+  },
+  {
+   "id": "ab18",
+   "kind": "can_do",
+   "lang": "en",
+   "pick": "b",
+   "chosen": "control"
+  },
+  {
+   "id": "ab19",
+   "kind": "can_do",
+   "lang": "en",
+   "pick": "a",
+   "chosen": "control"
+  },
+  {
+   "id": "ab20",
+   "kind": "can_do",
+   "lang": "en",
+   "pick": "a",
+   "chosen": "voice"
+  },
+  {
+   "id": "ab21",
+   "kind": "can_do",
+   "lang": "en",
+   "pick": "a",
+   "chosen": "voice"
+  },
+  {
+   "id": "ab22",
+   "kind": "can_do",
+   "lang": "en",
+   "pick": "a",
+   "chosen": "voice"
+  },
+  {
+   "id": "ab23",
+   "kind": "can_do",
+   "lang": "fr",
+   "pick": "b",
+   "chosen": "voice"
+  },
+  {
+   "id": "ab24",
+   "kind": "joke",
+   "lang": "en",
+   "pick": "a",
+   "chosen": "voice"
+  },
+  {
+   "id": "ab25",
+   "kind": "joke",
+   "lang": "en",
+   "pick": "b",
+   "chosen": "control"
+  },
+  {
+   "id": "ab26",
+   "kind": "joke",
+   "lang": "en",
+   "pick": "b",
+   "chosen": "voice"
+  },
+  {
+   "id": "ab28",
+   "kind": "joke",
+   "lang": "en",
+   "pick": "b",
+   "chosen": "control"
+  },
+  {
+   "id": "ab29",
+   "kind": "joke",
+   "lang": "fr",
+   "pick": "b",
+   "chosen": "voice"
+  },
+  {
+   "id": "ab39",
+   "kind": "list",
+   "lang": "en",
+   "pick": "a",
+   "chosen": "control"
+  },
+  {
+   "id": "ab40",
+   "kind": "list",
+   "lang": "en",
+   "pick": "same",
+   "chosen": "same"
+  },
+  {
+   "id": "ab41",
+   "kind": "list",
+   "lang": "en",
+   "pick": "a",
+   "chosen": "voice"
+  },
+  {
+   "id": "ab43",
+   "kind": "list",
+   "lang": "en",
+   "pick": "same",
+   "chosen": "same"
+  },
+  {
+   "id": "ab44",
+   "kind": "list",
+   "lang": "en",
+   "pick": "a",
+   "chosen": "control"
+  },
+  {
+   "id": "ab45",
+   "kind": "list",
+   "lang": "en",
+   "pick": "same",
+   "chosen": "same"
+  },
+  {
+   "id": "ab46",
+   "kind": "list",
+   "lang": "en",
+   "pick": "a",
+   "chosen": "voice"
+  },
+  {
+   "id": "ab47",
+   "kind": "one_fact",
+   "lang": "fr",
+   "pick": "b",
+   "chosen": "voice"
+  },
+  {
+   "id": "ab51",
+   "kind": "list",
+   "lang": "fr",
+   "pick": "a",
+   "chosen": "voice"
+  }
+ ]
+}
