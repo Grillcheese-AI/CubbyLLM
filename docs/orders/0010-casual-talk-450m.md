@@ -951,3 +951,20 @@ not used; its recipe is worth borrowing. Not downloaded.**
     read what a task holds. If tasks with a checkable answer are there: 200 of them, the program seat proposes,
     the VM runs, and three numbers are reported: can be written, runs, right. The trial also lists what
     CubeLang lacked.
+
+- **Corrected the same day, on Nick's word: the second limit above is false.** I wrote that only straight-line
+  programs can be counted on. I had it from the to-do page's VM list, which was written from cubelang's
+  markdown files, and those are not current. Checked against the release binary instead:
+  - 13 of the 14 programs in cubelang's `examples` run: a `while` loop (Fibonacci, 55), a real `for` over an
+    array (60), a call with recursion and an early return (factorial, 120), `match`.
+  - A program of mine with a loop, a two-argument call, an early return and a `for` (a greatest common divisor
+    by subtraction, then a sum) runs and returns 18, as it should.
+  - The one example that does not run is kept as a failing fixture, and its message is a rule of wording, not
+    a missing feature: an operand or an argument is a literal or a register, so a compound expression is
+    computed into a register first. The other rule the examples state: inside a called function the
+    arguments arrive as `arg0`, `arg1`.
+- **What it changes for Nick's idea:** tasks that need loops and calls can be written. So the code stream
+  (programming problems) is a candidate beside the math stream, wherever the answer can be checked and no file
+  is needed. The first limit stands: the rows hold sessions, and the answers are in the sets they came from.
+- **For the trial:** the program seat's rows must follow the two rules of wording above, or the VM refuses the
+  program at compile time.
