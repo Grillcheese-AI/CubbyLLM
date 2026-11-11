@@ -290,3 +290,15 @@ fact in them is a line of the block. Every sentence around it is a picked templa
 - **Grounding held:** on the H-E6 battery, the voice arm's spoken-and-correct is at least the control arm's minus
   0.02, with the host reading replies through the opener view for both.
 - **Reported, not a gate:** held answer loss per family; the share of fact replies in the one-sentence form.
+
+### Nick's call (2026-11-11): the run goes on Colab, not on a rented card
+"if its that fast, might as well do it in colab".
+- **The notebook:** `notebooks/talk_sft.ipynb` (builder `_build_talk.py`) now runs the two arms on `base450m_cont`,
+  one after the other, and its last cell releases the GPU. A finished arm leaves a `DONE` file beside its adapter
+  and is not run again, so a session that ends early is simply run again.
+- **On Drive:** the notebook as `cubbyllm/notebooks/talk_v3a.ipynb`, and `cubbyllm/talk/talk_v3a.jsonl` beside
+  `talk_v2_2.jsonl` (the same file as here, checked by sha256). The base and the tokenizer were already there.
+- **What this drops:** the token, the upload of the base to another service, the rented card. The runner for a
+  rented card (`validation/pod/talk_pod.py`) stays, tested on a CPU, for a run that does not fit Colab.
+- **Cost:** Colab's compute units. Google publishes no rate table; third-party readings for an A100 in 2026 run
+  from 5.4 to 15 units an hour, so about 6 to 18 units for the 70 minutes. The session's own panel shows the rate.
