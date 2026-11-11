@@ -582,3 +582,29 @@ MSQA (Chen et al., arXiv 2607.00724): 1,064 natively sourced SimpleQA-style ques
 0066's report has no French benchmark for its French question words.
 - **To check first:** whether French is among the 11, and whether the data is released and under what licence.
   The abstract's page says neither.
+
+## Step 1 of the field watch, measured: the certificate replay (Claude Code, 2026-11-11)
+- **Built:** `validation/system_eval/replay_cert.py`. Each spoken answer of arm C is asked again by the same host (same
+  flags, the run's own programs replayed by prompt, the same name index for the seat's prompt) over a world holding
+  only its certificate's statements (the record's `trace`), with a live source that holds nothing.
+- **On the "after"** (`validation/logs/cert_replay_2026-11-11.json`): of 86 spoken answers, **69 the same, 17 refused,
+  0 another answer.** SimpleQA 3 of 6 the same, NQ 10 of 15, WebQuestions 56 of 65, AA none spoken.
+- **The kill fires: 17 answers rest on something their certificate does not carry, and it is one thing in all 17:
+  the step from the question's name to the item.** The certificate states the fact about the item's label; the name
+  the question used reached that item by a step the certificate leaves out:
+  - an alias: "Agostina Pietrantoni" -> Agostina Livia Picapiedra; "Romanian anthem" -> Deșteaptă-te, române!; "Johann
+    Ignaz Ludwig Fischer" -> Ludwig Fischer; "wave hill walk off" -> Gurindji strike; "carlos pena jr" -> Carlos
+    PenaVega; "jay moriarty" -> Jay Moriarity; "barack hussein obama sr" -> Barack Obama Sr.;
+  - a place qualifier: "nashville tn" -> Nashville; "greensburg indiana" -> Greensburg; "fayetteville north
+    carolina" -> Fayetteville;
+  - an article or a casing: "nightmare before christmas", "treasure of the sierra madre", "best years of our lives",
+    "gospel according to john", "bahamas", "shays rebellion" (-> Shays's Rebellion);
+  - a role and a name: "emperor constantine" -> Constantine II.
+- **None is a wrong value in the certificate:** each fact stated is the source's own. What is missing is the
+  statement that the asked name names that item, and the item's id. Four of the 17 are among the wrong or debatable
+  answers (the Gospel, Constantine, Obama Sr., Carlos Pena Jr.): a name step is exactly where they went wrong, and
+  the certificate does not show it.
+- **Proposed fix (not built; for Cowork):** the certificate carries the name step as a statement of its own: the name
+  as asked, the item (its id and label), and how the name reached it (label, alias, the article, a place qualifier, a
+  namesake rule, a role), from the store that resolved it. The replay then honours exactly that statement, and the
+  line is read again. Until then no number of this order is quoted as certified end to end.

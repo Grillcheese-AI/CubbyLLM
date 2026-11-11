@@ -1,0 +1,304 @@
+{
+ "what": "order 0054, field-watch step 1: each spoken answer asked again over its certificate alone",
+ "run": "run_0055_after",
+ "flags": {
+  "CB_ANSWER_CLASS": "1",
+  "CB_WD_KINDS": "1",
+  "CB_RECORD_UNCERTIFIED": "1"
+ },
+ "benches": {
+  "simpleqa": {
+   "spoken": 6,
+   "refused": 3,
+   "same": 3
+  },
+  "nq": {
+   "spoken": 15,
+   "same": 10,
+   "refused": 5
+  },
+  "webq": {
+   "spoken": 65,
+   "same": 56,
+   "refused": 9
+  },
+  "aa": {
+   "spoken": 0
+  }
+ },
+ "not_same": [
+  {
+   "bench": "simpleqa",
+   "id": "simpleqa:2091",
+   "question": "Where was Agostina Pietrantoni born?",
+   "outcome": "refused",
+   "answer": "Pozzaglia Sabina",
+   "verdict": "right",
+   "trace": [
+    "Pozzaglia Sabina is the place of birth of Agostina Livia Picapiedra"
+   ],
+   "again": {
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "trace": []
+   }
+  },
+  {
+   "bench": "simpleqa",
+   "id": "simpleqa:4073",
+   "question": "Who wrote the music for the Romanian anthem?",
+   "outcome": "refused",
+   "answer": "Anton Pann",
+   "verdict": "right",
+   "trace": [
+    "Anton Pann is the composer of Deșteaptă-te, române!"
+   ],
+   "again": {
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "trace": []
+   }
+  },
+  {
+   "bench": "simpleqa",
+   "id": "simpleqa:4155",
+   "question": "Where did Johann Ignaz Ludwig Fischer die?",
+   "outcome": "refused",
+   "answer": "Berlin",
+   "verdict": "right",
+   "trace": [
+    "Berlin is the place of death of Ludwig Fischer"
+   ],
+   "again": {
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "trace": []
+   }
+  },
+  {
+   "bench": "nq",
+   "id": "nq:1120",
+   "question": "who is the director of nightmare before christmas",
+   "outcome": "refused",
+   "answer": "Henry Selick",
+   "verdict": "right",
+   "trace": [
+    "Henry Selick is the director of The Nightmare Before Christmas"
+   ],
+   "again": {
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "trace": []
+   }
+  },
+  {
+   "bench": "nq",
+   "id": "nq:1383",
+   "question": "what is the population of fayetteville north carolina",
+   "outcome": "refused",
+   "answer": "208501",
+   "verdict": "unmatched",
+   "trace": [
+    "208501 is the population of Fayetteville"
+   ],
+   "again": {
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "trace": []
+   }
+  },
+  {
+   "bench": "nq",
+   "id": "nq:1549",
+   "question": "who wrote the treasure of the sierra madre",
+   "outcome": "refused",
+   "answer": "B. Traven",
+   "verdict": "right",
+   "trace": [
+    "B. Traven is the author of The Treasure of the Sierra Madre"
+   ],
+   "again": {
+    "answer": null,
+    "reason": "unknown_relation",
+    "trace": []
+   }
+  },
+  {
+   "bench": "nq",
+   "id": "nq:1691",
+   "question": "when did the wave hill walk off end",
+   "outcome": "refused",
+   "answer": "April 1971",
+   "verdict": "unmatched",
+   "trace": [
+    "April 1971 is the end time of Gurindji strike"
+   ],
+   "again": {
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "trace": []
+   }
+  },
+  {
+   "bench": "nq",
+   "id": "nq:1881",
+   "question": "who directed the best years of our lives",
+   "outcome": "refused",
+   "answer": "William Wyler",
+   "verdict": "right",
+   "trace": [
+    "William Wyler is the director of The Best Years Of Our Lives"
+   ],
+   "again": {
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "trace": []
+   }
+  },
+  {
+   "bench": "webq",
+   "id": "webq:519",
+   "question": "what timezone is nashville tn?",
+   "outcome": "refused",
+   "answer": "Central Time Zone",
+   "verdict": "right",
+   "trace": [
+    "Central Time Zone is the located in time zone of Nashville"
+   ],
+   "again": {
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "trace": []
+   }
+  },
+  {
+   "bench": "webq",
+   "id": "webq:592",
+   "question": "when did shays rebellion start?",
+   "outcome": "refused",
+   "answer": "31 August 1786",
+   "verdict": "right",
+   "trace": [
+    "31 August 1786 is the start time of Shays's Rebellion"
+   ],
+   "again": {
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "trace": []
+   }
+  },
+  {
+   "bench": "webq",
+   "id": "webq:658",
+   "question": "who wrote the gospel according to john?",
+   "outcome": "refused",
+   "answer": "D. A. Carson",
+   "verdict": "unmatched",
+   "trace": [
+    "D. A. Carson is the author of The Gospel According to John"
+   ],
+   "again": {
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "trace": []
+   }
+  },
+  {
+   "bench": "webq",
+   "id": "webq:925",
+   "question": "what time zone is greensburg indiana?",
+   "outcome": "refused",
+   "answer": "Eastern Time Zone",
+   "verdict": "right",
+   "trace": [
+    "Eastern Time Zone is the located in time zone of Greensburg"
+   ],
+   "again": {
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "trace": []
+   }
+  },
+  {
+   "bench": "webq",
+   "id": "webq:1191",
+   "question": "what language do people speak in the bahamas?",
+   "outcome": "refused",
+   "answer": "English",
+   "verdict": "right",
+   "trace": [
+    "English is the official language of The Bahamas"
+   ],
+   "again": {
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "trace": []
+   }
+  },
+  {
+   "bench": "webq",
+   "id": "webq:1268",
+   "question": "where did jay moriarty die?",
+   "outcome": "refused",
+   "answer": "Maldives",
+   "verdict": "right",
+   "trace": [
+    "Maldives is the place of death of Jay Moriarity"
+   ],
+   "again": {
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "trace": []
+   }
+  },
+  {
+   "bench": "webq",
+   "id": "webq:1504",
+   "question": "where was barack hussein obama sr born?",
+   "outcome": "refused",
+   "answer": "Nyang'oma Kogelo",
+   "verdict": "unmatched",
+   "trace": [
+    "Nyang'oma Kogelo is the place of birth of Barack Obama Sr."
+   ],
+   "again": {
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "trace": []
+   }
+  },
+  {
+   "bench": "webq",
+   "id": "webq:1529",
+   "question": "where did emperor constantine die?",
+   "outcome": "refused",
+   "answer": "Aquileia",
+   "verdict": "unmatched",
+   "trace": [
+    "Aquileia is the place of death of Constantine II"
+   ],
+   "again": {
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "trace": []
+   }
+  },
+  {
+   "bench": "webq",
+   "id": "webq:1716",
+   "question": "what is carlos pena jr nationality?",
+   "outcome": "refused",
+   "answer": "United States",
+   "verdict": "unmatched",
+   "trace": [
+    "United States is the country of citizenship of Carlos PenaVega"
+   ],
+   "again": {
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "trace": []
+   }
+  }
+ ],
+ "wall_s": 116.2
+}
