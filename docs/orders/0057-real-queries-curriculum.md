@@ -157,8 +157,8 @@ or properly refuse, so the curriculum never wastes questions on links that don't
 - **Also for 0057's two-period questions:** the AIT Wikidata benchmark (0054's addendum of 2026-11-09) is a ready
   external set of as-of questions.
 
-## Cowork's addendum (2026-11-11): three ideas from the field watch for the curriculum, proposed
-Nick: "there's a lot more we can borrow in it". **Proposed, for Nick's yes; nothing here is built or measured.**
+## Cowork's addendum (2026-11-11): three ideas from the field watch for the curriculum, approved (Nick, 2026-11-11: "proposals: yes")
+Nick: "there's a lot more we can borrow in it". **Approved by Nick on 2026-11-11 ("proposals: yes"); built when this order is taken, in its queue place.** **Was: proposed, for Nick's yes; nothing here is built or measured.**
 As the field watch read them; each source is read again before anything is taken.
 
 **What it brings, in plain words:**

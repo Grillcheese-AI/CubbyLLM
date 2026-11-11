@@ -849,8 +849,8 @@ reading.
 table). All four land before 0054's rerun (step 4). The fictional classes are the class tree under Wikidata's
 "fictional entity" class; Claude Code confirms its id on the store and records it.
 
-## Cowork's addendum (2026-11-11): three ideas from the field watch for the certificate, proposed
-Nick: "there's a lot more we can borrow in it". **Proposed, for Nick's yes; nothing here is built or measured.**
+## Cowork's addendum (2026-11-11): three ideas from the field watch for the certificate, approved (Nick, 2026-11-11: "proposals: yes")
+Nick: "there's a lot more we can borrow in it". **Approved by Nick on 2026-11-11 ("proposals: yes"); built when this order is taken, in its queue place.** **Was: proposed, for Nick's yes; nothing here is built or measured.**
 As the field watch read them; each source is read again before anything is taken.
 
 **What it brings, in plain words:**

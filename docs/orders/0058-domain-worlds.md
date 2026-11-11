@@ -236,8 +236,8 @@ comes from the register's record, with its date.
 Credit: Tesseract Semantics is named as the source of each ontology in its manifest and in the paper's related
 work, as CC BY asks.
 
-## Cowork's addendum (2026-11-11, second): five more from the field watch for the domain worlds, proposed
-Nick: "there's a lot more we can borrow in it". **Proposed, for Nick's yes; nothing here is built or measured.**
+## Cowork's addendum (2026-11-11, second): five more from the field watch for the domain worlds, approved (Nick, 2026-11-11: "proposals: yes")
+Nick: "there's a lot more we can borrow in it". **Approved by Nick on 2026-11-11 ("proposals: yes"); built when this order is taken, in its queue place.** **Was: proposed, for Nick's yes; nothing here is built or measured.**
 The first three were read today; the last two are as the field watch read them.
 
 **What it brings, in plain words:**

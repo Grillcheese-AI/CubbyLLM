@@ -224,8 +224,8 @@ three-factor rule should do the same. Plain STDP cannot.
 - **Expected:** P never recovers, since it strengthens whatever it chose. There is no line: it is reported beside A, in
   H-A16's terms.
 
-## Cowork's note (2026-11-11): a learning rule from the field watch, proposed
-Nick: "there's a lot more we can borrow in it". **Proposed, for Nick's yes; not built, not measured.** As the
+## Cowork's note (2026-11-11): a learning rule from the field watch, approved (Nick, 2026-11-11: "proposals: yes")
+Nick: "there's a lot more we can borrow in it". **Approved by Nick on 2026-11-11 ("proposals: yes"); built when this order is taken, in its queue place.** **Was: proposed, for Nick's yes; not built, not measured.** As the
 field watch read it.
 - **Vector Symbolic Policy Gradient** (arXiv 2608.18404): an actor whose policy update is exactly an
   advantage-weighted bundling of hypervectors. The rule is local and uses bundling only, with a proof, and suits

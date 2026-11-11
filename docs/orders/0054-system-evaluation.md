@@ -535,8 +535,8 @@ From "Verified Knowledge Extraction from Language Models" (a Hugging Face space,
   in Namibia": `no_plan`; neither program plans its question). **NQ's C stands: 15 spoken, 4 wrong.** Every other
   answer is the gather run's; Cubby's own tally replies move by one count.
 
-## Cowork's addendum (2026-11-11, second): five more steps from the field watch, proposed
-Nick: "there's a lot more we can borrow in it". **Proposed, for Nick's yes; nothing here is built or measured.**
+## Cowork's addendum (2026-11-11, second): five more steps from the field watch, approved (Nick, 2026-11-11: "proposals: yes")
+Nick: "there's a lot more we can borrow in it". **Approved by Nick on 2026-11-11 ("proposals: yes"); built when this order is taken, in its queue place.** **Was: proposed, for Nick's yes; nothing here is built or measured.**
 Sources were read today where a page could be reached; what could not be checked is said.
 
 **What it brings, in plain words:**
