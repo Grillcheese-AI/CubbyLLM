@@ -222,3 +222,90 @@ outlet fix are accepted. **P1 is done.**
 - Manrope: Nick said yes (2026-10-22). Bundle it with the page (a small download, SIL Open Font Licence; keep its
   licence file beside the fonts), with the system stack as the fallback.
 - The 25 red tests in `standin/tests` that predate this order go to the hygiene order (0030), with the old local paths.
+
+## Cowork's addendum (2026-11-10): the chat's feel, from Nick's mockup
+Nick: "this is how I would like the cubby chat to be feeling", with a mockup: `chat/cubby_ai_chat_interface.html` in
+the CubbyUXReference checkout beside this one. **Status: waits for Nick's yes on the choices marked below.** The
+mockup is the reference for the feel, not for the code: it calls an outside model and outside style sheets, which a
+Cubby page never does.
+
+**What it brings, in plain words:** you see what Cubby is doing while it works. Its face is calm when it is ready,
+busy when it is checking and moving when it answers, and each reply says plainly whether it was checked, refused or
+needs a choice from you.
+- **Over a conventional model:** a chat assistant shows the same spinner whether it is looking something up or
+  making something up. Cubby's face and status come from the steps that really ran.
+
+### What to keep from the mockup
+1. **A face that shows state.** A panel beside the conversation holds Cubby's mark, large, with a status line under
+   it. The mockup has three states: ready (the smile at rest), thinking (the smile bends and three dots bounce under
+   it) and speaking (the line under the smile moves like a voice).
+2. **A conversation in bubbles:** Cubby on the left with its mark, the person on the right, the newest at the bottom
+   and the view following it.
+3. **The reply appears as if typed.**
+4. **A warm first line:** Cubby says its name and what it does, and asks the person's name.
+5. **One field and one button.** The field is closed while Cubby answers and takes the cursor back afterwards.
+6. **A header that says Cubby is live,** with a small pulsing dot.
+
+### What changes, and why
+- **The states are real** (choice 1). Each one is driven by the server, never by a timer alone:
+
+  | State | When | Status line |
+  |---|---|---|
+  | ready | no request is open | "Ready" |
+  | reading | from the send to the loop's first step | "Reading your question" |
+  | checking | while the loop runs | the step that is running, from the loop's event stream (the one `/panel` reads): "Looking up facts", "Checking the answer" |
+  | answering | while a finished reply is shown | "Answering" |
+  | asking back | the reply is a question to the person (several items share a name) | "Which one do you mean?" |
+  | not known | the reply is a refusal | "I don't know that one yet", with the reason in plain words |
+  | not connected | the ask loop is not mounted, or an error | "Not connected" |
+
+  When no step arrives while the loop runs, the checking state names no step. It never shows an invented one.
+- **Nothing is typed before it is checked.** A reply is shown only after the server returns it, so the VM has
+  certified it or the loop has refused. The typing only presents a finished reply: word by word, never longer than
+  1.5 s in all, and at once when the person prefers reduced motion. A screen reader hears the reply once, complete.
+- **The mark is the real one.** The face is the `_1` mark from the CubbyUXReference checkout's `logos` folder, and
+  its smile is the part that moves. The arcs and the colours are never redrawn. The dots and the moving line use the
+  logo's green. If the smile cannot move without redrawing the mark, the mark stays still and the motion lives in the
+  dots and the line under it.
+- **Cubby's one look** (choice 2). Colours, fonts and shapes come from `dashboard/brand/cubby-tokens.css` (Nick,
+  2026-11-10: "unify everything"). The mockup's indigo and its outside font are not taken. The page calls nothing
+  but its own server.
+- **Each reply says what it is** (choice 3). A permanent "fact-verified" badge would claim too much: certified is
+  not correct, and not every reply is a certified one. Instead:
+  - a checked answer carries a small "checked" mark, which opens how it was made;
+  - a refusal says "I don't know that one yet", and why;
+  - a question back offers the choices as buttons;
+  - casual talk (0010, 0059) carries no mark.
+
+  The header says only what is true of the server: live or not, and the store that is mounted.
+- **"See why" stays.** The prompt journey and the audit trail (this order's P1) open from a reply's "checked" mark:
+  in a panel on the right on a wide screen, over the conversation on a narrow one. The audit view stays for the
+  owner and auditors.
+- **The person's name.** When the person gives a name, Cubby uses it in that session. It is kept with the session
+  under the asker's id, never in a log and never in the public part of a record.
+- **Narrow screens:** the face panel folds into the header's small mark, which shows the same states.
+
+### The first line (choice 4: Nick's wording to confirm)
+The mockup says: "Hi! My name is cubby. I protect you, assist you, and prove the facts for you. What's yours?"
+"Prove the facts" promises more than a certificate gives, which is that an answer follows from the recorded facts,
+not that those facts are true. A wording that holds: "I protect you, assist you, and show you the facts behind my
+answers." Nick decides.
+
+### Acceptance (pre-registered)
+- **States are true:** over a recorded session of 30 asks (10 answered, 10 refused, 5 asked back, 5 with the loop
+  off), every state shown matches the server's record for that ask: 0 mismatches.
+- **Nothing early:** with a server slowed on purpose, no character of a reply is on screen before the response
+  arrives.
+- **Reduced motion:** with the setting on there is no bounce, no moving line and no typing, and the status text
+  still changes.
+- **No outside call:** the page loads and runs with the network limited to its own server: 0 requests elsewhere.
+- **The mark:** the file served is byte-identical to the one in the `logos` folder.
+- **Screen reader:** each reply is announced once, and the status line when it changes.
+- **Narrow screen (400 px):** no sideways scroll, and the header mark shows the states.
+- **P1's tests still pass:** the journey, and the audit view hidden in public mode.
+
+### Out of scope
+- Voice, in or out. The moving line shows that Cubby is answering; it is not audio.
+- Moods and arcs on the face (0019 and 0020; this order's P3).
+- Remembering a name between sessions (0059).
+- CubbyConsul's own chat.
