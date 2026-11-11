@@ -676,3 +676,51 @@ Logs: `validation/logs/talk_ab_2026-11-11_{voice,control,sheet,key}.json`, `_run
     spoken. Measured on E6's chat rows and on this sheet before it is turned on.
 - **For `talk_v3b`:** the stock talk comes on turns the rows do not cover. More of those turns, each with the
   record where the host sends it.
+
+### Changes g and h, approved (Nick, 2026-11-11: "yes"): no looping reply; what Cubby says it can do comes from its record
+Both are for Claude Code. Both read chat replies only, in `CubbyChat._guard`, after the checks that are there.
+Each has its own flag, off by default, like a, b and d. A refused reply is not offered and the don't-know line
+stays, as in change d. Claude Code's section on change d already named this gap ("not caught by any check
+here").
+
+**What it brings, in plain words:** Cubby stays quiet where it would loop, and it only claims the abilities
+written in its record.
+- **Over a conventional model:** a model's reply goes out as generated, loops included, and nothing checks what
+  it says about itself.
+- **For you:** no "I can send your messages", no "I can't tell jokes", no sentence said ten times.
+
+**Change g, a reply that loops is not spoken** (`CB_CHAT_NO_LOOP=1`). A chat reply is refused when:
+- the generation stopped at the token limit; or
+- a sentence or a line of three words or more is said twice; or
+- the same run of one to six words is said three times in a row.
+- Compared after folding case, spaces, punctuation and emoji. Reason: `loop`.
+- Fact replies are out of scope. A list that stops at the limit stays as noted under change b.
+
+**Change h, abilities come from the record** (`CB_CHAT_ABILITIES=1`). In a chat reply:
+- "I can ..." (and "I'm able to", "je peux", "je sais") is spoken when it says one of the record's can-do lines,
+  or names no ability: "here's what I can do", or a plain offer to help with nothing named. Any other ability is
+  refused.
+- "I can't ...", "I don't have ...", "I'm not able to" and the French forms are spoken when the record says so:
+  what it does not do yet, and the don't-know lines about a fact that is not on record. Any other is refused.
+- Reason: `ability: <the words>`.
+- It replaces the list of forbidden abilities for chat replies. What Cubby says it is, and the names and
+  numbers, are read as today.
+
+**Acceptance (set before the build).**
+1. **The third run's 60 chat replies, read again from the logs with g and h on.** No generation is needed. The
+   replies refused are these, and no other verdict changes:
+   - g: control ab04, ab05, ab10, ab21, ab29; voice ab19;
+   - h: control ab11, ab15, ab24, ab26, ab29; voice ab21.
+   - Spoken chat replies then: voice 27 (from 29), control 18 (from 27). Any other change is listed and read by
+     hand.
+   - Cowork ran rule g as written here over the logs: it refuses exactly the six listed. Rule h's list is by
+     reading, not by a run.
+2. **Nothing true is lost.** Still spoken: the voice's replies that say the record's lines (ab12, ab14, ab16,
+   ab18, ab20, ab23), "I can help you with that." (ab22), the host's own don't-know lines and the voice's
+   trained one, in English and in French.
+3. **On every chat reply the gates hold,** each reply g or h newly refuses is listed and read. **Kill:** one of
+   them is true of Cubby and holds together.
+4. **Flags off, nothing changes.**
+5. Tests for each rule, with the replies above as fixtures.
+
+**Report:** the counts, the list of every newly refused reply, and whether lines 1 to 4 are met.
