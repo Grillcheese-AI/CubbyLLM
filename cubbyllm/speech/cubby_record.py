@@ -109,7 +109,8 @@ def self_claims(reply: str) -> list[str]:
             bad.append(f"claims to be {sorted(heads & NOT_KINDS)[0]}")
         elif not neg and h.group("h")[:1].isupper() and h.group("h") != name and h.group("h") not in ("I",):
             bad.append(f"says it is {h.group('h')}")
-    for m in _CAN.finditer(reply or ""):
+    from .chat_checks import abilities_on
+    for m in ([] if abilities_on() else _CAN.finditer(reply or "")):   # 0010 h replaces this list (chat_checks)
         hit = NOT_YET.search(m.group("rest"))
         if hit:
             bad.append(f"claims it can do what it cannot yet ({hit.group(0)})")

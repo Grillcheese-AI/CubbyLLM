@@ -77,7 +77,7 @@ class CubbyChat(ChatState):
 
 
     # ── the turn ────────────────────────────────────────────────────────────
-    def _guard(self, reply: str, user_text: str) -> str | None:
+    def _guard(self, reply: str, user_text: str, hit_limit: bool = False) -> str | None:
         """The host guards, unchanged. -> the reason it may not be spoken, or
         None if it survives. Pulled out of `candidates` so the same cascade
         runs over every sample when more than one is drawn."""
@@ -101,7 +101,8 @@ class CubbyChat(ChatState):
             ok, why = chat_check(reply, user_text, [str(last.get("user") or ""), str(last.get("reply") or "")])
             if not ok:
                 return why
-        return None
+        from .chat_checks import check as loop_and_abilities         # 0010 changes g (CB_CHAT_NO_LOOP=1) and h
+        return loop_and_abilities(reply, hit_limit)                   # (CB_CHAT_ABILITIES=1), each off by default
 
     def candidates(self, user_text: str, grounded: set[str] | None = None) -> tuple[list[str], list[str]]:
         """-> (offered, rejected): the model's replies (think-stripped) that
@@ -152,7 +153,7 @@ class CubbyChat(ChatState):
             if not reply or reply in seen:
                 continue
             seen.add(reply)
-            why = self._guard(reply, user_text)
+            why = self._guard(reply, user_text, bool((getattr(self.emitter, "last", None) or {}).get("hit_limit")))
             if why is None:
                 offered.append(reply)
             else:

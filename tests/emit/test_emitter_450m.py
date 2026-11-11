@@ -121,3 +121,14 @@ def test_the_real_trunk_refuses_a_missing_file_before_touching_the_card(tmp_path
         Cubby450mTrunk(str(tmp_path), str(tmp_path / "tok.json"), {"programs": str(tmp_path / "none")})
     with pytest.raises(ValueError):
         Cubby450mTrunk(str(tmp_path), str(tmp_path), {})
+
+
+def test_the_talk_seat_says_when_its_generation_stopped_at_the_limit():
+    """0010 change g: a chat reply that stopped at the token limit is not spoken; the seat reports it, the bank passes
+    it on (`ContextualEmitter.last`)."""
+    talk = Cubby450mTalk(FakeTrunk({"programs": "x", "talk": " Hello there!"}))
+    bank = ContextualEmitter({"programs": talk, "talk": talk}, default="programs")
+    bank.emit("hi", context={"role": "talk"}, max_new_tokens=64)
+    assert bank.last["hit_limit"] is False                                   # an end before the limit
+    bank.emit("hi", context={"role": "talk"}, max_new_tokens=2)
+    assert bank.last["hit_limit"] is True                                    # cut by the limit

@@ -30,6 +30,9 @@ _TOKEN = re.compile(r"[A-Za-zÀ-ÿ][\w'’\-]*|\d[\d.,:/\-]*")        # ask._TOK
 _ENUM = re.compile(r"(?m)^\s*(?:\d{1,2}[.)]|[-*•])\s+")
 _OPENER = re.compile(r"(?:^|[.!?:]\s+|\n\s*)([A-Za-zÀ-ÿ][\w'’\-]*)")
 _PRONOUN_I = {"i", "i'm", "i’m", "i'd", "i’d", "i'll", "i’ll", "i've", "i’ve"}
+# a French verb joined to its pronoun (an imperative or an inversion): "Installe-toi", "Dis-moi", "Allez-y", "Peut-on".
+# Opening a sentence it is a forced capital, never a name (Cowork, 2026-11-11: "Bonjour ! Installe-toi, ..." was refused)
+_FR_VERB = re.compile(r"^[a-zà-ÿ]+-(?:toi|vous|moi|nous|lui|leur|le|la|les|y|en|t-il|t-elle|t-on|il|elle|on|je|tu)$")
 
 
 def on() -> bool:
@@ -49,7 +52,7 @@ def openers(text: str) -> set[int]:
 
 def opener_view(answer: str, common: set[str] | frozenset[str] | None = None) -> str:
     """The answer with list enumerators removed and the capitals English forces lowered (a common word opening a
-    sentence or line, the pronoun I). `common` defaults to the host's words."""
+    sentence or line, a French verb joined to its pronoun there, the pronoun I). `common` defaults to the host's words."""
     common = common_words() if common is None else common
     text = _ENUM.sub("\n", answer)
     starts = openers(text)
@@ -59,7 +62,7 @@ def opener_view(answer: str, common: set[str] | frozenset[str] | None = None) ->
         low = tok.lower().strip("'’-.,:")
         if low.endswith(("'s", "’s")):
             low = low[:-2]
-        if tok[0].isupper() and (low in _PRONOUN_I or (m.start() in starts and low in common)):
+        if tok[0].isupper() and (low in _PRONOUN_I or (m.start() in starts and (low in common or _FR_VERB.match(low)))):
             out[m.start()] = tok[0].lower()
     return "".join(out)
 

@@ -96,8 +96,9 @@ class Cubby450mTalk:
         out = self.trunk.generate(self.role, [ids], max_new_tokens, temperature=temperature, seed=seed)[0]
         if self.trunk.eos in out:
             out = out[:out.index(self.trunk.eos)]
+        hit = len(out) >= max_new_tokens                  # no end before the limit: it stopped there (0010, g)
         raw = self.trunk.tokenizer.decode(out)
-        self.last = {"prompt": text, "raw": raw}
+        self.last = {"prompt": text, "raw": raw, "hit_limit": hit}
         return (prefix + " " if prefix else "") + talk_answer(raw)
 
 
@@ -223,5 +224,7 @@ class ContextualEmitter:
              context: "str | dict | None" = None) -> str:
         role = self.resolve(context)
         self.calls[role] += 1
-        return self.adapters[role].emit(prompt, max_new_tokens=max_new_tokens, system=system, prefix=prefix,
-                                        temperature=temperature, seed=seed, context=context)
+        out = self.adapters[role].emit(prompt, max_new_tokens=max_new_tokens, system=system, prefix=prefix,
+                                       temperature=temperature, seed=seed, context=context)
+        self.last = getattr(self.adapters[role], "last", None) or {}    # the seat's last generation (raw, hit_limit)
+        return out

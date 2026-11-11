@@ -134,10 +134,12 @@ def asks_about_cubby(text: str) -> bool:
 
 
 # ── the BASE model's own guards must not leak: only ours are enforced ──────
-# LFM2.5's alignment shows up as refusals, "as an AI language model" framing,
-# and its maker's identity. Cubby's answers come from Cubby's rules (the
-# voice rules, the VM's ASK, the don't-know line) — a reply carrying the base
-# model's guard is rejected like a forbidden word, never spoken.
+# Stock assistant talk the base learned from its pretraining text (the 450M's
+# own, and any stand-in's) shows up as refusals ("I can't assist with that"),
+# "as an AI language model" framing, and a maker that is not Cubby's. Cubby's
+# answers come from Cubby's rules (the voice rules, the VM's ASK, the
+# don't-know line) — a reply carrying such a guard is rejected like a
+# forbidden word, never spoken.
 _MODEL_GUARD = re.compile(
     r"\b(as an? (ai|artificial intelligence|language model|llm|assistant)|i am an? (ai|artificial intelligence|"
     r"language model|llm)|i'?m an? (ai|artificial intelligence|language model|llm)|"

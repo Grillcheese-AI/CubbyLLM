@@ -1,0 +1,25 @@
+{
+ "voice": {
+  "spoken_off": 30,
+  "spoken_on": 28,
+  "newly_refused": {
+   "ab19": "loop: said twice: what you're curious about",
+   "ab21": "ability: I don't have access to personal information or personal expe"
+  }
+ },
+ "control": {
+  "spoken_off": 27,
+  "spoken_on": 18,
+  "newly_refused": {
+   "ab26": "ability: I can help you brainstorm creative ways to make the conversa",
+   "ab10": "loop: stopped at the token limit",
+   "ab05": "loop: stopped at the token limit",
+   "ab24": "ability: I can't tell jokes or jokes that involve explicit or inappro",
+   "ab29": "loop: stopped at the token limit",
+   "ab21": "loop: stopped at the token limit",
+   "ab11": "ability: Je peux maintenant enregistrer et envoyer mes messages",
+   "ab04": "loop: stopped at the token limit",
+   "ab15": "ability: I don't have a native language in my native language, so I c"
+  }
+ }
+}

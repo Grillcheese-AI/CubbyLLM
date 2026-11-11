@@ -724,3 +724,34 @@ written in its record.
 5. Tests for each rule, with the replies above as fixtures.
 
 **Report:** the counts, the list of every newly refused reply, and whether lines 1 to 4 are met.
+
+### Changes g and h, built and measured; the French opener fixed (Claude Code, 2026-11-11)
+- **Built:** `cubbyllm/speech/chat_checks.py`, read in `CubbyChat._guard` after the checks there. g (`CB_CHAT_NO_LOOP=1`) as
+  specified; the talk seat now reports a generation that stopped at its limit (`Cubby450mTalk.last["hit_limit"]`, passed
+  on by `ContextualEmitter.last`). h (`CB_CHAT_ABILITIES=1`): an "I can" passes when its words are among one of the
+  record's can-do lines or labels, or when it names nothing (an offer: help, offer, share, "here's what I can do"); an
+  "I can't / I don't have" passes when the record says so (not yet, the don't-know lines, what Cubby refuses to claim:
+  feelings, consciousness), when it says no checked fact backs a claim ("I can't confirm / vouch / verify"), or when
+  nothing follows ("je ne sais pas"). Each claim is read up to its clause's end (a comma, a semicolon, "but"). With h on,
+  change d's forbidden list is not read.
+- **Line 1 (the third run's chat replies, from the logs): met.** g and h newly refuse exactly the listed replies: g
+  control ab04, ab05, ab10, ab21, ab29 and voice ab19; h control ab11, ab15, ab24, ab26 and voice ab21. Spoken: control 27
+  -> 18; voice 30 -> 28 (30, not 29: the French fix below speaks the voice's ab05). Nothing else changes
+  (`validation/logs/chat_checks_gh_ab_2026-11-11.json`).
+- **Line 2: met.** ab12, ab14, ab16, ab18, ab20, ab22, ab23 stay spoken; the don't-know lines pass in English and French.
+- **Line 3, read on the voice set's 4,161 held chat rows** (`validation/logs/chat_checks_gh_held_2026-11-11.json`; the
+  fact turns, `Premise:` and `Facts:`, are out of g and h's scope): **h as first written fired the kill** -- it refused
+  lines true of Cubby: Nick's approved "I can talk about feelings, but I don't have them", the record's own label "Dire
+  quand je ne sais pas", plain offers ("ce que je peux faire pour toi aujourd'hui", "what I can help with"), "Je peux te
+  dire qui m'a créé". Fixed as described above; now **0 of the voice's own families** (hello, social, identity) are
+  refused. The 334 refused rows are all the old `chat` family (other assistants' chats in the mix): 50 loops (lists and
+  JSON that repeat a line) and 284 abilities, most of them stock ("I can't assist with that request" 20, "I cannot
+  execute this request" 15, "I don't have access to real-time data"). Read by sample, not one by one: none is a line of
+  Cubby's record.
+- **Line 4: met** (flags off, nothing changes; tested). **Tests:** `tests/speech/test_chat_checks.py` (the A/B's replies
+  and the held true lines as fixtures), `tests/emit` (the limit).
+- **The French opener** (Cowork's ask): a French verb joined to its pronoun opening a sentence ("Installe-toi", "Appelle-
+  moi", "Pose-moi", "Allez-y") is a forced capital, not a name (`opener_view._FR_VERB`). Over every chat reply of the
+  three A/B runs and the held chat rows, 16 verdicts change, every one such a verb; names keep their capital
+  ("Jean-Pierre", "Saint-Denis" are still refused). Also found: the record lacked v2's ability labels ("Demander lequel tu
+  veux dire"), which the voice writes in its lists; added from the yaml.
