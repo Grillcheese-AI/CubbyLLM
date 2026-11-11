@@ -9,6 +9,8 @@ manifest. Where the store and the binary are: `CUBBY_WD_STORE`, `CUBBY_WDSTORE_E
 (`<store dir>.kinds.sqlite`, or `CUBBY_WD_KINDS_TABLE`) and its cue table with the fictional classes
 (`<store dir>.cues.sqlite`, or `CUBBY_WD_CUES_TABLE`), so order 0037's rule decides its shared names; off until that
 rule's audit on the store is read (``validation/audit_wd_kinds.py``).
+With one of order 0066's checks on (``CB_QWORD_KIND``, ``CB_ORIGINAL_FIRST``, ``CB_ALIAS_OPEN``), it also reads the
+class-roots table (`<store dir>.roots.sqlite`, or `CUBBY_WD_ROOTS_TABLE`; `wd_store_roots`).
 
 Wired: WIRED (`cubby_serve/cli.py`, ``CB_WD_STORE=1``).
 """
@@ -37,8 +39,12 @@ def build(log=print):
     on = os.environ.get("CB_WD_KINDS") == "1"
     kinds = (value("CUBBY_WD_KINDS_TABLE") or os.path.normpath(store) + ".kinds.sqlite") if on else None
     cues = (value("CUBBY_WD_CUES_TABLE") or os.path.normpath(store) + ".cues.sqlite") if on else None
+    checks = [f for f in ("CB_QWORD_KIND", "CB_ORIGINAL_FIRST", "CB_ALIAS_OPEN") if os.environ.get(f) == "1"]
+    roots = (value("CUBBY_WD_ROOTS_TABLE") or os.path.normpath(store) + ".roots.sqlite") if checks else None
     world = WdStoreWorld(StoreClient(exe, store).ask, man.get("dump_date") or "", c.get("statements_hot", 0) + c.get("statements_cold", 0),
-                         kinds=kinds, cues=cues)
+                         kinds=kinds, cues=cues, roots=roots)
+    if checks and world._roots is None:
+        raise SystemExit(f"{', '.join(checks)}: the class-roots table ({roots}) must be built from this store (order 0066)")
     if on and (world._kinds is None or world._cues is None):
         raise SystemExit(f"CB_WD_KINDS=1: the kinds table ({kinds}) and the cue table ({cues}) must both be built from this store")
     log(f"  wikidata store: {len(world.relations())} relations, snapshot {str(world.state)[:12]}, dump {man.get('dump_date')}, "

@@ -1,28 +1,26 @@
-"""cubbyllm/worlds/wd_store_names.py -- three of Cowork's proposals from the read of order 0054's "after" (2026-11-11,
-approved by Nick the same day), on the hot Wikidata store's names and values. Each behind its own flag, off by default;
-off, the store answers as before.
+"""cubbyllm/worlds/wd_store_names.py -- order 0066's checks on the hot Wikidata store's names and values (Cowork, approved
+by Nick 2026-11-11), each behind its own flag, off by default; off, the store answers as before. Classes are read
+through the class-roots table (`wd_store_roots`); without it, checks 1 to 3 do nothing.
 
-- **The original work first** (``CB_ORIGINAL_WORK=1``, proposal 2): a title shared by a work and works about it or
-  made from it. An item that points at another item of the same name by "main subject" (P921), "based on" (P144),
-  "edition or translation of" (P629), "recording or performance of" (P2550), "modified version of" (P5059) or
-  "inspired by" (P941) steps aside from the fitting items, as a fictional item does (`wd_store_refine`): D. A.
-  Carson's commentary "The Gospel According to John" (main subject: the gospel), Herbert Murrill's score of "Jana Gana
-  Mana" (based on: the anthem). The original joins the name's items even when the name is only one of its aliases
-  ("The Gospel According to John" is an alias of the Gospel of John). Then order 0037's rule decides among what is left,
-  or the loop asks: the original is never picked for being the original, only its derivatives leave.
-- **An alias match does not end the name search** (``CB_ALIAS_SEARCH=1``, proposal 3): a name found only as an alias
-  and opening with a title ("Emperor Constantine", an alias of Constantine II alone) also gathers the items labelled
-  with the rest of the name whose own description holds the title (the three Byzantine emperors labelled
-  "Constantine"). The name is then shared, and the picking rules apply as to any shared name.
-- **A value's own date** (``CB_OWN_DATE=1``, proposal 4): a statement with a "point in time" (P585) at year precision
-  or finer keeps that year, `fact_year` gives it, and the loop says the value "as of" that year rather than the dump's
-  (`ask_memory._snapshot`): Fayetteville's 208,501 is the 2020 count.
+- **Check 1's kinds** (`value_kind`, read by `ask_qword` with ``CB_QWORD_KIND=1``): the value's own item is a place
+  (coordinates, or a class under "geographic location"), a person, a group or an organisation (a class that is or is
+  under "human", "group of humans", "organization" or "fictional character"); a time value is a date. A value that is
+  no item and no time this world handed out: unknown.
+- **Check 2, the original first** (``CB_ORIGINAL_FIRST=1``): a name's items, label and alias tiers read together, that
+  are works (a class under "work") and point at one another ("based on" P144, "edition or translation of" P629, "main
+  subject" P921, or the original's own "derivative work" P4969): the work pointed at that points at none of them is
+  the original, and the name stands for it (with any item that is no work, which the existing rules still weigh). No
+  original, or several: as today (a shared name is asked about). Never by fame or age.
+- **Check 3, an alias match does not end the search** (``CB_ALIAS_OPEN=1``): a name that matches no label, one item
+  by alias, and opens with a role word (the label of an item that is, or is an instance of, a class under "position",
+  "title", "noble title" or "military rank") reads the bare name too, keeps its items that hold or held the role
+  ("position held" P39, "noble title" P97, "occupation" P106: the role, or a class under it by subclass of), and the
+  alias's item joins them. Then the existing rules decide, or the loop asks; a year the question names keeps the one
+  whose term or life covers it (`pick_year`). None held the role: the alias stands, as today.
+- **Check 4, a value's own date** (``CB_VALUE_DATE=1``): a statement's "point in time" (P585), else its "start time"
+  (P580), at year precision or finer, is the year the loop says it "as of" (`ask_memory._snapshot`), not the dump's.
 
-And for proposal 1 (``CB_ANSWER_FITS=1``, `cubbyllm/reasoning/ask_word_fits.py`): `value_kinds` reads what the value's
-own item is, from its statements: a place (coordinates, a country, located in), a person (a human, a sex or gender, a
-birth or death date), an organisation (headquarters, founder, industry, legal form, a league, a record label ...).
-
-Wired: WIRED (`wd_store_world.WdStoreWorld`'s base; `ask_word_fits` and `ask_memory` read `value_kinds`, `fact_year`).
+Wired: WIRED (`wd_store_world.WdStoreWorld`'s base; `ask_qword`, `ask_memory` and `ask_namesakes` read it).
 """
 from __future__ import annotations
 
@@ -33,19 +31,12 @@ from cubbyllm.reasoning.planner import normalize
 
 __wiring__ = "WIRED"
 
-DERIVED = (921, 144, 629, 2550, 5059, 941)               # about it, based on it, an edition, a performance, a version
-POINT_IN_TIME = 585
+POINTS = (144, 629, 921)                                 # based on, edition or translation of, main subject
+DERIVATIVE = 4969                                        # the original's own "derivative work"
+HELD = (39, 97, 106)                                     # position held, noble title, occupation
+POINT_IN_TIME, START, END = 585, 580, 582
 KEEP = 200_000                                           # entries each record keeps (oldest dropped)
-TITLES = {"emperor": "emperor", "empress": "empress", "king": "king", "queen": "queen", "pope": "pope", "saint": "saint",
-          "st": "saint", "prince": "prince", "princess": "princess", "tsar": "tsar", "czar": "tsar", "sultan": "sultan",
-          "pharaoh": "pharaoh", "president": "president", "general": "general", "admiral": "admiral", "duke": "duke",
-          "duchess": "duchess", "count": "count", "countess": "countess", "emir": "emir", "caliph": "caliph",
-          "shah": "shah", "kaiser": "kaiser", "chancellor": "chancellor", "bishop": "bishop", "archbishop": "archbishop",
-          "cardinal": "cardinal", "rabbi": "rabbi", "imam": "imam", "lord": "lord", "lady": "lady", "sir": "sir"}
-PLACE = (625, 131, 17, 706, 30)                          # coordinates, located in, country, terrain feature, continent
-PERSON = (21, 569, 570)                                  # sex or gender, born, died (and an instance of human)
-ORGANISATION = (159, 112, 452, 1454, 749, 355, 488, 169, 1128, 2124, 118, 286, 115, 264)
-HUMAN = {"Q5", "Q15632617"}                              # human, fictional human
+ROLE_ITEMS, BARE_MAX, UP = 25, 400, 6
 
 
 def flag(name: str) -> bool:
@@ -62,122 +53,199 @@ def key3(subj: str, rel: str, obj: str) -> tuple:
     return normalize(subj or ""), normalize(rel or ""), normalize(obj or "")
 
 
-def year_of(qualifiers: list, qnodes: list, nodes: dict, pid: int = POINT_IN_TIME) -> str | None:
-    """The year of a statement's qualifier `pid` at year precision or finer ("2020", "500 BC"), or None."""
-    node_of = {p: n for p, n in qnodes or []}
-    for p, v in qualifiers or []:
-        if p != pid or not isinstance(v, dict) or "typed" not in v:
-            continue
-        node = nodes.get(node_of.get(p) or "") or {}
-        try:
-            if int(node.get("wikibase:timePrecision", "")) < 9:
+def year_of(literal) -> int | None:
+    m = re.match(r"^([+-])?0*(\d+)-", str(literal or ""))
+    if not m or m.group(2) == "0":
+        return None
+    return -int(m.group(2)) if m.group(1) == "-" else int(m.group(2))
+
+
+def say_year(y: int) -> str:
+    return f"{-y} BC" if y < 0 else str(y)
+
+
+def qual_year(s: dict, nodes: dict, pid: int) -> int | None:
+    """A statement's qualifier `pid` (a time) as a year, at year precision or finer when its node says, else None."""
+    node_of = dict(s.get("hot_qualifier_nodes") or [])
+    for p, v in s.get("hot_qualifiers") or []:
+        if p == pid and isinstance(v, dict) and "typed" in v:
+            node = nodes.get(node_of.get(p) or "") if nodes else None
+            try:
+                if node is not None and int(node.get("wikibase:timePrecision", "")) < 9:
+                    return None
+            except ValueError:
                 return None
-        except ValueError:
-            return None
-        m = re.match(r"^([+-])?0*(\d{1,})-", str(v["typed"][0]))
-        if not m or m.group(2) == "0":
-            return None
-        return f"{m.group(2)} BC" if m.group(1) == "-" else m.group(2)
+            return year_of(v["typed"][0])
     return None
 
 
+def _ent(s: dict) -> str | None:
+    v = s.get("value")
+    return v["entity"] if isinstance(v, dict) and "entity" in v else None
+
+
 class Named:
-    """For `WdStoreWorld` (uses its `ask`, `_entity`, `_tiers`, `_pid_label`)."""
+    """For `WdStoreWorld` (uses its `ask`, `_entity`, `_tiers`, `_p31`, `_roots`, `namesakes`, NAMESAKE_CAP)."""
+
+    def _rec(self) -> dict:
+        if not hasattr(self, "_named_rec"):
+            self._named_rec = {k: {} for k in ("links", "derivs", "pids", "life", "held", "obj", "time", "year", "up")}
+            self._opened = set()
+        return self._named_rec
 
     def _note_item(self, qid: str, statements: list) -> None:
-        """What `_entity_rows` read of an item: its links to what it is made from or about, and the pids it states."""
-        if not hasattr(self, "_links"):
-            self._links, self._pids, self._obj_ids, self._years = {}, {}, {}, {}
-        best = [s for s in statements if s.get("best") and s.get("rank") != 0]
-        _put(self._links, qid, {s["value"]["entity"] for s in best if s.get("pid") in DERIVED
-                                and isinstance(s.get("value"), dict) and "entity" in s["value"]})
-        _put(self._pids, qid, ({s.get("pid") for s in best},
-                               {s["value"]["entity"] for s in best if s.get("pid") == 31 and isinstance(s.get("value"), dict)
-                                and "entity" in s["value"]}))
+        r, best = self._rec(), [s for s in statements if s.get("best") and s.get("rank") != 0]
+        _put(r["links"], qid, {_ent(s) for s in best if s.get("pid") in POINTS and _ent(s)})
+        _put(r["derivs"], qid, {_ent(s) for s in best if s.get("pid") == DERIVATIVE and _ent(s)})
+        _put(r["pids"], qid, {s.get("pid") for s in best})
+        born = [year_of((s.get("value") or {}).get("typed", [None])[0]) for s in best if s.get("pid") == 569]
+        died = [year_of((s.get("value") or {}).get("typed", [None])[0]) for s in best if s.get("pid") == 570]
+        _put(r["life"], qid, (born[0] if born else None, died[0] if died else None))
+        _put(r["held"], qid, [(_ent(s), qual_year(s, {}, START), qual_year(s, {}, END))
+                              for s in statements if s.get("pid") in HELD and s.get("rank") != 0 and _ent(s)])
 
     def _note_row(self, subj: str, rel: str, obj: str, s: dict, nodes: dict) -> None:
-        """A said row: its object's item, and its own year ("point in time")."""
-        if not hasattr(self, "_links"):
-            self._links, self._pids, self._obj_ids, self._years = {}, {}, {}, {}
-        k = key3(subj, rel, obj)
-        v = s.get("value")
-        if isinstance(v, dict) and "entity" in v:
-            _put(self._obj_ids, k, v["entity"])
-        y = year_of(s.get("hot_qualifiers"), s.get("hot_qualifier_nodes"), nodes)
-        if y:
-            _put(self._years, k, y)
+        r, k = self._rec(), key3(subj, rel, obj)
+        if _ent(s):
+            _put(r["obj"], k, _ent(s))
+        if "dateTime" in str((s.get("value") or {}).get("typed", "")):
+            _put(r["time"], k, True)
+        y = qual_year(s, nodes, POINT_IN_TIME)
+        y = qual_year(s, nodes, START) if y is None else y
+        if y is not None:
+            _put(r["year"], k, y)
 
-    # ---- proposal 4: a value's own date
+    # ---- check 4
     def fact_year(self, triple) -> str | None:
-        """The year the source dated this fact's value at (its "point in time"), with ``CB_OWN_DATE=1``; else None."""
-        if not flag("CB_OWN_DATE") or triple is None:
+        """The year the source dated this fact's value at (its point in time, else its start), with
+        ``CB_VALUE_DATE=1``; else None."""
+        if not flag("CB_VALUE_DATE") or triple is None:
             return None
-        return getattr(self, "_years", {}).get(key3(triple.subj, triple.rel, triple.obj))
+        y = self._rec()["year"].get(key3(triple.subj, triple.rel, triple.obj))
+        return None if y is None else say_year(y)
 
-    # ---- proposal 1: what the value's item is
-    def value_kinds(self, triple) -> set | None:
-        """{"place", "person", "organisation"} that the value's own item is (maybe empty), or None when the value is
-        no item this world handed out (nothing to check against)."""
+    # ---- check 1
+    def item_roots(self, q: str) -> set:
+        if getattr(self, "_roots", None) is None:
+            return set()
+        self._entity(q)
+        return set().union(*(self._roots.of(c) for c in self._p31.get(q, set()) | {q}))
+
+    def value_kind(self, triple) -> set | None:
+        """{"time"} for a time value; the roots of the value's item (with "place" for coordinates); None: no item and
+        no time this world handed out, or no roots table (nothing to check against)."""
         if triple is None:
             return None
-        q = getattr(self, "_obj_ids", {}).get(key3(triple.subj, triple.rel, triple.obj))
-        if q is None:
+        r, k = self._rec(), key3(triple.subj, triple.rel, triple.obj)
+        if r["time"].get(k):
+            return {"time"}
+        q = r["obj"].get(k)
+        if q is None or getattr(self, "_roots", None) is None:
             return None
-        if q not in getattr(self, "_pids", {}):
-            self._entity(q)
-        pids, p31 = self._pids.get(q, (set(), set()))
-        out = set()
-        if pids & set(PLACE):
-            out.add("place")
-        if p31 & HUMAN or pids & set(PERSON):
-            out.add("person")
-        if pids & set(ORGANISATION):
-            out.add("organisation")
-        return out
+        got = self.item_roots(q) - {"role", "work"}
+        return got | ({"place"} if 625 in r["pids"].get(q, set()) else set())
 
-    # ---- proposals 2 and 3: a name's items
+    # ---- checks 2 and 3: a name's items
     def _more_items(self, key: str, labels: list, aliases: list) -> tuple[list, list]:
-        if flag("CB_ALIAS_SEARCH") and aliases and not labels:
-            aliases = aliases + [q for q in self._titled(key) if q not in aliases]
-        if flag("CB_ORIGINAL_WORK") and labels and aliases and len(labels) <= self.NAMESAKE_CAP:
-            pointed = set().union(*(self._links_of(q) for q in labels))
-            labels = labels + [q for q in aliases if q in pointed and q not in labels]
+        if getattr(self, "_roots", None) is None:
+            return labels, aliases
+        if flag("CB_ALIAS_OPEN"):
+            more = self._alias_open(key, labels, aliases)
+            if more:
+                aliases = aliases + more
+        if flag("CB_ORIGINAL_FIRST"):
+            orig = self._original(labels, aliases)
+            if orig is not None:
+                works = self._works(labels + aliases)
+                labels, aliases = [orig] + [q for q in labels if q not in works and q != orig], []
         return labels, aliases
 
-    def _titled(self, key: str) -> list:
-        """The items labelled with a titled name's rest whose description holds the title ("Emperor Constantine")."""
+    def _works(self, items) -> set:
+        return {q for q in items if "work" in self.item_roots(q)}
+
+    def _original(self, labels: list, aliases: list) -> str | None:
+        items = labels + [q for q in aliases if q not in labels]
+        if not 2 <= len(items) <= self.NAMESAKE_CAP:
+            return None
+        works = self._works(items)
+        if len(works) < 2:
+            return None
+        r = self._rec()
+        points = {q: (r["links"].get(q, set()) & works) - {q} for q in works}
+        for o in works:
+            for w in (r["derivs"].get(o, set()) & works) - {o}:
+                points[w].add(o)
+        pointed = set().union(*points.values())
+        originals = [q for q in pointed if not points[q]]
+        return originals[0] if len(originals) == 1 else None
+
+    def _alias_open(self, key: str, labels: list, aliases: list) -> list:
         words = key.split()
-        title = TITLES.get(words[0]) if len(words) >= 2 else None
-        if title is None:
+        if labels or len(aliases) != 1 or len(words) < 2:
             return []
-        rest_labels, _ = self._tiers(" ".join(words[1:]))
-        if not rest_labels or len(rest_labels) > 400:
+        roles = self._role_items(words[0])
+        if not roles:
             return []
-        brief: dict = {}
-        for i in range(0, len(rest_labels), 200):
-            brief.update(self.ask({"op": "brief", "ids": rest_labels[i:i + 200]}) or {})
-        rx = re.compile(rf"\b{title}\b", re.I)
-        return [q for q in rest_labels if rx.search((brief.get(q) or {}).get("description") or "")]
+        bare, _ = self._tiers(" ".join(words[1:]))
+        if not bare or len(bare) > BARE_MAX:
+            return []
+        held = [q for q in bare if q not in aliases and self._holds(q, roles)]
+        if held:
+            self._rec()
+            self._opened.add(key)
+        return held
+
+    def _role_items(self, word: str) -> set:
+        items, _ = self._tiers(word)
+        return {q for q in items[:ROLE_ITEMS] if "role" in self.item_roots(q)}
+
+    def _holds(self, q: str, roles: set) -> bool:
+        self._entity(q)
+        return any(v in roles or roles & self._up(v) for v, _s, _e in self._rec()["held"].get(q, []))
+
+    def _up(self, c: str) -> set:
+        """The classes above `c` by subclass of, at most UP steps (read from the store, remembered)."""
+        memo = self._rec()["up"]
+        if c in memo:
+            return memo[c]
+        seen, frontier = set(), {c}
+        for _ in range(UP):
+            nxt = set()
+            for x in frontier:
+                e = self.ask({"op": "get", "id": x}) or {}
+                nxt |= {_ent(s) for s in e.get("statements", []) if s.get("pid") == 279 and s.get("best") and _ent(s)}
+            frontier = nxt - seen
+            seen |= nxt
+            if not frontier or len(seen) > 200:
+                break
+        _put(memo, c, seen)
+        return seen
+
+    def pick_year(self, name: str, year: int) -> str | None:
+        """Among a name check 3 opened, the one item whose term in the role, else whose life, covers the year."""
+        key = normalize(name or "")
+        if not flag("CB_ALIAS_OPEN") or key not in getattr(self, "_opened", set()):
+            return None
+        r, by = self._rec(), self.namesakes(name)
+
+        def term(q):
+            return any(s is not None and s <= year and (e is None or year <= e) for _v, s, e in r["held"].get(q, []))
+
+        def life(q):
+            b, d = r["life"].get(q, (None, None))
+            return b is not None and d is not None and b <= year <= d
+        for test in (term, life):
+            hit = [q for q in by if test(q)]
+            if hit:
+                return hit[0] if len(hit) == 1 else None
+        return None
 
     def _also_named(self, key: str, subj: str) -> bool:
-        """`subj` is the label of an item the name gathered under these flags (the original from the alias tier, a
-        titled name's namesake), whose rows a hop on the name may read."""
-        if not (flag("CB_ORIGINAL_WORK") or flag("CB_ALIAS_SEARCH")):
+        """`subj` is the label of an item a name gathered under checks 2 or 3, whose rows a hop on the name may read."""
+        if not (flag("CB_ORIGINAL_FIRST") or flag("CB_ALIAS_OPEN")):
             return False
         labels, aliases = self._tiers(normalize(key or ""))
         return any(normalize(self._entity(q)[0] or "") == normalize(subj or "") for q in labels + aliases)
 
-    def _links_of(self, q: str) -> set:
-        if q not in getattr(self, "_links", {}):
-            self._entity(q)
-        return getattr(self, "_links", {}).get(q, set())
 
-    def _derived(self, items) -> list:
-        """The items that point at another of the same items as their original (``CB_ORIGINAL_WORK=1``)."""
-        if not flag("CB_ORIGINAL_WORK"):
-            return []
-        items = set(items)
-        return sorted(q for q in items if self._links_of(q) & (items - {q}))
-
-
-__all__ = ["DERIVED", "Named", "TITLES", "key3", "year_of"]
+__all__ = ["Named", "key3", "qual_year", "say_year", "year_of"]

@@ -70,7 +70,6 @@ ROUTES: dict[str, tuple[str, str]] = {
     "profile_empty": ("source_gaps", "the item was found and holds nothing the ask wants"),
     "not_what_was_asked": ("source_gaps", "the item holds the relation, but no value of the kind the question names (order 0037)"),
     "class_mismatch": ("source_gaps", "the value is not of the class the question names, and no 'located in' step reached one (order 0047)"),
-    "word_mismatch": ("emitter_curriculum", "the value is not what the question word asks (where, who, when): the plan read another relation (order 0054)"),
     "profile_unrecovered":("vm_review", "facts were held but none recovered above the profile threshold"),
     "no_events_for_date": ("capability_gaps", "nothing indexes events by date"),
     "no_self_record": ("capability_gaps", "the loop keeps no record of that subject about itself"),

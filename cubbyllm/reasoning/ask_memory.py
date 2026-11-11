@@ -126,11 +126,10 @@ class AskMemory:
         from .ask_class import check as class_check       # an answer of the class asked (order 0047; CB_HELDOUT_FIXES=0 off)
         if not class_check(self, question, lr, rec):
             return
-        from .ask_word_fits import check as word_check     # where/who/when fit the value (0054 proposal 1; CB_ANSWER_FITS=1)
-        if not word_check(self, question, lr, rec):
-            return
         why = self._time_check(question, lr) if self.tense else None
         snap = self._snapshot(question, lr) if not why else None
+        if snap and snap[0] == "as_of":
+            self._dates(lr, rec)                         # the value's own date and the dump's, apart (0066, check 4)
         if snap and snap[0] != "as_of":                   # a snapshot's value asked about another time (order 0014)
             why = snap[1]
         undated = self._undated(question, lr) if not why and not snap else None
@@ -155,6 +154,13 @@ class AskMemory:
         elif lr.attributed:                               # one witness only: said hedged, the source never named
             rec.update(tier="attributed", reply=hedged(rec["answer"]))
 
+    def _dates(self, lr, rec: dict) -> None:
+        h = lr.result.trace[-1] if lr.result.trace else None
+        w = self.world.held_by(h.fact) if h is not None and hasattr(self.world, "held_by") else None
+        own = w.fact_year(h.triple) if hasattr(w, "fact_year") else None
+        if own:
+            rec["dates"] = {"value": own, "dump": getattr(w, "snapshot", None)}
+
     def _snapshot(self, question: str, lr):
         """For an answer whose last fact a snapshot world holds on a relation whose value changes (heads of state,
         teams, employers: `hdc_store`): ('as_of', year) to say it as of the snapshot; ('refuse', why) for another
@@ -165,7 +171,7 @@ class AskMemory:
         if w is None or normalize(h.triple.rel) not in getattr(w, "time_sensitive", ()):
             return None
         from .question_forms import tense_of
-        own = w.fact_year(h.triple) if hasattr(w, "fact_year") else None    # the value's own date (CB_OWN_DATE=1)
+        own = w.fact_year(h.triple) if hasattr(w, "fact_year") else None    # the value's own date (CB_VALUE_DATE=1, 0066)
         when, held = (own, "the value is dated") if own else (w.snapshot, "the snapshot holds")
         year = strip_as_of(question)[1]
         if year is not None:
@@ -208,7 +214,7 @@ class AskMemory:
             if not self.time_rule or not changes(h.triple.rel) or dated(when):
                 return None
             holder = self.world.held_by(h.fact) if hasattr(self.world, "held_by") else None
-            own = holder.fact_year(h.triple) if hasattr(holder, "fact_year") else None   # (CB_OWN_DATE=1)
+            own = holder.fact_year(h.triple) if hasattr(holder, "fact_year") else None   # (CB_VALUE_DATE=1, 0066)
             as_of = own or getattr(holder, "snapshot", None) or getattr(holder or self.world, "as_of", None)
             if as_of:
                 return ("as_of", str(as_of)) if year is None or str(year) == str(as_of) else \

@@ -70,10 +70,11 @@ class WdStoreWorld(Named, Refined, Crowded, HdcWorld):
     NAMESAKE_CAP = NAMESAKE_CAP
 
     def __init__(self, ask, dump_date: str, statements: int = 0, cache: int = 50_000, kinds: str | None = None,
-                 cues: str | None = None) -> None:
+                 cues: str | None = None, roots: str | None = None) -> None:
         """`ask`: one `wdstore serve` request -> its answer (a dict). `dump_date`: the dump's date (its manifest's).
         `kinds`: the kinds table's path (`wd_store_kinds`); `cues`: the cue table and fictional classes' path
-        (`wd_store_cues`); each read when built from this state of the store."""
+        (`wd_store_cues`); `roots`: the class-roots table (`wd_store_roots`, order 0066's checks); each read when built
+        from this state of the store."""
         self.ask = ask
         self._lock, self._pins = threading.Lock(), threading.local()
         self.snapshot = dump_date[:4]                    # the loop's snapshot rule compares a year
@@ -83,6 +84,8 @@ class WdStoreWorld(Named, Refined, Crowded, HdcWorld):
         from .wd_store_cues import for_store as cues_for
         self._kinds = for_store(kinds, self.state)       # (no table: shared names are held)
         self._cues, self._fictional = cues_for(cues, self.state)   # (none: no cue rules out; nothing set aside)
+        from .wd_store_roots import for_store as roots_for
+        self._roots = roots_for(roots, self.state)       # (none: 0066's checks 1 to 3 do nothing)
         self._pid_label, self._datatype = {}, {}
         for lo in range(1, 14_001, 1000):                # every property: its label and datatype (2.6 s, full store)
             got = ask({"op": "brief", "ids": [f"P{i}" for i in range(lo, lo + 1000)], "lang": "en"})
@@ -188,7 +191,7 @@ class WdStoreWorld(Named, Refined, Crowded, HdcWorld):
             found = {q: k for q, k in found.items()                     # a Wikimedia page is not a thing
                      if q in brief and not set(brief[q].get("types", [])) & META}
         order = sorted(found, key=lambda x: int(x[1:]))
-        return self._more_items(key, [q for q in order if found[q] == 0], [q for q in order if found[q] == 1])   # (0054's proposals 2, 3)
+        return self._more_items(key, [q for q in order if found[q] == 0], [q for q in order if found[q] == 1])   # (0066's checks 2, 3)
 
     def _ids(self, key: str) -> tuple[str, list]:
         """("label", ids), else ("alias", ids), else ("none", [])."""

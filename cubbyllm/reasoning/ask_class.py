@@ -9,6 +9,8 @@ ville", "quel pays"):
 - the value is spoken only if it is an instance of one: its P31, or one ``subclass of`` step above it (as
   ``sources.wikidata_namesakes`` reads kinds);
 - otherwise ``class_mismatch``, naming what was found ("Parkland Memorial Hospital, a hospital");
+- with ``CB_QWORD_KIND=1`` (order 0066): a question that names no class is checked by its question word
+  (`ask_qword`), and a class word the source has no class for is read by its head noun ("culture region" -> "region");
 - with ``CB_CLASS_WALK=1``: the value is walked up ``located in`` (P131), at most three steps, to the first item of
   the class asked, each step a statement the source makes ("Dallas, where Parkland Memorial Hospital is").
 
@@ -96,9 +98,14 @@ def walk_up(loop, start: str, cls: set) -> list[tuple[str, str]] | None:
 def check(loop, question: str, lr, rec: dict) -> bool:
     """True when the answer stands (or there is nothing to check); False when `rec` now refuses (or walked)."""
     from .heldout import on, walk_on
+    from . import ask_qword
     src = getattr(loop, "source", None)
     cw = class_word(question) if on() else None
     h = lr.result.trace[-1] if lr.result.trace else None
+    if cw is None:                      # no class named: the question word's kind (0066, check 1a; CB_QWORD_KIND=1)
+        got = ask_qword.check(loop, question, lr, rec)
+        if got is not None:
+            return got
     if not cw or h is None or h.triple is None or not hasattr(src, "_claims"):
         return True
     table = getattr(loop, "_everyday", None)
@@ -113,6 +120,10 @@ def check(loop, question: str, lr, rec: dict) -> bool:
                    refused={"answer": value, "why": f"the question asks for a {cw[0]}, and {value} is not one"})
         return False
     cls = classes(src, cw[0], cw[1])
+    if not cls and ask_qword.on() and cw[1] == "en" and len(cw[0].split()) > 1:
+        head = cw[0].split()[-1]        # 0066, check 1b: a class the source has none for, read by its head noun
+        cls = classes(src, head, cw[1])
+        cw = (head, cw[1]) if cls else cw
     items = value_items(loop, h.fact, value) if cls else []
     if not cls or not items or any(is_a(src, q, cls) for q in items):
         return True

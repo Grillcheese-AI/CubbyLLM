@@ -104,6 +104,8 @@ def seed_for(loop, seed: str, item: str | None = None, question: str | None = No
         return contextlib.nullcontext()
     loop.world.clear_withheld()
     by, got = _decided(loop.world, seed, item, held=bool(loop.facts_about(seed)))
+    if by and not got and question:
+        got = _by_year(loop.world, seed, question)      # a name 0066's check 3 opened: the year the question names
     if got:
         return loop.world.pinned(seed, by[got[0]][0][1].subj, got[0])
     if question and answer.on():
@@ -114,6 +116,19 @@ def seed_for(loop, seed: str, item: str | None = None, question: str | None = No
                 stack.enter_context(o.cued(words))
         return stack
     return contextlib.nullcontext()
+
+
+def _by_year(world, seed: str, question: str):
+    """(item, how) when a world that opened `seed` (0066, check 3; ``CB_ALIAS_OPEN=1``) finds one item whose term or
+    life covers the year the question names; else None."""
+    m = _re.search(r"\b([1-9][0-9]{2,3})\b", question or "")      # a year of three or four digits
+    if not m:
+        return None
+    for w in [world, *getattr(world, "others", [])]:
+        q = w.pick_year(seed, int(m.group(1))) if hasattr(type(w), "pick_year") else None
+        if q:
+            return q, f"the year the question names ({m.group(1)})"
+    return None
 
 
 also = answer.also                                      # the namesakes' line, after the loop's checks (ask.AskLoop._ask)
