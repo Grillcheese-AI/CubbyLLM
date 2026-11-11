@@ -156,3 +156,33 @@ or properly refuse, so the curriculum never wastes questions on links that don't
     program against the ontology's domains and ranges before it becomes a training pair, and count the rejects.
 - **Also for 0057's two-period questions:** the AIT Wikidata benchmark (0054's addendum of 2026-11-09) is a ready
   external set of as-of questions.
+
+## Cowork's addendum (2026-11-11): three ideas from the field watch for the curriculum, proposed
+Nick: "there's a lot more we can borrow in it". **Proposed, for Nick's yes; nothing here is built or measured.**
+As the field watch read them; each source is read again before anything is taken.
+
+**What it brings, in plain words:**
+- Cubby knows the list of question shapes it answers, and says "that is not a shape I answer" for the rest.
+- It learns "which bird has no wings" and questions inside questions.
+- Its practice questions come with wrong choices drawn from the graph, so each is checked by rule.
+- **Over a conventional model:** a model answers any shape of question, including the ones it cannot do.
+- **For you:** fewer silent misreadings: Cubby confirms what it understood, or says the shape is outside its
+  list.
+
+### 1. The curriculum as a closed list of shapes
+From "Never the Number: Structural Abstention" (a fixed kernel compiles fixed question shapes; a request outside
+them is declined). Prior art, to cite.
+- **The list:** every answerable shape is named (a hop, a chain, a count, a filter, a comparison, a superlative).
+- **Outside the list:** refused as "not a shape I answer", its own refusal reason, counted apart.
+- **Before answering:** the parsed question is said back when the parse was not exact.
+
+### 2. Negation and nested constraints
+From CUCKOO and its NestKGQA set (negative-constrained questions).
+- **New shapes:** "which X has no Y", and a constraint inside a constraint.
+- **Each is added** only when the VM runs it and the answer is checked, as every shape is.
+
+### 3. Practice questions with distractors drawn from the graph
+From KGQuest (templates by relation cluster; wrong choices taken from the graph; its LLM polish is left out).
+- **The form:** a question, its checked answer, and wrong choices that are true of a neighbour.
+- **Use:** training the proposer to tell near relations apart, and the talk seat to keep neighbours' values
+  apart (0010: the binding losses, and real question wordings bound to a relation).

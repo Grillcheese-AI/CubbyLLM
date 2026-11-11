@@ -848,3 +848,38 @@ reading.
 **Order for the four approved changes:** 1, 4 and 2 first (they are changes to the picking rule), then 3 (the cue
 table). All four land before 0054's rerun (step 4). The fictional classes are the class tree under Wikidata's
 "fictional entity" class; Claude Code confirms its id on the store and records it.
+
+## Cowork's addendum (2026-11-11): three ideas from the field watch for the certificate, proposed
+Nick: "there's a lot more we can borrow in it". **Proposed, for Nick's yes; nothing here is built or measured.**
+As the field watch read them; each source is read again before anything is taken.
+
+**What it brings, in plain words:**
+- The certificate shows how its facts back the answer: which are needed together, and which are separate
+  backings of the same thing.
+- A certificate can be checked on another machine, with no access to Cubby's store.
+- **Over a conventional model:** a citation list says what was read, not what the answer needs. Nothing in it can
+  be checked offline.
+- **For you:** "two independent records agree" and "one chain of three facts" look different on the page.
+
+### 1. The certificate says how its statements support the answer
+From PERAG (how-provenance polynomials: fake facts accepted fell from 41% to 16%) and Scallop's provenance
+semirings.
+- **The form:** the statements read are written as an expression: joined where all are needed, alternatives
+  where each is enough. "(s1 and s2) or s3".
+- **The check:** remove an alternative and the answer stays; remove a joined statement and it goes. This is the
+  same replay as 0054's certificate check.
+- **Reported:** how many spoken answers have more than one independent support.
+
+### 2. Statements a certificate can prove offline
+From the Trust-Centric architecture (claims checked on a signed graph) and SYMMARTYS (a signed receipt per
+record: source, fetch time, hash).
+- **The form:** each ingest batch's digest is signed with the host's key (the stack already holds one), and a
+  certificate carries the path from its statements to that digest.
+- **The check:** a certificate verifies with the public key alone.
+
+### 3. A hypervector path index is tested before it is trusted (parked)
+PathHD keeps relation paths as invertible hypervectors. "Holographic Memory for Zero-Shot Compositional
+Reasoning in KGs" reports that HRR and FHRR memories fail on multi-hop chains they have not seen, with a flaw in
+FHRR's cleanup.
+- **If a hypervector path index is ever proposed for the store:** those two failure tests run first.
+- **For Nick's own block-code work:** the cleanup flaw is worth reading against it. Nothing is built here.

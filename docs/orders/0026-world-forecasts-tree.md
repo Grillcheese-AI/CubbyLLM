@@ -113,3 +113,15 @@ exactly (Nick: "yes").
 - **Reported:**
   - the share of events with at least one recorded cause, which bounds what this can answer;
   - for the queue, the number of candidates, and the confirmation rate on a seeded sample of 200.
+
+## Cowork's note (2026-11-11): a what-if as a fork of the event log, from the field watch, proposed
+Nick: "there's a lot more we can borrow in it". **Proposed, for Nick's yes; not built, not measured.** As the
+field watch read it.
+- **Deterministic Event-Graph Substrates as World Models** (Tesseract, May 2026): an append-only event log; a
+  what-if is the log forked at a tick; "why" and "what if" are one walk over an event's causal ancestors. No
+  part is learned.
+- **For this order:** a forecast's what-if branch is a fork of the recorded log, so each branch replays, and the
+  "why" of an outcome is a list of recorded events.
+- **What it brings, in plain words:** Cubby can answer "what if this had not happened?" by replaying from that
+  point, and show the events that led to the result.
+- **Over a conventional model:** a model imagines the alternative; nothing can be replayed or checked.

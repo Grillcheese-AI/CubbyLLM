@@ -223,3 +223,16 @@ three-factor rule should do the same. Plain STDP cannot.
   - the keys not swapped stay within 1 point.
 - **Expected:** P never recovers, since it strengthens whatever it chose. There is no line: it is reported beside A, in
   H-A16's terms.
+
+## Cowork's note (2026-11-11): a learning rule from the field watch, proposed
+Nick: "there's a lot more we can borrow in it". **Proposed, for Nick's yes; not built, not measured.** As the
+field watch read it.
+- **Vector Symbolic Policy Gradient** (arXiv 2608.18404): an actor whose policy update is exactly an
+  advantage-weighted bundling of hypervectors. The rule is local and uses bundling only, with a proof, and suits
+  event-driven hardware.
+- **For this order:** a candidate update rule for the learner, compared with the current one on this order's
+  own tasks before anything changes.
+- **What it brings, in plain words:** the fast learner improves from experience with the one operation it
+  already has, adding vectors.
+- **Over a conventional model:** a network's update needs gradients carried back through every layer; this one
+  needs only what the unit itself sees.

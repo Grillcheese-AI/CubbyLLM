@@ -235,3 +235,49 @@ comes from the register's record, with its date.
 
 Credit: Tesseract Semantics is named as the source of each ontology in its manifest and in the paper's related
 work, as CC BY asks.
+
+## Cowork's addendum (2026-11-11, second): five more from the field watch for the domain worlds, proposed
+Nick: "there's a lot more we can borrow in it". **Proposed, for Nick's yes; nothing here is built or measured.**
+The first three were read today; the last two are as the field watch read them.
+
+**What it brings, in plain words:**
+- A finance test with the answers already written, to grade Cubby on day one.
+- Rules of law or policy as small checked programs that say "holds", "does not hold" or "cannot tell".
+- A verdict that quotes the rule as it was worded on the day in question.
+- **Over a conventional model:** a model paraphrases a rule from memory, in today's wording, with rounded
+  numbers, and never says "cannot tell".
+- **For you:** Cubby can check a record against a dated rule and show the exact sentence it applied.
+
+### 1. A finance fixture with expected answers
+Fluree's Financial Services Demo Kit: FIBO's business-entity ontologies with a credit extension, 75 real GLEIF
+LEI records (public domain) among 171 entities, and 18 competency questions, each with its expected answer. A
+21 KB zip; its own licence is in its README, to read first.
+- **Use:** the finance world's first test. **Line:** 18 of 18 right or refused with a reason; 0 wrong.
+
+### 2. Rules as typed programs with exact numbers and an explicit "cannot tell"
+From MudraForge Decompiler (Apache 2.0): statutes become a typed tree; a VM evaluates it in exact rational
+arithmetic and abstains on an ambiguous or contradictory provision. Its scores are its authors' own.
+- **For this order's rule mapping:** a domain rule is a CubeLang program with exact arithmetic and three
+  outcomes: holds, does not hold, cannot tell. No float decides a threshold.
+- **The model that writes their tree is not taken:** here a rule is written by hand or mapped from the ontology.
+
+### 3. Records checked against a dated law
+From ccp-engine: 1,487,586 Portuguese public-procurement procedures checked against the public contracts code.
+No model runs at run time. Each verdict cites the passage, its wording in force on that date, a literal quote
+and the facts used; a refusal carries a typed reason; each verdict names the log head, the law's version and the
+code's commit. Its licence file is to be read first.
+- **Taken as patterns:** the wording in force on the record's date; refusal types (a fact missing, a rule
+  missing, dates in conflict); the verdict naming the versions it was made with.
+- **A candidate domain after finance and automotive:** public procurement, where the records are open.
+
+### 4. A draft mapping from a company's own tables, approved term by term
+From NVIDIA's Auto Ontology (a model drafts an enterprise ontology and people certify it). For the on-premises
+worlds of this order.
+- **Here:** the draft comes from profiling the tables by rule (keys, value ranges, joins that hold). A person
+  approves each term, and the mapping records the approval, as the addendum of 2026-11-06 already asks.
+- **Also taken:** a filter's value is checked against the data before a query runs.
+
+### 5. An enterprise benchmark whose answers carry proofs
+ENTLORE: 907 enterprise questions whose gold answers are computed by graph programs with proof certificates,
+with a bank of questions that must be refused. Its code was not out when the field watch read it.
+- **When released:** the benchmark for this order's enterprise demo.

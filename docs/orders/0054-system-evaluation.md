@@ -534,3 +534,51 @@ From "Verified Knowledge Extraction from Language Models" (a Hugging Face space,
 - **Both questions are refused** ("who is the minister of local government in Zimbabwe", "who is the minister of youth
   in Namibia": `no_plan`; neither program plans its question). **NQ's C stands: 15 spoken, 4 wrong.** Every other
   answer is the gather run's; Cubby's own tally replies move by one count.
+
+## Cowork's addendum (2026-11-11, second): five more steps from the field watch, proposed
+Nick: "there's a lot more we can borrow in it". **Proposed, for Nick's yes; nothing here is built or measured.**
+Sources were read today where a page could be reached; what could not be checked is said.
+
+**What it brings, in plain words:**
+- A right answer is only counted when its certificate, alone, is enough to give it.
+- Cubby is tested with every name replaced by a made-up word, so nothing can come from memory.
+- Refusals are judged: did Cubby give the real reason?
+- French gets a benchmark of its own.
+- **Over a conventional model:** a model's right answer may rest on memory or on luck, and nothing shows which.
+  Its refusals are not checked for their reason.
+- **For you:** "right" in the paper means right and backed, and a refusal means the stated reason is the true one.
+
+### 1. A right answer whose certificate does not carry it
+From "Trace Integrity for LLM Data Agents" (BIRD Mini-Dev: 45.8 to 59.1% of answers scored right rested on
+computation that was not valid) and owl-equivariance (a reasoner checks that the cited axioms alone entail the
+answer; Apache-2.0).
+- **The check:** each spoken answer's program is run again on a store that holds only the statements its
+  certificate names. The same answer must come out.
+- **Reported:** right answers with an insufficient certificate, beside wrong and refused, per benchmark.
+- **Line:** 0. **Kill:** one such answer is a hole in the certificate; it is read before any other number.
+
+### 2. Every name replaced by a made-up word
+From HiddenPathQA's pseudoword test (Jo and Choi, arXiv 2611.11802) and owl-equivariance's renamed presentations.
+- **The test:** entities are renamed to made-up words, the same way in the store and in the question.
+- **Arm C:** every answer must follow the renaming. Any that does not came from somewhere other than the store.
+- **The proposer:** its plans are compared before and after. Plans lost under renaming are counted: that is how
+  much the 450M leans on names it has seen.
+
+### 3. Questions whose wording hides the relation
+HiddenPathQA: 1,055 hand-checked questions of 2 to 6 hops whose words do not name the path's relations. It is the
+gap the "after" found in the proposer and the blind A/B found in the talk seat ("what money does spain use?").
+- **Use:** an evaluation set for arm C and for C-oracle, never training data.
+- **To check first:** the paper's page does not say whether the data is released, or under what licence.
+
+### 4. Refusals judged, not only counted
+From AuthentiCity (1,394 questions over a city graph, some built to be infeasible; CC BY as the field watch read
+it) and NeSy-RAG's "more" cases (a refusal that names the missing fact). HopRefusalBench is already in this order.
+- **Scored:** on questions built to be unanswerable for a known reason, whether Cubby's refusal names that reason
+  (a fact missing, a false premise, an underspecified question, a shape it does not answer).
+- **Reported:** refusals with the right reason, the wrong reason, and wrong answers, apart.
+
+### 5. A French set
+MSQA (Chen et al., arXiv 2607.00724): 1,064 natively sourced SimpleQA-style questions in 11 language groups.
+0066's report has no French benchmark for its French question words.
+- **To check first:** whether French is among the 11, and whether the data is released and under what licence.
+  The abstract's page says neither.

@@ -232,3 +232,15 @@ The original options, kept for reference:
 - Private projects and internal-only sources.
 - Local paths, drive letters and account details.
 - Any claim of GeoSPARQL, OWL or SHACL conformance that has not been tested.
+
+## Related work the field watch found (2026-11-11), for v2
+- **Close to the claim, to cite and tell apart:** Stardog Voicebox (a commercial answer engine over an enterprise
+  graph that says it does not hallucinate; no benchmark numbers); third-party-risk-graph (rules pick query
+  templates, facts carry sources, refusals carry reasons; a simulated world, 79.6% right and 10% wrong held
+  out); ferrum-app-intelligence (typed metric reads by rule, with refusals; no benchmark); "Never the Number"
+  (fixed question shapes compiled by a fixed kernel; the rest declined).
+- **The same shape in another domain:** ccp-engine (records checked against dated law, quoted verdicts, typed
+  refusals, no model at run time); MudraForge (statutes as typed programs run in exact arithmetic, with an
+  abstain outcome).
+- **What sets Cubby apart, as measured so far:** public benchmarks with the wrong and refusal counts and their
+  intervals, a certificate per answer, and no model on the answer path.
