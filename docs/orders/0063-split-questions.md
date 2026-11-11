@@ -128,3 +128,16 @@ evidence. It is change h of 0010, applied to actions.
 - **Reported:** the outcomes by kind, and for "recovered" the number of attempts.
 - **Kill:** one reply that says a step was done which the trace does not hold. It is read before any other
   number.
+
+## Cowork's correction (2026-11-11): the note on containers above was measured on an old build
+- The note says containers and wiring compile to nothing. That was the main checkout's release binary of
+  2026-09-29.
+- On the cowork branch's build of 2026-11-11, the one the stack runs, `bridge_mesh.cube` is no longer dropped:
+  the container is compiled, and the draft stops on two named errors (a method call used as an operand; strict
+  naming its `io` block). That branch has container tests of its own.
+- **Step 0 of this order is done from a build, never from the markdown.** Checked by running on both builds:
+  `for`, `match`, a call with recursion and an early `return` execute. Not checked: the `parallel`, `joined`
+  and `async` modifiers.
+- One thing differs between the two lines: on main a called function that reads a declared parameter name
+  gets 0, with no error; the cowork branch binds the names.
+- The note's second paragraph stands: records about containers and bridges are written from what ran.

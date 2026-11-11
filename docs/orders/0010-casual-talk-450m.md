@@ -968,3 +968,26 @@ not used; its recipe is worth borrowing. Not downloaded.**
   is needed. The first limit stands: the rows hold sessions, and the answers are in the sets they came from.
 - **For the trial:** the program seat's rows must follow the two rules of wording above, or the VM refuses the
   program at compile time.
+
+- **The smallest file read, on Nick's yes (2026-11-11):** `skill_based/mixed/data_processing`, 17.9 MB, into the
+  git-ignored data folder.
+  - **What it holds:** 957 rows, each a different task, with one agent's session of 2 to 24 turns. Every session
+    is DeepSeek-V3.2's. The columns are the ones the schema showed.
+  - **What a task is:** a written specification in the first turn. The one I read: three input files (sales as
+    JSON lines, an inventory as CSV, a region table), then drop bad records, join on a key, compute two derived
+    fields, class each record by thresholds, flag anomalies, group and aggregate, sort, and write three output
+    files with exact keys.
+  - **What is not there:** the input files (the session shows only what the agent printed, often the first
+    five lines) and any expected value. 940 of the 957 have an "expected outputs" section; in the one I read it
+    describes the files to write, not their content. No row mentions a test.
+  - **So these tasks cannot be converted and checked as they are:** there is nothing to check a CubeLang
+    program's result against.
+- **What does convert is the shape, and it fits CubeLang:** each specification is a chain of a few basic data
+  skills: filter, join, derive, class by threshold, flag, group and aggregate, sort. CubeLang runs loops,
+  calls, `match` and arrays.
+  - **Proposed, on Nick's yes:** a generator of our own. Tasks are built by rule from those skills over small
+    tables that the generator also writes; the expected result comes from a reference written by hand, once
+    per skill; Cubby's program seat writes the CubeLang; the VM runs it; a row is kept only when the results
+    are equal. No model writes a fact, a task's answer or a program.
+  - The math and code streams were not fetched (3.0 GB and 855 MB). Their answers are in the sets they were
+    adapted from.
