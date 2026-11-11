@@ -362,3 +362,33 @@ base, read raw) is beside them for reference.
   and changes b to f.
 - **The opener view's own effect** is not isolated by this pass (both arms ran with it on). The control without
   it would be the comparison; the voice without it was the reason for building it (0010's "Found on the way", 1).
+
+### Cowork's read of the gates (2026-11-11)
+- **The table holds against the logs:** 395 and 391 of 407 on E6's host view, 0 spoken wrong; 6 and 9
+  wrong-but-guarded; the capitals, 24 and 24 both ways; E7's three bars; E8's 314-question split (75.2% and 75.5%,
+  1 wrong each); E9's gate, 0 wrong in both.
+- **The ruling: this pass's lines are met.** The voice's spoken-and-correct on H-E6 is the control's minus 0.010
+  (line: minus 0.02), and the voice says no wrong answer the control does not. E8's one wrong answer is the
+  retrieval's, the same row in all three adapters: "0 wrong spoken" is true of what the voice adds, not of E8
+  as a whole.
+- **Where the 4 go** (E6, voice against control): profile 75 against 77, bind_t 74 against 77, counter 77 against
+  78, relation 78 against 76. In profile and bind_t, six rows are the voice's alone:
+  - **2 read as the host's first-line cut, not the adapter's.** "I've got the checked details right here:" and
+    "Let's lay out the confirmed details for you." are a list's lead-in. `talk_answer` keeps the first line, so
+    a list after it is dropped (the raw output is not in the log: to confirm with change **b**). The value check
+    finds no value and refuses.
+  - **2 are bindings to another entity's value,** where the control was right: the track of Teletubbies, the
+    birthplace of Yo Yo Honey Singh. Each value is in the block, under another entity. The value check refused
+    both.
+  - **1 is a name spelt wrong** ("Khaungthala Temple" for "Madhukeshwara Temple"), refused by the guard.
+  - **1 is a refusal** where the control answered (La Repubblica's parent company).
+- **What the voice does better:** 2 more relation rows answered, and "The facts don't say." said on its own more
+  often when the fact is absent (63 of 64 against 59, before the host).
+- **Wrong in both arms, and not the adapters':** two rows whose entity is malformed in the held data ("Polish
+  Russian War)>"), and two scored wrong on spelling or word order ("NonBarotropic" for "Non Barotropic"; "a
+  bloodletting type" for "a type of Bloodletting"). They are refused either way. The held set and its scorer go
+  through 0054's audit when it is built.
+- **To watch in the next voice set: binding.** A guess, not measured: the voice rows carry one entity's facts a
+  block, and the mix is 254,231 training rows where `talk_v2_2` alone was 216,035, so its binding rows are a
+  smaller share. The next build adds voice rows whose block holds a second entity's facts.
+- **Next:** change **b** first among b to f; then the casual proxies and the blind A/B, on replies read with b.
