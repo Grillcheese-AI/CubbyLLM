@@ -86,3 +86,42 @@ calculation, not a reading.
 - **Not verified here:**
 - **Found on the way:**
 - **Questions:**
+
+## Cowork's addendum (2026-11-11): one outcome per document, and what each field depends on
+Nick: "yes". The shape comes from the Agent Task Management Dataset (Hugging Face, `Lelonthecodeur`, MIT), a set
+written by a program. Only the shape of its record is taken; none of its rows is used and nothing was
+downloaded. The same addendum is in 0063, for split questions.
+
+**What it brings, in plain words:** every document ends in one of five recorded outcomes, and each field says
+which other fields it rests on.
+- **Over a conventional model:** an extractor returns filled fields. Nothing says which were read, which were
+  worked out, and which a person fixed.
+- **For you:** "this invoice is entered" is only ever said of an invoice whose every field has its proof.
+
+### Added to the record (step 8)
+- **`depends_on`, per field and per check:** the subtotal rests on the lines; the total on the subtotal and the
+  tax. When a reviewer changes a line, the checks that rest on it run again, and the record shows which.
+- **`evidence`, per field:** the region and the reader's version, or the reviewer's entry. A field with no
+  evidence is never in a committed document.
+- **`outcome`, one per document, with its reason:**
+  - **done:** every field was read and checked. Committed on the automatic path;
+  - **failed:** a check does not hold: the lines do not add up, the purchase order disagrees, the number was
+    entered before. Not committed; the review task says why;
+  - **recovered:** a field was refused as unreadable, a reviewer entered it, and the checks then held. Committed,
+    with the reviewer on record;
+  - **impossible:** it is not a document Cubby reads: handwriting, another language, not one of the schemas.
+    Refused whole, and said so;
+  - **needs a clarification:** the page reads, but leaves a choice: two totals, two suppliers that match. The
+    reviewer is asked to choose among the candidates listed.
+
+### What Cubby says it did comes from the record
+"Entered", "checked" and "sent to review" are said of a document only when the record holds that step. A
+document is never called entered before its commit.
+
+### Acceptance, added (set before the build)
+- **The degraded copy and the planted cases are labelled with the outcome they must end in,** and each of the
+  five occurs by design.
+- **Hard lines:**
+  - the recorded outcome is the planted one on every planted case;
+  - 0 documents recorded as done with a field that has no evidence.
+- **Reported:** documents by outcome; for "recovered", the fields a person entered.

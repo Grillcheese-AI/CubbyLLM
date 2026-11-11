@@ -81,3 +81,50 @@ otherwise, the parallel parts of this order run as separate VM sessions driven b
 Records about containers and bridges, such as Nick's JSON-LD draft for the bridge, are written by the host from what
 actually ran (the observed status, rate-limit counts and audit log), never declared by hand. A bridge that never
 started must not be recorded as "Active".
+
+## Cowork's addendum (2026-11-11): the record of a task, and five outcomes to test
+Nick: "yes". The shape comes from the Agent Task Management Dataset (Hugging Face, `Lelonthecodeur`, MIT), a set
+written by a program. Only the shape of its record is taken. None of its rows is used and nothing was downloaded:
+its traces are all marked "simulated", where Cubby's are the VM's own.
+
+**What it brings, in plain words:** every split question leaves one record that says what was planned, what
+actually ran, what proves each step, and how it ended.
+- **Over a conventional model:** an agent's report of its own steps is text it wrote. Nothing shows a step ran.
+- **For you:** when Cubby says "I checked that", there is a step in the record with its proof, or it does not
+  say it.
+
+### The record (step 7), as one shape
+- **`plan`:** the parts as steps. Each step names the slot it fills and `depends_on`, the steps whose values it
+  reads.
+- **`trace`:** one entry for each step that ran: its route, its proposer, its program, its verdict, and
+  `evidence`, which is the VM's certificate for that step. A step that did not run has no entry. No model
+  writes any of it.
+- **`checks`:** one for each value the final sentence uses, naming the certificate behind it.
+- **`outcome`:** exactly one of five, with its reason:
+  - **done:** every part and the combination are certified;
+  - **failed:** a part ran and was refused. The reply names it (step 4);
+  - **recovered:** a part failed on its first route or proposer and was certified on another. Both attempts stay
+    in the trace;
+  - **impossible:** the plan cannot cover the question: a part of a shape Cubby does not answer, or a fact no
+    world holds;
+  - **needs a clarification:** a name stands for several things, or the question leaves a choice open. Cubby
+    asks.
+- It is the record 0059 settles, not a second one: the plan is the plan, the trace is the activities, the
+  outcome is the decision.
+
+### What Cubby says it did comes from the trace
+The final sentence (step 6) already says certified values only. The same holds for what it says it did: a
+statement that a step was done, checked or looked up is spoken only when the trace holds that step with its
+evidence. It is change h of 0010, applied to actions.
+
+### Acceptance, added (set before the build)
+- **The planted cases cover the five outcomes:** at least 30 of the 300 questions for each outcome other than
+  done. For "recovered", the first specialist lacks the fact and a second holds it. For "needs a clarification",
+  a planted namesake.
+- **Hard lines:**
+  - the recorded outcome is the planted one on every planted case;
+  - 0 trace entries without a certificate;
+  - 0 replies that say a step was done which the trace does not hold.
+- **Reported:** the outcomes by kind, and for "recovered" the number of attempts.
+- **Kill:** one reply that says a step was done which the trace does not hold. It is read before any other
+  number.
