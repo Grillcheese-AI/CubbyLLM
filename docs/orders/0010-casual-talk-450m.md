@@ -327,3 +327,38 @@ fact in them is a line of the block. Every sentence around it is a picked templa
   takes tens of GB at batch 32; a loss computed in slices would give the same number in less memory.
 - **Next:** gates E6 to E9 at home on grilly2 for both adapters, the host reading replies through the opener view
   for both (change **a** above); then the lines set for this pass, and the blind A/B.
+
+### Gates E6 to E9, both adapters (Claude Code, 2026-11-11; Nick's go)
+At home on grilly2 (the local card), the grilly2 export of `base450m_cont`, greedy, the scripts and data of the
+September gates unchanged, one after the other, **the host reading every reply through the opener view**
+(change a, `6b35c9c`: `CB_OPENER_VIEW=1`, off by default; `cubbyllm/reasoning/opener_view.py`). Logs:
+`validation/logs/exp_e6_talk_gate_{v2_2_cont,v3a}`, `exp_e6_host_view_*`, `exp_e7_explicit_gate_*`,
+`exp_e8_history_retrieval_*`, `exp_e9_context_followups_test_*` (.json, .log). `talk_v2_2` (September, the old
+base, read raw) is beside them for reference.
+
+| | `talk_v2_2` (Sept.) | control `talk_v2_2_cont` | voice `talk_v3a` |
+|---|---|---|---|
+| **E6, spoken and wrong** (host view, 407 held records) | 0 | **0** | **0** |
+| E6, spoken and correct | 385 (94.6%) | 395 (97.1%) | 391 (96.1%) |
+| E6, wrong-but-guarded (the model's, before the value check) | 8 | 6 | 9 |
+| E6, capitals: facts followed / "The facts don't say." | 24 / 24 | 24 / 24 | 24 / 24 |
+| E7: explicit with the gate closed / gate answer / open answered | 0 / 100% / 98.7% | 0 / 100% / 100% | 0 / 100% / 99.3% |
+| E8, reworded test (314): correct / wrong | 74.8% / 1 | 75.2% / 1 | 75.5% / 1 |
+| E9, context arm (test): gate | pass | pass | pass |
+| E9, context arm: wrong | 0 | 0 | 0 |
+
+- **The lines for this pass: met.** 0 wrong spoken on every gate's host view but E8's one (below), both arms; the
+  voice's spoken-and-correct on the H-E6 battery is the control's minus 0.010 (391 against 395 of 407), inside
+  the 0.02 set before the run.
+- **E8's one wrong answer is the retrieval's, not an adapter's:** "What were the results of the Assyrian campaign
+  led by Sennacherib against Judah in 701 BC?" is matched to another event of the graph (`Sennacherib's Assyrian
+  campaign against Judah (701 BCE)` for the gold `Assyrian attack led by Sennacherib`), and its block is read
+  faithfully ("... caused Hezekiah's Tribute to Sennacherib"). The same row is wrong for all three adapters. E8's
+  gate (top1, line and correct bars, wrong = 0) was missed in September on the same row; nothing here changes it.
+- **Where the voice gives up a little:** E6's bind_t (92.5% against 96.2%) and profile (93.8% against 96.2%), each
+  a refusal by the host, never a wrong answer said. Its absent family is better (98.4% against 92.2% before the
+  host; both 100% after it).
+- **Not measured here:** the blind A/B (Nick's), the proxies for casual (shape, openings, contractions, length),
+  and changes b to f.
+- **The opener view's own effect** is not isolated by this pass (both arms ran with it on). The control without
+  it would be the comparison; the voice without it was the reason for building it (0010's "Found on the way", 1).
