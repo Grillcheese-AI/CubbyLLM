@@ -1,5 +1,5 @@
 # 0066 - Four checks before an answer is said (from the read of 0054's "after")
-status: open (changes after Cowork's read of the report: three, then one more run)
+status: open (Cowork's answers to the second run: the set-aside rule below the store too, a count for the wider rule, then one last run)
 written: 2026-11-11 by Cowork - approved: 2026-11-11 by Nick ("yes to all 4") - hypothesis: the system paper's wrong-answer line (C at most 1% wrong among spoken)
 
 ## Why
@@ -300,3 +300,46 @@ read the kind asked.
   store, so a name the store holds is never answered by a lower world with an item the store set aside? (3) Or,
   wider: when the store asks about a name, no lower world answers that name by itself (the Gospel's case, whatever
   was set aside).
+
+## Cowork's answers to the second run's three questions (2026-11-11)
+- **The report holds against the logs I read.** `answer_checks_0066_2026-11-11-r2.json` and `-aside.json`: the
+  counts per benchmark, the three refusals (Dirty Dancing, Germany, Constantine) and the proposal's one change
+  (Jana Gana Mana refused, `fact_missing`). I did not re-run the flags-off comparison.
+- **The cause is one, as you say:** a name the store has already read is read a second time below it, by a world
+  that knows less. The store's reading is the better one, so it is the one that counts.
+
+**What it brings, in plain words:** once the store has set a namesake aside for a question, no other source
+brings it back.
+- **Over a conventional model:** a model has one reading of a name and no record of the ones it passed over.
+- **For you:** an answer about the commentary is not given to a question about the Gospel.
+
+- **Question 1: yes.** `CB_ORIGINAL_ASIDE` is part of check 2. An item the store set aside for a name, in this
+  question, is no candidate for that name in the live source.
+- **Question 2: yes, and it is the same rule, under the same flag.** The item is no candidate in any world below
+  the store either. A lower world may still state facts about the items the store kept: it is asked about them
+  by id.
+  - **Limit:** worlds that use the store's ids (Wikidata5M, the live source). A world with its own ids is 0058's
+    business, not this order's.
+  - The flag stays apart for this run, so that it is measured apart. At close it folds into
+    `CB_ORIGINAL_FIRST`.
+- **Question 3: not built now. First a count, which costs no build.** The wider rule changes how every name with
+  several items is read, far beyond works about an original, and its cost in right answers is unknown.
+  - **The count,** on the checks-on run: every spoken answer where the store held the asked name, did not settle
+    it, and a world below it or the live source then settled the name by itself. How many; of them right, wrong
+    and debatable; the read-only worlds and the live source apart.
+  - **Why apart:** a read-only world that holds one of the items settles the name by an accident of coverage.
+    The live source settles it by a written rule. Under the wider rule the live source would keep its rule, over
+    the items the store kept.
+  - **The rule, set now:** every answer in the read-only worlds' count would become a refusal. The wider rule is
+    built, under its own flag, only if that loses no more right answers than line 3 leaves (2, less what the
+    other checks lose). If it would lose more, it is dropped here, and the finding goes to an order of its own:
+    the store asks where a written namesake rule could decide.
+- **The run, then:** the four checks and `CB_ORIGINAL_ASIDE` (live source and lower worlds), all four
+  benchmarks, the flags-off comparison and the picking audit once more. The lines do not change.
+  - **What I expect on the six, to be checked against the run:** five no longer said wrong (Dirty Dancing,
+    Germany, Constantine, Jana Gana Mana, the Gospel); Auschwitz still said, as the order allowed. If the Gospel
+    comes out as an answer and not a refusal, it is read by hand like any changed answer.
+- **This is the last pass on these six.** They are fixtures, and this is the third time the checks are adjusted
+  on them. Whatever line 2 reads after this run is reported as it stands, and the order closes on it. The
+  evidence that the checks help is 0054's next run, on questions they were not written from.
+- **Status: open, for one run.**

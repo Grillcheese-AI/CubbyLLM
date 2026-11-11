@@ -608,3 +608,81 @@ MSQA (Chen et al., arXiv 2607.00724): 1,064 natively sourced SimpleQA-style ques
   as asked, the item (its id and label), and how the name reached it (label, alias, the article, a place qualifier, a
   namesake rule, a role), from the store that resolved it. The replay then honours exactly that statement, and the
   line is read again. Until then no number of this order is quoted as certified end to end.
+
+## Cowork: the shape of the name statement (2026-11-11), for the replay's kill
+The replay's finding stands, and the fix is the one Claude Code proposes. Three things are added: what the name
+step rests on is carried as statements like any other; the items passed over are carried too; and the replay
+checks the step instead of taking it on trust.
+
+**What it brings, in plain words:** the certificate shows how Cubby got from the words of the question to the
+thing it answered about, and which namesakes it passed over.
+- **Over a conventional model:** a model never says which "Constantine" it took the question to mean.
+- **For you:** when an answer is wrong because a name was read as the wrong thing, the certificate shows it.
+
+### What a name statement carries
+One for each name of the question that the program starts from.
+- **`asked`:** the name as the question has it, as the host cut it, unchanged ("nashville tn").
+- **`item`:** the item's id, and the label the answer uses.
+- **`store`:** the world that read the name, with its snapshot hash (0055); for the live source, the revision it
+  read.
+- **`steps`:** the name rules applied, in order. Each step names what it rests on:
+  - `label` or `alias`: the item's own label or alias statement in the source;
+  - `fold`: an article, a casing, a punctuation ("shays rebellion" for "Shays's Rebellion"). A rule only: it
+    names the two strings it took as equal;
+  - `place_qualifier`: the qualifier's own name statement ("tn"), and the fact that ties the item to that place;
+  - `role`: the fact that gives the item the role, and the role root the word fell under (0066);
+  - `kind`: the class fact, when the question's class word chose among items (0066, check 1b);
+  - `original_first`: for each item set aside, the statement by which it points at the original (0066, check 2);
+  - `namesake`: the rule's name and what it compared, as the source gave it.
+- **`others`:** the other items that store holds for the name: always the count; for up to 10, the id, the label,
+  and the step that dropped it, or "kept".
+  - They are listed whether or not the rule in force looked at them. Gathering them changes no answer.
+- **Every statement a step rests on is carried like any statement read:** with its source and its revision.
+- **A step that rests on something the certificate cannot state** (a ranking by a number the source does not
+  give) is marked `unstated`.
+- **Fact statements gain the ids of the items they mention.** The label is how an item is said; the id is what
+  the statement is about.
+
+### In the certificate's other forms
+- **PROV-O (the 2026-11-06 addendum):** the name statement is an entity derived from the label or alias
+  statement and from the facts its steps rest on. A name-reading activity generated it, and that activity used
+  the store's snapshot. Each step is a rule applied, like the VM's.
+- **The decision step (the 2026-11-07 note):** the name step is a decision of its own, in the same terms. The
+  question is which item the name stands for; the options are the store's items for it; the criteria are the
+  name rules; the decision is the item, or "asked". `is_violated_by` says which step dropped each option.
+- **A refusal over a name** (`name_unresolved`) carries the same statement with no item: the name, the store,
+  the steps, and the options left. Step 4 of the field watch (refusals judged) reads it.
+- **0066's set-aside items** appear in `others` under `original_first`. It is the list the worlds below the
+  store are held to.
+
+### What the replay does with it
+- The replay's world holds the fact statements and, for each name statement, the statements its steps rest on,
+  for the item and for the others listed. The store's own name rules run over that. The same item must come
+  out, and then the same answer.
+- **Three outcomes for a name step, reported apart:**
+  - **re-derived:** the rules reach the same item from the statements listed;
+  - **stated only:** a step is `unstated`, or the others number more than the 10 listed. The replay takes the
+    item as stated, and says so;
+  - **not the same:** another item, or none. A hole: read before any other number.
+- **The line stays 0** for "not the same". "Stated only" is reported beside "the same", never inside it.
+- **If running the store's name rules over a listed set is not a small change, say so before building.** The
+  fallback checks each step's ground and no more: the label or alias equals the asked name after the stated
+  fold; the qualifier's fact is among the statements; the pointing statement is there. The choice among the
+  others is then "stated only" for every pick.
+
+### Reported with it
+- Per benchmark, spoken answers by their name step: a label; a fold; an alias; a qualifier or a role; a pick
+  among several (`original_first`, `namesake`).
+- **A pick among several is reported apart, with its wrong count.** Of the 17 answers the replay refused, four
+  are wrong or debatable, and each went wrong at this step (Claude Code's report above).
+- **Sufficient is not correct.** A certificate that carries its name step is complete. The Gospel's would have
+  shown the alias naming the commentary, with the Gospel among the others: complete, and wrong.
+
+### Acceptance
+- The replay on the "after": each of the 17 is re-derived or stated only; "not the same" is 0. Anything else
+  is read first.
+- Flags off, every answer of the four benchmarks is unchanged: the statement is a record, not a rule.
+- The PROV-O round trip includes the name statement and what it is derived from.
+- Tests: one for each kind of step among the 17 (an alias, a place qualifier, a fold, a role), and one refusal
+  that carries its options.
+- Until this passes, no number of this order is quoted as certified end to end.

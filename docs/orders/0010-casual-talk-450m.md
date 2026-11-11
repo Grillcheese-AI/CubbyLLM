@@ -561,3 +561,37 @@ Logs: `validation/logs/talk_ab_2026-11-11_{voice,control,sheet,key}.json`, `_run
   assistant talk, and the host's guards stop the false kind; they do not stop the empty kind.
 - **Added for `talk_v3b`:** rows in the host's own chat shape (a greeting, a thanks and a question about Cubby
   each with the record as the block); the record's "is" and "is not" labels; the name in "who are you".
+
+### The blind A/B after the host's greeting fix (Cowork, 2026-11-11): this is the sheet Nick judges
+- **Why once more.** `c294d75`: a hello, a thanks or a goodbye alone now reaches the adapter bare. In the rerun
+  above, nine of them carried Cubby's record. The prompts were built again and committed before any reply
+  (`7f7eaa6`, tag `talk_ab_2026-11-11c`). Eight chat prompts carry the record, all of them questions about
+  Cubby. The 30 fact prompts are the rerun's, unchanged. Flags: `CB_OPENER_VIEW=1 CB_TALK_LINES=1
+  CB_CUBBY_RECORD=1`. Logs: `validation/logs/talk_ab_2026-11-11c_*`.
+
+  | turns | voice | control |
+  |---|---|---|
+  | chat, 30 | 29 spoken; 1 refused | 27 spoken; 3 refused ("says it is Daniel"; the base-model guard twice) |
+  | fact, 30 | 20 spoken, as before | 11 spoken, as before |
+
+- **The voice's one refusal is the host's, and it is a false one.** "Bonjour ! Installe-toi, on va mettre les
+  faits au clair." is refused as `ungrounded: Installe-toi`: the record's check reads the verb as a name. Passed
+  to Claude Code.
+- **My read of the voice's 29 spoken chat replies: none is false of Cubby.**
+  - **Greetings, bare: the trained voice is there.** 11 of the 12 hello, thanks and goodbye replies read as its
+    own lines ("Hello there! What shall we look up today?"; "See you later, and may your facts be easy to
+    check."). "good morning!" gets the base's stock line, emoji included.
+  - **Questions about Cubby: as in the rerun.** "who are you?" and "are you a person or a program?" still get a
+    line about what Cubby can do.
+  - **Four questions about Cubby reach the adapter without the record:** "what languages do you speak?", "how
+    can you help me?", "what happens if you don't know something?" and "can you show me how you got an
+    answer?". The host does not read them as turns about Cubby. Three get stock assistant talk. The first is
+    answered right from the training rows alone, which goes stale the day the record changes. Passed to Claude
+    Code: the record holds the answer to all four.
+- **The sheet:** 35 pairs to judge and 1 identical pair, so 36; the voice passes with 24 (a coin flip reaches 24
+  of 36 3.3% of the time). 24 pairs have a refusal and are not judged. Against the rerun's sheet: two greetings
+  come in, "bonjour Cubby" goes out (the false refusal above) and "bye for now" goes out (the control is
+  refused). The page shows this sheet; no pick had been saved before it changed. Key sha256
+  `3e5cdb0aab9156fc...`.
+- **For `talk_v3b`, against the plan above:** greetings stay bare, as the rows have them. Added: greetings by
+  the time of day; the four question shapes above, with the record as the block once the host sends it.
