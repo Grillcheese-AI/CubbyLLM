@@ -75,6 +75,11 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
             else:
                 raise ValueError(f"unknown source {source!r}")
         self.source = source
+        named = [w for w in [world, *getattr(world, "others", [])] if hasattr(type(w), "decided")]
+        if named and hasattr(source, "resolve") and getattr(source, "store_decided", None) is None:
+            # order 0066: a name the store made stand for an item, and the works it set aside (check 2, its flags)
+            source.store_decided = lambda name: next((q for w in named for q in [w.decided(name)] if q), None)
+            source.store_aside = lambda name: set().union(*(w.set_aside(name) for w in named))
         # The date source. A `when` ask is the one question the wiki world provably cannot answer
         # (measured: 0 facts whose subject is a year), so it gets its own source -- and only a
         # `when` ask ever consults it. `news="rss"` builds the default feed set.

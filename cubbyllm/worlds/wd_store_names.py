@@ -8,12 +8,15 @@ through the class-roots table (`wd_store_roots`); without it, checks 1 to 3 do n
   no item and no time this world handed out: unknown.
 - **Check 2, the original first** (``CB_ORIGINAL_FIRST=1``): a name's items, label and alias tiers read together, that
   are works (a class under "work") and point at one another ("based on" P144, "edition or translation of" P629, "main
-  subject" P921, or the original's own "derivative work" P4969): the work pointed at that points at none of them is
-  the original, and the name stands for it (with any item that is no work, which the existing rules still weigh). No
-  original, or several: as today (a shared name is asked about). Never by fame or age.
+  subject" P921, or the original's own "derivative work" P4969): the works that point at another step aside; the
+  works pointed at stand in the label tier, and every other item (an unrelated work of the name, an item that is no
+  work) stays where it was, for the existing rules to decide or ask (Cowork's read, 2026-11-11: a work is an original
+  only against the works that point at it). When one item is left in the tier the name reads, the name stands for it
+  (`decided`): the live source is then asked about that item, never about the name. Never by fame or age.
 - **Check 3, an alias match does not end the search** (``CB_ALIAS_OPEN=1``): a name that matches no label, one item
   by alias, and opens with a role word (the label of an item that is, or is an instance of, a class under "position",
-  "title", "noble title" or "military rank") reads the bare name too, keeps its items that hold or held the role
+  "title", "noble title" or "military rank") reads the bare name too, its label and alias tiers together (Cowork's
+  amendment, 2026-11-11: "Constantine the Great" carries "Constantine" as an alias), keeps its items that hold or held the role
   ("position held" P39, "noble title" P97, "occupation" P106: the role, or a class under it by subclass of), and the
   alias's item joins them. Then the existing rules decide, or the loop asks; a year the question names keeps the one
   whose term or life covers it (`pick_year`). None held the role: the alias stands, as today.
@@ -97,7 +100,8 @@ class Named:
 
     def _rec(self) -> dict:
         if not hasattr(self, "_named_rec"):
-            self._named_rec = {k: {} for k in ("links", "derivs", "pids", "life", "held", "obj", "time", "year", "up")}
+            self._named_rec = {k: {} for k in ("links", "derivs", "pids", "life", "held", "obj", "time", "year", "up",
+                                               "decided", "aside")}
             self._opened = set()
         return self._named_rec
 
@@ -163,30 +167,58 @@ class Named:
             if more:
                 aliases = aliases + more
         if flag("CB_ORIGINAL_FIRST"):
-            orig = self._original(labels, aliases)
-            if orig is not None:
-                works = self._works(labels + aliases)
-                labels, aliases = [orig] + [q for q in labels if q not in works and q != orig], []
+            labels, aliases = self._step_aside(key, labels, aliases)
         return labels, aliases
 
     def _works(self, items) -> set:
         return {q for q in items if "work" in self.item_roots(q)}
 
-    def _original(self, labels: list, aliases: list) -> str | None:
-        items = labels + [q for q in aliases if q not in labels]
-        if not 2 <= len(items) <= self.NAMESAKE_CAP:
-            return None
+    def _pointing(self, items: list) -> tuple[set, set]:
+        """(the works among `items` that point at another of them, the works pointed at that point at none)."""
         works = self._works(items)
         if len(works) < 2:
-            return None
+            return set(), set()
         r = self._rec()
         points = {q: (r["links"].get(q, set()) & works) - {q} for q in works}
         for o in works:
             for w in (r["derivs"].get(o, set()) & works) - {o}:
                 points[w].add(o)
-        pointed = set().union(*points.values())
-        originals = [q for q in pointed if not points[q]]
-        return originals[0] if len(originals) == 1 else None
+        pointers = {q for q, at in points.items() if at}
+        return pointers, set().union(*points.values()) - pointers
+
+    def _step_aside(self, key: str, labels: list, aliases: list) -> tuple[list, list]:
+        items = labels + [q for q in aliases if q not in labels]
+        if not 2 <= len(items) <= self.NAMESAKE_CAP:
+            return labels, aliases
+        pointers, originals = self._pointing(items)
+        if not pointers:
+            return labels, aliases
+        _put(self._rec()["aside"], key, pointers)
+        labels = [q for q in labels if q not in pointers] + [q for q in aliases if q in originals and q not in labels]
+        aliases = [q for q in aliases if q not in pointers and q not in labels]
+        tier = labels or aliases
+        if len(tier) == 1:
+            _put(self._rec()["decided"], key, tier[0])
+        return labels, aliases
+
+    def decided(self, name: str) -> str | None:
+        """The one item check 2 left a name standing for (``CB_ORIGINAL_FIRST=1``), else None. The live source is
+        asked about that item, never about the name (`WikidataSource.resolve`)."""
+        if not flag("CB_ORIGINAL_FIRST"):
+            return None
+        key = normalize(name or "")
+        got = self._rec()["decided"].get(key)
+        if got is None and key not in self._rec()["decided"]:
+            self._tiers(key)                             # the store reads the name once; check 2 records its decision
+            got = self._rec()["decided"].get(key)
+            if got is None:
+                _put(self._rec()["decided"], key, None)  # read, nothing decided: not read again
+        return got
+
+    def set_aside(self, name: str) -> set:
+        """The works check 2 set aside for a name, with ``CB_ORIGINAL_ASIDE=1`` too (a proposal in 0066's report, off by
+        default): the live source's own namesake rule then never picks one of them. Read after `decided`."""
+        return set(self._rec()["aside"].get(normalize(name or ""), ())) if flag("CB_ORIGINAL_ASIDE") else set()
 
     def _alias_open(self, key: str, labels: list, aliases: list) -> list:
         words = key.split()
@@ -195,7 +227,8 @@ class Named:
         roles = self._role_items(words[0])
         if not roles:
             return []
-        bare, _ = self._tiers(" ".join(words[1:]))
+        bare_l, bare_a = self._tiers(" ".join(words[1:]))            # both tiers (Cowork's amendment, 2026-11-11)
+        bare = bare_l + [q for q in bare_a if q not in bare_l]
         if not bare or len(bare) > BARE_MAX:
             return []
         held = [q for q in bare if q not in aliases and self._holds(q, roles)]

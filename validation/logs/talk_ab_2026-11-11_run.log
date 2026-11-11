@@ -1,11 +1,11 @@
 ﻿start 13:58:04
 === voice 13:58:04
-uv : C:\Users\grill\Documents\GitHub\CubbyLLM\validation\exp_talk_ab.py:174: DeprecationWarning: ask moved to 
+uv : $CUBBY_REPO\validation\exp_talk_ab.py:174: DeprecationWarning: ask moved to 
 cubbyllm.reasoning.ask (order 0031)
-At C:\Users\grill\AppData\Local\Temp\cubby_review\run_ab.ps1:11 char:5
-+     uv run --project C:\Users\grill\Documents\GitHub\grilly2 python - ...
+At ~\AppData\Local\Temp\cubby_review\run_ab.ps1:11 char:5
++     uv run --project $CUBBY_GITHUB\grilly2 python - ...
 +     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (C:\Users\grill\...sk (order 0031):String) [], RemoteException
+    + CategoryInfo          : NotSpecified: (~\...sk (order 0031):String) [], RemoteException
     + FullyQualifiedErrorId : NativeCommandError
  
   from ask import talk_reply
@@ -71,12 +71,12 @@ At C:\Users\grill\AppData\Local\Temp\cubby_review\run_ab.ps1:11 char:5
   ab59 wrong_assumption spoken  spoken                                   | "Ce n'est pas ce que je trouve pour Gos. Thom., en fait. Voici ce qui e"
 exit 0
 === control 13:59:01
-uv : C:\Users\grill\Documents\GitHub\CubbyLLM\validation\exp_talk_ab.py:174: DeprecationWarning: ask moved to 
+uv : $CUBBY_REPO\validation\exp_talk_ab.py:174: DeprecationWarning: ask moved to 
 cubbyllm.reasoning.ask (order 0031)
-At C:\Users\grill\AppData\Local\Temp\cubby_review\run_ab.ps1:11 char:5
-+     uv run --project C:\Users\grill\Documents\GitHub\grilly2 python - ...
+At ~\AppData\Local\Temp\cubby_review\run_ab.ps1:11 char:5
++     uv run --project $CUBBY_GITHUB\grilly2 python - ...
 +     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (C:\Users\grill\...sk (order 0031):String) [], RemoteException
+    + CategoryInfo          : NotSpecified: (~\...sk (order 0031):String) [], RemoteException
     + FullyQualifiedErrorId : NativeCommandError
  
   from ask import talk_reply

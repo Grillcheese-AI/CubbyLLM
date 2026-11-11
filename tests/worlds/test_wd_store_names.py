@@ -3,9 +3,11 @@
   and a city; "who" refuses a place and passes a person, a band and a company; "when" refuses a place; "what culture
   region" (no class) is read as "region": a company refused, a region passed; "which city" is untouched;
 - check 2 (CB_ORIGINAL_FIRST): a commentary and its Gospel under one name -> the Gospel; an anthem and its
-  arrangement -> the anthem; two works with no statement between them -> asked, both named;
-- check 3 (CB_ALIAS_OPEN): "Emperor Constantine" (one alias item, several emperors) -> asked; a year only one's term
-  covers -> that one; an alias with no role word -> as today;
+  arrangement -> the anthem; two works with no statement between them -> asked, both named; an unrelated work of
+  the name stays beside the original (only the work that points steps aside: Cowork's read, 2026-11-11); the live
+  source is asked about the item the store decided, never about the name;
+- check 3 (CB_ALIAS_OPEN): "Emperor Constantine" (one alias item, several emperors, one of them under "Constantine" by
+  alias only) -> asked; a year only one's term covers -> that one; an alias with no role word -> as today;
 - check 4 (CB_VALUE_DATE): a 2020 point in time and a 2025 dump -> "as of 2020"; no date of its own -> the dump's
   year; a question naming 2023 against a 2020 value -> refused;
 - each flag off: as before.
@@ -33,7 +35,7 @@ _spec = importlib.util.spec_from_file_location("_wd_fake", pathlib.Path(__file__
 T = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(T)
 st = T.st
-FLAGS = ("CB_QWORD_KIND", "CB_ORIGINAL_FIRST", "CB_ALIAS_OPEN", "CB_VALUE_DATE")
+FLAGS = ("CB_QWORD_KIND", "CB_ORIGINAL_FIRST", "CB_ALIAS_OPEN", "CB_VALUE_DATE", "CB_ORIGINAL_ASIDE")
 
 
 def sq(pid, value, quals=()):
@@ -60,7 +62,7 @@ CLASSES = {   # class: (label, superclass)
     "Q9020": ("film", "Q9003"), "Q9021": ("book", "Q9003"), "Q8001": ("religious text", "Q9003"),
     "Q8002": ("literary work", "Q9003"), "Q8003": ("national anthem", "Q9003"), "Q8004": ("musical score", "Q9003"),
     "Q9030": ("band", "Q9004"), "Q9031": ("company", "Q9005"),
-    "Q9040": ("emperor", "Q9006"), "Q9041": ("Roman emperor", "Q9040"),
+    "Q9040": ("emperor", "Q9006"), "Q9041": ("Roman emperor", "Q9040"), "Q8005": ("painting", "Q9003"),
 }
 for q, (lab, sup) in CLASSES.items():
     T.ITEMS[q] = item(lab, *([st(279, {"entity": sup})] if sup else []))
@@ -80,6 +82,9 @@ T.ITEMS.update({
     "Q8030": item("Hymn of the Land", *of("Q8003")),
     "Q8031": item("Hymn of the Land", *of("Q8004"), st(50, {"entity": "Q8032"}), st(144, {"entity": "Q8030"})),
     "Q8032": item("Herbert Arranger", *of("Q5")),
+    "Q8034": item("Song of the Sea", *of("Q8003")),
+    "Q8035": item("Song of the Sea", *of("Q8004"), st(50, {"entity": "Q8032"}), st(144, {"entity": "Q8034"})),
+    "Q8036": item("Song of the Sea", *of("Q8005"), st(50, {"entity": "Q8021"})),
     "Q8070": item("Twin Tale", *of("Q8002"), st(50, {"entity": "Q8020"})),
     "Q8071": item("Twin Tale", *of("Q8002"), st(50, {"entity": "Q8021"})),
     # check 3
@@ -88,6 +93,8 @@ T.ITEMS.update({
     "Q8041": item("Constantine", *of("Q5"), st(20, {"entity": "Q9103"}), sq(39, {"entity": "Q9041"}, [(580, 913), (582, 959)])),
     "Q8043": item("Constantine", *of("Q5"), st(20, {"entity": "Q9101"}), sq(39, {"entity": "Q9041"}, [(580, 868), (582, 879)])),
     "Q8042": item("Constantine", *of("Q9016")),
+    "Q8044": item("Constantine the Great", *of("Q5"), st(20, {"entity": "Q9102"}),
+                  sq(39, {"entity": "Q9041"}, [(580, 306), (582, 337)]), aliases=("Constantine",)),
     "Q8080": item("New York City", *of("Q9016"), aliases=("Big Apple",)),
     # check 4
     "Q8060": ([("en", 0, "Fayette")], [{**st(1082, {"typed": ["+208501", "xsd:decimal"]}, "n9"),
@@ -103,7 +110,8 @@ T.NAMES.update({"the gospel according to john": [("Q8011", 0, "exact"), ("Q8010"
                 "hymn of the land": [("Q8030", 0, "exact"), ("Q8031", 0, "exact")],
                 "twin tale": [("Q8070", 0, "exact"), ("Q8071", 0, "exact")],
                 "emperor constantine": [("Q8040", 1, "exact")],
-                "constantine": [("Q8041", 0, "exact"), ("Q8042", 0, "exact"), ("Q8043", 0, "exact")],
+                "constantine": [("Q8041", 0, "exact"), ("Q8042", 0, "exact"), ("Q8043", 0, "exact"), ("Q8044", 1, "exact")],
+                "song of the sea": [("Q8034", 0, "exact"), ("Q8035", 0, "exact"), ("Q8036", 0, "exact")],
                 "big apple": [("Q8080", 1, "exact")]})
 
 
@@ -219,13 +227,53 @@ def test_check_2_the_original_first(world, monkeypatch):
     assert world._tiers("hymn of the land") == (["Q8030"], [])                                   # the anthem
     assert hop(world, "author", "Hymn of the Land") == set()                                     # (it holds no author)
     assert hop(world, "author", "Twin Tale") == set() and set(world.withheld("twin tale")) == {"Q8070", "Q8071"}
+    assert world.decided("Hymn of the Land") == "Q8030" and world.decided("The Gospel According to John") == "Q8010"
+    assert world.decided("Twin Tale") is None
+    fresh(world)                                    # the arrangement steps aside; the painting, unrelated, stays: asked
+    assert world._tiers("song of the sea") == (["Q8034", "Q8036"], []) and world.decided("song of the sea") is None
+    monkeypatch.delenv("CB_ORIGINAL_FIRST")
+    assert world.decided("Hymn of the Land") is None                                               # off: nothing decided
+
+
+def test_check_2_the_live_source_is_asked_about_the_stores_item(world, monkeypatch, tmp_path):
+    from cubbyllm.sources.wikidata import WikidataSource
+    src = WikidataSource(cache_dir=tmp_path, offline=True)
+    searched = []
+    monkeypatch.setattr(src, "_get", lambda params: searched.append(params) or {"search": []})
+    monkeypatch.setattr(src, "_labels_for", lambda ids: {q: "Hymn of the Land" for q in ids})
+    src.store_decided = world.decided
+    assert src.resolve("Hymn of the Land") is None                                          # off: the name is searched
+    assert searched
+    monkeypatch.setenv("CB_ORIGINAL_FIRST", "1")
+    searched.clear()
+    fresh(world)
+    assert src.resolve("hymn of the land") == ("Q8030", "Hymn of the Land") and not searched   # the anthem, no search
+    assert src.last["how"] == "the store's item"
+
+
+
+def test_the_proposal_the_live_source_never_picks_a_work_the_store_set_aside(world, monkeypatch, tmp_path):
+    from cubbyllm.sources.wikidata import WikidataSource
+    src = WikidataSource(cache_dir=tmp_path, offline=True)
+    hits = [{"id": q, "label": "Song of the Sea", "description": d} for q, d in (("Q8035", "score"), ("Q8034", "anthem"))]
+    monkeypatch.setattr(src, "_get", lambda params: {"search": hits})
+    monkeypatch.setattr(src, "_labels_for", lambda ids: {q: "Song of the Sea" for q in ids})
+    src.store_decided, src.store_aside = world.decided, world.set_aside
+    monkeypatch.setenv("CB_ORIGINAL_FIRST", "1")
+    fresh(world)
+    assert world.decided("song of the sea") is None and world.set_aside("song of the sea") == set()   # proposal off
+    assert src.resolve("song of the sea") is None                                     # two items carry it: refused
+    monkeypatch.setenv("CB_ORIGINAL_ASIDE", "1")
+    assert world.set_aside("song of the sea") == {"Q8035"}
+    assert src.resolve("song of the sea") == ("Q8034", "Song of the Sea")              # the arrangement is not its item
 
 
 def test_check_3_an_alias_does_not_end_the_search(world, monkeypatch):
     assert hop(world, "place of death", "Emperor Constantine") == {"Lyon"}                      # off: the alias's item
     monkeypatch.setenv("CB_ALIAS_OPEN", "1")
     assert hop(world, "place of death", "Emperor Constantine") == set()                          # three emperors: asked
-    assert set(world.namesakes("emperor constantine")) == {"Q8040", "Q8041", "Q8043"}            # not the city
+    assert set(world.namesakes("emperor constantine")) == {"Q8040", "Q8041", "Q8043", "Q8044"}   # not the city; the
+                                                                                     # Great by his alias "Constantine"
     assert world.pick_year("emperor constantine", 870) == "Q8043" and world.pick_year("emperor constantine", 2000) is None
     got = ask_namesakes._by_year(SimpleNamespace(others=[world]), "emperor constantine",
                                  "Where did Emperor Constantine, emperor in 870, die?")

@@ -130,7 +130,8 @@ def build(seat, online: bool, vm: str):
     loop._run_fn = timed(loop._run_fn, timing, vm == "permissive")
     meta = {"wd_store": wd.state if wd else None, "wd_dump": wd.provenance_name if wd else None,
             "flags": {k: os.environ.get(k) for k in ("CB_WD_STORE", "CB_WD_KINDS", "CB_ANSWER_CLASS", "CB_QWORD_KIND",
-                                                          "CB_ORIGINAL_FIRST", "CB_ALIAS_OPEN", "CB_VALUE_DATE")},
+                                                          "CB_ORIGINAL_FIRST", "CB_ALIAS_OPEN", "CB_VALUE_DATE",
+                                                          "CB_ORIGINAL_ASIDE")},
             "skills": len(loop.skills), "books": bool(os.environ.get("CUBBY_BOOKS_INDEX")), "online": online,
             "everyday": loop._everyday is not None, "tense": loop.tense, "vm": vm}
     return loop, timing, meta

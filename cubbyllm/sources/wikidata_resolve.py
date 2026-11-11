@@ -145,6 +145,11 @@ class WikiResolve:
             qid = self.links[_normalize(via)][0]
             self.last.update(how="linked", via=via)
             return qid, self._labels_for([qid]).get(qid) or entity
+        store = getattr(self, "store_decided", None)     # order 0066: the hot store made the name stand for an item
+        got = store(entity) if store is not None and not qid else None       # (check 2, CB_ORIGINAL_FIRST=1; the
+        if got:                                          # store's ids are Wikidata's): that item, never the name again
+            self.last.update(how="the store's item")
+            return got, self._labels_for([got]).get(got) or entity
         asked = (getattr(self, "asked_names", None) or {}).get(key)
         if asked and not qid:                                # the name as the asker wrote it, first (order 0047)
             from .wikidata_asked import asked_hits
@@ -191,6 +196,10 @@ class WikiResolve:
         real = [h for h in exact if not _META.search(str(h.get("description") or ""))]
         cands = real if real else exact
         how = "exact" + ("" if len(real) == len(exact) else " (meta-pages dropped)")
+        aside = getattr(self, "store_aside", None)       # 0066 (CB_ORIGINAL_ASIDE=1): the works the store set aside for
+        gone = aside(entity) if aside is not None else set()     # this name, as pointing at another, are not its items
+        if gone and any(h.get("id") not in gone for h in cands):
+            cands, how = [h for h in cands if h.get("id") not in gone], how + " (the store's set-aside dropped)"
         from .wikidata_namesakes import on as namesakes_on
         decision = None
         if len(cands) > 1 and relations and not qid and namesakes_on() and hasattr(self, "decide"):
