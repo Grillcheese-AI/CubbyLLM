@@ -52,6 +52,7 @@ from . import wd_store_values as vals
 from .hdc_store import HdcWorld, _Rows
 from .hdc_world import TIME_SENSITIVE
 from .wd_store_crowd import Crowded
+from .wd_store_names import Named
 from .wd_store_refine import Refined
 
 __wiring__ = "WIRED"
@@ -64,7 +65,7 @@ META = {"Q4167410", "Q22808320", "Q4167836", "Q11266439", "Q13406463", "Q1420424
 _QID = re.compile(r"^q[1-9][0-9]*$")
 
 
-class WdStoreWorld(Refined, Crowded, HdcWorld):
+class WdStoreWorld(Named, Refined, Crowded, HdcWorld):
     name = "wdstore"
     NAMESAKE_CAP = NAMESAKE_CAP
 
@@ -147,6 +148,7 @@ class WdStoreWorld(Refined, Crowded, HdcWorld):
             return None, [], keys                        # an item with no English or mul label is never named here
         self._p31[qid.upper()] = {s["value"]["entity"] for s in e.get("statements", []) if s.get("pid") == 31 and s.get("best")
                                   and s.get("rank") != 0 and isinstance(s.get("value"), dict) and "entity" in s["value"]}
+        self._note_item(qid.upper(), e.get("statements", []))     # its links and pids (`wd_store_names`)
         sts = [s for s in e.get("statements", []) if s.get("pid") in self._pid_label and vals.kept(s, s["pid"] in self._ts_pids)]
         nodes = e.get("nodes", {})
         labels = self._labels(vals.entity_ids(sts) | vals.unit_ids(sts, nodes))
@@ -155,6 +157,7 @@ class WdStoreWorld(Refined, Crowded, HdcWorld):
             o = vals.say(s["value"], nodes.get(s.get("value_node") or ""), self._datatype[s["pid"]], labels)
             if o:
                 rows.append((subj, self._pid_label[s["pid"]], o))
+                self._note_row(subj, self._pid_label[s["pid"]], o, s, nodes)
         return subj, rows, keys
 
     def _tiers(self, key: str) -> tuple[list, list]:
@@ -185,7 +188,7 @@ class WdStoreWorld(Refined, Crowded, HdcWorld):
             found = {q: k for q, k in found.items()                     # a Wikimedia page is not a thing
                      if q in brief and not set(brief[q].get("types", [])) & META}
         order = sorted(found, key=lambda x: int(x[1:]))
-        return [q for q in order if found[q] == 0], [q for q in order if found[q] == 1]
+        return self._more_items(key, [q for q in order if found[q] == 0], [q for q in order if found[q] == 1])   # (0054's proposals 2, 3)
 
     def _ids(self, key: str) -> tuple[str, list]:
         """("label", ids), else ("alias", ids), else ("none", [])."""

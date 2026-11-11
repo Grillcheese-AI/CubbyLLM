@@ -102,9 +102,16 @@ class HdcWorld(Namesakes):
                     lab = self.label(ent)
                     as_label = plan if not lab or normalize(lab) == ent else type(plan)(
                         relations=plan.relations, tail=f"{rel} of {lab}", n_hop=plan.n_hop, answer_class=plan.answer_class)
-                    def keep(f, t, rel=rel, as_label=as_label, exact=exact):
+                    def keep(f, t, rel=rel, as_label=as_label, exact=exact, ent=ent):
                         same = normalize(t.rel) == normalize(rel)
-                        return (same if exact else self._rel_n.get(normalize(t.rel), 0) >= 2) and accepts(as_label, hop, entity, t)
+                        if not (same if exact else self._rel_n.get(normalize(t.rel), 0) >= 2):
+                            return False
+                        if accepts(as_label, hop, entity, t):
+                            return True              # else an item the name gathered under another label (wd_store_names)
+                        also = getattr(self, "_also_named", None)
+                        return bool(also and also(ent, t.subj)) and accepts(type(plan)(
+                            relations=plan.relations, tail=f"{rel} of {t.subj}", n_hop=plan.n_hop,
+                            answer_class=plan.answer_class), hop, entity, t)
                     for f, t in self.hop_rows(ent, keep, rel):   # a shared name: the one item the hop may read (0033)
                         if f not in seen:
                             cands.append((f, t)); seen.add(f)

@@ -14,6 +14,8 @@ through `hdc_namesakes.Namesakes.hop_rows`' hook (the Wikidata5M world has none:
    hop, the values are said once (hop 8: four Calhoun Townships, all in the United States); the items are listed in
    the decision (`agree`), and the loop records them (`ask_namesakes.after_walk`). No item is picked, so no pick can
    be wrong.
+4. **A work made from another of the name's items steps aside** (``CB_ORIGINAL_WORK=1``, `wd_store_names`): a
+   commentary, an edition, an arrangement, a film based on it. Order 0054's proposal 2 (Nick, 2026-11-11).
 
 Wired: WIRED (`cubbyllm/worlds/wd_store_world.WdStoreWorld`'s base).
 """
@@ -44,6 +46,9 @@ class Refined:
         fiction = [q for q in fit if self._classes(q) & self._fictional]
         if fiction and len(fiction) < len(fit):                      # (2) a real item fits: the fictional step aside
             d["fit"], d["stepped_aside"] = [q for q in fit if q not in fiction], fiction
+        derived = [q for q in self._derived(by) if q in d["fit"]] if hasattr(self, "_derived") else []
+        if derived:                                                  # (4) works made from another of the
+            d["fit"], d["derived"] = [q for q in d["fit"] if q not in derived], derived   # name's items step aside
         fit = d["fit"]
         if len(fit) >= 2 and all(held.get(q) for q in fit):
             if len({frozenset(t.obj for _f, t in held[q]) for q in fit}) == 1:

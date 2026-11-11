@@ -126,6 +126,9 @@ class AskMemory:
         from .ask_class import check as class_check       # an answer of the class asked (order 0047; CB_HELDOUT_FIXES=0 off)
         if not class_check(self, question, lr, rec):
             return
+        from .ask_word_fits import check as word_check     # where/who/when fit the value (0054 proposal 1; CB_ANSWER_FITS=1)
+        if not word_check(self, question, lr, rec):
+            return
         why = self._time_check(question, lr) if self.tense else None
         snap = self._snapshot(question, lr) if not why else None
         if snap and snap[0] != "as_of":                   # a snapshot's value asked about another time (order 0014)
@@ -162,12 +165,14 @@ class AskMemory:
         if w is None or normalize(h.triple.rel) not in getattr(w, "time_sensitive", ()):
             return None
         from .question_forms import tense_of
+        own = w.fact_year(h.triple) if hasattr(w, "fact_year") else None    # the value's own date (CB_OWN_DATE=1)
+        when, held = (own, "the value is dated") if own else (w.snapshot, "the snapshot holds")
         year = strip_as_of(question)[1]
         if year is not None:
-            return None if str(year) == w.snapshot else ("refuse", f"asked about {year}, the snapshot holds {w.snapshot}")
+            return None if str(year) == when else ("refuse", f"asked about {year}, {held} {when}")
         if tense_of(question) == "future":
-            return ("refuse", f"asked in the future, the snapshot holds {w.snapshot}")
-        return ("as_of", w.snapshot)
+            return ("refuse", f"asked in the future, {held} {when}")
+        return ("as_of", when)
 
     def _life(self, entity: str):
         """(born, died) years the world holds for `entity` (either None): the books' same-name guard."""
@@ -203,7 +208,8 @@ class AskMemory:
             if not self.time_rule or not changes(h.triple.rel) or dated(when):
                 return None
             holder = self.world.held_by(h.fact) if hasattr(self.world, "held_by") else None
-            as_of = getattr(holder, "snapshot", None) or getattr(holder or self.world, "as_of", None)
+            own = holder.fact_year(h.triple) if hasattr(holder, "fact_year") else None   # (CB_OWN_DATE=1)
+            as_of = own or getattr(holder, "snapshot", None) or getattr(holder or self.world, "as_of", None)
             if as_of:
                 return ("as_of", str(as_of)) if year is None or str(year) == str(as_of) else \
                        ("refuse", f"asked about {year}, the world holds it as of {as_of}")
