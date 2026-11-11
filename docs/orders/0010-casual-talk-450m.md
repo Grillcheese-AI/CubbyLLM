@@ -463,3 +463,46 @@ base, read raw) is beside them for reference.
   about Cubby before the sheet is shown. One in a voice reply is the kill; one in a control reply is reported.
 - **What Nick sees:** the user's line, the facts on record for a fact turn, and the two replies in an order drawn
   by seed, with bold and line breaks shown as the chat will show them. The key stays in the logs, apart.
+
+### The blind A/B: stopped by the kill before any pair was judged (Cowork, 2026-11-11)
+Both arms ran on grilly2, greedy, 160 new tokens, `CB_OPENER_VIEW=1 CB_TALK_LINES=1` (voice 2 min, control 1.5 min).
+Logs: `validation/logs/talk_ab_2026-11-11_{voice,control,sheet,key}.json`, `_run.log`. Nick has judged nothing.
+- **The kill fired on Cowork's read of the chat replies.** "are you a person or a program?" -> the voice: "I'm not
+  a person or program. I can't provide information about any person, organization, or event. ..." Both
+  statements are false of Cubby. By the rule set before the run, `talk_v3a` does not pass this test, whatever the
+  count would have been. The sheet is kept in the logs and is not a result.
+- **What the 60 turns show** (my read; of 60: 39 pairs to judge, 1 identical, 20 with a refusal; the line for the
+  40 left would have been 26):
+
+  | turns | voice | control |
+  |---|---|---|
+  | chat, 30 | its own voice on 24; stock assistant talk on 5 (one of them the false one); 1 non-answer | stock assistant talk throughout; 8 run to the token limit in loops; says it is "Daniel", and an assistant that makes digital art |
+  | one fact, real questions, 9 EN | 0 answered: "The facts don't say." on 9 | 1 answered; the same sentence on 8 |
+  | one fact, voice-shaped, 3 FR | 3 spoken, framed | 1 spoken, in English; 2 not |
+  | a list, E6-shaped, 8 EN | 8 spoken, the old one-sentence form | 8 spoken, the same form (1 identical, 7 differ by word order) |
+  | a list, voice-shaped, 2 FR | 2 spoken, as numbered lists | 1 spoken, in English; 1 refused |
+  | a wrong assumption, 8 | 7 spoken; 1 refused (a title's word translated) | 0 spoken: "The facts don't say." on 8 |
+
+- **Four findings, in order of weight:**
+  1. **Neither adapter words a fact for a real question.** "what money does spain use?" over "Spain - currency:
+     euro" gets "The facts don't say." from both. The question does not carry the relation's label, and both
+     were taught to decline then. So today the talk seat cannot replace the bare value on served questions.
+  2. **Off its rows, the voice falls back to the base's assistant talk,** and that talk can be false about Cubby.
+     A chat turn needs a check: change **d** (Cubby's record as the block for a question about Cubby, and the
+     guard on chat turns) comes before any chat turn is served by this adapter.
+  3. **The voice shows only on its own question shapes.** On E6-shaped questions it answers as the control does.
+  4. **Little variety where it does show:** the six English wrong-assumption replies open with the same sentence
+     ("I have to disagree a little about ..."), and two of the six jokes are the same line.
+- **Also seen:** lower-case garble passes the guard ("andarte character", its last letter accented, in a list of members: the guard reads
+  capitalised words); a French list repeats a label with part of its values; "mes sources" is said (the 28
+  templates still wait for Nick's call).
+- **What the control shows:** it was never taught chat or French. The comparison on those turns says the voice
+  data gave Cubby a chat voice and French where it had none, not that one voice is nicer than another.
+- **Next (Cowork's, with Nick):** the next voice set, `talk_v3b`, before another A/B:
+  - real question wordings bound to a block's relation (finding 1), from questions written by rule and by the
+    panel as wording only, each kept only if the host's checks pass;
+  - questions about Cubby outside today's rows (person or program, human, robot, AI), each answered from
+    Cubby's record, and a decline line for chat it has no answer to (finding 2);
+  - the old question shapes answered in the voice (finding 3); more openings per kind (finding 4);
+  - blocks with a second entity's facts (the binding losses of E6).
+- **Next (Claude Code's):** change **d** ahead of c, e and f.
