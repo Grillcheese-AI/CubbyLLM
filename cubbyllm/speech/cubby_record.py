@@ -37,6 +37,16 @@ _ABOUT = re.compile(r"\b(?:are you (?:a |an |really a |actually a |even a )?(?:r
                     r"program|bot|chatbot|machine|computer|robot|ai|model)|are you (?:real|alive|human)|"
                     r"es[- ]tu (?:une? )?(?:vraie? )?(?:personne|humaine?|programme|bot|machine|robot|ia|mod[èe]le|r[ée]el)|"
                     r"tu es (?:une? )?(?:personne|humaine?|programme|bot|machine|robot|ia|mod[èe]le))\b", re.I)
+# what Cubby does, speaks or shows (Cowork's proposal, Nick's yes 2026-11-11: these went bare and fell to stock talk);
+# narrow on purpose: a fact question with "you" in it ("do you know who won ...") is no question about Cubby
+_DOES = re.compile(r"\b(?:what languages? (?:do|can) you (?:speak|use)|which languages? (?:do|can) you|do you speak\b|"
+                   r"how (?:can|could|would) you help(?: me| us)?\s*\??$|what (?:can|do) you help (?:me |us )?with|"
+                   r"what happens (?:if|when) you (?:don'?t|do not|can'?t) know|"
+                   r"(?:can|could|will|would) you show me how you|show me how you (?:got|get|found|reached|checked)|"
+                   r"quelles? langues? (?:parles|connais)[- ]tu|tu parles quelles? langues?|parles[- ]tu (?:anglais|français|"
+                   r"fran[cç]ais|russe|espagnol)|comment (?:peux|pourrais)[- ]tu m'aider|"
+                   r"que se passe[- ]t[- ]il (?:si|quand) tu ne (?:sais|connais) pas|"
+                   r"(?:peux|pourrais)[- ]tu me montrer comment tu)", re.I)
 IS_KINDS = frozenset("model system tool program programme software ai ia machine bot chatbot computer ordinateur "
                      "modèle modele système systeme outil logiciel".split())
 NOT_KINDS = frozenset("person human people man woman being personne humain humaine homme femme".split())
@@ -62,8 +72,9 @@ def load() -> dict:
 
 
 def is_about_cubby(text: str) -> bool:
-    """A question of what Cubby is (a person, a program, ...), beyond `identity._IDENTITY_Q`'s."""
-    return bool(_ABOUT.search(text or ""))
+    """A question of what Cubby is (a person, a program, ...) or of what it does, speaks or shows ("what languages
+    do you speak?", "how can you help me?"), beyond `identity._IDENTITY_Q`'s."""
+    return bool(_ABOUT.search(text or "") or _DOES.search((text or "").strip()))
 
 
 def block(lang: str = "en") -> list[tuple[str, str, str]]:

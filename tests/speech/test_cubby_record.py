@@ -45,6 +45,12 @@ def test_on_a_question_about_cubby_gets_the_record_as_its_block(monkeypatch):
     for hello in ("hi", "thanks, that helped a lot", "bye for now", "salut"):                  # a hello alone: a chat
         assert c.talk_context(hello, "en") == {"turns": [("user", hello)]}, hello            # turn, no record block
     assert "facts" in c.talk_context("hi, who are you?", "en")
+    for q in ("what languages do you speak?", "how can you help me?", "what happens if you don't know something?",   # the
+              "can you show me how you got an answer?", "quelles langues parles-tu ?", "comment peux-tu m'aider ?"):  # four
+        assert "facts" in c.talk_context(q, "en"), q                                                         # that went bare
+    for q in ("do you know who won the 2010 world cup", "how do you check tire pressure", "how can you help a dog with fleas",
+              "what language do they speak in brazil"):                                              # fact questions with
+        assert not idn.is_identity_question(q), q                                                    # "you": no record
 
 
 def test_on_the_chat_check_reads_what_cubby_says_it_is_and_every_name(monkeypatch):
