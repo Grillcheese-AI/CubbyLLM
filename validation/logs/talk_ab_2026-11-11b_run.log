@@ -1,0 +1,144 @@
+﻿start 14:50:10 flags a b d on
+=== voice 14:50:10
+uv : C:\Users\grill\Documents\GitHub\CubbyLLM\validation\exp_talk_ab.py:200: DeprecationWarning: ask moved to 
+cubbyllm.reasoning.ask (order 0031)
+At C:\Users\grill\AppData\Local\Temp\cubby_review\run_ab_b.ps1:12 char:5
++     uv run --project C:\Users\grill\Documents\GitHub\grilly2 python - ...
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\Users\grill\...sk (order 0031):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  from ask import talk_reply
+  ab00 hello            spoken  spoken                                   | "Hey, I'm Cubby, built by GrillCheese Research Lab (GRL). I'm here to h"
+  ab01 hello            spoken  spoken                                   | "Hey Maya! ≡ƒÿè I'm Cubby, and I'm all about you. What's on your mind?"
+  ab02 hello            spoken  spoken                                   | 'Good morning! My curiosity is satisfied:\n- I answer questions from fac'
+  ab03 hello            spoken  spoken                                   | "Welcome, Daniel! I'm Cubby. I'm here to help with clear answers from c"
+  ab04 hello            spoken  spoken                                   | "Bonjour L├⌐a, bienvenue ! Je m'appelle Cubby. Mon r├┤le, c'est de te mon"
+  ab05 hello            spoken  spoken                                   | "Bonne nouvelle, j'ai plusieurs r├⌐ponses pour toi :\n- Je r├⌐ponds aux qu"
+  ab06 thanks           spoken  spoken                                   | 'Glad I could help!'
+  ab07 thanks           spoken  spoken                                   | 'Glad I could help!'
+  ab08 thanks           spoken  spoken                                   | "Bye now, don't be a stranger."
+  ab09 thanks           spoken  spoken                                   | "Take your time, I'm right here when you inquiring."
+  ab10 thanks           spoken  spoken                                   | 'Je te laisse le fait tout seul, et je ne devine jamais.'
+  ab11 thanks           spoken  spoken                                   | 'Bonne continuation, et ├á bient├┤t.'
+  ab12 who              spoken  spoken                                   | 'I can answer questions from facts I have on record, and I check the an'
+  ab13 who              spoken  spoken                                   | 'I was built by GrillCheese Research Lab (GRL).'
+  ab14 who              spoken  spoken                                   | 'I answer questions from facts I have on record, and I check the answer'
+  ab15 who              spoken  spoken                                   | 'English and French today. Russian and Spanish are next.'
+  ab16 who              spoken  spoken                                   | 'Voici ce que je peux faire pour toi :\n- Je r├⌐ponds aux questions ├á par'
+  ab17 who              spoken  spoken                                   | "J'ai ├⌐t├⌐ cr├⌐├⌐ par GrillCheese Research Lab (GRL)."
+  ab18 can_do           spoken  spoken                                   | "Here's what I can do for you:\n- I answer questions from facts I have o"
+  ab19 can_do           spoken  spoken                                   | "Of course! I'd be happy to help you with your questions. Could you ple"
+  ab20 can_do           spoken  spoken                                   | "Here's what I can do:\n- I answer questions from facts I have on record"
+  ab21 can_do           spoken  spoken                                   | "I'm here to help, but I don't have access to personal information or p"
+  ab22 can_do           spoken  spoken                                   | 'Of course! I can help you with that. Please share the question or prob'
+  ab23 can_do           spoken  spoken                                   | 'Voici ce que je sais faire :\n- Je r├⌐ponds aux questions ├á partir de fa'
+  ab24 joke             spoken  spoken                                   | 'I keep my facts in a small box and never guess, so I never have to gue'
+  ab25 joke             spoken  spoken                                   | "I'm a fact-checker, not a pun."
+  ab26 joke             spoken  spoken                                   | "I'm a cube, not a cube without a bit of sparkle."
+  ab27 joke             spoken  spoken                                   | "I'm a cube, not a cuboid."
+  ab28 joke             spoken  spoken                                   | 'I keep my facts in a small box and never guess, so I never have to gue'
+  ab29 joke             spoken  spoken                                   | 'Je v├⌐rifie tout, m├¬me si parfois ma m├⌐moire a des trous.'
+  ab30 one_fact         REFUSED value: returned value missing            | "The facts don't say."
+  ab31 one_fact         REFUSED value: returned value missing            | "The facts don't say."
+  ab32 one_fact         REFUSED value: returned value missing            | "The facts don't say."
+  ab33 one_fact         REFUSED value: returned value missing            | "The facts don't say."
+  ab34 one_fact         REFUSED value: returned value missing            | "The facts don't say."
+  ab35 one_fact         REFUSED value: returned value missing            | "The facts don't say."
+  ab36 one_fact         REFUSED value: returned value missing            | "The facts don't say."
+  ab37 one_fact         REFUSED value: returned value missing            | "The facts don't say."
+  ab38 one_fact         REFUSED value: returned value missing            | "The facts don't say."
+  ab39 list             spoken  spoken                                   | 'Special Air Service was founded by David Stirling and led by David Sti'
+  ab40 list             spoken  spoken                                   | 'Geometer Moth Larva is a type of Inchworm, Looping Gait, Spanworm, and'
+  ab41 list             spoken  spoken                                   | 'Chintamani is a Dev Title whose parent is Morya Gosavi, and its succes'
+  ab42 list             spoken  spoken                                   | 'Ha Long Bay is located in Vietnam and Quang Ninh Province.'
+  ab43 list             spoken  spoken                                   | 'Musketeers Of The Guard includes members such as Aramis Character, saf'
+  ab44 list             spoken  spoken                                   | 'Flathead Fish is a type of Table Fish belonging to the Platycephalidae'
+  ab45 list             spoken  spoken                                   | 'Free Reed Aerophone includes Harmonium, Harmonica, Bandoneon, and Conc'
+  ab46 list             spoken  spoken                                   | 'Damselfish is a type of Chrominae, Lepidozyginae, Abudefdufinae, and P'
+  ab47 one_fact         spoken  spoken                                   | "Voici ce que j'ai trouv├⌐ : **Domaine d'activit├⌐ :** International Huma"
+  ab48 one_fact         spoken  spoken                                   | "Ce que j'ai sous la main : **Pays de nationalit├⌐ :** United States of "
+  ab49 one_fact         spoken  spoken                                   | "Voici ce que j'ai trouv├⌐ : **Emplacement :** Pontus."
+  ab50 list             spoken  spoken                                   | 'Voici les infos que mes registres contiennent :\n1. **Cat├⌐gorie :** Tec'
+  ab51 list             spoken  spoken                                   | 'Voil├á les ├⌐l├⌐ments :\n1. **Inspiration :** Soldering Points, Travelling'
+  ab52 wrong_assumption spoken  spoken                                   | 'I have to disagree a little about Jingadawa Belbichhwa. **Country:** N'
+  ab53 wrong_assumption spoken  spoken                                   | 'I have to disagree a little about Queen Herneith. **Spouse:** King Dje'
+  ab54 wrong_assumption spoken  spoken                                   | 'I have to disagree a little about Ranma12. **Group:** Shonen Demograph'
+  ab55 wrong_assumption spoken  spoken                                   | 'I have to disagree a little about Sir Mark Sykes. **Occupation:** MP a'
+  ab56 wrong_assumption spoken  spoken                                   | 'I have to disagree a little about Lamourie Lock. **Country:** Venezuel'
+  ab57 wrong_assumption REFUSED ungrounded: Need                         | "I have to disagree a little about J'ai Need d'amour. **Country of orig"
+  ab58 wrong_assumption spoken  spoken                                   | "Ce n'est pas ce que mes sources indiquent ├á propos de Thomas Burkett, "
+  ab59 wrong_assumption spoken  spoken                                   | "Ce n'est pas ce que je trouve pour Gos. Thom., en fait. Voici ce qui e"
+exit 0
+=== control 14:51:24
+uv : C:\Users\grill\Documents\GitHub\CubbyLLM\validation\exp_talk_ab.py:200: DeprecationWarning: ask moved to 
+cubbyllm.reasoning.ask (order 0031)
+At C:\Users\grill\AppData\Local\Temp\cubby_review\run_ab_b.ps1:12 char:5
++     uv run --project C:\Users\grill\Documents\GitHub\grilly2 python - ...
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\Users\grill\...sk (order 0031):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  from ask import talk_reply
+  ab00 hello            REFUSED base-model guard leaked                  | "Hi! I'm sorry, but I can't help with that.\n\nIt seems like your message"
+  ab01 hello            REFUSED self: says it is Maya                    | "Hey Cubby, I'm Maya! ≡ƒÿè"
+  ab02 hello            spoken  spoken                                   | 'Good morning! ≡ƒÿè'
+  ab03 hello            REFUSED self: names itself Daniel                | 'Hello there, my name is Daniel.'
+  ab04 hello            spoken  spoken                                   | 'Si je ne me demande pas avant de r├⌐pondre, je ne dis pas que je ne me '
+  ab05 hello            spoken  spoken                                   | "Bonjour Cubby ! ≡ƒÿè\nJe peux te montrer les ├⌐tapes qui m'ont men├⌐ ├á une r"
+  ab06 thanks           spoken  spoken                                   | "Thanks! I'm glad it helped. ≡ƒÿè"
+  ab07 thanks           spoken  spoken                                   | "You're very welcome! I'm glad you're feeling good. How can I assist yo"
+  ab08 thanks           spoken  spoken                                   | "Got it! I'm ready whenever you are. What's on your mind today? ≡ƒÿè"
+  ab09 thanks           spoken  spoken                                   | "The facts don't say."
+  ab10 thanks           spoken  spoken                                   | "Merci beaucoup ! Je peux te montrer les ├⌐tapes qui m'ont men├⌐ ├á une r├⌐"
+  ab11 thanks           spoken  spoken                                   | 'Bon ! Je peux maintenant enregistrer et envoyer mes messages. ≡ƒÿè\nBon !\n'
+  ab12 who              spoken  spoken                                   | "The facts don't say."
+  ab13 who              spoken  spoken                                   | "The facts don't say."
+  ab14 who              spoken  spoken                                   | "The facts don't say."
+  ab15 who              spoken  spoken                                   | "I don't have a native language in my native language, so I can't speak"
+  ab16 who              spoken  spoken                                   | 'Si tu as un nom, je te le dis, et ce qui manque. Je ne devine pas.'
+  ab17 who              spoken  spoken                                   | "The facts don't say."
+  ab18 can_do           spoken  spoken                                   | 'You can ask questions from facts I have on record, and I check the ans'
+  ab19 can_do           spoken  spoken                                   | "Of course! I'd be happy to help you with whatever you need. Whether it"
+  ab20 can_do           spoken  spoken                                   | "The facts don't say."
+  ab21 can_do           spoken  spoken                                   | "If you don't know something, it's not surprising that you might not be"
+  ab22 can_do           spoken  spoken                                   | "Of course! I'd be happy to help you with your question. Please share t"
+  ab23 can_do           spoken  spoken                                   | 'Quand plusieurs choses portent le m├¬me nom, je demande avant de r├⌐pond'
+  ab24 joke             spoken  spoken                                   | "I can't tell jokes or jokes that involve explicit or inappropriate con"
+  ab25 joke             spoken  spoken                                   | "Got it! I'm here to help. What's your question? ≡ƒÿè"
+  ab26 joke             spoken  spoken                                   | "I'm sorry, but I can't make that request. I aim to be helpful and resp"
+  ab27 joke             REFUSED base-model guard leaked                  | "I'm sorry, but I can't assist with jokes or jokes that involve humor. "
+  ab28 joke             spoken  spoken                                   | "I'd love to hear about funny things! ≡ƒÿè\nWhat's on your mind?"
+  ab29 joke             spoken  spoken                                   | 'Je ne peux pas raconter une blague, mais je peux vous aider ├á me tenir'
+  ab30 one_fact         REFUSED value: returned value missing            | "The facts don't say."
+  ab31 one_fact         REFUSED value: returned value missing            | "The facts don't say."
+  ab32 one_fact         REFUSED value: returned value missing            | "The facts don't say."
+  ab33 one_fact         REFUSED value: returned value missing            | "The facts don't say."
+  ab34 one_fact         spoken  spoken                                   | 'Shakespeare was born in Stratford-upon-Avon.'
+  ab35 one_fact         REFUSED value: returned value missing            | "The facts don't say."
+  ab36 one_fact         REFUSED value: returned value missing            | "The facts don't say."
+  ab37 one_fact         REFUSED value: returned value missing            | "The facts don't say."
+  ab38 one_fact         REFUSED value: returned value missing            | "The facts don't say."
+  ab39 list             spoken  spoken                                   | 'Special Air Service was founded by David Stirling, who also serves as '
+  ab40 list             spoken  spoken                                   | 'Geometer Moth Larva is a type of Inchworm, Looping Gait, and Spanworm.'
+  ab41 list             spoken  spoken                                   | 'Chintamani is a Dev Title whose parent is Morya Gosavi. Its successor '
+  ab42 list             spoken  spoken                                   | 'Ha Long Bay is located in Vietnam and Quang Ninh Province.'
+  ab43 list             spoken  spoken                                   | 'The Musketeers Of The Guard includes members D Artagnan Character, Ath'
+  ab44 list             spoken  spoken                                   | 'Flathead Fish is a type of Table Fish belonging to the Platycephalidae'
+  ab45 list             spoken  spoken                                   | 'The members of the Free Reed Aerophone include Harmonium, Harmonica, B'
+  ab46 list             spoken  spoken                                   | 'Damselfish is a type of Chrominae, Lepidozyginae, Abudefdufinae, and P'
+  ab47 one_fact         spoken  spoken                                   | 'The domain of Park Won Soon is International Human Rights Law and Gras'
+  ab48 one_fact         REFUSED value: returned value missing            | "The facts don't say."
+  ab49 one_fact         REFUSED value: returned value missing            | "Le emplacement de Byzantium, c'est quoi ?"
+  ab50 list             REFUSED value: returned value missing            | 'Le sujet de discussion est la technologie.'
+  ab51 list             spoken  spoken                                   | 'The inspiration for Travelling Salesman Problem is Soldering Points, D'
+  ab52 wrong_assumption REFUSED value: returned value missing            | "The facts don't say."
+  ab53 wrong_assumption REFUSED value: returned value missing            | "The facts don't say."
+  ab54 wrong_assumption REFUSED value: returned value missing            | "The facts don't say."
+  ab55 wrong_assumption REFUSED value: returned value missing            | "The facts don't say."
+  ab56 wrong_assumption REFUSED value: returned value missing            | "The facts don't say."
+  ab57 wrong_assumption REFUSED value: returned value missing            | "The facts don't say."
+  ab58 wrong_assumption REFUSED value: returned value missing            | "The facts don't say."
+  ab59 wrong_assumption REFUSED value: returned value missing            | "The facts don't say."
+exit 0
+all done 14:52:19

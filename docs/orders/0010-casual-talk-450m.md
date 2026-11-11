@@ -528,3 +528,36 @@ Logs: `validation/logs/talk_ab_2026-11-11_{voice,control,sheet,key}.json`, `_run
 - **For the next A/B:** `validation/exp_talk_ab.py` reads chat turns through the cut only; to show what Cubby would
   say, its chat turns go through `CubbyChat._guard` (or `cubby_record.chat_check` after `identity.is_model_guard` and
   `voice_ok`) with `CB_CUBBY_RECORD=1`.
+
+### The blind A/B, run again through the host's own chat path (Cowork, 2026-11-11); the first run's stop does not stand
+- **What was wrong in the first run, and it was mine.** The harness read chat replies through the cut only,
+  on the belief that the host had no check on a chat turn. It has: the base-model guard, the voice rules, and
+  with change d Cubby's record (`CubbyChat._guard`). It also sent every chat turn bare, where the host renders a
+  turn about Cubby with Cubby's record as its block, and reads a greeting and a thanks as such a turn
+  (`ChatState.talk_context`). The reply the first run called the kill is refused by the host before anyone
+  sees it (Claude Code's read, above). So `talk_v3a` was not shown to say a false thing to a user, and the
+  first run's sheet is void.
+- **The rerun** (`280b7d2`, committed with its prompts before any reply; tag `talk_ab_2026-11-11b`): the harness
+  calls the host's own two functions; `CB_OPENER_VIEW=1 CB_TALK_LINES=1 CB_CUBBY_RECORD=1`; the same user lines
+  and the same 30 fact turns; 17 chat prompts now carry the record. Logs: `validation/logs/talk_ab_2026-11-11b_*`.
+
+  | turns | voice | control |
+  |---|---|---|
+  | chat, 30 | 30 spoken | 26 spoken; 4 refused (the base-model guard twice; "says it is Maya"; "names itself Daniel") |
+  | fact, 30 | as in the first run: 20 spoken | as in the first run: 11 spoken |
+
+- **My read of the voice's 30 spoken chat replies: none is false of Cubby.** What they are not:
+  - **not an answer, twice:** "are you a person or a program?" and "who are you?" each get a line about what
+    Cubby can do. The record's "is" and "is not" lines are there; the voice rows never used those labels;
+  - **a list of abilities for a greeting, three times:** the record arrives with "good morning", and the voice
+    rows have greetings bare;
+  - **stock assistant talk on three bare turns,** one with a statement the record does not hold ("I don't have
+    access to personal information or personal experiences"). No check reads it.
+- **The sheet:** 35 pairs to judge and 1 identical pair, so 36; the voice passes with 24 (a coin flip reaches 24
+  of 36 3.3% of the time). 24 pairs have a refusal and are not judged. Published for Nick as a page; the key
+  stays in the logs (sha256 `fef15578942a1765...`).
+- **The four findings, after the rerun:** 1 (no fact worded for a real question), 3 (the voice only on its own
+  shapes) and 4 (little variety) stand as written. 2 reads: off its rows the voice falls back to the base's
+  assistant talk, and the host's guards stop the false kind; they do not stop the empty kind.
+- **Added for `talk_v3b`:** rows in the host's own chat shape (a greeting, a thanks and a question about Cubby
+  each with the record as the block); the record's "is" and "is not" labels; the name in "who are you".
