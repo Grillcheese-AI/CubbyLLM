@@ -830,6 +830,15 @@ new flag, `CB_ANSWER_CLASS=1`, off by default, for 0054's rerun to turn on with 
   490 pass (the known red, 0002). `pipeline.py` grew from 582 to 602 lines for the two hooks (the rule is in its own
   module).
 
+**Claude Code, 2026-11-10: step 4 run** (0054's arm C with `CB_WD_STORE=1 CB_WD_KINDS=1 CB_ANSWER_CLASS=1`; the read
+is in 0054, "The 'after'"; `validation/logs/system_eval_after_2026-11-10.json`). Spoken: SimpleQA 6 -> 6, NQ 12 -> 15,
+WebQuestions 58 -> 65, AA 0 -> 0; the spoken facts now come from the store. Wrong among spoken: 0 / 6, 4 / 15, 4 / 65
+(one new with the store: "Emperor Constantine" is an alias of Constantine II alone). Over 0 on the batteries, the
+acceptance line "0054 with the full base: Cubby's wrong answers above 1% of its spoken ones" is crossed on NQ and
+WebQuestions, as it was before the store. The store reaches few questions: most never become a program (no plan:
+3,759 of 4,326 SimpleQA). 2 NQ prompts wait for a Colab programs round. Status stays `in progress` for Cowork's
+reading.
+
 **Nick's decisions on the report's open questions (2026-11-10: "yes" to Cowork's recommendations):**
 - **The 1 ms line:** no work on it now. It stays recorded as missed (1.5 ms p95). The 50-question preflight says
   whether 1.5 ms matters next to the rest of an answer, and the line is decided then.

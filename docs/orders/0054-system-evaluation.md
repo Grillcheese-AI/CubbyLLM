@@ -382,3 +382,56 @@ frozen and hashed with the run.
   unseen. The 1% line on wrong answers holds at every level; if wrong answers appear only at one level, the claim
   is narrowed to the levels where it holds, with the cause.
 - **Tests:** the classifier on fixtures (one question per level, by hand); the development set's hash recorded.
+
+## The "after" (Claude Code, 2026-11-10): arm C with the full Wikidata store
+Nick: "run the 0054 rerun with the flags on". Arm C, whole, at home on CPU, online (the Wikidata source live through
+its cache), the replay seat on the "before"'s programs (9,508), with `CB_WD_STORE=1 CB_WD_KINDS=1 CB_ANSWER_CLASS=1`:
+the hot store (snapshot `8a2041cff56d...`, the WikiKGQA 2026 dump of 2025-12-29) ahead of the hdc world, as
+`cubby_serve` mounts it (`run_c.py`, `82a1c31`). The same VM binary as the "before". M and CLUTRR's C are not rerun:
+neither reads the worlds. Log: `validation/logs/system_eval_after_2026-11-10.json` (the counts, and the read of every
+unmatched answer below, row by row).
+- **The preflight** (50 a benchmark, gather seat): no new seat prompt, no crash, the same verdicts as the "before" on
+  the same questions; the full run started on Nick's word.
+- **NQ:** the replay stopped on a prompt Colab never saw; NQ was run whole on the gather seat instead. **2 prompts are
+  new** (on the store, the walk reaches a different seat prompt for them); those 2 questions are recorded with nothing
+  proposed. They need one short Colab programs round (Nick's) before NQ's C is final.
+- **Counts** (spoken = right by the normalizer + unmatched; wrong and debatable from the read):
+
+| | spoken before -> after | right (matched) | unmatched | read wrong | wrong among spoken (95%) |
+|---|---|---|---|---|---|
+| SimpleQA | 6 -> 6 | 6 | 0 | 0 | 0 / 6 (0-39%) |
+| NQ | 12 -> 15 | 9 | 6 | 4 | 4 / 15, 26.7% (10.9-52.0%) |
+| WebQuestions | 58 -> 65 | 49 | 16 | 4 (+1 debatable) | 4 / 65, 6.2% (2.4-14.8%) |
+| AA-Omniscience | 0 -> 0 | 0 | 0 | 0 | none spoken |
+
+- **C-VM** (from C's records): SimpleQA 3 wrong of 11; NQ 4 of 16; WebQuestions 10 (+2 debatable) of 105. C is
+  below C-VM on SimpleQA and WebQuestions, level on NQ's count (4 and 4; C speaks one fewer).
+- **The line (C at most 1% wrong on every benchmark): not met** on NQ and WebQuestions, after as before (the "before",
+  read the same way: NQ 4 / 12, WebQuestions 3 (+1) / 58; nothing of the "before" had been read till now). By the
+  order's kill, the claim narrows to the benchmarks where it holds: SimpleQA (0 / 6), CLUTRR (0 / 827, the before's),
+  AA (nothing spoken). Cowork's to rule; this is the read, not a status.
+- **The 8 wrong, by cause** (7 were wrong in the "before" too):
+  - **the plan answered another relation** (3): "where was the remake of Dirty Dancing filmed" -> a derivative work;
+    "what culture region is Germany a part of" -> an inverse "part of" from live Wikidata (The Beers of Europe);
+    "where was Auschwitz located" -> "Gas Chambers" (a part of the camp);
+  - **a work named like the asked one** (2): "who wrote the Gospel according to John" -> D. A. Carson's commentary of
+    that title; "who wrote Jana Gana Mana" -> Herbert Murrill (an arrangement);
+  - **Wikidata's value against the gold** (2): Last Podcast on the Left's start (2015, the podcast began in 2011);
+    the Wave Hill walk-off's end (April 1971; the gold is the 1975 hand-back);
+  - **new with the store** (1): "where did Emperor Constantine die" -> Aquileia: "Emperor Constantine" is an English
+    alias of Constantine II alone in the store, so the name resolved to him (not a pick among namesakes).
+  - debatable: Robin Gibb's instrument, "voice" (Wikidata's; the gold says violin, piano).
+- **Right on reading** (14 of C's 22 unmatched): a finer or coarser place (Upper East Side, a New York hospital,
+  London for Paddington, Nine Mile for the mausoleum), a renamed site (Martin Luther King Jr. National Historical
+  Park), a value as of the dump against an older gold (Fayetteville's population), an offset for a zone (UTC-07:00),
+  a gold that answers another question (Lucy Lawless; Barack Obama Sr.'s birthplace is his son's in the gold).
+- **Where coverage stops** (C's refusals, after): no plan 3,759 / 2,704 / 1,064 / 580 (SimpleQA / NQ / WebQ / AA);
+  relation missing 400 / 429 / 432 / 13; name unresolved 52 / 280 / 281 / 0; fact missing 104 / 175 / 121 / 7. The
+  store moved few: **most questions never become a program a fact could answer** (the 450M seat proposes plans that do
+  not cover the question: "Who received the IEEE Frank Rosenblatt Award in 2010?" -> `['IEEE', 'FILM']`). The
+  "true numbers" Nick asked of 0055 are, at this stage, the proposer's.
+- **Where the spoken facts come from:** the store now, not live Wikidata: SimpleQA 6 of 6 (before 0), NQ 14 of 15
+  (before 1 of 12), WebQuestions 57 of 65 (before 28 of 58).
+- **Time** (the sum over the benchmark, CPU): SimpleQA 491 s (before 651), NQ 368 s (134), WebQuestions 366 s (88),
+  AA 17 s (6). The store answers in place of live fetches on SimpleQA; on the others each name read costs requests
+  to the store (per question p50 0.07-0.10 s, before 0.01-0.04 s). The 1 ms lookup line stays Nick's to decide.

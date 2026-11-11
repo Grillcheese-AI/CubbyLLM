@@ -1,0 +1,940 @@
+{
+ "what": "order 0054's arm C with the full Wikidata store (0055 step 4, the 'after'); Claude Code's read of every unmatched answer C spoke and of C-VM's extra unmatched ones, for Cowork to check",
+ "date": "2026-11-10",
+ "commit": "82a1c31",
+ "flags": "CB_WD_STORE=1 CB_WD_KINDS=1 CB_ANSWER_CLASS=1",
+ "store_snapshot": "8a2041cff56d6f44cbb04856605831f3b39a76f8f9be45bce73b935c4024e80f",
+ "dump": "WikiKGQA 2026 (2025-12-29)",
+ "vm": "cubelang.exe built 2026-11-04 (the before's)",
+ "programs": "the before's programs.jsonl (9,508); NQ: 2 prompts new, recorded with nothing proposed (gather seat)",
+ "benches": {
+  "simpleqa": {
+   "after_c": {
+    "spoken": 6,
+    "right_matched": 6,
+    "unmatched": 0,
+    "read_right": 0,
+    "read_wrong": 0,
+    "debatable": 0,
+    "unread": 0,
+    "wrong_rate": 0.0,
+    "wrong_rate_95": [
+     0,
+     0.3903
+    ],
+    "wrong_rate_with_debatable": 0.0
+   },
+   "after_cvm": {
+    "spoken": 11,
+    "right_matched": 8,
+    "unmatched": 3,
+    "read_right": 0,
+    "read_wrong": 3,
+    "debatable": 0,
+    "unread": 0,
+    "wrong_rate": 0.2727,
+    "wrong_rate_95": [
+     0.0975,
+     0.5657
+    ],
+    "wrong_rate_with_debatable": 0.2727
+   },
+   "before_c": {
+    "spoken": 6,
+    "right_matched": 6,
+    "unmatched": 0,
+    "read_right": 0,
+    "read_wrong": 0,
+    "debatable": 0,
+    "unread": 0,
+    "wrong_rate": 0.0,
+    "wrong_rate_95": [
+     0,
+     0.3903
+    ],
+    "wrong_rate_with_debatable": 0.0
+   },
+   "before_cvm": {
+    "spoken": 14,
+    "right_matched": 9,
+    "unmatched": 5,
+    "read_right": 0,
+    "read_wrong": 3,
+    "debatable": 0,
+    "unread": 2,
+    "wrong_rate": 0.2143,
+    "wrong_rate_95": [
+     0.0757,
+     0.4759
+    ],
+    "wrong_rate_with_debatable": 0.2143
+   },
+   "after_refusals": {
+    "no_plan": 3759,
+    "relation_missing": 400,
+    "fact_missing": 104,
+    "name_unresolved": 52,
+    "not_certified": 4,
+    "other:class_mismatch": 1
+   },
+   "after_facts_from": {
+    "store": 6,
+    "wikidata": 0
+   },
+   "after_wall_s": 490.8,
+   "before_wall_s": 650.9,
+   "no_program": 0
+  },
+  "nq": {
+   "after_c": {
+    "spoken": 15,
+    "right_matched": 9,
+    "unmatched": 6,
+    "read_right": 2,
+    "read_wrong": 4,
+    "debatable": 0,
+    "unread": 0,
+    "wrong_rate": 0.2667,
+    "wrong_rate_95": [
+     0.109,
+     0.5195
+    ],
+    "wrong_rate_with_debatable": 0.2667
+   },
+   "after_cvm": {
+    "spoken": 16,
+    "right_matched": 9,
+    "unmatched": 7,
+    "read_right": 3,
+    "read_wrong": 4,
+    "debatable": 0,
+    "unread": 0,
+    "wrong_rate": 0.25,
+    "wrong_rate_95": [
+     0.1018,
+     0.495
+    ],
+    "wrong_rate_with_debatable": 0.25
+   },
+   "before_c": {
+    "spoken": 12,
+    "right_matched": 8,
+    "unmatched": 4,
+    "read_right": 0,
+    "read_wrong": 4,
+    "debatable": 0,
+    "unread": 0,
+    "wrong_rate": 0.3333,
+    "wrong_rate_95": [
+     0.1381,
+     0.6094
+    ],
+    "wrong_rate_with_debatable": 0.3333
+   },
+   "before_cvm": {
+    "spoken": 13,
+    "right_matched": 8,
+    "unmatched": 5,
+    "read_right": 0,
+    "read_wrong": 4,
+    "debatable": 0,
+    "unread": 1,
+    "wrong_rate": 0.3077,
+    "wrong_rate_95": [
+     0.1268,
+     0.5763
+    ],
+    "wrong_rate_with_debatable": 0.3077
+   },
+   "after_refusals": {
+    "no_plan": 2704,
+    "fact_missing": 175,
+    "relation_missing": 429,
+    "name_unresolved": 280,
+    "walk_failed": 1,
+    "other:self": 6
+   },
+   "after_facts_from": {
+    "store": 14,
+    "wikidata": 1
+   },
+   "after_wall_s": 367.9,
+   "before_wall_s": 134.1,
+   "no_program": 2
+  },
+  "webq": {
+   "after_c": {
+    "spoken": 65,
+    "right_matched": 49,
+    "unmatched": 16,
+    "read_right": 11,
+    "read_wrong": 4,
+    "debatable": 1,
+    "unread": 0,
+    "wrong_rate": 0.0615,
+    "wrong_rate_95": [
+     0.0242,
+     0.1478
+    ],
+    "wrong_rate_with_debatable": 0.0769
+   },
+   "after_cvm": {
+    "spoken": 105,
+    "right_matched": 76,
+    "unmatched": 29,
+    "read_right": 17,
+    "read_wrong": 10,
+    "debatable": 2,
+    "unread": 0,
+    "wrong_rate": 0.0952,
+    "wrong_rate_95": [
+     0.0526,
+     0.1665
+    ],
+    "wrong_rate_with_debatable": 0.1143
+   },
+   "before_c": {
+    "spoken": 58,
+    "right_matched": 44,
+    "unmatched": 14,
+    "read_right": 10,
+    "read_wrong": 3,
+    "debatable": 1,
+    "unread": 0,
+    "wrong_rate": 0.0517,
+    "wrong_rate_95": [
+     0.0177,
+     0.1414
+    ],
+    "wrong_rate_with_debatable": 0.069
+   },
+   "before_cvm": {
+    "spoken": 97,
+    "right_matched": 68,
+    "unmatched": 29,
+    "read_right": 16,
+    "read_wrong": 9,
+    "debatable": 2,
+    "unread": 2,
+    "wrong_rate": 0.0928,
+    "wrong_rate_95": [
+     0.0496,
+     0.167
+    ],
+    "wrong_rate_with_debatable": 0.1134
+   },
+   "after_refusals": {
+    "no_plan": 1064,
+    "name_unresolved": 281,
+    "fact_missing": 121,
+    "relation_missing": 432,
+    "walk_failed": 38,
+    "other:profile": 27,
+    "other:self": 2,
+    "other:class_mismatch": 1,
+    "not_certified": 1
+   },
+   "after_facts_from": {
+    "store": 57,
+    "wikidata": 8
+   },
+   "after_wall_s": 366.2,
+   "before_wall_s": 88.3,
+   "no_program": 0
+  },
+  "aa": {
+   "after_c": {
+    "spoken": 0,
+    "right_matched": 0,
+    "unmatched": 0,
+    "read_right": 0,
+    "read_wrong": 0,
+    "debatable": 0,
+    "unread": 0,
+    "wrong_rate": null,
+    "wrong_rate_95": [
+     0.0,
+     0.0
+    ],
+    "wrong_rate_with_debatable": null
+   },
+   "after_cvm": {
+    "spoken": 0,
+    "right_matched": 0,
+    "unmatched": 0,
+    "read_right": 0,
+    "read_wrong": 0,
+    "debatable": 0,
+    "unread": 0,
+    "wrong_rate": null,
+    "wrong_rate_95": [
+     0.0,
+     0.0
+    ],
+    "wrong_rate_with_debatable": null
+   },
+   "before_c": {
+    "spoken": 0,
+    "right_matched": 0,
+    "unmatched": 0,
+    "read_right": 0,
+    "read_wrong": 0,
+    "debatable": 0,
+    "unread": 0,
+    "wrong_rate": null,
+    "wrong_rate_95": [
+     0.0,
+     0.0
+    ],
+    "wrong_rate_with_debatable": null
+   },
+   "before_cvm": {
+    "spoken": 0,
+    "right_matched": 0,
+    "unmatched": 0,
+    "read_right": 0,
+    "read_wrong": 0,
+    "debatable": 0,
+    "unread": 0,
+    "wrong_rate": null,
+    "wrong_rate_95": [
+     0.0,
+     0.0
+    ],
+    "wrong_rate_with_debatable": null
+   },
+   "after_refusals": {
+    "no_plan": 580,
+    "fact_missing": 7,
+    "relation_missing": 13
+   },
+   "after_facts_from": {
+    "store": 0,
+    "wikidata": 0
+   },
+   "after_wall_s": 17.3,
+   "before_wall_s": 6.2,
+   "no_program": 0
+  }
+ },
+ "unmatched_read": [
+  {
+   "bench": "simpleqa",
+   "arm": "cvm only",
+   "question": "Who was the recipient of the Leslie Fox Prize for Numerical Analysis in 2017?",
+   "said": "Ioana Dumitriu",
+   "golds": [
+    "Nicole Spillane"
+   ],
+   "read": "wrong",
+   "why": "another year's",
+   "before": "refused",
+   "facts_from": null,
+   "trace": [
+    "Ioana Dumitriu is the recipient of Leslie Fox Prize For Numerical Analysis"
+   ]
+  },
+  {
+   "bench": "simpleqa",
+   "arm": "cvm only",
+   "question": "What award did El Anatsui receive in 2008?",
+   "said": "Praemium Imperiale",
+   "golds": [
+    "Visionaries Award, Museum of Arts and Design"
+   ],
+   "read": "wrong",
+   "why": "another year's",
+   "before": "refused",
+   "facts_from": null,
+   "trace": [
+    "Praemium Imperiale is the award received of El Anatsui"
+   ]
+  },
+  {
+   "bench": "simpleqa",
+   "arm": "cvm only",
+   "question": "Who was the recipient of the Eckert–Mauchly Award in 2021?",
+   "said": "Wesley A Clark",
+   "golds": [
+    "Margaret Martonosi"
+   ],
+   "read": "wrong",
+   "why": "another year's",
+   "before": "refused",
+   "facts_from": null,
+   "trace": [
+    "Wesley A Clark is the recipient of Eckert Mauchly Award"
+   ]
+  },
+  {
+   "bench": "nq",
+   "arm": "cvm only",
+   "question": "what's the population of prince edward island",
+   "said": "152784",
+   "golds": [
+    "142,907 residents",
+    "142,907"
+   ],
+   "read": "right",
+   "why": "a value that changes; the gold is older",
+   "before": "refused",
+   "facts_from": null,
+   "trace": []
+  },
+  {
+   "bench": "nq",
+   "arm": "c",
+   "question": "when did last podcast on the left start",
+   "said": "16 February 2015",
+   "golds": [
+    "2011"
+   ],
+   "read": "wrong",
+   "why": "the store's start time (16 February 2015); the podcast began in 2011",
+   "before": "unmatched",
+   "facts_from": "store",
+   "trace": [
+    "16 February 2015 is the start time of Last Podcast on the Left"
+   ]
+  },
+  {
+   "bench": "nq",
+   "arm": "c",
+   "question": "when did the battle of badr take place",
+   "said": "624",
+   "golds": [
+    "13 March 624"
+   ],
+   "read": "right",
+   "why": "624; the gold's day is finer",
+   "before": "refused",
+   "facts_from": "store",
+   "trace": [
+    "624 is the point in time of Battle of Badr"
+   ]
+  },
+  {
+   "bench": "nq",
+   "arm": "c",
+   "question": "where was the remake of dirty dancing filmed",
+   "said": "Dirty Dancing: Havana Nights",
+   "golds": [
+    "High Hampton Inn in Cashiers",
+    "Hendersonville, North Carolina",
+    "western North Carolina"
+   ],
+   "read": "wrong",
+   "why": "a derivative work, not a filming location: the plan answered another relation",
+   "before": "unmatched",
+   "facts_from": "store",
+   "trace": [
+    "Dirty Dancing: Havana Nights is the derivative work of Dirty Dancing"
+   ]
+  },
+  {
+   "bench": "nq",
+   "arm": "c",
+   "question": "what is the population of fayetteville north carolina",
+   "said": "As of 2025, 208501.",
+   "golds": [
+    "204,408 in 2013"
+   ],
+   "read": "right",
+   "why": "a value that changes: the 2020 count as of the dump; the gold is 2013's",
+   "before": "refused",
+   "facts_from": "store",
+   "trace": [
+    "208501 is the population of Fayetteville"
+   ]
+  },
+  {
+   "bench": "nq",
+   "arm": "c",
+   "question": "what culture region is germany a part of",
+   "said": "The Beers of Europe was a part of germany at one point.",
+   "golds": [
+    "Central Germany"
+   ],
+   "read": "wrong",
+   "why": "an inverse 'part of' from live Wikidata (The Beers of Europe)",
+   "before": "unmatched",
+   "facts_from": "wikidata",
+   "trace": [
+    "The Beers of Europe is the part of of Germany"
+   ]
+  },
+  {
+   "bench": "nq",
+   "arm": "c",
+   "question": "when did the wave hill walk off end",
+   "said": "April 1971",
+   "golds": [
+    "16 August 1975"
+   ],
+   "read": "wrong",
+   "why": "the store's end time (April 1971); the gold is the 1975 hand-back",
+   "before": "unmatched",
+   "facts_from": "store",
+   "trace": [
+    "April 1971 is the end time of Gurindji strike"
+   ]
+  },
+  {
+   "bench": "webq",
+   "arm": "c",
+   "question": "what timezone is utah in?",
+   "said": "UTC-07:00",
+   "golds": [
+    "Mountain Time Zone"
+   ],
+   "read": "right",
+   "why": "UTC-07:00 is Mountain Time's standard offset",
+   "before": "unmatched",
+   "facts_from": "store",
+   "trace": [
+    "UTC-07:00 is the located in time zone of Utah"
+   ]
+  },
+  {
+   "bench": "webq",
+   "arm": "c",
+   "question": "where did eleanor roosevelt die?",
+   "said": "Upper East Side. If you meant something else, there is also a subbarrio of puerto rico named Eleanor Roosevelt and a painting named Eleanor Roosevelt. Want to know about one of them?",
+   "golds": [
+    "New York City"
+   ],
+   "read": "right",
+   "why": "Upper East Side is in New York City (finer)",
+   "before": "refused",
+   "facts_from": "store",
+   "trace": [
+    "Upper East Side is the place of death of Eleanor Roosevelt"
+   ]
+  },
+  {
+   "bench": "webq",
+   "arm": "c",
+   "question": "where did richard nixon die?",
+   "said": "Weill Cornell Medical Center",
+   "golds": [
+    "New York City"
+   ],
+   "read": "right",
+   "why": "a hospital in New York City (finer)",
+   "before": "unmatched",
+   "facts_from": "wikidata",
+   "trace": [
+    "Weill Cornell Medical Center is the place of death of Richard Nixon"
+   ]
+  },
+  {
+   "bench": "webq",
+   "arm": "cvm only",
+   "question": "which country was justin bieber born in?",
+   "said": "London",
+   "golds": [
+    "Canada"
+   ],
+   "read": "wrong",
+   "why": "London",
+   "before": "refused",
+   "facts_from": null,
+   "trace": [
+    "London is the place of birth of Justin Bieber"
+   ]
+  },
+  {
+   "bench": "webq",
+   "arm": "c",
+   "question": "who wrote the jana gana mana?",
+   "said": "Herbert Murrill",
+   "golds": [
+    "Ram Singh Thakur",
+    "Rabindranath Tagore"
+   ],
+   "read": "wrong",
+   "why": "Herbert Murrill arranged it; Tagore wrote it",
+   "before": "unmatched",
+   "facts_from": "store",
+   "trace": [
+    "Herbert Murrill is the author of Jana Gana Mana"
+   ]
+  },
+  {
+   "bench": "webq",
+   "arm": "cvm only",
+   "question": "what time zone am i in california?",
+   "said": "america los angeles",
+   "golds": [
+    "Pacific Time Zone",
+    "UTC-8"
+   ],
+   "read": "right",
+   "why": "America/Los_Angeles is Pacific Time",
+   "before": "refused",
+   "facts_from": null,
+   "trace": []
+  },
+  {
+   "bench": "webq",
+   "arm": "c",
+   "question": "where was elvis costello born?",
+   "said": "London. If you meant something else, there is also a painting named Elvis Costello and a lithograph print named Elvis Costello. Want to know about one of them?",
+   "golds": [
+    "Paddington"
+   ],
+   "read": "right",
+   "why": "London; Paddington is in it (coarser)",
+   "before": "unmatched",
+   "facts_from": "store",
+   "trace": [
+    "London is the place of birth of Elvis Costello"
+   ]
+  },
+  {
+   "bench": "webq",
+   "arm": "cvm only",
+   "question": "what nationality is mother teresa?",
+   "said": "albania",
+   "golds": [
+    "India"
+   ],
+   "read": "wrong",
+   "why": "Albania; the gold is India (her citizenship)",
+   "before": "refused",
+   "facts_from": null,
+   "trace": []
+  },
+  {
+   "bench": "webq",
+   "arm": "c",
+   "question": "what did laura ingalls wilder wrote?",
+   "said": "Little House on the Prairie",
+   "golds": [
+    "On the Banks of Plum Creek",
+    "The Long Winter",
+    "Farmer Boy",
+    "Little House in the Big Woods",
+    "West from Home"
+   ],
+   "read": "right",
+   "why": "one of her books; the gold lists others",
+   "before": "unmatched",
+   "facts_from": "store",
+   "trace": [
+    "Little House on the Prairie is the notable work of Laura Ingalls Wilder"
+   ]
+  },
+  {
+   "bench": "webq",
+   "arm": "cvm only",
+   "question": "what language does australia use?",
+   "said": "adithinngithigh",
+   "golds": [
+    "English Language"
+   ],
+   "read": "wrong",
+   "why": "Adithinngithigh, one of many",
+   "before": "refused",
+   "facts_from": null,
+   "trace": []
+  },
+  {
+   "bench": "webq",
+   "arm": "c",
+   "question": "what instrument did robin gibb play?",
+   "said": "voice",
+   "golds": [
+    "Violin",
+    "Piano"
+   ],
+   "read": "debatable",
+   "why": "voice: Wikidata's instrument; the gold says violin, piano",
+   "before": "unmatched",
+   "facts_from": "store",
+   "trace": [
+    "voice is the instrument of Robin Gibb"
+   ]
+  },
+  {
+   "bench": "webq",
+   "arm": "cvm only",
+   "question": "what timezone is the state of michigan and?",
+   "said": "5 utc",
+   "golds": [
+    "Central Time Zone",
+    "North American Eastern Time Zone",
+    "UTC-5"
+   ],
+   "read": "right",
+   "why": "UTC-5 (in substance)",
+   "before": "refused",
+   "facts_from": null,
+   "trace": []
+  },
+  {
+   "bench": "webq",
+   "arm": "c",
+   "question": "who wrote the gospel according to john?",
+   "said": "D. A. Carson",
+   "golds": [
+    "John the Evangelist"
+   ],
+   "read": "wrong",
+   "why": "D. A. Carson's commentary of that title, not the gospel",
+   "before": "unmatched",
+   "facts_from": "store",
+   "trace": [
+    "D. A. Carson is the author of The Gospel According to John"
+   ]
+  },
+  {
+   "bench": "webq",
+   "arm": "cvm only",
+   "question": "what form of government does north korea have?",
+   "said": "communist dictatorship",
+   "golds": [
+    "Single-party state",
+    "Socialist state",
+    "People's Republic",
+    "Juche",
+    "Unitary state"
+   ],
+   "read": "debatable",
+   "why": "communist dictatorship",
+   "before": "refused",
+   "facts_from": null,
+   "trace": []
+  },
+  {
+   "bench": "webq",
+   "arm": "c",
+   "question": "when was lucy lawless born?",
+   "said": "29 March 1968",
+   "golds": [
+    "New Zealand"
+   ],
+   "read": "right",
+   "why": "her date of birth; the gold (New Zealand) answers 'where'",
+   "before": "unmatched",
+   "facts_from": "store",
+   "trace": [
+    "29 March 1968 is the date of birth of Lucy Lawless"
+   ]
+  },
+  {
+   "bench": "webq",
+   "arm": "c",
+   "question": "what currency does england use now?",
+   "said": "pound sterling",
+   "golds": [
+    "UK £"
+   ],
+   "read": "right",
+   "why": "pound sterling = UK £",
+   "before": "unmatched",
+   "facts_from": "store",
+   "trace": [
+    "pound sterling is the currency of England"
+   ]
+  },
+  {
+   "bench": "webq",
+   "arm": "cvm only",
+   "question": "what time zone is pennsylvania in right now?",
+   "said": "5 utc",
+   "golds": [
+    "UTC-5",
+    "North American Eastern Time Zone"
+   ],
+   "read": "right",
+   "why": "UTC-5 (in substance)",
+   "before": "refused",
+   "facts_from": null,
+   "trace": []
+  },
+  {
+   "bench": "webq",
+   "arm": "cvm only",
+   "question": "what time zone is in the bahamas?",
+   "said": "america nassau",
+   "golds": [
+    "UTC-5",
+    "North American Eastern Time Zone"
+   ],
+   "read": "right",
+   "why": "America/Nassau is UTC-5",
+   "before": "refused",
+   "facts_from": null,
+   "trace": []
+  },
+  {
+   "bench": "webq",
+   "arm": "cvm only",
+   "question": "what language do people speak in brazil?",
+   "said": "brazilian sign language",
+   "golds": [
+    "Portuguese Language"
+   ],
+   "read": "wrong",
+   "why": "Brazilian Sign Language",
+   "before": "refused",
+   "facts_from": null,
+   "trace": []
+  },
+  {
+   "bench": "webq",
+   "arm": "cvm only",
+   "question": "what kind of government does poland have?",
+   "said": "parliamentary system",
+   "golds": [
+    "Parliamentary republic",
+    "Democracy"
+   ],
+   "read": "right",
+   "why": "parliamentary system",
+   "before": "refused",
+   "facts_from": null,
+   "trace": []
+  },
+  {
+   "bench": "webq",
+   "arm": "cvm only",
+   "question": "what currency does cyprus use?",
+   "said": "cypriot pound",
+   "golds": [
+    "Euro"
+   ],
+   "read": "wrong",
+   "why": "the Cypriot pound, replaced by the euro in 2008",
+   "before": "refused",
+   "facts_from": null,
+   "trace": []
+  },
+  {
+   "bench": "webq",
+   "arm": "c",
+   "question": "where was barack hussein obama sr born?",
+   "said": "Nyang'oma Kogelo",
+   "golds": [
+    "Honolulu"
+   ],
+   "read": "right",
+   "why": "Wikidata's place; the gold (Honolulu) is his son's",
+   "before": "unmatched",
+   "facts_from": "store",
+   "trace": [
+    "Nyang'oma Kogelo is the place of birth of Barack Obama Sr."
+   ]
+  },
+  {
+   "bench": "webq",
+   "arm": "c",
+   "question": "where did emperor constantine die?",
+   "said": "Aquileia",
+   "golds": [
+    "Constantinople"
+   ],
+   "read": "wrong",
+   "why": "Constantine II: 'Emperor Constantine' is an alias of his item alone in the store",
+   "before": "refused",
+   "facts_from": "store",
+   "trace": [
+    "Aquileia is the place of death of Constantine II"
+   ]
+  },
+  {
+   "bench": "webq",
+   "arm": "cvm only",
+   "question": "what is the official language of brazil now?",
+   "said": "brazilian sign language",
+   "golds": [
+    "Portuguese Language"
+   ],
+   "read": "wrong",
+   "why": "Brazilian Sign Language",
+   "before": "refused",
+   "facts_from": null,
+   "trace": []
+  },
+  {
+   "bench": "webq",
+   "arm": "c",
+   "question": "what is carlos pena jr nationality?",
+   "said": "United States",
+   "golds": [
+    "Dominican Republic"
+   ],
+   "read": "right",
+   "why": "Carlos PenaVega, a US citizen born in Missouri; the gold is his descent",
+   "before": "unmatched",
+   "facts_from": "store",
+   "trace": [
+    "United States is the country of citizenship of Carlos PenaVega"
+   ]
+  },
+  {
+   "bench": "webq",
+   "arm": "c",
+   "question": "where was martin luther king jr buried?",
+   "said": "Martin Luther King Jr. National Historical Park",
+   "golds": [
+    "Martin Luther King, Jr., National Historic Site"
+   ],
+   "read": "right",
+   "why": "the same site, renamed a national historical park in 2018",
+   "before": "unmatched",
+   "facts_from": "store",
+   "trace": [
+    "Martin Luther King Jr. National Historical Park is the place of burial of Martin Luther King Jr."
+   ]
+  },
+  {
+   "bench": "webq",
+   "arm": "c",
+   "question": "where was auschwitz concentration camp located?",
+   "said": "Gas Chambers",
+   "golds": [
+    "Poland"
+   ],
+   "read": "wrong",
+   "why": "'Gas Chambers': a part of the camp, not where it is",
+   "before": "unmatched",
+   "facts_from": "store",
+   "trace": [
+    "Gas Chambers is the location of Auschwitz Concentration Camp"
+   ]
+  },
+  {
+   "bench": "webq",
+   "arm": "cvm only",
+   "question": "what the time zone in japan?",
+   "said": "asia tokyo",
+   "golds": [
+    "Japan Standard Time",
+    "UTC+09:00"
+   ],
+   "read": "right",
+   "why": "Asia/Tokyo is Japan Standard Time",
+   "before": "refused",
+   "facts_from": null,
+   "trace": []
+  },
+  {
+   "bench": "webq",
+   "arm": "c",
+   "question": "where is bob marley buried?",
+   "said": "Nine Mile",
+   "golds": [
+    "Bob Marley Mausoleum"
+   ],
+   "read": "right",
+   "why": "his mausoleum is at Nine Mile",
+   "before": "unmatched",
+   "facts_from": "store",
+   "trace": [
+    "Nine Mile is the place of burial of Bob Marley"
+   ]
+  }
+ ]
+}
