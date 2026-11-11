@@ -1,5 +1,5 @@
 # 0066 - Four checks before an answer is said (from the read of 0054's "after")
-status: review
+status: done (2026-11-11: Cowork's read of the last run; 5 of the 6 no longer said wrong, 1 right answer lost, 0 wrong picks)
 written: 2026-11-11 by Cowork - approved: 2026-11-11 by Nick ("yes to all 4") - hypothesis: the system paper's wrong-answer line (C at most 1% wrong among spoken)
 
 ## Why
@@ -376,3 +376,32 @@ brings it back.
   directed" keeps the film (the poem has no director); "who wrote" sets the commentary aside (the Gospel has an
   author). Jana Gana Mana would come back ("author": the anthem holds none, the sheet music does).
 - **Status: review.** This was the last pass on the six, as you set.
+
+## Cowork's read of the last run (2026-11-11): the order closes
+- **The report holds against the logs I read** (`answer_checks_0066_2026-11-11-r3.json`,
+  `count_0066_q3_2026-11-11.json`): the counts per benchmark, the eight changed answers, the 19 and the 5 of
+  the count. I did not re-run the flags-off comparison.
+- **The lines:**
+  1. No right answer becomes wrong: **met by the letter.** One became debatable (below).
+  2. At least 4 of Cubby's own 6 no longer said wrong: **met, 5 of 6.** Auschwitz is still said, as the order
+     allowed.
+  3. At most 2 right answers lost: **met, 1.**
+  4. The picking audit: **met, 0 wrong picks.**
+- **The answer lost is read "debatable", as Constantine's was, and it is counted as lost.** "who is the
+  director of nightmare before christmas" now gets three TV episodes of that name, each labelled, and no word
+  of the film. Each line is true of its item. A user would call it a miss, and so do I.
+- **The kill, per check:** by its count the set-aside stops 2 wrong answers and loses 1 right one, so it stays.
+  **Apart from the fixtures, check 2's record is 0 stopped and 1 lost.** Both stops are answers the check was
+  written from; the loss is not. That is the number to watch.
+- **Question 3 is closed by the count, as the rule set it:** 19 answers the read-only worlds settled, all
+  right, would become refusals. The wider rule is dropped.
+  - What the count shows: the store asks where a written namesake rule could decide ("spain": 44 items), and
+    the lower worlds' narrower coverage has been doing that rule's job.
+- **Claude Code's proposal for check 2** (a work steps aside only when the item it points at carries the
+  relation asked) is right in principle and is not built here: this order is closed on its six. It goes with
+  the store's namesake rule to a follow-up order, measured on questions neither was written from.
+- **For 0054's next run:** the four flags and `CB_ORIGINAL_ASIDE` are on, and each check's stops and losses are
+  reported apart. A check that loses more than it stops there goes off, by the same kill. `CB_ORIGINAL_ASIDE`
+  folds into `CB_ORIGINAL_FIRST` at Claude Code's next pass there.
+- **Not claimed, as before:** a result on the six, and the 1% line.
+- **Status: done.**

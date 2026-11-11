@@ -887,3 +887,26 @@ Read as: yes to fetching it, and to all three uses above.
   - The card says CC BY 3.0 and points at Wikipedia's terms, which are share-alike. To settle before use.
   - Where it would go, on Nick's yes: 0058, to pick which domain world a question is put to, measured before it
     is built.
+
+### Cowork's read of g and h as built, and the served seat corrected (2026-11-11)
+- **The report holds against the logs** (`chat_checks_gh_ab_2026-11-11.json`, `chat_checks_gh_held_2026-11-11.json`).
+  Lines 1, 2 and 4 are met. On line 1 it is eleven replies, not twelve: the control's ab29 was on both of my
+  lists.
+- **Line 3: the kill fired on h as first written, and the line did its work.** It refused lines true of Cubby,
+  among them one Nick approved. The fix is in, with those lines as fixtures.
+  - I read the 334 held rows g and h now refuse: the 284 by their openings (178 distinct) and by sample, the 50
+    loops by sample. None is a line of Cubby's record. **Accepted.**
+- **Found in that read, for `talk_v3b`:** all 334 are targets of the old `chat` family, other assistants' chats
+  in the training mix: 3,096 of the 4,161 held chat rows. The mix itself teaches the stock talk the checks now
+  refuse ("I can't assist with that request", some twenty times).
+  - **So:** the mix's targets go through the host's checks, and a row the host would refuse is not trained on.
+    Counted when `talk_v3b` is built; E6 to E9 run again after.
+- **The four questions about Cubby** carry its record (`9038f40`, on Nick's yes). Nothing to add.
+- **The served seat: a correction to my record of the A/B.** I wrote that `talk_v3a` "stays off the served talk
+  seat". It was already served, on Nick's call ("why not use v3a?"), before he judged.
+  - What the A/B decides is this order's acceptance: not met, so 0010 stays open and `talk_v3b` is built.
+  - Which adapter is served is Nick's call. On his own picks the voice was preferred to the control 23 to 8,
+    and with g and h on it keeps 28 of its 30 chat replies where the control keeps 18. My read: `talk_v3a`
+    stays served until `talk_v3b` is judged.
+- **cubby-stack follows Nick's call** (`422ccf1` there): its default preset is Cubby with `talk_v3a` and the
+  flags a, b, d, g, h; the stand-in is dropped when a config is read, so a save no longer brings it back.
