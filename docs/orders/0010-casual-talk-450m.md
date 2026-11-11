@@ -435,3 +435,31 @@ base, read raw) is beside them for reference.
     the Lollardy list stops mid-word ("Twelve Conclusions Of The Loll") at the gate's 64 new tokens (the talk seat
     serves 160). The guard let the cut word pass. A host that drops an unfinished last line when the
     generation hit its token limit would fix it; not built (not in b).
+
+### The blind A/B, as built (Cowork, 2026-11-11; written and committed before any reply was generated)
+`validation/exp_talk_ab.py` (prompts, generate, sheet), `tests/validation/test_talk_ab.py`, and the 60 prompts in
+`validation/logs/talk_ab_2026-11-11_prompts.jsonl` (seed 20261111).
+- **Why the questions come from where they do.** On E6's questions the two adapters gave the same reply on 253 of
+  the 407 records, and where they differ it is by word order, not by voice. So on the old question shape the voice
+  mostly answers as the control does. The test therefore uses what the host will receive, and reports by source:
+  - **chat turns (30),** bare, as the host sends a first turn: 6 each of a hello, thanks or goodbye, who are you,
+    what can you do, a joke asked for. The user lines were written for this test. 22 EN, 8 FR.
+  - **one fact (12):** 9 EN are WebQuestions and SimpleQA questions Cubby answered right in 0054's "after", each
+    with the walk's own fact as the block; 3 FR are held rows of the voice set.
+  - **a list (10):** 8 EN are held profile records of the E6 data that E6 did not draw; 2 FR are held voice rows.
+  - **a wrong assumption (8):** 6 EN and 2 FR, held voice rows, with the host's verdict line ("Premise:
+    contradicted"). The host does not send that line yet (change c); the control never saw it.
+- **Two changes to the section above, with their reasons:**
+  1. **"A fact not on record" is not among the pairs.** Both adapters are trained to say the same sentence there,
+     and the host says it itself when the VM returns nothing: a pair would show the same text twice. E6 measured
+     it (63 and 59 of 64 said on their own). This helps the voice against the line as first written, and is
+     said here for that reason.
+  2. **The line's count.** A pair one arm refuses is not judged, so the line is read on the pairs that are left
+     (those Nick judges, and those whose two replies are identical, which count as "the same"): the voice
+     passes with the smallest count a coin flip reaches less than 5% of the time for that many pairs. For 60 it
+     is 37, as written.
+- **An identical pair is not shown:** it is "the same" by construction, and counted against the voice.
+- **Chat turns have no host check yet** (change d): the cut only. Cowork reads every reply for a false statement
+  about Cubby before the sheet is shown. One in a voice reply is the kill; one in a control reply is reported.
+- **What Nick sees:** the user's line, the facts on record for a fact turn, and the two replies in an order drawn
+  by seed, with bold and line breaks shown as the chat will show them. The key stays in the logs, apart.
