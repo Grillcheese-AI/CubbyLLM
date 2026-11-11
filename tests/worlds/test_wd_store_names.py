@@ -256,3 +256,12 @@ def test_all_four_on_together(world, monkeypatch):
     me = SimpleNamespace(world=SimpleNamespace(held_by=lambda f: world))
     lr = SimpleNamespace(result=SimpleNamespace(trace=[SimpleNamespace(fact=f, triple=t) for f, t in world._by_subj.get("fayette")]))
     assert AskMemory._snapshot(me, "What is the population of Fayette?", lr) == ("as_of", "2020")
+
+
+def test_an_unknown_value_given_as_a_plain_string_is_read_without_error(world, monkeypatch):
+    T.ITEMS["Q8090"] = item("Mystery Man", *of("Q5"), st(569, "somevalue"), st(570, "novalue"), st(20, {"entity": "Q9104"}))
+    T.NAMES["mystery man"] = [("Q8090", 0, "exact")]
+    for f in FLAGS:
+        monkeypatch.delenv(f, raising=False)                   # off: the bookkeeping still runs, and must not fail
+    assert hop(world, "place of death", "Mystery Man") == {"Lyon"}
+    assert world._rec()["life"]["Q8090"] == (None, None)

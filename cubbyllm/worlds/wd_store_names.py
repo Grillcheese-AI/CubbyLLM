@@ -79,6 +79,14 @@ def qual_year(s: dict, nodes: dict, pid: int) -> int | None:
     return None
 
 
+def _typed(s: dict):
+    """A statement's typed literal ("+1815-12-10T00:00:00Z"), or None (an item, or "some value" / "no value", which the
+    store gives as a plain string)."""
+    v = s.get("value")
+    t = v.get("typed") if isinstance(v, dict) else None
+    return t[0] if isinstance(t, (list, tuple)) and t else None
+
+
 def _ent(s: dict) -> str | None:
     v = s.get("value")
     return v["entity"] if isinstance(v, dict) and "entity" in v else None
@@ -98,8 +106,8 @@ class Named:
         _put(r["links"], qid, {_ent(s) for s in best if s.get("pid") in POINTS and _ent(s)})
         _put(r["derivs"], qid, {_ent(s) for s in best if s.get("pid") == DERIVATIVE and _ent(s)})
         _put(r["pids"], qid, {s.get("pid") for s in best})
-        born = [year_of((s.get("value") or {}).get("typed", [None])[0]) for s in best if s.get("pid") == 569]
-        died = [year_of((s.get("value") or {}).get("typed", [None])[0]) for s in best if s.get("pid") == 570]
+        born = [year_of(_typed(s)) for s in best if s.get("pid") == 569]
+        died = [year_of(_typed(s)) for s in best if s.get("pid") == 570]
         _put(r["life"], qid, (born[0] if born else None, died[0] if died else None))
         _put(r["held"], qid, [(_ent(s), qual_year(s, {}, START), qual_year(s, {}, END))
                               for s in statements if s.get("pid") in HELD and s.get("rank") != 0 and _ent(s)])
@@ -108,7 +116,8 @@ class Named:
         r, k = self._rec(), key3(subj, rel, obj)
         if _ent(s):
             _put(r["obj"], k, _ent(s))
-        if "dateTime" in str((s.get("value") or {}).get("typed", "")):
+        v = s.get("value")
+        if isinstance(v, dict) and "dateTime" in str(v.get("typed", "")):
             _put(r["time"], k, True)
         y = qual_year(s, nodes, POINT_IN_TIME)
         y = qual_year(s, nodes, START) if y is None else y
