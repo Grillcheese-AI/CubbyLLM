@@ -793,3 +793,14 @@ Nothing was downloaded. Both were read from their pages and licence files.
   would push the voice toward the unsupported talk the blind test caught.
 - If one part matters later (the Russian chats, when Russian comes), it is read at its own source, with its own
   licence.
+
+**human_assistant_conversation (Hugging Face, `Isotonic`), also proposed by Nick the same day: not used.**
+- **What it is:** 1,980,485 rows of "Human:" and "Assistant:" turns in English, Spanish and Chinese, 2.74 GB. The
+  card is empty: no source, no word on who or what wrote the turns. The licence tag is AFL-3.0, a software
+  licence.
+- **What the rows show** (eight read in the viewer): the assistant's side reads as a model's. It gives links
+  that look made up, advice on health and on stock trading, and garbled words. In one row it speaks as a human.
+- **For Cubby:** it is the stock assistant talk the blind test caught, in bulk, with facts a model wrote. Nick's
+  rule of 2026-11-10 stands: a model may draft wording, never a fact. Training on it would feed what changes g
+  and h are there to stop. No French.
+- **The user's side is not kept either:** nothing says a person wrote it, and some prompts show machine edits.
