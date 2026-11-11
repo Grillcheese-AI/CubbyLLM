@@ -1,5 +1,5 @@
-"""Order 0010's blind A/B harness (validation/exp_talk_ab.py): how a voice row's block is read, and which pairs go to
-the judge. No model is run."""
+"""Order 0010's blind A/B harness (validation/exp_talk_ab.py): how a voice row's block is read, which pairs go to the
+judge, and that a chat turn is rendered and read by the host's own chat path. No model is run."""
 import hashlib
 import json
 import os
@@ -53,3 +53,17 @@ def test_only_a_pair_both_arms_speak_and_that_differs_goes_to_the_judge(tmp_path
         assert p[key["voice_is"][p["id"]]] == voice[i] and "voice" not in json.dumps(p)
     blob = json.dumps(key["voice_is"], sort_keys=True).encode()
     assert key["sha256"] == sheet["key_sha256"] == hashlib.sha256(blob).hexdigest()
+
+
+def test_a_chat_turn_is_rendered_and_read_by_the_hosts_own_chat_path(monkeypatch):
+    monkeypatch.setenv("CB_CUBBY_RECORD", "1")
+    monkeypatch.setenv("CB_OPENER_VIEW", "1")
+    host = ab._host()
+    about = host.context("are you a person or a program?", "en")
+    assert about["question"] == "are you a person or a program?" and about["facts"]      # Cubby's record as the block
+    assert host.context("hi", "en")["facts"] == about["facts"]            # the host reads a greeting as a turn about Cubby
+    assert host.context("tell me a joke", "en") == {"turns": [("user", "tell me a joke")]}   # any other turn goes bare
+    # the first run's "kill" reply: the host does not let it out
+    assert host.guard("I'm not a person or program. I can't provide information about any person, organization, or event.",
+                      "are you a person or a program?") is not None
+    assert host.guard("Glad I could help!", "ok thank you!") is None

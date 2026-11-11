@@ -4,15 +4,19 @@ Three steps, each its own run, so the prompts exist (and are committed) before a
 
   prompts    60 turns, by seed ("a fact not on record" is not among them: both adapters are trained to say the
              same sentence there, the host says it itself when the VM returns nothing, and E6 measured it):
-             30 chat turns (bare, as the host sends a first turn): a hello, thanks or goodbye, who are you, what can
-             you do, a joke asked for; user lines written for this test, 22 EN and 8 FR;
+             30 chat turns, rendered by the host's own chat path (`ChatState.talk_context`: a question about Cubby
+             comes with Cubby's record as its block, any other turn bare): a hello, thanks or goodbye, who are you,
+             what can you do, a joke asked for; user lines written for this test, 22 EN and 8 FR;
              30 fact turns: one fact (9 EN: a benchmark question Cubby answered right in 0054's "after", with the
              walk's own fact as the block; 3 FR: held voice rows), a list (8 EN: held profile records of the E6 data
              that E6 did not draw; 2 FR: held voice rows), a wrong assumption (6 EN, 2 FR: held voice rows carrying
              the host's verdict line, "Premise: contradicted")
   generate   one arm: greedy, 160 new tokens (the talk seat's), cut by the host's `talk_answer`; a fact turn's draft
-             is read by the host's `talk_reply` (CB_OPENER_VIEW=1 CB_TALK_LINES=1: changes a and b). A chat turn has
-             no host check yet (change d): the cut only, and Cowork reads each for a false statement about Cubby
+             is read by the host's `talk_reply`, a chat turn's by the host's chat guards (`CubbyChat._guard`: the
+             base-model guard, the voice rules, Cubby's record), with CB_OPENER_VIEW=1 CB_TALK_LINES=1
+             CB_CUBBY_RECORD=1 (changes a, b and d). Cowork still reads each spoken reply for a false statement.
+             The first run (tag talk_ab_2026-11-11) read chat turns through the cut only and sent every chat turn
+             bare: it took no account of the host's chat guards, and its "kill" was a reply the host refuses
   sheet      pairs the two arms. A pair goes to Nick only when both replies are spoken and they differ; the side of
              each arm is drawn by seed. Refused and identical pairs are listed, not shown. The key is written apart.
 
@@ -41,7 +45,7 @@ for _p in (HERE, ROOT, os.path.join(ROOT, "standin"), os.path.join(ROOT, "standi
 
 __wiring__ = "STANDALONE"
 
-TAG = "talk_ab_2026-11-11"
+TAG = "talk_ab_2026-11-11b"                              # b: chat turns through the host's chat path
 LOGS = os.path.join(HERE, "logs")
 SEED = 20261111
 OUT = os.path.join(ROOT, "standin", "data", "out")
@@ -61,6 +65,25 @@ CHAT = {
              ("fr", "raconte-moi une blague")],
 }
 _FR = re.compile(r" \?$|[éèêàùç]|^(quel|quelle|c'est|tu |dis|présente|donc|alors)", re.I)
+
+
+FLAGS = ("CB_OPENER_VIEW", "CB_TALK_LINES", "CB_CUBBY_RECORD")   # changes a, b and d: on for prompts and replies
+
+
+def _flags_on() -> None:
+    off = [f for f in FLAGS if os.environ.get(f) != "1"]
+    assert not off, f"run with {' '.join(f + '=1' for f in FLAGS)} (off: {off})"
+
+
+def _host():
+    """The host's own chat path, without a server: how it renders a chat turn for the talk adapter, and the guards a
+    reply passes before it may be offered (a first turn: no history)."""
+    import types
+
+    from cubbyllm.speech import chat, chat_state, identity
+    me = types.SimpleNamespace(facts=identity.load_facts(), history_turns=False, history=[])
+    return types.SimpleNamespace(context=lambda text, lang: chat_state.ChatState.talk_context(me, text, lang),
+                                 guard=lambda reply, text: chat.CubbyChat._guard(me, reply, text))
 
 
 def _rows(path: str) -> list[dict]:
@@ -123,12 +146,15 @@ def _bench_facts(rng) -> list[dict]:
 
 
 def build_prompts() -> list[dict]:
+    from cubbyllm.emit.talk import talk_prompt
+    _flags_on()
     rng = random.Random(SEED)
-    out = []
+    out, host = [], _host()
     for kind, lines in CHAT.items():
         for lang, text in lines:
+            ctx = host.context(text, lang)
             out.append({"kind": kind, "group": "chat", "lang": lang, "source": "written for the test", "user": text,
-                        "facts": [], "prompt": f"Question: {text}\nAnswer:", "check": None})
+                        "facts": [list(f) for f in ctx.get("facts", [])], "prompt": talk_prompt(text, ctx), "check": None})
     for b in _bench_facts(rng):
         out.append({"kind": "one_fact", "group": "fact", "lang": "en", "source": "0054 after, " + b["id"], "user": b["q"],
                     "facts": b["facts"], "prompt": _fact_prompt(b["facts"], b["q"]),
@@ -175,7 +201,8 @@ def generate(a) -> None:
     from cubbyllm.emit.talk import talk_answer
     from exp_e5_base450m_probes import load_grilly
     from exp_e6_talk_gate import load_adapter
-    assert os.environ.get("CB_OPENER_VIEW") == "1" and os.environ.get("CB_TALK_LINES") == "1", "run with changes a and b on"
+    _flags_on()
+    host = _host()
     prompts = _rows(os.path.join(LOGS, TAG + "_prompts.jsonl"))
     tk = Tokenizer.from_file(os.path.join(a.export, "tokenizer.json"))
     eos = tk.token_to_id("</s>")
@@ -190,8 +217,9 @@ def generate(a) -> None:
         raw = tk.decode(new[:new.index(eos)] if eos in new else new)
         draft = talk_answer(raw)
         c = p["check"]
-        if c is None:
-            reply, why = (draft or None), "chat: the cut only"
+        if c is None:                                    # a chat turn: the host's chat guards
+            why = host.guard(draft, p["user"]) if draft else "no draft"
+            reply, why = (draft, "spoken") if why is None else (None, why)
         else:
             reply, why = talk_reply(c["returned"], draft, c["lines"], c["entity"], c["others"])
         rows.append({"id": p["id"], "raw": raw, "draft": draft, "reply": reply, "why": why, "hit_limit": limit})
