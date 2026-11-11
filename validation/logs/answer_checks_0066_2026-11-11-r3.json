@@ -1,0 +1,347 @@
+{
+ "what": "order 0066: arm C as the 'after' ran it, with the four checks on (CB_QWORD_KIND, CB_ORIGINAL_FIRST, CB_ALIAS_OPEN, CB_VALUE_DATE); every changed answer read by hand; for Cowork to check",
+ "date": "2026-11-11",
+ "commit": "576de44",
+ "run": "run_0066_r3",
+ "roots_table": "Cowork's 13 ids (7f5541d)",
+ "programs": "the first round's 9,508 + the second round's 2 (A100, equal on an L4)",
+ "benches": {
+  "simpleqa": {
+   "after": {
+    "spoken": 6,
+    "wrong": 0,
+    "debatable": 0,
+    "unread": 0,
+    "wrong_rate": 0.0,
+    "wrong_rate_95": [
+     0,
+     0.3903
+    ],
+    "wall_s": 490.8,
+    "wall_p50": 0.08
+   },
+   "checks_on": {
+    "spoken": 6,
+    "wrong": 0,
+    "debatable": 0,
+    "unread": 0,
+    "wrong_rate": 0.0,
+    "wrong_rate_95": [
+     0,
+     0.3903
+    ],
+    "wall_s": 412.7,
+    "wall_p50": 0.07
+   },
+   "checks_records": {
+    "kind_unknown:who:refused": 2
+   }
+  },
+  "nq": {
+   "after": {
+    "spoken": 15,
+    "wrong": 4,
+    "debatable": 0,
+    "unread": 0,
+    "wrong_rate": 0.2667,
+    "wrong_rate_95": [
+     0.109,
+     0.5195
+    ],
+    "wall_s": 335.7,
+    "wall_p50": 0.07
+   },
+   "checks_on": {
+    "spoken": 13,
+    "wrong": 2,
+    "debatable": 1,
+    "unread": 0,
+    "wrong_rate": 0.1538,
+    "wrong_rate_95": [
+     0.0433,
+     0.4224
+    ],
+    "wall_s": 321.9,
+    "wall_p50": 0.07
+   },
+   "checks_records": {
+    "qword:where:refused": 1,
+    "dates:value:spoken": 1
+   }
+  },
+  "webq": {
+   "after": {
+    "spoken": 65,
+    "wrong": 4,
+    "debatable": 2,
+    "unread": 0,
+    "wrong_rate": 0.0615,
+    "wrong_rate_95": [
+     0.0242,
+     0.1478
+    ],
+    "wall_s": 366.2,
+    "wall_p50": 0.1
+   },
+   "checks_on": {
+    "spoken": 62,
+    "wrong": 1,
+    "debatable": 2,
+    "unread": 0,
+    "wrong_rate": 0.0161,
+    "wrong_rate_95": [
+     0.0029,
+     0.0859
+    ],
+    "wall_s": 244.9,
+    "wall_p50": 0.1
+   },
+   "checks_records": {
+    "kind_unknown:where:spoken": 1
+   }
+  },
+  "aa": {
+   "after": {
+    "spoken": 0,
+    "wrong": 0,
+    "debatable": 0,
+    "unread": 0,
+    "wrong_rate": null,
+    "wrong_rate_95": [
+     0.0,
+     0.0
+    ],
+    "wall_s": 17.3,
+    "wall_p50": 0.0
+   },
+   "checks_on": {
+    "spoken": 0,
+    "wrong": 0,
+    "debatable": 0,
+    "unread": 0,
+    "wrong_rate": null,
+    "wrong_rate_95": [
+     0.0,
+     0.0
+    ],
+    "wall_s": 16.0,
+    "wall_p50": 0.0
+   },
+   "checks_records": {}
+  }
+ },
+ "changed": [
+  {
+   "bench": "nq",
+   "question": "when does the day of the dead end",
+   "golds": [
+    "November 2"
+   ],
+   "after": {
+    "verdict": "refused",
+    "said": null,
+    "refusal": "fact_missing",
+    "read": null
+   },
+   "now": {
+    "verdict": "refused",
+    "said": null,
+    "refusal": "not_certified",
+    "reason": "answer_type_mismatch",
+    "checks": null,
+    "trace": [
+     "30 November 1980 is the end time of Day of the Dead"
+    ]
+   },
+   "read": "refused",
+   "check": "check 2",
+   "why": "refused before (fact_missing) and after (not_certified)"
+  },
+  {
+   "bench": "nq",
+   "question": "who is the director of nightmare before christmas",
+   "golds": [
+    "Henry Selick"
+   ],
+   "after": {
+    "verdict": "right",
+    "said": "Henry Selick",
+    "refusal": null,
+    "read": "right"
+   },
+   "now": {
+    "verdict": "unmatched",
+    "said": "The Nightmare Before Christmas (part of the series: Holby City): I do not know; The Nightmare Before Christmas (part of the series: 7 Little Johnstons): I do not know; The Nightmare Before Christmas (part of the series: Queenie): Joelle Mae David.",
+    "refusal": null,
+    "reason": null,
+    "checks": null,
+    "trace": [
+     "Joelle Mae David is the director of The Nightmare Before Christmas"
+    ]
+   },
+   "read": "debatable",
+   "check": "check 2 (aside, below the store)",
+   "why": "the film is based on the poem, so it steps aside; Wikidata5M may no longer give it; each same-named episode labelled, the film not among them"
+  },
+  {
+   "bench": "nq",
+   "question": "where was the remake of dirty dancing filmed",
+   "golds": [
+    "High Hampton Inn in Cashiers",
+    "Hendersonville, North Carolina",
+    "western North Carolina"
+   ],
+   "after": {
+    "verdict": "unmatched",
+    "said": "Dirty Dancing: Havana Nights",
+    "refusal": null,
+    "read": "wrong"
+   },
+   "now": {
+    "verdict": "refused",
+    "said": null,
+    "refusal": "other:class_mismatch",
+    "reason": "class_mismatch",
+    "checks": {
+     "qword": "where"
+    },
+    "trace": [
+     "Dirty Dancing: Havana Nights is the derivative work of Dirty Dancing"
+    ]
+   },
+   "read": "refused",
+   "check": "check 1a",
+   "why": "'where': Dirty Dancing: Havana Nights is a film"
+  },
+  {
+   "bench": "nq",
+   "question": "what is the population of fayetteville north carolina",
+   "golds": [
+    "204,408 in 2013"
+   ],
+   "after": {
+    "verdict": "unmatched",
+    "said": "As of 2025, 208501.",
+    "refusal": null,
+    "read": "right"
+   },
+   "now": {
+    "verdict": "unmatched",
+    "said": "As of 2020, 208501.",
+    "refusal": null,
+    "reason": null,
+    "checks": {
+     "dates": {
+      "value": "2020",
+      "dump": "2025"
+     }
+    },
+    "trace": [
+     "208501 is the population of Fayetteville"
+    ]
+   },
+   "read": "right",
+   "check": "check 4",
+   "why": "the 2020 census count, now said as of 2020"
+  },
+  {
+   "bench": "nq",
+   "question": "what culture region is germany a part of",
+   "golds": [
+    "Central Germany"
+   ],
+   "after": {
+    "verdict": "unmatched",
+    "said": "The Beers of Europe was a part of germany at one point.",
+    "refusal": null,
+    "read": "wrong"
+   },
+   "now": {
+    "verdict": "refused",
+    "said": null,
+    "refusal": "other:class_mismatch",
+    "reason": "class_mismatch",
+    "checks": null,
+    "trace": [
+     "The Beers of Europe is the part of of Germany"
+    ]
+   },
+   "read": "refused",
+   "check": "check 1b",
+   "why": "'culture region' read as 'region': The Beers of Europe is a book"
+  },
+  {
+   "bench": "webq",
+   "question": "who wrote the jana gana mana?",
+   "golds": [
+    "Ram Singh Thakur",
+    "Rabindranath Tagore"
+   ],
+   "after": {
+    "verdict": "unmatched",
+    "said": "Herbert Murrill",
+    "refusal": null,
+    "read": "wrong"
+   },
+   "now": {
+    "verdict": "refused",
+    "said": null,
+    "refusal": "fact_missing",
+    "reason": "retrieval_exhausted",
+    "checks": null,
+    "trace": []
+   },
+   "read": "refused",
+   "check": "proposal CB_ORIGINAL_ASIDE",
+   "why": "the live source's candidates lose the sheet music the store set aside; fact_missing"
+  },
+  {
+   "bench": "webq",
+   "question": "who wrote the gospel according to john?",
+   "golds": [
+    "John the Evangelist"
+   ],
+   "after": {
+    "verdict": "unmatched",
+    "said": "D. A. Carson",
+    "refusal": null,
+    "read": "wrong"
+   },
+   "now": {
+    "verdict": "refused",
+    "said": null,
+    "refusal": "fact_missing",
+    "reason": "retrieval_exhausted",
+    "checks": null,
+    "trace": []
+   },
+   "read": "refused",
+   "check": "check 2 (aside, below the store)",
+   "why": "the commentary is no candidate in Wikidata5M; fact_missing"
+  },
+  {
+   "bench": "webq",
+   "question": "where did emperor constantine die?",
+   "golds": [
+    "Constantinople"
+   ],
+   "after": {
+    "verdict": "unmatched",
+    "said": "Aquileia",
+    "refusal": null,
+    "read": "wrong"
+   },
+   "now": {
+    "verdict": "refused",
+    "said": null,
+    "refusal": "name_unresolved",
+    "reason": "ambiguous_entity",
+    "checks": null,
+    "trace": []
+   },
+   "read": "refused",
+   "check": "check 3",
+   "why": "both tiers of the bare name: Constantine the Great joins; several emperors, asked (name_unresolved)"
+  }
+ ]
+}

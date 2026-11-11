@@ -1,0 +1,198 @@
+{
+ "read_only": [
+  {
+   "bench": "nq",
+   "question": "who directed the best years of our lives",
+   "said": "William Wyler",
+   "read": "right",
+   "items": 7,
+   "fact": "William Wyler is the director of The Best Years Of Our Lives"
+  },
+  {
+   "bench": "webq",
+   "question": "what timezone is utah in?",
+   "said": "UTC-07:00",
+   "read": "right",
+   "items": 19,
+   "fact": "UTC-07:00 is the located in time zone of Utah"
+  },
+  {
+   "bench": "webq",
+   "question": "what is the currency of puerto rico called?",
+   "said": "United States dollar",
+   "read": "right",
+   "items": 32,
+   "fact": "United States dollar is the currency of Puerto Rico"
+  },
+  {
+   "bench": "webq",
+   "question": "what is the currency in egypt 2012?",
+   "said": "Egyptian pound",
+   "read": "right",
+   "items": 51,
+   "fact": "Egyptian pound is the currency of Egypt"
+  },
+  {
+   "bench": "webq",
+   "question": "what the time zone in england?",
+   "said": "Greenwich Mean Time",
+   "read": "right",
+   "items": 28,
+   "fact": "Greenwich Mean Time is the located in time zone of England"
+  },
+  {
+   "bench": "webq",
+   "question": "what is the currency of brazil now?",
+   "said": "Brazilian real",
+   "read": "right",
+   "items": 43,
+   "fact": "Brazilian real is the currency of Brazil"
+  },
+  {
+   "bench": "webq",
+   "question": "what currency does england use now?",
+   "said": "pound sterling",
+   "read": "right",
+   "items": 28,
+   "fact": "pound sterling is the currency of England"
+  },
+  {
+   "bench": "webq",
+   "question": "what is the currency in italy?",
+   "said": "euro",
+   "read": "right",
+   "items": 36,
+   "fact": "euro is the currency of Italy"
+  },
+  {
+   "bench": "webq",
+   "question": "what is the capital city of spain wiki answers?",
+   "said": "As of 2025, Madrid.",
+   "read": "right",
+   "items": 44,
+   "fact": "Madrid is the capital of Spain"
+  },
+  {
+   "bench": "webq",
+   "question": "what kind of government does cuba have today?",
+   "said": "unitary state",
+   "read": "right",
+   "items": 65,
+   "fact": "unitary state is the basic form of government of Cuba"
+  },
+  {
+   "bench": "webq",
+   "question": "what is the capital of italy today?",
+   "said": "Rome",
+   "read": "right",
+   "items": 36,
+   "fact": "Rome is the capital of Italy"
+  },
+  {
+   "bench": "webq",
+   "question": "what the largest city in spain?",
+   "said": "Madrid city",
+   "read": "right",
+   "items": 44,
+   "fact": "Madrid city is the ‎most populous urban area of Spain"
+  },
+  {
+   "bench": "webq",
+   "question": "what currency should take to mexico?",
+   "said": "Mexican peso",
+   "read": "right",
+   "items": 76,
+   "fact": "Mexican peso is the currency of Mexico"
+  },
+  {
+   "bench": "webq",
+   "question": "what do they speak in scotland?",
+   "said": "English",
+   "read": "right",
+   "items": 42,
+   "fact": "English is the official language of Scotland"
+  },
+  {
+   "bench": "webq",
+   "question": "what is the currency in turkey called?",
+   "said": "Turkish lira",
+   "read": "right",
+   "items": 28,
+   "fact": "Turkish lira is the currency of Turkey"
+  },
+  {
+   "bench": "webq",
+   "question": "what language is spoken in argentina?",
+   "said": "Spanish",
+   "read": "right",
+   "items": 45,
+   "fact": "Spanish is the official language of Argentina"
+  },
+  {
+   "bench": "webq",
+   "question": "what money does spain use?",
+   "said": "euro",
+   "read": "right",
+   "items": 44,
+   "fact": "euro is the currency of Spain"
+  },
+  {
+   "bench": "webq",
+   "question": "what currency do they use in switzerland?",
+   "said": "Swiss franc",
+   "read": "right",
+   "items": 116,
+   "fact": "Swiss franc is the currency of Switzerland"
+  },
+  {
+   "bench": "webq",
+   "question": "what type of government does argentina have today?",
+   "said": "federal republic",
+   "read": "right",
+   "items": 45,
+   "fact": "federal republic is the basic form of government of Argentina"
+  }
+ ],
+ "live": [
+  {
+   "bench": "webq",
+   "question": "where did richard nixon die?",
+   "said": "Weill Cornell Medical Center",
+   "read": "right",
+   "items": 17,
+   "fact": "Weill Cornell Medical Center is the place of death of Richard Nixon"
+  },
+  {
+   "bench": "webq",
+   "question": "who was the father of king george vi?",
+   "said": "George V",
+   "read": "right",
+   "items": 3,
+   "fact": "George V is the father of king george vi"
+  },
+  {
+   "bench": "webq",
+   "question": "what country does alaska belong to?",
+   "said": "United States was a country of alaska at one point.",
+   "read": "right",
+   "items": 64,
+   "fact": "United States is the country of Alaska"
+  },
+  {
+   "bench": "webq",
+   "question": "where was shakespeare born at?",
+   "said": "Stratford-upon-Avon",
+   "read": "right",
+   "items": 51,
+   "fact": "Stratford-upon-Avon is the place of birth of shakespeare"
+  },
+  {
+   "bench": "webq",
+   "question": "where is president kennedy buried?",
+   "said": "Arlington National Cemetery",
+   "read": "right",
+   "items": 2,
+   "fact": "Arlington National Cemetery is the place of burial of president kennedy"
+  }
+ ]
+}

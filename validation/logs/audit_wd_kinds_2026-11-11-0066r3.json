@@ -1,0 +1,5718 @@
+{
+ "what": "order 0055 step 3 (a): order 0037's relation rule on the store's shared names, for a reading by hand",
+ "date": "2026-11-11-0066r3",
+ "seed": 1,
+ "store": "8a2041cff56d6f44cbb04856605831f3b39a76f8f9be45bce73b935c4024e80f",
+ "fixed": [
+  {
+   "question": "What is the capital of France?",
+   "label": "France",
+   "relation": "capital",
+   "items_n": 50,
+   "weighed": 2,
+   "outcome": "one item",
+   "reply": "Paris. If you meant something else, there is also a star trek location named France. Want to know about it?",
+   "fit": [
+    "Q142"
+   ],
+   "ms": 72.2,
+   "items": [
+    {
+     "item": "Q142",
+     "kinds": [
+      "country",
+      "republic",
+      "sovereign state"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "head of government: Sébastien Lecornu",
+      "continent: Europe",
+      "head of state: Emmanuel Macron",
+      "capital: Paris"
+     ]
+    },
+    {
+     "item": "Q99294601",
+     "kinds": [
+      "real country in a fiction work",
+      "star trek location"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "capital: Paris",
+      "part of: Europe",
+      "located on astronomical body: Earth",
+      "member of: European Alliance"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the currency of Japan?",
+   "label": "Japan",
+   "relation": "currency",
+   "items_n": 33,
+   "weighed": 1,
+   "outcome": "one item",
+   "reply": "yen.",
+   "fit": [
+    "Q17"
+   ],
+   "ms": 66.7,
+   "items": [
+    {
+     "item": "Q17",
+     "kinds": [
+      "country",
+      "island country",
+      "sovereign state"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "head of government: Takaichi Sanae",
+      "country: Japan",
+      "continent: Asia",
+      "head of state: Naruhito"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the capital of Italy?",
+   "label": "Italy",
+   "relation": "capital",
+   "items_n": 36,
+   "weighed": 2,
+   "outcome": "one item",
+   "reply": "Rome. If you meant something else, there is also a star trek location named Italy. Want to know about it?",
+   "fit": [
+    "Q38"
+   ],
+   "ms": 73.2,
+   "items": [
+    {
+     "item": "Q38",
+     "kinds": [
+      "country",
+      "sovereign state"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "head of government: Giorgia Meloni",
+      "country: Italy",
+      "continent: Europe",
+      "head of state: Sergio Mattarella"
+     ]
+    },
+    {
+     "item": "Q99294243",
+     "kinds": [
+      "real country in a fiction work",
+      "star trek location"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "part of: Europe",
+      "located on astronomical body: Earth",
+      "fictional or mythical analog of: Italy",
+      "from narrative universe: Star Trek universe"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What Nobel Prize did Marie Curie win?",
+   "label": "Marie Curie",
+   "relation": "award received",
+   "items_n": 18,
+   "weighed": 17,
+   "outcome": "one item",
+   "reply": "Nobel Prize in Chemistry, Nobel Prize in Physics. If you meant something else, there is also a charitable organization named Marie Curie and a comic strip named Marie Curie. Want to know about one of them?",
+   "fit": [
+    "Q7186"
+   ],
+   "ms": 40.1,
+   "items": [
+    {
+     "item": "Q7186",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Warsaw",
+      "place of death: Sancellemoz",
+      "sex or gender: female",
+      "father: Władysław Skłodowski"
+     ]
+    },
+    {
+     "item": "Q16997351",
+     "kinds": [
+      "charitable organization"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "country: United Kingdom",
+      "named after: Marie Curie",
+      "headquarters location: London",
+      "Commons category: Marie Curie (charity)"
+     ]
+    },
+    {
+     "item": "Q18614781",
+     "kinds": [
+      "comic strip"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "author: Randall Munroe",
+      "part of the series: xkcd",
+      "depicts: Zombie Marie Curie",
+      "depicts: Ponytail"
+     ]
+    },
+    {
+     "item": "Q26963166",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "director: Marie Noëlle",
+      "screenwriter: Marie Noëlle",
+      "composer: Bruno Coulais",
+      "genre: biographical film"
+     ]
+    },
+    {
+     "item": "Q52791408",
+     "kinds": [
+      "liceo scientifico"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "country: Italy",
+      "located in the administrative territorial entity: Meda",
+      "named after: Marie Curie",
+      "postal code: 20821"
+     ]
+    },
+    {
+     "item": "Q52797081",
+     "kinds": [
+      "lower secondary school"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "country: Italy",
+      "located in the administrative territorial entity: San Fermo della Battaglia",
+      "named after: Marie Curie",
+      "postal code: 22020"
+     ]
+    },
+    {
+     "item": "Q52827028",
+     "kinds": [
+      "kindergarten"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "country: Italy",
+      "located in the administrative territorial entity: Turin",
+      "postal code: 10146",
+      "parent organization or unit: Circolo Didattico J.Kennedy"
+     ]
+    },
+    {
+     "item": "Q52900475",
+     "kinds": [
+      "istituto tecnico"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "country: Italy",
+      "located in the administrative territorial entity: Milan",
+      "postal code: 20153",
+      "parent organization or unit: Marie Curie - Piero Sraffa"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the country of citizenship of Steve Mills?",
+   "label": "Steve Mills",
+   "relation": "country of citizenship",
+   "items_n": 10,
+   "weighed": 10,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (10 items named Steve Mills)",
+   "fit": [
+    "Q7613383",
+    "Q7613385",
+    "Q7613386",
+    "Q8870613",
+    "Q23617386",
+    "Q50330345",
+    "Q100984733",
+    "Q106099569",
+    "Q133610806"
+   ],
+   "ms": 88.9,
+   "items": [
+    {
+     "item": "Q7613381",
+     "kinds": [
+      "fictional human",
+      "television character"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "sex or gender: male",
+      "occupation: nurse",
+      "given name: Steve",
+      "present in work: Shortland Street"
+     ]
+    },
+    {
+     "item": "Q7613383",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "country of citizenship: United States",
+      "occupation: sport cyclist",
+      "occupation: circus performer"
+     ]
+    },
+    {
+     "item": "Q7613385",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "country of citizenship: United Kingdom",
+      "member of sports team: Gloucester Rugby",
+      "member of sports team: Barbarian FC"
+     ]
+    },
+    {
+     "item": "Q7613386",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Roosevelt",
+      "sex or gender: male",
+      "country of citizenship: United States",
+      "educated at: Princeton University"
+     ]
+    },
+    {
+     "item": "Q8870613",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Portsmouth",
+      "place of death: Southampton",
+      "sex or gender: male",
+      "country of citizenship: United Kingdom"
+     ]
+    },
+    {
+     "item": "Q23617386",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "date of birth: 9 October 1895",
+      "date of death: 9 March 1988",
+      "family name: Mills"
+     ]
+    },
+    {
+     "item": "Q50330345",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "country of citizenship: United States",
+      "educated at: Medill School of Journalism",
+      "educated at: University of California, Santa Barbara"
+     ]
+    },
+    {
+     "item": "Q100984733",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "educated at: Weber State University",
+      "occupation: basketball player",
+      "sport: basketball"
+     ]
+    }
+   ]
+  }
+ ],
+ "audit": [
+  {
+   "question": "What is the educated at of Richard Parsons?",
+   "label": "Richard Parsons",
+   "relation": "educated at",
+   "items_n": 20,
+   "weighed": 20,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (20 items named Richard Parsons)",
+   "fit": [
+    "Q2149305",
+    "Q7328287",
+    "Q7328288",
+    "Q7328289",
+    "Q7328290",
+    "Q16090883",
+    "Q18757051",
+    "Q21466855",
+    "Q21524713",
+    "Q44606086",
+    "Q65046276",
+    "Q75255222",
+    "Q75255312",
+    "Q75255324",
+    "Q75437721",
+    "Q76090772",
+    "Q86633580",
+    "Q92534386",
+    "Q102342311"
+   ],
+   "ms": 40.1,
+   "items": [
+    {
+     "item": "Q2149305",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Brooklyn",
+      "sex or gender: male",
+      "country of citizenship: United Kingdom",
+      "country of citizenship: United States"
+     ]
+    },
+    {
+     "item": "Q7328287",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "father: Richard Parsons, 1st Viscount Rosse",
+      "mother: Elizabeth Hamilton",
+      "spouse: Frances Claxton"
+     ]
+    },
+    {
+     "item": "Q7328288",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "country of citizenship: United Kingdom",
+      "educated at: Ulverston Victoria High School",
+      "educated at: University of Oxford"
+     ]
+    },
+    {
+     "item": "Q7328289",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "educated at: Durham School",
+      "educated at: Magdalen College",
+      "occupation: Anglican priest"
+     ]
+    },
+    {
+     "item": "Q7328290",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "country of citizenship: Australia",
+      "occupation: explorer",
+      "family name: Parsons"
+     ]
+    },
+    {
+     "item": "Q16090883",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "country of citizenship: United Kingdom",
+      "educated at: Brasenose College",
+      "educated at: Bembridge School"
+     ]
+    },
+    {
+     "item": "Q18757051",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "country of citizenship: Kingdom of England",
+      "occupation: ecclesiastical judge",
+      "occupation: antiquarian"
+     ]
+    },
+    {
+     "item": "Q21466855",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "occupation: painter",
+      "date of birth: 1925",
+      "date of death: 2000"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the location of creation of USS Swasey?",
+   "label": "USS Swasey",
+   "relation": "location of creation",
+   "items_n": 2,
+   "weighed": 2,
+   "outcome": "each item labelled",
+   "reply": "USS Swasey (instance: destroyer escort): Houston; USS Swasey (instance: shipwreck): Quincy.",
+   "fit": [
+    "Q7874525",
+    "Q7874526"
+   ],
+   "ms": 90.8,
+   "items": [
+    {
+     "item": "Q7874525",
+     "kinds": [
+      "destroyer escort"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "operator: United States Navy",
+      "named after: Charles Swasey",
+      "manufacturer: Brown Shipbuilding",
+      "vessel class: Edsall-class destroyer escort"
+     ]
+    },
+    {
+     "item": "Q7874526",
+     "kinds": [
+      "destroyer",
+      "shipwreck"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "country: United Kingdom",
+      "located in the administrative territorial entity: United Kingdom",
+      "operator: Royal Navy",
+      "operator: Royal Navy"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the opposite of of flashforward?",
+   "label": "flashforward",
+   "relation": "opposite of",
+   "items_n": 3,
+   "weighed": 3,
+   "outcome": "one item",
+   "reply": "flashback. If you meant something else, there is also a television series named FlashForward and a literary work named Flashforward. Want to know about one of them?",
+   "fit": [
+    "Q2533706"
+   ],
+   "ms": 104.7,
+   "items": [
+    {
+     "item": "Q476857",
+     "kinds": [
+      "television series"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "director: David S. Goyer",
+      "composer: Ramin Djawadi",
+      "genre: drama television series",
+      "genre: science fiction television program"
+     ]
+    },
+    {
+     "item": "Q2346621",
+     "kinds": [
+      "literary work"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "author: Robert J. Sawyer",
+      "publisher: Tor Books",
+      "genre: science fiction",
+      "language of work or name: English"
+     ]
+    },
+    {
+     "item": "Q2533706",
+     "kinds": [
+      "cinematic technique",
+      "narrative technique"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "subclass of: scene",
+      "opposite of: flashback",
+      "different from: spoiler"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the country of origin of A Different World?",
+   "label": "A Different World",
+   "relation": "country of origin",
+   "items_n": 5,
+   "weighed": 5,
+   "outcome": "each item labelled",
+   "reply": "Different World (genre: heavy metal): I do not know; Different World (genre: dance music): I do not know.",
+   "fit": [
+    "Q2314449",
+    "Q59576383"
+   ],
+   "ms": 97.4,
+   "items": [
+    {
+     "item": "Q2314449",
+     "kinds": [
+      "single"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "composer: Steve Harris",
+      "genre: heavy metal",
+      "follows: The Reincarnation of Benjamin Breeg",
+      "followed by: El Dorado"
+     ]
+    },
+    {
+     "item": "Q2315368",
+     "kinds": [
+      "album"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "genre: Burlington",
+      "genre: arena rock",
+      "genre: hard rock",
+      "genre: Collector's Guide Publishing"
+     ]
+    },
+    {
+     "item": "Q59576383",
+     "kinds": [
+      "single"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: dance music",
+      "follows: Diamond Heart",
+      "followed by: Lost Control",
+      "performer: K-391"
+     ]
+    },
+    {
+     "item": "Q59617920",
+     "kinds": [
+      "album"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "genre: electronic dance music",
+      "producer: Jenna Andrews",
+      "producer: Steve Aoki",
+      "producer: Mood Melodies"
+     ]
+    },
+    {
+     "item": "Q109286761",
+     "kinds": [
+      "audio track"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "performer: Alan Walker",
+      "performer: K-391",
+      "performer: CORSAK",
+      "performer: Sofia Carson"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the part of of Ballad of Easy Rider?",
+   "label": "Ballad of Easy Rider",
+   "relation": "part of",
+   "items_n": 2,
+   "weighed": 2,
+   "outcome": "each item labelled",
+   "reply": "Ballad of Easy Rider (genre: rock music): The Byrds' albums in chronological order; Ballad of Easy Rider (genre: folk rock): Ballad of Easy Rider.",
+   "fit": [
+    "Q805125",
+    "Q4851333"
+   ],
+   "ms": 185.3,
+   "items": [
+    {
+     "item": "Q805125",
+     "kinds": [
+      "album"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: rock music",
+      "producer: Terry Melcher",
+      "performer: The Byrds",
+      "record label: Columbia Records"
+     ]
+    },
+    {
+     "item": "Q4851333",
+     "kinds": [
+      "single"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: folk rock",
+      "follows: Wasn't Born to Follow",
+      "followed by: Jesus Is Just Alright",
+      "performer: Roger McGuinn"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the location of formation of The Architect?",
+   "label": "The Architect",
+   "relation": "location of formation",
+   "items_n": 32,
+   "weighed": 2,
+   "outcome": "each item labelled",
+   "reply": "Architect (instance: rock band): Syracuse; Architect (instance: business): I do not know.",
+   "fit": [
+    "Q2860251",
+    "Q11285528"
+   ],
+   "ms": 114.6,
+   "items": [
+    {
+     "item": "Q2860251",
+     "kinds": [
+      "rock band"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: progressive metal",
+      "record label: Black Market Activities",
+      "country of origin: United States",
+      "inception: 2004"
+     ]
+    },
+    {
+     "item": "Q11285528",
+     "kinds": [
+      "business"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "country: Japan",
+      "headquarters location: Japan"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the located in the administrative territorial entity of Diamantina River?",
+   "label": "Diamantina River",
+   "relation": "located in the administrative territorial entity",
+   "items_n": 2,
+   "weighed": 2,
+   "outcome": "each item labelled",
+   "reply": "Diamantina River (country: Australia): Queensland; Diamantina River (country: Brazil): Goiás.",
+   "fit": [
+    "Q1208608",
+    "Q5270661"
+   ],
+   "ms": 35.3,
+   "items": [
+    {
+     "item": "Q1208608",
+     "kinds": [
+      "river"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Australia",
+      "continent: Australian continent",
+      "located in the administrative territorial entity: Queensland",
+      "named after: Diamantina Bowen"
+     ]
+    },
+    {
+     "item": "Q5270661",
+     "kinds": [
+      "river"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Brazil",
+      "located in the administrative territorial entity: Goiás",
+      "mouth of the watercourse: Araguaia River",
+      "elevation above sea level: 420 metre"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the country of Calhoun Township?",
+   "label": "Calhoun Township",
+   "relation": "country",
+   "items_n": 4,
+   "weighed": 4,
+   "outcome": "one answer, every item agrees",
+   "reply": "United States. (4 items named Calhoun Township agree)",
+   "fit": [
+    "Q2218297",
+    "Q5019797",
+    "Q9037091",
+    "Q10835456"
+   ],
+   "ms": 27.3,
+   "items": [
+    {
+     "item": "Q2218297",
+     "kinds": [
+      "township of iowa"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States",
+      "located in the administrative territorial entity: Calhoun County",
+      "population: 123",
+      "number of households: 51"
+     ]
+    },
+    {
+     "item": "Q5019797",
+     "kinds": [
+      "township of kansas"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States",
+      "located in the administrative territorial entity: Cheyenne County",
+      "population: 41",
+      "number of households: 3"
+     ]
+    },
+    {
+     "item": "Q9037091",
+     "kinds": [
+      "civil township",
+      "township of iowa"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States",
+      "located in the administrative territorial entity: Harrison County",
+      "population: 358",
+      "number of households: 82"
+     ]
+    },
+    {
+     "item": "Q10835456",
+     "kinds": [
+      "township of arkansas"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States",
+      "located in the administrative territorial entity: Prairie County"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the from narrative universe of Demon Hunter?",
+   "label": "Demon Hunter",
+   "relation": "from narrative universe",
+   "items_n": 14,
+   "weighed": 14,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (14 items named Demon Hunter)",
+   "fit": [
+    "Q5256211",
+    "Q58795262",
+    "Q113624913"
+   ],
+   "ms": 34.1,
+   "items": [
+    {
+     "item": "Q1186459",
+     "kinds": [
+      "musical group"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "country: United States",
+      "genre: metalcore",
+      "genre: alternative metal",
+      "genre: groove metal"
+     ]
+    },
+    {
+     "item": "Q1756223",
+     "kinds": [
+      "album"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "genre: metalcore",
+      "followed by: Summer of Darkness",
+      "producer: Aaron Sprinkle",
+      "performer: Demon Hunter"
+     ]
+    },
+    {
+     "item": "Q2895087",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "director: Gilberto de Anda",
+      "screenwriter: Gilberto de Anda",
+      "composer: Marco Flores",
+      "genre: horror film"
+     ]
+    },
+    {
+     "item": "Q5256211",
+     "kinds": [
+      "comics character"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "creator: David Anthony Kraft",
+      "creator: Rich Buckler",
+      "from narrative universe: Earth-616"
+     ]
+    },
+    {
+     "item": "Q5256212",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "director: Scott Ziehl",
+      "composer: Jon Lee",
+      "genre: horror film",
+      "cast member: Sean Patrick Flanery"
+     ]
+    },
+    {
+     "item": "Q58795262",
+     "kinds": [
+      "fictional profession"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "subclass of: hunter",
+      "said to be the same as: Demon hunter",
+      "topic's main category: Category:Fictional demon hunters",
+      "enemy: fictional demon"
+     ]
+    },
+    {
+     "item": "Q109062277",
+     "kinds": [
+      "video game series"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": []
+    },
+    {
+     "item": "Q113624913",
+     "kinds": [
+      "fictional profession"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "field of work: demonology",
+      "subclass of: hunter",
+      "subclass of: warrior",
+      "said to be the same as: demon hunter"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the educated at of Colin Griffiths?",
+   "label": "Colin Griffiths",
+   "relation": "educated at",
+   "items_n": 4,
+   "weighed": 4,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (4 items named Colin Griffiths)",
+   "fit": [
+    "Q5145163",
+    "Q16016147",
+    "Q124867295",
+    "Q134473850"
+   ],
+   "ms": 29.5,
+   "items": [
+    {
+     "item": "Q5145163",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Kent",
+      "sex or gender: male",
+      "country of citizenship: United Kingdom",
+      "educated at: University of East Anglia"
+     ]
+    },
+    {
+     "item": "Q16016147",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Upminster",
+      "sex or gender: male",
+      "country of citizenship: United Kingdom",
+      "occupation: cricketer"
+     ]
+    },
+    {
+     "item": "Q124867295",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "country of citizenship: Australia",
+      "occupation: architect",
+      "date of birth: 1936"
+     ]
+    },
+    {
+     "item": "Q134473850",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "occupation: guitarist",
+      "member of: U-J3RK5",
+      "family name: Griffiths"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the capital of Chen?",
+   "label": "Chen",
+   "relation": "capital",
+   "items_n": 29,
+   "weighed": 1,
+   "outcome": "one item",
+   "reply": "Huaiyang District.",
+   "fit": [
+    "Q1069690"
+   ],
+   "ms": 61.8,
+   "items": [
+    {
+     "item": "Q1069690",
+     "kinds": [
+      "ancient chinese state",
+      "twelve vassals"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "continent: Asia",
+      "capital: Huaiyang District",
+      "dissolved, abolished or demolished date: 478 BC",
+      "topic's main category: Category:Chen (state)"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the genre of Real Friends?",
+   "label": "Real Friends",
+   "relation": "genre",
+   "items_n": 7,
+   "weighed": 7,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (7 items named Real Friends)",
+   "fit": [
+    "Q17151030",
+    "Q22905752",
+    "Q28453482",
+    "Q45642682",
+    "Q85796217",
+    "Q136328192"
+   ],
+   "ms": 36.2,
+   "items": [
+    {
+     "item": "Q17151030",
+     "kinds": [
+      "musical group"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: punk rock",
+      "record label: Fearless Records",
+      "discography: Real Friends discography",
+      "country of origin: United States"
+     ]
+    },
+    {
+     "item": "Q22905752",
+     "kinds": [
+      "single"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: hip-hop",
+      "producer: Boi-1da",
+      "performer: Kanye West",
+      "performer: Ty Dolla Sign"
+     ]
+    },
+    {
+     "item": "Q28453482",
+     "kinds": [
+      "album"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: soul",
+      "follows: Highly Distinct",
+      "followed by: Whatever",
+      "performer: The Friends of Distinction"
+     ]
+    },
+    {
+     "item": "Q45642682",
+     "kinds": [
+      "single"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: pop music",
+      "follows: Sangria Wine",
+      "performer: Camila Cabello",
+      "record label: Epic Records"
+     ]
+    },
+    {
+     "item": "Q66011342",
+     "kinds": [
+      "television series episode"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "follows: Locket & Key",
+      "followed by: Tunnel of Shadows",
+      "part of the series: Lego Friends: Girls on a Mission",
+      "title: Real Friends"
+     ]
+    },
+    {
+     "item": "Q85796217",
+     "kinds": [
+      "album"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: country music",
+      "performer: Chris Janson",
+      "record label: Warner Bros. Records"
+     ]
+    },
+    {
+     "item": "Q136328192",
+     "kinds": [
+      "audio track"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "performer: Kanye West",
+      "title: Real Friends",
+      "duration: 252 second"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the located in the administrative territorial entity of KATA?",
+   "label": "KATA",
+   "relation": "located in the administrative territorial entity",
+   "items_n": 28,
+   "weighed": 0,
+   "outcome": "nothing read",
+   "reply": "I don't know.",
+   "fit": null,
+   "ms": 41.2,
+   "items": []
+  },
+  {
+   "question": "What is the country of Qu River?",
+   "label": "Qu River",
+   "relation": "country",
+   "items_n": 3,
+   "weighed": 3,
+   "outcome": "one answer, every item agrees",
+   "reply": "People's Republic of China. (3 items named Qu River agree)",
+   "fit": [
+    "Q544565",
+    "Q7268213",
+    "Q15895848"
+   ],
+   "ms": 31.0,
+   "items": [
+    {
+     "item": "Q544565",
+     "kinds": [
+      "river",
+      "watercourse"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: People's Republic of China",
+      "located in the administrative territorial entity: Sichuan",
+      "located in the administrative territorial entity: Chongqing",
+      "mouth of the watercourse: Jialing River"
+     ]
+    },
+    {
+     "item": "Q7268213",
+     "kinds": [
+      "watercourse"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: People's Republic of China",
+      "Commons category: Qu River (Nanpan River)",
+      "tributary: Lian River",
+      "described by source: Gujin Tushu Jicheng"
+     ]
+    },
+    {
+     "item": "Q15895848",
+     "kinds": [
+      "river"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: People's Republic of China",
+      "located in the administrative territorial entity: Huaihua",
+      "located in the administrative territorial entity: Jingzhou Miao and Dong Autonomous County",
+      "located in the administrative territorial entity: Hunan"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the language of work or name of The Deer and the Cauldron?",
+   "label": "The Deer and the Cauldron",
+   "relation": "language of work or name",
+   "items_n": 2,
+   "weighed": 2,
+   "outcome": "each item labelled",
+   "reply": "The Deer and the Cauldron (country of origin: Hong Kong): Chinese; The Deer and the Cauldron (country of origin: People's Republic of China): Standard Chinese.",
+   "fit": [
+    "Q1185345",
+    "Q15633375"
+   ],
+   "ms": 96.8,
+   "items": [
+    {
+     "item": "Q1185345",
+     "kinds": [
+      "written work"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "author: Jin Yong",
+      "publisher: Ming Pao",
+      "genre: wuxia",
+      "genre: historical prose literature"
+     ]
+    },
+    {
+     "item": "Q15633375",
+     "kinds": [
+      "television series"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "cast member: Han Dong",
+      "language of work or name: Standard Chinese",
+      "original broadcaster: Anhui Television",
+      "country of origin: People's Republic of China"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the located in the administrative territorial entity of Tenna?",
+   "label": "Tenna",
+   "relation": "located in the administrative territorial entity",
+   "items_n": 11,
+   "weighed": 11,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (11 items named Tenna)",
+   "fit": [
+    "Q66226",
+    "Q326941",
+    "Q1145289",
+    "Q3983464",
+    "Q7699953",
+    "Q11224398",
+    "Q30031045",
+    "Q31540182",
+    "Q52989293"
+   ],
+   "ms": 42.5,
+   "items": [
+    {
+     "item": "Q66226",
+     "kinds": [
+      "former municipality of switzerland",
+      "village"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Switzerland",
+      "located in the administrative territorial entity: Canton of the Grisons",
+      "postal code: 7106",
+      "Commons category: Tenna"
+     ]
+    },
+    {
+     "item": "Q326941",
+     "kinds": [
+      "commune of italy"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Italy",
+      "capital: Tenna",
+      "shares border with: Pergine Valsugana",
+      "shares border with: Caldonazzo"
+     ]
+    },
+    {
+     "item": "Q1145289",
+     "kinds": [
+      "japanese era name"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Japan",
+      "follows: Enpō",
+      "followed by: Jōkyō",
+      "start time: 9 November 1681"
+     ]
+    },
+    {
+     "item": "Q3983464",
+     "kinds": [
+      "river"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Italy",
+      "Commons category: Tenna (river)",
+      "mouth of the watercourse: Adriatic Sea",
+      "length: 70 kilometre"
+     ]
+    },
+    {
+     "item": "Q7699953",
+     "kinds": [
+      "human settlement"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Sri Lanka",
+      "located in the administrative territorial entity: Central Province",
+      "located in time zone: UTC+05:30"
+     ]
+    },
+    {
+     "item": "Q11224398",
+     "kinds": [
+      "island"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Norway",
+      "located in the administrative territorial entity: Herøy Municipality",
+      "area: 3.5 square kilometre"
+     ]
+    },
+    {
+     "item": "Q30031045",
+     "kinds": [
+      "municipality seat"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Italy",
+      "located in the administrative territorial entity: Tenna",
+      "located in time zone: UTC+01:00",
+      "located in time zone: UTC+02:00"
+     ]
+    },
+    {
+     "item": "Q31540182",
+     "kinds": [
+      "mountain"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Norway",
+      "located in the administrative territorial entity: Volda Municipality"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the located in the administrative territorial entity of Barreiros?",
+   "label": "Barreiros",
+   "relation": "located in the administrative territorial entity",
+   "items_n": 24,
+   "weighed": 21,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (21 items named Barreiros)",
+   "fit": [
+    "Q367720",
+    "Q799367",
+    "Q808853",
+    "Q1634820",
+    "Q2102404",
+    "Q12384188",
+    "Q20541823",
+    "Q20541870",
+    "Q22027335",
+    "Q28119906",
+    "Q30938408",
+    "Q61383420",
+    "Q112752565",
+    "Q113121306",
+    "Q113122899",
+    "Q113330215",
+    "Q113513446",
+    "Q115769994",
+    "Q115930322",
+    "Q115932221"
+   ],
+   "ms": 44.5,
+   "items": [
+    {
+     "item": "Q367720",
+     "kinds": [
+      "automobile manufacturer",
+      "brand"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Spain",
+      "founded by: Eduardo Barreiros",
+      "headquarters location: Villaverde",
+      "Commons category: Barreiros vehicles"
+     ]
+    },
+    {
+     "item": "Q799367",
+     "kinds": [
+      "former freguesia of portugal"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Portugal",
+      "located in the administrative territorial entity: Sonim e Barreiros",
+      "located in time zone: Western European Time",
+      "elevation above sea level: 455 metre"
+     ]
+    },
+    {
+     "item": "Q808853",
+     "kinds": [
+      "freguesia of portugal"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Portugal",
+      "located in the administrative territorial entity: Amares",
+      "elevation above sea level: 74 metre",
+      "area: 2.99 square kilometre"
+     ]
+    },
+    {
+     "item": "Q1634820",
+     "kinds": [
+      "municipality of galicia"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "head of government: Ana Ermida Igrexas",
+      "country: Spain",
+      "capital: San Miguel de Reinante, Barreiros",
+      "shares border with: Lourenzá"
+     ]
+    },
+    {
+     "item": "Q2102404",
+     "kinds": [
+      "municipality of brazil"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Brazil",
+      "shares border with: São José da Coroa Grande",
+      "shares border with: Maragogi",
+      "shares border with: Tamandaré"
+     ]
+    },
+    {
+     "item": "Q12384188",
+     "kinds": [
+      "settlement in galicia"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Spain",
+      "located in the administrative territorial entity: Rioaveso, Vilalba",
+      "on focus list of Wikimedia project: Wikiproject Toponymy"
+     ]
+    },
+    {
+     "item": "Q20541823",
+     "kinds": [
+      "abandoned village",
+      "settlement in galicia"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Spain",
+      "located in the administrative territorial entity: As Chás, Maceda",
+      "on focus list of Wikimedia project: Wikiproject Toponymy"
+     ]
+    },
+    {
+     "item": "Q20541870",
+     "kinds": [
+      "settlement in galicia"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Spain",
+      "on focus list of Wikimedia project: Wikiproject Toponymy"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the languages spoken, written or signed of Kathy Smith?",
+   "label": "Kathy Smith",
+   "relation": "languages spoken, written or signed",
+   "items_n": 7,
+   "weighed": 7,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (7 items named Kathy Smith)",
+   "fit": [
+    "Q3066300",
+    "Q6377304",
+    "Q6377305",
+    "Q19879126",
+    "Q100320057",
+    "Q116879195",
+    "Q120603796"
+   ],
+   "ms": 44.4,
+   "items": [
+    {
+     "item": "Q3066300",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Maidenhead",
+      "sex or gender: female",
+      "country of citizenship: United Kingdom",
+      "occupation: archer"
+     ]
+    },
+    {
+     "item": "Q6377304",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: female",
+      "country of citizenship: Australia",
+      "occupation: film director",
+      "employer: University of Southern California"
+     ]
+    },
+    {
+     "item": "Q6377305",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Arizona",
+      "sex or gender: female",
+      "country of citizenship: United States",
+      "child: Kate Grace"
+     ]
+    },
+    {
+     "item": "Q19879126",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Sheffield",
+      "sex or gender: female",
+      "country of citizenship: Australia",
+      "country of citizenship: United Kingdom"
+     ]
+    },
+    {
+     "item": "Q100320057",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: female",
+      "country of citizenship: United States",
+      "occupation: politician",
+      "family name: Smith"
+     ]
+    },
+    {
+     "item": "Q116879195",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "educated at: University of Mary Hardin–Baylor",
+      "field of work: nursing science",
+      "occupation: academic",
+      "occupation: researcher"
+     ]
+    },
+    {
+     "item": "Q120603796",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Chicago",
+      "sex or gender: female",
+      "languages spoken, written or signed: English",
+      "languages spoken, written or signed: Czech"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the cast member of Wet Gold?",
+   "label": "Wet Gold",
+   "relation": "cast member",
+   "items_n": 2,
+   "weighed": 2,
+   "outcome": "each item labelled",
+   "reply": "Wet Gold (genre: treasure hunt film): Brian Kerwin, Brooke Shields, Burgess Meredith, Thomas Byrd; Wet Gold (genre: adventure film): Ralph Ince.",
+   "fit": [
+    "Q7989963",
+    "Q15617001"
+   ],
+   "ms": 38.0,
+   "items": [
+    {
+     "item": "Q7989963",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "director: Dick Lowry",
+      "screenwriter: David Sherwin",
+      "composer: Sylvester Levay",
+      "genre: treasure hunt film"
+     ]
+    },
+    {
+     "item": "Q15617001",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "director: Ralph Ince",
+      "screenwriter: John Ernest Williamson",
+      "genre: adventure film",
+      "genre: silent film"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the filming location of Loners?",
+   "label": "Loners",
+   "relation": "filming location",
+   "items_n": 5,
+   "weighed": 5,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (5 items named Loners)",
+   "fit": [
+    "Q2742024",
+    "Q2894483",
+    "Q23302084",
+    "Q65045205"
+   ],
+   "ms": 32.1,
+   "items": [
+    {
+     "item": "Q2742024",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "director: David Ondříček",
+      "screenwriter: Petr Zelenka",
+      "screenwriter: Olga Dabrowská",
+      "screenwriter: David Ondříček"
+     ]
+    },
+    {
+     "item": "Q2894483",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "director: Renen Schorr",
+      "screenwriter: Moshe Zonder",
+      "screenwriter: Renen Schorr",
+      "composer: Shem Tov Levi"
+     ]
+    },
+    {
+     "item": "Q5144153",
+     "kinds": [
+      "fictional organization"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "from narrative universe: Earth-616"
+     ]
+    },
+    {
+     "item": "Q23302084",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "director: Sutton Roley",
+      "composer: Fred Karger",
+      "genre: drama film",
+      "cast member: Dean Stockwell"
+     ]
+    },
+    {
+     "item": "Q65045205",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "distribution format: video on demand",
+      "publication date: 2019"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the educated at of Harry McPherson?",
+   "label": "Harry McPherson",
+   "relation": "educated at",
+   "items_n": 2,
+   "weighed": 2,
+   "outcome": "each item labelled",
+   "reply": "Harry McPherson (occupation: lawyer): Southern Methodist University; Harry McPherson (occupation: Australian rules football player): I do not know.",
+   "fit": [
+    "Q3790209",
+    "Q16073436"
+   ],
+   "ms": 31.0,
+   "items": [
+    {
+     "item": "Q3790209",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Tyler",
+      "place of death: Bethesda",
+      "sex or gender: male",
+      "country of citizenship: United States"
+     ]
+    },
+    {
+     "item": "Q16073436",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Longwood",
+      "place of death: Malvern",
+      "sex or gender: male",
+      "member of sports team: St Kilda Football Club"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the country of origin of City of Lost Souls?",
+   "label": "City of Lost Souls",
+   "relation": "country of origin",
+   "items_n": 3,
+   "weighed": 3,
+   "outcome": "each item labelled",
+   "reply": "The City of Lost Souls (genre: action film): Japan; City of Lost Souls (genre: LGBT-related film): Germany; City of Lost Souls (genre: adventure fiction): United States.",
+   "fit": [
+    "Q1094135",
+    "Q5123797",
+    "Q5770821"
+   ],
+   "ms": 326.3,
+   "items": [
+    {
+     "item": "Q1094135",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "director: Takashi Miike",
+      "composer: Kōji Endō",
+      "genre: action film",
+      "genre: gangster film"
+     ]
+    },
+    {
+     "item": "Q5123797",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "director: Rosa von Praunheim",
+      "screenwriter: Rosa von Praunheim",
+      "composer: Holger Münzer",
+      "genre: LGBT-related film"
+     ]
+    },
+    {
+     "item": "Q5770821",
+     "kinds": [
+      "literary work"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "author: Cassandra Clare",
+      "publisher: Simon & Schuster",
+      "genre: adventure fiction",
+      "genre: fantasy"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the given name of Andrew Blake?",
+   "label": "Andrew Blake",
+   "relation": "given name",
+   "items_n": 28,
+   "weighed": 0,
+   "outcome": "nothing read",
+   "reply": "I don't know.",
+   "fit": null,
+   "ms": 32.0,
+   "items": []
+  },
+  {
+   "question": "What is the country of citizenship of Jimmy Adams?",
+   "label": "Jimmy Adams",
+   "relation": "country of citizenship",
+   "items_n": 6,
+   "weighed": 6,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (6 items named Jimmy Adams)",
+   "fit": [
+    "Q2789496",
+    "Q3763931",
+    "Q6199479",
+    "Q6199482",
+    "Q75475333",
+    "Q137150557"
+   ],
+   "ms": 79.0,
+   "items": [
+    {
+     "item": "Q2789496",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Troon",
+      "place of death: London",
+      "sex or gender: male",
+      "country of citizenship: United Kingdom"
+     ]
+    },
+    {
+     "item": "Q3763931",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Port Maria La luz",
+      "sex or gender: male",
+      "country of citizenship: South Africa",
+      "occupation: cricketer"
+     ]
+    },
+    {
+     "item": "Q6199479",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Stoke-on-Trent",
+      "place of death: Stoke-on-Trent",
+      "sex or gender: male",
+      "country of citizenship: United Kingdom"
+     ]
+    },
+    {
+     "item": "Q6199482",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Norfolk",
+      "sex or gender: male",
+      "country of citizenship: United States",
+      "occupation: engineer"
+     ]
+    },
+    {
+     "item": "Q75475333",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "father: Harold Adams",
+      "mother: Coco Lequerre",
+      "family name: Adams"
+     ]
+    },
+    {
+     "item": "Q137150557",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "date of birth: 1929",
+      "family name: Adams",
+      "given name: Jimmy"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the location of formation of Pearl Jam?",
+   "label": "Pearl Jam",
+   "relation": "location of formation",
+   "items_n": 2,
+   "weighed": 2,
+   "outcome": "one item",
+   "reply": "Seattle. If you meant something else, there is also an album named Pearl Jam. Want to know about it?",
+   "fit": [
+    "Q142701"
+   ],
+   "ms": 82.1,
+   "items": [
+    {
+     "item": "Q142701",
+     "kinds": [
+      "rock band"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: grunge",
+      "genre: hard rock",
+      "award received: Rock and Roll Hall of Fame",
+      "award received: MTV Video Music Award for Best Group"
+     ]
+    },
+    {
+     "item": "Q931609",
+     "kinds": [
+      "album"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "genre: hard rock",
+      "genre: alternative rock",
+      "genre: grunge",
+      "follows: Riot Act"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the located in the administrative territorial entity of Changy?",
+   "label": "Changy",
+   "relation": "located in the administrative territorial entity",
+   "items_n": 7,
+   "weighed": 7,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (7 items named Changy)",
+   "fit": [
+    "Q210441",
+    "Q1068656",
+    "Q1218976",
+    "Q2956090",
+    "Q34791782",
+    "Q109572248",
+    "Q109573949"
+   ],
+   "ms": 41.3,
+   "items": [
+    {
+     "item": "Q210441",
+     "kinds": [
+      "commune of france"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: France",
+      "shares border with: Marcilly-la-Gueurce",
+      "shares border with: Charolles",
+      "shares border with: Lugny-lès-Charolles"
+     ]
+    },
+    {
+     "item": "Q1068656",
+     "kinds": [
+      "commune of france"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: France",
+      "shares border with: Saint-Bonnet-des-Quarts",
+      "shares border with: Ambierle",
+      "shares border with: La Pacaudière"
+     ]
+    },
+    {
+     "item": "Q1218976",
+     "kinds": [
+      "commune of france"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: France",
+      "shares border with: Outrepont",
+      "shares border with: Saint-Quentin-les-Marais",
+      "shares border with: Bassuet"
+     ]
+    },
+    {
+     "item": "Q2956090",
+     "kinds": [
+      "commune of france"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: France",
+      "located in the administrative territorial entity: arrondissement of Montargis",
+      "located in time zone: UTC+02:00",
+      "located in time zone: UTC+01:00"
+     ]
+    },
+    {
+     "item": "Q34791782",
+     "kinds": [
+      "human settlement"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: France"
+     ]
+    },
+    {
+     "item": "Q109572248",
+     "kinds": [
+      "commune of france"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: France",
+      "located in the administrative territorial entity: Cher",
+      "dissolved, abolished or demolished date: 1823"
+     ]
+    },
+    {
+     "item": "Q109573949",
+     "kinds": [
+      "commune of france"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: France",
+      "located in the administrative territorial entity: Nièvre",
+      "dissolved, abolished or demolished date: 1836"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the distributed by of CBGB?",
+   "label": "CBGB",
+   "relation": "distributed by",
+   "items_n": 2,
+   "weighed": 2,
+   "outcome": "one item",
+   "reply": "Disney+, Netflix, XLrator Media. If you meant something else, there is also a music venue named CBGB. Want to know about it?",
+   "fit": [
+    "Q2931018"
+   ],
+   "ms": 30.0,
+   "items": [
+    {
+     "item": "Q1022965",
+     "kinds": [
+      "music venue",
+      "nightclub"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "country: United States",
+      "founded by: Hilly Kristal",
+      "owned by: Hilly Kristal",
+      "located in the administrative territorial entity: Manhattan"
+     ]
+    },
+    {
+     "item": "Q2931018",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "director: Randall Miller",
+      "screenwriter: Randall Miller",
+      "composer: Cliff Eidelman",
+      "genre: biographical film"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the part of the series of The Maid?",
+   "label": "The Maid",
+   "relation": "part of the series",
+   "items_n": 38,
+   "weighed": 5,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (5 items named The Maid)",
+   "fit": [
+    "Q1990821",
+    "Q7749615",
+    "Q114289268",
+    "Q114477888",
+    "Q135073847"
+   ],
+   "ms": 122.4,
+   "items": [
+    {
+     "item": "Q1990821",
+     "kinds": [
+      "television film"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "director: Ian Toynton",
+      "screenwriter: Timothy Prager",
+      "composer: Didier Vasseur",
+      "genre: romantic comedy"
+     ]
+    },
+    {
+     "item": "Q7749615",
+     "kinds": [
+      "television series episode"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "director: Andy Ackerman",
+      "follows: The Frogger",
+      "followed by: The Puerto Rican Day",
+      "part of the series: Seinfeld"
+     ]
+    },
+    {
+     "item": "Q114289268",
+     "kinds": [
+      "literary work"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "author: Nita Prose",
+      "genre: crime fiction",
+      "language of work or name: English",
+      "publication date: 2022"
+     ]
+    },
+    {
+     "item": "Q114477888",
+     "kinds": [
+      "television series episode"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "follows: The Director",
+      "followed by: Hand Model",
+      "part of the series: My Wife and Kids",
+      "publication date: 5 May 2004"
+     ]
+    },
+    {
+     "item": "Q135073847",
+     "kinds": [
+      "video game"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: action game",
+      "genre: adventure video game",
+      "genre: action-adventure game",
+      "platform: Microsoft Windows"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the award received of Giuseppe Garibaldi?",
+   "label": "Giuseppe Garibaldi",
+   "relation": "award received",
+   "items_n": 18,
+   "weighed": 18,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (18 items named Giuseppe Garibaldi)",
+   "fit": [
+    "Q539",
+    "Q5565419",
+    "Q15292979",
+    "Q15292987",
+    "Q125182663"
+   ],
+   "ms": 48.7,
+   "items": [
+    {
+     "item": "Q539",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Nice",
+      "place of death: Caprera",
+      "sex or gender: male",
+      "father: Domenico Garibaldi"
+     ]
+    },
+    {
+     "item": "Q742121",
+     "kinds": [
+      "anti submarine warfare carrier"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "operator: Italian Navy",
+      "named after: Giuseppe Garibaldi",
+      "manufacturer: Fincantieri",
+      "Commons category: Giuseppe Garibaldi (C 551)"
+     ]
+    },
+    {
+     "item": "Q1133711",
+     "kinds": [
+      "armored cruiser"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "operator: Royal Italian Navy",
+      "named after: Giuseppe Garibaldi",
+      "manufacturer: Ansaldo",
+      "vessel class: Giuseppe Garibaldi-class armored cruiser"
+     ]
+    },
+    {
+     "item": "Q2261834",
+     "kinds": [
+      "light cruiser"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "operator: Royal Italian Navy",
+      "operator: Italian Navy",
+      "named after: Giuseppe Garibaldi",
+      "followed by: Andrea Doria-class cruiser"
+     ]
+    },
+    {
+     "item": "Q3758350",
+     "kinds": [
+      "hospital ship"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "operator: Royal Italian Navy",
+      "named after: Giuseppe Garibaldi",
+      "manufacturer: Regio Cantiere di Castellammare di Stabia",
+      "Commons category: Garibaldi (ship, 1860)"
+     ]
+    },
+    {
+     "item": "Q5565419",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Cipressa",
+      "place of death: Province of Imperia",
+      "sex or gender: male",
+      "country of citizenship: Kingdom of Italy"
+     ]
+    },
+    {
+     "item": "Q15292979",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "father: Menotti Garibaldi",
+      "mother: Italia Bidischini dall'Oglio",
+      "family name: Garibaldi"
+     ]
+    },
+    {
+     "item": "Q15292987",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "father: Menotti Garibaldi",
+      "mother: Italia Bidischini dall'Oglio",
+      "family name: Garibaldi"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the occupation of Liam Finn?",
+   "label": "Liam Finn",
+   "relation": "occupation",
+   "items_n": 2,
+   "weighed": 2,
+   "outcome": "each item labelled",
+   "reply": "Liam Finn (country of citizenship: New Zealand): singer, singer-songwriter; Liam Finn (country of citizenship: Ireland): rugby league player.",
+   "fit": [
+    "Q2708494",
+    "Q6539589"
+   ],
+   "ms": 29.9,
+   "items": [
+    {
+     "item": "Q2708494",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Melbourne",
+      "sex or gender: male",
+      "father: Neil Finn",
+      "country of citizenship: New Zealand"
+     ]
+    },
+    {
+     "item": "Q6539589",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Yorkshire",
+      "sex or gender: male",
+      "country of citizenship: Ireland",
+      "member of sports team: Wakefield Trinity"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the country of citizenship of Bobby Caldwell?",
+   "label": "Bobby Caldwell",
+   "relation": "country of citizenship",
+   "items_n": 2,
+   "weighed": 2,
+   "outcome": "one answer, every item agrees",
+   "reply": "United States. (2 items named Bobby Caldwell agree)",
+   "fit": [
+    "Q2907941",
+    "Q3487124"
+   ],
+   "ms": 77.8,
+   "items": [
+    {
+     "item": "Q2907941",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Manhattan",
+      "place of death: Manhattan",
+      "sex or gender: male",
+      "country of citizenship: United States"
+     ]
+    },
+    {
+     "item": "Q3487124",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Florida",
+      "sex or gender: male",
+      "country of citizenship: United States",
+      "occupation: musician"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the located in the administrative territorial entity of Sumner Township?",
+   "label": "Sumner Township",
+   "relation": "located in the administrative territorial entity",
+   "items_n": 14,
+   "weighed": 14,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (14 items named Sumner Township)",
+   "fit": [
+    "Q615480",
+    "Q1915599",
+    "Q2220640",
+    "Q5397574",
+    "Q5400616",
+    "Q6031928",
+    "Q6031931",
+    "Q7637997",
+    "Q7637998",
+    "Q9045035",
+    "Q9045038",
+    "Q9045039",
+    "Q9045040",
+    "Q10822152"
+   ],
+   "ms": 39.5,
+   "items": [
+    {
+     "item": "Q615480",
+     "kinds": [
+      "township of kansas"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States",
+      "located in the administrative territorial entity: Phillips County",
+      "population: 35",
+      "number of households: 0"
+     ]
+    },
+    {
+     "item": "Q1915599",
+     "kinds": [
+      "township of minnesota"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States",
+      "located in the administrative territorial entity: Fillmore County",
+      "population: 482",
+      "number of households: 162"
+     ]
+    },
+    {
+     "item": "Q2220640",
+     "kinds": [
+      "township of iowa"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States",
+      "located in the administrative territorial entity: Buchanan County",
+      "Commons category: Sumner Township, Buchanan County, Iowa",
+      "population: 3335"
+     ]
+    },
+    {
+     "item": "Q5397574",
+     "kinds": [
+      "township of michigan"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States",
+      "located in the administrative territorial entity: Gratiot County",
+      "population: 1863",
+      "number of households: 826"
+     ]
+    },
+    {
+     "item": "Q5400616",
+     "kinds": [
+      "township of iowa"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States",
+      "located in the administrative territorial entity: Iowa County",
+      "population: 399",
+      "number of households: 199"
+     ]
+    },
+    {
+     "item": "Q6031928",
+     "kinds": [
+      "township in the united states"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States",
+      "located in the administrative territorial entity: Guilford County"
+     ]
+    },
+    {
+     "item": "Q6031931",
+     "kinds": [
+      "township in the united states"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States",
+      "located in the administrative territorial entity: Spink County",
+      "population: 10",
+      "number of households: 9"
+     ]
+    },
+    {
+     "item": "Q7637997",
+     "kinds": [
+      "township of illinois"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States",
+      "located in the administrative territorial entity: Kankakee County",
+      "inception: 8 October 1855",
+      "population: 837"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the parent taxon of Alibertia?",
+   "label": "Alibertia",
+   "relation": "parent taxon",
+   "items_n": 2,
+   "weighed": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Alibertia)",
+   "fit": [
+    "Q2473735",
+    "Q4725637"
+   ],
+   "ms": 27.3,
+   "items": [
+    {
+     "item": "Q2473735",
+     "kinds": [
+      "taxon"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "taxon rank: genus",
+      "named after: Jean-Louis Alibert",
+      "parent taxon: Cordiereae",
+      "taxon name: Alibertia"
+     ]
+    },
+    {
+     "item": "Q4725637",
+     "kinds": [
+      "taxon"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "taxon rank: genus",
+      "parent taxon: Eulophidae",
+      "taxon name: Alibertia",
+      "homonymous taxon: Alibertia"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the followed by of Turbulence?",
+   "label": "Turbulence",
+   "relation": "followed by",
+   "items_n": 32,
+   "weighed": 10,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (10 items named Turbulence)",
+   "fit": [
+    "Q623500",
+    "Q2191062",
+    "Q3542269",
+    "Q3542271",
+    "Q7854770",
+    "Q50845899",
+    "Q114461979",
+    "Q114509365",
+    "Q136467971"
+   ],
+   "ms": 60.6,
+   "items": [
+    {
+     "item": "Q623500",
+     "kinds": [
+      "single"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: crunk",
+      "genre: big room house",
+      "follows: I'm in the House",
+      "follows: Hey"
+     ]
+    },
+    {
+     "item": "Q2191062",
+     "kinds": [
+      "album"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "follows: III",
+      "performer: Brother Ape",
+      "publication date: 2009"
+     ]
+    },
+    {
+     "item": "Q3542269",
+     "kinds": [
+      "album"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "performer: Michel Portal",
+      "record label: Harmonia Mundi",
+      "publication date: 1987"
+     ]
+    },
+    {
+     "item": "Q3542271",
+     "kinds": [
+      "album"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: instrumental rock",
+      "genre: progressive rock",
+      "follows: The Steve Howe Album",
+      "followed by: The Grand Scheme of Things"
+     ]
+    },
+    {
+     "item": "Q7854770",
+     "kinds": [
+      "album"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "follows: Aviator",
+      "performer: Aviator",
+      "record label: Harvest",
+      "publication date: 1980"
+     ]
+    },
+    {
+     "item": "Q7854771",
+     "kinds": [],
+     "how": "none",
+     "mark": "does not fit",
+     "values": [
+      "country: United States"
+     ]
+    },
+    {
+     "item": "Q50845899",
+     "kinds": [
+      "television series episode"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "director: Kevin Fair",
+      "follows: Infamous",
+      "followed by: Hex",
+      "part of the series: Smallville"
+     ]
+    },
+    {
+     "item": "Q114461979",
+     "kinds": [
+      "television series episode"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "follows: Control",
+      "followed by: Family Matters",
+      "part of the series: The Night Shift",
+      "publication date: 20 July 2017"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the country of citizenship of Steve Gould?",
+   "label": "Steve Gould",
+   "relation": "country of citizenship",
+   "items_n": 2,
+   "weighed": 2,
+   "outcome": "each item labelled",
+   "reply": "Steve Gould (occupation: curler): Canada; Steve Gould (occupation: singer): United Kingdom.",
+   "fit": [
+    "Q7612689",
+    "Q7612692"
+   ],
+   "ms": 77.3,
+   "items": [
+    {
+     "item": "Q7612689",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Winnipeg",
+      "sex or gender: male",
+      "country of citizenship: Canada",
+      "occupation: curler"
+     ]
+    },
+    {
+     "item": "Q7612692",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "country of citizenship: United Kingdom",
+      "occupation: singer",
+      "occupation: guitarist"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the member of sports team of Johnny Peacock?",
+   "label": "Johnny Peacock",
+   "relation": "member of sports team",
+   "items_n": 2,
+   "weighed": 2,
+   "outcome": "each item labelled",
+   "reply": "Johnny Peacock (occupation: baseball player): Boston Red Sox, Minneapolis Millers, Philadelphia Phillies; Johnny Peacock (occupation: American football player): Houston Cougars football, Tennessee Titans.",
+   "fit": [
+    "Q6267462",
+    "Q18001557"
+   ],
+   "ms": 101.6,
+   "items": [
+    {
+     "item": "Q6267462",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Fremont",
+      "place of death: Wilson",
+      "sex or gender: male",
+      "country of citizenship: United States"
+     ]
+    },
+    {
+     "item": "Q18001557",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Austin",
+      "sex or gender: male",
+      "country of citizenship: United States",
+      "member of sports team: Tennessee Titans"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the country of Petershausen?",
+   "label": "Petershausen",
+   "relation": "country",
+   "items_n": 4,
+   "weighed": 4,
+   "outcome": "one answer, every item agrees",
+   "reply": "Germany. (4 items named Petershausen agree)",
+   "fit": [
+    "Q533046",
+    "Q592306",
+    "Q32221839",
+    "Q50675411"
+   ],
+   "ms": 28.6,
+   "items": [
+    {
+     "item": "Q533046",
+     "kinds": [
+      "municipality without town privileges in germany"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "head of government: Marcel Fath",
+      "country: Germany",
+      "shares border with: Weichs",
+      "shares border with: Vierkirchen"
+     ]
+    },
+    {
+     "item": "Q592306",
+     "kinds": [
+      "ortsteil",
+      "quarter"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Germany",
+      "located in the administrative territorial entity: Constance",
+      "Commons category: Petershausen (Konstanz)",
+      "located in time zone: UTC+01:00"
+     ]
+    },
+    {
+     "item": "Q32221839",
+     "kinds": [
+      "municipality seat",
+      "ortsteil",
+      "parish village"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Germany",
+      "located in the administrative territorial entity: Petershausen",
+      "postal code: 85238",
+      "population: 2718"
+     ]
+    },
+    {
+     "item": "Q50675411",
+     "kinds": [
+      "railway station"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "transport network: Munich S-Bahn",
+      "country: Germany",
+      "connecting line: Munich–Treuchtlingen railway",
+      "connecting line: Munich-Laim Pbf–Petershausen (Oberbay) railway"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the located in the administrative territorial entity of Gnojno?",
+   "label": "Gnojno",
+   "relation": "located in the administrative territorial entity",
+   "items_n": 8,
+   "weighed": 8,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (8 items named Gnojno)",
+   "fit": [
+    "Q212257",
+    "Q212638",
+    "Q553519",
+    "Q959946",
+    "Q5574316",
+    "Q5574318",
+    "Q5574319",
+    "Q5574320"
+   ],
+   "ms": 43.5,
+   "items": [
+    {
+     "item": "Q212257",
+     "kinds": [
+      "village of poland"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Poland",
+      "located in the administrative territorial entity: Gmina Konstantynów",
+      "located in or next to body of water: Western Bug",
+      "postal code: 21-543"
+     ]
+    },
+    {
+     "item": "Q212638",
+     "kinds": [
+      "village of poland"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Poland",
+      "located in the administrative territorial entity: Gmina Gnojno",
+      "Commons category: Gnojno, Świętokrzyskie Voivodeship",
+      "located in time zone: UTC+02:00"
+     ]
+    },
+    {
+     "item": "Q553519",
+     "kinds": [
+      "rural municipality of poland"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Poland",
+      "continent: Europe",
+      "capital: Gnojno",
+      "shares border with: Gmina Pierzchnica"
+     ]
+    },
+    {
+     "item": "Q959946",
+     "kinds": [
+      "village of poland"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Poland",
+      "located in the administrative territorial entity: Gmina Inowrocław",
+      "located in time zone: UTC+01:00",
+      "located in time zone: UTC+02:00"
+     ]
+    },
+    {
+     "item": "Q5574316",
+     "kinds": [
+      "village of poland"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Poland",
+      "located in the administrative territorial entity: Gmina Bobrowniki",
+      "Commons category: Gnojno, powiat lipnowski",
+      "licence plate code: CLI"
+     ]
+    },
+    {
+     "item": "Q5574318",
+     "kinds": [
+      "village of poland"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Poland",
+      "located in the administrative territorial entity: Gmina Pułtusk",
+      "postal code: 06-100",
+      "located in time zone: UTC+01:00"
+     ]
+    },
+    {
+     "item": "Q5574319",
+     "kinds": [
+      "village of poland"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Poland",
+      "located in the administrative territorial entity: Gmina Działdowo",
+      "located in time zone: UTC+01:00",
+      "located in time zone: UTC+02:00"
+     ]
+    },
+    {
+     "item": "Q5574320",
+     "kinds": [
+      "village of poland"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Poland",
+      "located in the administrative territorial entity: Gmina Kutno",
+      "postal code: 99-300",
+      "licence plate code: EKU"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the member of sports team of Moon Sung-hyun?",
+   "label": "Moon Sung-hyun",
+   "relation": "member of sports team",
+   "items_n": 2,
+   "weighed": 2,
+   "outcome": "each item labelled",
+   "reply": "Moon Sung-hyun (occupation: baseball player): Kiwoom Heroes; Moon Sung-Hyun (occupation: politician): I do not know.",
+   "fit": [
+    "Q492889",
+    "Q6907571"
+   ],
+   "ms": 89.4,
+   "items": [
+    {
+     "item": "Q492889",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Seoul",
+      "sex or gender: male",
+      "country of citizenship: South Korea",
+      "member of sports team: Kiwoom Heroes"
+     ]
+    },
+    {
+     "item": "Q6907571",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "country of citizenship: South Korea",
+      "educated at: Jinju High School",
+      "educated at: Seoul National University"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the given name of Alfred Thomson?",
+   "label": "Alfred Thomson",
+   "relation": "given name",
+   "items_n": 3,
+   "weighed": 3,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (3 items named Alfred Thomson)",
+   "fit": [
+    "Q4723525",
+    "Q19519439",
+    "Q127008072"
+   ],
+   "ms": 29.6,
+   "items": [
+    {
+     "item": "Q4723525",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Bengaluru",
+      "place of death: Chelsea",
+      "sex or gender: male",
+      "country of citizenship: British Raj"
+     ]
+    },
+    {
+     "item": "Q19519439",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of death: Paddington",
+      "sex or gender: male",
+      "country of citizenship: Australia",
+      "occupation: cricketer"
+     ]
+    },
+    {
+     "item": "Q127008072",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "educated at: Imperial University of Dorpat",
+      "described by source: Album academicum universitatis tartuensis"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the operator of USS Hyman G. Rickover?",
+   "label": "USS Hyman G. Rickover",
+   "relation": "operator",
+   "items_n": 2,
+   "weighed": 2,
+   "outcome": "one answer, every item agrees",
+   "reply": "United States Navy. (2 items named USS Hyman G. Rickover agree)",
+   "fit": [
+    "Q174818",
+    "Q19563487"
+   ],
+   "ms": 29.2,
+   "items": [
+    {
+     "item": "Q174818",
+     "kinds": [
+      "attack submarine",
+      "nuclear submarine"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "operator: United States Navy",
+      "manufacturer: General Dynamics",
+      "vessel class: Los Angeles-class submarine",
+      "Commons category: USS Hyman G. Rickover (SSN-709)"
+     ]
+    },
+    {
+     "item": "Q19563487",
+     "kinds": [
+      "nuclear powered attack submarine"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "operator: United States Navy",
+      "named after: Hyman G. Rickover",
+      "manufacturer: General Dynamics Electric Boat",
+      "vessel class: Virginia-class submarine"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the different from of Thespis?",
+   "label": "Thespis",
+   "relation": "different from",
+   "items_n": 5,
+   "weighed": 4,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (4 items named Thespis)",
+   "fit": [
+    "Q117176",
+    "Q972539",
+    "Q6145853",
+    "Q6769679"
+   ],
+   "ms": 29.9,
+   "items": [
+    {
+     "item": "Q117176",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Ikarion",
+      "sex or gender: male",
+      "country of citizenship: Classical Athens",
+      "occupation: poet"
+     ]
+    },
+    {
+     "item": "Q972539",
+     "kinds": [
+      "dramatico musical work"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "composer: Arthur Sullivan",
+      "librettist: W. S. Gilbert",
+      "genre: comic opera",
+      "genre: féerie"
+     ]
+    },
+    {
+     "item": "Q6145853",
+     "kinds": [
+      "taxon"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "taxon rank: genus",
+      "parent taxon: Thespidae",
+      "taxon name: Thespis",
+      "Commons category: Thespis (genus)"
+     ]
+    },
+    {
+     "item": "Q6769679",
+     "kinds": [
+      "taxon"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "taxon rank: genus",
+      "parent taxon: Lagenophorinae",
+      "parent taxon: Asteraceae",
+      "taxon name: Thespis"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the distributed by of The Toxic Avenger?",
+   "label": "The Toxic Avenger",
+   "relation": "distributed by",
+   "items_n": 6,
+   "weighed": 6,
+   "outcome": "each item labelled",
+   "reply": "The Toxic Avenger (instance: film): Netflix, Troma Entertainment; The Toxic Avenger (instance: film series): I do not know; The Toxic Avenger (instance: media franchise): I do not know.",
+   "fit": [
+    "Q615551",
+    "Q7769798",
+    "Q64755318"
+   ],
+   "ms": 30.6,
+   "items": [
+    {
+     "item": "Q615551",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "director: Michael Herz",
+      "director: Lloyd Kaufman",
+      "screenwriter: Lloyd Kaufman",
+      "genre: action film"
+     ]
+    },
+    {
+     "item": "Q3523058",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "place of birth: France",
+      "sex or gender: male",
+      "country of citizenship: France",
+      "occupation: disc jockey"
+     ]
+    },
+    {
+     "item": "Q3989664",
+     "kinds": [
+      "character",
+      "film character"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "sex or gender: male",
+      "present in work: The Toxic Avenger Part II",
+      "present in work: The Toxic Avenger",
+      "present in work: The Toxic Avenger Part III: The Last Temptation of Toxie"
+     ]
+    },
+    {
+     "item": "Q7769796",
+     "kinds": [
+      "dramatico musical work"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "composer: David Bryan",
+      "librettist: Joe DiPietro",
+      "lyricist: Joe DiPietro",
+      "form of creative work: musical"
+     ]
+    },
+    {
+     "item": "Q7769798",
+     "kinds": [
+      "film series"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "has part(s): The Toxic Avenger",
+      "has part(s): Citizen Toxie: The Toxic Avenger IV",
+      "has part(s): The Toxic Avenger Part II",
+      "has part(s): The Toxic Avenger Part III: The Last Temptation of Toxie"
+     ]
+    },
+    {
+     "item": "Q64755318",
+     "kinds": [
+      "media franchise"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "topic's main category: Category:The Toxic Avenger (franchise)"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the country of Notojima?",
+   "label": "Notojima",
+   "relation": "country",
+   "items_n": 2,
+   "weighed": 2,
+   "outcome": "one answer, every item agrees",
+   "reply": "Japan. (2 items named Notojima agree)",
+   "fit": [
+    "Q7063204",
+    "Q11612025"
+   ],
+   "ms": 26.4,
+   "items": [
+    {
+     "item": "Q7063204",
+     "kinds": [
+      "dissolved municipality of japan"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Japan",
+      "located in the administrative territorial entity: Kashima district",
+      "inception: 1 February 1955",
+      "dissolved, abolished or demolished date: 1 October 2004"
+     ]
+    },
+    {
+     "item": "Q11612025",
+     "kinds": [
+      "island"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Japan",
+      "located in the administrative territorial entity: Nanao",
+      "Commons category: Notojima",
+      "highest point: Yomuratukayama"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the country of origin of George and Mildred?",
+   "label": "George and Mildred",
+   "relation": "country of origin",
+   "items_n": 2,
+   "weighed": 2,
+   "outcome": "one answer, every item agrees",
+   "reply": "United Kingdom. (2 items named George and Mildred agree)",
+   "fit": [
+    "Q776608",
+    "Q5546666"
+   ],
+   "ms": 71.8,
+   "items": [
+    {
+     "item": "Q776608",
+     "kinds": [
+      "television series"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: sitcom",
+      "follows: Man About the House",
+      "cast member: Avril Elgar",
+      "cast member: Roy Kinnear"
+     ]
+    },
+    {
+     "item": "Q5546666",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "director: Peter Frazer-Jones",
+      "screenwriter: Dick Sharples",
+      "composer: Les Reed",
+      "genre: comedy film"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the located in the administrative territorial entity of Greenfield?",
+   "label": "Greenfield",
+   "relation": "located in the administrative territorial entity",
+   "items_n": 69,
+   "weighed": 0,
+   "outcome": "nothing read",
+   "reply": "I don't know.",
+   "fit": null,
+   "ms": 38.4,
+   "items": []
+  },
+  {
+   "question": "What is the country of citizenship of John Whyte?",
+   "label": "John Whyte",
+   "relation": "country of citizenship",
+   "items_n": 10,
+   "weighed": 10,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (10 items named John Whyte)",
+   "fit": [
+    "Q6263935",
+    "Q18164633",
+    "Q18219677",
+    "Q50992423",
+    "Q75341757",
+    "Q75608708",
+    "Q76317327",
+    "Q94594251",
+    "Q94900467",
+    "Q116973055"
+   ],
+   "ms": 79.0,
+   "items": [
+    {
+     "item": "Q6263935",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Dunfermline",
+      "place of death: Leeds",
+      "sex or gender: male",
+      "country of citizenship: Canada"
+     ]
+    },
+    {
+     "item": "Q18164633",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "country of citizenship: Australia",
+      "date of birth: 1826",
+      "date of death: 16 February 1902"
+     ]
+    },
+    {
+     "item": "Q18219677",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Easdale",
+      "sex or gender: male",
+      "country of citizenship: United Kingdom of Great Britain and Ireland",
+      "date of death: 1913"
+     ]
+    },
+    {
+     "item": "Q50992423",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "spouse: Tom Wilson Weinberg",
+      "educated at: Swarthmore College",
+      "educated at: University of Pennsylvania"
+     ]
+    },
+    {
+     "item": "Q75341757",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "child: Theodore Whyte",
+      "date of birth: 14 May 1806",
+      "date of death: 24 July 1889"
+     ]
+    },
+    {
+     "item": "Q75608708",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "child: Louisa Whyte",
+      "family name: Whyte",
+      "given name: John"
+     ]
+    },
+    {
+     "item": "Q76317327",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "child: Alexander Whyte",
+      "date of birth: 1812",
+      "date of death: 1871"
+     ]
+    },
+    {
+     "item": "Q94594251",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "occupation: researcher",
+      "given name: John"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the participant in of Charles Allen?",
+   "label": "Charles Allen",
+   "relation": "participant in",
+   "items_n": 30,
+   "weighed": 0,
+   "outcome": "nothing read",
+   "reply": "I don't know.",
+   "fit": null,
+   "ms": 37.1,
+   "items": []
+  },
+  {
+   "question": "What is the participated in conflict of HMS Racoon?",
+   "label": "HMS Racoon",
+   "relation": "participated in conflict",
+   "items_n": 6,
+   "weighed": 6,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (6 items named HMS Racoon)",
+   "fit": [
+    "Q5633965",
+    "Q5633966",
+    "Q11861024",
+    "Q22570343",
+    "Q85765324"
+   ],
+   "ms": 34.5,
+   "items": [
+    {
+     "item": "Q5633965",
+     "kinds": [
+      "sloop of war"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "operator: Royal Navy",
+      "designed by: John Randall",
+      "vessel class: Diligence-class brig-sloop",
+      "service entry: 1795"
+     ]
+    },
+    {
+     "item": "Q5633966",
+     "kinds": [
+      "sloop of war"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "operator: Royal Navy",
+      "vessel class: Cormorant-class sloop-of-war",
+      "country of origin: United Kingdom of Great Britain and Ireland",
+      "participated in conflict: War of 1812"
+     ]
+    },
+    {
+     "item": "Q5633970",
+     "kinds": [
+      "torpedo cruiser"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "operator: Royal Navy",
+      "manufacturer: HMNB Devonport",
+      "vessel class: Archer-class torpedo cruiser",
+      "Commons category: HMS Racoon (ship, 1887)"
+     ]
+    },
+    {
+     "item": "Q11861024",
+     "kinds": [
+      "destroyer"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "operator: Royal Navy",
+      "vessel class: Beagle-class destroyer",
+      "significant event: ship launching",
+      "different from: HMS Racoon"
+     ]
+    },
+    {
+     "item": "Q22570343",
+     "kinds": [
+      "brig sloop"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "operator: Royal Navy",
+      "country of origin: Kingdom of Great Britain",
+      "inception: 1782",
+      "significant event: ship launching"
+     ]
+    },
+    {
+     "item": "Q85765324",
+     "kinds": [
+      "corvette",
+      "sailing ship"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "operator: Royal Navy",
+      "vessel class: Pearl-class corvette",
+      "Commons category: HMS Racoon (ship, 1857)",
+      "significant event: ship launching"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the language of work or name of Traveler?",
+   "label": "Traveler",
+   "relation": "language of work or name",
+   "items_n": 43,
+   "weighed": 25,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (25 items named Traveler)",
+   "fit": [
+    "Q493191",
+    "Q734223",
+    "Q7770002",
+    "Q7835975",
+    "Q7835976",
+    "Q7835977",
+    "Q7835978",
+    "Q9361370",
+    "Q10701529",
+    "Q12582064",
+    "Q21539974",
+    "Q28872440",
+    "Q30690175",
+    "Q61849363",
+    "Q70098807",
+    "Q107120787",
+    "Q109676784",
+    "Q110117291",
+    "Q111840450",
+    "Q115521174",
+    "Q122372851",
+    "Q122826275",
+    "Q124028963",
+    "Q130044401",
+    "Q135453279"
+   ],
+   "ms": 124.0,
+   "items": [
+    {
+     "item": "Q493191",
+     "kinds": [
+      "literary work"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "author: John Twelve Hawks",
+      "genre: science fiction",
+      "part of the series: Fourth Realm trilogy",
+      "language of work or name: English"
+     ]
+    },
+    {
+     "item": "Q734223",
+     "kinds": [
+      "television series"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "composer: Trevor Morris",
+      "genre: drama television series",
+      "cast member: Logan Marshall-Green",
+      "cast member: Aaron Stanford"
+     ]
+    },
+    {
+     "item": "Q7770002",
+     "kinds": [
+      "magazine"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "publisher: Shanghai",
+      "country of origin: People's Republic of China",
+      "inception: 2000"
+     ]
+    },
+    {
+     "item": "Q7835975",
+     "kinds": [
+      "album"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: blues",
+      "follows: Fuse",
+      "followed by: Limelight",
+      "performer: Colin James"
+     ]
+    },
+    {
+     "item": "Q7835976",
+     "kinds": [
+      "album"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: ambient music",
+      "performer: Steve Roach",
+      "record label: Domino Recording Company",
+      "part of: Steve Roach's albums in chronological order"
+     ]
+    },
+    {
+     "item": "Q7835977",
+     "kinds": [
+      "album"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: J-pop",
+      "genre: pop rock",
+      "performer: Hitomi",
+      "record label: Avex Trax"
+     ]
+    },
+    {
+     "item": "Q7835978",
+     "kinds": [
+      "album"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "performer: Trey Anastasio",
+      "record label: Rubber Jungle Records",
+      "part of: Trey Anastasio's albums in chronological order",
+      "publication date: 16 October 2012"
+     ]
+    },
+    {
+     "item": "Q9361370",
+     "kinds": [
+      "album"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "performer: Hard",
+      "publication date: 2008"
+     ]
+    }
+   ]
+  }
+ ],
+ "probe": [
+  {
+   "label": "Richard Parsons",
+   "relation": "country of citizenship",
+   "cue": "male",
+   "target": "Q7328290",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q2149305",
+    "Q7328287",
+    "Q7328288",
+    "Q7328289",
+    "Q7328290",
+    "Q16090883",
+    "Q18757051",
+    "Q21466855",
+    "Q21524713",
+    "Q44606086",
+    "Q65046276",
+    "Q75255222",
+    "Q75255312",
+    "Q75255324",
+    "Q75437721",
+    "Q76090772",
+    "Q86633580",
+    "Q92534386",
+    "Q102342311"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (20 items named Richard Parsons)",
+   "ms": 97.8,
+   "items": [
+    {
+     "item": "Q2149305",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Brooklyn",
+      "sex or gender: male",
+      "country of citizenship: United Kingdom",
+      "country of citizenship: United States"
+     ]
+    },
+    {
+     "item": "Q7328287",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "father: Richard Parsons, 1st Viscount Rosse",
+      "mother: Elizabeth Hamilton",
+      "spouse: Frances Claxton"
+     ]
+    },
+    {
+     "item": "Q7328288",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "country of citizenship: United Kingdom",
+      "educated at: Ulverston Victoria High School",
+      "educated at: University of Oxford"
+     ]
+    },
+    {
+     "item": "Q7328289",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "educated at: Durham School",
+      "educated at: Magdalen College",
+      "occupation: Anglican priest"
+     ]
+    },
+    {
+     "item": "Q7328290",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "country of citizenship: Australia",
+      "occupation: explorer",
+      "family name: Parsons"
+     ]
+    },
+    {
+     "item": "Q16090883",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "country of citizenship: United Kingdom",
+      "educated at: Brasenose College",
+      "educated at: Bembridge School"
+     ]
+    },
+    {
+     "item": "Q18757051",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "country of citizenship: Kingdom of England",
+      "occupation: ecclesiastical judge",
+      "occupation: antiquarian"
+     ]
+    },
+    {
+     "item": "Q21466855",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "occupation: painter",
+      "date of birth: 1925",
+      "date of death: 2000"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "USS Swasey",
+   "relation": "manufacturer",
+   "cue": "clemson",
+   "target": "Q7874526",
+   "verdict": "picks the target",
+   "fit": [
+    "Q7874526"
+   ],
+   "reads": [
+    "Bethlehem Shipbuilding Corporation"
+   ],
+   "reply": "Bethlehem Shipbuilding Corporation. If you meant something else, there is also a destroyer escort named USS Swasey. Want to know about it?",
+   "ms": 27.5,
+   "items": [
+    {
+     "item": "Q7874525",
+     "kinds": [
+      "destroyer escort"
+     ],
+     "how": "recorded",
+     "mark": "ruled out by 'clemson'",
+     "values": [
+      "operator: United States Navy",
+      "named after: Charles Swasey",
+      "manufacturer: Brown Shipbuilding",
+      "vessel class: Edsall-class destroyer escort"
+     ]
+    },
+    {
+     "item": "Q7874526",
+     "kinds": [
+      "destroyer",
+      "shipwreck"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "country: United Kingdom",
+      "located in the administrative territorial entity: United Kingdom",
+      "operator: Royal Navy",
+      "operator: Royal Navy"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Flashforward",
+   "relation": "main subject",
+   "cue": "sawyer",
+   "target": "Q2346621",
+   "verdict": "picks the target",
+   "fit": [
+    "Q2346621"
+   ],
+   "reads": [
+    "time travel"
+   ],
+   "reply": "time travel. If you meant something else, there is also a television series named FlashForward and a cinematic technique named flashforward. Want to know about one of them?",
+   "ms": 31.0,
+   "items": [
+    {
+     "item": "Q476857",
+     "kinds": [
+      "television series"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "director: David S. Goyer",
+      "composer: Ramin Djawadi",
+      "genre: drama television series",
+      "genre: science fiction television program"
+     ]
+    },
+    {
+     "item": "Q2346621",
+     "kinds": [
+      "literary work"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "author: Robert J. Sawyer",
+      "publisher: Tor Books",
+      "genre: science fiction",
+      "language of work or name: English"
+     ]
+    },
+    {
+     "item": "Q2533706",
+     "kinds": [
+      "cinematic technique",
+      "narrative technique"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "subclass of: scene",
+      "opposite of: flashback",
+      "different from: spoiler"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Different World",
+   "relation": "producer",
+   "cue": "arena",
+   "target": "Q2315368",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q2314449",
+    "Q2315368",
+    "Q59576383",
+    "Q59617920",
+    "Q109286761"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (5 items named Different World)",
+   "ms": 37.3,
+   "items": [
+    {
+     "item": "Q2314449",
+     "kinds": [
+      "single"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "composer: Steve Harris",
+      "genre: heavy metal",
+      "follows: The Reincarnation of Benjamin Breeg",
+      "followed by: El Dorado"
+     ]
+    },
+    {
+     "item": "Q2315368",
+     "kinds": [
+      "album"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: Burlington",
+      "genre: arena rock",
+      "genre: hard rock",
+      "genre: Collector's Guide Publishing"
+     ]
+    },
+    {
+     "item": "Q59576383",
+     "kinds": [
+      "single"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: dance music",
+      "follows: Diamond Heart",
+      "followed by: Lost Control",
+      "performer: K-391"
+     ]
+    },
+    {
+     "item": "Q59617920",
+     "kinds": [
+      "album"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: electronic dance music",
+      "producer: Jenna Andrews",
+      "producer: Steve Aoki",
+      "producer: Mood Melodies"
+     ]
+    },
+    {
+     "item": "Q109286761",
+     "kinds": [
+      "audio track"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "performer: Alan Walker",
+      "performer: K-391",
+      "performer: CORSAK",
+      "performer: Sofia Carson"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Ballad of Easy Rider",
+   "relation": "part of",
+   "cue": "november",
+   "target": "Q805125",
+   "verdict": "each item labelled, the target among them",
+   "fit": [
+    "Q805125",
+    "Q4851333"
+   ],
+   "reads": [],
+   "reply": "Ballad of Easy Rider (genre: rock music): The Byrds' albums in chronological order; Ballad of Easy Rider (genre: folk rock): Ballad of Easy Rider.",
+   "ms": 74.5,
+   "items": [
+    {
+     "item": "Q805125",
+     "kinds": [
+      "album"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: rock music",
+      "producer: Terry Melcher",
+      "performer: The Byrds",
+      "record label: Columbia Records"
+     ]
+    },
+    {
+     "item": "Q4851333",
+     "kinds": [
+      "single"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: folk rock",
+      "follows: Wasn't Born to Follow",
+      "followed by: Jesus Is Just Alright",
+      "performer: Roger McGuinn"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Diamantina River",
+   "relation": "named after",
+   "cue": "warburton",
+   "target": "Q1208608",
+   "verdict": "asking back",
+   "fit": [],
+   "reads": [],
+   "reply": "Which one do you mean? (2 items named Diamantina River)",
+   "ms": 32.4,
+   "items": [
+    {
+     "item": "Q1208608",
+     "kinds": [
+      "river"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "country: Australia",
+      "continent: Australian continent",
+      "located in the administrative territorial entity: Queensland",
+      "named after: Diamantina Bowen"
+     ]
+    },
+    {
+     "item": "Q5270661",
+     "kinds": [
+      "river"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "country: Brazil",
+      "located in the administrative territorial entity: Goiás",
+      "mouth of the watercourse: Araguaia River",
+      "elevation above sea level: 420 metre"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Calhoun Township",
+   "relation": "located in the administrative territorial entity",
+   "cue": "states",
+   "target": "Q9037091",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q2218297",
+    "Q5019797",
+    "Q9037091",
+    "Q10835456"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (4 items named Calhoun Township)",
+   "ms": 38.6,
+   "items": [
+    {
+     "item": "Q2218297",
+     "kinds": [
+      "township of iowa"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States",
+      "located in the administrative territorial entity: Calhoun County",
+      "population: 123",
+      "number of households: 51"
+     ]
+    },
+    {
+     "item": "Q5019797",
+     "kinds": [
+      "township of kansas"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States",
+      "located in the administrative territorial entity: Cheyenne County",
+      "population: 41",
+      "number of households: 3"
+     ]
+    },
+    {
+     "item": "Q9037091",
+     "kinds": [
+      "civil township",
+      "township of iowa"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States",
+      "located in the administrative territorial entity: Harrison County",
+      "population: 358",
+      "number of households: 82"
+     ]
+    },
+    {
+     "item": "Q10835456",
+     "kinds": [
+      "township of arkansas"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States",
+      "located in the administrative territorial entity: Prairie County"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Demon Hunter",
+   "relation": "game mode",
+   "cue": "adventure",
+   "target": "Q124064797",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q109062277",
+    "Q124064797",
+    "Q135032719"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (14 items named Demon Hunter)",
+   "ms": 37.0,
+   "items": [
+    {
+     "item": "Q1186459",
+     "kinds": [
+      "musical group"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "country: United States",
+      "genre: metalcore",
+      "genre: alternative metal",
+      "genre: groove metal"
+     ]
+    },
+    {
+     "item": "Q1756223",
+     "kinds": [
+      "album"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "genre: metalcore",
+      "followed by: Summer of Darkness",
+      "producer: Aaron Sprinkle",
+      "performer: Demon Hunter"
+     ]
+    },
+    {
+     "item": "Q2895087",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "director: Gilberto de Anda",
+      "screenwriter: Gilberto de Anda",
+      "composer: Marco Flores",
+      "genre: horror film"
+     ]
+    },
+    {
+     "item": "Q5256211",
+     "kinds": [
+      "comics character"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "sex or gender: male",
+      "creator: David Anthony Kraft",
+      "creator: Rich Buckler",
+      "from narrative universe: Earth-616"
+     ]
+    },
+    {
+     "item": "Q5256212",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "director: Scott Ziehl",
+      "composer: Jon Lee",
+      "genre: horror film",
+      "cast member: Sean Patrick Flanery"
+     ]
+    },
+    {
+     "item": "Q58795262",
+     "kinds": [
+      "fictional profession"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "subclass of: hunter",
+      "said to be the same as: Demon hunter",
+      "topic's main category: Category:Fictional demon hunters",
+      "enemy: fictional demon"
+     ]
+    },
+    {
+     "item": "Q109062277",
+     "kinds": [
+      "video game series"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": []
+    },
+    {
+     "item": "Q113624913",
+     "kinds": [
+      "fictional profession"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "field of work: demonology",
+      "subclass of: hunter",
+      "subclass of: warrior",
+      "said to be the same as: demon hunter"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Colin Griffiths",
+   "relation": "country of citizenship",
+   "cue": "anglia",
+   "target": "Q5145163",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q5145163",
+    "Q16016147",
+    "Q124867295",
+    "Q134473850"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (4 items named Colin Griffiths)",
+   "ms": 72.3,
+   "items": [
+    {
+     "item": "Q5145163",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Kent",
+      "sex or gender: male",
+      "country of citizenship: United Kingdom",
+      "educated at: University of East Anglia"
+     ]
+    },
+    {
+     "item": "Q16016147",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Upminster",
+      "sex or gender: male",
+      "country of citizenship: United Kingdom",
+      "occupation: cricketer"
+     ]
+    },
+    {
+     "item": "Q124867295",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "country of citizenship: Australia",
+      "occupation: architect",
+      "date of birth: 1936"
+     ]
+    },
+    {
+     "item": "Q134473850",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "occupation: guitarist",
+      "member of: U-J3RK5",
+      "family name: Griffiths"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Real Friends",
+   "relation": "performer",
+   "cue": "album",
+   "target": "Q85796217",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q22905752",
+    "Q28453482",
+    "Q45642682",
+    "Q85796217",
+    "Q136328192"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (7 items named Real Friends)",
+   "ms": 27.7,
+   "items": [
+    {
+     "item": "Q17151030",
+     "kinds": [
+      "musical group"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "genre: punk rock",
+      "record label: Fearless Records",
+      "discography: Real Friends discography",
+      "country of origin: United States"
+     ]
+    },
+    {
+     "item": "Q22905752",
+     "kinds": [
+      "single"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: hip-hop",
+      "producer: Boi-1da",
+      "performer: Kanye West",
+      "performer: Ty Dolla Sign"
+     ]
+    },
+    {
+     "item": "Q28453482",
+     "kinds": [
+      "album"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: soul",
+      "follows: Highly Distinct",
+      "followed by: Whatever",
+      "performer: The Friends of Distinction"
+     ]
+    },
+    {
+     "item": "Q45642682",
+     "kinds": [
+      "single"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: pop music",
+      "follows: Sangria Wine",
+      "performer: Camila Cabello",
+      "record label: Epic Records"
+     ]
+    },
+    {
+     "item": "Q66011342",
+     "kinds": [
+      "television series episode"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "follows: Locket & Key",
+      "followed by: Tunnel of Shadows",
+      "part of the series: Lego Friends: Girls on a Mission",
+      "title: Real Friends"
+     ]
+    },
+    {
+     "item": "Q85796217",
+     "kinds": [
+      "album"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: country music",
+      "performer: Chris Janson",
+      "record label: Warner Bros. Records"
+     ]
+    },
+    {
+     "item": "Q136328192",
+     "kinds": [
+      "audio track"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "performer: Kanye West",
+      "title: Real Friends",
+      "duration: 252 second"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Qu River",
+   "relation": "located in the administrative territorial entity",
+   "cue": "dong",
+   "target": "Q15895848",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q544565",
+    "Q7268213",
+    "Q15895848"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (3 items named Qu River)",
+   "ms": 34.8,
+   "items": [
+    {
+     "item": "Q544565",
+     "kinds": [
+      "river",
+      "watercourse"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: People's Republic of China",
+      "located in the administrative territorial entity: Sichuan",
+      "located in the administrative territorial entity: Chongqing",
+      "mouth of the watercourse: Jialing River"
+     ]
+    },
+    {
+     "item": "Q7268213",
+     "kinds": [
+      "watercourse"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: People's Republic of China",
+      "Commons category: Qu River (Nanpan River)",
+      "tributary: Lian River",
+      "described by source: Gujin Tushu Jicheng"
+     ]
+    },
+    {
+     "item": "Q15895848",
+     "kinds": [
+      "river"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: People's Republic of China",
+      "located in the administrative territorial entity: Huaihua",
+      "located in the administrative territorial entity: Jingzhou Miao and Dong Autonomous County",
+      "located in the administrative territorial entity: Hunan"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "The Deer and the Cauldron",
+   "relation": "genre",
+   "cue": "written",
+   "target": "Q1185345",
+   "verdict": "each item labelled, the target among them",
+   "fit": [
+    "Q1185345",
+    "Q15633375"
+   ],
+   "reads": [],
+   "reply": "The Deer and the Cauldron (country of origin: Hong Kong): historical prose literature, wuxia; The Deer and the Cauldron (country of origin: People's Republic of China): I do not know.",
+   "ms": 31.2,
+   "items": [
+    {
+     "item": "Q1185345",
+     "kinds": [
+      "written work"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "author: Jin Yong",
+      "publisher: Ming Pao",
+      "genre: wuxia",
+      "genre: historical prose literature"
+     ]
+    },
+    {
+     "item": "Q15633375",
+     "kinds": [
+      "television series"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "cast member: Han Dong",
+      "language of work or name: Standard Chinese",
+      "original broadcaster: Anhui Television",
+      "country of origin: People's Republic of China"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Tenna",
+   "relation": "country",
+   "cue": "volda",
+   "target": "Q31540182",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q66226",
+    "Q3983464",
+    "Q7699953",
+    "Q11224398",
+    "Q31540182"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (11 items named Tenna)",
+   "ms": 29.3,
+   "items": [
+    {
+     "item": "Q66226",
+     "kinds": [
+      "former municipality of switzerland",
+      "village"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Switzerland",
+      "located in the administrative territorial entity: Canton of the Grisons",
+      "postal code: 7106",
+      "Commons category: Tenna"
+     ]
+    },
+    {
+     "item": "Q326941",
+     "kinds": [
+      "commune of italy"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Italy",
+      "capital: Tenna",
+      "shares border with: Pergine Valsugana",
+      "shares border with: Caldonazzo"
+     ]
+    },
+    {
+     "item": "Q1145289",
+     "kinds": [
+      "japanese era name"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Japan",
+      "follows: Enpō",
+      "followed by: Jōkyō",
+      "start time: 9 November 1681"
+     ]
+    },
+    {
+     "item": "Q3983464",
+     "kinds": [
+      "river"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Italy",
+      "Commons category: Tenna (river)",
+      "mouth of the watercourse: Adriatic Sea",
+      "length: 70 kilometre"
+     ]
+    },
+    {
+     "item": "Q7699953",
+     "kinds": [
+      "human settlement"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Sri Lanka",
+      "located in the administrative territorial entity: Central Province",
+      "located in time zone: UTC+05:30"
+     ]
+    },
+    {
+     "item": "Q11224398",
+     "kinds": [
+      "island"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Norway",
+      "located in the administrative territorial entity: Herøy Municipality",
+      "area: 3.5 square kilometre"
+     ]
+    },
+    {
+     "item": "Q30031045",
+     "kinds": [
+      "municipality seat"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Italy",
+      "located in the administrative territorial entity: Tenna",
+      "located in time zone: UTC+01:00",
+      "located in time zone: UTC+02:00"
+     ]
+    },
+    {
+     "item": "Q31540182",
+     "kinds": [
+      "mountain"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Norway",
+      "located in the administrative territorial entity: Volda Municipality"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Barreiros",
+   "relation": "Soundex",
+   "cue": "index",
+   "target": "Q36894757",
+   "verdict": "picks the target",
+   "fit": [
+    "Q36894757"
+   ],
+   "reads": [
+    "B662"
+   ],
+   "reply": "B662. If you meant something else, there is also a brand named Barreiros and a former freguesia of portugal named Barreiros. Want to know about one of them?",
+   "ms": 29.0,
+   "items": [
+    {
+     "item": "Q367720",
+     "kinds": [
+      "automobile manufacturer",
+      "brand"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "country: Spain",
+      "founded by: Eduardo Barreiros",
+      "headquarters location: Villaverde",
+      "Commons category: Barreiros vehicles"
+     ]
+    },
+    {
+     "item": "Q799367",
+     "kinds": [
+      "former freguesia of portugal"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "country: Portugal",
+      "located in the administrative territorial entity: Sonim e Barreiros",
+      "located in time zone: Western European Time",
+      "elevation above sea level: 455 metre"
+     ]
+    },
+    {
+     "item": "Q808853",
+     "kinds": [
+      "freguesia of portugal"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "country: Portugal",
+      "located in the administrative territorial entity: Amares",
+      "elevation above sea level: 74 metre",
+      "area: 2.99 square kilometre"
+     ]
+    },
+    {
+     "item": "Q1634820",
+     "kinds": [
+      "municipality of galicia"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "head of government: Ana Ermida Igrexas",
+      "country: Spain",
+      "capital: San Miguel de Reinante, Barreiros",
+      "shares border with: Lourenzá"
+     ]
+    },
+    {
+     "item": "Q2102404",
+     "kinds": [
+      "municipality of brazil"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "country: Brazil",
+      "shares border with: São José da Coroa Grande",
+      "shares border with: Maragogi",
+      "shares border with: Tamandaré"
+     ]
+    },
+    {
+     "item": "Q12384188",
+     "kinds": [
+      "settlement in galicia"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "country: Spain",
+      "located in the administrative territorial entity: Rioaveso, Vilalba",
+      "on focus list of Wikimedia project: Wikiproject Toponymy"
+     ]
+    },
+    {
+     "item": "Q20541823",
+     "kinds": [
+      "abandoned village",
+      "settlement in galicia"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "country: Spain",
+      "located in the administrative territorial entity: As Chás, Maceda",
+      "on focus list of Wikimedia project: Wikiproject Toponymy"
+     ]
+    },
+    {
+     "item": "Q20541870",
+     "kinds": [
+      "settlement in galicia"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "country: Spain",
+      "on focus list of Wikimedia project: Wikiproject Toponymy"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Kathy Smith",
+   "relation": "place of birth",
+   "cue": "female",
+   "target": "Q120603796",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q3066300",
+    "Q6377304",
+    "Q6377305",
+    "Q19879126",
+    "Q100320057",
+    "Q116879195",
+    "Q120603796"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (7 items named Kathy Smith)",
+   "ms": 79.9,
+   "items": [
+    {
+     "item": "Q3066300",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Maidenhead",
+      "sex or gender: female",
+      "country of citizenship: United Kingdom",
+      "occupation: archer"
+     ]
+    },
+    {
+     "item": "Q6377304",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: female",
+      "country of citizenship: Australia",
+      "occupation: film director",
+      "employer: University of Southern California"
+     ]
+    },
+    {
+     "item": "Q6377305",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Arizona",
+      "sex or gender: female",
+      "country of citizenship: United States",
+      "child: Kate Grace"
+     ]
+    },
+    {
+     "item": "Q19879126",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Sheffield",
+      "sex or gender: female",
+      "country of citizenship: Australia",
+      "country of citizenship: United Kingdom"
+     ]
+    },
+    {
+     "item": "Q100320057",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: female",
+      "country of citizenship: United States",
+      "occupation: politician",
+      "family name: Smith"
+     ]
+    },
+    {
+     "item": "Q116879195",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "educated at: University of Mary Hardin–Baylor",
+      "field of work: nursing science",
+      "occupation: academic",
+      "occupation: researcher"
+     ]
+    },
+    {
+     "item": "Q120603796",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Chicago",
+      "sex or gender: female",
+      "languages spoken, written or signed: English",
+      "languages spoken, written or signed: Czech"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Wet Gold",
+   "relation": "title",
+   "cue": "july",
+   "target": "Q7989963",
+   "verdict": "each item labelled, the target among them",
+   "fit": [
+    "Q7989963",
+    "Q15617001"
+   ],
+   "reads": [
+    "Wet Gold"
+   ],
+   "reply": "Wet Gold (genre: treasure hunt film): Wet Gold; Wet Gold (genre: adventure film): Wet Gold.",
+   "ms": 26.2,
+   "items": [
+    {
+     "item": "Q7989963",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "director: Dick Lowry",
+      "screenwriter: David Sherwin",
+      "composer: Sylvester Levay",
+      "genre: treasure hunt film"
+     ]
+    },
+    {
+     "item": "Q15617001",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "director: Ralph Ince",
+      "screenwriter: John Ernest Williamson",
+      "genre: adventure film",
+      "genre: silent film"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Loners",
+   "relation": "distribution format",
+   "cue": "video",
+   "target": "Q65045205",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q2742024",
+    "Q2894483",
+    "Q23302084",
+    "Q65045205"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (5 items named Loners)",
+   "ms": 31.3,
+   "items": [
+    {
+     "item": "Q2742024",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "director: David Ondříček",
+      "screenwriter: Petr Zelenka",
+      "screenwriter: Olga Dabrowská",
+      "screenwriter: David Ondříček"
+     ]
+    },
+    {
+     "item": "Q2894483",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "director: Renen Schorr",
+      "screenwriter: Moshe Zonder",
+      "screenwriter: Renen Schorr",
+      "composer: Shem Tov Levi"
+     ]
+    },
+    {
+     "item": "Q5144153",
+     "kinds": [
+      "fictional organization"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "from narrative universe: Earth-616"
+     ]
+    },
+    {
+     "item": "Q23302084",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "director: Sutton Roley",
+      "composer: Fred Karger",
+      "genre: drama film",
+      "cast member: Dean Stockwell"
+     ]
+    },
+    {
+     "item": "Q65045205",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "distribution format: video on demand",
+      "publication date: 2019"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Harry McPherson",
+   "relation": "Commons category",
+   "cue": "male",
+   "target": "Q3790209",
+   "verdict": "each item labelled, the target among them",
+   "fit": [
+    "Q3790209",
+    "Q16073436"
+   ],
+   "reads": [],
+   "reply": "Harry McPherson (occupation: lawyer): I do not know; Harry McPherson (occupation: Australian rules football player): I do not know.",
+   "ms": 34.0,
+   "items": [
+    {
+     "item": "Q3790209",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Tyler",
+      "place of death: Bethesda",
+      "sex or gender: male",
+      "country of citizenship: United States"
+     ]
+    },
+    {
+     "item": "Q16073436",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Longwood",
+      "place of death: Malvern",
+      "sex or gender: male",
+      "member of sports team: St Kilda Football Club"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "City of Lost Souls",
+   "relation": "publisher",
+   "cue": "heavenly",
+   "target": "Q5770821",
+   "verdict": "picks the target",
+   "fit": [
+    "Q5770821"
+   ],
+   "reads": [
+    "Simon & Schuster"
+   ],
+   "reply": "Simon & Schuster. If you meant something else, there is also a film named The City of Lost Souls and a film named City of Lost Souls. Want to know about one of them?",
+   "ms": 68.6,
+   "items": [
+    {
+     "item": "Q1094135",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "director: Takashi Miike",
+      "composer: Kōji Endō",
+      "genre: action film",
+      "genre: gangster film"
+     ]
+    },
+    {
+     "item": "Q5123797",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "director: Rosa von Praunheim",
+      "screenwriter: Rosa von Praunheim",
+      "composer: Holger Münzer",
+      "genre: LGBT-related film"
+     ]
+    },
+    {
+     "item": "Q5770821",
+     "kinds": [
+      "literary work"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "author: Cassandra Clare",
+      "publisher: Simon & Schuster",
+      "genre: adventure fiction",
+      "genre: fantasy"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Jimmy Adams",
+   "relation": "family name",
+   "cue": "male",
+   "target": "Q137150557",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q2789496",
+    "Q3763931",
+    "Q6199479",
+    "Q6199482",
+    "Q75475333",
+    "Q137150557"
+   ],
+   "reads": [
+    "Adams"
+   ],
+   "reply": "Which one do you mean? (6 items named Jimmy Adams)",
+   "ms": 32.1,
+   "items": [
+    {
+     "item": "Q2789496",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Troon",
+      "place of death: London",
+      "sex or gender: male",
+      "country of citizenship: United Kingdom"
+     ]
+    },
+    {
+     "item": "Q3763931",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Port Maria La luz",
+      "sex or gender: male",
+      "country of citizenship: South Africa",
+      "occupation: cricketer"
+     ]
+    },
+    {
+     "item": "Q6199479",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Stoke-on-Trent",
+      "place of death: Stoke-on-Trent",
+      "sex or gender: male",
+      "country of citizenship: United Kingdom"
+     ]
+    },
+    {
+     "item": "Q6199482",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "place of birth: Norfolk",
+      "sex or gender: male",
+      "country of citizenship: United States",
+      "occupation: engineer"
+     ]
+    },
+    {
+     "item": "Q75475333",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "father: Harold Adams",
+      "mother: Coco Lequerre",
+      "family name: Adams"
+     ]
+    },
+    {
+     "item": "Q137150557",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "sex or gender: male",
+      "date of birth: 1929",
+      "family name: Adams",
+      "given name: Jimmy"
+     ]
+    }
+   ]
+  }
+ ],
+ "counts": {
+  "audit_outcomes": {
+   "asking back": 21,
+   "each item labelled": 14,
+   "nothing read": 4,
+   "one answer, every item agrees": 7,
+   "one item": 4
+  },
+  "probe_verdicts": {
+   "asking back": 1,
+   "asking back, the target among them": 11,
+   "each item labelled, the target among them": 4,
+   "picks the target": 4
+  },
+  "crowded": 9,
+  "decision_ms": {
+   "p50": 39.5,
+   "max": 326.3,
+   "n": 75
+  }
+ }
+}

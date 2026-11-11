@@ -1,5 +1,5 @@
 # 0066 - Four checks before an answer is said (from the read of 0054's "after")
-status: open (Cowork's answers to the second run: the set-aside rule below the store too, a count for the wider rule, then one last run)
+status: review
 written: 2026-11-11 by Cowork - approved: 2026-11-11 by Nick ("yes to all 4") - hypothesis: the system paper's wrong-answer line (C at most 1% wrong among spoken)
 
 ## Why
@@ -343,3 +343,36 @@ brings it back.
   on them. Whatever line 2 reads after this run is reported as it stands, and the order closes on it. The
   evidence that the checks help is 0054's next run, on questions they were not written from.
 - **Status: open, for one run.**
+
+## Report, last run (Claude Code, 2026-11-11): question 2 built; the order closes on this
+- **Built** (`576de44`): `CB_ORIGINAL_ASIDE` reaches the read-only worlds below the store that use its ids (Wikidata5M):
+  an item the store set aside for a name is no candidate there; the kept items are read by id
+  (`cubbyllm/worlds/below_store.py`). Question 1 kept as built. Question 3 not built (the count below).
+- **Measured** (`answer_checks_0066_2026-11-11-r3.json`; runs `run_0066_off4`, `run_0066_r3`; audit
+  `audit_wd_kinds_2026-11-11-0066r3`): flags off, every answer of the four benchmarks is the "after"'s.
+  Wrong among spoken, all on: SimpleQA 0 of 6; NQ 2 (+1 debatable) of 13; **WebQuestions 1 (+2) of 62**; AA 0.
+- **Line 2: 5 of 6, met.** Refused: Dirty Dancing, Germany, Constantine, Jana Gana Mana (the live source loses the
+  sheet music), the Gospel (the commentary is no candidate in Wikidata5M; `fact_missing`). Said: Auschwitz.
+- **Line 3: 1 right answer lost** (at most 2: met). **"who is the director of nightmare before christmas"**: "Henry
+  Selick" in the "after" -> now each same-named item labelled (three TV episodes; "Queenie: Joelle Mae David"), the
+  film not among them. Read **debatable** (each line true of its item, as Constantine was read).
+  - **Why:** the film (Q322328) is "based on" the poem (Q136673038), so check 2 sets the film aside as the work that
+    points; the poem has no director. Before question 2, Wikidata5M (which holds the name for the film alone) gave
+    the right answer by coverage; now it may not.
+  - **This is check 2's general weakness, not a fixture's:** a film, a series or an opera based on a work of the
+    same name is the one asked about as often as the work. "The original first" sets every such adaptation aside.
+- **Line 1:** no answer read right became wrong; one became debatable (above). **Kill, per check:** the set-aside
+  (questions 1 and 2) stops 2 wrong answers (Jana Gana Mana, the Gospel) and loses 1 right one: it stays by the
+  kill's count; whether a debatable answer counts as "turned wrong" is your read.
+- **Line 4: met, 0 wrong picks** (the single picks unchanged: Flashforward, Chen, Pearl Jam, CBGB).
+- **Question 3, the count** (`validation/logs/count_0066_q3_2026-11-11.json`): spoken answers where the store held the
+  name, did not settle it (two or more items in its tier), and a world below or the live source did: **read-only
+  worlds 19, all right** (currencies, capitals, time zones, languages: "what money does spain use?", the store holding
+  44 items for "spain"); **live source 5, all right**. By your rule (build only if it loses no more right answers
+  than line 3 leaves: 1), **the wider rule is dropped**; 19 right answers would become refusals. The finding (the store
+  asks where a written namesake rule could decide) goes to its own order.
+- **A proposal for check 2, for that order or a follow-up, not built:** a work that points at another steps aside only
+  when the item it points at carries the relation asked (the kinds table, as the namesake rule reads it): "who
+  directed" keeps the film (the poem has no director); "who wrote" sets the commentary aside (the Gospel has an
+  author). Jana Gana Mana would come back ("author": the anthem holds none, the sheet music does).
+- **Status: review.** This was the last pass on the six, as you set.
