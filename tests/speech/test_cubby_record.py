@@ -42,6 +42,9 @@ def test_on_a_question_about_cubby_gets_the_record_as_its_block(monkeypatch):
     assert ("Cubby", "is", "a model") in got["facts"] and ("Cubby", "is not", "a person") in got["facts"]
     assert ("Cubby", "creator", "GrillCheese Research Lab (GRL)") in got["facts"]
     assert ("Cubby", "langue", "français") in c.talk_context("qui es-tu ?", "fr")["facts"]
+    for hello in ("hi", "thanks, that helped a lot", "bye for now", "salut"):                  # a hello alone: a chat
+        assert c.talk_context(hello, "en") == {"turns": [("user", hello)]}, hello            # turn, no record block
+    assert "facts" in c.talk_context("hi, who are you?", "en")
 
 
 def test_on_the_chat_check_reads_what_cubby_says_it_is_and_every_name(monkeypatch):

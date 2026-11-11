@@ -118,7 +118,13 @@ _FEEL_Q = re.compile(r"\bdo you (feel|have feelings)\b(?P<rest>.*)$", re.I | re.
 def is_identity_question(text: str) -> bool:
     """A turn where answering with who/what Cubby is IS the right answer
     (the intents the identity SFT taught, greetings included)."""
-    if _GREETING_Q.search(text) or _IDENTITY_Q.search(text):
+    return bool(_GREETING_Q.search(text)) or asks_about_cubby(text)
+
+
+def asks_about_cubby(text: str) -> bool:
+    """`is_identity_question` less a greeting, a thanks or a goodbye alone: a turn that asks about Cubby itself (0010,
+    change d: such a turn gets Cubby's record as its block; a bare hello does not)."""
+    if _IDENTITY_Q.search(text):
         return True
     from .cubby_record import is_about_cubby, on as record_on     # 0010 change d (CB_CUBBY_RECORD=1): "are you a
     if record_on() and is_about_cubby(text):                      # person or a program?" is about Cubby too
