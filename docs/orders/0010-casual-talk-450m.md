@@ -630,3 +630,22 @@ Logs: `validation/logs/talk_ab_2026-11-11_{voice,control,sheet,key}.json`, `_run
   - what Cubby can do is said in a sentence, and as a list only when a list is asked for;
   - the jokes wait for Nick's open calls on the templates and the rate;
   - whether the voice may use emoji is Nick's call.
+
+### Nick's note on how he judged (2026-11-11), and what it changes
+- **Nick:** "sometimes I judge based on what made more sense as there was a lot of repetitions". His choices mix
+  two things: which reply is more casual, and which one makes sense. The count cannot be split after the fact,
+  and it is not scored again. 23 of 36 stands: not met.
+- **Where a reply on the sheet repeats itself** (a sentence said twice, or three words in a row said three
+  times): 5 pairs.
+  - In 4 the control loops, three of them in French, and Nick picked the voice.
+  - In 1 the voice repeats a line ("how can you help me?"), and he picked the control.
+  - By my read, two more voice replies repeat a word and lost: a name said three times in a list, and a joke
+    that says "guess" twice.
+- **The mixed judging did not cost the voice the line. On balance it helped it.** After the fact, and not a
+  line: without those 5 pairs the count is 19 of 31, where the line would be 21.
+- **What the sheet should not have shown is a reply that loops.** The host speaks one today.
+  - **Proposed, for Claude Code; it waits for Nick's yes:** a chat reply that says the same sentence twice, or
+    that stops at the token limit, is not spoken. It is measured on E6's rows and on this sheet before it is
+    turned on.
+- **For the next test:** with that check the pairs shown are replies that hold together, so the question can
+  stay "which is more casual". The voice's own repetitions go to `talk_v3b`.
