@@ -167,6 +167,10 @@ class Namesakes:
         (``hdc_relation.decide``: its kind carries the relation and goes with the question's cue words, no other's
         does) when it holds such a fact (one that holds none decides nothing, and the holders are noted, as before);
         two or more that fit (two of a kind) are noted to be answered each."""
+        from .below_store import rows as below                # 0066: the store's set-aside reaches here (CB_ORIGINAL_ASIDE)
+        got = below(self, name, keep)
+        if got is not None:
+            return got
         got = self._by_subj.get(name)
         if got:
             return [(f, t) for f, t in got if keep(f, t)]

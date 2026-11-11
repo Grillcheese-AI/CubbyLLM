@@ -269,6 +269,8 @@ class Stores(StoresNamesakes):
         self.index = _Index(self)
         self.provenance = _Provenance(self)
         self._aside = threading.local()                   # one world's rows on one relation set aside for a walk (`aside`)
+        from .below_store import wire                     # 0066: a name's items the store set aside, for the worlds below
+        wire(self)
 
     def __getattr__(self, name):                          # texts, times, _key, oracle, ... are the first world's
         return getattr(self.primary, name)
