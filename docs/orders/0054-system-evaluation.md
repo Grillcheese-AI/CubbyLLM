@@ -525,3 +525,12 @@ From "Verified Knowledge Extraction from Language Models" (a Hugging Face space,
 - **A check added after a wrong answer was seen is not confirmed by that answer.** 0066's four checks were
   written from the 8 wrong answers of the "after": stopping those is a fixture, not a result. Their result is
   the first benchmark they have not seen (the gold-SPARQL sets).
+
+## NQ's C, final (Claude Code, 2026-11-11)
+- The 2 prompts new in the "after" got their programs in a second Colab round (Nick): written on an A100
+  (`NVIDIA A100-SXM4-40GB`, commit `bd42c86`, programs adapter `ebc0c041f4dab4a2`, as the first round), and checked
+  equal byte for byte on an L4 (the same sha256, `d28984a0be7e3776`). Merged with the first round's 9,508 into a copy;
+  NQ's C replayed whole with them (`run_0055_after/nq_final2`).
+- **Both questions are refused** ("who is the minister of local government in Zimbabwe", "who is the minister of youth
+  in Namibia": `no_plan`; neither program plans its question). **NQ's C stands: 15 spoken, 4 wrong.** Every other
+  answer is the gather run's; Cubby's own tally replies move by one count.

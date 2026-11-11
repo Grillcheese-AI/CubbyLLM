@@ -1,5 +1,5 @@
 # 0066 - Four checks before an answer is said (from the read of 0054's "after")
-status: in progress (queue: before 0054's next rerun)
+status: review
 written: 2026-11-11 by Cowork - approved: 2026-11-11 by Nick ("yes to all 4") - hypothesis: the system paper's wrong-answer line (C at most 1% wrong among spoken)
 
 ## Why
@@ -144,50 +144,89 @@ read the kind asked.
 - **The wording of an ask or a refusal:** the talk seat's, order 0010.
 
 ## Report
-<!-- Claude Code fills this in, then sets status: review -->
-- **Commits:**
-- **Files:**
-- **Tests:**
-- **Measured:** <against each acceptance line>
-- **Not verified here:**
+- **Commits:** `5b8345b` (first build from the four bullets, before the order), `3e0311c` + `25ea6b0` (to the order's
+  spec; the first carried only a rename), `cc82f96` (a regression of mine fixed, below), `7f5541d` (the roots as
+  Cowork's allow-list), `ccf8e68`, `cd674ab` (check 1 reads a store fact's item and classes in the store), `6b19487`
+  (arm C's record keeps what the checks said). cubelang-cowork `a351be8` (local): `wdstore subclasses`.
+- **Files:** `cubbyllm/reasoning/ask_qword.py` (check 1a; `store_item`, `store_is_a`), `ask_class.py` (1a's hook, 1b,
+  the store-linked read), `ask_memory.py` (check 4's year and `rec["dates"]`), `ask_namesakes.py` (check 3's year);
+  `cubbyllm/worlds/wd_store_roots.py` (the class-roots table), `wd_store_names.py` (checks 2, 3, 4's records, 1's
+  kinds), `wd_store_world.py`, `hdc_store.py` (a hop reads the rows of an item a name gathered under another label);
+  `cubby_serve/wd_world.py` (mounts the table, stops without it); `validation/builders/build_wd_roots.py`;
+  `validation/system_eval/run_c.py`; `tests/worlds/test_wd_store_names.py`.
+- **The class-roots table:** from the store's 5,157,087 best-rank subclass-of edges (`wdstore subclasses`, 580 s), on
+  Cowork's ids, each checked to be a class carrying its label (build stops otherwise): place Q27096213 (93,368
+  classes), person Q5 (2,116), group Q16334295 (110,730), organisation Q43229 (105,037), character Q95074, Q21070598
+  (7,263), work Q15621286, Q732577 (229,200), role Q4164871, Q216353, Q355567, Q56019, Q16138157 (107,018; with
+  278,166 items that are instances of a role class). Properties read: based on P144, edition or translation of P629,
+  main subject P921, derivative work P4969 (check 2); position held P39, noble title P97, occupation P106, start P580,
+  end P582, birth P569, death P570 (check 3); point in time P585, start P580 (check 4); coordinates P625 (check 1).
+- **Tests:** `tests/worlds/test_wd_store_names.py`, 9: the order's fixtures for each check on alone, all four on,
+  each off as before; an unknown value given as a plain string; a store-linked value read in the store's dump when
+  live Wikidata disagrees. tests/worlds, tests/reasoning, system_eval, package rules, local paths: pass; the known red
+  `test_every_module_declares_wiring` (step_loop, spatial; order 0002) only.
+- **Measured** (`validation/logs/answer_checks_0066_2026-11-11.json`: the counts and every changed answer, read by
+  hand; runs in `run_0066_final`, flags-off in `run_0066_off2`; audit `validation/logs/audit_wd_kinds_2026-11-11-0066.{json,md}`):
+  - **All flags off: the "after" replays identically** on SimpleQA, WebQuestions and AA (every question: the same
+    verdict and reply); on NQ every answer is the same, and 6 of Cubby's own tally replies ("this loop -- asked ...")
+    differ by one count, because the Zimbabwe prompt now has a program (the second round) and its refusal is
+    counted under another reason.
+  - **Wrong among spoken** (the read; 0054's for the "after", with Cowork's Obama Sr. change):
+
+    | | after: spoken, wrong (+debatable) | checks on: spoken, wrong (+debatable) | 95%, checks on |
+    |---|---|---|---|
+    | SimpleQA | 6, 0 | 6, 0 | 0-39% |
+    | NQ | 15, 4 | 13, 2 | 4.3-42.2% |
+    | WebQuestions | 65, 4 (+2) | 64, 2 (+3) | 0.9-10.7% |
+    | AA-Omniscience | 0 | 0 | - |
+
+  - **Every answer that changed** (7), by check:
+    - check 1a: "where was the remake of Dirty Dancing filmed" -> refused (a film is no place);
+    - check 1b: "what culture region is Germany a part of" -> refused ("region"; The Beers of Europe is a book);
+    - check 2: "who wrote the Gospel according to John" -> refused (the name now stands for the Gospel; its author
+      hop holds several values); "where was Elvis Costello born" -> London as before, and the closing line now names a
+      written work instead of a painting and a lithograph (question 1 below); "when does the day of the dead end" ->
+      refused before and after (another reason: the VM's type check);
+    - check 3: "where did Emperor Constantine die" -> each Constantine who held the role, labelled: "Constantine II
+      (father: Constantine the Great): Aquileia; Constantine (father: Leo V the Armenian): I do not know; Constantine
+      (father: Theophilos): I do not know." Read **debatable**: each statement is true of its item, and Constantine
+      the Great (the gold) is not among them (his label is not "Constantine");
+    - check 4: Fayetteville: "As of 2025, 208501." -> "As of 2020, 208501." (`dates`: value 2020, dump 2025).
+  - **Line 1 (no answer read right becomes wrong): met.** Two right answers changed (Fayetteville, redated; Elvis
+    Costello, the closing line only); neither is wrong.
+  - **Line 2 (of Cubby's own 6 wrong, at least 4 no longer said wrong): 3 certain, 4 if Cowork reads Constantine as
+    asked rather than wrong.** Refused: Dirty Dancing, Germany, the Gospel. Constantine: labelled per item
+    (debatable). **Still said:** Jana Gana Mana: the store now stands for the anthem, which holds no author, so the
+    walk falls through to live Wikidata, whose own namesake rule gives the score's author (Herbert Murrill); 0066's
+    checks act on the store. Auschwitz: "Gas Chambers" is said; check 1 found no item the store linked the value to
+    (the store gives nothing for that hop now; the walk reached it on another path), so its kind is unknown and it
+    was not checked; the store holds Auschwitz (Q7341) with "has part" items, the gas chambers among them.
+  - **Line 3 (right answers lost, at most 2): 0.** (The first run on the fixed table lost Beatrice, Nebraska -- found
+    and fixed: `ccf8e68`, `cd674ab`; the final run keeps it.)
+  - **Line 4 (the picking audit, at most 1 wrong pick in 50): met, 0.** With the flags on, the set of shared names
+    changes, so the audit drew 30 other rows than the 2026-11-10 run; every single pick (5) is the one item whose kind
+    carries the relation (Flashforward the technique, Chen the state, Pearl Jam the band, CBGB the film, The Toxic
+    Avenger the film); 7 "every item agrees"; no probe picks another item.
+  - **Kill, per check:** no check loses a right answer; none turns one wrong.
+  - **"Kind unknown":** 3 (SimpleQA 2 "who", both refused by the time check anyway; WebQuestions 1 "where",
+    Auschwitz, spoken).
+  - **Time** (the sum over each benchmark, CPU): SimpleQA 491 -> 380 s, NQ 336 -> 287, WebQuestions 366 -> 238, AA 17
+    -> 17. Not a gain of the checks: the store's cache was warm from the runs before (not controlled).
+- **Not verified here:** French question words on real questions (no French benchmark yet); check 3's year path and
+  check 4's start-time branch on benchmark questions (fixtures only); the 1% line (not claimed, as the order says).
 - **Found on the way:**
+  - **A regression of mine, caught by the flags-off check** (`cc82f96`): the store's new bookkeeping read an unknown
+    birth date (a plain string) as a dict, with the flags off, since `5b8345b`; 6 questions ended in `error` where
+    the "after" refused them for another reason. Nothing wrong was said.
+  - **Roots by label alone caught every sense of the word** (physics work, labour, a poker position, fictional human
+    races); "work" Q386724 reached cities and hospitals. Cowork picked the ids; the build now checks them.
+  - **Live Wikidata has moved since the dump:** "city in the United States" is no longer a subclass of "city" there.
+    A store fact's classes are now read in the store.
 - **Questions:**
-
-## Cowork's addendum (2026-11-11): the roots, picked from the store's own list
-Claude Code resolved each root by its label and found several senses of each word (`roots.json`, beside the
-subclass edges). The picks below were made from that list and tested on the store's own `subclass of` edges
-(4,406,685 classes, 5,157,087 edges, snapshot `8a2041cff56d...`), with generic classes only: no benchmark question
-was used to choose.
-
-| root | ids kept | why |
-|---|---|---|
-| place | Q27096213 geographic entity | replaces Q2221906 geographic location, which sits under it |
-| person | Q5 human | the 11 fictional races named "human" are dropped |
-| group | Q16334295 group of humans | as resolved |
-| organisation | Q43229 organization | the three other senses are dropped |
-| character | Q95074 character, Q21070598 figure that may or may not be fictional | the second adds gods and mythical and biblical figures |
-| work | Q15621286 intellectual work, Q732577 publication | replace Q386724 work, which is too wide here |
-| role | Q4164871 position, Q216353 title, Q355567 noble title, Q56019 military rank, Q16138157 title (a sign of rank) | the ten other senses are dropped |
-
-- **Place.** Under "geographic location" the store has city, country, mountain, lake and road, but not human
-  settlement, village, neighbourhood, park, river, building, hospital, region or cultural region. All of them are
-  under "geographic entity" (93,368 classes); film, book, business and human are not. This is the more lenient
-  pick for the Auschwitz answer (a part of a camp is a structure, so a place): said here before the run.
-- **Work.** In this store "work" (Q386724) has "group of works", "artificial physical object" and "architectural
-  structure" under it, so a city, a musical instrument and a hospital are works. Check 2 must not reach them.
-  "Intellectual work" holds creative, written, literary and musical works, films, series, paintings and games;
-  "publication" adds book, "version, edition or translation" and musical release, which are not under it.
-- **Who.** A Greek or Roman deity, a goddess and a human biblical figure reach none of human, group,
-  organization or character; they reach "figure that may or may not be fictional" (1,265 classes). A country is
-  an organization in the store, so it passes "who". A named animal does not: it is refused, and counted.
-- **Role words (check 3): by `instance of` as well as `subclass of`.** Emperor, king, queen, pope, president,
-  prime minister, minister, sultan, duke, general, ambassador and mayor are under "position" by `subclass of`.
-  Bishop, priest, prince, crown prince and knight are under no role root that way. A role word is an item under
-  a role root, or an instance of a class under one. The list's size is reported.
-- **How the ids are held:** each root keeps its label and an allow-list of the ids above. The build checks that
-  every id is a class of the store carrying that label, and stops if one is not. The ids are listed in the
-  report with the table's snapshot.
-- **This amends the order's text:** in check 1, "geographic location" reads "geographic entity", and "fictional
-  character" also takes the figures above; in check 2, "work" reads "intellectual work or publication".
-- **The runs made on the first table are not 0066's.** Its "work" reached cities and buildings, so check 2 could
-  ask where it has no business. The flags-on run and the audit are made again on the rebuilt table.
+  1. **Check 2's strength.** As built (the order's "the name stands for it"), the original stands with the items that
+     are no work; unrelated works of the name leave too. For Elvis Costello the painting and the lithograph left the
+     closing line because an edition points at the written work. The alternative: only the works that point at another
+     leave, the original and unrelated works stay, and the existing rules decide or ask. Which?
+  2. **Constantine's labelled answer:** wrong, or asked?
+  3. **Jana Gana Mana:** the live source's namesake rule (order 0043) gives the score. Should check 2 reach the live
+     source too (its own order)?
