@@ -5,7 +5,8 @@ Three steps, each its own run, so the prompts exist (and are committed) before a
   prompts    60 turns, by seed ("a fact not on record" is not among them: both adapters are trained to say the
              same sentence there, the host says it itself when the VM returns nothing, and E6 measured it):
              30 chat turns, rendered by the host's own chat path (`ChatState.talk_context`: a question about Cubby
-             comes with Cubby's record as its block, any other turn bare): a hello, thanks or goodbye, who are you,
+             comes with Cubby's record as its block; any other turn, a greeting included, bare): a hello, thanks or
+             goodbye, who are you,
              what can you do, a joke asked for; user lines written for this test, 22 EN and 8 FR;
              30 fact turns: one fact (9 EN: a benchmark question Cubby answered right in 0054's "after", with the
              walk's own fact as the block; 3 FR: held voice rows), a list (8 EN: held profile records of the E6 data
@@ -45,7 +46,8 @@ for _p in (HERE, ROOT, os.path.join(ROOT, "standin"), os.path.join(ROOT, "standi
 
 __wiring__ = "STANDALONE"
 
-TAG = "talk_ab_2026-11-11b"                              # b: chat turns through the host's chat path
+TAG = "talk_ab_2026-11-11c"                              # b: chat turns through the host's chat path; c: after the
+                                                         # host stopped reading a greeting as a turn about Cubby (c294d75)
 LOGS = os.path.join(HERE, "logs")
 SEED = 20261111
 OUT = os.path.join(ROOT, "standin", "data", "out")
@@ -197,7 +199,7 @@ def generate(a) -> None:
     import grilly  # grilly2
     from tokenizers import Tokenizer
 
-    from ask import talk_reply
+    from cubbyllm.reasoning.ask import talk_reply
     from cubbyllm.emit.talk import talk_answer
     from exp_e5_base450m_probes import load_grilly
     from exp_e6_talk_gate import load_adapter

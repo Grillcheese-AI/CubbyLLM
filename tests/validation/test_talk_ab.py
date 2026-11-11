@@ -61,7 +61,8 @@ def test_a_chat_turn_is_rendered_and_read_by_the_hosts_own_chat_path(monkeypatch
     host = ab._host()
     about = host.context("are you a person or a program?", "en")
     assert about["question"] == "are you a person or a program?" and about["facts"]      # Cubby's record as the block
-    assert host.context("hi", "en")["facts"] == about["facts"]            # the host reads a greeting as a turn about Cubby
+    assert host.context("hi", "en") == {"turns": [("user", "hi")]}        # a greeting alone goes bare (c294d75)
+    assert host.context("hi, who are you?", "en")["facts"] == about["facts"]
     assert host.context("tell me a joke", "en") == {"turns": [("user", "tell me a joke")]}   # any other turn goes bare
     # the first run's "kill" reply: the host does not let it out
     assert host.guard("I'm not a person or program. I can't provide information about any person, organization, or event.",
