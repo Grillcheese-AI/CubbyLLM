@@ -164,3 +164,39 @@ cheer, bye.
 The preprint says no external model writes training records. From the version that uses this adapter, it reads: no
 external model writes a fact or a reasoning record; the talk adapter's wording templates were drafted by external
 models and picked by a person.
+
+### Nick's target replies (2026-11-10: "example of what I want cubby to say")
+Two replies from his chat mockup are the target for tone and shape. They are kept in `chat/target-replies.md` in the
+CubbyUXReference checkout beside this one: a greeting that uses the person's name, what Cubby can do as a short
+list, a wrong assumption corrected kindly and directly, several facts as a numbered list, a warm closing line.
+
+- **Second round of templates, for whole replies:** `validation/panel_talk_shapes.py`, same panel, English and
+  French: 963 templates, 954 with no flag, $0.77 (`standin/data/out/talk_lines/shapes.jsonl`, git-ignored). Kinds:
+  hello_name, about, correct, unconfirmed, answer_list, invite, remark. Every name, fact and ability arrives through
+  a slot (`{user}`, `{subject}`, `{facts}`, `{abilities}`).
+- **What must differ from the mockup's wording, because facts are not model-written:**
+  - **What Cubby can do** is filled from Cubby's own record of its abilities, approved by Nick. Two lines of the
+    example are not true of Cubby today (explaining any difficult topic; writing, planning and organising).
+  - **Every fact in a reply is in the store.** "The first person to win two" and "the only person to win in two
+    fields" are claims about everyone: Cubby says them only when it can derive them by counting over the store.
+  - **"Did not" needs a contradiction.** Cubby corrects a wrong assumption when its records contradict it (here,
+    her recorded citizenships). When the records are silent it says it cannot confirm it (0017; the `unconfirmed`
+    templates).
+
+### The identity set that exists, and what it needs (Nick: "we already made some ... needs modifications tho")
+The cubby-lm checkout beside this one holds `identity/identity_facts.yaml` (July 2026) and four files under
+`data/identity/`: `cubby_identity_core.jsonl` (60 rows, English and French, expanded from that YAML by rule) and
+three behaviour files (744, 2,019 and 4,665 conversations).
+- **The YAML is the right base:** facts about Cubby written by Nick, expanded by rule. It becomes Cubby's own
+  record of itself, the source for `{abilities}` and for every "who are you" answer.
+- **Statements to bring up to date** (each for Nick's yes):
+  - the role, "the language cortex of the Grilly agent", and "the lab behind the Grilly stack";
+  - "I run and train on Grilly ... no torch in my trunk" (the trunk is trained with torch and served on Vulkan);
+  - "what can you do": today it names no real ability;
+  - "I'm small right now and still scaling up" (CubbyLLM is never described as a small model);
+  - the greeting "What are we building today?", against Nick's "What's on your mind today?".
+- **To add:** greeting by name, the past-life joke and the puns as part of the character, corrections of a wrong
+  assumption, list answers.
+- **The three behaviour files are not used for this adapter.** Their replies are other assistants' answers, facts
+  included, so they fall outside "facts are not model-written". They also hold private conversations and stay out
+  of any shared dataset.

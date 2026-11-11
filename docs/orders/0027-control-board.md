@@ -321,3 +321,9 @@ needs a choice from you.
 
 ### Queue
 After 0055's remaining steps and 0054's rerun, unless Nick moves it up.
+
+### Added 2026-11-10: lists and bold are rendered
+Nick's example replies use short lists with bold labels, and his mockup shows them as raw asterisks. The chat
+renders a reply's lists and bold as such: a safe, small subset (paragraphs, bulleted and numbered lists, bold),
+escaped first, with no links or HTML taken from a reply. Acceptance: a reply with a list and bold labels shows no
+raw asterisks, and a reply holding HTML shows it as text.
