@@ -409,3 +409,29 @@ base, read raw) is beside them for reference.
   data changed.
 - **Who:** Cowork builds the sheet (the pairs and three buttons, the key kept apart); Nick judges; his choices are
   saved with the key's hash.
+
+### Change b: a list's lines kept (Claude Code, 2026-11-11)
+- **Built** (`546a560`): with `CB_TALK_LINES=1`, `talk_answer` keeps every line up to the next block marker
+  (`Question:`, `Facts:`, `Conversation:`, `User:`, `System:`, and now `Assistant:`, `Answer:`, `Explicit:`), each
+  line's spaces collapsed, a run of blank lines kept as one. Off (the default) it is the first line, as before (the
+  new markers open a line, so the first line cannot change). The guard reads every kept line through the opener view.
+  E6's gate now cuts with the host's `talk_answer` and keeps the raw decode beside each answer (`raw`); E8 keeps it
+  beside each draft.
+- **E6 again, both adapters, b on** (grilly2, greedy, the opener view as before; `exp_e6_talk_gate_{v3a,v2_2_cont}_b`,
+  `exp_e6_host_view_{v3a,v2_2_cont}_b`; row by row against the first-line run in
+  `validation/logs/e6_change_b_2026-11-11.json`):
+
+  | host view, 407 held | first line (65342d3) | b on |
+  |---|---|---|
+  | voice `talk_v3a`: spoken & correct, refused, spoken & wrong | 391, 16, 0 | **393, 14, 0** |
+  | control `talk_v2_2_cont` | 395, 12, 0 | 395, 12, 0 |
+
+  - **Cowork's two rows were the host's cut:** "I've got the checked details right here:" (International Shooting
+    Sport Federation) and "Let's lay out the confirmed details for you." (Lollardy) are now spoken with their lists,
+    and read correct. They are the only two multi-line answers in the voice's 407; the control writes none. Every
+    other answer's first line is the same as in the first-line run (greedy reproduces).
+  - **Voice = control - 0.005** on spoken and correct (was - 0.010; line - 0.02).
+  - **Seen, not a gate:** the voice's list is numbered and in bold markdown ("1. **Leader:** Luciano Rossi"), and
+    the Lollardy list stops mid-word ("Twelve Conclusions Of The Loll") at the gate's 64 new tokens (the talk seat
+    serves 160). The guard let the cut word pass. A host that drops an unfinished last line when the
+    generation hit its token limit would fix it; not built (not in b).

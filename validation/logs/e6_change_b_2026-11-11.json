@@ -1,0 +1,63 @@
+{
+ "v3a": {
+  "counts": {
+   "first_line": {
+    "spoken_correct": 391,
+    "refused": 16
+   },
+   "b": {
+    "spoken_correct": 393,
+    "refused": 14
+   }
+  },
+  "multi_line_answers": 2,
+  "changed": [
+   {
+    "id": "g014378",
+    "family": "profile",
+    "question": "Tell me about International Shooting Sport Federation.",
+    "first_line": [
+     "refused",
+     "value: returned value missing",
+     "I've got the checked details right here:"
+    ],
+    "b": [
+     "spoken_correct",
+     "spoken",
+     "I've got the checked details right here:\n1. **Leader:** Luciano Rossi\n2. **Effect:** Belarusian Athletes And Officials and Russian Athletes And Officials\n3. **Creation:** ISSF World Championships and ISSF World Cup\n4. **Influence:** Luciano Rossi\n\nAnything else you'd like to ask"
+    ],
+    "raw": " I've got the checked details right here:\n1. **Leader:** Luciano Rossi\n2. **Effect:** Belarusian Athletes And Officials and Russian Athletes And Officials\n3. **Creation:** ISSF World Championships and ISSF World Cup\n4. **Influence:** Luciano Rossi\n\nAnything else you'd like to ask"
+   },
+   {
+    "id": "g003298",
+    "family": "profile",
+    "question": "What is Lollardy?",
+    "first_line": [
+     "refused",
+     "value: returned value missing",
+     "Let's lay out the confirmed details for you."
+    ],
+    "b": [
+     "spoken_correct",
+     "spoken",
+     "Let's lay out the confirmed details for you.\n1. **Type:** Proto Protestant Christian Religious Movement and Heresy General\n2. **Inspiration:** translation of the Bible into the English language\n3. **Creation:** Twelve Conclusions Of The Lollards\n4. **Adaptation:** Twelve Conclusions Of The Loll"
+    ],
+    "raw": " Let's lay out the confirmed details for you.\n1. **Type:** Proto Protestant Christian Religious Movement and Heresy General\n2. **Inspiration:** translation of the Bible into the English language\n3. **Creation:** Twelve Conclusions Of The Lollards\n4. **Adaptation:** Twelve Conclusions Of The Loll"
+   }
+  ]
+ },
+ "v2_2_cont": {
+  "counts": {
+   "first_line": {
+    "spoken_correct": 395,
+    "refused": 12
+   },
+   "b": {
+    "spoken_correct": 395,
+    "refused": 12
+   }
+  },
+  "multi_line_answers": 0,
+  "changed": []
+ }
+}
