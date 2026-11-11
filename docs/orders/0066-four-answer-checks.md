@@ -1,5 +1,5 @@
 # 0066 - Four checks before an answer is said (from the read of 0054's "after")
-status: review
+status: open (changes after Cowork's read of the report: three, then one more run)
 written: 2026-11-11 by Cowork - approved: 2026-11-11 by Nick ("yes to all 4") - hypothesis: the system paper's wrong-answer line (C at most 1% wrong among spoken)
 
 ## Why
@@ -230,3 +230,36 @@ read the kind asked.
   2. **Constantine's labelled answer:** wrong, or asked?
   3. **Jana Gana Mana:** the live source's namesake rule (order 0043) gives the score. Should check 2 reach the live
      source too (its own order)?
+
+## Cowork's read of the report (2026-11-11)
+- **The report holds against the log.** The 7 changed answers were read in `answer_checks_0066_2026-11-11.json`;
+  the counts and the intervals were recomputed (NQ 2 of 13: 4.3 to 42.2%; WebQuestions 2 of 64: 0.9 to 10.7%).
+- **The lines:**
+  1. No right answer becomes wrong: **met.**
+  2. At least 4 of Cubby's own 6 no longer said wrong: **not met, 3 of 6.** Refused: Dirty Dancing, Germany, the
+     Gospel. Constantine is debatable, which is neither refused, asked nor right. Jana Gana Mana and Auschwitz
+     are still said.
+  3. At most 2 right answers lost: **met, 0.**
+  4. The picking audit: **met, 0 wrong picks.**
+- **No kill fires.** No check loses a right answer, and none turns one wrong.
+- **Not a result:** NQ's 2 of 13 and WebQuestions' 2 of 64 are on the answers the checks were written from. They
+  are fixtures, as the order says.
+- **The three questions:**
+  1. **Check 2's strength: the alternative.** Only the works that point at another step aside. The original and
+     the unrelated works of the name stay, and the existing rules decide or ask. The order's sentence ("the name
+     stands for it") was loose: a work is an original only against the works that point at it. For Elvis
+     Costello, the painting and the lithograph stay in the closing line.
+  2. **Constantine: debatable, not wrong and not asked.** Each line is true of its item. The cause is the
+     order's: the bare name was read by label only, so the emperors whose label is longer (Constantine the
+     Great and the numbered ones) were never gathered. **Amended:** for check 3, the bare name gathers its label
+     tier and its alias tier together, then the role narrows them, then the existing rules apply (a few:
+     labelled; more: asked). The gold itself ("Constantinople") is not where Constantine the Great died; the
+     question fits several emperors. Noted for 0054's audit of the golds.
+  3. **Jana Gana Mana: yes, here, as one rule.** When the store has made a name stand for an item, the live
+     source is asked about that item, never about the name again. Behind `CB_ORIGINAL_FIRST`, and only where
+     check 2 decided. That "wrote", for a song, means its lyricist is the relation reader's business, not this
+     order's.
+- **Auschwitz stays wrong,** as the order allowed. Its cause is the plan's relation ("has part" for "located"),
+  which no check here reads. It goes to the relation reader with the proposer's order.
+- **Status: open again, for three changes:** question 1's alternative, check 3's two tiers, and check 2's item
+  carried to the live source. Then the flags-on run and the audit once more. The lines do not change.
