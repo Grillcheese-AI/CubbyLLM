@@ -123,3 +123,44 @@ Nick, 2026-11-06: "fluency and conversation, we have plenty of chat datasets".
 
   They may serve as evaluation prompts only, never as training records.
 - **Evaluation only:** lmsys toxic-chat and the two prompt-injection sets feed the guards' tests, not the talk mix.
+
+## Cowork's addendum (2026-11-10): talk templates may be model-written; facts never are
+Nick, 2026-11-10: "the talk templates could be model writen", "facts are not model writen". This changes one line of
+this order ("No target is model-written") and nothing about the facts.
+
+**In plain words:** Cubby's turns of phrase, greetings and jokes can be drafted by other models and picked by us.
+What Cubby tells you as a fact still comes only from its own checked records.
+- **Over a conventional model:** a model's wording and its facts come from the same place, so a fluent sentence can
+  carry an invented fact. Here the sentence has a hole, and only a checked fact can fill it.
+
+### The rule now
+- **A template** is wording with no fact in it: a greeting, a reaction, a way of saying "I don't know", a question
+  back with a `{name}` slot, a sentence that hands over an answer with a `{fact}` slot, a pun, a line of the
+  past-life joke. A template may be model-written.
+- **A fact** is whatever fills a slot, and any statement about the world. A fact is never model-written. It comes
+  from the host's block, and the name-and-number guard and the claim check run on every fact target as before.
+- **A template carries no fact of its own.** A candidate with a real name, place, date, number or event outside its
+  slot is dropped. The past-life joke stays vague or absurd.
+- **Each row records where its wording came from:** human dialogue (this order's sources), a model-written template
+  (with the model's id) or a rule. The manifest counts each.
+- **The human-dialogue route stays** for how a conversation flows. Templates add Cubby's own character on top.
+
+### The first candidates
+`validation/panel_talk_lines.py` asked 8 models for 100 lines each in English and French (Nick: puns, and a running
+joke about a past life in the 1700s): 1,602 lines, 1,573 with no flag, $0.78. They sit in
+`standin/data/out/talk_lines/` (git-ignored), in nine kinds: greet, small, frame, unknown, which, pun, pastlife,
+cheer, bye.
+
+### To settle before training (Cowork with Nick)
+- **Which lines are kept:** Nick reads and picks. The voice is his character.
+- **How often the jokes come:** a pun or a past-life line is a flourish. It never replaces an answer and never sits
+  in a refusal about something serious. The rate is a setting; Cowork proposes a low default and Nick sets it.
+- **Provider terms:** some providers restrict training on their models' outputs. The manifest keeps each line's
+  model, so one provider's lines can be dropped in one step. Nick decides.
+- **Where it trains:** rented serverless GPUs (Runpod), run by Cowork, with the price stated and Nick's go before
+  anything billable starts.
+
+### For the paper
+The preprint says no external model writes training records. From the version that uses this adapter, it reads: no
+external model writes a fact or a reasoning record; the talk adapter's wording templates were drafted by external
+models and picked by a person.

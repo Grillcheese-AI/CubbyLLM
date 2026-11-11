@@ -205,6 +205,9 @@ the record pages.
   - v2 goes up as "New version" on that record, so every version stays linked under one concept DOI.
   - The record's description field is empty on Zenodo. A short abstract there helps search and the NSCS listing.
   - The record does not list the NSCS community yet; accept or add it from the community's side.
+  - **For v2, the training-records sentence** (Nick, 2026-11-10: talk templates may be model-written, facts never):
+    v1 says no external model writes training records. v2 says: no external model writes a fact or a reasoning
+    record; the talk adapter's wording templates were drafted by external models and picked by a person.
   - **For v2:** v1 cites "the public split of AA-Omniscience (600)". v2 names it as v1's public split and adds v1.1's.
 
 The original options, kept for reference:
