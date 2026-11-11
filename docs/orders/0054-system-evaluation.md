@@ -421,7 +421,8 @@ unmatched answer below, row by row).
   - **new with the store** (1): "where did Emperor Constantine die" -> Aquileia: "Emperor Constantine" is an English
     alias of Constantine II alone in the store, so the name resolved to him (not a pick among namesakes).
   - debatable: Robin Gibb's instrument, "voice" (Wikidata's; the gold says violin, piano).
-- **Right on reading** (14 of C's 22 unmatched): a finer or coarser place (Upper East Side, a New York hospital,
+- **Right on reading** (13 of C's 22 unmatched: NQ 2, WebQuestions 11, as the log counts them; 14 was a slip,
+  found by Cowork; 12 after Cowork's read, Obama Sr. debatable): a finer or coarser place (Upper East Side, a New York hospital,
   London for Paddington, Nine Mile for the mausoleum), a renamed site (Martin Luther King Jr. National Historical
   Park), a value as of the dump against an older gold (Fayetteville's population), an offset for a zone (UTC-07:00),
   a gold that answers another question (Lucy Lawless; Barack Obama Sr.'s birthplace is his son's in the gold).
