@@ -269,3 +269,21 @@ def test_an_unknown_value_given_as_a_plain_string_is_read_without_error(world, m
         monkeypatch.delenv(f, raising=False)                   # off: the bookkeeping still runs, and must not fail
     assert hop(world, "place of death", "Mystery Man") == {"Lyon"}
     assert world._rec()["life"]["Q8090"] == (None, None)
+
+
+def test_check_1b_reads_the_item_the_store_linked_not_a_label_search(world, monkeypatch):
+    class Missing(Src):                                       # the label search's first hits: a namesake, no city
+        def _get(self, params):
+            if params.get("search") == "Lyon":
+                return {"search": [{"id": "Q9109", "label": "Lyon"}]}
+            return super()._get(params)
+    f, t = {t.obj: (f, t) for f, t in world._by_subj.get("probe")}["Lyon"]
+
+    def run(on):
+        monkeypatch.setenv("CB_QWORD_KIND", "1" if on else "0")
+        rec = {"answer": "Lyon", "verified": True}
+        lr = SimpleNamespace(result=SimpleNamespace(trace=[SimpleNamespace(fact=f, triple=t)]))
+        return ask_class.check(SimpleNamespace(world=SimpleNamespace(others=[world]), source=Missing(), _everyday=None),
+                               "In which Rhone city did he die?", lr, rec)
+    assert run(on=True)                                       # Q9104 is a city: passes through the store's link
+    assert run(on=False)                                      # off: "rhone city" has no class, unchecked, as before

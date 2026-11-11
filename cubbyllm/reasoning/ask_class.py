@@ -124,7 +124,8 @@ def check(loop, question: str, lr, rec: dict) -> bool:
         head = cw[0].split()[-1]        # 0066, check 1b: a class the source has none for, read by its head noun
         cls = classes(src, head, cw[1])
         cw = (head, cw[1]) if cls else cw
-    items = value_items(loop, h.fact, value) if cls else []
+    linked = ask_qword.store_item(loop, h.triple) if cls and ask_qword.on() else None    # the item the store
+    items = [linked] if linked else value_items(loop, h.fact, value) if cls else []      # handed out (0066)
     if not cls or not items or any(is_a(src, q, cls) for q in items):
         return True
     kinds = [src._labels_for([k]).get(k) for k in _ids(src._claims(items[0]), "P31")][:1]

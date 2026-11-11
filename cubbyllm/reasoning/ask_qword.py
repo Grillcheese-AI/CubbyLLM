@@ -48,6 +48,18 @@ def _stores(world) -> list:
     return [w for w in [world, *getattr(world, "others", [])] if hasattr(type(w), "value_kind")]
 
 
+def store_item(loop, triple) -> str | None:
+    """The item a store world linked this fact's value to, when it handed the fact out (else None). With
+    ``CB_QWORD_KIND=1`` the class check reads the value through it, not through a label search: "Beatrice" by label
+    is a name, a character and a dozen places, and the ten first hits may miss the one the fact is about."""
+    from cubbyllm.worlds.wd_store_names import key3
+    for w in _stores(getattr(loop, "world", None)):
+        q = w._rec()["obj"].get(key3(triple.subj, triple.rel, triple.obj)) if triple is not None else None
+        if q:
+            return q
+    return None
+
+
 def kind_of(loop, fact: str, triple) -> set | None:
     """The kinds of the answer's value as the store reads them, or None (unknown)."""
     stores = _stores(getattr(loop, "world", None))
