@@ -714,3 +714,106 @@ One for each name of the question that the program starts from.
   commentary); Obama Sr. and Carlos Pena Jr.: aliases. Sufficient, and not correct, as you wrote.
 - **Not done:** a "label in another form" ("Agostina Pietrantoni", a label of the item in another language) is named
   `fold` with a note and read "stated only"; a step of its own would read it as re-derived.
+
+## Cowork's read of the name statement as built (2026-11-11): the record is accepted, the replay's line is not met yet
+Read from the run's records (`run_0054_names`), not from the summary. The report's counts are right: 86 spoken;
+42, 44 and 0; label 3, fold 31, alias 10, a qualifier or a role 5, a pick 34, unstated 3.
+
+**What holds:**
+- **The statement is a record and changes no answer.** SimpleQA 4,326, NQ 3,610, WebQuestions 2,032 and AA 600
+  records carry the "after"'s spoken flag, answer, reason and trace. One unspoken WebQuestions record differs
+  (`webq:172`): its text is the run's own counters.
+- **86 of 86 replay to the same answer once the name step is given.** The name step was the only thing the 17
+  certificates lacked.
+- No statement carries an error. The four tests pass.
+
+**What does not hold: "0 not the same" is not evidence yet, because the check cannot fail.**
+- `ground` answers "not the same" in one case only: a `label` step whose label is not the asked name. It never
+  reads the facts it is handed. The replay adds the facts under the asked name whatever `ground` says.
+- **A statement that contradicts itself passed.** "treasure of the sierra madre": the statement's item is
+  Q251559; its own namesake step says the rule kept Q4677176 alone, and Q4677176 is listed among the others as
+  "kept". It was read "stated only", and the answer "the same".
+- **Why:** the item's id is found by matching the label (the first item of the pool that has the trace's label),
+  not taken from the decision. 31 of the 86 statements list another item with the same label.
+- The ids on the fact statements, which the shape asked for and which would settle this, were not built. The
+  report does not say so.
+
+**What "re-derived" stands on, for the 42** (answers; of them, not matching the gold):
+- **15 (4):** a label or a fold of an identified item. The replay compares two strings itself.
+- **10 (5):** an alias. The sentence is composed from the asked name, so nothing is compared.
+- **16 (5):** no item at all. The fact came from a world the builder does not read (the store is named
+  "wiki+wdstore+hdc"): the id is none, and "others: 0" though none was counted.
+- **1 (0):** the live source's. "republic of ireland is the label of the item": the label there is the asked
+  name, not the item's.
+- For comparison, "stated only": 44 answers, 8 not matching.
+- **So the replay checks the name step itself in 15 of 86. "42 re-derived" is not to be quoted.**
+- "Re-derived" answers miss the gold more often (14 of 42) than "stated only" ones (8 of 44). The outcome says
+  what the certificate carries, never that the name was read right.
+
+**The wrong answers of 0066, in their statements:**
+- The report says the wrong and debatable answers show where they went wrong. That holds for the four it names:
+  Constantine, Obama Sr. and Carlos Pena Jr. (an alias each) and the Gospel (a pick).
+- It does not hold for three others of 0066's six. Dirty Dancing, Jana Gana Mana and Auschwitz are among the 16
+  with no item: a fold, no id, no others, read "re-derived".
+- Germany (NQ) is the live source's: "relation: part of", unstated.
+- **The Gospel's last step is in no statement.** The rule kept five items of that label, and the first in id
+  order was taken. It is the same in all 11 picks where the rule kept several.
+
+**The picks (34):** the rule kept one item in 23 (4 not matching) and several in 11 (2 not matching). `how` is
+"None" in all 34. What the rule compared (its cues, its relations, the items ruled out) is in the decision and
+not in the statement.
+
+**Refusals:**
+- 572 refusals have the reason `entity_unresolved`, and none carries a statement. My error: the shape said
+  `name_unresolved`, a reason the host does not have.
+- 41 have `ambiguous_entity` and carry one. 31 of the 41 list no option.
+
+**The live source (9 statements):** no revision and no fetch time; in 6 the label is the asked name, not the
+item's; "relation: place of death" was read as a place qualifier (fixed for "relation:"; the test on the word
+"place" still decides the other cases).
+
+**Ruling:**
+- **The statement as a record: accepted as a first build.** It stays in every record.
+- **The replay's line: not met.** The count of 0 comes from a check that cannot fail, and one statement is
+  wrong by its own content.
+- **What may be quoted today:** 86 of 86 answers replay the same once the name step is given; the replay checks
+  that step itself in 15. Nothing of this order is quoted as certified end to end.
+- **The PROV-O round trip** stays with the 2026-11-06 addendum. It does not hold this step.
+
+**Asked, in this order.** Each is a record or a check; none changes an answer.
+1. **The item is the one the world resolved, by id.** The world that reads the name keeps the id it handed
+   facts for: the store's decision, the HDC world's node, the id the live source's `resolve` returned. The
+   statement takes that id and never matches a label. The first fact's statement carries its subject's id.
+2. **`ground` can fail, and reads what it is handed:**
+   - the item is among the items its namesake step kept, else "not the same";
+   - the item is the subject of the first fact (by id, or by label where a world has no ids), else "not the
+     same";
+   - `label`, `fold` and `alias` compare the asked name with a string the world gave (the item's label, the
+     store's own alias key), carried in the step. An alias composed from the asked name is "stated only";
+   - a `place_qualifier`'s fact is among the carried statements, else "stated only";
+   - a statement with no item id is "stated only".
+   - The replay adds nothing under the asked name when `ground` says "not the same", and counts that answer
+     with the holes.
+   - **Tests: one tampered statement for each check** (an item outside the kept list; a label that is not the
+     fact's subject; an alias string that is not the asked name). Each must be caught.
+3. **The branch with no store:** name the world that held the fact, not the combined world. `id: null` with its
+   reason; `others` not counted is `null`, never 0. If that world can list what it holds for the name, list it.
+4. **A pick says what it compared and what chose last.** From the decision: the cues, the relations, the items
+   ruled out and by what. When several are kept, the last choice is a step of its own (`first_by_id`), so the
+   Gospel's statement shows it.
+5. **Refusals:** `entity_unresolved` carries a statement (the name, the worlds asked, no option). An
+   `ambiguous_entity` lists its options from the world that found them.
+6. **The live source:** the item's own label beside the asked name; `label` only when the two are equal; the
+   revision, or failing that the fetch time; the others when the search result holds them.
+7. **Reported in three classes, each with its count of answers that do not match the gold:** checked by the
+   replay; resting on a statement of the store (an alias, a qualifier's fact); taken as stated (a pick, a role,
+   a last choice, no item).
+
+**Acceptance (replaces the replay line of the shape above):**
+- "Not the same" is 0, and the tampered-statement tests pass.
+- The Sierra Madre's statement names the item the rule kept. No statement's item is outside its kept list.
+- No statement says "others: 0" for a name that was not counted.
+- The three classes are reported with their counts of answers not matching the gold.
+- Refusals with `entity_unresolved` and with `ambiguous_entity`: how many carry a statement, and how many list
+  their options.
+- Every answer of the four benchmarks is unchanged, as now.
