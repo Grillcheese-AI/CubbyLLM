@@ -649,3 +649,30 @@ Logs: `validation/logs/talk_ab_2026-11-11_{voice,control,sheet,key}.json`, `_run
     turned on.
 - **For the next test:** with that check the pairs shown are replies that hold together, so the question can
   stay "which is more casual". The voice's own repetitions go to `talk_v3b`.
+
+### Nick's second note (2026-11-11): the base's stock talk gets past the host's check
+- **Nick's example,** shown to him on the sheet: "Bon ! Je peux maintenant enregistrer et envoyer mes messages."
+  It is the control's reply to "bon, je file, à plus tard". Cubby cannot record or send messages. The host spoke
+  it.
+- **A miss of mine.** The plan said a false statement about Cubby in a control reply is reported. I reported the
+  control's refusals and its loops, and not these.
+- **By my read of this run's spoken chat replies, six say something about Cubby that its record does not
+  hold.** Five are the control's, one is the voice's. All six were on the sheet, and Nick picked the voice on
+  each of the six pairs, so the count does not move.
+  - control, an ability it does not have: "Je peux maintenant enregistrer et envoyer mes messages.";
+  - control, against the record: "I can't speak any language." (the record: English and French);
+  - control, the base's stock refusal, three times: "I can't tell jokes or jokes that involve explicit or
+    inappropriate content."; "I'm sorry, but I can't make that request."; "Je ne peux pas raconter une blague";
+  - voice, the base's stock disclaimer: "I don't have access to personal information or personal experiences."
+- **Why the check lets them out.** It reads "I can ..." against a list of things Cubby does not do yet (writing,
+  e-mail, code, planning). Anything off that list passes. It does not read "I can't ..." at all, and the
+  base-model guard knows only a few verbs after it.
+- **Proposed, for Claude Code; it waits for Nick's yes, with the looping check above:** the list is turned
+  around. What a chat reply says Cubby can or cannot do must be in its record.
+  - "I can ..." is spoken when it matches a line of what Cubby can do, or is a plain offer to help.
+  - "I can't ..." and "I don't have ..." are spoken when the record says so.
+  - Anything else is not spoken.
+  - **Tests:** the six replies above are refused. The voice's replies that say the record's own lines are still
+    spoken. Measured on E6's chat rows and on this sheet before it is turned on.
+- **For `talk_v3b`:** the stock talk comes on turns the rows do not cover. More of those turns, each with the
+  record where the host sends it.
