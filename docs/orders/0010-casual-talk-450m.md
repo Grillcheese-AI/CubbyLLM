@@ -392,3 +392,20 @@ base, read raw) is beside them for reference.
   block, and the mix is 254,231 training rows where `talk_v2_2` alone was 216,035, so its binding rows are a
   smaller share. The next build adds voice rows whose block holds a second entity's facts.
 - **Next:** change **b** first among b to f; then the casual proxies and the blind A/B, on replies read with b.
+
+### Nick's call (2026-11-11): the blind A/B is voice against control, both Cubby
+"both cubby". The acceptance's A/B named the LFM stand-in. It now reads:
+- **The pairs:** 60 prompts, each answered by the voice (`talk_v3a`) and the control (`talk_v2_2_cont`), the order
+  hidden and shuffled pair by pair. 30 chat turns (a hello, thanks, who are you, what can you do, a joke asked for)
+  and 30 fact turns (one fact, a list, a wrong assumption, a fact not on record). 45 in English, 15 in French,
+  the battery's own 3 to 1.
+- **Both read the same way:** greedy, through the host with changes **a** and **b**. A pair is judged only when
+  both replies are spoken. A prompt one arm refuses is counted for that arm and reported apart.
+- **Nick's choice, pair by pair:** the first is more casual, the second is, or they are the same.
+- **Line (set before he reads any):** the voice is chosen as more casual on at least 37 of the 60. A coin flip
+  reaches 37 of 60 less than 5% of the time (4.6%). "The same" counts against the voice.
+- **Kill, unchanged:** a wrong answer in any reply shown.
+- **The stand-in is out of this test.** Cubby's base is its own, and the comparison that matters is what the voice
+  data changed.
+- **Who:** Cowork builds the sheet (the pairs and three buttons, the key kept apart); Nick judges; his choices are
+  saved with the key's hash.
