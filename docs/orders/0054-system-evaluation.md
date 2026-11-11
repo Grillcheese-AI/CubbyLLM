@@ -435,3 +435,29 @@ unmatched answer below, row by row).
 - **Time** (the sum over the benchmark, CPU): SimpleQA 491 s (before 651), NQ 368 s (134), WebQuestions 366 s (88),
   AA 17 s (6). The store answers in place of live fetches on SimpleQA; on the others each name read costs requests
   to the store (per question p50 0.07-0.10 s, before 0.01-0.04 s). The 1 ms lookup line stays Nick's to decide.
+
+## Cowork's read of the "after" (2026-11-11)
+- **The read holds**, row by row, on C's 22 unmatched answers, with two changes:
+  - **"where was Barack Hussein Obama Sr born" -> Nyang'oma Kogelo: not right.** The gold (Honolulu) is his son's,
+    as the read says, but the answer is at odds with the reference too: Wikipedia has him born in Rachuonyo
+    District near Kendu Bay, and raised and buried in Nyang'oma Kogelo. Read: debatable, the store's value against
+    the reference. WebQuestions becomes 4 wrong (+2 debatable) of 65.
+  - **"population of Fayetteville" -> "As of 2025, 208501.": right as a count, wrong as a date.** 208,501 is the
+    2020 census count; the reply dates it 2025, the dump's year. Not counted wrong here. It would be on a question
+    that names a year.
+- **The ruling (the order's kill, as pre-registered):** C is above 1% wrong among spoken on NQ (4 of 15) and on
+  WebQuestions (4 of 65). The claim narrows to the benchmarks where it holds: SimpleQA (0 of 6), CLUTRR (0 of 827),
+  AA-Omniscience (nothing spoken). 0 of 6 is thin: its 95% interval runs to 39%. The paper's v2 says both.
+- **Whose wrong answers:** of the 8, 2 are the source's value against the gold (Last Podcast on the Left, Wave
+  Hill): the certificate is faithful and the answer is still wrong. 6 are Cubby's own: a plan that answered another
+  relation (3), a work named like the asked one (2), an alias (1). Reported apart, counted together.
+- **Proposed, for Nick's yes (not built, not measured):**
+  1. **The answer fits the question word:** "where" a place, "who" a person or an organisation, "when" a date; else
+     refuse. It is the class check that met the Marie Curie test, taken from the question word instead of a named
+     class. It would have stopped the Dirty Dancing and Germany answers, and probably Auschwitz.
+  2. **A title shared by a work and works about it** (a commentary, an arrangement): the original first, else ask.
+  3. **An alias match does not end the name search:** "Emperor Constantine" also gathers the Constantines who were
+     emperors, and the picking rules then apply.
+  4. **A value with its own date is said with that date;** the pin's date is for facts that carry none.
+- **Where the numbers are:** the proposer, as the read says. No plan for 3,759 of 4,326 SimpleQA questions. The
+  store no longer limits the count.
