@@ -43,6 +43,7 @@ import grilly  # noqa: E402  (grilly2)
 from grilly.infer.lora import apply_lora_  # noqa: E402
 
 from ask import date_words, grounded_prose  # noqa: E402
+from cubbyllm.reasoning.opener_view import guard_text  # noqa: E402  (CB_OPENER_VIEW=1: the host's view)
 from build_ground_sft import ABSENT, has_value, norm, render  # noqa: E402
 from exp_e5_base450m_probes import CAPITALS, load_grilly  # noqa: E402
 
@@ -78,7 +79,7 @@ def answer(model, tk, eos, prompt, max_new=64):
 
 def judge(rec, text):
     lines = [f"{v} is the {r} of {e}" for e, r, v in rec["facts"]] + [f"{e} {r}: {v}" for e, r, v in rec["facts"]]
-    guarded, bad = grounded_prose(text, lines, rec["entity"])
+    guarded, bad = grounded_prose(guard_text(text), lines, rec["entity"])
     refused = text.strip().lower().startswith(ABSENT.lower().rstrip("."))
     forbidden = [v for v in rec.get("forbid", []) if norm(v) and f" {norm(v)} " in f" {norm(text)} "]
     fam = rec["family"]

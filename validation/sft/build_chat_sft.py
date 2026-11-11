@@ -35,8 +35,8 @@ ordinary first name each (the same in prompt and answer) so the model never lear
 Elsewhere they stand for companies, planets and citations as often as people, so those records are
 dropped; Presidio's <..._ANONYMIZED_...> tags likewise.
 
-`chat_common_words.txt` (beside this file) is the corpus's lowercase-dominant words, fixed so a slice
-and the whole file are filtered alike.
+`cubbyllm/reasoning/opener_words.txt` (the host's, order 0010 change a; was `standin/data/chat_common_words.txt`)
+is the corpus's lowercase-dominant words, fixed so a slice and the whole file are filtered alike.
 """
 from __future__ import annotations
 
@@ -52,34 +52,15 @@ if hasattr(sys.stdout, "reconfigure"):
 __wiring__ = "STANDALONE"
 
 SOURCE = "nvidia/Nemotron-SFT-Instruction-Following-Chat-v2"
-COMMON = pathlib.Path(__file__).parents[2] / "standin" / "data" / "chat_common_words.txt"
+COMMON = pathlib.Path(__file__).parents[2] / "cubbyllm" / "reasoning" / "opener_words.txt"   # the host's list (0010 a)
 
-_TOKEN = re.compile(r"[A-Za-zÀ-ÿ][\w'’\-]*|\d[\d.,:/\-]*")        # ask._TOKEN
-_ENUM = re.compile(r"(?m)^\s*(?:\d{1,2}[.)]|[-*•])\s+")
-_OPENER = re.compile(r"(?:^|[.!?:]\s+|\n\s*)([A-Za-zÀ-ÿ][\w'’\-]*)")
-_PRONOUN_I = {"i", "i'm", "i’m", "i'd", "i’d", "i'll", "i’ll", "i've", "i’ve"}
-
-
-def openers(text: str) -> set[int]:
-    """Positions where English capitalises any word: sentence and line starts."""
-    return {m.start(1) for m in _OPENER.finditer(text)}
+from cubbyllm.reasoning.opener_view import openers  # noqa: E402,F401  (moved to the host, order 0010 change a)
+from cubbyllm.reasoning.opener_view import opener_view as _opener_view  # noqa: E402
 
 
 def chat_view(answer: str, common: set[str]) -> str:
-    """The answer as `grounded_prose` should read it: list enumerators removed, and a capital English
-    forces (a common word opening a sentence or line, the pronoun I) lowered. Names keep their capitals,
-    so everything the guard exists to catch is still caught."""
-    text = _ENUM.sub("\n", answer)
-    starts = openers(text)
-    out = list(text)
-    for m in _TOKEN.finditer(text):
-        tok = m.group(0)
-        low = tok.lower().strip("'’-.,:")
-        if low.endswith(("'s", "’s")):
-            low = low[:-2]
-        if tok[0].isupper() and (low in _PRONOUN_I or (m.start() in starts and low in common)):
-            out[m.start()] = tok[0].lower()
-    return "".join(out)
+    """The answer as `grounded_prose` should read it, with the builder's own word set: the host's `opener_view`."""
+    return _opener_view(answer, common)
 
 
 _STOP = frozenset("""a about above after again against all am an and any are as at be because been before being below

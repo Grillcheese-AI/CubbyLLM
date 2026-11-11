@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import re as _re
 from .ask_words import ABSENT_REPLY, _MONTHS, _vnorm, grounded_prose, has_value, say, value_check
+from .opener_view import guard_text
 
 __wiring__ = "WIRED"
 
@@ -157,13 +158,13 @@ def talk_reply(returned: list[str], draft: str | None, facts: list[str], entity:
                others: list[str], lines: list | None = None, check: str = "value") -> tuple[str | None, str]:
     """What the host says for a question over a facts block. The VM returned nothing -> the host says
     ABSENT_REPLY itself (the model is not asked to decline). Otherwise the draft is spoken only if the
-    name-and-number guard AND the value check pass -- or, with check="claims" and the block's `lines`,
+    name-and-number guard (with `CB_OPENER_VIEW=1`, reading the draft through `opener_view`) AND the value check pass -- or, with check="claims" and the block's `lines`,
     the claim check in its place (H-E10). -> (reply or None to refuse, reason)."""
     if not returned:
         return ABSENT_REPLY, "vm_empty"
     if not draft:
         return None, "no_draft"
-    ok, bad = grounded_prose(draft, facts, entity)
+    ok, bad = grounded_prose(guard_text(draft), facts, entity)      # CB_OPENER_VIEW=1: through the opener view
     if not ok:
         return None, "ungrounded: " + ", ".join(bad[:4])
     if check == "claims" and lines is not None:

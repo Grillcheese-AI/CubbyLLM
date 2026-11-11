@@ -24,6 +24,7 @@ include = ["cubbyllm*", "cubby_serve*"]   # the two homes (order 0031)
 
 [tool.setuptools.package-data]
 cubby_serve = ["LICENSE"]
+"cubbyllm.reasoning" = ["opener_words.txt"]   # the opener view's words (order 0010 change a)
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
