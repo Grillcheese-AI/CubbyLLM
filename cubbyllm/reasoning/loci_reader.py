@@ -68,7 +68,7 @@ class LociReader:
                 p.copy_(s.to(p.device))
         del ck
         tok = tokenizer or os.environ.get("CUBBY_SPM") or os.path.join(
-            os.environ.get("CUBBY_MODELS", _lp(r"$CUBBY_MODELS")), "base450m", "grilly", "tokenizer.json")
+            (os.environ.get("CUBBY_MODELS") or _lp(r"$CUBBY_MODELS")), "base450m", "grilly", "tokenizer.json")
         self.tk = Tokenizer.from_file(tok)
         self.eos, self.nl = self.tk.token_to_id("</s>"), self.tk.encode("\n", add_special_tokens=False).ids[-1]
         self.rel_index = {r: i for i, r in enumerate(sorted({r for _s, r, _o in wk.load_triples()}))}

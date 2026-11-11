@@ -18,7 +18,7 @@ from ..local_paths import expand as _lp
 __wiring__ = "WIRED"
 
 PQ_FILE = pathlib.Path(_lp(r"$CUBBY_DATA_ROOT/valid_scaling_law_with_facts.pq"))
-V4_TABLE = pathlib.Path(os.environ.get("CUBBY_MODELS", _lp(r"$CUBBY_MODELS"))) / "fastword_table_v4.npz"
+V4_TABLE = pathlib.Path((os.environ.get("CUBBY_MODELS") or _lp(r"$CUBBY_MODELS"))) / "fastword_table_v4.npz"
 
 
 def load_sample(n: int, seed: int, exclude: set[str] | None = None):
