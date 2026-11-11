@@ -139,7 +139,7 @@ def main():
     if not args.no_model:
         from tokenizers import Tokenizer
         from exp_e5_base450m_probes import load_grilly
-        from exp_e6_talk_gate import answer, load_adapter
+        from exp_e6_talk_gate import LAST, answer, load_adapter
         tk = Tokenizer.from_file(os.path.join(args.export, "tokenizer.json"))
         eos = tk.token_to_id("</s>")
         model, _ = load_grilly(args.export)
@@ -154,7 +154,8 @@ def main():
                     draft = answer(model, tk, eos, render(hit.lines, hit.canonical))
                 reply, reason = talk_reply(hit.returned, draft, [f"{e} {rel}: {v}" for e, rel, v in hit.lines] +
                                            [f"{v} is the {rel} of {e}" for e, rel, v in hit.lines], hit.name, hit.others)
-            r.update(draft=draft, reply=reply, reason=reason, outcome=outcome(hit, q, reply))
+            r.update(draft=draft, raw=LAST["raw"] if draft is not None else None, reply=reply, reason=reason,
+                     outcome=outcome(hit, q, reply))
         log(f"talk: {len(rows)} questions, {time.time() - t2:.0f}s")
     result = {"args": vars(args), "adapter_meta": model_meta}
     for tier in ("reworded", "named"):

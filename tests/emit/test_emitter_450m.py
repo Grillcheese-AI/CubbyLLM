@@ -75,6 +75,20 @@ def test_the_answer_is_cut_at_the_next_block_and_kept_to_one_line():
     assert talk_answer("  two   spaces \n second line") == "two spaces"
 
 
+def test_change_b_keeps_a_lists_lines_up_to_the_next_block_only_with_its_flag(monkeypatch):
+    raw = ("I've got the checked details right here:\n- Born:  1867 in  Warsaw\n\n\n- Field: physics\n"
+           "Answer: more\nQuestion: next?")
+    monkeypatch.delenv("CB_TALK_LINES", raising=False)
+    assert talk_answer(raw) == "I've got the checked details right here:"            # off: the first line, as before
+    assert talk_answer("Hi there.\nAssistant: hello again") == "Hi there."
+    monkeypatch.setenv("CB_TALK_LINES", "1")
+    assert talk_answer(raw) == ("I've got the checked details right here:\n- Born: 1867 in Warsaw\n\n"
+                                "- Field: physics")                                 # a blank run kept as one; "Answer:" stops
+    assert talk_answer(" Marie Curie was born in Warsaw.\nQuestion: next?\nAnswer: no") == "Marie Curie was born in Warsaw."
+    assert talk_answer("\n\nHello!\nConversation:\nUser: x") == "Hello!"
+    assert talk_answer("Sure.\nAssistant: and more") == "Sure."
+
+
 def test_both_seats_on_one_trunk_render_decode_and_swap_only_on_a_role_change():
     trunk = FakeTrunk({"programs": 'program CotPlan implements ISolve {\n    bind frame, SEED, "$E1";\n    bind frame, ACTION, "x";\n}\n',
                        "talk": " Marie Curie was born in Warsaw.\nQuestion: more?"})

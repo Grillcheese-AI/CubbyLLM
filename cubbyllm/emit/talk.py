@@ -16,7 +16,8 @@ __wiring__ = "WIRED"
 # conversation, or a bare question; the answer follows "Answer:".
 TALK_DASH = " \u2014 "
 TALK_UNLOCK = "Explicit: allowed"
-_TALK_STOPS = ("\nQuestion:", "\nFacts:", "\nConversation:", "\nUser:", "\nSystem:")
+_TALK_STOPS = ("\nQuestion:", "\nFacts:", "\nConversation:", "\nUser:", "\nSystem:", "\nAssistant:",
+               "\nAnswer:", "\nExplicit:")   # each opens a line: the first line is the same without the last three
 
 
 def talk_prompt(prompt: str, context=None) -> str:
@@ -47,11 +48,29 @@ def talk_prompt(prompt: str, context=None) -> str:
     return f"{head}Question: {prompt.strip()}\nAnswer:"
 
 
+def lines_on() -> bool:
+    """``CB_TALK_LINES=1`` (order 0010, change b): the answer keeps its lines up to the next block marker."""
+    return os.environ.get("CB_TALK_LINES", "0") == "1"
+
+
 def talk_answer(text: str) -> str:
-    """The adapter's answer out of its generation: cut where it would start the next block, one line."""
+    """The adapter's answer out of its generation: cut where it would start the next block. Off (the default): its
+    first line only, so a list was cut after its lead-in ("Here is what I have:"). With ``CB_TALK_LINES=1``: every
+    line up to the next block marker, each line's spaces collapsed, a run of blank lines kept as one, none at either
+    end. The guard reads every line kept (the opener view lowers a line's forced capital and drops its enumerator),
+    so a line more is a name or a value more to check, never one less."""
     for stop in _TALK_STOPS:
         text = text.split(stop)[0]
-    return " ".join(text.strip().split("\n")[0].split())
+    if not lines_on():
+        return " ".join(text.strip().split("\n")[0].split())
+    out: list[str] = []
+    for line in text.strip().split("\n"):
+        line = " ".join(line.split())
+        if line or (out and out[-1]):
+            out.append(line)
+    while out and not out[-1]:
+        out.pop()
+    return "\n".join(out)
 
 
 class Cubby450mTalk:

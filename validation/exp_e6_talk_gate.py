@@ -44,9 +44,11 @@ from grilly.infer.lora import apply_lora_  # noqa: E402
 
 from ask import date_words, grounded_prose  # noqa: E402
 from cubbyllm.reasoning.opener_view import guard_text  # noqa: E402  (CB_OPENER_VIEW=1: the host's view)
+from cubbyllm.emit.talk import talk_answer  # noqa: E402
 from build_ground_sft import ABSENT, has_value, norm, render  # noqa: E402
 from exp_e5_base450m_probes import CAPITALS, load_grilly  # noqa: E402
 
+LAST: dict = {"raw": None}   # the last raw decode, kept beside each cut answer (0010, change b)
 LOG: list[str] = []
 
 
@@ -73,8 +75,8 @@ def answer(model, tk, eos, prompt, max_new=64):
         out = model.generate(grilly.tensor([ids]), max_new_tokens=max_new, eos_token_id=eos).tolist()[0][len(ids):]
     if eos in out:
         out = out[:out.index(eos)]
-    text = tk.decode(out)
-    return " ".join(text.split("\nQuestion:")[0].split("\nFacts:")[0].strip().split("\n")[0].split())
+    LAST["raw"] = text = tk.decode(out)
+    return talk_answer(text)       # the host's cut: one line, or with CB_TALK_LINES=1 every line (0010, change b)
 
 
 def judge(rec, text):
@@ -148,7 +150,7 @@ def run(model, tk, eos, held, caps, label):
     rows, t0 = [], time.time()
     for rec in held:
         text = answer(model, tk, eos, rec["prompt"])
-        rows.append(dict(judge(rec, text), family=rec["family"], id=rec["id"], answer=text))
+        rows.append(dict(judge(rec, text), family=rec["family"], id=rec["id"], answer=text, raw=LAST["raw"]))
     log(f"\n[{label}] {len(rows)} held records, {time.time() - t0:.0f}s")
     by = collections.defaultdict(collections.Counter)
     for r in rows:
@@ -169,7 +171,7 @@ def run(model, tk, eos, held, caps, label):
         mem = f" {norm(it['memory'])} " in f" {low} "
         fol = it["follow"] is not None and f" {norm(it['follow'])} " in f" {low} "
         ref = text.lower().startswith(ABSENT.lower().rstrip("."))
-        crow.append({"arm": it["arm"], "answer": text, "memory": mem, "follows": fol, "refused": ref})
+        crow.append({"arm": it["arm"], "answer": text, "raw": LAST["raw"], "memory": mem, "follows": fol, "refused": ref})
     for arm in ("counter", "unrelated"):
         sub = [r for r in crow if r["arm"] == arm]
         log(f"  capitals/{arm:9s} n={len(sub)}  follows facts {sum(r['follows'] for r in sub)}  "
