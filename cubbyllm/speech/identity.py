@@ -120,6 +120,9 @@ def is_identity_question(text: str) -> bool:
     (the intents the identity SFT taught, greetings included)."""
     if _GREETING_Q.search(text) or _IDENTITY_Q.search(text):
         return True
+    from .cubby_record import is_about_cubby, on as record_on     # 0010 change d (CB_CUBBY_RECORD=1): "are you a
+    if record_on() and is_about_cubby(text):                      # person or a program?" is about Cubby too
+        return True
     m = _FEEL_Q.search(text)
     return bool(m) and len(m.group("rest").split()) <= 3
 

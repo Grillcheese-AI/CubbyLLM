@@ -95,6 +95,12 @@ class CubbyChat(ChatState):
             # who-it-is to anything. Off topic -> not offered; the don't-know
             # line is the sanctioned answer for what it can't do yet.
             return "identity reply to a non-identity turn"
+        from .cubby_record import chat_check, on as record_on       # 0010 change d (CB_CUBBY_RECORD=1): what Cubby
+        if record_on():                                             # says it is, and every name and number, against
+            last = self.history[-1] if self.history else {}         # its record, the turn and the last exchange
+            ok, why = chat_check(reply, user_text, [str(last.get("user") or ""), str(last.get("reply") or "")])
+            if not ok:
+                return why
         return None
 
     def candidates(self, user_text: str, grounded: set[str] | None = None) -> tuple[list[str], list[str]]:
