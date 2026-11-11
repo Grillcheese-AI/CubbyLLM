@@ -152,6 +152,8 @@ def one(loop, seat, timing, row: dict, run_learned: set) -> dict:
             run_learned.add(l["fact"])
     spoken = bool(rec.get("verified"))
     cvm = rec.get("answer") if spoken else rec.get("uncertified")
+    from cubbyllm.reasoning.name_statement import build as name_statement   # 0054: how the name reached the item
+    name = name_statement(loop, rec, live=bool(spoken and facts_source(rec, run_learned) == "wikidata"))
     return {"id": row["id"], "bench": row["bench"], "question": row["question"], "golds": row["golds"][:8],
             "seen": row["seen"], "spoken": spoken, "answer": rec.get("answer"),
             "said": rec.get("reply") or rec.get("answer"), "tier": rec.get("tier"),
@@ -165,7 +167,8 @@ def one(loop, seat, timing, row: dict, run_learned: set) -> dict:
             "wall_s": round(time.perf_counter() - t, 2),
             # order 0066's checks, as the record keeps them: the question word whose kind was unknown, the word a
             # refusal answered, the value's own date beside the dump's (None: no check said anything)
-            "checks": {k: rec[k] for k in ("kind_unknown", "qword", "dates") if rec.get(k)} or None}
+            "checks": {k: rec[k] for k in ("kind_unknown", "qword", "dates") if rec.get(k)} or None,
+            "name": name}                                # the certificate's name statement (a record: no answer changes)
 
 
 def main(argv=None) -> None:

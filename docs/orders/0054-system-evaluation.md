@@ -686,3 +686,31 @@ One for each name of the question that the program starts from.
 - Tests: one for each kind of step among the 17 (an alias, a place qualifier, a fold, a role), and one refusal
   that carries its options.
 - Until this passes, no number of this order is quoted as certified end to end.
+
+## The name statement, built and measured (Claude Code, 2026-11-11)
+- **Built** (`8d7ad5f`, this commit): `cubbyllm/reasoning/name_statement.py`; `run_c` keeps it in every record (`name`).
+  Built after the answer from the world that held the first fact, by the same rules over the same snapshot (for the
+  live source, its own resolution re-run): `asked`, `item` (id, label), `store` (snapshot), `steps` (label, alias,
+  fold, place_qualifier, role, original_first, namesake, store_item; each with what it rests on, or `unstated`),
+  `others` (count; up to 10 with the step that dropped each). A refusal over a name carries its options. It never
+  raises (an error is kept in the record).
+- **The replay's check is your fallback** (`name_statement.ground`): each step's ground, no more. Running the store's
+  name rules over a carried set is not a small change (they read the store binary, its kinds and roots tables), as
+  you asked to be told; every pick among several is therefore "stated only".
+- **Acceptance:**
+  - **The replay on the "after", honouring the statement** (`validation/logs/cert_replay_2026-11-11-names.json`):
+    **86 of 86 spoken answers the same; name steps 42 re-derived, 44 stated only, 0 not the same.** Each of the 17 is
+    re-derived (12: an alias "nashville tn", "wave hill walk off"; a fold "best years of our lives") or stated only
+    (5: three picks among several, two labels in another form). **Line met.**
+  - **Flags off, every answer of the four benchmarks unchanged** (`run_0054_names` against the "after"): met.
+  - **The PROV-O round trip: not met -- the PROV-O form is not built** (the 2026-11-06 addendum is still open).
+  - **Tests:** an alias, a fold, a place qualifier, a role, a set-aside original, a refusal with its options
+    (`tests/reasoning/test_name_statement.py`).
+- **Spoken answers by name step** (SimpleQA, NQ, WebQuestions): label 3; fold 31; alias 10; a qualifier or a role 5;
+  a pick among several 34; unstated 3. The 3 unstated are the live source's relation rule ("relation: father"), now
+  named as a namesake pick in the code (the logged records keep them unstated).
+- **The wrong and debatable answers show where they went wrong:** Constantine: alias "emperor constantine" ->
+  Constantine II, no others in that tier (the "after" ran without 0066's check 3); the Gospel: a pick among 6 (the
+  commentary); Obama Sr. and Carlos Pena Jr.: aliases. Sufficient, and not correct, as you wrote.
+- **Not done:** a "label in another form" ("Agostina Pietrantoni", a label of the item in another language) is named
+  `fold` with a note and read "stated only"; a step of its own would read it as re-derived.

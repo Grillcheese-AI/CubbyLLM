@@ -1,0 +1,35 @@
+{
+ "what": "order 0054, field-watch step 1: each spoken answer asked again over its certificate alone",
+ "run": "run_0054_names",
+ "flags": {
+  "CB_ANSWER_CLASS": "1",
+  "CB_WD_KINDS": "1",
+  "CB_WD_STORE": "1",
+  "CB_RECORD_UNCERTIFIED": "1"
+ },
+ "benches": {
+  "simpleqa": {
+   "spoken": 6,
+   "same": 6,
+   "name: stated only": 2,
+   "name: re-derived": 4
+  },
+  "nq": {
+   "spoken": 15,
+   "same": 15,
+   "name: re-derived": 12,
+   "name: stated only": 3
+  },
+  "webq": {
+   "spoken": 65,
+   "same": 65,
+   "name: stated only": 39,
+   "name: re-derived": 26
+  },
+  "aa": {
+   "spoken": 0
+  }
+ },
+ "not_same": [],
+ "wall_s": 113.3
+}

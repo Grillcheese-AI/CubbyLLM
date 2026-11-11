@@ -55,7 +55,7 @@ def _qualifier(asked: str, label: str, rows) -> dict | None:
 def _store(w, key: str, asked: str, subj: str) -> dict:
     labels, aliases = w._tiers(key)
     pool = list(dict.fromkeys(labels + aliases))
-    item = next((q for q in pool if w._entity(q)[0] == subj), None)
+    item = next((q for q in pool if w._entity(q)[0] == subj), None) if subj else None
     r = w._rec() if hasattr(w, "_rec") else {}
     aside = set((r.get("aside") or {}).get(key, ()))
     st = {"asked": asked, "store": getattr(w, "name", "store"), "snapshot": getattr(w, "state", None),
@@ -103,7 +103,7 @@ def _live(src, asked: str, subj: str, relations) -> dict:
     qid = got[0] if got else None
     if "store's item" in how:
         steps = [{"rule": "store_item", "statement": f"the store made {asked} stand for {qid}"}]
-    elif how.startswith("namesake rule"):
+    elif how.startswith(("namesake rule", "relation:")):     # "relation: father": the item that carries the relation
         steps = [{"rule": "namesake", "how": how}]
     elif how.startswith("exact"):
         steps = _label_steps(asked, subj, 0 if normalize(asked) == normalize(subj) else 1)
@@ -117,7 +117,15 @@ def _live(src, asked: str, subj: str, relations) -> dict:
 
 def build(loop, rec: dict, live: bool = False) -> dict | None:
     """The name statement for a record's seed, from the world that held its first fact (`live`: the live source gave
-    it). None when there is nothing to state (no seed, no trace)."""
+    it). None when there is nothing to state (no seed, no trace). A record: it never raises (an error is kept in it)."""
+    try:
+        return _build(loop, rec, live)
+    except Exception as e:                               # noqa: BLE001 -- a record never breaks the run
+        return {"asked": rec.get("seed"), "steps": [{"rule": "unstated", "error": str(e)[:120]}],
+                "others": {"count": None, "listed": []}}
+
+
+def _build(loop, rec: dict, live: bool = False) -> dict | None:
     seed, trace = rec.get("seed"), rec.get("trace") or []
     world = getattr(loop, "world", None)
     if seed and not trace and rec.get("reason") in ("ambiguous_entity", "name_unresolved"):
@@ -166,8 +174,8 @@ def ground(st: dict, facts: list[str]) -> str:
             out = "stated only" if out == "re-derived" else out          # a form the fold rule does not name
         if rule in ("namesake", "store_item", "unstated", "role", "original_first") or s.get("statement") == "unstated":
             out = "stated only"
-        if rule == "place_qualifier" and s.get("statement") not in facts and s.get("statement") != "unstated":
-            facts = facts + [s["statement"]]             # carried with the statement
+        if rule == "place_qualifier" and not s.get("statement"):
+            out = "stated only"                          # the live source's qualifier: its rule named, no fact carried
     if (st.get("others") or {}).get("count") and (st["others"]["count"] or 0) > LIST:
         out = "stated only"
     return out
