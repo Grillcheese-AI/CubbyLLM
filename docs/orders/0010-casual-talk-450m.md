@@ -755,3 +755,41 @@ written in its record.
   three A/B runs and the held chat rows, 16 verdicts change, every one such a verb; names keep their capital
   ("Jean-Pierre", "Saint-Denis" are still refused). Also found: the record lacked v2's ability labels ("Demander lequel tu
   veux dire"), which the voice writes in its lists; added from the yaml.
+
+### Two sources Nick proposed for the English chat (2026-11-11), read by Cowork
+Nothing was downloaded. Both were read from their pages and licence files.
+
+**Topical-Chat (Amazon Alexa; Gopalakrishnan et al., Interspeech 2019): used, in three bounded ways.**
+- **What it is:** 10,784 conversations, 235,281 turns, between pairs of people who were each given facts to read
+  on a topic. Each turn carries the writer's own label for its sentiment, the section of facts it drew on (or
+  "Personal Knowledge"), and the partner's rating of the turn.
+- **Licence:** CDLA-Sharing-1.0, read in the repository's `DATALICENSE`. Section 3.5: no obligation on the
+  results of computing over the data. Rows we publish that contain its text go out under the same licence, with
+  credit, so they stay in a file of their own. Recorded here before use.
+- **Why not as rows, turn for turn:** the writers are people. They say they played football at school, watch
+  the news once a day, have sons. Trained as Cubby's side, that is what changes d and h refuse. Many turns also
+  add facts from memory, where Cubby says only what its block holds. The facts read are Wikipedia lead sections,
+  a newspaper article and trivia from a subreddit; none is checked against Cubby's store.
+- **Use 1, the user's side:** real casual questions and reactions, for the user lines of `talk_v3b`'s rows and
+  for the next blind test's turns. Needs the conversations only.
+- **Use 2, wording for Cubby's side:** turns that cite a fact section, were rated well by the partner, carry no
+  statement about the writer's life, and pass Cubby's own name-and-number guard against the fact they cite. The
+  wording is kept; the fact in the row comes from Cubby's store, never from the trivia.
+  - This needs the facts each turn read. The repository builds them with a script that calls Reddit, with
+    credentials Nick would set himself. The enriched version (Hedayatnia et al., 2020) points each turn at its
+    nearest fact sentence by TF-IDF similarity: automatic, so checked before it is trusted.
+- **Use 3, later:** the writers' own sentiment labels, for the emotions order.
+- **Not used:** the copy on Hugging Face in chat format. Its turns carry stage directions such as "*laughs*".
+
+**human-chats-worldwide (Hugging Face, `asdf98`): not used.**
+- **What it is:** eleven other datasets repacked by one uploader in May 2026: Discord, Reddit, Twitch, Telegram
+  and Usenet chats, counselling conversations, a Japanese and a Korean set.
+- **No licence** is stated for it or, on its card, for any of its sources.
+- **Private people's messages,** counselling among them, with no step described that removes names.
+- **The card contradicts the files:** 1.6 million rows and 470 MB on the card; 4.83 million rows and 1.48 GB on
+  the hub. The Japanese source is named as a set made for language models, on a card that says every row is a
+  real human's.
+- **For Cubby:** no French; nothing ties a reply to a fact; the register is stream chat and forum talk. It
+  would push the voice toward the unsupported talk the blind test caught.
+- If one part matters later (the Russian chats, when Russian comes), it is read at its own source, with its own
+  licence.
