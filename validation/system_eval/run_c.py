@@ -161,7 +161,10 @@ def one(loop, seat, timing, row: dict, run_learned: set) -> dict:
             "facts_from": facts_source(rec, run_learned) if spoken else None,
             "cvm_answer": cvm, "cvm_verdict": verdict(cvm is not None, cvm, row["golds"], row["bench"]),
             "vm_calls": timing["vm_calls"] - v0, "vm_s": round(timing["vm_s"] - s0, 3),
-            "wall_s": round(time.perf_counter() - t, 2)}
+            "wall_s": round(time.perf_counter() - t, 2),
+            # order 0066's checks, as the record keeps them: the question word whose kind was unknown, the word a
+            # refusal answered, the value's own date beside the dump's (None: no check said anything)
+            "checks": {k: rec[k] for k in ("kind_unknown", "qword", "dates") if rec.get(k)} or None}
 
 
 def main(argv=None) -> None:
