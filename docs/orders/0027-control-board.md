@@ -237,10 +237,11 @@ needs a choice from you.
   making something up. Cubby's face and status come from the steps that really ran.
 
 ### What to keep from the mockup
-1. **The logo that animates.** This is the heart of it. A panel beside the conversation holds Cubby's logo, large,
-   with a status line under it, and the logo itself moves with what Cubby is doing. The mockup has three states:
-   ready (the smile at rest), thinking (the smile bends and three dots bounce under it) and speaking (the line under
-   the smile moves like a voice).
+1. **The logo that animates.** This is the heart of it. Nick simplified the logo for this ("I did simplify the logo
+   a lot"): a smile with a line under it, in a rounded square with a blended edge and a soft glow. A panel beside
+   the conversation holds it, large, with a status line under it, and the logo itself moves with what Cubby is
+   doing. The mockup has three states: ready (the smile at rest), thinking (the smile bends and three dots bounce
+   where the line was) and speaking (the line under the smile moves like a voice).
 2. **A conversation in bubbles:** Cubby on the left with its mark, the person on the right, the newest at the bottom
    and the view following it.
 3. **The reply appears as if typed.**
@@ -251,7 +252,8 @@ needs a choice from you.
 - **Its words:** the first line, the question about the person's name, "Protected & Fact-Verified" and the status
   texts. What Cubby says stays with 0010 and 0059.
 - **Its model call and its outside files** (a hosted model, a style library from a CDN, an outside font).
-- **Its indigo.** The look is Cubby's own (below).
+- **Its indigo around the logo** (the bubbles, the button, the field). The page's look is Cubby's own (below). The
+  logo keeps the colours Nick drew.
 
 ### What changes, and why
 - **The states are real.** Each one is driven by the server, never by a timer alone:
@@ -270,20 +272,21 @@ needs a choice from you.
 - **Nothing is typed before it is checked.** A reply is shown only after the server returns it, so the VM has
   certified it or the loop has refused. The typing only presents a finished reply: word by word, never longer than
   1.5 s in all, and at once when the person prefers reduced motion. A screen reader hears the reply once, complete.
-- **The logo animates, and at rest it is the logo.** The moving logo is a rig drawn over the `_1` mark from the
-  CubbyUXReference checkout's `logos` folder: one shape for each part (the outer arc, the inner arc, the smile, the
-  lower arc and the node dots), in the logo's own colours (`--cb-logo-cyan`, `--cb-logo-green`, `--cb-logo-amber`).
-  - **Why a rig:** Nick simplified the logo ("I did simplify the logo a lot"), so it is five plain parts. The
-    folder's SVG file is still a trace, 63 pieces in 51 near-identical shades, so its smile cannot move on its own.
-    If Nick exports a layered SVG from his design file, one shape per part, that file is the rig's source.
-  - **At rest** the rig matches the logo (see Acceptance), and Nick sees it before it ships.
-  - **What moves:** the smile bends while Cubby checks and returns when it answers; three dots bounce under it
-    while it checks; a line under it moves like a voice while it answers. The arcs and the node dots do not move.
-  - **Where:** large in the face panel, small in the chat's header. Every still use of the logo (other pages, the
-    browser tab) stays the file from the folder, unchanged.
-- **Cubby's one look.** Colours, fonts and shapes come from `dashboard/brand/cubby-tokens.css` (Nick,
-  2026-11-10: "unify everything"). The mockup's indigo and its outside font are not taken. The page calls nothing
-  but its own server.
+- **The animated logo is the one in the mockup, as drawn.** It exists nowhere else yet: Nick has not made it in his
+  design file ("I do not have it in AI done yet only in that file"). So the mockup's drawing is the source:
+  - **The shapes:** the smile and the line, with the mockup's own path data, in the rounded square with its edge
+    and glow. `chat/cubby-logo-simplified-from-mockup.svg`, beside the mockup, holds the logo at rest with one
+    shape per part (it matches the mockup's rendering; Cowork checked it).
+  - **The motion, as in the mockup:** the smile bends over 0.4 s while Cubby checks, and three dots bounce in turn
+    (0.9 s each, 0.15 s apart) where the line was; while Cubby answers the smile is back and the line moves as a
+    wave that stays flat at both ends.
+  - **The logo's own colours as drawn:** the amber smile, the green line and dots, the edge's blend. They sit in one
+    place in the code, so they change in one line when Nick finishes the logo in his design file.
+  - **Where:** large in the face panel, small in the chat's header.
+  - **The still logo everywhere else** stays the `_1` file from the `logos` folder until Nick says otherwise.
+- **Cubby's one look, around the logo.** The page's colours, fonts and shapes come from
+  `dashboard/brand/cubby-tokens.css` (Nick, 2026-11-10: "unify everything"). The mockup's indigo on the bubbles, the
+  button and the field, and its outside font, are not taken. The page calls nothing but its own server.
 - **Each reply says what it is.** A permanent "fact-verified" badge would claim too much: certified is
   not correct, and not every reply is a certified one. Instead:
   - a checked answer carries a small "checked" mark, which opens how it was made;
@@ -304,8 +307,8 @@ needs a choice from you.
   arrives.
 - **Reduced motion:** with the setting on the logo is still, there is no typing, and the status text still changes.
 - **No outside call:** the page loads and runs with the network limited to its own server: 0 requests elsewhere.
-- **The logo at rest:** the rig at rest, drawn at the size of the logo's 4x PNG, differs from it on at most 2% of
-  pixels, and Nick approves it by eye. Every still use of the logo serves a file byte-identical to the folder's.
+- **The logo:** at rest it uses the mockup's path data unchanged, and each state's timing is the mockup's. Nick
+  approves it by eye. Every still use of the `_1` logo serves a file byte-identical to the folder's.
 - **Screen reader:** each reply is announced once, and the status line when it changes.
 - **Narrow screen (400 px):** no sideways scroll, and the header mark shows the states.
 - **P1's tests still pass:** the journey, and the audit view hidden in public mode.
