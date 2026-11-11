@@ -302,3 +302,28 @@ fact in them is a line of the block. Every sentence around it is a picked templa
   rented card (`validation/pod/talk_pod.py`) stays, tested on a CPU, for a run that does not fit Colab.
 - **Cost:** Colab's compute units. Google publishes no rate table; third-party readings for an A100 in 2026 run
   from 5.4 to 15 units an hour, so about 6 to 18 units for the 70 minutes. The session's own panel shows the rate.
+
+### The two runs, as they went (2026-11-11, Colab, A100 80 GB)
+- **The settings changed on the day (Nick).** At batch 32 the card filled on both attention paths (flex, and the
+  reference with `CB_NO_FLEX=1`) and ran at 0.55 s a step, where September ran 0.25 on the same data. Nick set
+  **batch 16** and kept `CB_NO_FLEX=1`, for both runs: twice the updates at the same learning rate. So this is not
+  `talk_v2_2`'s exact recipe; the control carries that difference together with the new base.
+
+  | Run | Data | Steps | Training | Held answer loss, start -> end |
+  |---|---|---|---|---|
+  | `talk_v2_2_cont`, the control | `talk_v2_2.jsonl` | 13,503 | 68.5 min | 2.2760 -> 1.0973 |
+  | `talk_v3a`, the voice | `talk_v3a.jsonl` | 15,890 | 79.8 min | 2.2052 -> 0.8264 |
+
+- **Reading the held loss:** the control's 320 held rows are the ones September's `talk_v2_2` was read on (2.3633
+  -> 1.1896, earlier base, batch 32), so the control ends 0.09 lower on the same rows. The voice run's 320 rows
+  are another sample (its held split holds the voice rows too), so its 0.83 says nothing against the control's
+  1.10. The gates decide.
+- **Each adapter's own record:** LoRA r16/a32 on 181 projections, batch 16, lr 2e-4, 1 epoch, the base
+  `base450m_cont_final.pt` (sha256 7d4bf9d6...).
+- **Where:** on Drive under `cubbyllm/talk/`, and copied beside the grilly2 export of `base450m_cont` in the
+  trained-models folder, as `talk_v2_2_cont/` and `talk_v3a/`, each with its logs.
+- **Not explained yet:** why batch 32 no longer fits and why it was slower. Cowork's guess, not measured: on
+  batches of long answers the loss scores every answer token over the 128k vocabulary in float32, which alone
+  takes tens of GB at batch 32; a loss computed in slices would give the same number in less memory.
+- **Next:** gates E6 to E9 at home on grilly2 for both adapters, the host reading replies through the opener view
+  for both (change **a** above); then the lines set for this pass, and the blind A/B.

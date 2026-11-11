@@ -57,9 +57,10 @@ asked, a fact behind a frame or as a list, a wrong assumption answered. A templa
 never is: every fact in a voice record is a line of its facts block or of Cubby's own record.
 
 **The two runs here, both on `base450m_cont`** (talk_v2.2 itself sits on the earlier `base450m_final.pt`):
-- `_v2_2_cont`, the control: talk_v2.2's data on the new base (216,035 records, 6,752 steps);
-- `_v3a`, the voice: talk_v3a (254,231 records, 7,945 steps).
-The base and the data both change against talk_v2.2; the control tells the two apart at the gates.
+- `_v2_2_cont`, the control: talk_v2.2's data on the new base (216,035 records, 13,503 steps at batch 16);
+- `_v3a`, the voice: talk_v3a (254,231 records, 15,890 steps at batch 16).
+The base, the batch and the data all change against talk_v2.2; the control carries the first two, so the gates
+read the voice records alone.
 
 **The adapter** is LoRA r16/α32 on all 181 projections (7.86M trainable); the base is never merged. The file is keyed
 by grilly2's module names, so what this writes loads on the local card for the gate (`validation/exp_e6_talk_gate.py`)
@@ -69,8 +70,9 @@ and for serving — the same file the local grilly2 trainer (`validation/train_t
 1. `master` on GitHub has `validation/train_talk_torch.py` and `validation/talk_data.py`; the setup cell checks.
 2. On Drive: the base (`cubbyllm/runs/base450m_cont/base450m_cont_final.pt`), the tokenizer
    (`cubbyllm/token_cache_cont/tokenizer/`), and the data (`cubbyllm/talk/talk_v2_2.jsonl`, `cubbyllm/talk/talk_v3a.jsonl`).
-3. A large GPU (A100). talk_v2.1 (203k train records, 6,346 steps) took 26.8 min at 0.25 s/step; at that speed the
-   two runs here take about 28 and 33 minutes.
+3. A large GPU (A100 80 GB). Run on 2026-11-11 at batch 16 with `CB_NO_FLEX=1`: 68.5 and 79.8 minutes at
+   0.30 s/step. Batch 32, talk_v2.2's setting (26.8 min at 0.25 s/step in September), filled the 80 GB card that
+   day on either attention path and ran at 0.55 s/step; why is not measured yet.
 
 **Run all** does everything: both runs, then the last cell releases the GPU. A run already finished (a `DONE` file
 beside its adapter on Drive) is not run again, so a session that ends early is simply run again.
@@ -96,8 +98,9 @@ CKPT      = f'{DRIVE}/runs/base450m_cont/base450m_cont_final.pt'
 TOKENIZER = f'{DRIVE}/token_cache_cont/tokenizer/grillcheese_bbpe128k.json'
 RUNS      = [('_v2_2_cont', f'{DRIVE}/talk/talk_v2_2.jsonl'),   # the control: talk_v2.2's data on the new base
              ('_v3a',       f'{DRIVE}/talk/talk_v3a.jsonl')]    # the voice: the same mix plus the voice records
-EPOCHS, BATCH, LR, RANK, ALPHA = 1, 32, 2e-4, 16, 32
+EPOCHS, BATCH, LR, RANK, ALPHA = 1, 16, 2e-4, 16, 32   # batch 16: 32 filled the 80 GB card (2026-11-11)
 MAX_LEN   = 1024
+os.environ['CB_NO_FLEX'] = '1'                # the reference attention path; the trainer does not compile flex
 for p in (CKPT, TOKENIZER, *[d for _, d in RUNS]):
     assert os.path.exists(p), p
 """),
