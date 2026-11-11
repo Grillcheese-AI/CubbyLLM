@@ -208,6 +208,12 @@ the record pages.
   - **For v2, the training-records sentence** (Nick, 2026-11-10: talk templates may be model-written, facts never):
     v1 says no external model writes training records. v2 says: no external model writes a fact or a reasoning
     record; the talk adapter's wording templates were drafted by external models and picked by a person.
+  - **Also for v2 (found 2026-11-10):** talk_v2_2 already works this way. Its fact sentences were written by a
+    frontier model and kept only when the host's checks passed (`build_ground_sft.py`), and its chat and web
+    families are model-written text under the same guard. So v1's sentence holds for the emitter and the
+    reasoning records, and not for the talk adapter's wording. v2 says it for both adapters: the wording of the
+    talk adapter's training sentences came from external models and was kept only when every name and number
+    in it was in the facts handed over; no external model wrote a fact or a reasoning record.
   - **For v2:** v1 cites "the public split of AA-Omniscience (600)". v2 names it as v1's public split and adds v1.1's.
 
 The original options, kept for reference:

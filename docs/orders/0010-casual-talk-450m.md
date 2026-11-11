@@ -200,3 +200,93 @@ three behaviour files (744, 2,019 and 4,665 conversations).
 - **The three behaviour files are not used for this adapter.** Their replies are other assistants' answers, facts
   included, so they fall outside "facts are not model-written". They also hold private conversations and stay out
   of any shared dataset.
+
+## Cowork's addendum (2026-11-10, second): the voice rows are built; what the host needs; the rented run
+
+**In plain words:** Cubby's voice now exists as training rows: a hello by name, what it can do, thanks and
+goodbyes, a pun when asked, a fact handed over in a frame or a list, a wrong assumption answered kindly. Every
+fact in them is a line of the block. Every sentence around it is a picked template.
+- **Over a conventional model:** a chat model learns its facts and its manners from the same text. Here the manners
+  are trained and the facts are handed over at each turn, so a change of tone cannot change a fact.
+
+### What was built
+`validation/sft/build_talk_voice.py` (with `talk_voice_pick`, `_inputs`, `_text`, `_rows`, `_self`, `_facts`; tests in
+`tests/validation/test_talk_voice.py`). It asks no model for anything.
+- **Templates:** 2,565 read, 2,413 kept by rule. Dropped: 91 answer no turn written here, 38 flagged by the panel
+  script, 11 claim to be right, 10 carry a name, 2 offer what Cubby does not do yet. The kept list is
+  `standin/data/out/talk_lines/picked.jsonl` (git-ignored), for Nick to read: his pick is the last word.
+- **Rows:** 40,298 (38,196 train, 2,102 held), English and French. Train rows by family:
+
+  | Family | What it teaches | Train rows |
+  |---|---|---|
+  | `voice_fact` | a checked fact behind a frame (11,000 EN, 3,000 FR) | 14,000 |
+  | `voice_social` | hello, thanks, sorry, encouragement, goodbye, a joke when asked | 6,986 |
+  | `voice_list` | all the block holds about one thing, as a numbered list | 6,341 |
+  | `voice_correct` | `Premise: contradicted`: says so, then the checked value | 3,200 |
+  | `voice_hello` | a greeting by name, and what Cubby can do when asked | 3,004 |
+  | `voice_unconfirmed` | `Premise: not on record`: cannot confirm it, then what it has | 2,500 |
+  | `voice_identity` | a question about Cubby -> Nick's approved answer | 1,428 |
+  | `voice_identity_facts` | Cubby's record as a facts block: it says what the record says | 737 |
+
+- **Where the wording came from, per row:** a template (with its model's id; the eight models carry between 4,797
+  and 5,550 rows each), a rule, Cubby's record, the fact row it was built on. 235 rows carry a joke after a hello,
+  a cheer or a goodbye (`JOKE_RATE` 0.08, Nick's to set). The manifest is `validation/logs/talk_voice.manifest.json`.
+- **The mix `talk_v3a`:** `talk_v2_2.jsonl` unchanged, then the voice rows: 254,231 train rows the trainer keeps,
+  7,945 steps at batch 32 (`talk_v2_2`: 216,035 rows, 6,752 steps).
+- **Checks, all passing:** every fact row passes the name-and-number guard through the opener view and the value
+  check; no slot unfilled; no row twice; no place name in a line about Cubby or a social line (Nick: "do not
+  disclose locations"); the longest row is 319 tokens.
+
+### Found on the way
+1. **Today's host would refuse most of these replies.** `talk_reply` reads the raw draft, and `grounded_prose` takes
+   any capitalised word outside the facts for a name: "Here is what I have: ..." is refused over "Here". Measured on
+   the fact rows as built: the raw guard passes 5,173 of 30,251. Read through `build_chat_sft.chat_view` (a common
+   word that opens a sentence is not a name) every kept row passes. Until the host reads replies that way, a casual
+   adapter cannot be judged on fact turns: it would look like a refusal machine.
+2. **`talk_answer` keeps the first line.** A list is cut after its lead-in.
+3. **The opener list lacks interjections** ("hmm", "ooh", "aha", "oups", "hello", "hey", "bonjour", "coucou",
+   "j'espère", "qu'est-ce"; the manifest counts them). Fact rows opening with them were dropped here.
+4. **The current mix holds no French fact row** (0 French questions in its fact families). So a French fact reply
+   is its label and value behind a French frame, over a block with French labels (`FR_LABEL`, Cowork's table). No
+   French sentence about a fact was invented.
+5. **The refusal sentence stays exact.** The gates read "The facts don't say" at the start of a reply, and the host
+   says it itself when the VM returns nothing. The picked `unknown` and `which` lines (159 each) are in
+   `talk_lines/host_lines.jsonl` for the host to say itself. No French refusal sentence is defined yet.
+6. **`talk_v2_2`'s own data is already "wording by a model, facts checked":** its fact sentences were written by a
+   frontier model and kept only when the host's checks passed (`build_ground_sft.py`, Nick 2026-09-12), its chat
+   family is model-written chats under the guard, its web questions are synthetic. That fits Nick's rule. It does
+   not fit the preprint's "no external model writes training records" read as a statement about every adapter;
+   the paper notes carry the v2 sentence.
+7. **The base.** `talk_v2_2` sits on `base450m_final.pt` (step 21,103). This order names `base450m_cont` (step
+   24,414): its checkpoint is on the Drive folder (`cubbyllm/runs/base450m_cont/`), and its tokenizer is the same
+   file as the trainer's (sha256 4e4030e6...).
+
+### What the host needs before the voice shows (Claude Code; none touches how a fact is found)
+- **a.** `talk_reply` reads the draft through the opener view (move `chat_view` and its word list into the host,
+  add the interjections of point 3). The guard still catches every name and number.
+- **b.** `talk_answer` keeps a list's lines, up to the next block marker.
+- **c.** One line in `talk_prompt`, written like `Explicit: allowed`: `Premise: contradicted` or `Premise: not on
+  record`, from 0017's check of the question's premise. The false value never enters the block, so the guard
+  cannot be talked into grounding it. The adapter words the verdict; it never reaches one.
+- **d.** Cubby's record (`identity_facts.yaml`) as the facts: on a question about Cubby, and for the guard on a
+  chat turn, so "I'm Cubby" is grounded.
+- **e.** French labels in the block of a French chat.
+- **f.** The host's own lines for "I don't know" and "which one" from `host_lines.jsonl` once Nick has picked, and
+  graders that read the outcome code rather than the sentence.
+
+### The rented run (Cowork; nothing billable has started)
+- **Two arms on one card.** `control`: `talk_v2_2`'s data on `base450m_cont` (6,752 steps). `voice`: `talk_v3a`
+  (7,945 steps). The base and the data both change against `talk_v2_2`; the control tells them apart.
+- **Scripts:** `validation/pod/prepare_talk_inputs.py` stages the inputs and the committed code and uploads them;
+  `validation/pod/talk_pod.py` fetches, trains each arm with the notebook's settings, uploads each adapter with its
+  logs and stops the card. The remote is order 0045's: a private dataset repo, the token from the environment.
+- **Price read 2026-11-10:** A100 80 GB at $1.79 an hour (secure), $1.19 to $1.39 (community). At the measured
+  0.25 s a step: 28 + 33 minutes of training and about 10 of setup, so about 70 minutes and about $2.10. No arm
+  starts past 150 minutes.
+- **After:** gates E6 to E9 at home on grilly2 for both adapters, then this order's blind A/B.
+
+### Lines for this pass (set before the run)
+- **Hard, unchanged:** 0 wrong spoken with the guards on.
+- **Grounding held:** on the H-E6 battery, the voice arm's spoken-and-correct is at least the control arm's minus
+  0.02, with the host reading replies through the opener view for both.
+- **Reported, not a gate:** held answer loss per family; the share of fact replies in the one-sentence form.
