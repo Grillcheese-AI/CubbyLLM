@@ -181,3 +181,57 @@ pattern of item 2.
 
 Licences are checked and recorded per module before anything is loaded. Utopia ships IOF Core as one of its packs,
 and is cited as related work.
+
+## Cowork's addendum (2026-11-11): three finance registers already built as worlds
+Nick: "yes to all 4". Source: Tesseract Semantics' open research of August 2026. Three ontologies, each with its
+SHACL shapes, its pipeline and its queries, built by script from public registers. Stated licence: CC BY 4.0 for
+the ontology and documentation, MIT for the code. They ship no question answering: material for Cubby, not a
+competitor. The figures below are their pages', read 2026-11-11.
+
+| world | built from | their size | repository |
+|---|---|---|---|
+| US investment funds | the SEC's series and class dataset, Form N-CEN, GLEIF's ISIN-to-LEI file | 1.29 million triples; 14,841 funds, 43,344 share classes | `fabio-rovai/investment-fund-ontology` |
+| US banks | the FDIC's BankFind register (27,836 institutions), GLEIF's full golden copy (3,403,760 LEI records), the Federal Reserve's MDRM dictionary | 1,123,634 triples | `fabio-rovai/bank-register-ontology` |
+| EU insurers | EIOPA's register of insurance undertakings (33,924 rows), GLEIF, BaFin's German register | about 276,683 triples; 4,842 undertakings | `fabio-rovai/insurance-register-ontology` |
+
+**What it brings, in plain words:** three finance worlds Cubby can load instead of building: "which funds does
+this registrant run?", "is this bank's identifier still valid?", "where may this insurer sell?". Each answer
+comes from the register's record, with its date.
+- **Over a conventional model:** a model has no register behind its answer, and cannot say that an identifier
+  lapsed last month.
+- **For you:** a finance demo on real public records, sooner than building the worlds from FIBO and GLEIF alone.
+
+### What is done with them
+0. **Before any download:** each repository's licence file is read and recorded, and each register's own terms
+   (the SEC, the FDIC, the Federal Reserve, EIOPA, BaFin, GLEIF). Their pages do not say which licence covers
+   the shapes; that is settled here. Sizes are checked first: a download over 1 GB waits for Nick's yes (GLEIF's
+   golden copy is the likely one).
+1. **Each is a domain manifest of this order,** loaded by the same loader: the ontology checked on its own
+   first, the records loaded with their source and date, the shapes run by the pinned checker, as the addenda
+   above say. The funds world's FIBO alignment is read as they grade it. Where they say FIBO has no counterpart,
+   none is invented.
+2. **Their pipelines are read before anything of theirs runs.** Whether Cubby runs them, or loads the same
+   registers with this order's own loader, is Claude Code's proposal in the report, before it is done. Any part
+   of a world that was not built by rule from a register is left out.
+3. **Their defect counts are the first test of the load.** Each page reports what its shapes found in the real
+   records: in the bank world, 1,733 truncated identifiers held by active institutions and 283 lapsed
+   registrations; in the insurer world, 4 identifiers that fail their check digits and 118 lapsed ones. Loaded
+   from the same register date, Cubby's counts equal theirs. From a later date, the difference is reported per
+   shape, and nothing is repaired.
+4. **Their stop is taken:** each headline count is computed twice, once from the source rows and once by query
+   on the loaded world, and the load's report is not written when the two disagree. It hardens this order's
+   "loaded counts equal the source's counts".
+5. **Questions:** by rule from held-out records, in EN and FR, 100 read by hand, as step 4 of the order. Each
+   world adds its defect questions: "is this identifier valid?" is answered from the check, naming the rule that
+   failed.
+6. **Order of work:** the bank world first (it carries the full GLEIF copy that step 2 needs anyway), then
+   funds, then insurers. Step 2's ownership chains (GLEIF's "who owns whom" records) stay as written and run on
+   the same load.
+
+### Acceptance (added to the order's)
+- **Per world:** the licence record; the loaded counts equal the source's, both ways (item 4); the defect counts
+  against theirs (item 3); right, wrong and refused on its questions. **Line:** 0 wrong.
+- **Kill:** a licence that does not allow the use stops that world before any download.
+
+Credit: Tesseract Semantics is named as the source of each ontology in its manifest and in the paper's related
+work, as CC BY asks.

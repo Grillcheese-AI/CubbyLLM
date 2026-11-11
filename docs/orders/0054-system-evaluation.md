@@ -461,3 +461,66 @@ unmatched answer below, row by row).
   4. **A value with its own date is said with that date;** the pin's date is for facts that carry none.
 - **Where the numbers are:** the proposer, as the read says. No plan for 3,759 of 4,326 SimpleQA questions. The
   store no longer limits the count.
+
+## Cowork's addendum (2026-11-11): the golds and the scorer audited, the proposer measured apart, chance baselines
+Nick: "yes to all 4". The four checks are order 0066; this is the field watch's part. Three steps, each an idea
+taken from someone else's evaluation. No code and no data of theirs is taken.
+
+**What it brings, in plain words:**
+- A wrong answer is counted only after the benchmark's own answer and the scorer have been checked.
+- The numbers say which part failed: the part that writes the plan, or the store and the VM.
+- "Right" is read against what a blind guess scores, and a rate is not quoted before enough answers are spoken.
+- **Over a conventional model:** a model's benchmark score is one number. It cannot say whether the benchmark,
+  the scorer or the model was wrong, nor which of its parts.
+- **For you:** when the paper says "no wrong answer", a reviewer can check what that rests on.
+
+### 1. The golds and the scorer audited by replay, before a wrong is counted
+From "Follow the Policy, Fail the Benchmark" (Xiao and Cai, arXiv 2611.07042). It audits nine rule-following
+benchmarks by source tracing and program execution, and finds reference answers the sources do not support and
+scorers that reject valid answers or accept incomplete ones.
+- **The gold, replayed as a claim.** For every unmatched answer of C, the gold is checked against the store and
+  the live source, and classed: supported; contradicted; supported for another question (Obama Sr.'s gold is his
+  son's); out of date; not on record.
+- **The scorer, on fixtures.** Known-right paraphrases (a finer or coarser place, a renamed site, "UTC-07:00" for
+  a zone) and known-wrong near misses (a namesake, a part for the whole). Its false misses and false matches are
+  counted per benchmark.
+- **The matched answers are read too:** all of them while a benchmark has under 100, a seeded sample of 100
+  after. A match by the normalizer is not yet a right answer.
+- **Both counts are reported, never only the kinder one:** as read by hand (today's), and as audited. The 1% line
+  keeps reading the count as read by hand, the source's wrong values included.
+- **Line:** every audit row names its evidence (the statement, or "none found"). **Kill:** a row with no
+  evidence is not used.
+
+### 2. The store and the VM measured apart from the proposer (arm C-oracle)
+From EviGraphRAG (Sun, Su and Wang, Computers, Materials & Continua, September 2026). It scores the same
+questions twice, once with gold constraints and once with parsed ones, so the parser's errors are counted apart
+from the execution's.
+- **The arm:** on the benchmarks that carry a gold SPARQL query (QALD-10, the WikiKGQA 2026 test, the query-log
+  benchmark: the levels addendum above), the gold query is turned by rule into Cubby's plan and handed to the
+  stack in place of the seat's proposal. The same store, VM, checks and certificate.
+- **By rule, no model.** Only the shapes Cubby's plan language holds are translated; the others are counted
+  "not expressible", by shape. The arm never reads the gold answer.
+- **Reported:** C-oracle beside C: right, wrong, refused. C-oracle minus C is the proposer's share. C-oracle's
+  own refusals, by reason, are the store's and the VM's. It is an upper bound, labelled so, never a system
+  result.
+- **Line:** C-oracle at most 1% wrong among spoken, the source's value against the gold counted apart (step 1).
+- **Kill:** a wrong answer from a right program that the source does not explain is a fault of the store, the
+  checks or the VM. It is read and fixed before any other number of this order is quoted.
+
+### 3. Chance baselines, and bars declared with the count they need
+From "Verified Knowledge Extraction from Language Models" (a Hugging Face space, July 2026). It withdrew its own
+55 of 55 headline: a constant guess passed the same gate 88.9% of the time.
+- **A constant-guess arm per benchmark.** For each asked relation, the answer is the store's most frequent value
+  of that relation (CLUTRR: the most frequent relation of its training set). No reasoning, no name read.
+  Reported beside C and M. A benchmark where the constant guess is right more than 5% of the time is flagged in
+  the table.
+- **The certificate against a null.** Each spoken answer's question is put to the claim check with the
+  relation's most frequent other value in the answer's place. **Line:** none is certified. One certified null is
+  a hole in the check, read before anything else.
+- **Bars with the count they need, declared before the run.** With this order's interval (Wilson, 95%), 0 wrong
+  needs 381 spoken answers for the top of the interval to be under 1%; 1 wrong needs 563. Until a benchmark
+  speaks that many, the paper says "0 wrong of n", with the interval, never "under 1%". Today CLUTRR meets it
+  (0 of 827, top 0.46%); SimpleQA does not (0 of 6, top 39%).
+- **A check added after a wrong answer was seen is not confirmed by that answer.** 0066's four checks were
+  written from the 8 wrong answers of the "after": stopping those is a fixture, not a result. Their result is
+  the first benchmark they have not seen (the gold-SPARQL sets).
