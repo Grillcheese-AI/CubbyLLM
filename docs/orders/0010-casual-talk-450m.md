@@ -910,3 +910,24 @@ Read as: yes to fetching it, and to all three uses above.
     stays served until `talk_v3b` is judged.
 - **cubby-stack follows Nick's call** (`422ccf1` there): its default preset is Cubby with `talk_v3a` and the
   flags a, b, d, g, h; the stand-in is dropped when a config is read, so a save no longer brings it back.
+
+**Nemotron-Terminal-Corpus (NVIDIA; Pi et al., arXiv 2602.21193), pointed at by Nick the same day: the data is
+not used; its recipe is worth borrowing. Not downloaded.**
+- **What it is:** about 366,000 worked sessions of an agent solving tasks in a Linux terminal, CC BY 4.0, 8.3 GB.
+  The tasks come from two streams: existing math, code and software sets rewritten as terminal tasks (226,000),
+  and new tasks built from a list of basic terminal skills in nine areas, at set levels of difficulty
+  (140,000). An agent ran each task in a real container; the sessions were then filtered and cleared of
+  anything overlapping the benchmark.
+- **Its result:** an 8-billion-parameter model goes from 2.5% to 13.0% on Terminal-Bench 2.0, and a 32-billion
+  one from 3.4% to 27.4%, past models fifteen times its size.
+- **Why not the data:** Cubby's program seat writes CubeLang for the VM; it does not drive a shell, and 0063 puts
+  agents that act in the world out of scope. The sessions are another model's reasoning, which Nick's rule of
+  2026-11-10 keeps out of Cubby's training.
+- **The recipe, for the program seat's data** (0057's curriculum; 0062's helpers), on Nick's yes:
+  - a list of the basic skills a CubeLang program is made of (look up, hop, filter, count, compare, a date
+    sum), and tasks built from them at set levels, so that a gap in one skill can be trained on its own;
+  - existing question sets rewritten into Cubby's format, as 0057 already plans for Wikidata's query logs;
+  - only what runs and certifies is kept, which is already Cubby's rule;
+  - everything that overlaps a benchmark is removed before training. Today's NQ case is the reason.
+- **For the system paper's related work:** measured evidence that a model of modest size gains most from data
+  checked by running it.
