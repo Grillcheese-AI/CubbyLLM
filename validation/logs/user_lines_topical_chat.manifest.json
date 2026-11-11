@@ -1,0 +1,73 @@
+{
+ "what": "order 0010: users' lines from Topical-Chat, for talk_v3b's rows (pool rows) and for blind tests (pool held, never trained on); counts only, the text stays out of the repository",
+ "source": "Topical-Chat (Gopalakrishnan et al., Interspeech 2019), Hugging Face: Conversational-Reasoning/Topical-Chat",
+ "licence": "CDLA-Sharing-1.0",
+ "splits": {
+  "train": "rows",
+  "valid_freq": "held",
+  "valid_rare": "held",
+  "test_freq": "held",
+  "test_rare": "held"
+ },
+ "read": {
+  "turns": 235281,
+  "not a kind": 134351,
+  "dropped": {
+   "too short or too long for its kind": 24045,
+   "rated badly by the partner": 1072,
+   "a link, an address or a long number": 64,
+   "a blocked word": 15
+  },
+  "duplicates": 4485,
+  "held also in train": 1194
+ },
+ "kept": {
+  "rows": {
+   "about_you": 18086,
+   "bye": 4864,
+   "hello": 2915,
+   "know_ask": 3908,
+   "know_claim": 6796,
+   "question": 15765,
+   "reaction": 3860,
+   "all": 56194
+  },
+  "held": {
+   "about_you": 4131,
+   "bye": 1094,
+   "hello": 634,
+   "know_ask": 1114,
+   "know_claim": 1775,
+   "question": 4227,
+   "reaction": 886,
+   "all": 13861
+  }
+ },
+ "stand_alone": {
+  "rows": {
+   "about_you": 13391,
+   "bye": 2389,
+   "hello": 2915,
+   "know_ask": 2699,
+   "know_claim": 4446,
+   "question": 5097,
+   "reaction": 484
+  },
+  "held": {
+   "about_you": 2937,
+   "bye": 506,
+   "hello": 634,
+   "know_ask": 766,
+   "know_claim": 1208,
+   "question": 1362,
+   "reaction": 116
+  }
+ },
+ "about_you_personal_and_alone": {
+  "rows": 9518,
+  "held": 2053
+ },
+ "with_a_topic_named": 20028,
+ "sensitive_flagged": 3065,
+ "lines_sha256": "d615057e7bb91b6cbeb58481e73d32f23c4aa8c1326ba0b7aaae251aab79b9c1"
+}

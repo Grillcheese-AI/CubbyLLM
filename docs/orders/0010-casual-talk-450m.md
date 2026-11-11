@@ -804,3 +804,86 @@ Nothing was downloaded. Both were read from their pages and licence files.
   rule of 2026-11-10 stands: a model may draft wording, never a fact. Training on it would feed what changes g
   and h are there to stop. No French.
 - **The user's side is not kept either:** nothing says a person wrote it, and some prompts show machine edits.
+
+### Topical-Chat fetched, and the users' lines built (Cowork, 2026-11-11; Nick: "yes all")
+Read as: yes to fetching it, and to all three uses above.
+- **Fetched:** from its Hugging Face copy (`Conversational-Reasoning/Topical-Chat`, Amazon's licence file
+  inside): 10 data files, 70 MB, into the git-ignored data folder. 10,784 conversations and 235,281 turns, as
+  its card says.
+- **Use 1, built:** `validation/sft/build_user_lines.py`, with tests. It keeps only what a person says to open,
+  to close, to ask and to react. Nothing is taken as Cubby's side, and no fact is taken.
+  - Dropped: turns the partner rated badly, links and long numbers, a short list of blocked words, lines too
+    short or too long for their kind.
+  - The lines stay in the git-ignored out folder. Only the counts are committed
+    (`validation/logs/user_lines_topical_chat.manifest.json`).
+
+  | kind | for rows (train) | held for blind tests | of these, standing alone |
+  |---|---|---|---|
+  | a hello | 2,915 | 634 | all |
+  | a goodbye or a thanks | 4,864 | 1,094 | 2,389 and 506 |
+  | a question about the partner's own life | 18,086 | 4,131 | 13,391 and 2,937 |
+  | asking after a thing ("do you know who ...?") | 3,908 | 1,114 | 2,699 and 766 |
+  | a fact stated as "did you know ...?" | 6,796 | 1,775 | 4,446 and 1,208 |
+  | another question | 15,765 | 4,227 | 5,097 and 1,362 |
+  | a short reaction | 3,860 | 886 | 484 and 116 |
+  | all | 56,194 | 13,861 | 31,421 and 7,529 |
+
+  - **Standing alone:** the line can be put to Cubby with nothing said before it. Most turns open with a reply
+    to the partner, so the question is also kept by itself.
+  - **The held pool is never trained on.** It is the four valid and test files, less every line that also
+    occurs in train. The next blind test's turns come from it.
+  - **What each kind is for:** the questions about the partner's life are where a model is tempted to claim one
+    (9,518 and 2,053 are plainly personal and stand alone): they test changes d and h. "Do you know who ...?"
+    is how people ask after a thing. "Did you know ...?" is a claim to check, some true and some not.
+  - **By my read of a sample:** the hellos, the goodbyes, the personal questions and the two "know" kinds are
+    clean. "Another question" is noisy and is used last.
+- **Use 2 waits for the facts.** The copy holds pointers only: Reddit post ids, Wikipedia section numbers, an
+  article's address. The repository's script fetches the text with Reddit credentials, which Nick sets himself.
+  - What it would open: 172,351 turns cite a fact section and no memory; 160,593 of them are rated good or
+    excellent; 65,011 of those have no first-person word; 41,424 of those are statements. That is before
+    Cubby's guard is run against the fact each cites.
+- **Use 3, noted for the emotions order:** each turn carries the writer's own label. Curious to dive deeper
+  101,162; neutral 51,796; surprised 38,253; happy 36,845; sad 3,070; disgusted 1,848; fearful 1,174; angry
+  1,133.
+
+### Four more sources Nick pointed at (2026-11-11), read by Cowork; none downloaded
+- **MAGA-human-source** (`anyangsong`; Song et al., arXiv 2601.04633): **not used as a whole; two parts may be,
+  each at its own source.**
+  - It is a mirror of about twenty collections of human text in English and Chinese, 83.9 GB: Reddit posts,
+    reviews, news, answers, abstracts, encyclopedia entries. They are documents, not conversations. Nothing ties
+    a text to a fact. No French.
+  - The MIT tag is the mirror's. Each part keeps its own terms, and one part (wikiHow) was already taken down
+    after a copyright notice. Reddit's terms since 2023 forbid training models on its content without its
+    permission, as The Register reported them.
+  - **Its `natural_questions` part must never reach a training row:** NQ is one of 0054's benchmarks.
+  - What could serve: real question wordings (the Yahoo Answers part, Reddit titles), for the user's side only,
+    once their own terms are read.
+- **Humanizer-5M** (`Lelonthecodeur`, French): **the data is not used; two of its ideas are.**
+  - Five million rows written by a program from templates. The replies carry no content ("Je commencerais
+    petit, avec une version qui fonctionne"), and the bad twin of each is the same reply with a stock opening
+    put in front. No licence is stated.
+  - **Idea 1, the labelled bad twin:** generic assistant phrasing, emoji overuse, hype with no reason, forced
+    empathy, a jump of tone, too many words. Those are the faults the blind test showed. Cubby's own logs hold
+    real ones: the control's stock replies. They can label the next sheet and test changes g and h.
+  - **Idea 2, proportion:** an emoji only when the user's own message has one. It is an answer to Nick's open
+    call on emoji.
+  - For French users' lines, the data folder already holds three French sets (named claire, diabla and quebec),
+    not yet read for this.
+- **Agent Task Management Dataset** (`Lelonthecodeur`, MIT, English): **the data is not used; the record's shape
+  is worth borrowing.**
+  - Five million rows written by a program. Every trace says "simulated", and tools are assigned at random (a
+    database schema prepared with a spreadsheet). Training on it would teach a model to write a trace, where
+    Cubby's rule is that the VM writes it.
+  - **The shape:** a plan with steps that depend on each other, a trace with evidence per step, a check per
+    expected output, and five outcomes: done, failed, recovered after an error, impossible, needs a
+    clarification. Its system line is Cubby's own: never claim an action succeeded that was not run.
+  - Where it would go, on Nick's yes: 0063 (split questions: each part certified, and how they combine) and
+    0061 (documents with human review), as the record of a task and as the five outcomes to test.
+- **wiki_academic_subjects** (`meliascosta`, 64,400 chunks of English Wikipedia, each labelled with its place
+  in Wikipedia's outline of academic disciplines; about 50 MB): **a candidate for telling which field a
+  question is in; nothing decided.**
+  - The text is bags of words with the stop words removed, so it gives a table from words to fields, not
+    sentences. The labels were assigned automatically from links. English only.
+  - The card says CC BY 3.0 and points at Wikipedia's terms, which are share-alike. To settle before use.
+  - Where it would go, on Nick's yes: 0058, to pick which domain world a question is put to, measured before it
+    is built.
