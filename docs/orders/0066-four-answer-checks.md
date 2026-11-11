@@ -152,3 +152,42 @@ read the kind asked.
 - **Not verified here:**
 - **Found on the way:**
 - **Questions:**
+
+## Cowork's addendum (2026-11-11): the roots, picked from the store's own list
+Claude Code resolved each root by its label and found several senses of each word (`roots.json`, beside the
+subclass edges). The picks below were made from that list and tested on the store's own `subclass of` edges
+(4,406,685 classes, 5,157,087 edges, snapshot `8a2041cff56d...`), with generic classes only: no benchmark question
+was used to choose.
+
+| root | ids kept | why |
+|---|---|---|
+| place | Q27096213 geographic entity | replaces Q2221906 geographic location, which sits under it |
+| person | Q5 human | the 11 fictional races named "human" are dropped |
+| group | Q16334295 group of humans | as resolved |
+| organisation | Q43229 organization | the three other senses are dropped |
+| character | Q95074 character, Q21070598 figure that may or may not be fictional | the second adds gods and mythical and biblical figures |
+| work | Q15621286 intellectual work, Q732577 publication | replace Q386724 work, which is too wide here |
+| role | Q4164871 position, Q216353 title, Q355567 noble title, Q56019 military rank, Q16138157 title (a sign of rank) | the ten other senses are dropped |
+
+- **Place.** Under "geographic location" the store has city, country, mountain, lake and road, but not human
+  settlement, village, neighbourhood, park, river, building, hospital, region or cultural region. All of them are
+  under "geographic entity" (93,368 classes); film, book, business and human are not. This is the more lenient
+  pick for the Auschwitz answer (a part of a camp is a structure, so a place): said here before the run.
+- **Work.** In this store "work" (Q386724) has "group of works", "artificial physical object" and "architectural
+  structure" under it, so a city, a musical instrument and a hospital are works. Check 2 must not reach them.
+  "Intellectual work" holds creative, written, literary and musical works, films, series, paintings and games;
+  "publication" adds book, "version, edition or translation" and musical release, which are not under it.
+- **Who.** A Greek or Roman deity, a goddess and a human biblical figure reach none of human, group,
+  organization or character; they reach "figure that may or may not be fictional" (1,265 classes). A country is
+  an organization in the store, so it passes "who". A named animal does not: it is refused, and counted.
+- **Role words (check 3): by `instance of` as well as `subclass of`.** Emperor, king, queen, pope, president,
+  prime minister, minister, sultan, duke, general, ambassador and mayor are under "position" by `subclass of`.
+  Bishop, priest, prince, crown prince and knight are under no role root that way. A role word is an item under
+  a role root, or an instance of a class under one. The list's size is reported.
+- **How the ids are held:** each root keeps its label and an allow-list of the ids above. The build checks that
+  every id is a class of the store carrying that label, and stops if one is not. The ids are listed in the
+  report with the table's snapshot.
+- **This amends the order's text:** in check 1, "geographic location" reads "geographic entity", and "fictional
+  character" also takes the figures above; in check 2, "work" reads "intellectual work or publication".
+- **The runs made on the first table are not 0066's.** Its "work" reached cities and buildings, so check 2 could
+  ask where it has no business. The flags-on run and the audit are made again on the rebuilt table.
