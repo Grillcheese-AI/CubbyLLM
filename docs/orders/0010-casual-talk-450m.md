@@ -931,3 +931,23 @@ not used; its recipe is worth borrowing. Not downloaded.**
   - everything that overlaps a benchmark is removed before training. Today's NQ case is the reason.
 - **For the system paper's related work:** measured evidence that a model of modest size gains most from data
   checked by running it.
+
+- **Nick's idea on it (2026-11-11):** "tasks from the dataset could be converted to cubelang programs that would
+  execute". Cowork's read, from the card, the paper and the schema; no row has been read yet:
+  - **It is Cubby's own loop, and it keeps the rule, if Cubby does the converting:** the program seat proposes a
+    CubeLang program for a task, the VM runs it, and the row is kept only when it runs and returns the task's
+    known answer. No other model writes a program. The teacher's shell session is not used.
+  - **What the rows carry:** the session (`conversations`) and labels (`task`, `source`, `agent`, `model`,
+    `date`). The schema shows no field for a task's input files, its tests or its expected answer: those lived in
+    the containers. A task is the instruction in the first turn.
+  - **What could be converted:** tasks that are a computation with a known answer and need no operating system:
+    the math stream, whose answers are in the sets it was adapted from, and data questions whose data is in the
+    task's text. Not file operations, dependencies, security, debugging or software engineering: the VM has no
+    files and no network, by design.
+  - **Two limits to say first:** the math stream is math sets wrapped for a terminal, and the repository
+    already imports a math set directly (TinyGSM); and a real `for`, a call and an early return are still on
+    cubelang's list, so only straight-line programs can be counted on today.
+  - **Proposed, on Nick's yes: read before deciding, then a small trial.** Fetch the smallest file (18 MB) and
+    read what a task holds. If tasks with a checkable answer are there: 200 of them, the program seat proposes,
+    the VM runs, and three numbers are reported: can be written, runs, right. The trial also lists what
+    CubeLang lacked.
