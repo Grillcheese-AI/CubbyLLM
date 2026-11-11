@@ -7,9 +7,10 @@ builds the closure under each root downward from the root, as `wdstore cues` bui
     python -m cubbyllm.worlds.wd_store_roots --raw <subclasses' out dir> --roots <resolved roots .json>
         --out <store dir>.roots.sqlite
 
-The roots are named here by their labels (ROOTS); their ids are read from the store (`resolve`, the store's own name
-lookup: an English or `mul` label, exact, of an item that is a class -- one with an edge in subclass.tsv), recorded
-in the table's meta, and listed in the order's report. Nothing is taken from the order's text. A class reaches a root
+The roots are allow-lists of (id, label) (ROOTS: Cowork's picks from the store's own candidates, 0066's addendum);
+`resolve` checks each id against the store -- a class (an edge in subclass.tsv) carrying that label -- and stops the
+build on any that fails, so nothing is taken from the order's text on trust. The ids go in the table's meta and the
+order's report. A class reaches a root
 when it is the root or any chain of subclass-of edges leads to it; a class may reach several. Written: ``roots(qid,
 mask)`` for every class that reaches one, ``meta`` (the store's snapshot, the root ids, counts). `for_store` gives the
 table only when it was built from the state of the store being served.
@@ -28,9 +29,16 @@ import time
 
 __wiring__ = "WIRED"
 
-ROOTS = {"place": ("geographic location",), "person": ("human",), "group": ("group of humans",),
-         "organisation": ("organization",), "character": ("fictional character",), "work": ("work",),
-         "role": ("position", "title", "noble title", "military rank")}
+ROOTS = {   # each root: its allow-list of (class id, a label the class carries), Cowork's picks in 0066's addendum
+    "place": (("Q27096213", "geographic entity"),),
+    "person": (("Q5", "human"),),
+    "group": (("Q16334295", "group of humans"),),
+    "organisation": (("Q43229", "organization"),),
+    "character": (("Q95074", "fictional character"), ("Q21070598", "figure that may or may not be fictional")),
+    "work": (("Q15621286", "intellectual work"), ("Q732577", "publication")),
+    "role": (("Q4164871", "position"), ("Q216353", "title"), ("Q355567", "noble title"), ("Q56019", "military rank"),
+             ("Q16138157", "title")),
+}
 BIT = {name: 1 << i for i, name in enumerate(ROOTS)}
 WHO = {"person", "group", "organisation", "character"}   # what "who" asks for (0066, check 1a)
 
@@ -41,17 +49,21 @@ def _tsv(path: str):
             yield line.rstrip("\n").split("\t")
 
 
-def resolve(ask, classes: set, labels: dict = ROOTS) -> dict:
-    """{root name: [ids]}: the classes whose English or `mul` label is the root's label exactly; for a label no class
-    has, those that carry it as an alias (the world's own order of names: "fictional character" is Q95074's alias)."""
-    out = {}
-    for name, texts in labels.items():
-        ids = []
-        for text in texts:
-            hits = [h for h in (ask({"op": "name", "text": text}) or {}).get("hits", [])
-                    if h.get("how") == "exact" and h.get("lang") in ("en", "mul") and h["id"] in classes]
-            ids += [h["id"] for h in hits if h.get("kind") == 0] or [h["id"] for h in hits if h.get("kind") == 1]
-        out[name] = sorted(set(ids), key=lambda q: int(q[1:]))
+def resolve(ask, classes: set, roots: dict = ROOTS) -> dict:
+    """{root name: [ids]}: each allow-listed id, checked to be a class of this store (it has a subclass-of edge) that
+    carries its label (an English or `mul` label or alias, normalized). Any id that fails stops the build: nothing is
+    taken on trust from the order's text."""
+    from cubbyllm.reasoning.planner import normalize
+    out, bad = {}, []
+    for name, pairs in roots.items():
+        for q, label in pairs:
+            e = ask({"op": "get", "id": q}) or {}
+            names = {normalize(n[2]) for n in e.get("names", []) if n[0] in ("en", "mul") and n[1] in (0, 1)}
+            if q not in classes or normalize(label) not in names:
+                bad.append((name, q, label, q in classes, sorted(names)[:4]))
+            out.setdefault(name, []).append(q)
+    if bad:
+        raise SystemExit(f"roots not verified in this store: {bad}")
     return out
 
 

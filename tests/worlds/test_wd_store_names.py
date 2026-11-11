@@ -146,8 +146,12 @@ def hop(w, rel, name):
 
 def test_the_roots_table_reads_the_closure_and_the_resolution_rule(world, tmp_path):
     assert world._roots.of("Q9014") == {"place"} and world._roots.of("Q9041") == {"role"} and world._roots.of("Q9999") == set()
-    got = R.resolve(T.FakeStore(), {"Q5", "Q41"}, {"person": ("human",), "place": ("geographic location",)})
-    assert got == {"person": ["Q5"], "place": []}                     # a label no class holds: none
+    assert R.resolve(T.FakeStore(), {"Q5", "Q41"}, {"person": (("Q5", "human"),)}) == {"person": ["Q5"]}
+    with pytest.raises(SystemExit):                                   # an id that does not carry its label: stop
+        R.resolve(T.FakeStore(), {"Q5", "Q41"}, {"person": (("Q41", "human"),)})
+    with pytest.raises(SystemExit):                                   # an id that is no class of the store: stop
+        R.resolve(T.FakeStore(), {"Q41"}, {"person": (("Q5", "human"),)})
+    assert set(R.ROOTS) == set(R.BIT) and all(q.startswith("Q") for ps in R.ROOTS.values() for q, _l in ps)
     assert R.for_store(str(tmp_path / "roots.sqlite"), "another") is None
 
 
