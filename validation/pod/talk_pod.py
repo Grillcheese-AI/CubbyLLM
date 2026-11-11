@@ -74,8 +74,16 @@ class Run:
 
 
 def preflight(r: Run) -> None:
-    """The card and a write to the remote, before anything is fetched: a card is not billed for a run that cannot
-    save its result."""
+    """The trainer's packages, the card and a write to the remote, before anything is fetched: a card is not
+    billed for a run that cannot save its result."""
+    missing = []
+    for mod in ("numpy", "tokenizers", "safetensors.numpy"):
+        try:
+            __import__(mod)
+        except ImportError:
+            missing.append(mod.split(".")[0])
+    if missing:
+        raise SystemExit("missing packages: " + ", ".join(missing) + " (pip install them, then run again)")
     import torch
     card = torch.cuda.get_device_name() if torch.cuda.is_available() else "cpu"
     r.state["card"], r.state["torch"] = card, torch.__version__
