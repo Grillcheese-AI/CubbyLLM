@@ -506,3 +506,25 @@ Logs: `validation/logs/talk_ab_2026-11-11_{voice,control,sheet,key}.json`, `_run
   - the old question shapes answered in the voice (finding 3); more openings per kind (finding 4);
   - blocks with a second entity's facts (the binding losses of E6).
 - **Next (Claude Code's):** change **d** ahead of c, e and f.
+
+### Change d: Cubby's record, and a check on every chat reply (Claude Code, 2026-11-11)
+- **Built** (`37ca3e1`, `CB_CUBBY_RECORD=1`, off by default):
+  - **The record:** `cubbyllm/speech/cubby_record.json`, the facts of `identity_facts.yaml` v2 copied into the repo on
+    Nick's yes (2026-11-11), with one statement added on his yes the same day: Cubby is not a person, it is a model
+    ("No, I'm not a person. I'm Cubby, a model built by GrillCheese Research Lab." and the French). The backend line is
+    left out.
+  - **A question about Cubby** (now also: a person, a human, a program, a bot, a machine, a robot; EN and FR) reaches
+    the talk adapter with the record as its block, in the voice rows' labels plus "is" / "is not".
+  - **Every chat reply** passes `cubby_record.chat_check` in `CubbyChat._guard`: what Cubby says it is (denying it is a
+    model or a program, claiming to be a person or human, another name), an ability the record lists as not yet, then
+    every name and number against the record, the user's turn and the last exchange (the name-and-number guard through
+    the opener view). A refused reply is not offered; the don't-know line stays.
+- **Read over the A/B's chat replies** (the host's checks in their served order: base-model guard, voice rules, then
+  this): voice 28 of 30 pass; the kill reply is refused (by the base-model guard already, and by this check); one
+  French imperative ("Installe-toi") is refused as a name. Control 25 of 30 pass; "I'm Daniel" is refused.
+- **Not caught by any check here:** stock assistant talk with no name, number or claim about Cubby ("Could you please
+  tell me: 1. ..."), and a false statement in other words ("I don't have a native language"). The check reads what
+  Cubby says it is and names; it does not read every sentence for truth.
+- **For the next A/B:** `validation/exp_talk_ab.py` reads chat turns through the cut only; to show what Cubby would
+  say, its chat turns go through `CubbyChat._guard` (or `cubby_record.chat_check` after `identity.is_model_guard` and
+  `voice_ok`) with `CB_CUBBY_RECORD=1`.
