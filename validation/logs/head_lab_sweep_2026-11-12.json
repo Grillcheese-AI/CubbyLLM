@@ -1,0 +1,39 @@
+{
+ "what": "order 0068 route 2: larger shortlists, on the held-in tuning split only",
+ "arm": "screen+succ",
+ "date": "2026-11-12",
+ "positions": 13312,
+ "index_rows": 4096,
+ "ks": {
+  "8192": {
+   "agree_shortlist_alone": 0.98445,
+   "rows_shortlist_mean": 8194.8,
+   "mass_inside": 0.95126,
+   "fallback_for_0.995": {
+    "signal": "p1",
+    "rate": 0.4348
+   },
+   "rows_mean_at_0.995": 67944.6
+  },
+  "16384": {
+   "agree_shortlist_alone": 0.99279,
+   "rows_shortlist_mean": 16385.5,
+   "mass_inside": 0.97239,
+   "fallback_for_0.995": {
+    "signal": "logistic",
+    "rate": 0.04612
+   },
+   "rows_mean_at_0.995": 26385.3
+  },
+  "24576": {
+   "agree_shortlist_alone": 0.99549,
+   "rows_shortlist_mean": 24576.9,
+   "mass_inside": 0.97998,
+   "fallback_for_0.995": {
+    "signal": "margin",
+    "rate": 0.0
+   },
+   "rows_mean_at_0.995": 28672.9
+  }
+ }
+}

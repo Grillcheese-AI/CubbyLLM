@@ -1,0 +1,121 @@
+{
+ "what": "order 0068 route 2: the shortlist with a fallback to the full head",
+ "date": "2026-11-12",
+ "arm": "screen+succ",
+ "k": 4096,
+ "index": "index_router_succ.npz",
+ "tune": {
+  "dump": "heldin_val",
+  "stride": 2,
+  "signal": "logistic",
+  "threshold": -3.619435544010789,
+  "model": {
+   "mu": [
+    2.020389948313375,
+    0.4942341265550363,
+    2.42964430508668,
+    1788.0687202306895
+   ],
+   "sd": [
+    2.5178300125458284,
+    0.3113684667583438,
+    1.6558004920855969,
+    3728.997020134423
+   ],
+   "beta": [
+    -0.377713696061749,
+    -0.018592409597598388,
+    0.45772409197454456,
+    0.09465293021635274,
+    -3.4133119497835813
+   ]
+  },
+  "table": {
+   "margin": {
+    "0.995": {
+     "threshold": -1.6156120300292969,
+     "fallback_rate": 0.6244741586538461
+    },
+    "0.997": {
+     "threshold": -2.0985469818115234,
+     "fallback_rate": 0.7021484375
+    },
+    "0.999": {
+     "threshold": -3.4595470428466797,
+     "fallback_rate": 0.8266225961538461
+    },
+    "at_target": {
+     "threshold": -2.0985469818115234,
+     "fallback_rate": 0.7021484375
+    }
+   },
+   "p1": {
+    "0.995": {
+     "threshold": -0.5366067090443463,
+     "fallback_rate": 0.5953275240384616
+    },
+    "0.997": {
+     "threshold": -0.6795415668622228,
+     "fallback_rate": 0.6932842548076923
+    },
+    "0.999": {
+     "threshold": -0.9153870062651117,
+     "fallback_rate": 0.8301532451923077
+    },
+    "at_target": {
+     "threshold": -0.6795415668622228,
+     "fallback_rate": 0.6932842548076923
+    }
+   },
+   "logistic": {
+    "0.995": {
+     "threshold": -3.46888197604211,
+     "fallback_rate": 0.6042668269230769
+    },
+    "0.997": {
+     "threshold": -3.619435544010789,
+     "fallback_rate": 0.6716496394230769
+    },
+    "0.999": {
+     "threshold": -4.182301928016774,
+     "fallback_rate": 0.8311298076923077
+    },
+    "at_target": {
+     "threshold": -3.619435544010789,
+     "fallback_rate": 0.6716496394230769
+    }
+   }
+  },
+  "tuned_on": 13312,
+  "fitted_on": 13312,
+  "target": 0.997
+ },
+ "read": {
+  "dump": "heldout",
+  "skip": 2048,
+  "stride": 4,
+  "offset": 1,
+  "positions": 12800,
+  "fallback_rate": 0.64703,
+  "agree_overall": 0.99367,
+  "agree_overall_95": [
+   0.99214,
+   0.99491
+  ],
+  "agree_shortlist_alone": 0.95984,
+  "agree_where_accepted": 0.98207,
+  "rows_mean": 91016.8,
+  "rows_shortlist_mean": 4100.8,
+  "index_rows": 4096,
+  "mass_inside_where_accepted": 0.96941,
+  "target_outside_and_accepted": 0.01156,
+  "nll_full": 2.6463,
+  "nll_mixed_outside_lost": 2.8375,
+  "nll_mixed_inside_only": 2.6283
+ },
+ "lines": {
+  "agree_overall >= 0.995": false,
+  "rows_mean <= 32000": false,
+  "nll within +0.02 (0050's)": false
+ }
+}

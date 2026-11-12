@@ -1,9 +1,9 @@
 # 0068 - The head lab: four ways to stop scoring 128,000 words at every token, tried on the frozen trunk's saved states
-status: in progress (Cowork builds this one, on Nick's word of 2026-11-11)
-written: 2026-11-11 by Cowork - approved: 2026-11-11 by Nick ("can you do it yourself?") - hypothesis: H-C3 (with H-C2, H-C6)
+status: in progress (Cowork builds this one, on Nick's word of 2026-11-12)
+written: 2026-11-12 by Cowork - approved: 2026-11-12 by Nick ("can you do it yourself?") - hypothesis: H-C3 (with H-C2, H-C6)
 
 ## Why
-Nick, 2026-11-11: "something we did not fix yet is the 128k vocab". It is true in the code: `build.py` sets the
+Nick, 2026-11-12: "something we did not fix yet is the 128k vocab". It is true in the code: `build.py` sets the
 head's shortlist to the whole vocabulary, so every token scores all 128,000 rows. The claim "128k at a 32k head's
 cost" does not hold today.
 
@@ -75,5 +75,44 @@ Routes 3 and 4 that pass go to the serving batteries on a card (0050's list), in
 - Growing the vocabulary itself, and H-C2's merged tokens: after a head passes.
 - The input embedding table.
 
-## Report
-<!-- Cowork fills this in -->
+## Report (Cowork)
+
+### Route 2 as pre-registered (K = 4,096): killed (2026-11-12)
+- **Log:** `validation/logs/head_lab_fallback_2026-11-12.json`. The rule frozen on held-in (26,624 positions) is the
+  logistic score. To reach 0.997 there it hands 67% of positions to the full head (the margin: 70%; the best
+  probability: 69%). Even 0.995 needs 60%.
+- **Held-out, read once** (12,800 positions, offset 1): fallback 64.7%; overall agreement 0.99367 (95%: 0.99214 to
+  0.99491); mean rows 91,017; loss 2.8375 against the full head's 2.6463. The shortlist alone agrees on 0.95984
+  (0050 read 0.958 on its own positions).
+- **Both lines are missed,** and 0050's loss line with them.
+- **What it says:** where this shortlist is wrong, it does not look unsure. A disagreement means the full head's
+  best token is outside the shortlist, and the scores inside carry little sign of it: among the 35% of positions
+  the rule trusts most, 1.8% still disagree. A fallback keyed on the shortlist's own confidence cannot rescue a
+  shortlist that small.
+
+### A larger shortlist, on held-in only (2026-11-12)
+0050 stopped at K = 4,096. Its cost line is a full 32k head's, which leaves room for about 27,900 rows beside
+the index's 4,096.
+- **Log:** `validation/logs/head_lab_sweep_2026-11-12.json` (13,312 held-in tuning positions; no held-out position
+  touched).
+
+| K | shortlist alone | probability inside | fallback needed for 0.995 | mean rows at 0.995 |
+|---|---|---|---|---|
+| 8,192 | 0.98445 | 0.951 | 43.5% | 67,945 |
+| 16,384 | 0.99279 | 0.972 | 4.6% | 26,385 |
+| 24,576 | 0.99549 | 0.980 | none | 28,673 |
+
+- **Within a 32k head's rows, the frozen index reaches the line on held-in.** The margin is thin: at K = 4,096
+  the shortlist alone missed about a tenth more often on held-out than on held-in (4.0% against 3.6%).
+
+### Route 2b, pre-registered before its read (2026-11-12)
+- The same frozen index, a larger K, the same three signals. No training.
+- **Chosen on held-in only** (26,624 positions): among K in {16,384; 24,576} and targets {0.997; 0.996}, the
+  highest target whose mean rows there are at most 30,000; then the fewer rows. If none qualifies, 2b stops
+  there and no held-out position is read.
+- **Lines, on held-out, read once (offset 2):** overall greedy agreement at least 99.5%; mean rows at most
+  32,000. **Kill:** either missed.
+- Routes 3 and 4 move to offset 3. No held-out position is then left unread: a later arm needs a new dump.
+- **Not claimed by 2b, even if it passes: the measured time.** 24,576 gathered rows are not a contiguous 32k
+  block. The time line is read on grilly2 and on an A100 when the route is wired. If the gather costs too much
+  there, the next arm keeps a fixed block of frequent tokens, contiguous, and gathers only a short list.

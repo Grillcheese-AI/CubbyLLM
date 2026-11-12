@@ -10,6 +10,7 @@ used instead. This reads, with no training of the head and no GPU:
             even positions and every threshold is chosen on the odd ones)
   read      once, on held-out positions 0050 did not read (--offset): fallback rate, overall agreement with its 95%
             interval, mean rows scored (the index's pass + the shortlist + the full head where it falls back)
+  --sweep   larger K, on the held-in tuning split only: what a bigger shortlist would give, with no held-out spent
 Rows are rows of the head's width scored per token; a 32k head scores 32,000. Times are not computed here.
 
     python validation/head_lab.py --export <base export> --dumps <head_shortlist folder> [--k 4096 --target 0.997]
@@ -156,6 +157,28 @@ def tune(sc: dict, target: float, targets=(0.995, 0.997, 0.999)) -> dict:
             "tuned_on": int(odd.sum()), "fitted_on": int(even.sum()), "target": target}
 
 
+def sweep(idx, w, held: dict, ks: list, a, index_rows: int, log) -> None:
+    """Held-in only: per K, the shortlist's agreement alone, and the fallback each signal needs for 0.995 there with
+    the mean rows that makes (the index's pass + K + the full head where it falls back)."""
+    rep = {"what": "order 0068 route 2: larger shortlists, on the held-in tuning split only", "arm": a.arm,
+           "date": _dt.date.today().isoformat(), "positions": len(held["target"]), "index_rows": index_rows, "ks": {}}
+    for k in ks:
+        sc = scan(idx, w, held, k, a.arm, log=log)
+        rep["ks"][str(k)] = {"agree_shortlist_alone": round(float(sc["agree"].mean()), 5),
+                             "rows_shortlist_mean": round(float(sc["rows"].mean()), 1),
+                             "mass_inside": round(float(sc["mass"].mean()), 5)}
+        for t in [float(x) for x in a.sweep_targets.split(",")]:
+            table = tune(sc, t)["table"]
+            best = min(SIGNALS, key=lambda s: table[s]["at_target"]["fallback_rate"])
+            f = table[best]["at_target"]["fallback_rate"]
+            rep["ks"][str(k)][f"fallback_for_{t}"] = {"signal": best, "rate": round(f, 5)}
+            rep["ks"][str(k)][f"rows_mean_at_{t}"] = round(index_rows + float(sc["rows"].mean()) + f * len(w), 1)
+        log(k, json.dumps(rep["ks"][str(k)]))
+    path = os.path.join(HERE, "logs", f"head_lab_sweep_{rep['date']}{a.tag}.json")
+    json.dump(rep, open(path, "w", encoding="utf-8"), indent=1)
+    log("->", os.path.relpath(path, os.path.dirname(HERE)))
+
+
 def cut(d: dict, skip: int, stride: int, offset: int) -> dict:
     return {k: (v if k == "shards" else v[skip:][offset::stride]) for k, v in d.items()}
 
@@ -177,6 +200,9 @@ def main() -> None:
     ap.add_argument("--stride", type=int, default=4)
     ap.add_argument("--offset", type=int, default=1, help="0 is the set 0050 read; 1 is this order's")
     ap.add_argument("--tag", default="")
+    ap.add_argument("--sweep", default="", help="K values, comma separated: read on the held-in tuning split only "
+                    "(no held-out position is touched), then stop")
+    ap.add_argument("--sweep-targets", default="0.995", help="the agreements asked for there, comma separated")
     a = ap.parse_args()
     log = lambda *x: print(*x, flush=True)                              # noqa: E731
     w = head_rows(a.export)
@@ -184,6 +210,8 @@ def main() -> None:
     index_rows = len(idx.screen.centroids) if a.arm.startswith("screen") else idx.n
     held = cut(dict(np.load(os.path.join(a.dumps, f"{a.tune}.npz"))), 0, a.tune_stride, 0)
     log(f"tune: {len(held['target'])} held-in positions")
+    if a.sweep:
+        return sweep(idx, w, held, [int(x) for x in a.sweep.split(",")], a, index_rows, log)
     frozen = tune(scan(idx, w, held, a.k, a.arm, log=log), a.target)
     log("frozen:", frozen["signal"], frozen["threshold"], json.dumps(frozen["table"]))
     out = cut(dict(np.load(os.path.join(a.dumps, f"{a.read}.npz"))), a.skip, a.stride, a.offset)

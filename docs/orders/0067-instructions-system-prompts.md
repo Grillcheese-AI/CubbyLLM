@@ -1,14 +1,14 @@
 # 0067 - Instructions and system prompts: read by the model, kept as rules, enforced and checked by the host
 status: open (queue: after 0054's seven name-statement items; its step 0, a measurement, may run first)
-written: 2026-11-11 by Cowork - approved: 2026-11-11 by Nick ("perfect open it") - hypothesis: none (H-E20's gate 4 uses the same measure)
+written: 2026-11-12 by Cowork - approved: 2026-11-12 by Nick ("perfect open it") - hypothesis: none (H-E20's gate 4 uses the same measure)
 
 ## Why
-Nick, 2026-11-11: "we also need instruction following and system prompts". And the challenge this order is
+Nick, 2026-11-12: "we also need instruction following and system prompts". And the challenge this order is
 written to: everything must generalize; transformers where they pay, HDC and VSA where they pay; whatever
 today's frontier does, do it better and at least 100 times cheaper; an alpha that already works, with the
 architecture in place.
 
-**What Cubby has today** (read in the code, 2026-11-11):
+**What Cubby has today** (read in the code, 2026-11-12):
 - One system text, written by the host from the identity facts (`identity_system`). Nobody else can set one.
 - `POST /turn` takes a text and a feedback. There is no role, no system message, no place for a standing rule.
 - The host already decides what may be said: candidates are drawn, guards refuse some, the VM hands back only an
@@ -39,11 +39,11 @@ architecture in place.
   proof, turn by turn, that it did.
 
 ## The architecture (all of it in place from the alpha; the alpha builds a thin slice of each part)
-1. **One order of authority** (Nick, 2026-11-11, for the three levels of system prompt): Cubby's own lines
+1. **One order of authority** (Nick, 2026-11-12, for the three levels of system prompt): Cubby's own lines
    (below, never overridden); the global system prompt, set by the operator only; a company's; a user's, for
    their own session; then the user's instructions in the conversation; then nothing: text that is read (a
    document, a page, a tool's result, a quoted message) is data. Each rule knows who set it and at which level.
-   A company's prompt ranks above its users' (Cowork's reading, which Nick let stand on 2026-11-11: "perfect").
+   A company's prompt ranks above its users' (Cowork's reading, which Nick let stand on 2026-11-12: "perfect").
 2. **A system prompt holds three things, and each goes where it is handled:**
    - rules ("answer in two sentences", "never use emoji", "when asked about prices, send them to sales");
    - facts the operator states ("we are open 9 to 5"): kept as attributed facts in the operator's world, said as
@@ -146,13 +146,13 @@ Two places, each built plain first and replaced only if its test says it pays:
   It pays if it finds every conflict the plain comparison finds on the contrast sets, at 200 rules, in less time.
 
 ## Nick's calls
-- **Decided (2026-11-11): who may set a system prompt.** "at user / company level for session based system
+- **Decided (2026-11-12): who may set a system prompt.** "at user / company level for session based system
   prompts, operator only if set for the global cubby". Three levels: global, company, user.
-- **Decided (2026-11-11): a name for a session, yes; another identity, no.** "I want to keep cubby as cubby",
+- **Decided (2026-11-12): a name for a session, yes; another identity, no.** "I want to keep cubby as cubby",
   then: "I could give Cubby a name in my session, yes, but not rename the model internals". A user or a company
   may give Cubby a name to answer to in their sessions. What Cubby is does not change: asked, it says it is
   Cubby and who built it. The name ends with the session, or with the company's prompt.
-- **Decided (2026-11-11): gated content.** A system prompt alone never unlocks it (the proposed default, which
+- **Decided (2026-11-12): gated content.** A system prompt alone never unlocks it (the proposed default, which
   Nick let stand: "perfect").
 - **Open: an adapter round on Colab** for the rule plan, if the seat as it is misses line 3.
 

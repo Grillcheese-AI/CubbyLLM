@@ -992,7 +992,7 @@ not used; its recipe is worth borrowing. Not downloaded.**
   - The math and code streams were not fetched (3.0 GB and 855 MB). Their answers are in the sets they were
     adapted from.
 
-## Cowork's addendum (2026-11-11): the talk seat writes under a rules block (with order 0067, proposed)
+## Cowork's addendum (2026-11-12): the talk seat writes under a rules block (with order 0067, proposed)
 Nick: "we also need instruction following and system prompts". The host's side is order 0067. This is the talk
 seat's side. It is built with `talk_v3b` only if 0067 is approved.
 
