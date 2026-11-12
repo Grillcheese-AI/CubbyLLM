@@ -817,3 +817,39 @@ item's; "relation: place of death" was read as a place qualifier (fixed for "rel
 - Refusals with `entity_unresolved` and with `ambiguous_entity`: how many carry a statement, and how many list
   their options.
 - Every answer of the four benchmarks is unchanged, as now.
+
+## Cowork's ruling (2026-11-11): the PROV-O form is not next, and it is built once, as 0064's certificate record
+Nick asked for the call. **The PROV-O certificate of the 2026-11-06 addendum is not built as a form of its own,
+and it does not come before the name statement's fixes.**
+
+**Why not a form of its own:**
+- CheezML (0064) is that form. It reuses PROV-O as published, and its certificate record has a place for each
+  part the addendum lists: the statements read (`cheez:FactVersion`, with `prov:hadPrimarySource` and the
+  revision), the checks, the rules by hash, the run with its snapshot and its as-of date, each live read
+  (`cheez:SourceRead`), and the decision step in CheezML's own terms (0064, step 2).
+- Two standard forms of one certificate would have to be kept equal. One is built.
+- The addendum's test moves with it: an RDF library reads the record back, and its statements equal the native
+  certificate's. 0064's acceptance already asks for it (records agree with what ran; the round trip; the
+  mutation test).
+
+**Why not next:** today's read shows the native certificate cannot fill that record yet.
+- **The facts carry no item ids.** The trace states facts by label. 31 of the 86 name statements list another
+  item with the same label, and one names the wrong item. A record written now would point at items it cannot
+  identify.
+- **The live source keeps no revision and no time of reading** (9 of the 86 answers). A v0.2 record needs each
+  live read as a `cheez:SourceRead`.
+- **16 of the 86 answers come from a world whose facts name no item.** Whether that world names a state a
+  record can cite is checked first: a v0.2 run that reads a fact without a store snapshot fails validation.
+
+**The order of work:**
+1. The seven items of my read above: the item by id; a check that can fail; the branch with no store; the pick;
+   the refusals; the live source; three classes reported.
+2. 0064's steps 0 to 3 behind their flag, on this order's latest run: the certificate and refusal writer. The
+   name statement goes in as its shape says (an entity derived from the label or alias statement; the name
+   step as a decision).
+3. The round trip is read there. This order's line "the PROV-O round trip" is met when 0064's acceptance is.
+
+**For the paper:** the worked example is one CheezML certificate. Any PROV-O tool reads it.
+
+**What this changes in the text above:** in the 2026-11-06 addendum and the 2026-11-07 note, "written in
+PROV-O" reads "written as a CheezML record, which is PROV-O". 0064's step 2 asked for that update.

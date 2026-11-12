@@ -222,3 +222,17 @@ about, and which outside source it looked at.
   counts.
 - **Domains:** the list and the rule for adding a module are in the cheezml repo's `DOMAINS.md`. Finance (`czfin`)
   is the first module, with order 0058.
+
+## Cowork's note (2026-11-11): 0054's PROV-O certificate is this order's certificate record
+Nick asked whether the PROV-O form of 0054's 2026-11-06 addendum is next. The ruling is in 0054: it is not built
+as a form of its own. It is step 3's certificate and refusal writer, and 0054's round-trip line is met when this
+order's acceptance is.
+- **What the writer waits for** (0054, Cowork's read of the name statement as built):
+  - item ids on the facts and on the name statement, taken from the world's decision, never matched by label;
+  - the live source's revision or time of reading, for `cheez:SourceRead`;
+  - a state that the worlds below the store can be cited at. An answer whose world names none gets no record,
+    and the report counts those.
+- **The name statement is part of the certificate record:** an entity derived from the label or alias statement
+  and from the facts its steps rest on; the name step as a decision in this vocabulary's terms. If a term is
+  missing for it, it is added in the cheezml repository, through its checks.
+- **The queue place is unchanged:** after 0055, with 0054's writers.
