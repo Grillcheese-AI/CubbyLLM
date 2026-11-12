@@ -11,6 +11,10 @@ is unchanged bit for bit). Built once, offline, deterministically from a seed:
                  k-means over the trunk's held-in states; each context cluster keeps the tokens the full head ranks in
                  its top-k for that cluster's states, by their summed probability. A query takes its nearest context
                  cluster's list (then the next nearest) up to K. "screen+succ" adds (c)'s successors.
+  (e) + ham      added by Cowork (order 0068, route 5): any arm's list, joined with the best N rows of a Hamming pass
+                 over the head's own rows (``hamming.py``: one bit per weight and a norm per row, nothing trained).
+                 The context list holds what the context makes likely; the pass looks at every row for what the
+                 state itself points at. ``ARMS`` stays 0050's five: "+ham" is a suffix on any of them.
 The clusters are spherical (rows centred on their mean, compared by direction): in 1,024 dimensions plain Euclidean
 k-means put half the rows in clusters of one (``head_shortlist_<date>.json``, the first read).
 The shortlist: whole clusters in score order until at least K rows (a cluster is never cut, so the rows scored are
@@ -27,9 +31,12 @@ import os
 
 import numpy as np
 
+from .hamming import HammingIndex
+
 __wiring__ = "WIRED"
 
 ARMS = ("clusters", "router", "router+succ", "screen", "screen+succ")
+HAM = "+ham"                  # arm (e): a suffix on any of them
 
 
 def on() -> bool:
@@ -102,11 +109,25 @@ class ShortlistIndex:
         return h @ w.T + b
 
     def shortlist(self, h: np.ndarray, k: int, arm: str = "clusters", prev: np.ndarray | None = None) -> list:
-        if arm.startswith("screen"):
-            return self.screen.shortlist(h, k, self.succ if arm.endswith("succ") else None, prev)
-        return self._clusters(h, k, arm, prev)
+        base = arm[:-len(HAM)] if arm.endswith(HAM) else arm
+        if base.startswith("screen"):
+            lists = self.screen.shortlist(h, k, self.succ if base.endswith("succ") else None, prev)
+        else:
+            lists = self._clusters(h, k, base, prev)
+        if base == arm:
+            return lists
+        if self.ham is None:
+            raise ValueError(f"arm {arm!r} needs the head's Hamming index (attach_hamming)")
+        return [np.union1d(a, b) for a, b in zip(lists, self.ham.top(h, self.ham_n))]
 
     screen = None             # a ScreenIndex (arm d), attached by the builder
+    ham, ham_n = None, 2048   # a HammingIndex over the head's rows (arm e), and how many of its best rows join
+
+    def attach_hamming(self, rows: np.ndarray, n: int = 2048) -> "ShortlistIndex":
+        """Arm (e): the Hamming pass, built from the rows the head scores; its best `n` join an arm named "+ham".
+        Not saved with the index: it is rebuilt from the head, so it cannot go stale against the rows."""
+        self.ham, self.ham_n = HammingIndex.build(rows), int(n)
+        return self
 
     def _clusters(self, h: np.ndarray, k: int, arm: str, prev: np.ndarray | None) -> list:
         """[token ids (sorted)] per query: whole clusters in score order until >= k rows; (c) adds successors."""
@@ -214,4 +235,4 @@ def successors(tokens: np.ndarray, vocab: int, top: int = 32) -> np.ndarray:
     return out
 
 
-__all__ = ["ARMS", "ScreenIndex", "ShortlistIndex", "kmeans", "on", "successors"]
+__all__ = ["ARMS", "HAM", "ScreenIndex", "ShortlistIndex", "kmeans", "on", "successors"]

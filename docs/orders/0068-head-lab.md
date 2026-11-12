@@ -230,3 +230,38 @@ positions). The rows count the index's pass, K, the coarse pass and N in full, w
 - **Where the other routes stand:** route 1 (the allowed list) is exact and still to be counted on the programs
   seat's prompts; routes 2 and 2b are killed; route 3 stopped on held-in; route 4 (a head trained on bit codes)
   is not started, and its case is now the growth of the vocabulary, not today's 128k.
+
+### Route 5, wired behind the switch (2026-11-12, on Nick's word: "yes")
+- **What is wired.**
+  - `cubbyllm/model/vocab/hamming.py` (new, numpy only): the Hamming pass. A row is kept as its signs, one bit a
+    weight, packed the way grilly2's bit codes are, and its norm. A state is read as its signs. A row's score is
+    its norm times (d minus twice the Hamming distance). `HammingIndex.top` returns the best N rows; ties at the
+    Nth place go to the lower id.
+  - `cubbyllm/model/vocab/shortlist.py`: "+ham" is a suffix on any arm. The arm's list is joined with the pass's
+    best N. `ARMS` stays 0050's five, so 0050's evaluation reads what it read.
+  - `cubbyllm/model/vocab/output_head.py`: `attach_shortlist(index, k, arm, ham_n)` builds the pass from the head's
+    own rows when the arm ends in "+ham". It is not saved with the index, so it cannot go stale against the rows.
+  - The switch is 0050's: `CB_HEAD_SHORTLIST=1` and an index attached. Off by default. Off, the head's output is
+    bit-identical (pinned).
+- **Tests:** `tests/test_head_hamming.py` (8) and `tests/validation/test_head_lab_wired.py` (4), new;
+  `tests/test_head_shortlist.py` (0050's 6) unchanged and passing.
+- **The wiring check, fixed before it runs** (`validation/head_lab_wired.py`; held-in only, it refuses a held-out
+  dump). On the 13,312 held-in positions of the lab's table (`heldin_val`, every 4th), "screen+succ+ham",
+  K = 8,192, N = 2,048:
+  1. the wired list holds the full head's best token exactly where the lab's two hit tests say it does, on all but
+     at most 5 positions (rounding at the Nth place), so its agreement is the lab's 0.99812 within 0.0004;
+  2. through `TopKRetrievalHead` with the switch on, on every 13th of them: the rows kept are the list's on every
+     position, their logits are the full head's within 1e-3, and the best token is the full head's exactly where
+     the list holds it.
+
+  A miss on either is a wiring fault to fix. It is not a result about route 5.
+- **Also read there, as an exploration:** the pass ranked by Hamming distance alone, with no norm. That is what
+  grilly2's packed top-k (`cubbyllm/ops/packed.py`, order 0031) computes today. Its ties at the Nth place are
+  counted for and against. It decides nothing: a decision needs held-out positions, and all four offsets are spent.
+- **Not wired by this step.** The served seats decode in grilly2 (`cubbyllm/ops/grilly_seats.py` calls the model's
+  own `generate`), and that loop does not read this index. The torch head computes its lists in numpy on the CPU,
+  one row at a time: it is the reference a kernel must match, not the fast path. The time on a card, the serving
+  batteries and sampled talk stay as listed above.
+- **Found on the way, not from this order:** `tests/test_guards.py::test_every_module_declares_wiring` fails on
+  `cubbyllm.reasoning.step_loop` and `cubbyllm.spatial`. Neither declares `__wiring__`; neither is touched here.
+  Reported to Claude Code in the inbox.

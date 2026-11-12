@@ -103,9 +103,14 @@ class TopKRetrievalHead:
     shortlist = None          # a ShortlistIndex (order 0050), read only with CB_HEAD_SHORTLIST=1
     shortlist_k, shortlist_arm = 1024, "clusters"
 
-    def attach_shortlist(self, index, k: int = 1024, arm: str = "clusters") -> "TopKRetrievalHead":
+    def attach_shortlist(self, index, k: int = 1024, arm: str = "clusters",
+                         ham_n: int = 2048) -> "TopKRetrievalHead":
         """Attach a ``shortlist.ShortlistIndex``: with ``CB_HEAD_SHORTLIST=1`` the head then scores only its
-        shortlist's rows (exactly) and the rest are ``-inf``; off, nothing changes (order 0050, stage 1)."""
+        shortlist's rows (exactly) and the rest are ``-inf``; off, nothing changes (order 0050, stage 1). An arm
+        ending in "+ham" (order 0068) also takes the best `ham_n` rows of a Hamming pass over this head's own
+        rows, built here from them."""
+        if str(arm).endswith("+ham"):
+            index.attach_hamming(self._codes().detach().float().cpu().numpy(), ham_n)
         self.shortlist, self.shortlist_k, self.shortlist_arm = index, int(k), str(arm)
         return self
 
