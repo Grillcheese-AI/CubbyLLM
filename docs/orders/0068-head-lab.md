@@ -116,3 +116,31 @@ the index's 4,096.
 - **Not claimed by 2b, even if it passes: the measured time.** 24,576 gathered rows are not a contiguous 32k
   block. The time line is read on grilly2 and on an A100 when the route is wired. If the gather costs too much
   there, the next arm keeps a fixed block of frequent tokens, contiguous, and gathers only a short list.
+
+### Route 2b, read: killed by its agreement line (2026-11-12)
+- **The choice, on held-in only** (`validation/logs/head_lab_sweep_2026-11-12_choice.json`, 26,624 positions):
+
+| K | shortlist alone | for 0.996: fallback, mean rows | for 0.997: fallback, mean rows |
+|---|---|---|---|
+| 16,384 | 0.99339 | 5.3%, 27,260 | 10.1%, 33,443 |
+| 24,576 | 0.99572 | 0.2%, 28,933 | 1.5%, 30,558 |
+
+  No setting reaches 0.997 within 30,000 rows. At 0.996 both do, and the rule takes the fewer rows: **K = 16,384,
+  target 0.996** (the logistic score).
+- **Held-out, read once** (`validation/logs/head_lab_fallback_2026-11-12_2b.json`; 12,800 positions, offset 2):
+  - fallback 4.3%; **overall agreement 0.99336** (95%: 0.99180 to 0.99463); **mean rows 26,011**;
+  - the shortlist alone: 0.99266; loss 2.9093 against the full head's 2.6965.
+- **Against the lines:** agreement at least 99.5%: **missed**, by 0.16 points, the whole interval under the line.
+  Mean rows at most 32,000: met. 0050's loss line: missed.
+- **What it says:**
+  - **The larger shortlist carries over.** Alone it agrees on 0.99266 held-out against 0.99339 held-in, at 20,480
+    rows with the index's pass: two thirds of a 32k head.
+  - **The fallback does not.** On held-in it lifted the agreement by 0.26 points; on held-out by 0.07, where
+    handing 4.3% of positions over at random would give 0.03. As at K = 4,096: where the shortlist misses, nothing
+    inside it shows it.
+  - K = 24,576 alone read 0.99572 on held-in. With the same slip it would sit at the line on held-out. It is not
+    read: no setting is tried on held-out after the fact, and offset 3 is kept for routes 3 and 4.
+- **Where that leaves the claim:** with no training, the frozen index agrees with the full head on 99.3% of
+  positions at two thirds of a 32k head's rows. That is short of the gate, and the gate stands.
+- **Next: route 3.** The two-level head gives the first pass what the shortlist lacks: an entry per cluster of
+  rare tokens that says how much probability lies outside. It is trained on the held-in states, the trunk frozen.
