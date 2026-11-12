@@ -265,3 +265,36 @@ positions). The rows count the index's pass, K, the coarse pass and N in full, w
 - **Found on the way, not from this order:** `tests/test_guards.py::test_every_module_declares_wiring` fails on
   `cubbyllm.reasoning.step_loop` and `cubbyllm.spatial`. Neither declares `__wiring__`; neither is touched here.
   Reported to Claude Code in the inbox.
+
+### The wiring check, read: both lines met (2026-11-12)
+- **Log:** `validation/logs/head_lab_wired_2026-11-12_heldin.json` (13,312 held-in positions; six CPU threads).
+- **Line 1, met.** The wired list holds the full head's best token on 0.99812 of positions (25 misses). The lab's
+  two hit tests say 0.99812 (25 misses). The two differ on **0 of 13,312 positions**. No weight of the head and no
+  state value there is an exact zero, so the two readings of a sign cannot differ on them.
+- **Line 2, met.** Through `TopKRetrievalHead` with the switch on, on 1,024 positions: the rows kept are the list's
+  on all 1,024; the largest difference from the full head's logits on those rows is 6.7e-05; the best token is the
+  full head's on 1,022, the same 1,022 where the list holds it.
+- **The rows, counted on the lists themselves.** The union holds 10,095 rows on average (median 10,102, most
+  10,250): the two lists share few rows. By bytes a token reads 18,191 rows on average (the index's pass 4,096,
+  the Hamming pass 4,000, the union 10,095). The lab's 18,336 counted both lists in full, and it left out two
+  things: the successors (up to 32 rows a token) and the norms the pass reads (125 rows by bytes). With both, the
+  average is 18,316 and the most a token can read is 18,493. The line was 32,000.
+- **The time of the reference, on this machine's CPU: slower than the full head, not faster.** Through torch, 21.0 ms
+  a position with the switch on against 1.35 ms with it off. In numpy, the context list takes 3.1 ms a position
+  and the Hamming pass 10.6 ms, against 0.78 ms for the full head scored 256 positions at a time. The lists are
+  built in numpy, one position at a time. None of this is a card's time. **Turning the switch on today makes
+  decoding slower. It stays off.**
+- **Distance alone (an exploration, held-in).** Ranked by Hamming distance with no norm, the pass's best 2,048 give
+  a union agreement of 0.99820 with every tie at the 2,048th place counted against it, and 0.99842 with them
+  counted for it (at 4,096: 0.99880 and 0.99910). The norm-weighted pass reads 0.99812 on the same positions. So
+  on held-in the norm buys nothing, and grilly2's packed top-k, which ranks by distance alone on the card,
+  computes this pass as it is. Not read on held-out: all four offsets are spent, so the decision needs a new dump.
+- **What this step establishes:** the model code computes route 5 as the lab read it, position for position, and
+  with the switch off it changes nothing.
+- **What it does not: any speed.** The ceiling is 0050's: the head is 1.8 to 2.9% of an A100 decode step and 7.3 to
+  9.6% at home. The head's memory does not shrink either: the trained rows are still read, and the bits add 16 MB.
+- **Next, in this order:**
+  1. A new dump of held-out states, to read distance alone once against the same lines (0.995; 32,000 rows). A
+     dump needs a card: Nick's call.
+  2. The pass on the card through `cubbyllm/ops/packed.py`, timed against a full 32k head (0050's line).
+  3. The serving path in grilly2, then the serving batteries and sampled talk.

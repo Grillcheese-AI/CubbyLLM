@@ -1,0 +1,69 @@
+{
+ "what": "order 0068: the wired '+ham' arm against the lab's reading of route 5, on held-in positions",
+ "date": "2026-11-12",
+ "dump": "heldin_val",
+ "skip": 0,
+ "stride": 4,
+ "offset": 0,
+ "arm": "screen+succ+ham",
+ "k": 8192,
+ "n": 2048,
+ "threads": "6",
+ "lists": {
+  "positions": 13312,
+  "wired_agree": 0.99812,
+  "wired_misses": 25,
+  "lab_agree": 0.99812,
+  "lab_misses": 25,
+  "positions_where_they_differ": 0,
+  "context_list_alone": 0.98445,
+  "rows_scored_exactly": {
+   "mean": 10095.3,
+   "p50": 10102,
+   "p99": 10229,
+   "max": 10250
+  },
+  "rows_by_bytes": {
+   "index_pass": 4096,
+   "hamming_pass": 4000.0,
+   "exact_mean": 10095.3,
+   "total_mean": 18191.3
+  },
+  "zeros": {
+   "head_weights": 0,
+   "state_values": 0
+  },
+  "seconds_per_position_cpu": {
+   "full_head": 0.000779,
+   "context_list": 0.003118,
+   "hamming_pass": 0.010575
+  },
+  "distance_alone": {
+   "2048": {
+    "ties_for": 0.99842,
+    "ties_against": 0.9982
+   },
+   "4096": {
+    "ties_for": 0.9991,
+    "ties_against": 0.9988
+   },
+   "8192": {
+    "ties_for": 0.99932,
+    "ties_against": 0.99917
+   }
+  }
+ },
+ "head": {
+  "positions": 1024,
+  "every": 13,
+  "bits_are_the_heads_rows": true,
+  "best_token_is_the_full_heads": 1022,
+  "best_token_in_the_list": 1022,
+  "kept_rows_are_the_list": 1024,
+  "max_abs_logit_difference_on_kept_rows": 6.7e-05,
+  "seconds_per_position_cpu_torch": {
+   "full": 0.001354,
+   "shortlisted": 0.020995
+  }
+ }
+}
