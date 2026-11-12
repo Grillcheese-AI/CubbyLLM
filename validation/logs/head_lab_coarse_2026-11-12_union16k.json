@@ -1,0 +1,116 @@
+{
+ "what": "order 0068: a coarse pass over every row, then the exact rows of its best N",
+ "date": "2026-11-12",
+ "dump": "heldin_val",
+ "skip": 0,
+ "stride": 4,
+ "offset": 0,
+ "positions": 13312,
+ "screen_k": 16384,
+ "screen_alone": 0.99279,
+ "screen_rows": 20480.0,
+ "schemes": {
+  "sign": {
+   "rows_eq_coarse": 4000.0,
+   "n": {
+    "1024": {
+     "recall": 0.69539,
+     "mass_inside": 0.59983,
+     "rows_eq_total": 5024.0
+    },
+    "2048": {
+     "recall": 0.74324,
+     "mass_inside": 0.65438,
+     "rows_eq_total": 6048.0
+    },
+    "4096": {
+     "recall": 0.78801,
+     "mass_inside": 0.70797,
+     "rows_eq_total": 8096.0
+    },
+    "8192": {
+     "recall": 0.8285,
+     "mass_inside": 0.76165,
+     "rows_eq_total": 12192.0
+    }
+   },
+   "union": {
+    "1024": {
+     "agree": 0.99805,
+     "recall_where_the_shortlist_misses": 0.72917,
+     "rows_eq_total": 25504.0
+    },
+    "2048": {
+     "agree": 0.99842,
+     "recall_where_the_shortlist_misses": 0.78125,
+     "rows_eq_total": 26528.0
+    },
+    "4096": {
+     "agree": 0.99857,
+     "recall_where_the_shortlist_misses": 0.80208,
+     "rows_eq_total": 28576.0
+    },
+    "8192": {
+     "agree": 0.9991,
+     "recall_where_the_shortlist_misses": 0.875,
+     "rows_eq_total": 32672.0
+    }
+   },
+   "rank_p50": 78,
+   "rank_p99": 120158,
+   "rank_p999": 127618,
+   "rank_max": 127982
+  },
+  "pca64": {
+   "rows_eq_coarse": 8000.0,
+   "n": {
+    "1024": {
+     "recall": 0.69734,
+     "mass_inside": 0.62885,
+     "rows_eq_total": 9024.0
+    },
+    "2048": {
+     "recall": 0.77051,
+     "mass_inside": 0.71117,
+     "rows_eq_total": 10048.0
+    },
+    "4096": {
+     "recall": 0.83759,
+     "mass_inside": 0.78822,
+     "rows_eq_total": 12096.0
+    },
+    "8192": {
+     "recall": 0.89769,
+     "mass_inside": 0.85871,
+     "rows_eq_total": 16192.0
+    }
+   },
+   "union": {
+    "1024": {
+     "agree": 0.99361,
+     "recall_where_the_shortlist_misses": 0.11458,
+     "rows_eq_total": 29504.0
+    },
+    "2048": {
+     "agree": 0.99429,
+     "recall_where_the_shortlist_misses": 0.20833,
+     "rows_eq_total": 30528.0
+    },
+    "4096": {
+     "agree": 0.99579,
+     "recall_where_the_shortlist_misses": 0.41667,
+     "rows_eq_total": 32576.0
+    },
+    "8192": {
+     "agree": 0.99677,
+     "recall_where_the_shortlist_misses": 0.55208,
+     "rows_eq_total": 36672.0
+    }
+   },
+   "rank_p50": 191,
+   "rank_p99": 81742,
+   "rank_p999": 126659,
+   "rank_max": 127983
+  }
+ }
+}

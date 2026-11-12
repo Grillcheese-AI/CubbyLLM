@@ -1,0 +1,55 @@
+{
+ "what": "order 0068: a coarse pass over every row, then the exact rows of its best N",
+ "date": "2026-11-12",
+ "dump": "heldin_val",
+ "skip": 0,
+ "stride": 4,
+ "offset": 0,
+ "positions": 13312,
+ "screen_k": 16384,
+ "screen_alone": 0.99279,
+ "screen_rows": 20480.0,
+ "schemes": {
+  "hamming": {
+   "rows_eq_coarse": 4000.0,
+   "n": {
+    "1024": {
+     "recall": 0.48821,
+     "mass_inside": 0.40207,
+     "rows_eq_total": 5024.0
+    },
+    "2048": {
+     "recall": 0.54214,
+     "mass_inside": 0.45279,
+     "rows_eq_total": 6048.0
+    },
+    "4096": {
+     "recall": 0.60029,
+     "mass_inside": 0.50886,
+     "rows_eq_total": 8096.0
+    }
+   },
+   "union": {
+    "1024": {
+     "agree": 0.99865,
+     "recall_where_the_shortlist_misses": 0.8125,
+     "rows_eq_total": 25504.0
+    },
+    "2048": {
+     "agree": 0.99917,
+     "recall_where_the_shortlist_misses": 0.88542,
+     "rows_eq_total": 26528.0
+    },
+    "4096": {
+     "agree": 0.9997,
+     "recall_where_the_shortlist_misses": 0.95833,
+     "rows_eq_total": 28576.0
+    }
+   },
+   "rank_p50": 1215,
+   "rank_p99": 127302,
+   "rank_p999": 127976,
+   "rank_max": 127998
+  }
+ }
+}

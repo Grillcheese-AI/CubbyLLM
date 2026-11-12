@@ -1,0 +1,156 @@
+{
+ "what": "order 0068: a coarse pass over every row, then the exact rows of its best N",
+ "date": "2026-11-12",
+ "dump": "heldin_val",
+ "skip": 0,
+ "stride": 4,
+ "offset": 0,
+ "positions": 13312,
+ "schemes": {
+  "sign": {
+   "rows_eq_coarse": 4000.0,
+   "n": {
+    "1024": {
+     "recall": 0.69539,
+     "mass_inside": 0.59983,
+     "rows_eq_total": 5024.0
+    },
+    "4096": {
+     "recall": 0.78801,
+     "mass_inside": 0.70797,
+     "rows_eq_total": 8096.0
+    },
+    "8192": {
+     "recall": 0.8285,
+     "mass_inside": 0.76165,
+     "rows_eq_total": 12192.0
+    },
+    "16384": {
+     "recall": 0.86779,
+     "mass_inside": 0.81648,
+     "rows_eq_total": 20384.0
+    }
+   },
+   "rank_p50": 78,
+   "rank_p99": 120158,
+   "rank_p999": 127618,
+   "rank_max": 127982
+  },
+  "sign_c": {
+   "rows_eq_coarse": 4000.0,
+   "n": {
+    "1024": {
+     "recall": 0.63281,
+     "mass_inside": 0.5511,
+     "rows_eq_total": 5024.0
+    },
+    "4096": {
+     "recall": 0.74407,
+     "mass_inside": 0.67129,
+     "rows_eq_total": 8096.0
+    },
+    "8192": {
+     "recall": 0.79703,
+     "mass_inside": 0.7362,
+     "rows_eq_total": 12192.0
+    },
+    "16384": {
+     "recall": 0.85652,
+     "mass_inside": 0.80744,
+     "rows_eq_total": 20384.0
+    }
+   },
+   "rank_p50": 192,
+   "rank_p99": 114181,
+   "rank_p999": 126607,
+   "rank_max": 127867
+  },
+  "hamming": {
+   "rows_eq_coarse": 4000.0,
+   "n": {
+    "1024": {
+     "recall": 0.48821,
+     "mass_inside": 0.40207,
+     "rows_eq_total": 5024.0
+    },
+    "4096": {
+     "recall": 0.60029,
+     "mass_inside": 0.50886,
+     "rows_eq_total": 8096.0
+    },
+    "8192": {
+     "recall": 0.65813,
+     "mass_inside": 0.57053,
+     "rows_eq_total": 12192.0
+    },
+    "16384": {
+     "recall": 0.7177,
+     "mass_inside": 0.64275,
+     "rows_eq_total": 20384.0
+    }
+   },
+   "rank_p50": 1215,
+   "rank_p99": 127302,
+   "rank_p999": 127976,
+   "rank_max": 127998
+  },
+  "pca64": {
+   "rows_eq_coarse": 8000.0,
+   "n": {
+    "1024": {
+     "recall": 0.69734,
+     "mass_inside": 0.62885,
+     "rows_eq_total": 9024.0
+    },
+    "4096": {
+     "recall": 0.83759,
+     "mass_inside": 0.78822,
+     "rows_eq_total": 12096.0
+    },
+    "8192": {
+     "recall": 0.89769,
+     "mass_inside": 0.85871,
+     "rows_eq_total": 16192.0
+    },
+    "16384": {
+     "recall": 0.94028,
+     "mass_inside": 0.91471,
+     "rows_eq_total": 24384.0
+    }
+   },
+   "rank_p50": 191,
+   "rank_p99": 81742,
+   "rank_p999": 126659,
+   "rank_max": 127983
+  },
+  "pca128": {
+   "rows_eq_coarse": 16000.0,
+   "n": {
+    "1024": {
+     "recall": 0.76059,
+     "mass_inside": 0.68842,
+     "rows_eq_total": 17024.0
+    },
+    "4096": {
+     "recall": 0.88071,
+     "mass_inside": 0.83061,
+     "rows_eq_total": 20096.0
+    },
+    "8192": {
+     "recall": 0.92698,
+     "mass_inside": 0.88901,
+     "rows_eq_total": 24192.0
+    },
+    "16384": {
+     "recall": 0.9562,
+     "mass_inside": 0.93221,
+     "rows_eq_total": 32384.0
+    }
+   },
+   "rank_p50": 123,
+   "rank_p99": 67437,
+   "rank_p999": 125180,
+   "rank_max": 127978
+  }
+ }
+}

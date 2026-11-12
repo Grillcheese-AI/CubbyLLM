@@ -1,0 +1,96 @@
+{
+ "what": "order 0068: a coarse pass over every row, then the exact rows of its best N",
+ "date": "2026-11-12",
+ "dump": "heldin_val",
+ "skip": 0,
+ "stride": 4,
+ "offset": 0,
+ "positions": 13312,
+ "screen_k": 8192,
+ "screen_alone": 0.98445,
+ "screen_rows": 12288.0,
+ "schemes": {
+  "sign": {
+   "rows_eq_coarse": 4000.0,
+   "n": {
+    "1024": {
+     "recall": 0.69539,
+     "mass_inside": 0.59983,
+     "rows_eq_total": 5024.0
+    },
+    "2048": {
+     "recall": 0.74324,
+     "mass_inside": 0.65438,
+     "rows_eq_total": 6048.0
+    },
+    "4096": {
+     "recall": 0.78801,
+     "mass_inside": 0.70797,
+     "rows_eq_total": 8096.0
+    }
+   },
+   "union": {
+    "1024": {
+     "agree": 0.99684,
+     "recall_where_the_shortlist_misses": 0.7971,
+     "rows_eq_total": 17312.0
+    },
+    "2048": {
+     "agree": 0.99737,
+     "recall_where_the_shortlist_misses": 0.83092,
+     "rows_eq_total": 18336.0
+    },
+    "4096": {
+     "agree": 0.99767,
+     "recall_where_the_shortlist_misses": 0.85024,
+     "rows_eq_total": 20384.0
+    }
+   },
+   "rank_p50": 78,
+   "rank_p99": 120158,
+   "rank_p999": 127618,
+   "rank_max": 127982
+  },
+  "hamming": {
+   "rows_eq_coarse": 4000.0,
+   "n": {
+    "1024": {
+     "recall": 0.48821,
+     "mass_inside": 0.40207,
+     "rows_eq_total": 5024.0
+    },
+    "2048": {
+     "recall": 0.54214,
+     "mass_inside": 0.45279,
+     "rows_eq_total": 6048.0
+    },
+    "4096": {
+     "recall": 0.60029,
+     "mass_inside": 0.50886,
+     "rows_eq_total": 8096.0
+    }
+   },
+   "union": {
+    "1024": {
+     "agree": 0.99715,
+     "recall_where_the_shortlist_misses": 0.81643,
+     "rows_eq_total": 17312.0
+    },
+    "2048": {
+     "agree": 0.99812,
+     "recall_where_the_shortlist_misses": 0.87923,
+     "rows_eq_total": 18336.0
+    },
+    "4096": {
+     "agree": 0.99887,
+     "recall_where_the_shortlist_misses": 0.92754,
+     "rows_eq_total": 20384.0
+    }
+   },
+   "rank_p50": 1215,
+   "rank_p99": 127302,
+   "rank_p999": 127976,
+   "rank_max": 127998
+  }
+ }
+}

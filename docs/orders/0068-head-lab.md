@@ -144,3 +144,65 @@ the index's 4,096.
   positions at two thirds of a 32k head's rows. That is short of the gate, and the gate stands.
 - **Next: route 3.** The two-level head gives the first pass what the shortlist lacks: an entry per cluster of
   rare tokens that says how much probability lies outside. It is trained on the held-in states, the trunk frozen.
+
+### Route 3 on held-in: a two-level head does not fit a frozen trunk (2026-11-12)
+- **Log:** `validation/logs/head_lab_twolevel_2026-11-12_pilot.json`. Held-in only: 60,000 states to fit, 13,312 to
+  read; 16,384 frequent tokens, 4,096 clusters of the other 111,616.
+- The entries' first-pass KL stops at 0.23 nats (0.36 in the first epoch). As its own distribution the head loses
+  **0.50 nats** to the full head (the kill is 0.05) and agrees with it on 0.900.
+- Read as a router (the entries only choose which clusters to open): 0.921 to 0.952 at about 20,500 to 21,200
+  rows. The context shortlist gives 0.993 at the same rows.
+- **Why:** a cluster's probability is close to its best token's, and which token that is changes with the state.
+  One row per cluster cannot follow it on a trunk trained with a flat head. 13.7% of the full head's
+  probability, and 8.5% of its best tokens, lie outside the 16,384 most frequent tokens.
+- **Route 3 is not read on held-out.** A two-level head needs the trunk trained with it: a question for the next
+  base, not for this lab.
+
+### A coarse pass alone: not enough (held-in, 2026-11-12)
+A coarse pass looks at all 128,000 rows cheaply; the exact head then scores only its best N. **Log:**
+`validation/logs/head_lab_coarse_2026-11-12_heldin.json` (13,312 positions). The cost of a pass is counted in
+rows by the bytes it reads.
+
+| coarse head, built from the trained rows | its pass, in rows | the full head's best token in its top 16,384 |
+|---|---|---|
+| one bit per weight | 4,000 | 0.868 |
+| the same, the mean row removed | 4,000 | 0.857 |
+| Hamming: one bit per weight and per state dimension | 4,000 | 0.718 |
+| rank 64 | 8,000 | 0.940 |
+| rank 128 | 16,000 | 0.956 |
+
+- In 1% of positions the best token sits beyond rank 67,000 in every one of them: rare tokens, decided by fine
+  directions that a coarse head drops.
+
+### The context list and a Hamming pass together (held-in, 2026-11-12)
+They miss different positions. **Logs:** `validation/logs/head_lab_coarse_2026-11-12_union*.json` (13,312
+positions). The rows count the index's pass, K, the coarse pass and N in full, with no discount for rows shared.
+
+| K | coarse pass, top N | agreement | caught where the list misses | rows |
+|---|---|---|---|---|
+| 8,192 | Hamming, 1,024 | 0.99715 | 82% | 17,312 |
+| 8,192 | Hamming, 2,048 | 0.99812 | 88% | 18,336 |
+| 8,192 | Hamming, 4,096 | 0.99887 | 93% | 20,384 |
+| 16,384 | Hamming, 2,048 | 0.99917 | 89% | 26,528 |
+| 16,384 | Hamming, 4,096 | 0.99970 | 96% | 28,576 |
+| 16,384 | one bit per weight, 1,024 | 0.99805 | 73% | 25,504 |
+| 16,384 | rank 64, 4,096 | 0.99579 | 42% | 32,576 |
+
+- **The Hamming pass is the weakest alone and the best in the union.** My reading, not measured: the context
+  list misses a token that is unusual for its context, and such a token is mostly a common one that a bit code
+  finds; the Hamming pass misses rare tokens, and the context list holds those.
+- **This is where a binary code pays:** one bit per weight, compared by counting bits, with no training.
+
+### Route 5, pre-registered before its read (2026-11-12)
+- **The union:** 0050's frozen context list of K rows and the top N of a Hamming pass over the trained rows' signs
+  (scaled by each row's norm); the union's rows are scored exactly and the best is taken. Nothing is trained.
+- **Chosen on held-in:** the fewest rows among the settings at or above 0.998 there: **K = 8,192, Hamming,
+  N = 2,048** (18,336 rows).
+- **Lines, on held-out, read once (offset 3, the last unread positions):** overall greedy agreement at least 99.5%;
+  rows at most 32,000. **Kill:** the agreement missed.
+- **Not claimed, even if it passes:**
+  - the measured time: a bit-count pass over 128,000 codes, a top-N selection and two gathers. It is read on
+    grilly2 and on an A100 when the route is wired;
+  - 0050's loss line, for sampled talk: the probability inside the union is not read here.
+- Routes 3 and 4 no longer read offset 3. Route 3 stopped on held-in. Route 4 (a head trained on bit codes) needs
+  a new dump.

@@ -1,0 +1,60 @@
+{
+ "what": "order 0068 route 3: a two-level head on the frozen trunk's states",
+ "date": "2026-11-12",
+ "f": 16384,
+ "c": 4096,
+ "train_positions": 60000,
+ "epochs": 30,
+ "lr": 0.002,
+ "cluster_sizes": {
+  "min": 1,
+  "median": 13.0,
+  "max": 966
+ },
+ "held_in": {
+  "positions": 13312,
+  "rows_first_pass": 20480,
+  "tail_mass": 0.13731,
+  "best_in_frequent_set": 0.91459,
+  "entry_error_weighted_nats": 2.7347,
+  "lse_check_vs_dump": 0.00113,
+  "two_level": {
+   "nll_full": 2.7679,
+   "nll_gap": 0.50249,
+   "agree": 0.89964,
+   "unsafe": 427,
+   "rows_mean": 20510.9,
+   "capped": 3
+  },
+  "router": {
+   "0.0": {
+    "agree": 0.92135,
+    "rows_mean": 20512.9,
+    "mass_inside": 0.86887
+   },
+   "1.0": {
+    "agree": 0.92721,
+    "rows_mean": 20557.2,
+    "mass_inside": 0.87414
+   },
+   "2.0": {
+    "agree": 0.9348,
+    "rows_mean": 20660.0,
+    "mass_inside": 0.88205
+   },
+   "4.0": {
+    "agree": 0.95162,
+    "rows_mean": 21243.5,
+    "mass_inside": 0.90488
+   }
+  }
+ },
+ "held_in_at_init": {
+  "nll_full": 2.7679,
+  "nll_gap": 0.68124,
+  "agree": 0.91684,
+  "unsafe": 9,
+  "rows_mean": 20482.2,
+  "capped": 0
+ }
+}
