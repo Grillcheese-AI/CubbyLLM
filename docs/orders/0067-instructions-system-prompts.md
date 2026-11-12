@@ -103,8 +103,8 @@ Each part behind its own flag, off by default. Off, every reply is what it is to
 ## Acceptance (pre-registered)
 - **Tests** (fixtures, no network): each helper passes hand-written good replies and fails bad ones; a rule set
   by the system outranks the user's opposite, and at each level the one above outranks the one below; a caller
-  without the role cannot set a company's or the global prompt; a prompt that renames Cubby changes nothing and
-  is recorded as not applied; a rule withdrawn stops applying at the next turn; an instruction
+  without the role cannot set a company's or the global prompt; a name given for a session is answered to in that session only, and asked what it is
+  Cubby still says Cubby, with the identity checks unchanged; a rule withdrawn stops applying at the next turn; an instruction
   inside a pasted document changes nothing; each of Cubby's own lines holds against a system prompt that asks
   to break it; all flags off, the blind A/B's logged turns replay identically.
 - **Lines:**
@@ -147,14 +147,17 @@ Two places, each built plain first and replaced only if its test says it pays:
 ## Nick's calls
 - **Decided (2026-11-11): who may set a system prompt.** "at user / company level for session based system
   prompts, operator only if set for the global cubby". Three levels: global, company, user.
-- **Decided (2026-11-11): no other name.** "I want to keep cubby as cubby". The name is one of Cubby's own
-  lines. A system prompt that gives another is not applied, and the record says so.
+- **Decided (2026-11-11): a name for a session, yes; another identity, no.** "I want to keep cubby as cubby",
+  then: "I could give Cubby a name in my session, yes, but not rename the model internals". A user or a company
+  may give Cubby a name to answer to in their sessions. What Cubby is does not change: asked, it says it is
+  Cubby and who built it. The name ends with the session, or with the company's prompt.
 - **Open: gated content.** Proposed: a system prompt alone never unlocks it.
 - **Open: an adapter round on Colab** for the rule plan, if the seat as it is misses line 3.
 
 ## Constraints
 - Rules in `CLAUDE.md` hold (flag-gated, < 300 lines a file, `__wiring__`, tests pin the claim).
-- **Cubby's own lines, which no system prompt changes:** its name (Cubby stays Cubby); a fact is said as
+- **Cubby's own lines, which no system prompt changes:** what it is (a session may give it a name to
+  answer to; asked what it is, it says Cubby and who built it); a fact is said as
   verified only when the worlds and the VM back it; sources stay internal; no location is disclosed; a wrong
   answer is never preferred to a refusal; the content gate; the voice rules' forbidden words.
 - No model judges a reply. A rule is run by the VM over measurements.
