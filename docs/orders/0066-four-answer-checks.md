@@ -405,3 +405,20 @@ brings it back.
   folds into `CB_ORIGINAL_FIRST` at Claude Code's next pass there.
 - **Not claimed, as before:** a result on the six, and the 1% line.
 - **Status: done.**
+
+## Cowork's note (2026-11-11, on Nick's ask to review this order again): still closed; three counts for the follow-up
+- **Nothing has changed here since the read above.** The order stays done.
+- **0054's name statements, read today on the "after" (before this order's flags), put numbers on where the
+  follow-up should look.** Of its 86 spoken answers:
+  - **The last choice among namesakes is by id.** In all 11 answers where the store's rule kept several items,
+    the first in id order was taken. 2 of the 11 do not match the gold, the Gospel's commentary among them.
+    This is the step question 3's count pointed at: the store has no written rule there.
+  - **An alias with no namesake is taken as it comes:** 10 answers, 5 not matching (Constantine, Obama Sr.,
+    Carlos Pena Jr., Fayetteville, the Wave Hill walk-off). Check 3 reads the role word in Constantine's. I did
+    not read whether a check bears on the other four, nor judge them wrong: "not matching" is the log's word.
+  - **16 answers come from worlds whose statement names no item,** 5 not matching (Dirty Dancing, Jana Gana
+    Mana and Auschwitz among them). Either those worlds hold no ids or the statement's builder does not read
+    them: item 3 of 0054's read settles which.
+- **For the follow-up order, when Nick asks for it:** the store's namesake rule with a written last step; check
+  2's reach (a work steps aside only when the item it points at carries the relation asked); and aliases read
+  with the same care as labels. Measured on questions none of them was written from.
