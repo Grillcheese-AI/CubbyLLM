@@ -883,3 +883,55 @@ Reasoning in KGs" reports that HRR and FHRR memories fail on multi-hop chains th
 FHRR's cleanup.
 - **If a hypervector path index is ever proposed for the store:** those two failure tests run first.
 - **For Nick's own block-code work:** the cleanup flaw is worth reading against it. Nothing is built here.
+
+## Cowork's addendum (2026-11-11, second): what the store had on record then, and correction probes (field watch), proposed
+Nick: "yes", to writing it up (2026-11-11). **Proposed: nothing here is built or measured, and it waits for
+Nick's yes.** The source's abstract was read today; its code and benchmark were not fetched. Only the idea is
+taken.
+
+**What it brings, in plain words:** Cubby can say what it had on record on a past day, and that it has since
+been corrected.
+- **Over a conventional model:** a model cannot tell what it would have answered last month, nor that the
+  answer was corrected since.
+- **For you:** to "why did it tell me X in March?", the answer is exact: X was on record then, and it was
+  corrected on a known day.
+
+**From TGMS** (Zhang, arXiv 2607.10265, v2 of 24 Jul 2026; Apache-2.0): a graph store that keeps valid time and
+transaction time apart, with thirteen typed operators handed to a model as tools. Its example question is what
+the system believed as of a transaction time. On correction probes it scores 0.67 where its three baselines
+score 0. A model still plans the calls and writes the answer there.
+
+**What the store already has:** the two clocks; a pin to a recorded date; the as-of date on every read; a
+corrected statement closed, never overwritten; one snapshot per question; the room-402 probe and the CRM as-of
+set. This addendum adds two things on top.
+
+### 1. A read as recorded, for a user's question
+- Today a pin to a recorded date serves the benchmarks and the replay. The same read answers "what did you
+  have on record on that day about X".
+- **The four reads of one fact are told apart, and each is exact:** as of a date D in the world (valid time)
+  and as recorded on a day T (recorded time): now and now; D and now; now and T; D and T.
+- **The reply says which read it is:** "As recorded on T: X. Corrected on T2: Y." The certificate names the
+  snapshot read and the date, as every answer does (`cheez:storeSnapshot`, `cheez:asOf`).
+- **A question that names a recorded day the store does not hold is refused,** with a code: the 2026-11-10
+  addendum's rule for a named snapshot.
+- Which words ask for a recorded day is the reader's side (0012's question shape). It is not built here.
+
+### 2. Correction probes
+A correction is not a change in the world: the fact's valid time stays, and what was recorded about it is
+replaced. The room-402 probe has changes, a late fact and a retraction. A correction is a retraction and a new
+statement for the same valid time.
+- **Fixtures, seeded by rule:** a statement recorded at T1 with a wrong value, corrected at T2.
+- **Each must be exact:**
+  - read now: the corrected value;
+  - read as recorded between T1 and T2: the old value, said as corrected since;
+  - an answer given between T1 and T2, replayed against its snapshot: the same answer and the same report hash;
+  - that old answer, listed when asked which answers rest on a statement corrected since;
+  - a derived fact that used the old value: closed at T2 (section 2 of the 2026-11-06 addendum).
+- **Broken controls that must fail:** a store that overwrites instead of closing, and a read pinned before T2
+  that returns the corrected value.
+- **Line:** every probe exact; every broken control fails.
+
+### Not taken
+TGMS also checks a written answer's numbers and names against the run's trace (500 injected errors caught, as
+the abstract gives it). Cubby's fact answers are filled from the certificate by the host, and 0064's mutation
+test already changes one recorded value at a time. Nothing is added for it here.

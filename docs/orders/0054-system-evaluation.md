@@ -853,3 +853,85 @@ and it does not come before the name statement's fixes.**
 
 **What this changes in the text above:** in the 2026-11-06 addendum and the 2026-11-07 note, "written in
 PROV-O" reads "written as a CheezML record, which is PROV-O". 0064's step 2 asked for that update.
+
+## Cowork's addendum (2026-11-11, third): three more steps from the field watch, proposed
+Nick: "yes", to writing them up (2026-11-11). **Proposed: nothing here is built or measured, and each step waits
+for Nick's yes.** Each source was read today where a page could be reached; what could not be checked is said.
+Only ideas are taken: no data, no code.
+
+**What it brings, in plain words:**
+- A "no" from Cubby is tested: it must come from a statement that settles the question, never from a gap.
+- Cubby is asked about the wrong thing on purpose, and must refuse instead of answering about the right one.
+- Every refusal is filed under the step that refused, with what each check cost and what it stopped.
+- **Over a conventional model:** a model says "no" when it finds nothing, answers about the name it remembers
+  instead of the one asked, and its refusals carry no cause.
+- **For you:** "no" means the record says no; a swapped name gets a refusal; and you can see which check to work
+  on next.
+
+### 6. A "no" only when the record closes the question
+From CROWN-QA (Min et al., arXiv 2608.04591, 5 Aug 2026): 5,000 synthetic and 1,599 real examples in which the
+question and the observed facts stay fixed and only the coverage of the evidence changes. Two labels: a certified
+negative, and unknown. Two errors: over-closure (a negative though the evidence does not cover the question's
+scope) and under-closure (unknown though it does). The best configuration it reports still over-closes on 12.4%
+of its synthetic set, as the page gives its Table 3. No public data and no licence are stated: the idea only.
+- **Cubby's rule stays 0017's:** absence from the store is never a no. A no needs a statement that closes the
+  scope: a single-valued relation holding another value at that time; the full list of an office's holders at
+  that time; or the source's own "no value" statement (Wikidata states "no child" as a fact; the store's
+  reader meets such statements and gives them no value today).
+- **The test:** contrast sets built by rule from the store. One claim, three stores:
+  - A: the closing statement is there. Expected: no, with that statement in the certificate.
+  - B: a closing statement for another scope (another date, another item, another relation). Expected: can't
+    confirm.
+  - C: the closing statement removed. Expected: can't confirm.
+- **Reported:** over-closure and under-closure, beside right, wrong and refused. An over-closure is a wrong
+  answer under the kill line.
+- **Line:** over-closure 0. Under-closure is reported, with no line.
+- **Depends on 0017** (claim checks, proposed). Until it is built, yes/no questions are refused, and that is
+  all there is to measure.
+
+### 7. The entity swapped: refusals that must fire
+From retrieval-abstention-bench (simin-yuan; MIT; no model anywhere in it): 1,017 questions over four
+public-domain novels, 717 of them made unanswerable by swapping the entity, in three tiers. Its settings are
+sealed with the question set, a `verify` step fails if they drift, and 7 falsification cases must fail. Results
+carry a 95% bootstrap interval. Its corpus is fiction: the design only.
+- **Built by rule from questions Cubby answers right,** so a refusal is caused by the swap alone:
+  - **an invented name** the store does not hold. Expected: refused, the name unresolved. (Step 2 renames the
+    store too; here the store is unchanged.)
+  - **a real item of the same kind that lacks the relation asked.** Expected: refused, the fact missing.
+  - **a real item of another kind** (a city where a person was asked). Expected: refused.
+- **Each swap is checked, not assumed:** the store is read to confirm it holds no such statement for the swapped
+  item. A swap the store can answer is another test and is dropped.
+- **Reported:** refusals on the swapped questions against the originals, with a 95% bootstrap interval; refusals
+  with the expected reason (step 4); and, apart, **every swapped question answered with the original item's
+  answer.** That answer came from the name the question no longer has.
+- **Line:** 0 swapped questions answered with the original's answer. **Kill:** one is read before any other
+  number.
+- **Controls that must fail:** a store where the swapped item does hold the fact (Cubby must answer), and a
+  scorer fed the original's answer (it must count it).
+- The set, its manifest hash and the scorer's settings are frozen before the run.
+
+### 8. Every refusal filed under the step that refused
+From AXIOM (Bruno, arXiv 2606.00671, v3 of 12 Aug 2026): a model only rewrites a math problem into a narrow
+form, and a computer-algebra system solves it or abstains; 4,510 of 5,000 MATH problems right and one
+confidently wrong, as the abstract gives it. Its closing line: "every logged abstain is a candidate correct
+after one ship cycle." The field watch read a split of abstentions by cause there; the two pages I could reach
+do not name the causes, so the split below is ours.
+- **Each refusal reason belongs to one step, in a table fixed before the run:** the plan; the relation; the
+  name; the facts; the guards after an answer; a question routed elsewhere. A reason outside the table fails
+  the report.
+- **For the guards after an answer, the price and the catch:** the record keeps the answer Cubby would have
+  given without that check (`cvm_answer`). Of each guard's refusals: how many of those answers matched the
+  gold, and how many did not.
+- **Read from the "after"'s records today, with no new run** (10,482 refusals; `run_0054_names`):
+  - the plan: 8,107 (`plan_does_not_cover_question` 4,726; `no_plan` 3,291; `emit_error` 90);
+  - the relation: 1,274 (`ambiguous_relation` 770; `unknown_relation` 504);
+  - the name: 613 (`entity_unresolved` 572; `ambiguous_entity` 41);
+  - the facts: 407 (`retrieval_exhausted` 399; `no_events_for_date` 7; `no_path` 1);
+  - the guards after an answer: 46 (`ambiguous_hop` 39; `time_mismatch` 5; `class_mismatch` 2);
+  - routed elsewhere: 35 (`profile` 27; `self` 8).
+  - **The guards' price and catch:** of the 46 answers they held back, 29 matched the gold and 17 did not
+    (`ambiguous_hop` 26 and 13; `time_mismatch` 2 and 3; `class_mismatch` 1 and 1). "Did not match" is not
+    read as wrong here.
+- **To settle when built:** `emit_error` carries free text after its code; the code alone goes in the table.
+- **Reported per benchmark,** with the 29 and the 17 read by hand once. A guard that holds back more right
+  answers than wrong ones is a finding to read, not a verdict.
