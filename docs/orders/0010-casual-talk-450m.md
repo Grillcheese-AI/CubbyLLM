@@ -991,3 +991,25 @@ not used; its recipe is worth borrowing. Not downloaded.**
     are equal. No model writes a fact, a task's answer or a program.
   - The math and code streams were not fetched (3.0 GB and 855 MB). Their answers are in the sets they were
     adapted from.
+
+## Cowork's addendum (2026-11-11): the talk seat writes under a rules block (with order 0067, proposed)
+Nick: "we also need instruction following and system prompts". The host's side is order 0067. This is the talk
+seat's side. It is built with `talk_v3b` only if 0067 is approved.
+
+**What it brings, in plain words:** Cubby keeps its own voice while it does what it was asked: shorter, in
+French, as a list, without emoji.
+- **Over a conventional model:** a model is trained to follow instructions, and nothing checks that it does.
+  Here every training reply was run through the same rule programs the host uses, so the seat only sees replies
+  that passed.
+- **For you:** asking Cubby to answer differently does not make it sound like another assistant.
+
+- **The rows:** a user line from the Topical-Chat pool (built 2026-11-11); a rules block of one to three rules,
+  drawn by rule; a target from Cubby's voice set that passes those rules' programs. A target that fails is never
+  rewritten by a model: it is dropped, or cut by rule where the rule is a cap.
+- **The block's form is fixed.** It is the one the host writes at serving (0067, point 6 of its architecture).
+- **Held out before any row is built:** kinds of rule, wordings and conversations, for 0067's lines 3 and 4.
+- **Rows with no block stay the majority,** so the voice without rules does not move. The blind test's turns
+  carry no block.
+- **Nothing from other assistants' chats.** The old `chat` family taught the stock talk (the read above);
+  instruction rows from model-written sets would teach it again.
+- **Measured** by `exp_if_follow.py` and 0067's sets, beside the host's checks a to h.
