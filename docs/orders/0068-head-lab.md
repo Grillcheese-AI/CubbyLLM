@@ -206,3 +206,27 @@ positions). The rows count the index's pass, K, the coarse pass and N in full, w
   - 0050's loss line, for sampled talk: the probability inside the union is not read here.
 - Routes 3 and 4 no longer read offset 3. Route 3 stopped on held-in. Route 4 (a head trained on bit codes) needs
   a new dump.
+
+### Route 5, read: both lines met on held-out (2026-11-12)
+- **Log:** `validation/logs/head_lab_coarse_2026-11-12_route5.json` (12,800 held-out positions, offset 3, read once;
+  K = 8,192, the Hamming pass's top 2,048, as chosen on held-in).
+- **Overall greedy agreement with the full head: 0.99758** (95%: 0.99657 to 0.99829). The line is 0.995: **met**, the whole
+  interval above it.
+- **Rows: 18,336** (the index's pass 4,096, the list 8,192, the Hamming pass 4,000 by bytes, its top 2,048; the two
+  lists counted in full). The line is 32,000: **met.** It is 57% of a 32k head and 14% of the full head.
+- The context list alone agrees on 0.98445 there (0.98445 on held-in). The Hamming pass catches 84% of what it
+  misses (88% on held-in).
+- **What is established:** with nothing trained, the 450M's next token can be chosen from 18,336 rows instead of
+  128,000 and be the full head's choice on 99.76% of held-out positions.
+- **What is not, and comes next:**
+  1. **The time.** Rows are bytes read. The Hamming pass is a bit count over 128,000 codes, then a top-N
+     selection; the union's rows are gathered, not contiguous. Read on grilly2 and on an A100 once wired, against
+     a full 32k head, as 0050's line says.
+  2. **The serving batteries** (0050's list: the programs seat's greedy programs identical on at least 99% of
+     prompts, E8, H-E15). They need the route wired.
+  3. **Sampled talk:** 0050's loss line. The probability inside the union is not read here.
+  4. **Wiring it** touches `cubbyllm/model/vocab/shortlist.py` (a Hamming arm and the union, behind
+     `CB_HEAD_SHORTLIST`, off by default). That waits for Nick's word.
+- **Where the other routes stand:** route 1 (the allowed list) is exact and still to be counted on the programs
+  seat's prompts; routes 2 and 2b are killed; route 3 stopped on held-in; route 4 (a head trained on bit codes)
+  is not started, and its case is now the growth of the vocabulary, not today's 128k.
