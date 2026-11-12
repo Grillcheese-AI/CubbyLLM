@@ -1,6 +1,6 @@
 # 0067 - Instructions and system prompts: read by the model, kept as rules, enforced and checked by the host
-status: proposed
-written: 2026-11-11 by Cowork - approved: - - hypothesis: none (H-E20's gate 4 uses the same measure)
+status: open (queue: after 0054's seven name-statement items; its step 0, a measurement, may run first)
+written: 2026-11-11 by Cowork - approved: 2026-11-11 by Nick ("perfect open it") - hypothesis: none (H-E20's gate 4 uses the same measure)
 
 ## Why
 Nick, 2026-11-11: "we also need instruction following and system prompts". And the challenge this order is
@@ -43,7 +43,7 @@ architecture in place.
    (below, never overridden); the global system prompt, set by the operator only; a company's; a user's, for
    their own session; then the user's instructions in the conversation; then nothing: text that is read (a
    document, a page, a tool's result, a quoted message) is data. Each rule knows who set it and at which level.
-   A company's prompt ranking above its users' is Cowork's reading of the levels, for Nick to confirm.
+   A company's prompt ranks above its users' (Cowork's reading, which Nick let stand on 2026-11-11: "perfect").
 2. **A system prompt holds three things, and each goes where it is handled:**
    - rules ("answer in two sentences", "never use emoji", "when asked about prices, send them to sales");
    - facts the operator states ("we are open 9 to 5"): kept as attributed facts in the operator's world, said as
@@ -85,7 +85,8 @@ Each part behind its own flag, off by default. Off, every reply is what it is to
    session's. Each is compiled once.
 2. **The reply world.** One module: a reply in, statements out. The starter relations are the ten kinds
    `exp_if_follow.py` checks and M-IFEval's five French ones, each a small helper with its own tests. The VM reads
-   them through the host (0065's world calls), never the text itself.
+   them as statements handed to the run, the way a question's facts reach it today (and through 0065's world
+   calls once they exist), never the text itself. This order does not wait for 0065.
 3. **The rule plan.** A plan family for the program seat: a measurement, a comparison, a value; joined by and,
    or, not; with a scope (the session, this turn, a topic). Rows are built in reverse, by rule: a rule is drawn,
    its wordings are rendered from templates, in English and French. No model writes a rule.
@@ -151,7 +152,8 @@ Two places, each built plain first and replaced only if its test says it pays:
   then: "I could give Cubby a name in my session, yes, but not rename the model internals". A user or a company
   may give Cubby a name to answer to in their sessions. What Cubby is does not change: asked, it says it is
   Cubby and who built it. The name ends with the session, or with the company's prompt.
-- **Open: gated content.** Proposed: a system prompt alone never unlocks it.
+- **Decided (2026-11-11): gated content.** A system prompt alone never unlocks it (the proposed default, which
+  Nick let stand: "perfect").
 - **Open: an adapter round on Colab** for the rule plan, if the seat as it is misses line 3.
 
 ## Constraints
