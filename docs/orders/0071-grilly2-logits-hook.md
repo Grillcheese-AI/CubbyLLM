@@ -1,5 +1,5 @@
 # 0071 - A logits hook in grilly2's generate: the host can steer each token as it is written
-status: review (built 2026-11-12; the grilly2 branch waits for Nick's review)
+status: done (checked 2026-11-12; the grilly2 branch generate-logits-hook waits for Nick's merge)
 written: 2026-11-12 by Cowork - approved: 2026-11-12 by Nick ("yes") - hypothesis: none
 
 ## Why
@@ -109,3 +109,17 @@ through when given (`cubbyllm/ops/` stays the only grilly importer). Default `No
   the hook absent it decodes exactly as before. Switch back with `git switch ci-and-release` in grilly2 if wanted.
 - **Questions:** none blocking. 0067's step 4 can use `AllowedTokensLogitsProcessor` / `SuppressTokensLogitsProcessor`
   through `grilly_seats.generate` once Nick merges the branch (until then it runs from the branch's checkout).
+
+## Cowork's check (2026-11-12)
+Read: the report, grilly2's diff `main..generate-logits-hook` (3 files: `generation.py`, the new `logits_process.py`,
+its tests), `validation/logs/logits_hook_cost_2026-11-12.json`. Collected grilly2's new test file under its own
+environment: 19 tests (8 functions, parametrized). CubbyLLM's seam test: 2 pass, 1 skips without the hook installed in
+this repo's environment, as written.
+- **Every line met:** off is bit-identical (60 outputs, `main` against the branch); an allowed list holds at every
+  step in all 8 cases; greedy parity with transformers 5.5.1 (local); the decode suites pass (116); the identity
+  processor adds 0.35% a step on the home card (line 2%, kill 10%), 18,000 allowed ids 1.73%.
+- **Read honestly:** the rounds spread about as much as the differences, and every arm is within 2% of none. That
+  is enough for the line; it is not a claim that the hook is free.
+- **Done on the CubbyLLM side.** The grilly2 branch waits for Nick's review and merge.
+- **For Nick:** grilly2's checkout on this machine now sits on the branch, so the stack runs the branch's code. With
+  the hook absent it decodes exactly as before (pinned). 0067's step 4 needs the branch until it is merged.
