@@ -1207,3 +1207,17 @@ Behind `CB_API_ROLES=1` (off: `POST /turn` reads `{"text"}` as before, `/rules/`
   sessions, as Cowork's note leaves them; and what a user teaches the worlds (the memory cortex) goes through the
   worlds' gate into the shared stores, as before: a stated fact, not a conversation. Either is a call for Nick if it
   should be per session too.
+
+### Nick's call (2026-11-13): the mood "per company / user"; built (Code A)
+- Under `CB_API_ROLES=1` the mood (the neurochemistry's ODE and its emotion, the user's state as read, the hormones a
+  turn reads, the last appraisal) is no longer the one Cubby's across sessions: a company member's session shares its
+  company's mood; a signed-in caller without a company has their own; an anonymous session its own
+  (`cubby_serve/api_sessions.py`, which now also holds each session's conversation; swapped in for the turn, out
+  after). A turn without a session reads the chat's own, as before; `/state` shows the chat's own.
+- Read as: the company when there is one, else the user. If Nick meant each user apart inside a company too, it is
+  one line (`mood_key`).
+- **Test** (`test_the_mood_is_per_company_else_per_user`, 11 in the file): four callers (two of one company, one of
+  another, one with none); three angry turns in one company's session move that company's mood and nobody else's,
+  nor the chat's own; the two members of one company read one mood (the same ODE goes on). It fails with one mood
+  for all (checked once). Full suite: 1,647 passed, 12 skipped, the known red only; it ran from about 15:58 to 16:03,
+  across the start of Cowork's hold (said in the inbox).

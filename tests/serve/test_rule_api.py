@@ -4,7 +4,9 @@ without the role cannot set a company's or the global prompt (nor anyone, with n
 and its rule book is shown to whoever set it; a session is its creator's; each level reaches only its own sessions;
 a user never sees the operator's or the company's sentence; a correction applies from the next turn, by its setter
 only; "confirm before apply" holds a company's rules; assistant and tool messages set nothing; two users' sessions,
-their turns interleaved, never see each other's words (in the seat's context or the record) nor each other's rules."""
+their turns interleaved, never see each other's words (in the seat's context or the record) nor each other's rules;
+the mood is per company, else per user (Nick, 2026-11-13: "per company / user"): one company's turns never move
+another's mood or a lone user's, and a company's members share theirs."""
 from __future__ import annotations
 
 import json
@@ -20,7 +22,7 @@ from cubbyllm.speech import rule_turn
 from http.server import ThreadingHTTPServer
 
 PEOPLE = {"op": dict(permissions=["rules:global"]), "ana": dict(tenant="acme", tenant_role="admin"),
-          "bo": dict(tenant="acme", tenant_role="member"), "cy": dict(tenant="other", tenant_role="member")}
+          "bo": dict(tenant="acme", tenant_role="member"), "cy": dict(tenant="other", tenant_role="member"), "di": {}}
 PLANS = {"under 50 words": {"m": "word count", "op": "<", "v": 50}, "lowercase": {"m": "case", "op": "==", "v": "lower"},
          "at most 50 words": {"m": "word count", "op": "<=", "v": 50}, "in french": {"m": "language", "op": "==", "v": "fr"}}
 
@@ -219,6 +221,7 @@ class RealBrain(Brain):
         self.seat = self.chat.emitter
 
     def turn(self, text, feedback=None):
+        self.chat.nudge(text)                                                 # sense: the appraisal moves the mood
         return self.chat.turn(text, feedback, mediate=False)
 
 
@@ -252,3 +255,26 @@ def test_a_sessions_rules_never_reach_another_interleaved(serve):
         cy = post("/turn", {"session": s_cy, "messages": [user("hi")]}, "cy")[1]
         assert [r["text"] for r in bo["rules"]] == ["Under 50 words."]
         assert [r["text"] for r in cy["rules"]] == ["All lowercase."]
+
+
+def test_the_mood_is_per_company_else_per_user(serve):
+    brain, post = serve()
+    real = RealBrain()
+    brain.chat, brain.turn = real.chat, real.turn
+    own = dict(real.chat.state)
+    angry = "I am furious, this is awful, I hate it, everything is terrible!!!"
+    s = {who: post("/turn", {"messages": [user("hello there")]}, who)[1]["session"] for who in ("bo", "ana", "cy", "di")}
+    moods = brain._rule_store.moods
+    assert set(moods) == {("company", "acme"), ("company", "other"), ("user", "di")}   # bo and ana: one, acme's
+    before = {k: dict(m["state"]) for k, m in moods.items()}
+    for _ in range(3):
+        post("/turn", {"session": s["cy"], "messages": [user(angry)]}, "cy")
+    assert moods[("company", "other")]["state"] != before[("company", "other")]           # cy's company moved
+    assert moods[("company", "acme")]["state"] == before[("company", "acme")]             # nobody else's
+    assert moods[("user", "di")]["state"] == before[("user", "di")]
+    assert real.chat.state == own                                                         # nor the chat's own
+    post("/turn", {"session": s["bo"], "messages": [user(angry)]}, "bo")
+    assert moods[("company", "acme")]["state"] != before[("company", "acme")]
+    chem = moods[("company", "acme")]["chem"]
+    post("/turn", {"session": s["ana"], "messages": [user("hello there")]}, "ana")
+    assert moods[("company", "acme")]["chem"] is chem                                     # ana goes on from bo's mood

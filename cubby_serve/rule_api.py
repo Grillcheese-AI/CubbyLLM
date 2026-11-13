@@ -16,10 +16,9 @@ On, `POST /turn` also takes messages with a role, in the shape other models' cli
   is text that is read, below the user); the chat keeps its own history.
 - **session**: made by the server on the first call and returned (``"session"``); a session is its creator's (another
   caller is refused); an id the server did not make is unknown. Without one, a turn reads the global rules only.
-  A session's conversation is its own: its history (the last exchange in the context, the replies ranked against),
-  the words its user has used (the appraisal's novelty) and its last choice are swapped into the one chat for its
-  turn and out after, so no turn sees another session's words. The hormones stay the one Cubby's. Rules count the
-  server's turns (one clock for every book), not a session's.
+  A session's conversation is its own, and its mood is its company's or its user's (`api_sessions.py`): both are
+  swapped into the one chat for its turn and out after. Rules count the server's turns (one clock for every book),
+  not a session's.
 
     POST /rules/correct  {"level", "rule", "text", "session"?}  -> the corrected reading said back (its setter only)
     POST /rules/confirm  {"rules": [...]}                       -> a company's held rules confirmed (its admin)
@@ -40,6 +39,7 @@ import secrets
 import threading
 from collections import OrderedDict
 
+from cubby_serve.api_sessions import Session, swapped
 from cubbyllm.speech.rule_book import RuleBook
 from cubbyllm.speech.rule_stack import RuleStack, compile_prompt
 
@@ -60,20 +60,6 @@ class Refused(Exception):
         self.code, self.why = code, why
 
 
-CONVERSATION = ("history", "_seen_vocab", "last_choice", "last_rejection")    # the chat's per-conversation state
-
-
-def fresh() -> dict:
-    return {"history": [], "_seen_vocab": set(), "last_choice": {}, "last_rejection": None}
-
-
-class Session:
-    def __init__(self, owner, tenant) -> None:
-        self.owner, self.tenant = owner, tenant
-        self.conversation = RuleBook(prefix="conversation-rule")
-        self.chat = fresh()                                     # this session's own conversation (CONVERSATION)
-
-
 class RuleStore:
     def __init__(self) -> None:
         self.lock, self.turn_lock = threading.Lock(), threading.Lock()
@@ -81,6 +67,7 @@ class RuleStore:
         self.prompts: dict = {}                    # (level, place) -> the last compile {"text", "set_by", "result"}
         self.sessions: OrderedDict = OrderedDict()
         self.clock = 0                             # the server's turns under the flag: every book's turn
+        self.moods: dict = {}                      # ("company", tenant) | ("user", sub) | ("session", id) -> a mood
 
     def book(self, key: tuple) -> RuleBook:
         if key not in self.books:
@@ -213,23 +200,18 @@ def turn(h, brain, req: dict, run) -> tuple[int, dict]:
 
 
 def _run(brain, store: RuleStore, session, text: str, run, audience: str) -> dict:
-    """The turn on the one chat, with this session's rules and conversation swapped in (none: the chat's own)."""
+    """The turn on the one chat, with this session's rules, conversation and mood swapped in (none: the chat's own)."""
     chat, (sid, s) = getattr(brain, "chat", None), session or (None, None)
     with store.turn_lock:
-        stack = store.stack(sid, s)
-        saved = {k: getattr(chat, k, None) for k in ("rules",) + CONVERSATION} if chat is not None else {}
+        old = getattr(chat, "rules", None)
         if chat is not None:
-            chat.rules = stack
-            for k, v in (s.chat.items() if s is not None else ()):
-                setattr(chat, k, v)
+            chat.rules = store.stack(sid, s)
         try:
-            rec = run(text)
+            with swapped(chat, sid, s, store.moods):
+                rec = run(text)
         finally:
             if chat is not None:
-                if s is not None:
-                    s.chat = {k: getattr(chat, k, None) for k in CONVERSATION}
-                for k, v in saved.items():
-                    setattr(chat, k, v)
+                chat.rules = old
             store.clock += 1
     if rec.get("rules"):
         rec["rules"] = shown_rows(rec["rules"], audience)
