@@ -1,0 +1,66 @@
+{
+ "summary": {
+  "by_kind": {
+   "case": {
+    "pass": 4,
+    "n": 34,
+    "rate": 0.1176
+   },
+   "first": {
+    "pass": 2,
+    "n": 14,
+    "rate": 0.1429
+   },
+   "forbid": {
+    "pass": 1,
+    "n": 1,
+    "rate": 1.0
+   },
+   "json": {
+    "pass": 19,
+    "n": 43,
+    "rate": 0.4419
+   },
+   "language": {
+    "pass": 40,
+    "n": 57,
+    "rate": 0.7018
+   },
+   "list": {
+    "pass": 0,
+    "n": 5,
+    "rate": 0.0
+   },
+   "require": {
+    "pass": 1,
+    "n": 1,
+    "rate": 1.0
+   },
+   "sentences": {
+    "pass": 4,
+    "n": 9,
+    "rate": 0.4444
+   },
+   "words": {
+    "pass": 97,
+    "n": 160,
+    "rate": 0.6062
+   }
+  },
+  "all": {
+   "pass": 168,
+   "n": 324,
+   "rate": 0.5185
+  },
+  "prompts": 290,
+  "answered": 290,
+  "data": "chat_sft.jsonl (held split)",
+  "export": "grilly",
+  "adapter": "talk_v3a",
+  "replies_file": "",
+  "seed": 0,
+  "seat": "base450m_cont + talk_v3a on grilly2 (the served talk seat)",
+  "commit": "1e0c000",
+  "rows": "kept off-repo (prompts and replies); per kind above"
+ }
+}

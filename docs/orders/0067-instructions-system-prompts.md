@@ -180,6 +180,41 @@ Two places, each built plain first and replaced only if its test says it pays:
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
 
+### Step 0, measured (Claude Code, 2026-11-12)
+**The baseline** (`validation/logs/if_follow_2026-11-12_talk_v3a.json`; the prompts and replies kept off-repo):
+`exp_if_follow.py` on the served talk seat (base450m_cont + talk_v3a on grilly2), 290 held prompts with a checkable
+constraint, 324 checks, greedy, 256 new tokens at most, 13 minutes on the local card.
+
+| kind | kept | rate |
+|---|---|---|
+| words | 97 / 160 | 60.6% |
+| language | 40 / 57 | 70.2% |
+| json | 19 / 43 | 44.2% |
+| case | 4 / 34 | 11.8% |
+| first | 2 / 14 | 14.3% |
+| sentences | 4 / 9 | 44.4% |
+| list | 0 / 5 | 0.0% |
+| forbid | 1 / 1 | 100% |
+| require | 1 / 1 | 100% |
+| **all** | **168 / 324** | **51.8%** |
+
+So line 4's "followed" target is **66.8%** on `exp_if_follow`. The sample is uneven by kind (one forbid, one require,
+five lists): a kind's rate below 10 checks says little.
+
+**The decode loop today** (part 4's "enforced" class is built on this and no wider):
+- **No hook on the logits.** The seat calls grilly2's `generate` (`cubbyllm/ops/grilly_seats.py:59-72`), which takes
+  only do_sample, temperature, top_k, top_p, repetition_penalty, eos_token_id, pad_token_id, attention_mask and a
+  streamer, and raises on anything else (grilly2 `python/grilly/infer/generation.py:10-12`). The logits go straight
+  to the sampler (generation.py, `sampling.next_token`). A streamer sees each token and cannot change it.
+- **A forced prefix, as text only:** `Cubby450mTalk.emit(prefix=)` appends it to the prompt and puts it in front of
+  the answer (`cubbyllm/emit/talk.py:94`, `:102`). A required opening can be enforced this way.
+- **A stop rule: the end token and the token limit only, while decoding.** grilly2 takes a list of end ids
+  (generation.py:70, :121); CubbyLLM passes one. The text stops (`_TALK_STOPS`, talk.py:62) cut after decoding;
+  hitting the limit is recorded (`hit_limit`, talk.py:99). `repetition_penalty` exists and is not passed.
+- **What "enforced" can be today:** a required opening (the prefix) and a hard cap in tokens. A banned word, a
+  sentence cap or a JSON shape cannot be steered while writing without a logits hook in grilly2; those rules are
+  "checked" (step 4's candidates), not "enforced".
+
 ### Line 3's split, pre-registered before any row (Claude Code, 2026-11-12)
 `validation/logs/rule_kinds_split_2026-11-12.json`: IFEval's 25 kinds (`google/IFEval`, Apache-2.0, the file's sha-256
 recorded), sorted, shuffled by `random.Random(0)`, the first 9 held out; all five of M-IFEval's French-only kinds held
