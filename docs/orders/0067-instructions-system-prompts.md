@@ -333,6 +333,34 @@ Two held-out kinds (forbidden words, bullet lists) are already measured by the r
   no such block); who may set a level (step 1); two rules that cannot both hold (the addendum's E).
 - **Next to measure:** line 4 on `exp_if_follow` with the turn (each prompt's rule as a plan, steering on, up to N
   candidates): followed, refused, broken against the 51.8% baseline; it is a long run on the card.
+### Line 4 on `exp_if_follow`: two runs (Claude Code, 2026-11-13)
+**What these numbers measure:** the turn under rules **given the right rules**: each prompt's rules were handed to
+the turn by the host as plans (`validation/exp_if_turn.py`'s `plan_of`), not read from the instruction's words; best
+of up to 4 candidates (the first greedy, as the baseline; then sampled at 0.7), steering on, the VM checking each,
+Cubby's "can't" line when none passes. The same 290 prompts and 324 checks as step 0, scored by `exp_if_follow`'s own
+check. **It is not Cubby reading and following instructions on its own:** that end-to-end number (the user types the
+instruction, the reader writes the rule) waits for the reader's line 3.
+
+| run | code | VM | followed | refused | broken |
+|---|---|---|---|---|---|
+| step 0 (baseline, no rules) | `a55bf33` | none used | 168 / 324 (51.8%) | 0 | — (no rule checked: 156 not followed) |
+| **1** (`if_turn_2026-11-12_run1.json`) | `13d67f5` | `cubelang/target/release/cubelang.exe`, 2026-09-29, older than its sources | 238 / 324 (73.5%) | 85 (26.2%) | **1** |
+| **2** (`if_turn_2026-11-13_turn.json`) | `e0d306a` | `cubelang-cowork/target/release/cubelang.exe`, 2026-11-11, from `3f37515` | **237 / 324 (73.1%)** | 87 (26.9%) | **0** |
+
+- **Run 1 hit line 1's kill on `exp_if_follow`.** One reply was said with a checked rule broken: a prompt asking for a
+  JSON key "u1" and all capitals; the reply's key was "U1", and `rule_plan` lowercased JSON keys, so the VM passed
+  it. Fixed in `ec76b6f` (a key is compared as written; pinned). Run 2 on the same prompts shows the fix works; it
+  does not erase run 1. In run 2 that prompt tried all 4 candidates and was refused. **Line 1's clean read comes from
+  sets this code has not seen** (IFEval, M-IFEval's French), as the order lists them; not from this rerun.
+- **Line 4 (followed >= 66.8%): met in both runs, given the right rules.** Said at the first candidate 178, the second
+  20, the third 10, the fourth 5; refused 77 prompts (run 2).
+- **The refusals are what a user sees:** 87 of 324 checks (26.9%); by kind (run 2): JSON 21 of 43, lists 5 of 5,
+  sentences 5 of 9, words 45 of 160, language 6 of 57, case 5 of 34; first, forbid and require 0. Refusing instead
+  of breaking is the design; the share is the cost.
+- Before the VM was named: every 0067 run up to run 1 (step 0 used no VM; steps 2-3's tests, the gold and seat
+  agreement reads, run 1) used main cubelang's September binary. From run 2 on, every run sets `CUBELANG_EXE` to the
+  cowork build and records the VM in its summary (`cubbyllm/bridges/vm_identity.py`); a run refuses a VM older than
+  its sources. `tests/speech` passes on the cowork VM (61).
 - **Commits:**
 - **Files:**
 - **Tests:**
@@ -419,6 +447,11 @@ an instruction or a rule.
   grade with a model judge are not scored here (no model judges a reply).
 - **Not claimed:** that Cubby follows more complex instructions than a frontier model. The claims are the kill lines
   and the content and process checks, which a model that writes free text cannot show.
+
+- **E's first case (Claude Code, 2026-11-13):** line 4's run 1 on `exp_if_follow` held a prompt whose two rules
+  cannot both hold: a JSON key "u1" and all capitals. Run 1 said a reply breaking one of them (a JSON-key bug, fixed);
+  run 2 refused it after 4 candidates. With E, the compile step would have found the two bounds on one reply and asked
+  which wins, before any writing.
 
 ## Cowork's check of step 3 and its adapter round (2026-11-12, late): hold the round until the wordings are clean
 Read: the two sections above, `rule_agree_2026-11-12_gold.json`, `rule_reader_2026-11-12_asis.json`,

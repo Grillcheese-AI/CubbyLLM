@@ -1,0 +1,97 @@
+{
+ "order": "0067",
+ "what": "exp_if_follow through the turn under rules (line 4)",
+ "prompts": 290,
+ "checks": 324,
+ "followed": 237,
+ "refused": 87,
+ "broken": 0,
+ "followed_rate": 0.7315,
+ "baseline_rate": 0.518,
+ "line": 0.668,
+ "candidates": 4,
+ "temperature": 0.7,
+ "steer": true,
+ "said_at_candidate": {
+  "refused": 77,
+  "1": 178,
+  "2": 20,
+  "3": 10,
+  "4": 5
+ },
+ "by_kind": {
+  "case": {
+   "n": 34,
+   "followed": 29,
+   "refused": 5,
+   "broken": 0,
+   "followed_rate": 0.8529
+  },
+  "first": {
+   "n": 14,
+   "followed": 14,
+   "refused": 0,
+   "broken": 0,
+   "followed_rate": 1.0
+  },
+  "forbid": {
+   "n": 1,
+   "followed": 1,
+   "refused": 0,
+   "broken": 0,
+   "followed_rate": 1.0
+  },
+  "json": {
+   "n": 43,
+   "followed": 22,
+   "refused": 21,
+   "broken": 0,
+   "followed_rate": 0.5116
+  },
+  "language": {
+   "n": 57,
+   "followed": 51,
+   "refused": 6,
+   "broken": 0,
+   "followed_rate": 0.8947
+  },
+  "list": {
+   "n": 5,
+   "followed": 0,
+   "refused": 5,
+   "broken": 0,
+   "followed_rate": 0.0
+  },
+  "require": {
+   "n": 1,
+   "followed": 1,
+   "refused": 0,
+   "broken": 0,
+   "followed_rate": 1.0
+  },
+  "sentences": {
+   "n": 9,
+   "followed": 4,
+   "refused": 5,
+   "broken": 0,
+   "followed_rate": 0.4444
+  },
+  "words": {
+   "n": 160,
+   "followed": 115,
+   "refused": 45,
+   "broken": 0,
+   "followed_rate": 0.7188
+  }
+ },
+ "seconds": 1774,
+ "adapter": "talk_v3a",
+ "seed": 0,
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-11 15:18",
+  "sha256": "3120403f35b007eb85a2302086da7fb1447830573f0f2d540e4c62fdb0cbc37b",
+  "commit": "3f37515",
+  "older_than_sources": false
+ }
+}

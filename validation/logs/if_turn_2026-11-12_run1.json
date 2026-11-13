@@ -1,0 +1,101 @@
+{
+ "order": "0067",
+ "what": "exp_if_follow through the turn under rules (line 4)",
+ "prompts": 290,
+ "checks": 324,
+ "followed": 238,
+ "refused": 85,
+ "broken": 1,
+ "followed_rate": 0.7346,
+ "baseline_rate": 0.518,
+ "line": 0.668,
+ "candidates": 4,
+ "temperature": 0.7,
+ "steer": true,
+ "said_at_candidate": {
+  "refused": 76,
+  "1": 178,
+  "2": 21,
+  "3": 10,
+  "4": 5
+ },
+ "by_kind": {
+  "case": {
+   "n": 34,
+   "followed": 30,
+   "refused": 4,
+   "broken": 0,
+   "followed_rate": 0.8824
+  },
+  "first": {
+   "n": 14,
+   "followed": 14,
+   "refused": 0,
+   "broken": 0,
+   "followed_rate": 1.0
+  },
+  "forbid": {
+   "n": 1,
+   "followed": 1,
+   "refused": 0,
+   "broken": 0,
+   "followed_rate": 1.0
+  },
+  "json": {
+   "n": 43,
+   "followed": 22,
+   "refused": 20,
+   "broken": 1,
+   "followed_rate": 0.5116
+  },
+  "language": {
+   "n": 57,
+   "followed": 51,
+   "refused": 6,
+   "broken": 0,
+   "followed_rate": 0.8947
+  },
+  "list": {
+   "n": 5,
+   "followed": 0,
+   "refused": 5,
+   "broken": 0,
+   "followed_rate": 0.0
+  },
+  "require": {
+   "n": 1,
+   "followed": 1,
+   "refused": 0,
+   "broken": 0,
+   "followed_rate": 1.0
+  },
+  "sentences": {
+   "n": 9,
+   "followed": 4,
+   "refused": 5,
+   "broken": 0,
+   "followed_rate": 0.4444
+  },
+  "words": {
+   "n": 160,
+   "followed": 115,
+   "refused": 45,
+   "broken": 0,
+   "followed_rate": 0.7188
+  }
+ },
+ "seconds": 1740,
+ "adapter": "talk_v3a",
+ "seed": 0,
+ "run": 1,
+ "vm": {
+  "path": "cubelang/target/release/cubelang.exe",
+  "modified": "2026-09-29 00:59",
+  "sha256": "c013841cf4c0db891caf948b9318a6e82f695fd993ab9168ca5e20d4829ca32b",
+  "commit": "3f37515",
+  "older_than_sources": true,
+  "named": "after the run (the run did not record it; identified 2026-11-13)"
+ },
+ "code": "13d67f5 (rule_plan lowercased JSON keys: the broken 1)",
+ "note": "kept as it fell (Cowork, 2026-11-13): line 1's kill was hit once on exp_if_follow; the fix is ec76b6f; run 2 is if_turn_2026-11-13_turn.json"
+}
