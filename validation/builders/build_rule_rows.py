@@ -232,21 +232,44 @@ def with_alpaca(rows: list[dict], seed: int) -> tuple[list[dict], dict]:
                           "alpaca_licence": "Stanford Alpaca text CC BY-NC 4.0; annotations Nick's own"}
 
 
+def with_asked(rows: list[dict], seed: int) -> tuple[list[dict], dict]:
+    """`rows` plus the rows whose answer is ``asked`` (`asked_rows`, round 5); train/dev ones sharing 5 words with a
+    benchmark prompt are dropped."""
+    import asked_rows
+    import bench_overlap as BO
+    bench = BO.benchmark_grams()
+    measurable = [(r["instruction"], r["plan"], r["lang"]) for r in rows
+                  if r["split"] == "train" and r.get("template") is not None and "+" not in r["kind"]]
+    extra, dropped = [], 0
+    for r in asked_rows.rows(seed + 3, measurable):
+        if r["split"] in ("train", "dev") and bench and BO.overlaps(r["instruction"], bench):
+            dropped += 1
+            continue
+        extra.append(r)
+    for i, r in enumerate(extra, start=len(rows)):
+        r["id"] = f"r{i:06d}"
+    return rows + extra, {"asked_rows": len(extra), "asked_dropped_for_benchmark_overlap": dropped}
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=None)
     ap.add_argument("--per", type=int, default=250)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--alpaca", action="store_true", help="add Nick's annotated Alpaca rows (round 4 on)")
+    ap.add_argument("--asked", action="store_true", help="add the rows whose answer is asked (round 5)")
     ap.add_argument("--wordings", default="v1", choices=("v1", "v2", "v3", "v4", "v4b"), help="round 1's wordings, or round 2's (more a kind)")
     a = ap.parse_args()
     use_wordings(a.wordings)
-    out = Path(a.out or Path(local_paths.value("CUBBY_DATASETS") or ".") /
-               ("rule_rows_0067" if a.wordings == "v1" else f"rule_rows_0067_{a.wordings}"))
+    name = "rule_rows_0067" if a.wordings == "v1" else f"rule_rows_0067_{a.wordings}"
+    out = Path(a.out or Path(local_paths.value("CUBBY_DATASETS") or ".") / (name + ("_asked" if a.asked else "")))
     rows = build(a.per, a.seed)
     extra_man = {}
     if a.alpaca:
         rows, extra_man = with_alpaca(rows, a.seed)
+    if a.asked:
+        rows, more = with_asked(rows, a.seed)
+        extra_man.update(more)
     out.mkdir(parents=True, exist_ok=True)
     with open(out / "rows.jsonl", "w", encoding="utf-8") as f:
         for r in rows:

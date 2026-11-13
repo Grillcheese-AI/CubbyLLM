@@ -560,6 +560,24 @@ instruction, the reader writes the rule) waits for the reader's line 3.
   persuasion, formality ... that no measurement covers), so abstaining is learned; and a fresh set of held-out kinds,
   since these 9 are now read. An abstention read (how often an unseen kind gets `asked` instead of a wrong rule) would
   join line 3.
+### The reader's fifth round, built for Colab (Nick, 2026-11-13: "build it"; Claude Code)
+- **Rows answering `asked`** (`validation/builders/asked_rows.py`): 32 instructions no measurement covers, each in 2
+  English and 2 French wordings (tone, register, style, rhetoric; rhyme, passive voice, tense, questions only, figures
+  of speech, British spelling); a seeded quarter of them held out whole (`asked_test`); each training phrase also
+  joined to a measurable rule, whose answer is that rule alone; and Nick's annotated prompts carrying an explicit style
+  phrase ("in a formal, academic style", "in a positive way"; "a persuasive essay" and "in a different way" left out:
+  they are tasks). `rule_reader`, the SFT builder and `exp_rule_reader` tell `asked` from `none`.
+- **Rows** (`--wordings v4 --seed 3 --alpaca --asked`, `rule_rows_0067_v4_asked`, sha `c248d954...`): 15,851; 92 held
+  out as `asked_test` (32 phrases, 60 annotated prompts). 0 train/dev overlaps with IFEval.
+- **The set** on Drive (`rules/rule_reader_sft_v5.jsonl`, sha `b4a9b2cb...`): 14,032 records; the `asked` records
+  repeated 4 times (`--repeat-asked 4`) so abstaining weighs like `none`: train 10,552 rules, 1,483 `none`, 652 `asked`.
+  0 overlaps; 0 slot boundaries tokenized otherwise. The notebook trains it into `rules/cubby450m_rules_v5/`.
+- **A fresh held-out set:** IFEval's 25 kinds are all spent, so IFBench's test set (AllenAI, 300 prompts, 58 kinds no
+  row was built from; data ODC-BY-1.0, checker code Apache-2.0) is fetched off-repo (`E:/datasets/ifbench`, 94 KB).
+  Running its checker code (downloaded) was held by this machine's permission check: it waits for Nick's yes.
+- **The read planned:** dev; `asked_test` (abstention on unmeasurable instructions never trained on); the regression
+  splits (round 4's natural and rule-free tests, the v4b new wordings: second reads, labelled as such); IFBench (how
+  often an unseen kind gets `asked` instead of a wrong rule; agreement and false passes where written).
 - **Commits:**
 - **Files:**
 - **Tests:**

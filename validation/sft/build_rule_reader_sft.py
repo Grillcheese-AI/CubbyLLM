@@ -35,14 +35,15 @@ SPLIT = {"train": "train", "dev": "held"}
 
 def record(r: dict) -> dict:
     return {"id": r["id"], "split": SPLIT[r["split"]], "family": r["kind"], "lang": r["lang"],
-            "prompt": rr.HEAD + f"Instruction: {r['instruction']}\nRule:", "answer": rr.surface(r["plan"]) + "\n"}
+            "prompt": rr.HEAD + f"Instruction: {r['instruction']}\nRule:",
+            "answer": ("asked" if r.get("asked") else rr.surface(r["plan"])) + "\n"}
 
 
 def slot_texts(rec: dict) -> list[tuple[str, str]]:
     """(text written so far, the next slot) at every boundary the reader writes."""
     out, text = [], rec["prompt"]
-    if rec["answer"].strip() == "none":                  # a rule-free instruction: one slot (round 4)
-        return [(text, "none")]
+    if rec["answer"].strip() in ("none", "asked"):       # no rule (round 4) or one no measurement covers (round 5)
+        return [(text, rec["answer"].strip())]
     for leaf_i, leaf in enumerate(rec["answer"].rstrip("\n").split(" ; ")):
         if leaf_i:
             out.append((text, ";"))
@@ -69,10 +70,13 @@ def main() -> None:
     ap.add_argument("--rows", default=None)
     ap.add_argument("--out", required=True)
     ap.add_argument("--tokenizer", default=None)
+    ap.add_argument("--repeat-asked", type=int, default=1, help="write each train record answering asked this many times")
     a = ap.parse_args()
     rows_p = Path(a.rows or Path(local_paths.value("CUBBY_DATASETS") or ".") / "rule_rows_0067" / "rows.jsonl")
     rows = [json.loads(line) for line in open(rows_p, encoding="utf-8")]
     recs = [record(r) for r in rows if r["split"] in SPLIT]
+    recs += [dict(rec, id=f"{rec['id']}~{j}") for rec in list(recs) if rec["split"] == "train" and rec["answer"] == "asked\n"
+             for j in range(1, a.repeat_asked)]           # round 5: abstaining weighs like the other rows
     tk = None
     if a.tokenizer:
         from tokenizers import Tokenizer

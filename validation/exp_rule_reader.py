@@ -90,12 +90,15 @@ def main() -> None:
             for r in rs:
                 got = rr.read(r["instruction"], gen, encode, eos, examples=shots if arm == "few" else ())
                 kept[arm][r["id"]] = got["plan"]
-                ok = got["how"] == "none" if r["plan"] is None else rr.same(got["plan"], r["plan"])
+                want_how = "asked" if r.get("asked") else "none"
+                ok = got["how"] == want_how if r["plan"] is None else rr.same(got["plan"], r["plan"])
                 rel_ok = rels(got["plan"]) == rels(r["plan"])
                 for key, hit in (("rows", 1), ("written", got["how"] == "written"), ("exact", ok), ("measurement right", rel_ok),
                                  (f"rows {r['lang']}", 1), (f"exact {r['lang']}", ok),
-                                 ("rule-free rows", r["plan"] is None),
-                                 ("invented a rule", r["plan"] is None and got["how"] == "written"),
+                                 ("rule-free rows", r["plan"] is None and not r.get("asked")),
+                                 ("invented a rule", r["plan"] is None and not r.get("asked") and got["how"] == "written"),
+                                 ("asked rows", bool(r.get("asked"))), ("said asked", got["how"] == "asked"),
+                                 ("wrote a rule for an asked row", bool(r.get("asked")) and got["how"] == "written"),
                                  ("said none where there was a rule", r["plan"] is not None and got["how"] == "none")):
                     tally[key] += int(bool(hit))
                 per_kind[r["kind"]].update({"rows": 1, "exact": int(ok), "measurement right": int(rel_ok)})
