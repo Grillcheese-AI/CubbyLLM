@@ -97,10 +97,71 @@ walking each candidate, with picks identical row for row (pinned by a test).
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
-- **Commits:**
-- **Files:**
-- **Tests:**
-- **Measured:** <against each acceptance line>
-- **Not verified here:**
+**Where it stands (2026-11-13):** A and B done and committed; C waits for cubelang P6-10 on the shared VM (the P6 build
+was 1.5-3.5x slower; P6-10 is in review); D is Cowork's (the rules), then one fresh read.
+
+- **Commits** (on `agent-b`): `cca4879` (in progress), `a08bfe1` (B), `9260781` (A).
+- **Files:** `validation/retrieval_bench/r2_misses.py` (each set rebuilt as R2 builds it; B1q's decision repeated from
+  the segment's facts, with why each candidate stands), `r2_misses_report.py` (A's tables), `r2_b1q.py` (`WALK`:
+  "walk" as built or "veto"; the walk factored out), `r2_choosing.py` (`--b1q-walk`, recorded in the log's args);
+  `tests/validation/test_r2_arms.py` (the veto, pinned). Logs: `retrieval_R2_misses_2026-11-13.json`,
+  `retrieval_R2_dev_2026-11-13_0069_veto.json`.
+- **Tests:** the veto never makes a pick, a chain for another candidate turns a pick into undecided, the walk unchanged
+  under "walk" (16 pass in the file).
+
+**A. The misses by cause** (`retrieval_R2_misses_2026-11-13.json`). B1q repeated from the facts equals R2's logs on
+every row before any cause is counted: dev 2,965 / 2,965, test 1,088 / 1,088, seed 1 1,952 / 1,952. A diagnostic of
+reads already made; nothing is scored anew; ids and codes only.
+1. **Wrong picks.** None stood by the "located in" walk, on test or dev.
+
+   | | test (38) | of which Mintaka (15) | WebQSP_EL (6) | ShadowLink (17) | dev (43) |
+   |---|---|---|---|---|---|
+   | the cue that held names several items | 29 | 13 | 3 | 13 | 32 |
+   | the gold does not bear the name | 18 | 2 | 1 | 15 | 31 |
+   | neither (a plain wrong pick) | 5 | 2 | 3 | 0 | 1 |
+   | the pick stood by its own statement / a statement pointing at it | 32 / 6 | 15 / 0 | 5 / 1 | 12 / 5 | 30 / 13 |
+
+   The two causes overlap (a row can have both). A cue "names several items" when the cue's words, looked up as a
+   name, give more than one item and the pick holds one of them: the qualifier is itself a namesake.
+2. **Rows the tiers decide and B1q does not** (test, Mintaka and WebQSP_EL: 161): the qualifier held by no candidate
+   157 (Mintaka 83, WebQSP_EL 74), no cue span 3, held by several 1. Of the 157: the gold bears the name and every cue
+   names an item the gold has no statement with, either way, 146 (the question's other entities, not a detail of the
+   gold); the gold does not bear the name 10; a cue names the gold itself 1.
+3. **Seed 1's 227 unresolved qualified rows** (EN 89, FR 138): held by several 117 (EN 63, FR 54); held by none 105
+   (EN 26, FR 79); no qualifier 4 (FR: the comparison rule took the name 2, no span names an item 2); the relation not
+   verified 1 (FR). Where no candidate holds it, checked against the qualifier's own item (the fame row's
+   discriminator):
+   - **the qualifier's name is a span of the question and the name index lacks it:** FR 64, EN 9 (e.g. "comte de X",
+     "personnalite politique", "Azerbaidjan occidental"): **this is most of French's extra refusals**;
+   - a cue names the qualifier but no candidate holds it: FR 12, EN 12;
+   - the name starts with an article the cue rule strips ("La Jolla" read as "jolla"): FR 2, EN 1;
+   - the name is not a span of the question: FR 5, EN 4.
+   Demonyms (P1549 of the candidates' countries, 378 known): no unresolved row carries one.
+
+**B. The walk as a veto, on dev** (`retrieval_R2_dev_2026-11-13_0069_veto.json`, against the walk on the same rows
+and build, `retrieval_R2_dev_2026-11-13_b1q_p6final.json`; the rebuilt cowork VM `676df1d`, every other rule frozen):
+
+| B1q, dev | walk: right / wrong / undecided / refused | veto: right / wrong / undecided / refused |
+|---|---|---|
+| fame qualified | 713 / 0 / 103 / 94 (resolved 0.7835) | 667 / 0 / 97 / 146 (resolved 0.7330) |
+| fame bare | 998 held, 2 single | 998 held, 2 single |
+| Mintaka | 55 / 9 / 325 / 44 | the same |
+| WebQSP_EL | 26 / 5 / 282 / 10 | the same |
+| ShadowLink Top | 9 / 15 / 75 / 4 | 8 / 15 / 76 / 4 |
+| ShadowLink Shadow / Tail | 13 / 14 / 73 / 8; 33 / 0 / 52 / 3 | the same |
+
+- **The line** (no more wrong picks than the walk on every set, seed 0's qualified resolved at or above 0.70):
+  **met** (0.7330). On dev the veto removes no wrong pick (A: none stood by the walk); 53 rows change, each a right or
+  an undecided turned refused or undecided (46 fame qualified rights, 1 ShadowLink Top right).
+- The 2 bare single picks are the shared-today line's (as on every run since 0046).
+
+**C, D:** not yet (C after P6-10 on the shared VM, in a quiet slot; D after Cowork's rules).
+
+- **Not verified here:** —
 - **Found on the way:**
-- **Questions:**
+  - The harness did not record its arms' mode; `--b1q-walk` now goes into the log's `args` (the veto run's log is
+    annotated by hand: it was started with the flag, and 53 rows differ from the walk's).
+  - A commit-message slip: `9260781` says "FR 64 of 79"; the base is 83 (79 held by none plus 4 with no qualifier).
+- **Questions:** for D: (1) the name index lacking French labels is a data cause, not a rule: is filling it (R1b's
+  segment, French labels of items already in it) in this order or its own? (2) "a cue that names several items" is
+  the most frequent wrong-pick cause on test (29 of 38): is "a namesake cue never qualifies" a rule you want written?
