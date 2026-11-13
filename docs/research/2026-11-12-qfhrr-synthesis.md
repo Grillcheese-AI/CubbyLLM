@@ -90,3 +90,13 @@ Each is a candidate for an order; Nick decides which are written.
 
 Parked: open-web entity search. Cubby finds its own items by index; the BEIR diagnostics run only if open-corpus
 entity search becomes a job.
+
+## Correction (Cowork, 2026-11-12, after the panel)
+The brief gave B1q's first seed-0 run. By the time of the panel, 0046 already had the rules of `43715a6` (the
+relation reading's words, so "né" is no cue; "located in" walked in the VM) and `acc16df` (comparisons); seed 1, read
+once, had met the fame-set lines (0 bare picks, 0 wrong, 0.762 resolved); and R2's test had failed on Mintaka EN
+(15 wrong of 450, more than the tiers' 13, fewer decided) and on WebQSP_EL's decided count. The panel's namesake
+advice holds in direction (no score chooses), and its two concrete fixes were already made. The veto form of
+"located in" matters more than the brief let it show: on dev the walk made one wrong pick by itself (Rhode Island the
+island, through Contra Costa County). Order 0069 is written from this state, not from the brief's; order 0070 from
+the brief's relation numbers, which are current.
