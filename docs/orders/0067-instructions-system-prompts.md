@@ -302,6 +302,37 @@ Two held-out kinds (forbidden words, bullet lists) are already measured by the r
 - **Rebuilt:** rows (sha `75eeee4f...`), the SFT set on Drive (11,072 records: 9,969 train, 1,103 held; sha
   `53b4b9c4...`; 0 slot boundaries tokenized otherwise), the notebook. The first set is moved aside to Drive's
   `rules/_discard/` (never trained on). The as-is dev read and the gold read stay as recorded (no training).
+### Step 4, the turn: built behind `CB_RULES=1` (Claude Code, 2026-11-12)
+- **The rule book** (`cubbyllm/speech/rule_book.py`): a rule is a plan with who set it, its level (global, company,
+  user, conversation; highest first), its scope (the session, or its own turn), the turn it was set at and the turn
+  it was withdrawn at; nothing is deleted, so the rules in force at any past turn read again. A plan the family
+  cannot run is refused as a rule (it stays "asked" with the caller).
+- **The turn** (`cubbyllm/speech/rule_turn.py`, hooked into `chat.CubbyChat.candidates` and `turn`): the rules in
+  force at this turn; the seat's steering handed through the turn's context (`cubbyllm/emit/talk.py` passes a mask
+  to grilly2's hook through `cubbyllm/ops/grilly_seats.suppress_processor`, and an opening as the forced prefix);
+  every candidate that clears the host guards is run against every rule by the VM; one that breaks a rule is not
+  offered; when a candidate was held back for a rule and none is left, Cubby says "I can't put that in the form you
+  asked." / "Je ne peux pas le dire sous la forme demandée." (in Cubby's voice; kept with the turn's code, since
+  `standin/` takes no new feature). The record (`rec["rules"]`) lists each rule in force: its level, who set it, how
+  it acted (enforced: the opening written in; checked; asked), whether it was steered, and its outcome on the reply
+  said (held, or refused when Cubby said its own line). A reply said with a checked rule broken cannot be produced:
+  only passing candidates are offered.
+- **Steering reads leaf shapes, never kinds:** a word that must be absent (its own tokens masked), all lowercase
+  (every token holding a capital masked) or all capitals, a character or letter that must not appear, an opening
+  (the prefix). Inside "or" / "not", nothing is steered. Specials and the end token are never masked.
+- **Off** (the default): the chat reads nothing new; a turn is the one before (pinned).
+- **Tests:** `tests/speech/test_rule_turn.py` (7, four through the VM): the book's clocks and levels; steering's
+  masks on a toy vocabulary; the "can't" line passes the voice rules; off unchanged; on, a breaking candidate is not
+  offered and the one said is recorded held; none passing -> the line, recorded refused, naming the rule; a
+  withdrawn rule stops at the next turn. Speech, affect, emit, ops: 172 passed (the known red only).
+- **On the 450M, a first look** (four questions, "all lowercase" and "no word *the*", greedy, one candidate each):
+  unsteered, 0 of 4 replies pass; steered, 2 of 4 ("**river** is a word that means ...", "tea is made by boiling
+  water ..."); the other two drifted (a lone quote; a run of emoji) and fail the check, so neither would be said.
+  "All lowercase" masks 42,968 of 127,996 tokens. Steering helps; the candidates and the VM decide.
+- **Not built in this step:** the talk seat's rules block (it waits for 0010's rows: the served seat was trained on
+  no such block); who may set a level (step 1); two rules that cannot both hold (the addendum's E).
+- **Next to measure:** line 4 on `exp_if_follow` with the turn (each prompt's rule as a plan, steering on, up to N
+  candidates): followed, refused, broken against the 51.8% baseline; it is a long run on the card.
 - **Commits:**
 - **Files:**
 - **Tests:**

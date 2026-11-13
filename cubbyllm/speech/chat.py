@@ -41,6 +41,7 @@ from ..affect.afferent import Afferent  # noqa: E402
 from ..affect.neurochem import Neurochemistry, appraise  # noqa: E402
 from ..affect import choosing  # noqa: E402
 from ..affect import saying  # noqa: E402
+from . import rule_turn  # noqa: E402
 
 __wiring__ = "STANDALONE"
 
@@ -77,6 +78,18 @@ class CubbyChat(ChatState):
 
 
     # ── the turn ────────────────────────────────────────────────────────────
+    def _turn_rules(self):
+        """This turn's rules (order 0067, ``CB_RULES=1`` and a rule book on the chat), else None: the turn is as
+        before. The VM session that checks them is opened once."""
+        if not rule_turn.on() or getattr(self, "rules", None) is None:
+            return None
+        if getattr(self, "_rule_vm", None) is None:
+            from cubbyllm.bridges import cubelang_client as cc
+            self._rule_vm = cc.CubelangSession(self.exe)
+        em = self.emitter
+        seat = (getattr(em, "adapters", None) or {}).get("talk", em)
+        return rule_turn.TurnRules(self.rules, len(self.history), seat, lambda src, fn: self._rule_vm.run(src, fn=fn))
+
     def _guard(self, reply: str, user_text: str, hit_limit: bool = False) -> str | None:
         """The host guards, unchanged. -> the reason it may not be spoken, or
         None if it survives. Pulled out of `candidates` so the same cascade
@@ -140,12 +153,14 @@ class CubbyChat(ChatState):
         # weighing the same set differently. It is also the cheap direction —
         # fewer decode passes exactly when the turn is time-critical.
         draws = choosing.breadth(max(1, int(getattr(self, "n_candidates", 1))), mod)
+        tr = self.turn_rules = self._turn_rules()        # order 0067 (CB_RULES=1): None when off
 
         offered, rejected, seen = [], [], set()
         for k in range(draws):
             self._turns = getattr(self, "_turns", 0) + 1
             raw = self.emitter.emit(prompt, context={"role": "talk", "state": dict(self.state),   # the talk adapter; the state rides in c
-                                                     **self.talk_context(user_text, lang)},        # the turns / the identity facts, for an adapter that renders its own format
+                                                     **self.talk_context(user_text, lang),         # the turns / the identity facts, for an adapter that renders its own format
+                                                     **(tr.context() if tr else {})},              # the rules' steering
                                     max_new_tokens=self.max_new_tokens, system=system,
                                     temperature=getattr(self, "temperature", 0.7), seed=self._turns)   # words, not programs: sample
             from ..emit.base import clean_reply
@@ -153,7 +168,10 @@ class CubbyChat(ChatState):
             if not reply or reply in seen:
                 continue
             seen.add(reply)
-            why = self._guard(reply, user_text, bool((getattr(self.emitter, "last", None) or {}).get("hit_limit")))
+            last = getattr(self.emitter, "last", None) or {}
+            why = self._guard(reply, user_text, bool(last.get("hit_limit")))
+            if why is None and tr is not None:           # every rule in force, run by the VM on this candidate
+                why = tr.why_not(reply, steered=bool(last.get("steered")))
             if why is None:
                 offered.append(reply)
             else:
@@ -162,7 +180,7 @@ class CubbyChat(ChatState):
 
         spoken = [r["reply"] for r in self.history[-8:]]
         backed = set(self.grounded) | set(grounded or ())
-        offered, self.last_choice = saying.rank(offered, mod, safe=dont_know,
+        offered, self.last_choice = saying.rank(offered, mod, safe=tr.safe(dont_know, lang) if tr else dont_know,
                                                 history=spoken, grounded=backed)
         return offered, rejected
 
@@ -211,4 +229,7 @@ class CubbyChat(ChatState):
         # the one bit that matters and the gains say why.
         rec["choice"] = dict(self.last_choice)
         rec["spoke_safe"] = bool(rec["reply"] == T(self.facts, "dont_know_line", guess_lang(user_text)))
+        if getattr(self, "turn_rules", None) is not None:   # order 0067: how each rule acted, and its outcome
+            rec["rules"] = self.turn_rules.record(rec["reply"])
+            rec["spoke_safe"] = rec["spoke_safe"] or rec["reply"] in rule_turn.CANT.values()
         return rec

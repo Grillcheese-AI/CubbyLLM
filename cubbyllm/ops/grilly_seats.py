@@ -56,6 +56,16 @@ def copy_pair(wrapped: dict, weights: dict, g=None) -> None:
             mod.lora_B.weight.copy_(g.from_numpy(b))
 
 
+def suppress_processor(token_ids: list):
+    """grilly2's processor that keeps `token_ids` from ever being written (order 0071's hook; order 0067's steering),
+    or None when this grilly2 has no hook."""
+    try:
+        from grilly.infer.logits_process import SuppressTokensLogitsProcessor
+    except ImportError:
+        return None
+    return SuppressTokensLogitsProcessor(token_ids)
+
+
 def generate(model, rows: list, max_new_tokens: int, eos: int, temperature: float = 0.0, top_k: int = 40,
              seed: "int | None" = None, g=None, logits_processor=None, prefix_allowed_tokens_fn=None) -> list:
     """Rows of token ids -> each row with its continuation (as lists), greedy; sampled at ``temperature`` > 0, seeded

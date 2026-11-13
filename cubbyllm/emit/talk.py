@@ -91,15 +91,36 @@ class Cubby450mTalk:
     def emit(self, prompt: str, max_new_tokens: int = 160, system: str | None = None,
              prefix: str = "", temperature: float = 0.0, seed: int | None = None,
              context: "str | dict | None" = None) -> str:
+        steer = (context or {}).get("steer") if isinstance(context, dict) else None   # order 0067 (CB_RULES=1)
+        prefix = prefix or ((steer or {}).get("prefix") or "")
+        hook, applied = {}, False
+        if steer and steer.get("suppress"):
+            from ..ops import grilly_seats as ops
+            proc = ops.suppress_processor(steer["suppress"])
+            if proc is not None:
+                hook, applied = {"logits_processor": [proc]}, True
         text = talk_prompt(prompt, context) + ((" " + prefix) if prefix else "")
         ids = self.trunk.tokenizer.encode(text).ids[-self.max_ctx:]
-        out = self.trunk.generate(self.role, [ids], max_new_tokens, temperature=temperature, seed=seed)[0]
+        out = self.trunk.generate(self.role, [ids], max_new_tokens, temperature=temperature, seed=seed, **hook)[0]
         if self.trunk.eos in out:
             out = out[:out.index(self.trunk.eos)]
         hit = len(out) >= max_new_tokens                  # no end before the limit: it stopped there (0010, g)
         raw = self.trunk.tokenizer.decode(out)
-        self.last = {"prompt": text, "raw": raw, "hit_limit": hit}
+        self.last = {"prompt": text, "raw": raw, "hit_limit": hit, "steered": applied}
         return (prefix + " " if prefix else "") + talk_answer(raw)
+
+    def vocab_strings(self) -> list[str]:
+        """Every token as text, by id (built once): what rule steering tests a mask against (order 0067)."""
+        if getattr(self, "_vocab", None) is None:
+            tk = self.trunk.tokenizer
+            self._vocab = [tk.decode([i]) for i in range(tk.get_vocab_size())]
+        return self._vocab
+
+    def specials(self) -> set:
+        """The ids steering never masks: the end token and every token the tokenizer calls special."""
+        tk = self.trunk.tokenizer
+        return {self.trunk.eos} | {i for t, i in tk.get_vocab(with_added_tokens=True).items()
+                                   if t.startswith("<") and t.endswith(">")}
 
 
 def context_role(context) -> str | None:
