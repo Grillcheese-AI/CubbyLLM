@@ -52,7 +52,10 @@ WALK = "veto"                                            # (0069 step D, rule 1:
 #                   held, the row is undecided; B1q never chooses among a cue's items
 #   "article"       a span may open with the article that belongs to a name ("la jolla", "the hague"): tried as a
 #                   name first; the article is stripped only where the name with it is not in the index (``longest``)
+#   "namesake_cue_class"  (2b) as "namesake_cue", except that a candidate holding the cue's item through a class
+#                   statement (instance of, subclass of, occupation) still stands on it
 RULES: set = set()
+CLASS_PIDS = ("P31", "P279", "P106")
 ARTICLES = {"the", "le", "la", "les", "l"}
 
 
@@ -197,6 +200,11 @@ def write_segment(path: str, rows: list[dict], profiles: dict, items_of_all: dic
                         seen.add((q, cue))
                         f.write(json.dumps({"key": f"{q} ~ {cue}", "text": cue, "source": f"wikidata:{q}"}, ensure_ascii=False) + "\n")
                         n += 1
+                    cls = {v for p in CLASS_PIDS for v in ((profiles.get(q) or {}).get("value_ids") or {}).get(p) or ()}
+                    if (q, "class", cue) not in seen and len(vals) > 1 and cls & vals:     # rule 2b's facts
+                        seen.add((q, "class", cue))
+                        f.write(json.dumps({"key": f"{q} ~class {cue}", "text": cue, "source": f"wikidata:{q}"}, ensure_ascii=False) + "\n")
+                        n += 1
     return n
 
 
@@ -228,7 +236,8 @@ def b1q(session, kpath: str, named: list[str], pid: str | None, cues: list[str],
             return {"outcome": "undecided", "why": "no relation and no qualifier", "k": len(named), "qualifier": "none"}
         out = V.b1(session, kpath, named, pid)
         return {**out, "qualifier": "none"}
-    several = {c for c in checked if len(items_of.get(c) or ()) > 1} if "namesake_cue" in RULES else set()
+    two_b = "namesake_cue_class" in RULES
+    several = {c for c in checked if len(items_of.get(c) or ()) > 1} if ("namesake_cue" in RULES or two_b) else set()
     usable = [c for c in checked if c not in several]   # rule 2: a namesake cue never makes a candidate stand
     bs, wall, held_by_several = [], 0.0, False
     for q in named:
@@ -241,6 +250,13 @@ def b1q(session, kpath: str, named: list[str], pid: str | None, cues: list[str],
             if b["values"]:
                 qual = True
                 break
+        if not qual and two_b:                           # rule 2b: a namesake cue held through a class statement
+            for c in several:
+                b = V.branch(session, kpath, q, "~class " + c)
+                wall += b["wall_ms"] or 0
+                if b["values"]:
+                    qual = True
+                    break
         if not qual and several:                         # (only to say why, below: the namesake cue held)
             for c in several:
                 if V.branch(session, kpath, q, "~ " + c)["values"]:

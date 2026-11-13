@@ -201,7 +201,7 @@ def main() -> None:
     ap.add_argument("--no-el", action="store_true", help="the fame set only")
     ap.add_argument("--tag", default="", help="appended to the log's name (a partial rerun keeps the full run's log)")
     ap.add_argument("--fame-set", default="fame_set", help="fame_set (seed 0, dev) or fame_set_seed1 (read once)")
-    ap.add_argument("--b1q-rules", nargs="*", default=[], choices=("namesake_cue", "article"),
+    ap.add_argument("--b1q-rules", nargs="*", default=[], choices=("namesake_cue", "namesake_cue_class", "article"),
                     help="order 0069 step D's rules 2 and 3 (each measured on dev before it is kept)")
     ap.add_argument("--b1q-walk", choices=("walk", "veto"), default="veto",
                     help="order 0069 B: a 'located in' chain makes a candidate hold a cue (walk) or only vetoes a pick")

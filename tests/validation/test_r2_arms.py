@@ -222,6 +222,33 @@ def test_a_namesake_cue_never_qualifies_a_pick(monkeypatch):
     assert Q.b1q(None, "", ["Q1", "Q2"], "P19", ["springfield"], several)["item"] == "Q1"
 
 
+def test_rule_2b_a_namesake_cue_qualifies_only_through_a_class_statement(monkeypatch, tmp_path):
+    """Order 0069 step D, rule 2b: a cue whose words name several items still makes a candidate stand when the
+    candidate holds one of them through instance of / subclass of / occupation; held through any other property (here
+    P131) it does not, and the row is undecided."""
+    import json
+    from retrieval_bench import r2_b1q as Q
+    monkeypatch.setattr(Q, "RULES", {"namesake_cue_class"})
+    cue = {"singer": ["Q177220", "Q999"]}                                  # a type word that also names a song
+    rows = [{"named": ["Q1", "Q2"], "cues": ["singer"], "cue_items": cue}]
+    for holder, pid in (("Q1", "P106"), ("Q2", "P131")):
+        profiles = {"Q1": {"value_ids": {}}, "Q2": {"value_ids": {}}}
+        profiles[holder]["value_ids"] = {pid: ["Q177220"]}
+        kpath = tmp_path / f"seg_{pid}.jsonl"
+        Q.write_segment(str(kpath), rows, profiles, cue, {})
+        facts = {}
+        for line in open(kpath, encoding="utf-8"):
+            d = json.loads(line)
+            q, key = d["key"].split(" ", 1)
+            facts.setdefault((q, key), []).append(d["text"])
+        monkeypatch.setattr(V, "branch", lambda s, k, q, p, f=facts: {"item": q, "values": f.get((q, p), []), "wall_ms": 0.1})
+        out = Q.b1q(None, "", ["Q1", "Q2"], None, ["singer"], cue)
+        if pid == "P106":
+            assert out["outcome"] == "pick" and out["item"] == "Q1"
+        else:
+            assert out["outcome"] == "undecided" and out["why"] == "the cue names several items"
+
+
 def test_an_article_that_belongs_to_a_name_is_tried_with_it(monkeypatch):
     """Order 0069 step D, rule 3: a span may open with its article ("la jolla"); ``longest`` then prefers the name with
     the article where the index has it, and the stripped span stands where it does not."""

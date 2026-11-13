@@ -117,6 +117,34 @@ walking each candidate, with picks identical row for row (pinned by a test).
 - **Then C** in its slot (it measures B1q as frozen after this step), **then the fresh read** exactly as the order
   writes it, every rule frozen, each sample's SHA-256 committed before any arm runs.
 
+### Step D's dev runs (Claude Code (B), 2026-11-13)
+Logs: `retrieval_R2_dev_2026-11-13_0069_veto.json` (rule 1 alone), `..._0069_rule2.json` (`--b1q-rules namesake_cue`),
+`..._0069_rule3.json` (`--b1q-rules article`); the rebuilt cowork VM (`b3b3360` for rules 2 and 3, `676df1d` for the veto run:
+the same verdicts, P6-10 changed only speed), every other rule frozen. Right / wrong / undecided / refused (resolved). The
+entity-linking sets' dev rows are English only; the fame set is English and French apart.
+
+| B1q, dev, with the veto | veto alone | rule 2 | rule 3 |
+|---|---|---|---|
+| fame/qualified | 667 / 0 / 97 / 146 (0.7330) | 182 / 0 / 582 / 146 (0.2000) | 640 / 0 / 90 / 180 (0.7033) |
+| fame/en | 373 / 0 / 52 / 41 (0.3861) | 94 / 0 / 331 / 41 (0.0973) | 345 / 0 / 45 / 76 (0.3571) |
+| fame/fr | 294 / 0 / 45 / 105 (0.3114) | 88 / 0 / 251 / 105 (0.0932) | 295 / 0 / 45 / 104 (0.3125) |
+| fame/bare | 998 held, 2 single | 998 held, 2 single | 998 held, 2 single |
+| mintaka | 55 / 9 / 325 / 44 (0.1270) | 15 / 2 / 372 / 44 (0.0346) | 56 / 10 / 323 / 44 (0.1293) |
+| webqsp_el | 26 / 5 / 282 / 10 (0.0805) | 4 / 0 / 309 / 10 (0.0124) | 29 / 5 / 279 / 10 (0.0898) |
+| shadowlink/Top | 8 / 15 / 76 / 4 (0.0777) | 5 / 5 / 89 / 4 (0.0485) | 8 / 15 / 76 / 4 (0.0777) |
+| shadowlink/Shadow | 13 / 14 / 73 / 8 (0.1204) | 4 / 8 / 88 / 8 (0.0370) | 13 / 14 / 73 / 8 (0.1204) |
+| shadowlink/Tail | 33 / 0 / 52 / 3 (0.3750) | 11 / 0 / 74 / 3 (0.1250) | 33 / 0 / 52 / 3 (0.3750) |
+| mintaka/en | 55 / 9 / 325 / 44 (0.1270) | 15 / 2 / 372 / 44 (0.0346) | 56 / 10 / 323 / 44 (0.1293) |
+| webqsp_el/en | 26 / 5 / 282 / 10 (0.0805) | 4 / 0 / 309 / 10 (0.0124) | 29 / 5 / 279 / 10 (0.0898) |
+| shadowlink/en | 54 / 29 / 201 / 15 (0.1806) | 20 / 13 / 251 / 15 (0.0669) | 54 / 29 / 201 / 15 (0.1806) |
+
+- **Rule 2: not built** (Cowork, 2026-11-13): seed 0's qualified resolved 0.2000 against the 0.70 line, though it cuts
+  wrongs (Mintaka 9 -> 2, WebQSP_EL 5 -> 0, ShadowLink Top 15 -> 5, Shadow 14 -> 8).
+- **Rule 3: not built** (Cowork, 2026-11-13): Mintaka wrong 9 -> 10 (qualified resolved 0.7033).
+- **Rule 2b** (Cowork, 2026-11-13, written before it ran): a namesake cue qualifies a candidate only when the candidate
+  holds the cue's item through instance of, subclass of or occupation (`--b1q-rules namesake_cue_class`; the facts
+  `<item> ~class <cue>` in the segment). Measured next, with the veto; the same keep line.
+
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
 **Where it stands (2026-11-13):** A and B done and committed; C waits for cubelang P6-10 on the shared VM (the P6 build
