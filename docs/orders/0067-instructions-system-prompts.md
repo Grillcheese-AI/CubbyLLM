@@ -839,3 +839,21 @@ Nick pointed to the OpenThoughts sets in the training data (`unified/`). Read fo
 - **OpenThoughts3** (`open_thoughts_3_600k.jsonl`, part of `unified`, already in the base's text): problems with long
   worked solutions (median about 62,000 characters a row). It holds no pairs of an instruction and its check, so it
   adds nothing direct to the reader's rows.
+
+## Nick's call (2026-11-13): a model may draft wording variations for the readers' rows
+Nick: "yes", to an outside model drafting extra phrasings of instructions for the readers' training rows. How it
+runs:
+- **Wording only.** The drafting model gets one template at a time ("answer in fewer than {n} words") and returns
+  other ways to say it, in the same language, blanks kept. It never sees or writes a rule or a program; those still
+  come from the generator and are run before they are kept.
+- **Every phrasing filtered before it is kept:** the blanks intact; the benchmark-overlap test (no 5-word run shared
+  with an IFEval or M-IFEval prompt); a hand-read sample of at least 10% per kind, and a kind whose sample shows a
+  changed meaning is dropped whole and redrafted. Kept and dropped counts reported per kind and language.
+- **Test wordings stay ours.** The `new` wordings that measure the readers are written by hand (or are the
+  benchmarks' own, unseen); no drafting model writes them.
+- **Which models:** only ones whose terms allow training on their output, checked on the day and recorded with the
+  model ids. Two drafters, for variety. The script, its prompt and every output are kept off the training rows'
+  path until filtered, and logged.
+- **Cost:** stated before the run (estimated under $5) and spent on Nick's go, as for the panels.
+- **Where it applies:** the second reader's rows first. The plan reader's first Colab round runs as built: it is the
+  baseline. Drafted wordings join the plan reader only in a later round, so their effect can be told apart.
