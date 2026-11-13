@@ -946,9 +946,9 @@ item in reading order, each row with its place (`i`) and its characters (`start`
   reader will write; the host prepends the views (`reply_views.literals`).
 - **Kept only when run** (`build_view_programs.py`): 8 replies a program (half pass, half fail by the evaluator); the
   VM's verdict must be the evaluator's on every one (a disagreement stops the build and is saved whole), and some pass
-  and some fail. **The set** (`$CUBBY_DATASETS/view_programs_0067`, seed 0, sha `4a9323ee...`,
+  and some fail. **The set** (`$CUBBY_DATASETS/view_programs_0067`, seed 0, sha `8229de7a...` (rebuilt in step 5: values on one line),
   `view_programs_2026-11-13_manifest.json`): 2,000 programs, 1,148 shapes, joins: 912 single atoms, 242 not, 225 or,
-  208 and, 207 unless, 206 if-then; **15,948 VM runs, 0 disagreements**. Tests: `tests/validation/test_view_programs.py`.
+  208 and, 207 unless, 206 if-then; **15,948 VM runs, 0 disagreements** (the rebuild: 15,956, 0). Tests: `tests/validation/test_view_programs.py`.
 - **Found on the way (VM, for cubelang's fix list):**
   1. **A list of 254+ strings returns nothing; one of exactly 255 numbers errors** (cubelang's P6-8 now). The views
      refuse more than 250 rows (`reply_views.TooLong`, the check is "asked").
@@ -965,6 +965,66 @@ item in reading order, each row with its place (`i`) and its characters (`start`
      The host guard stays in `rule_plan.run` and the step-2 build until the fixed build is the one `CUBELANG_EXE` names.
   3. The draw was not reproducible (set order follows the process's string hashing): values are sorted now; the same
      seed draws the same programs under any `PYTHONHASHSEED`. An earlier unseeded build is in `_discard`.
+
+### Step 3, built: long instructions with their split and join (Code A, 2026-11-13)
+- **Wording** (`validation/builders/view_wording.py`): every atom said in English and French by hand-written templates,
+  as an instruction (`say`), its negation (`say_not`, the negation carried into the atom: "fewer than", "no ...",
+  "the second sentence, if there is one, should not ...") and a condition (`say_cond`, for "if" and "unless"). Counts
+  said as people say them ("at least one", "no", "a number of lines other than 3"). Read by eye on a sample and fixed
+  where a wording said another rule (a numeric "!=" was said "exactly"); 0 French "aucun" without its "ne" in 8,538.
+- **The join** (`view_join.py`): one function per part, taking the view columns it reads as arguments (a called
+  function cannot read the caller's values on this build: probed), and a `solve` that calls the parts in the stated
+  order and joins them: all groups must hold; "A unless B" (A or B), "if B, A", "either A or B".
+- **Rows** (`build_long_rows.py`, `view_long_pools.py`): parts drawn one by one from the replies the parts so far still
+  pass; a negated part checked against the held-out forms as the atom it equals; groups; then a task sentence (Nick's
+  task words, `task_verbs` reads each one back), phrases no measurement covers (round 6's held-out phrases only in
+  held-out rows), a process step, sentences that are not instructions, in EN or FR. Targets: `segments` (each sentence
+  or clause, its character span and kind: check (its part, and "condition" for an if/unless clause), task, asked,
+  process, none) and `join`. Parts numbered as the text states them. Kept when the joined program's VM verdict is the
+  evaluator's on all 8 replies (4 pass, 4 fail); train/dev rows sharing 5 words with IFEval or IFBench dropped (34).
+- **The set** (`$CUBBY_DATASETS/long_rows_0067`, seed 0, sha `ca2e6a0e...` (rebuilt in step 5), `long_rows_2026-11-13_manifest.json`):
+  3,900 rows: train 3,000, dev 300, test 300 (2-4 parts, unseen compositions), test_long 300 (5-8 parts, line 4);
+  EN 2,269, FR 1,631; segments: 12,884 checks, 3,109 tasks, 3,881 asked, 1,557 process, 3,777 not instructions;
+  groups: 8,696 single, 1,075 either, 559 if, 460 unless. **31,091 VM runs, 0 disagreements** (the rebuild: 31,087, 0).
+  Tests: `tests/validation/test_long_rows.py`.
+- Next: step 4 (CubeLang as a syntax curriculum: the repo's examples and tests, the programs seat's rows), step 5
+  (the reader, grammar-constrained through 0071's hook), then its Colab round; 0072 after step 3, as Nick set.
+
+### Step 4, built: CubeLang as a syntax curriculum (Code A, 2026-11-13; 0072 done first, as Cowork set)
+`validation/builders/build_cubelang_curriculum.py` -> `$CUBBY_DATASETS/cubelang_curriculum_0067/programs.jsonl`
+(sha `a95da01d...` after the step-5 rebuild, `cubelang_curriculum_2026-11-13_manifest.json`): every program compiled on the cowork build
+(`cubelang compile`) before it is kept; duplicates once; IFEval / IFBench 5-word overlap dropped. **No benchmark:** the
+programs seat's GSM8K-derived arithmetic and every TinyGSM row are left out (the served programs seat's own set is all
+such step fragments, so none of it is used); its identity rows are text. Kept 4,568: the cubelang repo's examples 14
+(6 do not compile today), programs inside its tests 74 (30 do not: tests of errors, mostly), the programs seat's role
+binding, reasoning kernels and verified chains 2,431 (27 shared 5 words with a benchmark), step 2's checks 2,000 (each
+on its shortest reply), 0072's verb programs 49.
+
+### Step 5, built: the reader, its set and its grammar, ready for Colab (Code A, 2026-11-13)
+- **The form** (`cubbyllm/speech/view_reader.py`): after the instruction, one line per sentence or clause in order,
+  `<kind>[ <part>][ condition] | <text copied exactly>`, then `---`, then the join. `parse` finds each segment's span
+  in order; a segment the instruction does not hold makes the read "asked". All 3,900 rows round-trip exactly.
+- **The grammar** (`cubbyllm/speech/view_grammar.py`, through 0071's hook): the split's labels from the closed set and
+  its text copied forward from the instruction; the join's lines exactly the generator's shapes, in order (head, part
+  functions, `solve`, close); end of answer only when it is complete. `cubbyllm/ops/grilly_seats.ranked_processor`
+  lets it pick the best-scored token that keeps the answer viable (the top 32, then 512, then all). Every target is
+  complete under it and every prefix viable; a program the shapes allow but the compiler refuses is "asked".
+- **Found and fixed:** the generator drew values with a line break (the character "
+", a JSON value with one); a
+  wording put them in an instruction, which no person writes in one line and the split's one-line form cannot hold.
+  Values with a line break, a tab or only spaces are no longer drawn; steps 2, 3 and 4 rebuilt from seed 0 (the
+  earlier sets in `_discard`; the numbers above carry both).
+- **The set** (`validation/sft/build_view_reader_sft.py` -> `rules/view_reader_sft_v1.jsonl` on Drive, sha
+  `feeb7c6a...`): 9,018 records (train 8,402, held 616): long instructions with 2-4 parts 3,300 (train and dev only;
+  test and test_long never trained), single checks said in EN/FR 1,165, the CubeLang curriculum as continuations 4,553;
+  7 records sharing 5 words with IFEval/IFBench dropped; 15 longer than 1,280 tokens dropped (counted).
+- **The run** (`notebooks/view_reader.ipynb`): an A100, rank 16, three epochs, `MAX_LEN` 1,280 (micro-batches on a
+  smaller card); writes `rules/cubby450m_view_reader_v1/`. Nick's call (the addendum: "the Colab round for this reader
+  when its set is built").
+- **The read** (`validation/exp_view_reader.py`): test (2-4 parts) and test_long (5-8) once each; the split's span and
+  kind per part; uncovered text flagged "asked" (nothing dropped silently); each program bound to a reply's views,
+  compiled and run against the generator's verdict (agreement, false passes, the checked share); 5-8 over 2-4; seconds
+  per instruction (a plumbing run: about 40 ms a token, so about 40 s an instruction).
 
 ## Cowork's note (2026-11-13): a real long instruction to test the split and the join on
 Nick pointed to the OpenThoughts sets in the training data (`unified/`). Read for this order:

@@ -1,5 +1,5 @@
 # 0072 - Verb programs: one CubeLang program per instruction verb, by kind (the check, the gate, the read-back)
-status: open (Code A, after 0067's step 3; Nick, 2026-11-13)
+status: done (2026-11-13, Cowork: every line met; rerun once on the cubelang P6 build; see Cowork's check at the end)
 written: 2026-11-13 by Cowork - approved: 2026-11-13 by Nick ("we should craft cubelang programs for each of those instruction words / type") - hypothesis: none (0067's second reader)
 
 ## Why
@@ -157,10 +157,60 @@ file, a service, a device or an account takes **act**.
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
-- **Commits:**
-- **Files:**
-- **Tests:**
-- **Measured:** <against each acceptance line>
-- **Not verified here:**
-- **Found on the way:**
-- **Questions:**
+- **Commits:** `3c2728a` (in progress), `b66a31e` (step 1: the table as code, French forms), and the commit carrying
+  this report (steps 2-5).
+- **Files:** `cubbyllm/speech/verb_table.py` (the order's table, verbatim, with each verb's French infinitive),
+  `verb_kinds.py` (kinds, arguments, acts with class and read-back, `act_class(verb, ctx)`, French imperatives by rule),
+  `verb_programs.py` + `verb_programs_more.py` (one CubeLang template per kind and variant), `verb_guard.py` (the static
+  guard); `validation/builders/verb_cases.py`, `verb_cases_more.py`, `verb_cases_act.py` (cases, breakages, the gate's
+  fixed set), `verb_contracts.py` (the Python evaluator, written from the contracts), `validation/verb_fake_host.py`,
+  `validation/exp_verb_programs.py`, `validation/verb_forms_check.py`; logs `verb_programs_2026-11-13.json`,
+  `verb_forms_check_2026-11-13.json`.
+- **Tests:** `tests/speech/test_verb_kinds.py` (67 of 67 verbs with kinds or acts, arguments, class and read-back in
+  both languages; French imperatives by rule; a verb with no rule refused), `tests/speech/test_verb_guard.py` (the guard
+  refuses an unbound compare, an index outside a length check, an index that can go below 0, a list over 250, a shared
+  VM key; the templates pass it; the fake host is never reached for an ask-first verb without a yes in that turn; VM and
+  evaluator agree on a sample). All pass; the known red guard (order 0002) unchanged.
+- **Measured** (`verb_programs_2026-11-13.json`, the cowork VM `3f37515`):
+  - **0 unexplained disagreements:** 105 verb-kind pairs (50 reply kinds, 55 act verbs) x 20 cases, half broken by the
+    order's named breakages: **2,100 of 2,100 agree**, 0 disagreements. The guard refused 6 cases before they ran
+    (strings sharing a VM name key, "thing" / "government"); each was drawn again, so every pair ran 20. 57 cases whose
+    evaluator result did not match their breakage were drawn again before running (the builder's misses, not the VM's).
+  - **Kill (a missing value compared): not hit.** Every program passed the static guard before it ran.
+  - **The gate** (the fixed set, 560 instructions, at least 10 per act verb, EN and FR): **560 of 560** as the order
+    sets them. Ask-first without a yes in that turn (including a yes from an earlier turn only): 48 of 48 "ask", the
+    fake host reached 0 times; with a yes: "do"; no tool: "refuse"; "done" only when the read-back agreed ("not done"
+    otherwise).
+  - **Time:** p95 at 50 items, worst program **34 ms** (merge; line: 50 ms). At 250 items: sort 588 ms, merge 624 ms,
+    filter 104 ms (their item-by-item counting is quadratic), the others under 7 ms.
+  - **French forms** (`verb_forms_check_2026-11-13.json`, UniMorph off-repo): 176 of 177 imperatives agree; the one
+    difference is UniMorph's (it gives the subjunctive "extraie" as the 2sg imperative; "extrais" kept); 8 infinitives
+    are not UniMorph lemmas and are unchecked; 44 of 46 one-word task cues found.
+- **Not verified here:** act verbs ran against the fake host only (nothing real is called; one order per tool, later).
+  Write kinds check form only. Whether Code B ran CPU work during the timing was not checked (the timing line is
+  reported without that). The rerun on the P6 build waits for it.
+- **Found on the way:** the VM takes no unary minus as an operand: a negative value the host binds is written
+  ``assign x = 0; sub x, n;``. `act_class` reads the context (unsaved changes, a sandbox, software or data, a shared
+  branch); "ask first unless in a sandbox" is a change inside one; a verb with no act in a context is refused.
+- **Questions:** sort and merge at 250 items take about half a second (quadratic counting). Faster forms need a map or
+  host-sorted keys; worth an order only if the reader meets lists that long.
+
+## Cowork's check (2026-11-13): done
+- **Every line met** (`verb_programs_2026-11-13.json`, the cowork VM `3f37515`): 2,100 of 2,100 cases agree over
+  105 verb-kind pairs, 0 disagreements; the kill (a missing value compared) not hit, every program guarded first; the
+  gate 560 of 560, ask-first without a yes in that turn asked 48 of 48 with the fake host never reached; p95 34 ms at
+  50 items (line 50 ms), and at 250 items sort 588 ms, merge 624 ms, filter 104 ms, the rest under 7 ms. The table
+  holds 67 of 67 verbs (pinned). French imperatives by rule: 176 of 177 agree with UniMorph off-repo, the one
+  difference UniMorph's own ("extraie").
+- **The evaluator read** (`validation/builders/verb_contracts.py`): written apart from the templates and as the order
+  states the contracts: sort is the same counts in order; pick with "all" is complete; merge is the union of the
+  inputs' counts; each edit is equal outside the named places; the gate asks first without a yes. Redrawing the 57
+  cases whose breakage did not break, and the 6 the guard refused, happened before any VM run.
+- **What this shows and what it does not:** each kind's program runs on the VM as its contract says, and an action
+  that cannot be undone never reaches a tool without a yes. Whether an instruction is read into the right verb and
+  arguments is the reader's (0067 step 5). The timing was not checked against Code B's load; the line held anyway.
+  Act verbs ran against the fake host only.
+- **The quadratic counting at 250 items:** no order now. Host-sorted keys are the fix if the reader meets lists that
+  long; P6-9's wider keys may change the times, so the P6 rerun reports them again.
+- **Next:** the cases rerun once on the cowork VM rebuilt with cubelang P6 (Cowork names the commit in the inbox),
+  with every change listed.

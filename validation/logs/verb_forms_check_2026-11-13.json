@@ -1,0 +1,38 @@
+{
+ "order": "0072",
+ "what": "French verb forms by rule and task cues, checked against UniMorph French (off-repo)",
+ "verbs": 67,
+ "infinitives_known_to_unimorph": 59,
+ "infinitives_unknown": [
+  "créer",
+  "parser",
+  "imprimer",
+  "lire",
+  "régler",
+  "arrêter",
+  "tester",
+  "mettre à jour"
+ ],
+ "imperatives_checked": 177,
+ "imperatives_agreeing": 176,
+ "our_forms_disagreeing": [
+  {
+   "verb": "extract",
+   "infinitive": "extraire",
+   "person": "tu",
+   "ours": "extrais"
+  }
+ ],
+ "task_cues_one_word": 46,
+ "task_cues_found": 44,
+ "task_cues_not_found": [
+  "comparaison",
+  "pourquoi"
+ ],
+ "unimorph": "CC BY-SA 3.0; read here only, no row of it in this log or the repo",
+ "notes": {
+  "extraire, tu": "UniMorph's form for the 2sg imperative is the subjunctive's; the imperative is 'extrais' (ours, kept)",
+  "infinitives_unknown": "not UniMorph lemmas (lire, créer, mettre among them): not checked here",
+  "task_cues_not_found": "a noun and an adverb, not verb forms"
+ }
+}
