@@ -1,5 +1,5 @@
 # 0070 - The missing-fact guard: the relation step refuses when the item lacks the fact asked, measured on hidden facts
-status: review (Code B, on the branch `agent-b`, 2026-11-13: no guard passes; the report below)
+status: done (2026-11-13, Cowork: no guard passes, a negative result as measured; see Cowork's check at the end)
 written: 2026-11-12 by Cowork - approved: 2026-11-12 by Nick ("yes", to writing the qFHRR panel's first two steps as orders) - hypothesis: none (0046's R3 and R8 lines)
 
 ## Why
@@ -208,3 +208,24 @@ its loss (line at most 2 points), SimpleQuestions present recall@5 (line 0.85 wh
      here. Is a new order with a different G2 (incoming counts as well as outgoing, or the class chain) worth writing,
      read on a fresh hidden set?
   2. Should the kin inverses (P40 against P22 / P25) be added by hand to a future hidden set's rule?
+
+## Cowork's check (2026-11-13): done, a negative result
+- **The reads kept their order:** the split committed before any guard ran (`74bab81`), the thresholds frozen on
+  guard-dev before guard-test was opened (`4e6d0a3`), guard-test read once (`43dd3be`). The closest row recomputed from
+  the test log (`retrieval_R3g_test_2026-11-13.json`, `450m|G2`): 49 of 436, by set 11, 3, 13, 8, 14, as reported.
+- **The verdict, as pre-registered:** no guard passes for any arm. Killed: qFHRR at both margins and the 450M with the
+  store's wordings, behind every guard (G3 is not a passing configuration: its recall loss on guard-dev is over the
+  2-point rule everywhere). The lexicon neither passes nor is killed (16.7%, 6 of 38). The serving 450M behind G2
+  holds three lines and misses the fourth by 5 rows (11.2% against 10%), at no recall cost.
+- **What it means:** a filter on what an arm hands over does not stop the missing-fact handover. qFHRR stays out of
+  the relation choice (36 of 38 natural handovers; 30 at best behind a guard), as the panel said. The serving 450M is
+  the arm closest to a guarded relation step.
+- **Code B's questions:**
+  1. A G2 variant is not written now. The next candidate on this track is the 450M's selection seat with a "none of
+     these" answer (the synthesis's fifth, out of scope here), with G2 as written beside it, read on a fresh hidden
+     set; this set's guard-dev half may serve as its dev half, its guard-test half is spent. That order waits for Nick.
+  2. Yes: a future hidden set's rule also hides the kin pairs Wikidata does not link by P1696 (P40 against P22 and
+     P25), found by checking which incoming property joins the same two items, and written before any read.
+- **Not verified here:** the latency on a quiet machine (the read ran with the CPU 33% busy elsewhere; every guard's
+  p95 was within 50 ms anyway).
+- Code B's checkout now names `CUBBY_DATA` in its own `paths.local.json` (local, not committed).
