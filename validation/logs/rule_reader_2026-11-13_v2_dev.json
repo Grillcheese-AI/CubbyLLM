@@ -1,0 +1,281 @@
+{
+ "order": "0067",
+ "what": "the program seat as it is reads instructions into rule plans, slots constrained",
+ "adapter": "cubby450m_rules_v2",
+ "rows_file_lines": 12870,
+ "n_per_split": 150,
+ "k": 8,
+ "seed": 0,
+ "examples_kinds": [
+  "word count < 100",
+  "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+  "case == lower ; language == en",
+  "count of the word \"silence\" < 3",
+  "markdown == no",
+  "section count \"Part\" >= 5",
+  "count of the letter \"n\" >= 11",
+  "starts with \"Décris un matin tranquille.\" == yes"
+ ],
+ "arms": {
+  "zero": {
+   "dev": {
+    "counts": {
+     "rows": 150,
+     "written": 150,
+     "exact": 149,
+     "measurement right": 149,
+     "rows en": 68,
+     "exact en": 67,
+     "rows fr": 82,
+     "exact fr": 82
+    },
+    "per_kind": {
+     "english_capital": {
+      "rows": 5,
+      "exact": 5,
+      "measurement right": 5
+     },
+     "english_capital+multiple_sections": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "english_lowercase": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "english_lowercase+number_highlighted_sections": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "english_lowercase+number_sentences": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "existence": {
+      "rows": 8,
+      "exact": 8,
+      "measurement right": 8
+     },
+     "existence+json_format": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "existence+multiple_sections": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "existence+response_language": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "first": {
+      "rows": 10,
+      "exact": 10,
+      "measurement right": 10
+     },
+     "first+english_lowercase": {
+      "rows": 2,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "frequency": {
+      "rows": 9,
+      "exact": 9,
+      "measurement right": 9
+     },
+     "frequency+json_format": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "frequency+number_sentences": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "frequency+response_language": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "json_format": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "json_format+number_words": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "letter_frequency": {
+      "rows": 4,
+      "exact": 4,
+      "measurement right": 4
+     },
+     "letter_frequency+existence": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "letter_frequency+no_markdown": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "letter_frequency+number_words": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "multiple_sections": {
+      "rows": 10,
+      "exact": 10,
+      "measurement right": 10
+     },
+     "multiple_sections+number_words": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "no_markdown": {
+      "rows": 8,
+      "exact": 8,
+      "measurement right": 8
+     },
+     "no_markdown+english_lowercase": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "number_highlighted_sections": {
+      "rows": 6,
+      "exact": 6,
+      "measurement right": 6
+     },
+     "number_highlighted_sections+first": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "number_highlighted_sections+number_sentences": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "number_paragraphs": {
+      "rows": 5,
+      "exact": 5,
+      "measurement right": 5
+     },
+     "number_paragraphs+quotation": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "number_sentences": {
+      "rows": 8,
+      "exact": 8,
+      "measurement right": 8
+     },
+     "number_sentences+multiple_sections": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "number_words": {
+      "rows": 5,
+      "exact": 5,
+      "measurement right": 5
+     },
+     "number_words+frequency": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "number_words+repeat_prompt": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "quotation": {
+      "rows": 9,
+      "exact": 9,
+      "measurement right": 9
+     },
+     "quotation+letter_frequency": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "repeat_prompt": {
+      "rows": 5,
+      "exact": 5,
+      "measurement right": 5
+     },
+     "response_language": {
+      "rows": 4,
+      "exact": 4,
+      "measurement right": 4
+     },
+     "response_language+existence": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "response_language+json_format": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "title": {
+      "rows": 6,
+      "exact": 6,
+      "measurement right": 6
+     },
+     "title+no_markdown": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "title+number_highlighted_sections": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "title+number_paragraphs": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "two_responses": {
+      "rows": 4,
+      "exact": 4,
+      "measurement right": 4
+     },
+     "two_responses+response_language": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     }
+    },
+    "some_misses": [
+     {
+      "kind": "first+english_lowercase",
+      "want": "opening has yes ; case == lower ; language == en",
+      "got": "opening has yes Answer in English without"
+     }
+    ]
+   },
+   "seconds": 108.4,
+   "seat_calls": 972
+  }
+ }
+}

@@ -1,0 +1,414 @@
+{
+ "order": "0067",
+ "what": "rule plans run by the VM against IFEval's checker on replies built to pass and fail",
+ "arm": "seat",
+ "rows": 132,
+ "replies_per_rule": 10,
+ "seed": 0,
+ "splits": "new_wording",
+ "counts": {
+  "pairs": 1320,
+  "agree": 1223,
+  "checker passes": 568,
+  "rule passes, checker fails": 51,
+  "asked": 0
+ },
+ "agreement": 0.9265,
+ "rule_passes_checker_fails": 0.0386,
+ "checker_pass_share": 0.4303,
+ "per_kind": {
+  "english_capital": {
+   "pairs": 130,
+   "agree": 80,
+   "checker passes": 35,
+   "rule passes, checker fails": 35,
+   "asked": 0,
+   "agreement": 0.615
+  },
+  "english_lowercase": {
+   "pairs": 60,
+   "agree": 60,
+   "checker passes": 10,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "existence": {
+   "pairs": 90,
+   "agree": 90,
+   "checker passes": 43,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "frequency": {
+   "pairs": 50,
+   "agree": 50,
+   "checker passes": 30,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "json_format": {
+   "pairs": 70,
+   "agree": 70,
+   "checker passes": 25,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "letter_frequency": {
+   "pairs": 80,
+   "agree": 60,
+   "checker passes": 35,
+   "rule passes, checker fails": 12,
+   "asked": 0,
+   "agreement": 0.75
+  },
+  "multiple_sections": {
+   "pairs": 70,
+   "agree": 70,
+   "checker passes": 37,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_highlighted_sections": {
+   "pairs": 110,
+   "agree": 110,
+   "checker passes": 71,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_paragraphs": {
+   "pairs": 50,
+   "agree": 46,
+   "checker passes": 10,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.92
+  },
+  "number_sentences": {
+   "pairs": 70,
+   "agree": 70,
+   "checker passes": 39,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_words": {
+   "pairs": 110,
+   "agree": 100,
+   "checker passes": 51,
+   "rule passes, checker fails": 4,
+   "asked": 0,
+   "agreement": 0.909
+  },
+  "quotation": {
+   "pairs": 120,
+   "agree": 120,
+   "checker passes": 52,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "repeat_prompt": {
+   "pairs": 100,
+   "agree": 100,
+   "checker passes": 36,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "response_language": {
+   "pairs": 70,
+   "agree": 70,
+   "checker passes": 30,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "title": {
+   "pairs": 70,
+   "agree": 57,
+   "checker passes": 46,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.814
+  },
+  "two_responses": {
+   "pairs": 70,
+   "agree": 70,
+   "checker passes": 18,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  }
+ },
+ "misses": [
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "Her notes were short and very clear. The morning was quiet and the street was empty.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "nobody knew why the bridge was closed. it's a small town, but people don't leave it.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "Most of the work happens in the evening. The answer depends on the season and the weather.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "We walked to the market before noon. The morning was quiet and the street was empty.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "They sold bread, fruit and fresh cheese. A good plan starts with a simple question.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "LA PLUPART DU TRAVAIL SE FAIT LE SOIR. UN BON PLAN COMMENCE PAR UNE QUESTION SIMPLE.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "fr is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "Most of the work happens in the evening. A good plan starts with a simple question.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "title",
+   "kwargs": {},
+   "reply": "<<The morning was quie>>\nThey sold bread, fruit and fresh cheese. We walked to the market before noon.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the count of the word \"name\" of the reply"
+   ]
+  },
+  {
+   "kind": "title",
+   "kwargs": {},
+   "reply": "<<Nobody knew why the>>\nThey sold bread, fruit and fresh cheese. It's a small town, but people don't leave it.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the count of the word \"name\" of the reply"
+   ]
+  },
+  {
+   "kind": "title",
+   "kwargs": {},
+   "reply": "<<They sold bread, fru>>\nA good plan starts with a simple question. The morning was quiet and the street was empty.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the count of the word \"name\" of the reply"
+   ]
+  },
+  {
+   "kind": "title",
+   "kwargs": {},
+   "reply": "<<The answer depends o>>\nThe train was late again this week. They sold bread, fruit and fresh cheese.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the count of the word \"name\" of the reply"
+   ]
+  },
+  {
+   "kind": "title",
+   "kwargs": {},
+   "reply": "<<The morning was quie>>\nThey sold bread, fruit and fresh cheese. A good plan starts with a simple question.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the count of the word \"name\" of the reply"
+   ]
+  },
+  {
+   "kind": "title",
+   "kwargs": {},
+   "reply": "<<The answer depends o>>\nThe morning was quiet and the street was empty. The answer depends on the season and the weather.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the count of the word \"name\" of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "most of the work happens in the evening. the morning was quiet and the street was empty.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "Her notes were short and very clear. The morning was quiet and the street was empty.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "the train was late again this week. a good plan starts with a simple question.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "PERSONNE NE SAVAIT POURQUOI LE PONT ÉTAIT FERMÉ. LA PLUPART DU TRAVAIL SE FAIT LE SOIR.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "fr is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "the answer depends on the season and the weather. the answer depends on the season and the weather.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "a good plan starts with a simple question. the answer depends on the season and the weather.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "WE WALKED TO THE MARKET BEFORE NOON. THEY SOLD BREAD, FRUIT AND FRESH CHEESE.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "upper is the case of the reply",
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "it's a small town, but people don't leave it. nobody knew why the bridge was closed.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "lower is the case of the reply",
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "MOST OF THE WORK HAPPENS IN THE EVENING. MOST OF THE WORK HAPPENS IN THE EVENING.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "upper is the case of the reply",
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "a good plan starts with a simple question. it's a small town, but people don't leave it.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "lower is the case of the reply",
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "number_paragraphs",
+   "kwargs": {
+    "num_paragraphs": 4
+   },
+   "reply": "Ses notes étaient courtes et très claires. Le train était encore en retard cette semaine.\n***\nSes notes étaient courtes et très claires. Le train était encore e",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the count of the word \"texte\" of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "the train was late again this week. the answer depends on the season and the weather.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "en is the language of the reply"
+   ]
+  }
+ ],
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-11 15:18",
+  "sha256": "3120403f35b007eb85a2302086da7fb1447830573f0f2d540e4c62fdb0cbc37b",
+  "commit": "3f37515",
+  "older_than_sources": false
+ }
+}

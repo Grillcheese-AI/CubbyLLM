@@ -1,0 +1,191 @@
+{
+ "order": "0067",
+ "what": "the program seat as it is reads instructions into rule plans, slots constrained",
+ "adapter": "cubby450m_rules_v2",
+ "rows_file_lines": 12870,
+ "n_per_split": 150,
+ "k": 8,
+ "seed": 0,
+ "examples_kinds": [
+  "word count < 100",
+  "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+  "case == lower ; language == en",
+  "count of the word \"silence\" < 3",
+  "markdown == no",
+  "section count \"Part\" >= 5",
+  "count of the letter \"n\" >= 11",
+  "starts with \"Décris un matin tranquille.\" == yes"
+ ],
+ "arms": {
+  "zero": {
+   "new_wording": {
+    "counts": {
+     "rows": 150,
+     "written": 150,
+     "exact": 131,
+     "measurement right": 141,
+     "rows en": 78,
+     "exact en": 67,
+     "rows fr": 72,
+     "exact fr": 64
+    },
+    "per_kind": {
+     "english_capital": {
+      "rows": 13,
+      "exact": 3,
+      "measurement right": 8
+     },
+     "english_lowercase": {
+      "rows": 6,
+      "exact": 6,
+      "measurement right": 6
+     },
+     "existence": {
+      "rows": 9,
+      "exact": 9,
+      "measurement right": 9
+     },
+     "first": {
+      "rows": 10,
+      "exact": 8,
+      "measurement right": 10
+     },
+     "frequency": {
+      "rows": 5,
+      "exact": 5,
+      "measurement right": 5
+     },
+     "json_format": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "letter_frequency": {
+      "rows": 8,
+      "exact": 6,
+      "measurement right": 8
+     },
+     "multiple_sections": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "no_markdown": {
+      "rows": 8,
+      "exact": 8,
+      "measurement right": 8
+     },
+     "number_highlighted_sections": {
+      "rows": 11,
+      "exact": 11,
+      "measurement right": 11
+     },
+     "number_paragraphs": {
+      "rows": 5,
+      "exact": 3,
+      "measurement right": 3
+     },
+     "number_sentences": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "number_words": {
+      "rows": 11,
+      "exact": 10,
+      "measurement right": 11
+     },
+     "quotation": {
+      "rows": 12,
+      "exact": 12,
+      "measurement right": 12
+     },
+     "repeat_prompt": {
+      "rows": 10,
+      "exact": 10,
+      "measurement right": 10
+     },
+     "response_language": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "title": {
+      "rows": 7,
+      "exact": 5,
+      "measurement right": 5
+     },
+     "two_responses": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     }
+    },
+    "some_misses": [
+     {
+      "kind": "english_capital",
+      "want": "case == upper ; language == en",
+      "got": "case == lower ; language == en"
+     },
+     {
+      "kind": "number_paragraphs",
+      "want": "paragraph count == 3 ; empty paragraph count == 0",
+      "got": "count of the word \"text\" >= 3"
+     },
+     {
+      "kind": "first",
+      "want": "opening has no",
+      "got": "opening has no the first words of"
+     },
+     {
+      "kind": "letter_frequency",
+      "want": "count of the letter \"t\" < 11",
+      "got": "count of the letter \"t\" >= 11"
+     },
+     {
+      "kind": "english_capital",
+      "want": "case == upper ; language == en",
+      "got": "case == lower ; language == en"
+     },
+     {
+      "kind": "letter_frequency",
+      "want": "count of the letter \"h\" < 12",
+      "got": "count of the letter \"h\" >= 12"
+     },
+     {
+      "kind": "english_capital",
+      "want": "case == upper ; language == en",
+      "got": "case == lower ; language == en"
+     },
+     {
+      "kind": "english_capital",
+      "want": "case == upper ; language == en",
+      "got": "language == en"
+     },
+     {
+      "kind": "first",
+      "want": "opening has sure",
+      "got": "opening has first words of your reply"
+     },
+     {
+      "kind": "english_capital",
+      "want": "case == upper ; language == en",
+      "got": "language == en"
+     },
+     {
+      "kind": "english_capital",
+      "want": "case == upper ; language == en",
+      "got": "language == en"
+     },
+     {
+      "kind": "english_capital",
+      "want": "case == upper ; language == en",
+      "got": "language == en"
+     }
+    ]
+   },
+   "seconds": 93.0,
+   "seat_calls": 839
+  }
+ }
+}

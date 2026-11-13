@@ -403,6 +403,23 @@ instruction, the reader writes the rule) waits for the reader's line 3.
   `rules/cubby450m_rules_v2/` (round 1's adapter untouched).
 - **The read at home:** dev (`--rows` the v2 rows), then the fresh new wordings once, then IFEval's checker on those
   plans; the held-out kinds once, only if line 3 is met.
+### The reader's second round, read (Claude Code, 2026-11-13)
+- **The adapter** (`cubby450m_rules_v2`, on `rule_reader_sft_v2.jsonl`, hash checked; 311 steps, 1.3 minutes; held
+  answer loss 5.56 -> 0.0055), read on grilly2 with the instruction alone, the cowork VM.
+- **Dev** (150 rows of the v2 rows; `rule_reader_2026-11-13_v2_dev.json`): **149 of 150 exact** (the miss: an opening
+  value that ran on, "yes Answer in English without").
+- **The fresh new wordings, read once** (150 rows; `rule_reader_2026-11-13_v2_new.json`): **131 of 150 exact (87.3%)**,
+  the measurement right on 141 (EN 67/78, FR 64/72). Against IFEval's checker (`rule_agree_2026-11-13_v2_new.json`,
+  132 rules, 1,320 replies): **agreement 92.7%; the rule passes a reply the checker fails 3.9%.** Round 1: 66.7%,
+  82.3%, 8.7%.
+- **Where it misses:** all capitals 0.62 (35 of the 51 false passes: "with no lowercase letters" read as lowercase;
+  "CAPS", "fully uppercase" losing the case leaf); letter counts 0.75 (the new rows word "<" as "less than", which
+  training never shows by design, and the reader writes ">="); title 0.81; number of words 0.91; paragraphs 0.92.
+  Without the all-capitals kind the agreement would be about 96%.
+- **Line 3, new wordings of seen kinds: missed** (92.7% against 98%). The false passes (3.9%) are under the 5% that
+  line 3's kill sets for held-out kinds. **The held-out kinds stay unread.** This split is spent; nothing was tuned on it.
+- **What remains is narrow:** saying "capital" without the word (CAPS, uppercase, "no lowercase") and comparisons in
+  words training never had. A third round, if Nick wants one, would add wordings for those two and draw a fresh split.
 - **Commits:**
 - **Files:**
 - **Tests:**
