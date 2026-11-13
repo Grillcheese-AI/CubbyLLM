@@ -302,6 +302,14 @@ Two held-out kinds (forbidden words, bullet lists) are already measured by the r
 - **Rebuilt:** rows (sha `75eeee4f...`), the SFT set on Drive (11,072 records: 9,969 train, 1,103 held; sha
   `53b4b9c4...`; 0 slot boundaries tokenized otherwise), the notebook. The first set is moved aside to Drive's
   `rules/_discard/` (never trained on). The as-is dev read and the gold read stay as recorded (no training).
+- **The case wordings, fixed on Cowork's second check (2026-11-13):** "with capital letters for every word" (a
+  capital at each word's start) -> "every letter a capital"; "chaque mot en capitales" -> "et chaque lettre en
+  majuscule"; "des lettres toutes petites" (small type) -> "chaque lettre en minuscule"; and the English "keep every
+  letter small", the same ambiguity -> "every letter lowercase". (Cowork's "tout en majuscules / minuscules" is
+  already the kinds' second French wording, so another form was used.) Still 0 train/dev rows sharing 5 words with
+  IFEval. Rebuilt: rows (sha `b56dff01...`), the SFT set on Drive (11,072 records, sha `c196de53...`; the previous
+  one moved to `rules/_discard/`, never trained on). The notebook is unchanged (it reads the set on Drive).
+
 ### Step 4, the turn: built behind `CB_RULES=1` (Claude Code, 2026-11-12)
 - **The rule book** (`cubbyllm/speech/rule_book.py`): a rule is a plan with who set it, its level (global, company,
   user, conversation; highest first), its scope (the session, or its own turn), the turn it was set at and the turn

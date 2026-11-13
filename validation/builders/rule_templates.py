@@ -82,17 +82,17 @@ T = {
         "fr": {"train": ["Renvoie le tout sous forme d'un seul objet JSON.", "Réponds uniquement en JSON.", "Formate toute la réponse en JSON."],
                "new": ["Ne renvoie rien d'autre qu'un objet JSON.", "Tout ce que tu écris doit être du JSON valide."]}},
     "english_capital": {
-        "en": {"train": ["Answer in English, with capital letters for every word.", "Reply in English, all in capitals.",
+        "en": {"train": ["Answer in English, every letter a capital.", "Reply in English, all in capitals.",
                          "Write in English using only uppercase letters."],
                "new": ["Answer in English with every letter capitalised.", "Use English and CAPITAL LETTERS throughout."]},
-        "fr": {"train": ["Réponds en anglais, chaque mot en capitales.", "Réponds en anglais, tout en majuscules.",
+        "fr": {"train": ["En anglais, et chaque lettre en majuscule.", "Réponds en anglais, tout en majuscules.",
                          "Écris en anglais avec uniquement des lettres majuscules."],
                "new": ["Réponds en anglais avec chaque lettre en capitale.", "Utilise l'anglais et des MAJUSCULES partout."]}},
     "english_lowercase": {
-        "en": {"train": ["Keep to English and keep every letter small.",
+        "en": {"train": ["Keep to English, every letter lowercase.",
                          "Reply in English, all in lowercase.", "Write in English using only lowercase letters."],
                "new": ["Answer in English without a single capital letter.", "Use English, and keep every letter small."]},
-        "fr": {"train": ["Tiens-t'en à l'anglais et à des lettres toutes petites.", "Réponds en anglais, tout en minuscules.",
+        "fr": {"train": ["Tiens-t'en à l'anglais, chaque lettre en minuscule.", "Réponds en anglais, tout en minuscules.",
                          "Écris en anglais avec uniquement des lettres minuscules."],
                "new": ["Réponds en anglais sans une seule majuscule.", "Utilise l'anglais, et garde toutes les lettres en minuscule."]}},
     "response_language": {
