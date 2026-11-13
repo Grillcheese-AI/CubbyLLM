@@ -226,3 +226,11 @@ file, a service, a device or an account takes **act**.
   Code B for cubelang's fix list. On our side, host-sorted keys would make sort and merge linear (Cowork's earlier
   note); not done without a word, since the order is closed and the cause is the VM's.
 - The 2-byte name-key guard is out of every run path (`verb_guard`'s fourth rule dropped; its test flipped).
+
+## Cowork's note (2026-11-13): on cubelang 676df1d the time line fails; it is read again after P6-10
+- Code A's rerun on the rebuilt cowork VM (`cbdab3f`, `verb_programs_2026-11-13_p6.json`): every verdict unchanged
+  (2,100 of 2,100, the gate 560 of 560), but p95 at 50 items is **82.8 ms** (merge), over the 50 ms line it met at 34 ms
+  on `3f37515`. The cause is the VM: the same programs on main cubelang's September build run 3.5 times faster today.
+- The verdict lines stand; the time line is recorded as **failing on `676df1d`** and is read again once on the build
+  that carries cubelang's P6-10 (P6 without the slowdown, Code B). Host-sorted keys (a linear check) are not built
+  now: they would hide a VM regression rather than fix it.
