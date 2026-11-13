@@ -915,6 +915,24 @@ fact); the Colab round for this reader when its set is built.
   while the program was written, instead of coming back "asked". It is refused now (test added); 0 of the 2,855
   plans the readers wrote in the logs are newly refused.
 
+### Step 1, built: the reply's primitive views (Cowork, 2026-11-13: "step 1: go"; Code A)
+`cubbyllm/speech/reply_views.py` (unwired; the generator, step 2, reads it): the reply as seven tables, one row per
+item in reading order, each row with its place (`i`) and its characters (`start`, `end`):
+- `char` (kind, case), `word` (lower, len, first, last, their lowercase, case, the sentence / line / paragraph it sits
+  in), `sentence` (word count, first and last word, end mark), `line` (word count, first word, indent, a list marker
+  or not), `paragraph` (between blank lines or `***`; word and sentence counts, first word), `item` (marker, level,
+  text, word count), `json` (path, key, value, type; when the whole reply, fences off, is JSON).
+- Words, sentences, lines and list items are the reply world's own splits, so the views agree with its measurements
+  (a lone "-" is a word there too). The existing measurements stay.
+- **Every value is computed in Python; the VM only reads lists** (cubelang's P6 not yet on the build: a string is
+  never indexed in the VM, a missing value never compared). `literals(text, views)` binds each column as a parallel
+  list (`word_first_lower[i]`) with `n_<view>`; an empty view still binds every column as `[]`, so no name a program
+  reads is ever unbound. `statements` gives the record's lines ("<value> is the <column> of word 3 of the reply").
+- Tests (`tests/speech/test_reply_views.py`, 18): counts agree with the reply world; every item is found where it says;
+  lists, JSON and case; an empty reply binds every column; programs over the views run in the VM and agree with Python
+  (upper-case words, words starting with a letter, questions); quotes, backslashes and newlines survive the literal.
+- Next: step 2, the program generator over these views.
+
 ## Cowork's note (2026-11-13): a real long instruction to test the split and the join on
 Nick pointed to the OpenThoughts sets in the training data (`unified/`). Read for this order:
 - **AgentTrove** (`open_thoughts_agent_trove.jsonl`, already in the decay mix's agent shards): all 20,000 rows read
