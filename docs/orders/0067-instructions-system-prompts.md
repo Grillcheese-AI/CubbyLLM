@@ -478,3 +478,20 @@ Read: the two sections above, `rule_agree_2026-11-12_gold.json`, `rule_reader_20
      recorded (it trained on nothing).
 - **For Nick:** the Colab notebook `rule_reader.ipynb` should not be run until this is done. An adapter already
   trained from the current set would be set aside, not used.
+
+## Cowork's check of the rewritten wordings, the VM, and line 4's two runs (2026-11-13)
+- **Line 4, accepted as recorded:** run 1 (73.5%, broken 1) and run 2 (73.1% followed, 26.9% refused, 0 broken, on
+  the cowork VM) side by side; both labelled "given the right rules", the end-to-end number waiting for the reader;
+  line 1's clean read left to IFEval and M-IFEval's French. Line 4 is met for the turn; line 1 was hit once on
+  `exp_if_follow` and its cause fixed.
+- **The VM, accepted:** every run names its VM (path without drive or user folder, time, sha256, commit) and refuses
+  one older than its sources; the served brain was already on the cowork build.
+- **The wordings, accepted, with two fixes before the round runs:** 0 train or dev rows share 5 words with an IFEval
+  prompt (pinned; the first set set aside, never trained on). Two new wordings say something other than their rule:
+  1. `english_capital`: "with capital letters for every word" / "chaque mot en capitales" reads as a capital at the
+     start of each word, not every letter in capitals (and is close to `capital_word_frequency`, a held-out kind).
+     Say every letter: "in English, every letter a capital" / "en anglais, tout en majuscules".
+  2. `english_lowercase` in French: "des lettres toutes petites" reads as small type. "Tout en minuscules".
+- **Then the hold is lifted:** once those two are rebuilt into the set, Nick may run `rule_reader.ipynb`.
+- **M-IFEval's French check skips** (the set is not on this machine; its licence unread). It runs when the set is
+  fetched, after the licence is read; until then the French wordings are ours, translated from our English.
