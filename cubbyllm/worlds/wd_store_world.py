@@ -108,8 +108,8 @@ class WdStoreWorld(Named, Refined, Crowded, HdcWorld):
         self._rows = functools.lru_cache(maxsize=cache)(self._query)
         self._by_subj, self._by_obj = _Rows(self._subject), _Rows(lambda k: self._rows("okey", k))
 
-    def _triples(self, rows) -> list:
-        out = super()._triples(rows)
+    def _triples(self, rows, item=None) -> list:
+        out = super()._triples(rows, item)
         for f, _t in out:                                # remembered, so `in` names this world as the fact's holder
             self._served[" ".join(f.split())] = None
         while len(self._served) > SERVED_MAX:
@@ -214,21 +214,21 @@ class WdStoreWorld(Named, Refined, Crowded, HdcWorld):
         key = normalize(key or "")
         if col == "skey":
             _tier, by = self._named(key)
-            return self._triples(next(iter(by.values()))) if len(by) == 1 else []
+            return self._triples(*next(iter(by.items()))[::-1]) if len(by) == 1 else []    # (rows, its item)
         _tier, ids = self._ids(key)                      # an object: the one item the name stands for, then who points at it
         if len(ids) != 1:
             return []
         obj_label = self._entity(ids[0])[0]
         got = self.ask({"op": "pointing_at", "value": ids[0], "limit": OBJECT_CAP}) or {}
-        rows = []
+        rows, items = [], []
         for pid, subj, rank, _best in got.get("hits", []):
             if pid not in self._pid_label or rank == 0:
                 continue
             s_label, s_rows, _keys = self._entity(subj)
             row = (s_label, self._pid_label[pid], obj_label)
             if s_label and obj_label and row in s_rows:   # the subject's own truthy statement, said the same way
-                rows.append(row)
-        return self._triples(rows)
+                rows.append(row); items.append(subj)
+        return self._triples(rows, items)
 
     def label(self, name: str) -> str | None:
         """The exact label a name (label, alias or Q-id) stands for: its one item's."""

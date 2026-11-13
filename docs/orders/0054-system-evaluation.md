@@ -935,3 +935,55 @@ do not name the causes, so the split below is ours.
 - **To settle when built:** `emit_error` carries free text after its code; the code alone goes in the table.
 - **Reported per benchmark,** with the 29 and the 17 read by hand once. A guard that holds back more right
   answers than wrong ones is a finding to read, not a verdict.
+
+## Cowork's seven items, built and measured (Claude Code, 2026-11-12)
+Each is a record or a check; none changes an answer. Run `run_0054_names3` (the "after"'s snapshot, programs and three
+flags, as `run_0054_names`); replay `validation/logs/cert_replay_2026-11-12-names3.json`; counts
+`validation/logs/name_statement_0054_2026-11-12.json`.
+
+1. **The item by id.** A world now keeps, beside each fact it hands out, the id of the item it read it from, and for a
+   shared name the item a hop read and how (`cubbyllm/worlds/world_handed.py`, a mixin of `hdc_namesakes.Namesakes`:
+   `kept one`, `first_by_id`, `kept below`, `hop_pick`). The statement takes that id, never a label match; the first
+   fact's statement carries its subject's ids (`first_fact.subject_ids`). **Found on the way:** a world also holds
+   every fact it built for a name's other items, handed or not, so `held_by` can name a world that did not hand the
+   fact. The statement names the world that handed it (the Gospel: Wikidata5M, not the store).
+2. **A check that can fail** (`cubbyllm/reasoning/name_ground.py`): the item outside its namesake step's kept list;
+   the item not the first fact's subject (by id; by label where a world gives no id); a `label`, `fold` or `alias`
+   whose world string is not the asked name. An alias with no string from the world is "stated only". The replay adds
+   nothing under the asked name when the check says "not the same", and counts that answer with the holes. **Tests:
+   one tampered statement per check, each caught** (`tests/reasoning/test_name_statement.py`, 10 tests).
+3. **The branch with no store:** the 16 answers whose fact the wiki world holds now name `wiki`, `id: null` with its
+   reason ("this world's facts name no item"), `others.count: null`, and the other worlds that hold the same sentence
+   (`also_held`).
+4. **A pick:** the namesake step carries the items kept and what the rule compared (cues, relations, each item's
+   kinds, what was ruled out and by which cue, set aside as fictional, a neutral property). Several kept: a step of
+   its own, `first_by_id`, with the item chosen.
+5. **Refusals:** `ambiguous_entity` 41 of 41 carry a statement, each listing its options (the record's own
+   candidates, with the world that found them); `entity_unresolved` 572 of 572 carry one (the name, each world asked
+   with the items it holds under it, the live source, no option).
+6. **The live source** (9 answers): the item's own label beside the asked name; `label` only when equal (an alias the
+   search matched is "stated only": "republic of ireland" -> Ireland); the time it read the item (the claims request
+   returns no revision: 9 of 9 carry a read time); the search's other items for the name (8 of 9 counted).
+7. **Three classes** (spoken answers; of them, not matching the gold):
+
+| class | SimpleQA | NQ | WebQ | all | not matching the gold |
+|---|---|---|---|---|---|
+| checked by the replay (a label or a fold of an item identified by id) | 5 | 7 | 6 | **18** | 5 |
+| resting on a statement of the store (an alias the world gave, a qualifier's fact) | 1 | 2 | 7 | **10** | 5 |
+| taken as stated (a pick, a role, a last choice, no item) | 0 | 6 | 52 | **58** | 12 |
+
+**Acceptance:**
+- **"Not the same" 0**, with the tampered-statement tests passing: met. The replay: 86 of 86 the same; name steps
+  re-derived 28, stated only 58, not the same 0.
+- **The Sierra Madre's statement names the item the rule kept:** Q4677176 (`kept one`; the film Q251559 dropped by
+  the namesake rule on `author`). No statement's item is outside its kept list (0 of 86): met.
+- **No "others: 0" for a name not counted:** the wiki world's 16 say `null`: met.
+- **The three classes with their counts:** above.
+- **Refusals:** above.
+- **Every answer of the four benchmarks unchanged:** 10,567 of 10,568 records identical in spoken, answer, reason and
+  trace; the other (`webq:172`, refused as before) differs in its text, which is the loop's own counters. Met.
+
+**What the statements now show:** the Gospel's wrong answer came from the world below the store, whose one item under
+"The Gospel According to John" is the commentary (Q7737359): a fold of an identified item, "checked", and wrong.
+Sufficient, not correct (0066's `CB_ORIGINAL_ASIDE`, off in this run, reaches it). "Checked" means the replay
+compared the name step itself, never that the name was read right.

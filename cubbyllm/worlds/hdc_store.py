@@ -78,7 +78,7 @@ class HdcWorld(Namesakes):
             # a subject: the one item the name stands for (its label, else an alias or a Q-id). A name two or more
             # items share gives none of them (order 0033: the Globe Theatre's three items were said as one).
             _tier, by = self._named(key)
-            return self._triples(next(iter(by.values()))) if len(by) == 1 else []
+            return self._triples(*next(iter(by.items()))[::-1]) if len(by) == 1 else []    # (rows, its item)
         with self._lock:                                 # an object: the same rule, by the item pointed at (order 0036)
             by = object_items(self.db, key)
         return self._triples(next(iter(by.values()))) if len(by) == 1 else []

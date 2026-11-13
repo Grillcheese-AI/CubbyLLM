@@ -41,8 +41,9 @@ import os
 
 from cubbyllm.reasoning.planner import Triple, normalize
 
-__wiring__ = "WIRED"
+from .world_handed import Handed
 
+__wiring__ = "WIRED"
 INSTANCE = "instance of"
 APPLIES_SCAN = 2000                                      # a kind's members read to see whether it carries a relation
 
@@ -119,20 +120,20 @@ def hop_pick(held: dict, by: dict, applies) -> tuple[str | None, list]:
     return h, holders
 
 
-class Namesakes:
+class Namesakes(Handed):
     """HdcWorld's names that stand for several items (a mixin: `db`, `_lock`, `_pins` and `fact` are HdcWorld's)."""
 
     def _named_rows(self, key: str) -> tuple[str, dict]:
         with self._lock:
             return items(self.db, key)
 
-    def _triples(self, rows) -> list:
-        return [(self.fact(s, r, o), Triple(obj=o, rel=r, subj=s)) for s, r, o in rows]
+    def _triples(self, rows, item=None) -> list:     # `item`: the id(s) the rows are about (`world_handed`)
+        return self._note_ids([(self.fact(s, r, o), Triple(obj=o, rel=r, subj=s)) for s, r, o in rows], item)
 
     def namesakes(self, name: str) -> dict:
         """{item: [(fact, Triple)]} when `name` stands for two or more items, else {}."""
         _tier, by = self._named(normalize(name or ""))
-        return {q: self._triples(rows) for q, rows in by.items()} if len(by) > 1 else {}
+        return {q: self._triples(rows, q) for q, rows in by.items()} if len(by) > 1 else {}
 
     def pick_by(self, name: str, qualifier: str, place: bool = False) -> str | None:
         """The item among a name's several whose value is the qualifier (`qualifier_pick`), or None."""
@@ -142,7 +143,7 @@ class Namesakes:
     def item_facts(self, name: str, item: str) -> list:
         """One item's facts, when `name` stands for it."""
         _tier, by = self._named(normalize(name or ""))
-        return self._triples(by.get(item) or [])
+        return self._triples(by.get(item) or [], item)
 
     def applies(self, kind: str, rel: str) -> bool:
         """Does any item of `kind` carry `rel` in this world? From the kinds table when the world has one (complete;
@@ -185,9 +186,9 @@ class Namesakes:
             self._decisions()[normalize(name)] = d
             d["holds"] = [q for q in d["fit"] if held.get(q)]
             if len(d["fit"]) == 1 and d["holds"]:            # (one that fits and holds none decides nothing: the audit)
-                return held[d["fit"][0]]
+                return self._hand(name, d["fit"][0], "kept one", held)
             if d.get("agree"):                               # every fitting item gives the same value: said once
-                return held[d["fit"][0]]
+                return self._hand(name, d["fit"][0], "first_by_id", held)
             self._notes()[normalize(name)] = d["fit"] if len(d["fit"]) > 1 else [h for h, rows in held.items() if rows]
             return []
         if os.environ.get("CB_NAMESAKE_TIER") == "1":        # the relation tier, off since 0036's audit (module doc)
@@ -196,7 +197,7 @@ class Namesakes:
             q, holders = None, [h for h, rows in held.items() if rows]
         if q is None and holders:
             self._notes()[normalize(name)] = holders
-        return held[q] if q else []
+        return self._hand(name, q, "hop_pick", held) if q else []
 
     def _notes(self) -> dict:
         if getattr(self._pins, "withheld", None) is None:
@@ -232,8 +233,7 @@ class Namesakes:
         return list(self._notes().get(normalize(name or ""), []))
 
     def clear_withheld(self) -> None:
-        self._pins.withheld = {}
-        self._pins.decided = {}
+        self._pins.withheld, self._pins.decided, self._pins.handed = {}, {}, {}
 
     def _pin(self, key: str):
         return (getattr(self._pins, "map", None) or {}).get(normalize(key or ""))

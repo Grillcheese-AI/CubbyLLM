@@ -1,0 +1,48 @@
+{
+ "what": "order 0054, field-watch step 1: each spoken answer asked again over its certificate alone",
+ "run": "run_0054_names3",
+ "flags": {
+  "CB_ANSWER_CLASS": "1",
+  "CB_WD_KINDS": "1",
+  "CB_WD_STORE": "1",
+  "CB_RECORD_UNCERTIFIED": "1"
+ },
+ "benches": {
+  "simpleqa": {
+   "spoken": 6,
+   "name: re-derived": 6,
+   "class: checked": 5,
+   "same": 6,
+   "class: store statement": 1
+  },
+  "nq": {
+   "spoken": 15,
+   "name: re-derived": 9,
+   "class: checked": 7,
+   "same": 15,
+   "class: checked, not matching the gold": 2,
+   "name: stated only": 6,
+   "class: taken as stated": 6,
+   "class: taken as stated, not matching the gold": 2,
+   "class: store statement": 2,
+   "class: store statement, not matching the gold": 2
+  },
+  "webq": {
+   "spoken": 65,
+   "name: stated only": 52,
+   "class: taken as stated": 52,
+   "class: taken as stated, not matching the gold": 10,
+   "same": 65,
+   "name: re-derived": 13,
+   "class: checked": 6,
+   "class: checked, not matching the gold": 3,
+   "class: store statement": 7,
+   "class: store statement, not matching the gold": 3
+  },
+  "aa": {
+   "spoken": 0
+  }
+ },
+ "not_same": [],
+ "wall_s": 114.8
+}

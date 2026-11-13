@@ -33,9 +33,9 @@ def rows(world, name: str, keep):
     _tier, by = world._named(name)
     if not set(by) & gone:
         return None
-    kept = {q: [(f, t) for f, t in world._triples(r) if keep(f, t)] for q, r in by.items() if q not in gone}
+    kept = {q: [(f, t) for f, t in world._triples(r, q) if keep(f, t)] for q, r in by.items() if q not in gone}
     if len(kept) == 1:
-        return next(iter(kept.values()))
+        return world._hand(name, next(iter(kept)), "kept below", kept) if hasattr(world, "_hand") else next(iter(kept.values()))
     holders = [q for q, r in kept.items() if r]
     if holders:
         world._notes()[name] = holders

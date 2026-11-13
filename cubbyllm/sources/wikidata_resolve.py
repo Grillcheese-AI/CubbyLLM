@@ -125,6 +125,23 @@ class WikiResolve:
                     for st in self._claims(h["id"]).get("P31", [])} - {None} for h in cands]
         return bool(classes) and all(classes) and bool(set.intersection(*classes))
 
+    def read_of(self, qid: str) -> dict:
+        """Order 0054 (a record): the revision of `qid` this source read its claims at, else the time it read them
+        (the cached answer's time); {} when it holds no read."""
+        import datetime
+        import hashlib
+        import urllib.parse
+        params = {"action": "wbgetentities", "ids": qid, "props": "claims", "languages": "en", "format": "json"}
+        e = ((self._get({k: v for k, v in params.items() if k != "format"}) or {}).get("entities") or {}).get(qid) or {}
+        if e.get("lastrevid"):
+            return {"revision": e["lastrevid"]}
+        key = hashlib.sha256(urllib.parse.urlencode(sorted(params.items())).encode()).hexdigest()[:24]
+        path = self.cache / f"{key}.json" if self.cache else None
+        if path is None or not path.exists():
+            return {}
+        t = datetime.datetime.fromtimestamp(path.stat().st_mtime, datetime.timezone.utc)
+        return {"read_at": t.strftime("%Y-%m-%dT%H:%M:%SZ")}
+
     def resolve(self, entity: str, relations: list[str] | None = None, via: str | None = None,
                 qid: str | None = None, asker: str | None = None) -> tuple[str, str] | None:
         """(qid, label) for the entity, or None. Three tiers, each deterministic, none a pick
@@ -189,6 +206,7 @@ class WikiResolve:
         # rank. A search whose hits carry neither the label nor an alias equal to the query
         # is no resolution either (the old fallback to hits[0] was a guess).
         exact = [h for h in hits if _exact(h, key)]
+        self.last["exact"] = [h.get("id") for h in exact]        # the search's items of the name (a record: 0054)
         # a Wikimedia meta-page (disambiguation, list article, category, template) is never the thing a
         # question is about: dropping them is a filter on what an item IS, not a pick among candidates
         # (2026-09-14, live: 'the last roman emperor' was two hits -- the legendary figure and a

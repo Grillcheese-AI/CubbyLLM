@@ -1,0 +1,153 @@
+{
+ "benches": {
+  "simpleqa": {
+   "records": 4326,
+   "same as before": 4326
+  },
+  "nq": {
+   "records": 3610,
+   "same as before": 3610
+  },
+  "webq": {
+   "records": 2032,
+   "same as before": 2031
+  },
+  "aa": {
+   "records": 600,
+   "same as before": 600
+  }
+ },
+ "changed": [
+  {
+   "bench": "webq",
+   "id": "webq:172",
+   "q": "what do you call members of the senate?",
+   "old": [
+    false,
+    "this loop — asked: 60; answered: 2; refused: 58; refusal: plan_does_not_cover_question (27), entity_unresolved (10), unknown_relation (6), no_plan (5), ambiguous_relation (5); fact held: 552147; fact dated: 50; call: asked (61), vm (20)",
+    "self"
+   ],
+   "new": [
+    false,
+    "this loop — asked: 172; answered: 8; refused: 164; refusal: plan_does_not_cover_question (65), entity_unresolved (31), unknown_relation (22), ambiguous_relation (18), no_plan (17); fact held: 553277; fact dated: 308; call: asked (173), vm (107)",
+    "self"
+   ]
+  }
+ ],
+ "sierra": {
+  "q": "who wrote the treasure of the sierra madre",
+  "spoken": true,
+  "name": {
+   "asked": "treasure of the sierra madre",
+   "store": "wdstore",
+   "snapshot": "8a2041cff56d6f44cbb04856605831f3b39a76f8f9be45bce73b935c4024e80f",
+   "item": {
+    "id": "Q4677176",
+    "label": "The Treasure of the Sierra Madre",
+    "how": "kept one"
+   },
+   "first_fact": {
+    "fact": "B. Traven is the author of The Treasure of the Sierra Madre",
+    "subject": "The Treasure of the Sierra Madre",
+    "subject_ids": [
+     "Q4677176"
+    ]
+   },
+   "steps": [
+    {
+     "rule": "fold",
+     "equal": [
+      "treasure of the sierra madre",
+      "The Treasure of the Sierra Madre"
+     ],
+     "lang": "en"
+    },
+    {
+     "rule": "namesake",
+     "kept": [
+      "Q4677176"
+     ],
+     "compared": {
+      "cues": [],
+      "relations": [
+       "author"
+      ],
+      "kinds": {
+       "Q251559": [
+        [
+         "film"
+        ],
+        "recorded"
+       ],
+       "Q4677176": [
+        [
+         "literary work"
+        ],
+        "recorded"
+       ]
+      },
+      "ruled_out": {},
+      "stepped_aside": [],
+      "neutral": false
+     }
+    }
+   ],
+   "others": {
+    "count": 1,
+    "listed": [
+     {
+      "id": "Q251559",
+      "label": "The Treasure of the Sierra Madre",
+      "dropped_by": "namesake"
+     }
+    ]
+   }
+  }
+ },
+ "inside_kept_violations": [],
+ "others_zero_uncounted": [],
+ "refusals": {
+  "ambiguous_entity: listing options": 41,
+  "ambiguous_entity: records": 41,
+  "ambiguous_entity: with a statement": 41,
+  "entity_unresolved: listing options": 0,
+  "entity_unresolved: records": 572,
+  "entity_unresolved: with a statement": 572
+ },
+ "classes": {
+  "all: checked": 18,
+  "all: checked, not matching the gold": 5,
+  "all: store statement": 10,
+  "all: store statement, not matching the gold": 5,
+  "all: taken as stated": 58,
+  "all: taken as stated, not matching the gold": 12,
+  "nq: checked": 7,
+  "nq: store statement": 2,
+  "nq: taken as stated": 6,
+  "simpleqa: checked": 5,
+  "simpleqa: store statement": 1,
+  "webq: checked": 6,
+  "webq: store statement": 7,
+  "webq: taken as stated": 52
+ },
+ "examples": {
+  "checked": [
+   "Where was Agostina Pietrantoni born?",
+   "What was John Graham Lough's cause of death?",
+   "Who was the mother of Svetlana Alpers?",
+   "In which Nebraska city was painter Kathleen Gemberling Adkison born in 1917?"
+  ],
+  "store statement": [
+   "Who wrote the music for the Romanian anthem?",
+   "what is the population of fayetteville north carolina",
+   "when did the wave hill walk off end",
+   "what timezone is nashville tn?"
+  ],
+  "taken as stated": [
+   "who is the director of nightmare before christmas",
+   "where was the remake of dirty dancing filmed",
+   "what culture region is germany a part of",
+   "who wrote the treasure of the sierra madre"
+  ]
+ }
+}

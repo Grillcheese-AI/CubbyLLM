@@ -72,7 +72,7 @@ class Crowded:
         cand = (getattr(self._pins, "crowd", None) or {}).get(normalize(name or ""))
         if cand is None:
             return super().namesakes(name)
-        return {q: self._triples(rows) for q in cand for _s, rows, _k in [self._entity(q)] if rows}
+        return {q: self._triples(rows, q) for q in cand for _s, rows, _k in [self._entity(q)] if rows}
 
     def item_facts(self, name: str, item: str) -> list:
         """One item's facts when `name` stands for it, however many items share the name (the asker chose it)."""
@@ -80,4 +80,4 @@ class Crowded:
         if got:
             return got
         labels, aliases = self._tiers(normalize(name or ""))
-        return self._triples(self._entity(item)[1]) if item in labels or item in aliases else []
+        return self._triples(self._entity(item)[1], item) if item in labels or item in aliases else []

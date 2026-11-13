@@ -15,9 +15,12 @@ Outcomes per spoken answer:
 before any other number of the order.
 
 With ``--names`` (Cowork's shape of 2026-11-11): the record's name statement (`reasoning.name_statement`, kept by
-run_c) is honoured: its step's ground is checked (``name_statement.ground``: re-derived / stated only / not the same,
-reported apart), and the world also holds the trace's facts said of the asked name, so the walk can start from it.
-"Stated only" is reported beside "same", never inside it; "not the same" is the kill.
+run_c) is honoured: its step's ground is checked (``name_ground.ground``: re-derived / stated only / not the same,
+reported apart), and the world also holds the trace's facts said of the asked name, so the walk can start from it --
+unless the check says "not the same": then nothing is added under the asked name, and the answer is counted with the
+holes. "Stated only" is reported beside "same", never inside it; "not the same" is the kill. Each spoken answer is
+also counted in its statement's class (``name_ground.klass``: checked / store statement / taken as stated), with the
+answers of each class that do not match the gold (Cowork's read of 2026-11-11, item 7).
 
     python validation/system_eval/replay_cert.py --run <run dir> --bench webq [--file c_webq.jsonl]
         --programs <programs.jsonl> --out validation/logs/cert_replay_<date>.json
@@ -73,8 +76,9 @@ class Replayer:
         from cubbyllm.reasoning.ask import AskLoop
         from cubbyllm.worlds.base import FactStore
         facts = list(trace)
-        if name and (name.get("item") or {}).get("label") and name.get("asked"):
-            label, asked = name["item"]["label"], name["asked"]                  # the name statement, honoured: the
+        said = (name or {}).get("first_fact") and name["first_fact"].get("subject") or ((name or {}).get("item") or {}).get("label")
+        if name and said and name.get("asked"):
+            label, asked = said, name["asked"]                                   # the name statement, honoured: the
             facts += [f.replace(f" of {label}", f" of {asked}") for f in trace if f.endswith(f" of {label}")]   # asked name
         world = FactStore(facts, name="certificate")
         loop = AskLoop(self.em, world=world, source=self.source, lexicon=True, history_path=None)
@@ -107,16 +111,21 @@ def main(argv=None) -> None:
         counts = collections.Counter()
         for r in spoken:
             st = r.get("name") if a.names else None
-            again = rp.ask(r["question"], r.get("trace") or [], st)
-            o = outcome(r, again)
-            counts[o] += 1
+            g = None
             if a.names:
-                from cubbyllm.reasoning.name_statement import ground
+                from cubbyllm.reasoning.name_ground import ground, klass
                 g = ground(st, r.get("trace") or []) if st else "no statement"
                 counts["name: " + g] += 1
+                k = klass(st) if st else "no statement"
+                counts["class: " + k] += 1
+                if r.get("verdict") != "right":
+                    counts["class: " + k + ", not matching the gold"] += 1
                 if g == "not the same":
                     out["not_same"].append({"bench": bench, "id": r["id"], "question": r["question"], "outcome": "name not the same",
-                                            "name": st})
+                                            "answer": r.get("answer"), "again": {}, "name": st})
+            again = rp.ask(r["question"], r.get("trace") or [], None if g == "not the same" else st)
+            o = outcome(r, again)
+            counts[o] += 1
             if o != "same":
                 out["not_same"].append({"bench": bench, "id": r["id"], "question": r["question"], "outcome": o,
                                         "answer": r.get("answer"), "verdict": r.get("verdict"), "trace": r.get("trace"),
@@ -127,7 +136,8 @@ def main(argv=None) -> None:
     out["wall_s"] = round(time.perf_counter() - t0, 1)
     json.dump(out, open(a.out, "w", encoding="utf-8"), indent=1, ensure_ascii=False)
     for n in out["not_same"]:
-        print("  NOT SAME", n["bench"], n["outcome"], n["question"], "|", n["answer"], "->", n["again"]["answer"], n["again"]["reason"])
+        print("  NOT SAME", n["bench"], n["outcome"], n["question"], "|", n.get("answer"), "->", n["again"].get("answer"),
+              n["again"].get("reason"))
 
 
 if __name__ == "__main__":
