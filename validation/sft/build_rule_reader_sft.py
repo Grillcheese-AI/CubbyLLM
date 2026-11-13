@@ -88,6 +88,10 @@ def main() -> None:
             checked += 1
             if tk.encode(end).ids + tk.encode("\n").ids != tk.encode(end + "\n").ids:
                 bad += 1
+    sys.path.insert(0, str(ROOT / "validation" / "builders"))
+    import bench_overlap as BO                           # no benchmark prompt in a training record (Cowork, 0067)
+    bench = BO.benchmark_grams()
+    leaks = [r["id"] for r in rows if r["split"] in SPLIT and BO.overlaps(r["instruction"], bench)]
     out = Path(a.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     with open(out, "w", encoding="utf-8") as f:
@@ -98,6 +102,7 @@ def main() -> None:
            "families": len({r["family"] for r in recs}), "rows_sha256": hashlib.sha256(rows_p.read_bytes()).hexdigest(),
            "sft_sha256": hashlib.sha256(out.read_bytes()).hexdigest(), "new_wording_rows_left_out": sum(
                1 for r in rows if r["split"] == "new_wording"),
+           "benchmarks_checked": sorted(bench), "records_sharing_5_words_with_a_benchmark": len(leaks),
            "slot_boundaries_checked": checked, "slot_boundaries_tokenized_otherwise": bad, "examples": examples}
     Path(str(out) + ".manifest.json").write_text(json.dumps(man, indent=1, ensure_ascii=False), encoding="utf-8")
     print(json.dumps(man, indent=1, ensure_ascii=False))

@@ -284,6 +284,24 @@ Two held-out kinds (forbidden words, bullet lists) are already measured by the r
 - **The read at home, in this order:** the dev rows (the instruction alone), then the new-wording rows once, then
   their plans against IFEval's checker (line 3: written for 90%, agreement 98%); the held-out kinds once, only if that
   line is met.
+### The training wordings rewritten (Claude Code, 2026-11-12, on Cowork's check of step 3)
+- **Found:** 203 train/dev wordings (16 single English wordings and the compositions built from them) shared 5 or more
+  consecutive words with an IFEval prompt (`validation/builders/bench_overlap.py`, slots filled, every row of the
+  seed-0 build): IFEval's own instruction sentences, and its "less than" / "at least" phrasing.
+- **Rewritten** in our own words (`rule_templates.py`): those 16, the two generic sentences a composition joined into
+  a match ("Include the keyword ... in the response", "Do not use any markdown"), and the French first wordings that
+  translated the same IFEval sentences (M-IFEval's French prompts are not on this machine and its licence is unread,
+  so the French check could not run; those wordings were rewritten anyway). English comparisons in `train` are now
+  "no fewer than / a minimum of / not under" and "fewer than / under / below"; IFEval's "at least" and "less than"
+  word only the `new` rows (`REL_NEW`), so the new-wording read also meets comparisons training never showed.
+- **Now:** 0 train/dev rows share 5 consecutive words with an IFEval prompt. Pinned by
+  `tests/validation/test_rule_rows.py::test_no_training_wording_shares_five_words_with_a_benchmark_prompt` (reads
+  `$CUBBY_DATASETS/ifeval`, and `$CUBBY_DATASETS/m-ifeval/fr` where present; skips with neither). The SFT set's
+  manifest records the check (`benchmarks_checked`, `records_sharing_5_words_with_a_benchmark`: 0) and the notebook
+  refuses a set without it.
+- **Rebuilt:** rows (sha `75eeee4f...`), the SFT set on Drive (11,072 records: 9,969 train, 1,103 held; sha
+  `53b4b9c4...`; 0 slot boundaries tokenized otherwise), the notebook. The first set is moved aside to Drive's
+  `rules/_discard/` (never trained on). The as-is dev read and the gold read stay as recorded (no training).
 - **Commits:**
 - **Files:**
 - **Tests:**

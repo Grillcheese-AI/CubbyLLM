@@ -54,6 +54,8 @@ man = json.load(open(DATA + '.manifest.json'))
 print(man['records'], 'records', man['by_split'], '| new-wording rows left out:', man['new_wording_rows_left_out'],
       '| slot boundaries tokenized otherwise:', man['slot_boundaries_tokenized_otherwise'])
 assert man['slot_boundaries_tokenized_otherwise'] == 0
+assert 'IFEval' in man['benchmarks_checked'] and man['records_sharing_5_words_with_a_benchmark'] == 0, 'a benchmark prompt in the set'
+print('benchmarks checked:', man['benchmarks_checked'], '| records sharing 5 words with one:', man['records_sharing_5_words_with_a_benchmark'])
 !nvidia-smi --query-gpu=name,memory.total --format=csv
 """),
     md(r"""

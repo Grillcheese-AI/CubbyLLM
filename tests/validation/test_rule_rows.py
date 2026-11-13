@@ -56,3 +56,16 @@ def test_the_sft_records_are_the_readers_own_form():
         assert rec["prompt"].startswith(rr.HEAD) and rec["prompt"].endswith("\nRule:") and rec["answer"].endswith("\n")
         last_text, last_slot = S.slot_texts(rec)[-1]
         assert last_text + " " + last_slot == rec["prompt"] + " " + rec["answer"].rstrip("\n")
+
+
+def test_no_training_wording_shares_five_words_with_a_benchmark_prompt():
+    """Cowork's check of step 3: no benchmark prompt reaches a training row. Every train and dev instruction the
+    shipped build makes (seed 0) against IFEval's prompts, and M-IFEval's French ones where present, read off-repo."""
+    import pytest
+    import bench_overlap as BO
+    bench = BO.benchmark_grams()
+    if not bench:
+        pytest.skip("no benchmark prompts on this machine ($CUBBY_DATASETS/ifeval, $CUBBY_DATASETS/m-ifeval/fr)")
+    hits = [(r["instruction"], BO.overlaps(r["instruction"], bench)) for r in B.build(per=250, seed=0)
+            if r["split"] in ("train", "dev") and BO.overlaps(r["instruction"], bench)]
+    assert not hits, hits[:3]

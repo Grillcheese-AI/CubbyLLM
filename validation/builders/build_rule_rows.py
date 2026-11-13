@@ -131,6 +131,8 @@ def ifeval_form(kind: str, plan: dict) -> list | None:
 
 def render(kind, lang, which, rng) -> tuple[str, dict, int]:
     slots, plan = draw(kind, lang, rng)
+    if which == "new" and "rel" in slots:                # the held-apart rows also word the comparison otherwise
+        slots["rel"] = rng.choice(RT.REL_NEW[lang][rp.leaves(plan)[0]["op"]])
     ts = RT.T[kind][lang][which]
     i = rng.randrange(len(ts))
     return ts[i].format(**slots), plan, i
