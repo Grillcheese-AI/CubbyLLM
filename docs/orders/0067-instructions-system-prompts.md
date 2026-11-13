@@ -612,6 +612,33 @@ Trained 397 steps on an A100 (held answer loss 0.0079). Read at home on grilly2,
   Hub, its sources unlisted (the preview shows templated tasks, a StackOverflow post, answers that read model-written),
   1.17 GB; not fetched. Alternatives with known licences and human prompts: OASST1 (Apache-2.0), Dolly-15k (CC BY-SA
   3.0).
+### The reader's sixth round, built for Colab (Nick, 2026-11-13: "both"; Claude Code)
+Nick chose OASST1 and Dolly-15k (and is asking about CubeLang programs in the set: the rows keep plans, so the answer's
+form can change before training). Both fetched off-repo (`$CUBBY_DATASETS/oasst1`: the first-turn prompts file, 13 MB,
+Apache-2.0, its licence beside it; `$CUBBY_DATASETS/dolly15k`: 13 MB, CC BY-SA 3.0, its card beside it). Prompts only.
+- **Rows from real prompts** (`validation/builders/real_rows.py`): OASST1 first turns (English, French; not deleted,
+  reviewed, not synthetic) and Dolly instructions (the instruction screened; its Wikipedia passage, when it has one,
+  put before or after it: numbers in a passage are not counts to keep). Every prompt kept carries no constraint
+  (round 4's screens and a French one), so each row's rule is known by construction; each prompt is used once:
+  alone -> `none`; with a training-wording rule put after it, before it, or after its first sentence -> that rule
+  (15% with a phrase beside it); with a phrase no measurement covers -> `asked`. Prompts under 200 characters thinned
+  (English median 144 characters; 2,470 English prompts of 300+, IFBench's median 293).
+- **Structure phrases** (`struct_phrases.py`): 24 instructions on content or structure the reply world does not measure
+  (a dialogue, an analogy, step by step, three examples, the five senses, ...), 2 English and 2 French wordings,
+  kept clear of IFBench's 58 kinds and IFEval's 9 held-out kinds; a seeded quarter held out whole.
+- **Held out, never trained:** `real_none_test`, `real_rule_test` (rules keep IFEval's form for its checker),
+  `real_asked_test` (held-out structure and tone phrases), 300 English + 60 French each; IFBench stays the fresh kinds.
+- **The overlap check now includes IFBench** for round 6 (`bench_overlap.WITH_IFBENCH`, set by `--real`): 657 real
+  rows dropped. Off by default, so rounds 1-5 rebuild to their recorded hashes (round 5's `c248d954...` checked).
+- **Rows** (`--wordings v4 --seed 3 --alpaca --asked --real`, `rule_rows_0067_v4_asked_real`, sha `80d5d215...`):
+  26,267 (10,426 real). **The set** (`rules/rule_reader_sft_v6.jsonl`, sha `d7cb9146...`, `--repeat-asked 2`): 24,726
+  records (train 22,458); 0 sharing 5 words with IFEval or IFBench; 0 slot boundaries tokenized otherwise.
+- **Found on the way:** the trainer skips a record longer than `--max-len` without a word (`talk_data.encode_records`);
+  round 5 lost none at 160, but long prompts would have been dropped. The notebook trains at `MAX_LEN` 640 (the
+  longest prompt is 546 tokens) and the SFT manifest now counts records over it (0).
+- `build_rule_rows.py` reached 316 lines: its extra row sets moved to `rule_rows_extra.py`.
+- **The read planned:** dev; the three real test splits (real rules through IFEval's checker); the regression splits
+  (second reads, labelled); IFBench again (written share, then agreement with its checker).
 - **Commits:**
 - **Files:**
 - **Tests:**

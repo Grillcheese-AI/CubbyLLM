@@ -2,7 +2,7 @@
 a benchmark's prompts, words lowercased and stripped of punctuation.
 
 Benchmarks are read from their off-repo place: IFEval's ``ifeval_input_data.jsonl`` under ``$CUBBY_DATASETS/ifeval``,
-M-IFEval's French prompts as any ``*.jsonl`` with a ``prompt`` field under ``$CUBBY_DATASETS/m-ifeval/fr`` (absent on
+IFBench's test prompts (``$CUBBY_DATASETS/ifbench/ifbench_test.parquet``, round 6 on), M-IFEval's French prompts as any ``*.jsonl`` with a ``prompt`` field under ``$CUBBY_DATASETS/m-ifeval/fr`` (absent on
 this machine until its licence is read). `benchmark_grams()` returns {name: grams} for the ones present.
 
   python validation/builders/bench_overlap.py [--rows <rows.jsonl>]   # prints the train/dev wordings that overlap
@@ -37,12 +37,20 @@ def _prompts(path: Path) -> list[str]:
     return [json.loads(line).get("prompt", "") for line in open(path, encoding="utf-8") if line.strip()]
 
 
-def benchmark_grams() -> dict:
+WITH_IFBENCH = False                                     # round 6 on (`build_rule_rows --real` sets it): earlier
+                                                         # rounds' rows rebuild to their recorded hashes without it
+
+
+def benchmark_grams(ifbench: bool | None = None) -> dict:
     root = Path(local_paths.value("CUBBY_DATASETS") or ".")
     out = {}
     ife = root / "ifeval" / "ifeval_input_data.jsonl"
     if ife.exists():
         out["IFEval"] = set().union(*(grams(p) for p in _prompts(ife)))
+    ifb = root / "ifbench" / "ifbench_test.parquet"        # round 6 on: IFBench is a test set too
+    if (WITH_IFBENCH if ifbench is None else ifbench) and ifb.exists():
+        import pyarrow.parquet as pq
+        out["IFBench"] = set().union(*(grams(r["prompt"]) for r in pq.read_table(ifb, columns=["prompt"]).to_pylist()))
     fr = root / "m-ifeval" / "fr"
     if fr.exists():
         files = sorted(fr.glob("*.jsonl"))

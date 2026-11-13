@@ -11,6 +11,7 @@ capitals and all lowercase, JSON and paragraphs, ...) are not composed (`CLASH`)
 
   python validation/builders/build_rule_rows.py [--out $CUBBY_DATASETS/rule_rows_0067] [--per 250] [--seed 0]
       [--wordings v1|v2]   # v2 (round 2): 10 training wordings a kind, a fresh new-wording split; out rule_rows_0067_v2
+      [--alpaca] [--asked] [--real]   # rounds 4, 5, 6: `rule_rows_extra` (Nick's prompts, "asked", OASST1 + Dolly)
 Writes rows.jsonl and manifest.json there; prints the counts.
 """
 from __future__ import annotations
@@ -26,6 +27,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(ROOT), str(Path(__file__).resolve().parent)]
 import rule_templates as RT  # noqa: E402
+from rule_rows_extra import with_alpaca, with_asked, with_real  # noqa: E402
 
 from cubbyllm import local_paths  # noqa: E402
 from cubbyllm.speech import rule_plan as rp  # noqa: E402
@@ -214,43 +216,6 @@ def build(per: int, seed: int) -> list[dict]:
     return rows
 
 
-def with_alpaca(rows: list[dict], seed: int) -> tuple[list[dict], dict]:
-    """`rows` plus Nick's annotated Alpaca prompts (`alpaca_rows`): natural length rules and rule-free prompts. A train
-    or dev prompt that shares 5 words with a benchmark prompt is dropped (a real prompt is not redrawn). Ids follow."""
-    import alpaca_rows
-    import bench_overlap as BO
-    bench = BO.benchmark_grams()
-    extra, dropped = [], 0
-    for r in alpaca_rows.rows(seed):
-        if r["split"] in ("train", "dev") and bench and BO.overlaps(r["instruction"], bench):
-            dropped += 1
-            continue
-        extra.append(r)
-    for i, r in enumerate(extra, start=len(rows)):
-        r["id"] = f"r{i:06d}"
-    return rows + extra, {"alpaca_rows": len(extra), "alpaca_dropped_for_benchmark_overlap": dropped,
-                          "alpaca_licence": "Stanford Alpaca text CC BY-NC 4.0; annotations Nick's own"}
-
-
-def with_asked(rows: list[dict], seed: int) -> tuple[list[dict], dict]:
-    """`rows` plus the rows whose answer is ``asked`` (`asked_rows`, round 5); train/dev ones sharing 5 words with a
-    benchmark prompt are dropped."""
-    import asked_rows
-    import bench_overlap as BO
-    bench = BO.benchmark_grams()
-    measurable = [(r["instruction"], r["plan"], r["lang"]) for r in rows
-                  if r["split"] == "train" and r.get("template") is not None and "+" not in r["kind"]]
-    extra, dropped = [], 0
-    for r in asked_rows.rows(seed + 3, measurable):
-        if r["split"] in ("train", "dev") and bench and BO.overlaps(r["instruction"], bench):
-            dropped += 1
-            continue
-        extra.append(r)
-    for i, r in enumerate(extra, start=len(rows)):
-        r["id"] = f"r{i:06d}"
-    return rows + extra, {"asked_rows": len(extra), "asked_dropped_for_benchmark_overlap": dropped}
-
-
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=None)
@@ -258,17 +223,25 @@ def main() -> None:
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--alpaca", action="store_true", help="add Nick's annotated Alpaca rows (round 4 on)")
     ap.add_argument("--asked", action="store_true", help="add the rows whose answer is asked (round 5)")
+    ap.add_argument("--real", action="store_true", help="add round 6's real prompts (OASST1, Dolly-15k)")
     ap.add_argument("--wordings", default="v1", choices=("v1", "v2", "v3", "v4", "v4b"), help="round 1's wordings, or round 2's (more a kind)")
     a = ap.parse_args()
+    if a.real:                                           # round 6: IFBench joins the benchmarks no train row may meet
+        import bench_overlap as BO
+        BO.WITH_IFBENCH = True
     use_wordings(a.wordings)
     name = "rule_rows_0067" if a.wordings == "v1" else f"rule_rows_0067_{a.wordings}"
-    out = Path(a.out or Path(local_paths.value("CUBBY_DATASETS") or ".") / (name + ("_asked" if a.asked else "")))
+    out = Path(a.out or Path(local_paths.value("CUBBY_DATASETS") or ".") / (name + ("_asked" if a.asked else "")
+                                                                             + ("_real" if a.real else "")))
     rows = build(a.per, a.seed)
     extra_man = {}
     if a.alpaca:
         rows, extra_man = with_alpaca(rows, a.seed)
     if a.asked:
         rows, more = with_asked(rows, a.seed)
+        extra_man.update(more)
+    if a.real:
+        rows, more = with_real(rows, a.seed)
         extra_man.update(more)
     out.mkdir(parents=True, exist_ok=True)
     with open(out / "rows.jsonl", "w", encoding="utf-8") as f:

@@ -88,6 +88,12 @@ def _alpaca_style(max_chars: int = 300) -> list[dict]:
     return out
 
 
+def held_keys(seed: int) -> set:
+    """The keys `rows(seed)` holds out (its first draw)."""
+    keys = [k for k, _, _ in PHRASES]
+    return set(random.Random(seed).sample(keys, len(keys) // 4))
+
+
 def rows(seed: int = 6, measurable=None) -> list[dict]:
     """`measurable`: optional [(text, plan, lang)] rules to join a phrase to (the answer is that rule alone)."""
     rng = random.Random(seed)
@@ -113,4 +119,4 @@ def rows(seed: int = 6, measurable=None) -> list[dict]:
     return out + styled[:400]
 
 
-__all__ = ["PHRASES", "rows"]
+__all__ = ["PHRASES", "held_keys", "rows"]

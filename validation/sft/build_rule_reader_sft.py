@@ -13,6 +13,7 @@ encode(text + " " + slot). Mismatches are counted in the manifest (they mean the
 showed).
 
   python validation/sft/build_rule_reader_sft.py [--rows <rows.jsonl>] --out <rule_reader_sft.jsonl> [--tokenizer <json>]
+      [--repeat-asked N] [--max-len N]   # N: the notebook's MAX_LEN; the records over it are counted, not written apart
 """
 from __future__ import annotations
 
@@ -71,6 +72,7 @@ def main() -> None:
     ap.add_argument("--out", required=True)
     ap.add_argument("--tokenizer", default=None)
     ap.add_argument("--repeat-asked", type=int, default=1, help="write each train record answering asked this many times")
+    ap.add_argument("--max-len", type=int, default=0, help="the trainer's --max-len: count the records it would skip")
     a = ap.parse_args()
     rows_p = Path(a.rows or Path(local_paths.value("CUBBY_DATASETS") or ".") / "rule_rows_0067" / "rows.jsonl")
     rows = [json.loads(line) for line in open(rows_p, encoding="utf-8")]
@@ -81,7 +83,11 @@ def main() -> None:
     if a.tokenizer:
         from tokenizers import Tokenizer
         tk = Tokenizer.from_file(a.tokenizer)
-    bad, checked, examples = 0, 0, []
+    bad, checked, examples, over = 0, 0, [], Counter()
+    if tk and a.max_len:                                 # the trainer skips a record longer than --max-len, silently
+        for rec in recs:
+            if len(tk.encode(rec["prompt"]).ids) + len(tk.encode(" " + rec["answer"]).ids) + 1 > a.max_len:
+                over[rec["split"]] += 1
     if tk:
         for rec in recs:
             for text, slot in slot_texts(rec):
@@ -96,7 +102,7 @@ def main() -> None:
                 bad += 1
     sys.path.insert(0, str(ROOT / "validation" / "builders"))
     import bench_overlap as BO                           # no benchmark prompt in a training record (Cowork, 0067)
-    bench = BO.benchmark_grams()
+    bench = BO.benchmark_grams(ifbench=True)             # reported only: the rows decide what is in
     leaks = [r["id"] for r in rows if r["split"] in SPLIT and BO.overlaps(r["instruction"], bench)]
     out = Path(a.out)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -109,7 +115,8 @@ def main() -> None:
            "sft_sha256": hashlib.sha256(out.read_bytes()).hexdigest(), "new_wording_rows_left_out": sum(
                1 for r in rows if r["split"] == "new_wording"),
            "benchmarks_checked": sorted(bench), "records_sharing_5_words_with_a_benchmark": len(leaks),
-           "slot_boundaries_checked": checked, "slot_boundaries_tokenized_otherwise": bad, "examples": examples}
+           "slot_boundaries_checked": checked, "slot_boundaries_tokenized_otherwise": bad, "examples": examples,
+           "max_len": a.max_len or None, "records_over_max_len": dict(over) if a.max_len else None}
     Path(str(out) + ".manifest.json").write_text(json.dumps(man, indent=1, ensure_ascii=False), encoding="utf-8")
     print(json.dumps(man, indent=1, ensure_ascii=False))
 
