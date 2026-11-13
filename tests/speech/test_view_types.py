@@ -63,3 +63,23 @@ def test_the_typed_grammar_refuses_what_the_line_shapes_let_through():
     g = VT.TypedGrammar(instruction)
     assert g.viable(answer + HEAD + PART)
     assert not g.viable(answer + HEAD + PART.replace('x4 == "-"', "x4 == 9"))
+
+
+TWO = HEAD + PART + PART.replace("part1", "part2") + "    public function solve(mention: str): number {\n"
+CALLS = ("        let p1 = part1(n_sentence, sentence_n_word, sentence_first_word);\n"
+         "        let p2 = part2(n_sentence, sentence_n_word, sentence_first_word);\n")
+AND = "        if (p1 == 1) { if (p2 == 1) { assign g1 = 1; } }\n"
+OR = "        if (p1 == 1) { assign g1 = 1; } if (p2 == 1) { assign g1 = 1; }\n"
+IF = "        if (p1 == 0) { assign g1 = 1; } if (p2 == 1) { assign g1 = 1; }\n"
+
+
+def test_and_is_the_default_and_or_only_when_the_instruction_says_it():
+    plain, either, cond = "Use two sentences. Keep it short.", "Either use two sentences, or keep it short.", \
+        "If you use two sentences, keep it short."
+    assert VT.joins_ok(TWO + CALLS + AND, plain)
+    assert not VT.joins_ok(TWO + CALLS + OR, plain) and VT.joins_ok(TWO + CALLS + OR, either)
+    assert not VT.joins_ok(TWO + CALLS + IF, plain) and VT.joins_ok(TWO + CALLS + IF, cond)
+    assert not VT.joins_ok(TWO + CALLS + "        if (p1 == 0", plain)           # refused as it opens
+    assert VT.joins_ok(TWO + CALLS + OR, "Soit deux phrases, soit une réponse courte.")
+    assert not VT.joins_ok(TWO + CALLS + OR + OR.replace("g1", "g2"), "Use two sentences or keep it short.")  # one "or"
+    assert not VT.joins_ok(TWO + CALLS + OR, "Keep the colors bright.")             # "or" inside a word is no cue

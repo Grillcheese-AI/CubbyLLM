@@ -13,8 +13,15 @@ number was declared). The line shapes cannot see these; `TypedGrammar` adds, as 
 3. **a call passes the part's own parameters, in order:** ``let pK = partN(...)`` names a part already written, and
    its arguments are that part's parameters, the same names in the same order (``partN(a, b)`` for ``partN(a, b)``).
 
-What is checked is the answer's text, never the instruction: these rules hold for any instruction. The gold answers of
-every row pass (`tests/speech/test_view_types.py`).
+4. **"and" by default; "or" only when the instruction says it** (Nick, 2026-11-13: "we keep AND as a default and or
+   only if its part of the instruction text"): ``solve`` joins parts with "and" unless the instruction's own words
+   call for another join: an "or" group (``if (pA == 1) {...} if (pB == 1) {...}``) at most as many times as the
+   instruction says "or", "either", "unless" (French "ou", "soit", "sauf"); an "if" group (not A, or B:
+   ``if (pA == 0) ...``) at most as many times as it says "if" ("si"). The ``== 0`` that opens an "if" group is
+   refused as it is written, so the reader always has "and" to go on with.
+
+Rules 1-3 read the answer's text only; rule 4 reads the instruction's words for its cues. The gold answers of every row
+pass (`tests/speech/test_view_types.py`).
 
 Wiring: STANDALONE (`validation/exp_view_reader.py` reads with it; nothing in the serve path).
 """
@@ -37,6 +44,9 @@ _NAME = re.compile(r"\b(n_[a-z]+|[a-z]+_[a-z_]+)(?=[^a-z_])")
 _LET = re.compile(r"let (x\d+) = ([a-z]+_[a-z_]+)\[")
 _IF = re.compile(r"if \((x\d+) (<=|>=|==|!=|<|>)(?: (.))?")
 _QUOTED = re.compile(r'"(?:[^"\\\n]|\\.)*"?')
+_OPEN_IF = re.compile(r"\s+if \(p\d+ == 0")                         # an "if" group, from its first test
+_OPEN_OR = re.compile(r"\s+if \(p\d+ == 1\) \{ assign g\d+ = 1; \} if")   # an "or" group, from its second test
+CUES = {"or": re.compile(r"\b(?:or|either|unless|ou|soit|sauf)\b", re.I), "if": re.compile(r"\b(?:if|si)\b", re.I)}
 
 
 def kind(name: str) -> str | None:
@@ -99,14 +109,26 @@ def typed_ok(prog: str) -> bool:
     return True
 
 
+def joins_ok(prog: str, instruction: str) -> bool:
+    """Rule 4: the "or" and "if" groups written so far are no more than the instruction's words for them."""
+    lines = prog.split("\n")
+    at = next((i for i, ln in enumerate(lines) if ln.startswith("    public function solve")), None)
+    if at is None:
+        return True
+    body = lines[at + 1:]
+    n_if = sum(1 for ln in body if _OPEN_IF.match(ln))
+    n_or = sum(1 for ln in body if _OPEN_OR.match(ln))
+    return n_if <= len(CUES["if"].findall(instruction)) and n_or <= len(CUES["or"].findall(instruction))
+
+
 class TypedGrammar(Grammar):
-    """`view_grammar.Grammar` with rules 1-3 on the program."""
+    """`view_grammar.Grammar` with rules 1-4 on the program."""
 
     def _program(self, text: str) -> tuple[bool, bool]:
         ok, done = super()._program(text)
         if not ok:
             return False, False
-        return (True, done) if typed_ok(text) else (False, False)
+        return (True, done) if typed_ok(text) and joins_ok(text, self.instruction) else (False, False)
 
 
-__all__ = ["NUMBER", "TypedGrammar", "chooser", "kind", "typed_ok"]
+__all__ = ["CUES", "NUMBER", "TypedGrammar", "chooser", "joins_ok", "kind", "typed_ok"]
