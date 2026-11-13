@@ -1,0 +1,191 @@
+{
+ "order": "0067",
+ "what": "the program seat as it is reads instructions into rule plans, slots constrained",
+ "adapter": "cubby450m_rules_v1",
+ "rows_file_lines": 12872,
+ "n_per_split": 150,
+ "k": 8,
+ "seed": 0,
+ "examples_kinds": [
+  "word count < 20",
+  "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+  "case == lower ; language == en",
+  "count of the word \"médecin\" < 2",
+  "markdown == no",
+  "section count \"SECTION\" >= 2",
+  "count of the letter \"m\" < 4",
+  "starts with \"Explique pourquoi le ciel est bleu.\" == yes"
+ ],
+ "arms": {
+  "zero": {
+   "new_wording": {
+    "counts": {
+     "rows": 150,
+     "written": 150,
+     "exact": 100,
+     "measurement right": 109,
+     "rows en": 79,
+     "exact en": 56,
+     "rows fr": 71,
+     "exact fr": 44
+    },
+    "per_kind": {
+     "english_capital": {
+      "rows": 15,
+      "exact": 6,
+      "measurement right": 6
+     },
+     "english_lowercase": {
+      "rows": 6,
+      "exact": 4,
+      "measurement right": 6
+     },
+     "existence": {
+      "rows": 9,
+      "exact": 5,
+      "measurement right": 5
+     },
+     "first": {
+      "rows": 8,
+      "exact": 6,
+      "measurement right": 8
+     },
+     "frequency": {
+      "rows": 6,
+      "exact": 4,
+      "measurement right": 5
+     },
+     "json_format": {
+      "rows": 8,
+      "exact": 8,
+      "measurement right": 8
+     },
+     "letter_frequency": {
+      "rows": 8,
+      "exact": 6,
+      "measurement right": 7
+     },
+     "multiple_sections": {
+      "rows": 6,
+      "exact": 3,
+      "measurement right": 3
+     },
+     "no_markdown": {
+      "rows": 7,
+      "exact": 3,
+      "measurement right": 3
+     },
+     "number_highlighted_sections": {
+      "rows": 9,
+      "exact": 4,
+      "measurement right": 4
+     },
+     "number_paragraphs": {
+      "rows": 4,
+      "exact": 2,
+      "measurement right": 2
+     },
+     "number_sentences": {
+      "rows": 7,
+      "exact": 6,
+      "measurement right": 7
+     },
+     "number_words": {
+      "rows": 11,
+      "exact": 9,
+      "measurement right": 11
+     },
+     "quotation": {
+      "rows": 11,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "repeat_prompt": {
+      "rows": 10,
+      "exact": 10,
+      "measurement right": 10
+     },
+     "response_language": {
+      "rows": 8,
+      "exact": 8,
+      "measurement right": 8
+     },
+     "title": {
+      "rows": 7,
+      "exact": 6,
+      "measurement right": 6
+     },
+     "two_responses": {
+      "rows": 10,
+      "exact": 3,
+      "measurement right": 3
+     }
+    },
+    "some_misses": [
+     {
+      "kind": "english_capital",
+      "want": "case == upper ; language == en",
+      "got": "language == en"
+     },
+     {
+      "kind": "number_highlighted_sections",
+      "want": "highlight count >= 3",
+      "got": "highlight count >= 3 ; case == upper ; language == en"
+     },
+     {
+      "kind": "letter_frequency",
+      "want": "count of the letter \"m\" < 12",
+      "got": "count of the letter \"m\" >= 12 ; count of the word \"revienne\" >= 1"
+     },
+     {
+      "kind": "english_capital",
+      "want": "case == upper ; language == en",
+      "got": "language == en"
+     },
+     {
+      "kind": "existence",
+      "want": "count of the word \"énergie\" >= 1",
+      "got": "highlight count >= 1"
+     },
+     {
+      "kind": "frequency",
+      "want": "count of the word \"planète\" >= 1",
+      "got": "count of the word \"emplois\" >= 1"
+     },
+     {
+      "kind": "multiple_sections",
+      "want": "section count \"Part\" >= 4",
+      "got": "count of the word \"Part\" >= 4 ; opening has Part followed by its number"
+     },
+     {
+      "kind": "existence",
+      "want": "count of the word \"planète\" >= 1",
+      "got": "starts with \"Ta réponse doit mentionner planète.\" == yes"
+     },
+     {
+      "kind": "multiple_sections",
+      "want": "section count \"CHAPTER\" >= 5",
+      "got": "opening has en 5 parties ; count of the word \"CHAPTER\" >= 5"
+     },
+     {
+      "kind": "quotation",
+      "want": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+      "got": "markdown == no"
+     },
+     {
+      "kind": "english_lowercase",
+      "want": "case == lower ; language == en",
+      "got": "case == upper ; language == en"
+     },
+     {
+      "kind": "english_capital",
+      "want": "case == upper ; language == en",
+      "got": "language == en"
+     }
+    ]
+   },
+   "seconds": 99.8,
+   "seat_calls": 871
+  }
+ }
+}

@@ -1,0 +1,489 @@
+{
+ "order": "0067",
+ "what": "rule plans run by the VM against IFEval's checker on replies built to pass and fail",
+ "arm": "seat",
+ "rows": 135,
+ "replies_per_rule": 10,
+ "seed": 0,
+ "splits": "new_wording",
+ "counts": {
+  "pairs": 1350,
+  "agree": 1111,
+  "checker passes": 584,
+  "rule passes, checker fails": 118,
+  "asked": 0
+ },
+ "agreement": 0.823,
+ "rule_passes_checker_fails": 0.0874,
+ "checker_pass_share": 0.4326,
+ "per_kind": {
+  "english_capital": {
+   "pairs": 150,
+   "agree": 105,
+   "checker passes": 31,
+   "rule passes, checker fails": 39,
+   "asked": 0,
+   "agreement": 0.7
+  },
+  "english_lowercase": {
+   "pairs": 60,
+   "agree": 52,
+   "checker passes": 11,
+   "rule passes, checker fails": 3,
+   "asked": 0,
+   "agreement": 0.867
+  },
+  "existence": {
+   "pairs": 90,
+   "agree": 69,
+   "checker passes": 45,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.767
+  },
+  "frequency": {
+   "pairs": 60,
+   "agree": 45,
+   "checker passes": 34,
+   "rule passes, checker fails": 6,
+   "asked": 0,
+   "agreement": 0.75
+  },
+  "json_format": {
+   "pairs": 80,
+   "agree": 80,
+   "checker passes": 34,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "letter_frequency": {
+   "pairs": 80,
+   "agree": 73,
+   "checker passes": 37,
+   "rule passes, checker fails": 3,
+   "asked": 0,
+   "agreement": 0.912
+  },
+  "multiple_sections": {
+   "pairs": 60,
+   "agree": 48,
+   "checker passes": 31,
+   "rule passes, checker fails": 2,
+   "asked": 0,
+   "agreement": 0.8
+  },
+  "number_highlighted_sections": {
+   "pairs": 90,
+   "agree": 53,
+   "checker passes": 62,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.589
+  },
+  "number_paragraphs": {
+   "pairs": 40,
+   "agree": 35,
+   "checker passes": 12,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.875
+  },
+  "number_sentences": {
+   "pairs": 70,
+   "agree": 60,
+   "checker passes": 43,
+   "rule passes, checker fails": 6,
+   "asked": 0,
+   "agreement": 0.857
+  },
+  "number_words": {
+   "pairs": 110,
+   "agree": 90,
+   "checker passes": 51,
+   "rule passes, checker fails": 14,
+   "asked": 0,
+   "agreement": 0.818
+  },
+  "quotation": {
+   "pairs": 110,
+   "agree": 89,
+   "checker passes": 58,
+   "rule passes, checker fails": 21,
+   "asked": 0,
+   "agreement": 0.809
+  },
+  "repeat_prompt": {
+   "pairs": 100,
+   "agree": 100,
+   "checker passes": 32,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "response_language": {
+   "pairs": 80,
+   "agree": 80,
+   "checker passes": 45,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "title": {
+   "pairs": 70,
+   "agree": 64,
+   "checker passes": 42,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.914
+  },
+  "two_responses": {
+   "pairs": 100,
+   "agree": 68,
+   "checker passes": 16,
+   "rule passes, checker fails": 24,
+   "asked": 0,
+   "agreement": 0.68
+  }
+ },
+ "misses": [
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "C'EST UNE PETITE VILLE, MAIS ON NE LA QUITTE PAS. SES NOTES ÉTAIENT COURTES ET TRÈS CLAIRES.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "upper is the case of the reply",
+    "fr is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "LA PLUPART DU TRAVAIL SE FAIT LE SOIR. UN BON PLAN COMMENCE PAR UNE QUESTION SIMPLE.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "upper is the case of the reply",
+    "fr is the language of the reply"
+   ]
+  },
+  {
+   "kind": "two_responses",
+   "kwargs": {},
+   "reply": "Un bon plan commence par une question simple.\n******\nNous avons marché jusqu'au marché avant midi.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the count of the word \"Réponds\" of the reply",
+    "no is the starts with \"Réponds\" of the reply"
+   ]
+  },
+  {
+   "kind": "two_responses",
+   "kwargs": {},
+   "reply": "La réponse dépend de la saison et du temps.\n******\nIls vendaient du pain, des fruits et du fromage.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the count of the word \"Réponds\" of the reply",
+    "no is the starts with \"Réponds\" of the reply"
+   ]
+  },
+  {
+   "kind": "two_responses",
+   "kwargs": {},
+   "reply": "La réponse dépend de la saison et du temps.\n******\nLa matinée était calme et la rue était vide.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the count of the word \"Réponds\" of the reply",
+    "no is the starts with \"Réponds\" of the reply"
+   ]
+  },
+  {
+   "kind": "number_highlighted_sections",
+   "kwargs": {
+    "num_highlights": 2
+   },
+   "reply": "*Her notes were short and very clear* *We walked to the market before noon* *The train was late again this week* *Her notes were short and very clear* It's a sm",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "4 is the highlight count of the reply",
+    "mixed is the case of the reply",
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "number_highlighted_sections",
+   "kwargs": {
+    "num_highlights": 2
+   },
+   "reply": "*They sold bread, fruit and fresh cheese* *We walked to the market before noon* The morning was quiet and the street was empty.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "2 is the highlight count of the reply",
+    "mixed is the case of the reply",
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "number_highlighted_sections",
+   "kwargs": {
+    "num_highlights": 2
+   },
+   "reply": "*They sold bread, fruit and fresh cheese* *Most of the work happens in the evening* *Her notes were short and very clear* We walked to the market before noon.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "3 is the highlight count of the reply",
+    "mixed is the case of the reply",
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "number_highlighted_sections",
+   "kwargs": {
+    "num_highlights": 2
+   },
+   "reply": "*Most of the work happens in the evening* *The answer depends on the season and the weather* *Nobody knew why the bridge was closed* *A good plan starts with a ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "4 is the highlight count of the reply",
+    "mixed is the case of the reply",
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "number_highlighted_sections",
+   "kwargs": {
+    "num_highlights": 2
+   },
+   "reply": "*We walked to the market before noon* *The train was late again this week* *It's a small town, but people don't leave it* *The morning was quiet and the street ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "4 is the highlight count of the reply",
+    "mixed is the case of the reply",
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "number_highlighted_sections",
+   "kwargs": {
+    "num_highlights": 2
+   },
+   "reply": "*Her notes were short and very clear* *It's a small town, but people don't leave it* They sold bread, fruit and fresh cheese.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "2 is the highlight count of the reply",
+    "mixed is the case of the reply",
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "number_highlighted_sections",
+   "kwargs": {
+    "num_highlights": 2
+   },
+   "reply": "*We walked to the market before noon* *The morning was quiet and the street was empty* The morning was quiet and the street was empty.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "2 is the highlight count of the reply",
+    "mixed is the case of the reply",
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "number_highlighted_sections",
+   "kwargs": {
+    "num_highlights": 2
+   },
+   "reply": "*The answer depends on the season and the weather* *The morning was quiet and the street was empty* The train was late again this week.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "2 is the highlight count of the reply",
+    "mixed is the case of the reply",
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "number_highlighted_sections",
+   "kwargs": {
+    "num_highlights": 2
+   },
+   "reply": "*Most of the work happens in the evening* *Most of the work happens in the evening* *It's a small town, but people don't leave it* *It's a small town, but peopl",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "4 is the highlight count of the reply",
+    "mixed is the case of the reply",
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "number_highlighted_sections",
+   "kwargs": {
+    "num_highlights": 2
+   },
+   "reply": "*The train was late again this week* *The train was late again this week* *A good plan starts with a simple question* *The train was late again this week* The a",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "4 is the highlight count of the reply",
+    "mixed is the case of the reply",
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "existence",
+   "kwargs": {
+    "keywords": [
+     "planète"
+    ]
+   },
+   "reply": "Ils vendaient du pain, des fruits et du fromage. Ils vendaient du pain, des fruits et du fromage. planète.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "no is the starts with \"Ta réponse doit mentionner planète.\" of the reply"
+   ]
+  },
+  {
+   "kind": "existence",
+   "kwargs": {
+    "keywords": [
+     "planète"
+    ]
+   },
+   "reply": "Un bon plan commence par une question simple. Ils vendaient du pain, des fruits et du fromage. planète.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "no is the starts with \"Ta réponse doit mentionner planète.\" of the reply"
+   ]
+  },
+  {
+   "kind": "existence",
+   "kwargs": {
+    "keywords": [
+     "planète"
+    ]
+   },
+   "reply": "Nous avons marché jusqu'au marché avant midi. Nous avons marché jusqu'au marché avant midi. planète.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "no is the starts with \"Ta réponse doit mentionner planète.\" of the reply"
+   ]
+  },
+  {
+   "kind": "existence",
+   "kwargs": {
+    "keywords": [
+     "planète"
+    ]
+   },
+   "reply": "Nous avons marché jusqu'au marché avant midi. Personne ne savait pourquoi le pont était fermé. planète.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "no is the starts with \"Ta réponse doit mentionner planète.\" of the reply"
+   ]
+  },
+  {
+   "kind": "existence",
+   "kwargs": {
+    "keywords": [
+     "planète"
+    ]
+   },
+   "reply": "C'est une petite ville, mais on ne la quitte pas. Ils vendaient du pain, des fruits et du fromage. planète.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "no is the starts with \"Ta réponse doit mentionner planète.\" of the reply"
+   ]
+  },
+  {
+   "kind": "existence",
+   "kwargs": {
+    "keywords": [
+     "planète"
+    ]
+   },
+   "reply": "La réponse dépend de la saison et du temps. Ses notes étaient courtes et très claires. planète.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "no is the starts with \"Ta réponse doit mentionner planète.\" of the reply"
+   ]
+  },
+  {
+   "kind": "number_highlighted_sections",
+   "kwargs": {
+    "num_highlights": 3
+   },
+   "reply": "*La plupart du travail se fait le soir* *Le train était encore en retard cette semaine* *C'est une petite ville, mais on ne la quitte pas* La réponse dépend de ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "mixed is the case of the reply",
+    "fr is the language of the reply"
+   ]
+  },
+  {
+   "kind": "number_highlighted_sections",
+   "kwargs": {
+    "num_highlights": 3
+   },
+   "reply": "*Le train était encore en retard cette semaine* *La plupart du travail se fait le soir* *Ils vendaient du pain, des fruits et du fromage* Le train était encore ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "mixed is the case of the reply",
+    "fr is the language of the reply"
+   ]
+  },
+  {
+   "kind": "number_highlighted_sections",
+   "kwargs": {
+    "num_highlights": 3
+   },
+   "reply": "*La réponse dépend de la saison et du temps* *La réponse dépend de la saison et du temps* *C'est une petite ville, mais on ne la quitte pas* *La matinée était c",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "mixed is the case of the reply",
+    "fr is the language of the reply"
+   ]
+  },
+  {
+   "kind": "number_highlighted_sections",
+   "kwargs": {
+    "num_highlights": 3
+   },
+   "reply": "*Nous avons marché jusqu'au marché avant midi* *Personne ne savait pourquoi le pont était fermé* *Un bon plan commence par une question simple* *C'est une petit",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "mixed is the case of the reply",
+    "fr is the language of the reply"
+   ]
+  }
+ ],
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-11 15:18",
+  "sha256": "3120403f35b007eb85a2302086da7fb1447830573f0f2d540e4c62fdb0cbc37b",
+  "commit": "3f37515",
+  "older_than_sources": false
+ }
+}

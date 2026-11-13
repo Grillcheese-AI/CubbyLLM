@@ -369,6 +369,25 @@ instruction, the reader writes the rule) waits for the reader's line 3.
   agreement reads, run 1) used main cubelang's September binary. From run 2 on, every run sets `CUBELANG_EXE` to the
   cowork build and records the VM in its summary (`cubbyllm/bridges/vm_identity.py`); a run refuses a VM older than
   its sources. `tests/speech` passes on the cowork VM (61).
+### The reader's adapter round, read (Claude Code, 2026-11-13)
+- **The adapter** (`cubby450m_rules_v1`, Colab, on the clean set `c196de53`; one epoch, 312 steps of 32, 1.4 minutes;
+  held answer loss 5.39 -> 0.0078), read on grilly2 with the instruction alone (no examples), slots constrained.
+- **Dev** (150 rows, the training wordings, other rules; `rule_reader_2026-11-13_v1_dev.json`): first read 140 exact;
+  two slot faults were fixed on dev (`b94dbce`: word and opening values as the reply world reads words, so no
+  punctuation; up to 6 leaves, the rows compose 5); second read **149 of 150 exact** (EN 59/60, FR 90/90).
+- **New wordings, read once on `b94dbce`** (150 rows, wordings and comparison phrases training never showed;
+  `rule_reader_2026-11-13_v1_new.json`): **100 of 150 exact (66.7%)**, the measurement right on 109 (EN 56/79, FR
+  44/71). Against IFEval's checker (`rule_agree_2026-11-13_v1_new.json`, 135 rules with an IFEval form, 1,350 replies,
+  the cowork VM): **agreement 82.3%; the rule passes a reply the checker fails 8.7%.** Lowest: highlighted sections
+  0.59, two responses 0.68, all capitals 0.70 (it drops the capitals leaf from "every letter capitalised"), frequency
+  0.75, existence 0.77.
+- **Line 3, new wordings of seen kinds: missed** (agreement 82.3% against 98%; written 100% means nothing with the
+  slots constrained). The 8.7% false passes is above the 5% that line 3's kill sets for held-out kinds. **The held-out
+  kinds stay unread.** The gap is the wordings: three training wordings a kind are learned almost exactly (dev 99%)
+  and generalize partly (66.7%).
+- **What a next round would need** (Nick's call): many more wordings a kind. The order allows wording templates to be
+  model-drafted (the 2026-11-10 rule; rules never are), each checked against the benchmarks (`bench_overlap.py`) and
+  the new-wording templates kept apart; a fresh new-wording split would be drawn, since this one is now read.
 - **Commits:**
 - **Files:**
 - **Tests:**
