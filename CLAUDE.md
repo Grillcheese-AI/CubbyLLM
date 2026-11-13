@@ -34,6 +34,24 @@ Their format and lifecycle are in `docs/orders/README.md`. In short:
 turns out wrong while building it, **stop and say so in the report**: the reasoning is the
 deliverable, not the diff. List the queue: `grep -H "^status:" docs/orders/0*.md`.
 
+### Two Claude Code sessions (Nick, 2026-11-13)
+
+- **Code A** works in this checkout on `master`, as above. **Code B** works in a second checkout of the same
+  repo (a `git worktree`; its folder is in `CLAUDE.local.md`) on the branch `agent-b`.
+- Each takes only the orders whose status names it (`in progress (Code B, ...)`, `open (assigned to Code B ...)`).
+  An order that names neither is Code A's, by rule 3. Neither edits the other's order files while they are in progress.
+- Code B commits on `agent-b`, never on `master`, and never moves `master` from its own checkout (`git push .
+  agent-b:master`, `git branch -f master` and the like leave Code A's checkout out of step with its files). It brings
+  `master` in with `git merge master`: no rebase, no force, no push of `agent-b`.
+- When an order of Code B's reaches `review`: Code B merges `master` in, runs the tests and leaves a note in its inbox;
+  Cowork fast-forwards `master` to `agent-b` in this checkout (`git merge --ff-only agent-b`), checks the order on
+  `master`, and Code B merges `master` in again before going on. `master` is pushed from this checkout, as before.
+- Shared machine: twelve CPU threads, so each session's CPU jobs take at most six. A timing line (a latency, a
+  throughput) is measured while the other session runs no CPU job, and reported with that. Code B uses no GPU.
+- Same Python and data folders for both (`paths.local.json` is copied into Code B's checkout); scripts run from their
+  own checkout's root, so `cubbyllm` is imported from that checkout.
+- Each checkout has its own `docs/inbox.local.md`; Cowork writes to both.
+
 ## What CubbyLLM is
 
 An infrastructure in which the language model is the smallest, most replaceable layer: a trunk
@@ -148,7 +166,7 @@ recurrent vector per layer plus a ring of `window` keys), not a growing KV cache
   `_sizes.json`, `_align.json`, `_holdout.json`; the Corpus skips sync-tool duplicates named
   `<name> (1)`. Builders: `validation/make_spatial_shard.py`, `validation/make_fact_shard.py`.
 - **Logs:** `validation/logs/<what>_<date>.<ext>`. Files starting `_` there are scratch (untracked).
-- **Commits:** to `master`, pushed. Subject says what changed; body says why and carries the
+- **Commits:** to `master`, pushed (Code B: to `agent-b`, see "Two Claude Code sessions"). Subject says what changed; body says why and carries the
   measured numbers; reference the order (`[0001] ...`). Long messages from a file (`git commit -F`).
   Run git on the Windows side, never through a mounted copy of the repo (it leaves `index.lock`).
 

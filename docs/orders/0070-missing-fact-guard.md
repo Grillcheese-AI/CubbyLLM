@@ -1,5 +1,5 @@
 # 0070 - The missing-fact guard: the relation step refuses when the item lacks the fact asked, measured on hidden facts
-status: open (queue: after 0054's seven name-statement items, beside 0067; Nick sets the order between them)
+status: in progress (Code B, the second Claude Code session, on the branch `agent-b`; Nick, 2026-11-13: 0070 then 0069, beside 0067)
 written: 2026-11-12 by Cowork - approved: 2026-11-12 by Nick ("yes", to writing the qFHRR panel's first two steps as orders) - hypothesis: none (0046's R3 and R8 lines)
 
 ## Why

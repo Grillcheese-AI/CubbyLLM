@@ -1,5 +1,5 @@
 # 0067 - Instructions and system prompts: read by the model, kept as rules, enforced and checked by the host
-status: in progress (Nick, 2026-11-12: 0067 first, then 0070, then 0069)
+status: in progress (Nick, 2026-11-12: 0067 first, then 0070, then 0069; 2026-11-13: Code A stays on 0067, and 0070 then 0069 go to Code B, a second Claude Code session, in parallel)
 written: 2026-11-12 by Cowork - approved: 2026-11-12 by Nick ("perfect open it") - hypothesis: none (H-E20's gate 4 uses the same measure)
 
 ## Why
