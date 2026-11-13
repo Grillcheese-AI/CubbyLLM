@@ -146,3 +146,22 @@ def test_round_four_trains_clean_and_reads_comparisons_it_never_trained_on():
         B.use_wordings("v1")
     bench = BO.benchmark_grams()
     assert not [r for r in rows if r["split"] in ("train", "dev") and BO.overlaps(r["instruction"], bench)]
+
+
+def test_the_natural_length_grammar_reads_only_what_it_reads_in_full():
+    """Round 4's rows from Nick's annotated Alpaca prompts: the host's grammar fixes the rule; an ambiguous or double
+    length phrase is left out, never guessed."""
+    import alpaca_rows as A
+    plan = lambda t: (A.read_length(t) or (None,))[0]                    # noqa: E731
+    assert plan("Describe the painting in one sentence.") == {"m": "sentence count", "op": "==", "v": 1}
+    assert plan("Summarize it in a maximum of 100 words.") == {"m": "word count", "op": "<=", "v": 100}
+    assert plan("In 50 words or less, describe the game") == {"m": "word count", "op": "<=", "v": 50}
+    assert plan("Write a story in under 200 words.") == {"m": "word count", "op": "<", "v": 200}
+    assert plan("Explain it in 1 to 2 sentences.") == {"and": [{"m": "sentence count", "op": ">=", "v": 1},
+                                                              {"m": "sentence count", "op": "<=", "v": 2}]}
+    for t in ("Write it in 50 words.", "Split the sentence into two separate sentences.",
+              "Summarize in 3 sentences and 40 words or less.", "Explain the theory."):
+        assert A.read_length(t) is None, t
+    assert A.read_length("Summarize in 1 to 2 sentences.")[1] == [
+        ["length_constraints:number_sentences", {"num_sentences": 1, "relation": "at least"}],
+        ["length_constraints:number_sentences", {"num_sentences": 3, "relation": "less than"}]]

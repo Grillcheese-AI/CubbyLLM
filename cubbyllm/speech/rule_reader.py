@@ -8,7 +8,8 @@ The seat writes a short surface form, one leaf after another, joined by " ;" (an
 
 For each slot the host hands the decoder the token sequences of the slot's options (a trie) through grilly2's
 ``prefix_allowed_tokens_fn`` (order 0071), so the seat can only write a plan of the family's shape:
-- the measurement: a `reply_world` relation (or ``asked``, first slot only: no rule written);
+- the measurement: a `reply_world` relation; first slot only, ``asked`` (a rule no measurement covers: kept as text,
+  logged) or ``none`` (the instruction sets no rule on the reply at all);
 - the argument, for a relation that takes one: a span of the instruction's own words, or ``"`` (one character of the
   instruction for a letter or character count);
 - the comparison: the ops `rule_plan` allows for that relation;
@@ -45,8 +46,11 @@ NL = "\n"
 HEAD = "Each instruction becomes a rule over measurements of the reply.\n\n"
 
 
-def surface(plan: dict) -> str:
-    """A plan of leaves joined by "and", in the reader's surface form (the rows' targets, the few-shot examples)."""
+def surface(plan: dict | None) -> str:
+    """A plan of leaves joined by "and", in the reader's surface form (the rows' targets, the few-shot examples);
+    ``none`` for an instruction that sets no rule."""
+    if plan is None:
+        return "none"
     parts = []
     for lf in rp.leaves(plan):
         arg = f' "{lf["arg"]}"' if "arg" in lf else ""
@@ -123,14 +127,16 @@ def _values(rel: str, instruction: str) -> list[str]:
 
 
 def read(instruction: str, gen, encode, eos: int, examples=()) -> dict:
-    """{"plan": dict | None, "how": "written" | "asked", "surface": str, "why"}. `examples`: (instruction, plan)
+    """{"plan": dict | None, "how": "written" | "asked" | "none", "surface": str, "why"}. `examples`: (instruction, plan)
     pairs shown before it (few-shot), in the surface form."""
     text = HEAD + "".join(f"Instruction: {i}\nRule: {surface(p)}\n\n" for i, p in examples)
     text += f"Instruction: {instruction}\nRule:"
     rels = list(rw.RELATIONS) + list(rw.PARAMETRIC)
     leaves, written = [], ""
     for k in range(MAX_LEAVES):
-        rel = _choose(gen, encode, eos, text + written, rels + (["asked"] if k == 0 else []))
+        rel = _choose(gen, encode, eos, text + written, rels + (["asked", "none"] if k == 0 else []))
+        if rel == "none":                                # the instruction sets no rule on the reply (order 0067, round 4)
+            return {"plan": None, "how": "none", "surface": "none", "why": None}
         if rel is None or rel == "asked":
             return {"plan": None, "how": "asked", "surface": "asked", "why": "the seat wrote asked" if rel else "no option"}
         written += " " + rel

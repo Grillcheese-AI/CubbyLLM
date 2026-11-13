@@ -41,6 +41,8 @@ def record(r: dict) -> dict:
 def slot_texts(rec: dict) -> list[tuple[str, str]]:
     """(text written so far, the next slot) at every boundary the reader writes."""
     out, text = [], rec["prompt"]
+    if rec["answer"].strip() == "none":                  # a rule-free instruction: one slot (round 4)
+        return [(text, "none")]
     for leaf_i, leaf in enumerate(rec["answer"].rstrip("\n").split(" ; ")):
         if leaf_i:
             out.append((text, ";"))

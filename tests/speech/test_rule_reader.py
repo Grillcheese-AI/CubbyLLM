@@ -64,7 +64,7 @@ def test_asked_is_a_result():
 def test_any_allowed_choice_is_a_plan_the_family_accepts():
     for seed in range(40):
         got = rr.read(INSTRUCTION, wild(seed), encode, EOS)
-        assert got["how"] in ("written", "asked")
+        assert got["how"] in ("written", "asked", "none")
         if got["how"] == "written":
             assert rp.check(got["plan"]) is None and len(rp.leaves(got["plan"])) <= rr.MAX_LEAVES
 
@@ -78,3 +78,9 @@ def test_examples_are_shown_in_the_surface_form():
     rr.read("Be brief.", gen, encode, EOS, examples=[("Use fewer than 9 words.", PLANS[0])])
     assert "Instruction: Use fewer than 9 words.\nRule: word count < 50\n\n" in seen[0]
     assert rr.same(PLANS[1], {"and": list(reversed(PLANS[1]["and"]))}) and not rr.same(PLANS[0], PLANS[2])
+
+
+def test_none_is_a_result_apart_from_asked():
+    got = rr.read("Explain how to make tea.", oracle(" none\n"), encode, EOS)
+    assert got["how"] == "none" and got["plan"] is None and rr.surface(None) == "none"
+    assert rr.read(INSTRUCTION, oracle(" asked\n"), encode, EOS)["how"] == "asked"

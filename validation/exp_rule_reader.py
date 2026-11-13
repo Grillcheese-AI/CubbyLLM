@@ -62,6 +62,10 @@ def main() -> None:
     rng = random.Random(a.seed)
     sample = {s: rng.sample([r for r in rows if r["split"] == s], a.n) for s in ("dev", "new_wording")}
     sample = {s: v for s, v in sample.items() if s in a.splits.split(",")}   # the same draw whichever is read
+    for s in a.splits.split(","):                        # round 4's held-out Alpaca splits: all of them, or n at most
+        if s not in sample:
+            pool = [r for r in rows if r["split"] == s]
+            sample[s] = random.Random(a.seed).sample(pool, min(a.n, len(pool)))
     shots = examples(rows, a.k, a.seed)
     trunk = Cubby450mTrunk(a.export, a.tokenizer, {"programs": a.adapter})
     tk, eos = trunk.tokenizer, trunk.eos
@@ -86,10 +90,13 @@ def main() -> None:
             for r in rs:
                 got = rr.read(r["instruction"], gen, encode, eos, examples=shots if arm == "few" else ())
                 kept[arm][r["id"]] = got["plan"]
-                ok = rr.same(got["plan"], r["plan"])
+                ok = got["how"] == "none" if r["plan"] is None else rr.same(got["plan"], r["plan"])
                 rel_ok = rels(got["plan"]) == rels(r["plan"])
                 for key, hit in (("rows", 1), ("written", got["how"] == "written"), ("exact", ok), ("measurement right", rel_ok),
-                                 (f"rows {r['lang']}", 1), (f"exact {r['lang']}", ok)):
+                                 (f"rows {r['lang']}", 1), (f"exact {r['lang']}", ok),
+                                 ("rule-free rows", r["plan"] is None),
+                                 ("invented a rule", r["plan"] is None and got["how"] == "written"),
+                                 ("said none where there was a rule", r["plan"] is not None and got["how"] == "none")):
                     tally[key] += int(bool(hit))
                 per_kind[r["kind"]].update({"rows": 1, "exact": int(ok), "measurement right": int(rel_ok)})
                 if not ok and len(wrong) < 12:

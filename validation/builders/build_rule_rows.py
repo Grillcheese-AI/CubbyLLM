@@ -207,11 +207,29 @@ def build(per: int, seed: int) -> list[dict]:
                          "template": None, "ifeval": [f for f in (ifeval_form(a, pa), ifeval_form(b, pb)) if f],
                          "split": "dev" if rng.random() < 0.1 else "train"})
     for i, r in enumerate(rows):
-        why = rp.check(r["plan"])
+        why = rp.check(r["plan"]) if r["plan"] is not None else None
         if why:
             raise SystemExit(f"row {i} ({r['kind']}): its plan is refused: {why}")
         r["id"] = f"r{i:06d}"
     return rows
+
+
+def with_alpaca(rows: list[dict], seed: int) -> tuple[list[dict], dict]:
+    """`rows` plus Nick's annotated Alpaca prompts (`alpaca_rows`): natural length rules and rule-free prompts. A train
+    or dev prompt that shares 5 words with a benchmark prompt is dropped (a real prompt is not redrawn). Ids follow."""
+    import alpaca_rows
+    import bench_overlap as BO
+    bench = BO.benchmark_grams()
+    extra, dropped = [], 0
+    for r in alpaca_rows.rows(seed):
+        if r["split"] in ("train", "dev") and bench and BO.overlaps(r["instruction"], bench):
+            dropped += 1
+            continue
+        extra.append(r)
+    for i, r in enumerate(extra, start=len(rows)):
+        r["id"] = f"r{i:06d}"
+    return rows + extra, {"alpaca_rows": len(extra), "alpaca_dropped_for_benchmark_overlap": dropped,
+                          "alpaca_licence": "Stanford Alpaca text CC BY-NC 4.0; annotations Nick's own"}
 
 
 def main() -> None:
@@ -219,12 +237,16 @@ def main() -> None:
     ap.add_argument("--out", default=None)
     ap.add_argument("--per", type=int, default=250)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--alpaca", action="store_true", help="add Nick's annotated Alpaca rows (round 4 on)")
     ap.add_argument("--wordings", default="v1", choices=("v1", "v2", "v3", "v4"), help="round 1's wordings, or round 2's (more a kind)")
     a = ap.parse_args()
     use_wordings(a.wordings)
     out = Path(a.out or Path(local_paths.value("CUBBY_DATASETS") or ".") /
                ("rule_rows_0067" if a.wordings == "v1" else f"rule_rows_0067_{a.wordings}"))
     rows = build(a.per, a.seed)
+    extra_man = {}
+    if a.alpaca:
+        rows, extra_man = with_alpaca(rows, a.seed)
     out.mkdir(parents=True, exist_ok=True)
     with open(out / "rows.jsonl", "w", encoding="utf-8") as f:
         for r in rows:
@@ -235,7 +257,7 @@ def main() -> None:
     counts = Counter((r["split"], r["lang"]) for r in rows)
     man = {"order": "0067", "seed": a.seed, "per": a.per, "rows": len(rows),
            "by_split_lang": {f"{s}/{l}": n for (s, l), n in sorted(counts.items())},
-           "kinds": sorted(WORDINGS), "templates_sha256": hashlib.sha256(tsrc).hexdigest(), "wordings": a.wordings,
+           "kinds": sorted(WORDINGS), "templates_sha256": hashlib.sha256(tsrc).hexdigest(), "wordings": a.wordings, **extra_man,
            "rows_sha256": hashlib.sha256((out / "rows.jsonl").read_bytes()).hexdigest()}
     (out / "manifest.json").write_text(json.dumps(man, indent=1), encoding="utf-8")
     print(json.dumps(man, indent=1))

@@ -31,7 +31,9 @@ CELLS = [
 
 Agreement with IFEval's checker on new wordings: round 1 82.3%, round 2 92.7%, round 3 91.7%; rounds 2-3's misses are
 mostly "less than", kept out of training, read as ">=". Round 4 (Nick: everyday comparisons allowed) trains with "at
-least" / "less than" and is read on a fresh new-wording split whose comparisons training never had.
+least" / "less than" and is read on a fresh new-wording split whose comparisons training never had. Nick folded in his
+annotated instruction file: natural length rules from real prompts (the host's grammar reads the rule) and rule-free
+prompts, which teach the reader to answer `none`.
 
 **Runtime:** an A100 (the set is 9,977 short training records, at most 89 tokens each; one epoch is about 312 steps
 of 32, minutes rather than hours). It reads, from Drive: `runs/base450m_cont/base450m_cont_final.pt` (the base every

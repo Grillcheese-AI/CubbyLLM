@@ -475,6 +475,27 @@ instruction, the reader writes the rule) waits for the reader's line 3.
   `test_round_four_trains_clean_and_reads_comparisons_it_never_trained_on`).
 - **The set** on Drive (`rules/rule_reader_sft_v4.jsonl`, sha `cb7a7260...`): 11,057 records (9,964 train, 1,093
   held); 0 overlaps; 0 slot boundaries tokenized otherwise. The notebook trains it into `rules/cubby450m_rules_v4/`.
+### Round 4 with Nick's annotated instruction file folded in (Nick, 2026-11-13: "fold it in now"; Claude Code)
+- **The source:** Nick's annotated instruction file (`$CUBBY_INSTRUCT_SVC`): Stanford Alpaca's prompts (text CC BY-NC
+  4.0: internal research builds, not a commercial release) with Nick's own annotations (subject / verb / complement,
+  parts of speech, lemmas, dependencies). In his split, a reply constraint sits in the complement ("in one sentence"),
+  the task's content in the subject.
+- **Natural length rules** (`validation/builders/alpaca_rows.py`): whole prompts whose one length phrase a strict
+  grammar reads in full ("in a maximum of N words" -> word count <= N; "in N words or less" -> <= N; "in under N
+  words" -> < N; "in one sentence" -> == 1; "in 1 to 2 sentences" -> 1..2); an ambiguous phrase ("in 50 words"), two
+  length phrases, or any other rule kind -> left out. **This departs from the order's "built in reverse"** (a rule
+  drawn, then worded): here the wording is real and the host's grammar reads the rule. No model fixes a rule.
+- **Rule-free prompts:** no hit from the grammar or `exp_if_follow.rules_of`, no constraint word, no number in Nick's
+  annotated complement; their target is the reader's new **`none`** (the instruction sets no rule), kept apart from
+  `asked` (a rule no measurement covers). `rule_reader.read` takes `none` at its first slot.
+- **Counts:** 581 natural rules (116 held out as `natural_test`), 2,000 rule-free prompts (300 held out as
+  `none_test`); 48 train/dev prompts dropped for sharing 5 words with IFEval. Round 4's rows (`--wordings v4 --seed 3
+  --alpaca`, sha `d86c007c...`): 15,390. The set on Drive (`rules/rule_reader_sft_v4.jsonl`, sha `deefbe82...`):
+  13,174 records (templated 9,964 / 1,093; natural 419 / 32; none 1,483 / 183, train / held), 0 overlaps, 0 slot
+  boundaries tokenized otherwise, at most 96 tokens. The set without them is moved to `rules/_discard/`.
+- **The read adds two lines of its own:** the natural rules held out (exact; IFEval's checker where it can state the
+  rule) and the rule-free prompts held out (**how often the reader invents a rule**: a rule invented on a plain task
+  would make the turn refuse a good answer).
 - **Commits:**
 - **Files:**
 - **Tests:**
