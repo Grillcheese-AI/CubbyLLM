@@ -7,6 +7,8 @@
                 (all 870, and by half), R3o's 38 natural rows, the acceptance lines per arm and guard, every count per
                 set and language; the share of rows G2 finds "unavailable"; each guard's time per question
   --part time   the guards' time per question only (present rows; no outcome is read), for a quiet machine
+  --part g2     the rows G2 finds "unavailable" (no class of the row's items with ``N_MIN`` items in the local store),
+                per set and language, on guard-dev, guard-test and the natural rows (no outcome is read)
 
 Every number carries the caveat: a hidden fact is not distributed like a missing one.
 
@@ -180,18 +182,28 @@ def part_time(d: dict) -> dict:
     return {**head(d, "time"), "latency": timings(d["arms"], d["held"], d["ctxs"], d["cands"], d["classes"], d["table"], t_of)}
 
 
+def part_g2(d: dict) -> dict:
+    parts = {p: [r for r in d["held"] if d["split"]["part_of"][r["id"]] == p] for p in ("guard-dev", "guard-test")}
+    parts["natural"] = d["natural"]
+    out = {}
+    for p, rows in parts.items():
+        keys = sorted({f"{r['set']}/{r['lang']}" for r in rows})
+        out[p] = {"all": unavailable(d, rows), **{k: unavailable(d, [r for r in rows if f"{r['set']}/{r['lang']}" == k]) for k in keys}}
+    return {**head(d, "g2"), "g2_unavailable": out}
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--part", choices=("dev", "test", "time"), required=True)
+    ap.add_argument("--part", choices=("dev", "test", "time", "g2"), required=True)
     ap.add_argument("--tag", default="")
     a = ap.parse_args()
     t0 = time.time()
     d = load()
-    rep = {"dev": part_dev, "test": part_test, "time": part_time}[a.part](d)
+    rep = {"dev": part_dev, "test": part_test, "time": part_time, "g2": part_g2}[a.part](d)
     rep["wall_s"] = round(time.time() - t0, 1)
     path = os.path.join(LOGS, f"retrieval_R3g_{a.part}_{rep['date']}{a.tag}.json")
     json.dump(rep, open(path, "w", encoding="utf-8"), indent=1, ensure_ascii=False)
-    print(json.dumps(rep.get("verdicts") or rep.get("thresholds") or rep.get("latency"), indent=1)[:6000], "->", path)
+    print(json.dumps(rep.get("verdicts") or rep.get("thresholds") or rep.get("latency") or rep.get("g2_unavailable"), indent=1)[:6000], "->", path)
 
 
 if __name__ == "__main__":

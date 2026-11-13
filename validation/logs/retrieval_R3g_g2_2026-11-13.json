@@ -1,0 +1,240 @@
+{
+ "what": "order 0070: the missing-fact guard, part g2",
+ "date": "2026-11-13",
+ "caveat": "a hidden fact is not distributed like a missing one",
+ "split_sha256": "4bef4d41d3258d14a1e4e4b8222a4367687fe0a74f775ea4b40d5be179cecb5a",
+ "reproduced_r3o": {
+  "lexicon_content": {
+   "rows": 908,
+   "differ": 0,
+   "first": []
+  },
+  "450m": {
+   "rows": 908,
+   "differ": 0,
+   "first": []
+  },
+  "qfhrr@0.0": {
+   "rows": 908,
+   "differ": 0,
+   "first": []
+  },
+  "qfhrr@0.25": {
+   "rows": 908,
+   "differ": 0,
+   "first": []
+  },
+  "450m_wd": {
+   "rows": 908,
+   "differ": 0,
+   "first": []
+  }
+ },
+ "class_file": {
+  "made": "2026-11-13",
+  "store_snapshot": "8a2041cff56d6f44cbb04856605831f3b39a76f8f9be45bce73b935c4024e80f",
+  "classes": 538,
+  "classes_not_in_store": 19
+ },
+ "inverse_properties": {
+  "P26": [
+   "P26"
+  ],
+  "P36": [
+   "P1376"
+  ],
+  "P39": [
+   "P1308"
+  ],
+  "P40": [
+   "P8810"
+  ],
+  "P47": [
+   "P47"
+  ],
+  "P127": [
+   "P1830"
+  ],
+  "P131": [
+   "P150"
+  ],
+  "P137": [
+   "P121"
+  ],
+  "P150": [
+   "P131"
+  ],
+  "P155": [
+   "P156"
+  ],
+  "P156": [
+   "P155"
+  ],
+  "P170": [
+   "P800",
+   "P3342"
+  ],
+  "P175": [
+   "P453"
+  ],
+  "P176": [
+   "P1056"
+  ],
+  "P180": [
+   "P1299"
+  ],
+  "P184": [
+   "P185"
+  ],
+  "P361": [
+   "P527"
+  ],
+  "P460": [
+   "P460"
+  ],
+  "P527": [
+   "P361"
+  ],
+  "P674": [
+   "P1441"
+  ],
+  "P710": [
+   "P1344"
+  ],
+  "P726": [
+   "P3602"
+  ],
+  "P1029": [
+   "P5096"
+  ],
+  "P1038": [
+   "P1038"
+  ],
+  "P1308": [
+   "P39"
+  ],
+  "P1344": [
+   "P710",
+   "P1923"
+  ],
+  "P1411": [
+   "P2453"
+  ],
+  "P1441": [
+   "P674"
+  ],
+  "P1830": [
+   "P127"
+  ],
+  "P1923": [
+   "P1344"
+  ],
+  "P3373": [
+   "P3373"
+  ],
+  "P3602": [
+   "P726"
+  ]
+ },
+ "load_s": 17.6,
+ "threads": "6",
+ "g2_unavailable": {
+  "guard-dev": {
+   "all": {
+    "rows": 434,
+    "unavailable": 23,
+    "share": 0.053
+   },
+   "mintaka/en": {
+    "rows": 60,
+    "unavailable": 4,
+    "share": 0.0667
+   },
+   "mintaka/fr": {
+    "rows": 57,
+    "unavailable": 3,
+    "share": 0.0526
+   },
+   "qald9plus/en": {
+    "rows": 91,
+    "unavailable": 6,
+    "share": 0.0659
+   },
+   "qald9plus/fr": {
+    "rows": 77,
+    "unavailable": 3,
+    "share": 0.039
+   },
+   "simplequestions_wd/en": {
+    "rows": 149,
+    "unavailable": 7,
+    "share": 0.047
+   }
+  },
+  "guard-test": {
+   "all": {
+    "rows": 436,
+    "unavailable": 18,
+    "share": 0.0413
+   },
+   "mintaka/en": {
+    "rows": 60,
+    "unavailable": 2,
+    "share": 0.0333
+   },
+   "mintaka/fr": {
+    "rows": 58,
+    "unavailable": 3,
+    "share": 0.0517
+   },
+   "qald9plus/en": {
+    "rows": 92,
+    "unavailable": 4,
+    "share": 0.0435
+   },
+   "qald9plus/fr": {
+    "rows": 77,
+    "unavailable": 6,
+    "share": 0.0779
+   },
+   "simplequestions_wd/en": {
+    "rows": 149,
+    "unavailable": 3,
+    "share": 0.0201
+   }
+  },
+  "natural": {
+   "all": {
+    "rows": 38,
+    "unavailable": 10,
+    "share": 0.2632
+   },
+   "mintaka/en": {
+    "rows": 1,
+    "unavailable": 0,
+    "share": 0.0
+   },
+   "mintaka/fr": {
+    "rows": 6,
+    "unavailable": 1,
+    "share": 0.1667
+   },
+   "qald9plus/en": {
+    "rows": 17,
+    "unavailable": 4,
+    "share": 0.2353
+   },
+   "qald9plus/fr": {
+    "rows": 12,
+    "unavailable": 5,
+    "share": 0.4167
+   },
+   "simplequestions_wd/en": {
+    "rows": 2,
+    "unavailable": 0,
+    "share": 0.0
+   }
+  }
+ },
+ "wall_s": 17.8
+}
