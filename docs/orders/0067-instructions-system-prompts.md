@@ -973,3 +973,13 @@ and of the split of a system prompt (step 5); behind `CB_RULES`, as they are.
   - **reported:** on the reader's wrong rules from the held-out reads (round 4's IFEval kinds, IFBench), the share whose
     said-back sentence shows the error to a reader at a glance, judged by hand on a sample of 100 and written down
     before the next round's results are seen.
+
+## Nick's call (2026-11-13): the VM's comparisons are fixed in cubelang
+Nick: "yes", to comparing a missing value being an error, and to the fix list. Cowork wrote the seven items as
+cubelang's **P6** (`CUBELANG_FIXES.md`, cubelang `805feda`, docs only, not pushed): P6-1 is (a) above, comparing null
+or a string with a number fails with `TypeMismatch`, an index past the end fails with `IndexOutOfRange`, an undeclared
+name is a compile error; P6-2 is (b); P6-3 to P6-7 are (c) to (g). Each probe program that fails today becomes one of
+its tests. Who builds it, and when, is Nick's next call.
+- **Until P6-1 runs on the build `CUBELANG_EXE` names:** no generated program runs unless every value it compares is
+  bound from the reply world's views by the host, and nothing indexes a string in the VM (the rule above stands). The
+  second reader's kill line is read only on a build with P6-1.
