@@ -46,7 +46,14 @@ MAX_WORDS, IN_MAX, SHORT, MAX_HOPS = 6, 20, 3, 8
 # order 0069, B: how "located in" counts. "walk" (as built, 0046): a chain reaching the cue makes a candidate hold it.
 # "veto": a candidate holds the cue only by a statement of its own; a chain reaching the cue for ANOTHER candidate
 # turns a pick into undecided, and a chain never makes a pick. Set by `r2_choosing --b1q-walk`.
-WALK = "walk"
+WALK = "veto"                                            # (0069 step D, rule 1: the veto replaces the walk)
+# order 0069 step D's rules 2 and 3, each measured on dev before it is kept (`r2_choosing --b1q-rules`):
+#   "namesake_cue"  a cue span whose words name more than one item cannot make a candidate stand; where only such a cue
+#                   held, the row is undecided; B1q never chooses among a cue's items
+#   "article"       a span may open with the article that belongs to a name ("la jolla", "the hague"): tried as a
+#                   name first; the article is stripped only where the name with it is not in the index (``longest``)
+RULES: set = set()
+ARTICLES = {"the", "le", "la", "les", "l"}
 
 
 def relation_wordings(pids, lx: dict, langs=("en", "fr")) -> set[str]:
@@ -89,7 +96,8 @@ def cue_runs(question: str, mention, pids, lx: dict, relation_words=()) -> list[
     if cur:
         runs.append(cur)
     spans = {tuple(run[i:j]) for run in runs for i in range(len(run)) for j in range(i + 1, min(len(run), i + MAX_WORDS) + 1)}
-    return sorted(" ".join(sp) for sp in spans if sp[0] not in STOP and sp[-1] not in STOP)   # never a function word at an edge
+    lead = ARTICLES if "article" in RULES else set()      # rule 3: a leading article, kept for a name to be tried with it
+    return sorted(" ".join(sp) for sp in spans if (sp[0] not in STOP or (sp[0] in lead and len(sp) > 1)) and sp[-1] not in STOP)
 
 
 def _words(question: str, case: bool, accents: bool) -> list[str]:
@@ -220,18 +228,25 @@ def b1q(session, kpath: str, named: list[str], pid: str | None, cues: list[str],
             return {"outcome": "undecided", "why": "no relation and no qualifier", "k": len(named), "qualifier": "none"}
         out = V.b1(session, kpath, named, pid)
         return {**out, "qualifier": "none"}
-    bs, wall = [], 0.0
+    several = {c for c in checked if len(items_of.get(c) or ()) > 1} if "namesake_cue" in RULES else set()
+    usable = [c for c in checked if c not in several]   # rule 2: a namesake cue never makes a candidate stand
+    bs, wall, held_by_several = [], 0.0, False
     for q in named:
         rel = V.branch(session, kpath, q, pid) if pid else {"item": q, "values": ["(no relation)"], "wall_ms": 0.0}
         wall += rel["wall_ms"] or 0
         qual = False
-        for c in checked:
+        for c in usable:
             b = V.branch(session, kpath, q, "~ " + c)                                 # the key "<q> ~ <cue>"
             wall += b["wall_ms"] or 0
             if b["values"]:
                 qual = True
                 break
-        want = {v for c in checked for v in items_of.get(c) or ()}
+        if not qual and several:                         # (only to say why, below: the namesake cue held)
+            for c in several:
+                if V.branch(session, kpath, q, "~ " + c)["values"]:
+                    held_by_several = True
+                    break
+        want = {v for c in usable for v in items_of.get(c) or ()}
         if not qual and WALK == "walk":                  # the chain makes the candidate hold the cue
             qual, w = _walk(session, kpath, q, want)
             wall += w
@@ -242,8 +257,10 @@ def b1q(session, kpath: str, named: list[str], pid: str | None, cues: list[str],
         stand = [b["item"] for b in bs if b["values"]]
         out = {"outcome": "pick", "item": stand[0], "by": "the only one the context's facts hold"} if len(stand) == 1 else \
             {"outcome": "undecided", "items": stand or named}
+    if held_by_several and out.get("outcome") != "pick":   # rule 2: where only a namesake cue held, undecided
+        out = {"outcome": "undecided", "items": named, "why": "the cue names several items"}
     if WALK == "veto" and out.get("outcome") == "pick":  # another candidate reached through a chain: no pick
-        want = {v for c in checked for v in items_of.get(c) or ()}
+        want = {v for c in usable for v in items_of.get(c) or ()}
         for q in named:
             if q != out["item"]:
                 hit, w = _walk(session, kpath, q, want)

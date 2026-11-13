@@ -170,6 +170,7 @@ def test_b1q_s_rules_before_seed_1_short_names_as_written_and_the_template_s_wor
 
 def test_b1q_walks_located_in_one_vm_hop_at_a_time(monkeypatch):
     from retrieval_bench import r2_b1q as Q
+    monkeypatch.setattr(Q, "WALK", "walk")                                # the walk as built (0046); step D made the veto default
     facts = {("Q1", "~ western cape"): [], ("Q2", "~ western cape"): [], ("Q1", "P19"): ["Q9"], ("Q2", "P19"): ["Q9"],
              ("Q1", "P131"): ["Q5465"], ("Q5465", "P131"): ["Q127167"], ("Q2", "P131"): ["Q8"], ("Q8", "P131"): []}
     monkeypatch.setattr(V, "branch", lambda s, k, q, p: {"item": q, "values": facts.get((q, p), []), "wall_ms": 0.1})
@@ -202,6 +203,40 @@ def test_the_veto_never_makes_a_pick_and_a_chain_for_another_candidate_turns_one
     facts[("Q5465", "P131")] = ["Q127167"]
     del facts[("Q2", "~ western cape")]
     assert Q.b1q(None, "", ["Q1", "Q2"], "P19", ["western cape"], cue).get("item") == "Q1"
+
+
+def test_a_namesake_cue_never_qualifies_a_pick(monkeypatch):
+    """Order 0069 step D, rule 2: a cue whose words name several items cannot make a candidate stand; where only such a
+    cue held, the row is undecided (never a pick, never a refusal); a cue naming one item still picks."""
+    from retrieval_bench import r2_b1q as Q
+    monkeypatch.setattr(Q, "RULES", {"namesake_cue"})
+    facts = {("Q1", "~ springfield"): ["springfield"], ("Q1", "P19"): ["Q9"], ("Q2", "P19"): ["Q8"]}
+    monkeypatch.setattr(V, "branch", lambda s, k, q, p: {"item": q, "values": facts.get((q, p), []), "wall_ms": 0.1})
+    several = {"springfield": ["Q100", "Q101"]}
+    for pid in ("P19", None):
+        out = Q.b1q(None, "", ["Q1", "Q2"], pid, ["springfield"], several)
+        assert out["outcome"] == "undecided" and out["why"] == "the cue names several items"
+    one = {"springfield": ["Q100"]}
+    assert Q.b1q(None, "", ["Q1", "Q2"], "P19", ["springfield"], one)["item"] == "Q1"
+    monkeypatch.setattr(Q, "RULES", set())                                # off: the namesake cue picks, as before
+    assert Q.b1q(None, "", ["Q1", "Q2"], "P19", ["springfield"], several)["item"] == "Q1"
+
+
+def test_an_article_that_belongs_to_a_name_is_tried_with_it(monkeypatch):
+    """Order 0069 step D, rule 3: a span may open with its article ("la jolla"); ``longest`` then prefers the name with
+    the article where the index has it, and the stripped span stands where it does not."""
+    from retrieval_bench import r2_b1q as Q
+    lx = {"by_wording": {"en": {}, "fr": {}}}
+    monkeypatch.setattr(Q, "RULES", set())
+    off = Q.cue_runs("What is Bruce Robinson's job, from La Jolla?", "Bruce Robinson", [], lx)
+    assert "jolla" in off and "la jolla" not in off
+    monkeypatch.setattr(Q, "RULES", {"article"})
+    on = Q.cue_runs("What is Bruce Robinson's job, from La Jolla?", "Bruce Robinson", [], lx)
+    assert "la jolla" in on and "jolla" in on
+    assert "the hague" in Q.cue_runs("Who was born in The Hague?", "Who", [], lx)
+    assert Q.longest(["la jolla", "jolla"]) == ["la jolla"]                # named with its article: that one
+    assert Q.longest(["jolla"]) == ["jolla"]                               # not in the index with it: stripped
+    assert not any(c.split()[-1] in ("la", "the") for c in on)             # never an article at the end
 
 
 def test_b1q_s_compared_rule_two_names_compared_or_chosen_are_no_cue_for_each_other():

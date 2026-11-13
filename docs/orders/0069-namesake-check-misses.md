@@ -95,6 +95,28 @@ walking each candidate, with picks identical row for row (pinned by a test).
   the name index by wording, and then as its own arm with its own lines.
 - The relation step's missing-fact guard: order 0070.
 
+## Cowork's step D (2026-11-13)
+- **1. The veto replaces the walk.** B met the pre-registered line (no more wrong on every set; seed 0's qualified
+  resolved 0.7330, at least 0.70), and the line says the veto then replaces the walk. It is recorded that on dev it
+  removed no wrong pick and cost 46 rights (0.7835 to 0.7330): it is kept for what it rules out (a chain can never make
+  a pick), and the fresh read will say what it costs there.
+- **2. A namesake cue never qualifies a pick on its own.** A's most frequent cause, across Mintaka, WebQSP_EL and
+  ShadowLink (29 of 38 test wrongs, 32 of 43 dev): the qualifier's words, looked up as a name, give several items, and
+  the pick holds one of them. Rule: a cue span whose words name more than one item in the index cannot make a candidate
+  stand; where it was the cue that held, the pick becomes undecided. B1q never chooses among the cue's items. Pinned on
+  made-up items.
+- **3. An article that belongs to a name is kept.** The cue rule tries the span with its leading article first ("La
+  Jolla", "Le Havre", "The Hague") and strips it only when the name with the article is not in the index. A general
+  bug in both languages (3 rows today). Pinned on made-up items.
+- **Not built here:** the gold not bearing the name (18 / 31: candidate recall, not B1q's choice); a cue naming the
+  qualifier that no candidate holds (24: missing statements); **French labels missing from the name index** (64 of
+  seed 1's FR rows): a data change to the index that every arm reads, so its own order, proposed to Nick.
+- **Before the fresh read, on dev only, with 1 in place:** rules 2 and 3 each measured (right, wrong, undecided,
+  refused per set, FR and EN apart). **Kept** only if, with the rule, no set has more wrong picks and seed 0's qualified
+  resolved stays at or above 0.70; otherwise not built, and the table is recorded. Written now, before the run.
+- **Then C** in its slot (it measures B1q as frozen after this step), **then the fresh read** exactly as the order
+  writes it, every rule frozen, each sample's SHA-256 committed before any arm runs.
+
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
 **Where it stands (2026-11-13):** A and B done and committed; C waits for cubelang P6-10 on the shared VM (the P6 build
