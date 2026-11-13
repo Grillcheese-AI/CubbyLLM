@@ -987,3 +987,23 @@ flags, as `run_0054_names`); replay `validation/logs/cert_replay_2026-11-12-name
 "The Gospel According to John" is the commentary (Q7737359): a fold of an identified item, "checked", and wrong.
 Sufficient, not correct (0066's `CB_ORIGINAL_ASIDE`, off in this run, reaches it). "Checked" means the replay
 compared the name step itself, never that the name was read right.
+
+## Cowork's check of the seven items (2026-11-12)
+Read: the section above, `name_statement_0054_2026-11-12.json`, `cert_replay_2026-11-12-names3.json`, and the diff of
+`c054d76` (`world_handed.py`, `name_ground.py`, the tests).
+- **Accepted, all seven.** The item comes by id from the world that handed the fact; the check can fail and each way
+  it fails is pinned by a tampered statement; the no-store branch says why it has no item; a pick shows what it
+  compared; both refusals carry their statements; the live source carries a read time; the three classes are
+  counted. 10,567 of 10,568 benchmark records unchanged (the other differs only in the loop's counters).
+- **The replay's line is met:** 86 of 86 the same, 0 not the same, with a check that can now say "not the same".
+- **What the counts say:** the replay checks 18 of 86 name steps, rests on a store statement for 10, and takes 58 as
+  stated (WebQ 52 of them). The certificate (0064) will say that, row by row. Not a fault; the next lever.
+- **Three notes, for when 0054 next moves (none blocks anything):**
+  1. **The revision.** The claims request returns none, but `wbgetentities` returns `lastrevid` (and `modified`) with
+     its default properties. Where the live source reads an item that way, record the revision beside the read time.
+  2. **The world below the store needs a citable state** (a snapshot id with its date or hash) before 0064's
+     certificate can cite it. The Gospel's wrong answer came from that world: "checked", sufficient, not correct.
+  3. **Re-derive the picks.** A pick now records its inputs (cues, relations, kinds, what was ruled out). The replay
+     can re-run the namesake rule on them against the recorded items and move those rows from "stated" to
+     "checked". Report how many of the 58 move.
+- 0064 steps 0-3 still wait on notes 1 and 2.

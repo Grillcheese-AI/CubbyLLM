@@ -238,3 +238,23 @@ Two held-out kinds (forbidden words, bullet lists) are already measured by the r
 - **Not verified here:**
 - **Found on the way:**
 - **Questions:**
+
+## Cowork's check of step 0, the split, and steps 2-3 (2026-11-12)
+Read: the three sections above, `if_follow_2026-11-12_talk_v3a.json`, `rule_kinds_split_2026-11-12.json`, and
+`cubbyllm/speech/reply_world.py` and `rule_plan.py` with their tests.
+- **Step 0, accepted.** The served talk seat keeps 168 of 324 checkable instructions (51.8%); line 4's target is
+  66.8%. Kinds under 10 checks are reported but read as anecdotes, as the section says.
+- **The decode loop, accepted as measured:** only a required opening (a text prefix) and a token cap can be enforced
+  today; everything else is "checked". That is the honest class boundary until grilly2 has a logits hook.
+- **The split: kept as drawn, read in two parts.** Two held-out kinds (forbidden words, number of bullet lists) were
+  already measured by the reply world's starter relations before the draw. Redrawing would be choosing after seeing,
+  so the draw stands. Line 3 is reported on the 7 untouched held-out kinds and the 5 French ones; those 2 kinds are
+  reported beside them, apart, and do not count toward the line.
+- **Steps 2 and 3, accepted as built:** no kind of instruction has code of its own; a plan naming an unknown relation
+  or op is refused before any program is written ("asked", never "checked"); the VM decides whether a rule held.
+  "and" as nested ifs, because `&&` does not compile as an operand, is recorded as a CubeLang gap for the cubelang
+  fix list.
+- **A shared dependency, raised with Nick:** a logits hook in grilly2's `generate` (a callable on each step's logits,
+  `None` by default and bit-identical then) would move rules from "checked" to "enforced" here, and would also serve
+  0068's route 1 (the allowed list), route 5 on the served path, and the selection seat of the qFHRR synthesis. It is
+  a grilly2 change, so it waits for Nick's word and goes on a branch for his review.
