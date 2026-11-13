@@ -990,6 +990,16 @@ item in reading order, each row with its place (`i`) and its characters (`start`
 - Next: step 4 (CubeLang as a syntax curriculum: the repo's examples and tests, the programs seat's rows), step 5
   (the reader, grammar-constrained through 0071's hook), then its Colab round; 0072 after step 3, as Nick set.
 
+### Step 4, built: CubeLang as a syntax curriculum (Code A, 2026-11-13; 0072 done first, as Cowork set)
+`validation/builders/build_cubelang_curriculum.py` -> `$CUBBY_DATASETS/cubelang_curriculum_0067/programs.jsonl`
+(sha `6c653b27...`, `cubelang_curriculum_2026-11-13_manifest.json`): every program compiled on the cowork build
+(`cubelang compile`) before it is kept; duplicates once; IFEval / IFBench 5-word overlap dropped. **No benchmark:** the
+programs seat's GSM8K-derived arithmetic and every TinyGSM row are left out (the served programs seat's own set is all
+such step fragments, so none of it is used); its identity rows are text. Kept 4,568: the cubelang repo's examples 14
+(6 do not compile today), programs inside its tests 74 (30 do not: tests of errors, mostly), the programs seat's role
+binding, reasoning kernels and verified chains 2,431 (27 shared 5 words with a benchmark), step 2's checks 2,000 (each
+on its shortest reply), 0072's verb programs 49.
+
 ## Cowork's note (2026-11-13): a real long instruction to test the split and the join on
 Nick pointed to the OpenThoughts sets in the training data (`unified/`). Read for this order:
 - **AgentTrove** (`open_thoughts_agent_trove.jsonl`, already in the decay mix's agent shards): all 20,000 rows read

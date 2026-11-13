@@ -1,0 +1,39 @@
+{
+ "order": "0067",
+ "what": "the second reader's step 4: CubeLang programs as a syntax curriculum, each compiled",
+ "candidates": {
+  "example": 20,
+  "test": 106,
+  "programs_seat": 2610,
+  "view_check": 2000,
+  "verb_program": 49
+ },
+ "kept": {
+  "example": 14,
+  "test": 74,
+  "programs_seat": 2431,
+  "view_check": 2000,
+  "verb_program": 49
+ },
+ "dropped": {
+  "example: does not compile on this build": 6,
+  "test: does not compile on this build": 30,
+  "test: the same text again": 2,
+  "programs_seat: shares 5 words with a benchmark": 27,
+  "programs_seat: the same text again": 152
+ },
+ "benchmarks_checked": [
+  "IFBench",
+  "IFEval"
+ ],
+ "excluded_sources": "GSM8K-derived arithmetic (regen/arith_xl), every TinyGSM row, the identity rows (text, not programs)",
+ "cubelang_repo": "cubelang-cowork",
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-11 15:18",
+  "sha256": "3120403f35b007eb85a2302086da7fb1447830573f0f2d540e4c62fdb0cbc37b",
+  "commit": "3f37515",
+  "older_than_sources": false
+ },
+ "sha256": "6c653b27e071eec079fba87fd7ba67a2041d0b38b286a90aca103cf1b3e97ec7"
+}
