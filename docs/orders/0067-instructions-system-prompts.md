@@ -826,3 +826,16 @@ changes only in the cubelang repo with Nick's yes.
 **Nick's calls before the build:** the cubelang fixes step 0 finds; whether a model may draft wording templates
 (paraphrases only; the programs stay generated and run; his rule of 2026-11-10 allows model-written wording, never a
 fact); the Colab round for this reader when its set is built.
+
+## Cowork's note (2026-11-13): a real long instruction to test the split and the join on
+Nick pointed to the OpenThoughts sets in the training data (`unified/`). Read for this order:
+- **AgentTrove** (`open_thoughts_agent_trove.jsonl`, already in the decay mix's agent shards): all 20,000 rows read
+  open with the same long system prompt: reply as JSON with required fields (`analysis`, `plan`, `commands`), an
+  optional `task_complete`, each command an object with `keystrokes` and `duration`, and rules on durations. It is a
+  real long instruction with about ten parts.
+  - **Use:** a test for the second reader, never a training row. The reader splits it and joins the parts into one
+    program; the program runs on the trajectories' own replies. Report how many pass and show the ones that fail, read
+    by hand: a rule the program got wrong, or a reply that broke the format.
+- **OpenThoughts3** (`open_thoughts_3_600k.jsonl`, part of `unified`, already in the base's text): problems with long
+  worked solutions (median about 62,000 characters a row). It holds no pairs of an instruction and its check, so it
+  adds nothing direct to the reader's rows.
