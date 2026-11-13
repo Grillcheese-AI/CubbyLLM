@@ -1,0 +1,475 @@
+{
+ "order": "0067",
+ "what": "rule plans run by the VM against IFEval's checker on replies built to pass and fail",
+ "arm": "seat",
+ "rows": 134,
+ "replies_per_rule": 10,
+ "seed": 0,
+ "splits": "new_wording",
+ "counts": {
+  "pairs": 1280,
+  "agree": 1225,
+  "checker passes": 544,
+  "rule passes, checker fails": 2,
+  "asked": 0,
+  "not written": 60
+ },
+ "agreement": 0.957,
+ "rule_passes_checker_fails": 0.0016,
+ "checker_pass_share": 0.425,
+ "per_kind": {
+  "english_capital": {
+   "pairs": 150,
+   "agree": 143,
+   "checker passes": 41,
+   "rule passes, checker fails": 2,
+   "asked": 0,
+   "agreement": 0.953
+  },
+  "english_lowercase": {
+   "pairs": 60,
+   "agree": 60,
+   "checker passes": 8,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "existence": {
+   "pairs": 40,
+   "agree": 40,
+   "checker passes": 23,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "frequency": {
+   "pairs": 60,
+   "agree": 60,
+   "checker passes": 23,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "json_format": {
+   "pairs": 90,
+   "agree": 90,
+   "checker passes": 35,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "letter_frequency": {
+   "pairs": 80,
+   "agree": 80,
+   "checker passes": 32,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "multiple_sections": {
+   "pairs": 80,
+   "agree": 80,
+   "checker passes": 49,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_highlighted_sections": {
+   "pairs": 90,
+   "agree": 90,
+   "checker passes": 56,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_paragraphs": {
+   "pairs": 40,
+   "agree": 40,
+   "checker passes": 14,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_sentences": {
+   "pairs": 70,
+   "agree": 70,
+   "checker passes": 40,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_words": {
+   "pairs": 100,
+   "agree": 89,
+   "checker passes": 50,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.89
+  },
+  "quotation": {
+   "pairs": 110,
+   "agree": 79,
+   "checker passes": 58,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.718
+  },
+  "repeat_prompt": {
+   "pairs": 90,
+   "agree": 90,
+   "checker passes": 25,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "response_language": {
+   "pairs": 70,
+   "agree": 69,
+   "checker passes": 34,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.986
+  },
+  "title": {
+   "pairs": 70,
+   "agree": 70,
+   "checker passes": 34,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "two_responses": {
+   "pairs": 80,
+   "agree": 75,
+   "checker passes": 22,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.938
+  }
+ },
+ "misses": [
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "C'EST UNE PETITE VILLE, MAIS ON NE LA QUITTE PAS. SES NOTES ÉTAIENT COURTES ET TRÈS CLAIRES.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "upper is the case of the reply",
+    "fr is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "LA PLUPART DU TRAVAIL SE FAIT LE SOIR. UN BON PLAN COMMENCE PAR UNE QUESTION SIMPLE.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "upper is the case of the reply",
+    "fr is the language of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"Most of the work happens in the evening. The train was late again this week.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "yes is the starts with \"\"\" of the reply",
+    "yes is the ends with \"\"\" of the reply",
+    "0 is the count of the word \"end\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"Nobody knew why the bridge was closed. Her notes were short and very clear.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "yes is the starts with \"\"\" of the reply",
+    "yes is the ends with \"\"\" of the reply",
+    "0 is the count of the word \"end\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"They sold bread, fruit and fresh cheese. The morning was quiet and the street was empty.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "yes is the starts with \"\"\" of the reply",
+    "yes is the ends with \"\"\" of the reply",
+    "0 is the count of the word \"end\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"It's a small town, but people don't leave it. The morning was quiet and the street was empty.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "yes is the starts with \"\"\" of the reply",
+    "yes is the ends with \"\"\" of the reply",
+    "0 is the count of the word \"end\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"It's a small town, but people don't leave it. Her notes were short and very clear.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "yes is the starts with \"\"\" of the reply",
+    "yes is the ends with \"\"\" of the reply",
+    "0 is the count of the word \"end\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": " \"The morning was quiet and the street was empty. Her notes were short and very clear.\" ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "yes is the starts with \"\"\" of the reply",
+    "yes is the ends with \"\"\" of the reply",
+    "0 is the count of the word \"end\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": " \"Nobody knew why the bridge was closed. It's a small town, but people don't leave it.\" ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "yes is the starts with \"\"\" of the reply",
+    "yes is the ends with \"\"\" of the reply",
+    "0 is the count of the word \"end\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"A good plan starts with a simple question. A good plan starts with a simple question.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "yes is the starts with \"\"\" of the reply",
+    "yes is the ends with \"\"\" of the reply",
+    "0 is the count of the word \"end\" of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "A GOOD PLAN STARTS WITH A SIMPLE QUESTION. A GOOD PLAN STARTS WITH A SIMPLE QUESTION.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "upper is the case of the reply",
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "number_words",
+   "kwargs": {
+    "num_words": 300,
+    "relation": "less than"
+   },
+   "reply": "Nous avons marché jusqu'au marché avant midi. Ils vendaient du pain, des fruits et du fromage. La plupart du travail se fait le soir. Ils vendaient du pain, des",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "56 is the word count of the reply",
+    "nous is the opening of the reply",
+    "nous avons is the opening of the reply",
+    "nous avons marché is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "number_words",
+   "kwargs": {
+    "num_words": 300,
+    "relation": "less than"
+   },
+   "reply": "To of at or so a by by on up by or it up so or the in at on as to by at we up the at so we the up we at we as in by on on a to by on the we to we it a up as as ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "299 is the word count of the reply",
+    "to is the opening of the reply",
+    "to of is the opening of the reply",
+    "to of at is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "number_words",
+   "kwargs": {
+    "num_words": 300,
+    "relation": "less than"
+   },
+   "reply": "Un bon plan commence par une question simple. La réponse dépend de la saison et du temps. La plupart du travail se fait le soir.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "25 is the word count of the reply",
+    "un is the opening of the reply",
+    "un bon is the opening of the reply",
+    "un bon plan is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "number_words",
+   "kwargs": {
+    "num_words": 300,
+    "relation": "less than"
+   },
+   "reply": "As it to to of up on to it by to by we to or of of up on so we we in by we at in in at in so to of by it in to by to up on by in on of or at so on so as as to a",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "240 is the word count of the reply",
+    "as is the opening of the reply",
+    "as it is the opening of the reply",
+    "as it to is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "number_words",
+   "kwargs": {
+    "num_words": 300,
+    "relation": "less than"
+   },
+   "reply": "Nous avons marché jusqu'au marché avant midi. Ses notes étaient courtes et très claires. Ils vendaient du pain, des fruits et du fromage. La réponse dépend de l",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "32 is the word count of the reply",
+    "nous is the opening of the reply",
+    "nous avons is the opening of the reply",
+    "nous avons marché is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": " \"Most of the work happens in the evening. We walked to the market before noon.\" ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "yes is the starts with \"\"\" of the reply",
+    "yes is the ends with \"\"\" of the reply",
+    "0 is the count of the word \"end\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"They sold bread, fruit and fresh cheese. It's a small town, but people don't leave it.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "yes is the starts with \"\"\" of the reply",
+    "yes is the ends with \"\"\" of the reply",
+    "0 is the count of the word \"end\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": " \"We walked to the market before noon. The answer depends on the season and the weather.\" ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "yes is the starts with \"\"\" of the reply",
+    "yes is the ends with \"\"\" of the reply",
+    "0 is the count of the word \"end\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": " \"Most of the work happens in the evening. The answer depends on the season and the weather.\" ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "yes is the starts with \"\"\" of the reply",
+    "yes is the ends with \"\"\" of the reply",
+    "0 is the count of the word \"end\" of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "HER NOTES WERE SHORT AND VERY CLEAR. HER NOTES WERE SHORT AND VERY CLEAR.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "upper is the case of the reply",
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "two_responses",
+   "kwargs": {},
+   "reply": "Le train était encore en retard cette semaine.\n******\nC'est une petite ville, mais on ne la quitte pas.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "2 is the response count of the reply",
+    "0 is the empty response count of the reply",
+    "2 is the distinct response count of the reply"
+   ]
+  },
+  {
+   "kind": "two_responses",
+   "kwargs": {},
+   "reply": "Un bon plan commence par une question simple.\n******\nPersonne ne savait pourquoi le pont était fermé.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "2 is the response count of the reply",
+    "0 is the empty response count of the reply",
+    "2 is the distinct response count of the reply"
+   ]
+  },
+  {
+   "kind": "two_responses",
+   "kwargs": {},
+   "reply": "C'est une petite ville, mais on ne la quitte pas.\n******\nIls vendaient du pain, des fruits et du fromage.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "2 is the response count of the reply",
+    "0 is the empty response count of the reply",
+    "2 is the distinct response count of the reply"
+   ]
+  },
+  {
+   "kind": "two_responses",
+   "kwargs": {},
+   "reply": "Le train était encore en retard cette semaine.\n******\nNous avons marché jusqu'au marché avant midi.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "2 is the response count of the reply",
+    "0 is the empty response count of the reply",
+    "2 is the distinct response count of the reply"
+   ]
+  }
+ ],
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-11 15:18",
+  "sha256": "3120403f35b007eb85a2302086da7fb1447830573f0f2d540e4c62fdb0cbc37b",
+  "commit": "3f37515",
+  "older_than_sources": false
+ }
+}

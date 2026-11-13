@@ -520,6 +520,18 @@ instruction, the reader writes the rule) waits for the reader's line 3.
   rounds have not met it that way. Real prompts read at 97.7%. Whether to read the held-out kinds now (line 3's
   second part), change how the new-wording split words its comparisons, or wire the reader as it is behind its flag
   with these rates recorded, is his call.
+### Line 3's new-wording read with training's comparisons (Nick, 2026-11-13: "option 2, then read the held-out kinds")
+- **Nick's change:** a new-wording row's comparisons are worded as training words them ("at least", "less than",
+  "fewer than", ...). So that this is not a re-scoring of templates already read, the split is **fresh**: 108 new
+  templates (`validation/builders/rule_wordings_v4b.py`), in no training list and no earlier split (checked);
+  training identical to round 4's (checked). Rows `--wordings v4b --seed 5` (sha `49299be7...`). Read once with the
+  round-4 adapter as trained.
+- **Result** (`rule_reader_2026-11-13_v4b_new.json`, `rule_agree_2026-11-13_v4b_new.json`): 128 of 150 exact; **a rule
+  written for 144 of 150 (96%; line: 90%)**; 6 read `none`. Where written, against IFEval's checker (134 rules, 1,280
+  replies): **agreement 95.7% (line: 98%), the rule passes a reply the checker fails 0.16%** (2 of 1,280). Lowest:
+  quotation 0.72 (an extra leaf, `count of the word "end"`, on a right rule), number of words 0.89.
+- **Line 3, new wordings: written met, agreement missed by 2.3 points**; false passes nearly nil. The held-out kinds
+  are read next, as Nick said.
 - **Commits:**
 - **Files:**
 - **Tests:**

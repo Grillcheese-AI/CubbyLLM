@@ -158,11 +158,11 @@ def use_wordings(name: str) -> None:
     global WORDINGS, REL, REL_NEW
     mod = None if name == "v1" else __import__(f"rule_wordings_{name}")
     WORDINGS = RT.T if mod is None else mod.templates(RT.T)
-    REL = getattr(mod, "REL", RT.REL) if name in ("v3", "v4") else RT.REL       # v4: everyday comparisons allowed
+    REL = getattr(mod, "REL", RT.REL) if name in ("v3", "v4", "v4b") else RT.REL       # v4: everyday comparisons allowed
     REL_NEW = getattr(mod, "REL_NEW", RT.REL_NEW) if mod is not None else RT.REL_NEW
     global CLEAN
     CLEAN = None
-    if name == "v4":                                     # everyday comparisons meet IFEval's short runs for some numbers:
+    if name in ("v4", "v4b"):                            # everyday comparisons meet IFEval's short runs for some numbers:
         import bench_overlap as BO                       # a train/dev row that would share 5 words with a benchmark
         bench = BO.benchmark_grams()                     # prompt is drawn again (where the prompts are on this machine)
         CLEAN = (lambda text: not BO.overlaps(text, bench)) if bench else None
@@ -238,7 +238,7 @@ def main() -> None:
     ap.add_argument("--per", type=int, default=250)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--alpaca", action="store_true", help="add Nick's annotated Alpaca rows (round 4 on)")
-    ap.add_argument("--wordings", default="v1", choices=("v1", "v2", "v3", "v4"), help="round 1's wordings, or round 2's (more a kind)")
+    ap.add_argument("--wordings", default="v1", choices=("v1", "v2", "v3", "v4", "v4b"), help="round 1's wordings, or round 2's (more a kind)")
     a = ap.parse_args()
     use_wordings(a.wordings)
     out = Path(a.out or Path(local_paths.value("CUBBY_DATASETS") or ".") /
@@ -252,7 +252,7 @@ def main() -> None:
         for r in rows:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
     tsrc = (Path(__file__).parent / "rule_templates.py").read_bytes() + (
-        b"".join((Path(__file__).parent / f"rule_wordings_{v}.py").read_bytes() for v in ("v2", "v3", "v4")
+        b"".join((Path(__file__).parent / f"rule_wordings_{v}.py").read_bytes() for v in ("v2", "v3", "v4", "v4b")
                  if a.wordings >= v))
     counts = Counter((r["split"], r["lang"]) for r in rows)
     man = {"order": "0067", "seed": a.seed, "per": a.per, "rows": len(rows),
