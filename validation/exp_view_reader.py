@@ -34,6 +34,7 @@ from cubbyllm.bridges import vm_identity  # noqa: E402
 from cubbyllm.speech import reply_views as RV  # noqa: E402
 from cubbyllm.speech import view_grammar as VG  # noqa: E402
 from cubbyllm.speech import view_reader as VR  # noqa: E402
+from cubbyllm.speech import view_types as VT  # noqa: E402
 
 __wiring__ = "STANDALONE"
 
@@ -84,7 +85,7 @@ def with_ratio(report: dict) -> dict:
 
 def merge(files: list, out: str | None) -> None:
     parts = [json.loads(Path(f).read_text(encoding="utf-8")) for f in files]
-    report = {k: parts[0][k] for k in ("order", "what", "adapter", "vm")}
+    report = {k: parts[0].get(k) for k in ("order", "what", "adapter", "vm", "grammar")}
     report["chunks"] = [p.get("chunk") for p in parts]
     report["splits"] = {}
     for split in parts[0]["splits"]:
@@ -105,6 +106,9 @@ def main() -> None:
     ap.add_argument("--tokenizer")
     ap.add_argument("--adapter")
     ap.add_argument("--chunk", default="0/1")
+    ap.add_argument("--grammar", default="typed", choices=("typed", "lines"),
+                    help="typed: view_types.TypedGrammar (literals of the column's type, a part's own names, calls in "
+                         "order); lines: view_grammar.Grammar, the line shapes only (the first read's)")
     ap.add_argument("--rows", default=None)
     ap.add_argument("--splits", default="test,test_long")
     ap.add_argument("--n", type=int, default=100)
@@ -130,7 +134,7 @@ def main() -> None:
             pieces[t] = tk.decode([t])
         return pieces[t]
     report, kept = {"order": "0067", "what": "the second reader read on held-out instructions", "adapter": Path(a.adapter).name,
-                    "vm": vm_identity.identity(), "chunk": a.chunk, "splits": {}}, []
+                    "vm": vm_identity.identity(), "chunk": a.chunk, "grammar": a.grammar, "splits": {}}, []
     for split in a.splits.split(","):
         pool = [r for r in rows if r["split"] == split]
         sample = random.Random(0).sample(pool, min(a.n, len(pool)))
@@ -139,7 +143,8 @@ def main() -> None:
         for r in sample:
             t0 = time.time()
             ids = tk.encode(VR.prompt(r["instruction"])).ids
-            proc = ranked_processor(VG.chooser(VG.Grammar(r["instruction"]), piece, eos, len(ids)))
+            gram = (VT.TypedGrammar if a.grammar == "typed" else VG.Grammar)(r["instruction"])
+            proc = ranked_processor(VG.chooser(gram, piece, eos, len(ids)))
             out = trunk.generate("programs", [ids], a.max_new, logits_processor=proc)[0]
             answer = tk.decode([x for x in out if x != eos])
             t["seconds"] += time.time() - t0
