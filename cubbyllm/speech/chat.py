@@ -88,7 +88,10 @@ class CubbyChat(ChatState):
             self._rule_vm = cc.CubelangSession(self.exe)
         em = self.emitter
         seat = (getattr(em, "adapters", None) or {}).get("talk", em)
-        return rule_turn.TurnRules(self.rules, len(self.history), seat, lambda src, fn: self._rule_vm.run(src, fn=fn))
+        turn = len(self.history)                         # rules set in the conversation and not yet said back: said once,
+        new = [r for r in self.rules.unshown(turn) if r.level == "conversation"]   # now, before they apply (0067's addendum)
+        self._said_back = self.rules.show([r.id for r in new], new[0].set_by, turn, self._said_lang) if new else None
+        return rule_turn.TurnRules(self.rules, turn, seat, lambda src, fn: self._rule_vm.run(src, fn=fn))
 
     def _guard(self, reply: str, user_text: str, hit_limit: bool = False) -> str | None:
         """The host guards, unchanged. -> the reason it may not be spoken, or
@@ -153,6 +156,7 @@ class CubbyChat(ChatState):
         # weighing the same set differently. It is also the cheap direction —
         # fewer decode passes exactly when the turn is time-critical.
         draws = choosing.breadth(max(1, int(getattr(self, "n_candidates", 1))), mod)
+        self._said_lang = lang                           # a rule is said back in the user's language
         tr = self.turn_rules = self._turn_rules()        # order 0067 (CB_RULES=1): None when off
 
         offered, rejected, seen = [], [], set()
@@ -231,5 +235,6 @@ class CubbyChat(ChatState):
         rec["spoke_safe"] = bool(rec["reply"] == T(self.facts, "dont_know_line", guess_lang(user_text)))
         if getattr(self, "turn_rules", None) is not None:   # order 0067: how each rule acted, and its outcome
             rec["rules"] = self.turn_rules.record(rec["reply"])
+            rec["said_back"] = getattr(self, "_said_back", None)   # the rules set this turn, said back once
             rec["spoke_safe"] = rec["spoke_safe"] or rec["reply"] in rule_turn.CANT.values()
         return rec

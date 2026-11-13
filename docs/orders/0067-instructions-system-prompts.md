@@ -1116,6 +1116,33 @@ and of the split of a system prompt (step 5); behind `CB_RULES`, as they are.
     said-back sentence shows the error to a reader at a glance, judged by hand on a sample of 100 and written down
     before the next round's results are seen.
 
+### Say the rule back, built and measured (Code A, 2026-11-13, while the view reader's Colab run waits)
+- **Rendered, not written** (`cubbyllm/speech/rule_say.py`): every relation and comparison of the reply world said by
+  templates, English and French ("under 50 words", "all lowercase", "without the word "river"", "the word "paradox" at
+  least once"); "and" as ", ", "or", "not (...)". All 2,855 plans the readers wrote in the logs are said in both
+  languages without a gap. Cubby's lines: "Got it: ..." / "Got it, from now on: ..." / "Got it: no more ..." / an asked
+  rule "I'll keep "be formal" in mind; I can't check that one." (FR, with tu: "C'est noté : ..."). The module imports
+  nothing but the standard library: no seat, no model on this path.
+- **The rule book** (`rule_book.py`): `show` says rules back to whoever set them (Cubby's line) and `show_book` gives a
+  system prompt's book to its setter (each rule beside its sentence; every other sentence with where it went); a rule
+  applies only once shown to its setter (`in_force` checks it), so no unseen rule is ever applied; `correct` says the
+  new reading back now and replaces the old one from the next turn (linked both ways); a level in `confirm` holds its
+  new rules until `confirm`. The chat (behind `CB_RULES`) says a rule set in the conversation back once, in the user's
+  language, in the turn's record (`said_back`); a system rule never shown to its setter does not apply.
+- **Lines** (`validation/exp_rule_say.py`, `rule_say_2026-11-13.json`, tests `tests/speech/test_rule_say.py`):
+  - every rule applied was shown to whoever set it: **21,954 of 21,954** rule-turns in 1,000 simulated sessions (set at
+    every level, shown to the setter or to someone else or not yet, corrected, confirmed, withdrawn): **100%**, kill not hit;
+  - a correction replaces the rule from the next turn, at both levels (tests: a system prompt's book and the chat);
+  - the said-back line is template text only (test: the module imports nothing that could reach a model);
+  - **reported, judged on a sample of 100** of the reader's wrong rules (round 4 on IFEval's held-out kinds: 215 wrong;
+    round 6 on IFBench: 170 wrong; 50 drawn from each by seed; `rule_say_sample_2026-11-13.jsonl`): the said-back line
+    shows the error to its setter at a glance in **94 of 100** (IFEval 49 of 50, IFBench 45 of 50). Not shown: three
+    "unique words" read as "words", a word range said back right while counted otherwise, a paragraph's first word
+    said as "at least once", a three-sentence rule whose other parts were dropped. Judged by Claude Code reading each
+    pair, written down before the view reader's results; a human re-judgment is Cowork's or Nick's call.
+- The existing callers show their rules first (`exp_if_turn.py`: the host's rules shown to "the prompt" that set
+  them; the step 4 tests through a `put` helper).
+
 ## Nick's call (2026-11-13): the VM's comparisons are fixed in cubelang
 Nick: "yes", to comparing a missing value being an error, and to the fix list. Cowork wrote the seven items as
 cubelang's **P6** (`CUBELANG_FIXES.md`, cubelang `805feda`, docs only, not pushed): P6-1 is (a) above, comparing null
