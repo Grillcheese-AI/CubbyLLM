@@ -933,6 +933,38 @@ item in reading order, each row with its place (`i`) and its characters (`start`
   (upper-case words, words starting with a letter, questions); quotes, backslashes and newlines survive the literal.
 - Next: step 2, the program generator over these views.
 
+### Step 2, built: the program generator (Nick, 2026-11-13: "go ahead with step 2"; Code A)
+- **Specs** (`validation/builders/view_programs.py`): an atom asks one view (count, all, any, none, how many, the item
+  at a position) with up to two column conditions; specs join one or two atoms (and, or, not, if-then, unless). Values
+  and thresholds are drawn from a pool of replies built for the spec (`view_replies.py`: prose, lists, mixed, JSON; EN
+  and FR), so every spec holds for a fifth to four fifths of its pool. A Python evaluator gives the truth.
+- **Held out, never drawn** (`held_out`): forms stating IFEval's held-out kinds or IFBench kinds the grammar can state
+  (no commas or brackets, a word absent, list-item counts, a paragraph's first word, capitalised words counted, the last
+  word, punctuation counted, every word title-cased, a word at a position; indents and list levels are no filter).
+- **The compiler** (`view_compile.py`): only the forms step 0 found running (index loops bounded by `n_<view>`, values
+  read with `let`, nested ifs and 0/1 flags; an `at` checks its index before reading). `body(spec)` is what the
+  reader will write; the host prepends the views (`reply_views.literals`).
+- **Kept only when run** (`build_view_programs.py`): 8 replies a program (half pass, half fail by the evaluator); the
+  VM's verdict must be the evaluator's on every one (a disagreement stops the build and is saved whole), and some pass
+  and some fail. **The set** (`$CUBBY_DATASETS/view_programs_0067`, seed 0, sha `4a9323ee...`,
+  `view_programs_2026-11-13_manifest.json`): 2,000 programs, 1,148 shapes, joins: 912 single atoms, 242 not, 225 or,
+  208 and, 207 unless, 206 if-then; **15,948 VM runs, 0 disagreements**. Tests: `tests/validation/test_view_programs.py`.
+- **Found on the way (VM, for cubelang's fix list):**
+  1. **A list of 254+ strings returns nothing; one of exactly 255 numbers errors** (cubelang's P6-8 now). The views
+     refuse more than 250 rows (`reply_views.TooLong`, the check is "asked").
+  2. **Names and string literals share 16-bit keys.** The VM keys every identifier and string literal by BLAKE3's
+     first two bytes (cubelang `compiler.rs` `name_hash`, `engine.rs` `name_table`): two strings with one key read as
+     one spelling, so they compare equal (`"thing" == "government"` holds: both `15d0`; a searched pair, "eptwcv" and
+     "rmcens", too), and two variables with one key share a register. 121 of the first 500 programs of an unguarded
+     build carried such a pair; the build's only disagreements were these (seeds 4-9 rerun with the guard: 12,000
+     programs, 0 disagreements). Guard: `cubbyllm/bridges/vm_names.collisions` (fails closed without `blake3`);
+     `rule_plan.run` now returns "asked" for a program with a shared key (before: "the reply lacks 'government'" was
+     judged failed on "a thing here"), and the build leaves such replies out. **Every VM program in the serve path is
+     exposed** (question programs, facts): proposed, not built, a guard in `cubelang_client` behind a flag; the fix
+     belongs in cubelang (full-length keys or interning by the full string).
+  3. The draw was not reproducible (set order follows the process's string hashing): values are sorted now; the same
+     seed draws the same programs under any `PYTHONHASHSEED`. An earlier unseeded build is in `_discard`.
+
 ## Cowork's note (2026-11-13): a real long instruction to test the split and the join on
 Nick pointed to the OpenThoughts sets in the training data (`unified/`). Read for this order:
 - **AgentTrove** (`open_thoughts_agent_trove.jsonl`, already in the decay mix's agent shards): all 20,000 rows read

@@ -156,6 +156,11 @@ def run(plan: dict, reply: str, run_fn) -> dict:
     if why:
         return {"held": None, "how": "asked", "why": why, "statements": [], "program": None}
     src, sts = program(plan, reply)
+    from cubbyllm.bridges import vm_names
+    clash = vm_names.collisions(src)                     # the VM's 16-bit name keys: two strings read as one
+    if clash:
+        return {"held": None, "how": "asked", "why": f"strings share a VM name key: {clash[:2]}", "statements": sts,
+                "program": src}
     out = run_fn(src, "solve")
     res = out.get("result") if isinstance(out, dict) else None
     held = None if res is None else str(res).strip() in ("1", "1.0")

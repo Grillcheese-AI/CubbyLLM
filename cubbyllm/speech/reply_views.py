@@ -160,13 +160,23 @@ def _lit(v) -> str:
     return '"' + str(v).replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t") + '"'
 
 
+MAX_ROWS = 250        # the VM build: a list of 254+ strings returns null, one of exactly 255 numbers fails (step 2's probe)
+
+
+class TooLong(ValueError):
+    """A view has more rows than the VM can be handed as a list: the check cannot run ("asked", never a verdict)."""
+
+
 def literals(text: str, names=None) -> list[str]:
-    """CubeLang lines binding the views named (all when None): ``let <view>_<column> = [...];`` and ``n_<view>``."""
+    """CubeLang lines binding the views named (all when None): ``let <view>_<column> = [...];`` and ``n_<view>``.
+    Raises `TooLong` when a view named has more than `MAX_ROWS` rows."""
     vs = views(text)
     lines = []
     for name, rows in vs.items():
         if names is not None and name not in names:
             continue
+        if len(rows) > MAX_ROWS:
+            raise TooLong(f"{name}: {len(rows)} rows, the VM takes at most {MAX_ROWS} in a list")
         lines.append(f"create n_{name}: number; assign n_{name} = {len(rows)};")
         for c in COLUMNS[name]:
             lines.append(f"let {name}_{c} = [{', '.join(_lit(r[c]) for r in rows)}];")
@@ -183,4 +193,4 @@ def statements(text: str, names=None) -> list[str]:
     return out
 
 
-__all__ = ["COLUMNS", "literals", "statements", "views"]
+__all__ = ["COLUMNS", "MAX_ROWS", "TooLong", "literals", "statements", "views"]
