@@ -1,5 +1,5 @@
 # 0072 - Verb programs: one CubeLang program per instruction verb, by kind (the check, the gate, the read-back)
-status: open (Code A, after 0067's step 3; Nick, 2026-11-13)
+status: in progress (Code A, 2026-11-13; after 0067's step 3, as Nick set)
 written: 2026-11-13 by Cowork - approved: 2026-11-13 by Nick ("we should craft cubelang programs for each of those instruction words / type") - hypothesis: none (0067's second reader)
 
 ## Why
