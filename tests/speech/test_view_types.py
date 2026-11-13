@@ -76,13 +76,13 @@ IF = "        if (p1 == 0) { assign g1 = 1; } if (p2 == 1) { assign g1 = 1; }\n"
 def test_and_is_the_default_and_or_only_when_the_instruction_says_it():
     plain, either, cond = "Use two sentences. Keep it short.", "Either use two sentences, or keep it short.", \
         "If you use two sentences, keep it short."
-    assert VT.joins_ok(TWO + CALLS + AND, plain)
-    assert not VT.joins_ok(TWO + CALLS + OR, plain) and VT.joins_ok(TWO + CALLS + OR, either)
-    assert not VT.joins_ok(TWO + CALLS + IF, plain) and VT.joins_ok(TWO + CALLS + IF, cond)
-    assert not VT.joins_ok(TWO + CALLS + "        if (p1 == 0", plain)           # refused as it opens
-    assert VT.joins_ok(TWO + CALLS + OR, "Soit deux phrases, soit une réponse courte.")
-    assert not VT.joins_ok(TWO + CALLS + OR + OR.replace("g1", "g2"), "Use two sentences or keep it short.")  # one "or"
-    assert not VT.joins_ok(TWO + CALLS + OR, "Keep the colors bright.")             # "or" inside a word is no cue
+    G = TWO + CALLS + "        create g1: number; assign g1 = 0;\n"
+    assert VT.joins_ok(G + AND, plain)
+    assert not VT.joins_ok(G + OR, plain) and VT.joins_ok(G + OR, either)
+    assert not VT.joins_ok(G + IF, plain) and VT.joins_ok(G + IF, cond)
+    assert not VT.joins_ok(G + "        if (p1 == 0", plain)                      # refused as it opens
+    assert VT.joins_ok(G + OR, "Soit deux phrases, soit une réponse courte.")
+    assert not VT.joins_ok(G + OR, "Keep the colors bright.")                     # "or" inside a word is no cue
 
 
 def test_return_comes_only_once_every_part_is_joined():
@@ -94,3 +94,15 @@ def test_return_comes_only_once_every_part_is_joined():
     assert not VT.joins_ok(TWO + CALLS + "        return p1;", instr)
     assert VT.joins_ok(TWO + CALLS + "        create g1: number; assign g1 = 0;\n" + AND + "        return g", instr)
     assert not VT.joins_ok(TWO + CALLS + "        create g1: number; assign g1 = 0;\n" + AND + "        return p1;", instr)
+
+
+def test_no_value_is_read_twice_and_no_group_is_left_unwritten():
+    instr = "Use two sentences. Keep it short."
+    top = TWO + CALLS + "        create g1: number; assign g1 = 0;\n" + AND
+    assert not VT.joins_ok(top + "        create g2: number; assign g2 = 0;\n        if (g1 == 1) { if (g1", instr)
+    assert not VT.joins_ok(top + "        create g2: number; assign g2 = 0;\n        if (p1", instr)     # p1 joined
+    assert not VT.joins_ok(TWO + CALLS + "        create g1: number; assign g1 = 0;\n        create g", instr)
+    assert not VT.joins_ok(TWO + CALLS + "        create g1: number; assign g2", instr)
+    assert not VT.joins_ok(TWO + CALLS + "        create g1: number; assign g1 = 0;\n        if (p1 == 1) { a", instr)
+    assert VT.joins_ok(TWO + CALLS + "        create g1: number; assign g1 = 0;\n        if (p1 == 1) { a",
+                       "Use two sentences or keep it short.")             # may still become an "or" group
