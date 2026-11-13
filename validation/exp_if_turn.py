@@ -13,6 +13,7 @@ The rules here are the prompts' own, known to the host; reading them from the wo
 
   python validation/exp_if_turn.py --export <450M export> --tokenizer <tokenizer.json> --adapter <talk adapter> \
       [--n 300] [--candidates 4] [--temperature 0.7] [--no-steer] [--tag _turn]
+Set ``CUBELANG_EXE`` to a current VM build: the run refuses one older than its sources and records the VM it used.
 Writes validation/logs/if_turn_<date><tag>.json (the summary) and _if_turn_<date><tag>_rows.json (scratch: replies).
 """
 from __future__ import annotations
@@ -78,7 +79,13 @@ def main() -> None:
     ap.add_argument("--max-new", type=int, default=256)
     ap.add_argument("--no-steer", action="store_true")
     ap.add_argument("--tag", default="_turn")
+    ap.add_argument("--allow-stale-vm", action="store_true", help="run on a VM older than its sources (never by default)")
     a = ap.parse_args()
+    from cubbyllm.bridges import vm_identity
+    vm_id = vm_identity.identity()                       # every run names its VM (Nick, 2026-11-13)
+    print("VM:", vm_id, flush=True)
+    if vm_id["older_than_sources"] and not a.allow_stale_vm:
+        raise SystemExit("the VM is older than its sources: set CUBELANG_EXE to a current build (the cowork worktree's)")
     from cubbyllm.emit.seats_450m import Cubby450mTrunk
     from cubbyllm.emit.talk import Cubby450mTalk
     from cubbyllm.ops import grilly_seats as ops
@@ -139,7 +146,7 @@ def main() -> None:
                "line": round(base + 0.15, 4), "candidates": a.candidates, "temperature": a.temperature,
                "steer": not a.no_steer, "said_at_candidate": {str(k): v for k, v in sorted(drawn.items(), key=str)},
                "by_kind": {k: dict(v, followed_rate=round(v["followed"] / max(1, v["n"]), 4)) for k, v in sorted(per.items())},
-               "seconds": round(time.time() - t0), "adapter": os.path.basename(os.path.normpath(a.adapter)), "seed": a.seed}
+               "seconds": round(time.time() - t0), "adapter": os.path.basename(os.path.normpath(a.adapter)), "seed": a.seed, "vm": vm_id}
     day = _dt.date.today().isoformat()
     logs = os.path.join(HERE, "logs")
     json.dump(summary, open(os.path.join(logs, f"if_turn_{day}{a.tag}.json"), "w", encoding="utf-8"), indent=1)

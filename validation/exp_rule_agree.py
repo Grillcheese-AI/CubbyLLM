@@ -75,6 +75,8 @@ def main() -> None:
             pairs.append({"id": f"{r['id']}:{j}", "row": r["id"], "kind": r["kind"], "instruction_id": iid, "kwargs": kw,
                           "reply": reply})
     truth = checker(pairs)
+    from cubbyllm.bridges import vm_identity
+    vm_id = vm_identity.identity()                       # every run names its VM (Nick, 2026-11-13)
     vm = cc.CubelangSession()
     run = lambda src, fn: vm.run(src, fn=fn)                                # noqa: E731
     tally, per_kind = Counter(), defaultdict(Counter)
@@ -100,7 +102,7 @@ def main() -> None:
            "rule_passes_checker_fails": round(tally["rule passes, checker fails"] / n, 4),
            "checker_pass_share": round(tally["checker passes"] / n, 4),
            "per_kind": {k: dict(v, agreement=round(v["agree"] / max(1, v["pairs"]), 3)) for k, v in sorted(per_kind.items())},
-           "misses": misses}
+           "misses": misses, "vm": vm_id}
     text = json.dumps(out, indent=1, ensure_ascii=False)
     if a.out:
         Path(a.out).write_text(text, encoding="utf-8")
