@@ -460,6 +460,21 @@ instruction, the reader writes the rule) waits for the reader's line 3.
   ordinary English, and the 5-word overlap check would still keep IFEval's sentences out. If they may, the new-wording
   split would need other unseen comparisons ("a maximum of" for "<=" is not the same rule, so the choice needs care).
   If not, more training comparisons alone did not close the gap this round.
+### The reader's fourth round, built for Colab (Nick, 2026-11-13: "yes allow them, build round 4"; Claude Code)
+- **Nick's call:** everyday comparisons may enter training wordings; the 5-word check still keeps IFEval's sentences
+  out. Round 4's training comparisons are round 3's plus "at least" / "less than" (`rule_wordings_v4.py`); its
+  training wordings are round 3's plus round 3's spent new wordings (one reworded). Its **fresh new-wording split**
+  (3 a kind and language) words comparisons as training never did: English "at a minimum" / "not any fewer than"
+  (">=") and "lower than" / "beneath" ("<"), each the same rule as the phrase it stands for; French "au minimum" /
+  "en deçà de" (never trained in any round).
+- **Numbers can make a clean wording meet IFEval** ("appear at least 4 times", "use less than 300 words"), so for
+  round 4 the builder draws a train/dev row again when it would share 5 words with a benchmark prompt (where the
+  prompts are on this machine). Rounds 1-3 still rebuild bit for bit.
+- **Rows** (`--wordings v4 --seed 3`, `rule_rows_0067_v4`, sha `57353bd8...`): 12,857; "at least" in 158 and "less than"
+  in 110 English train/dev rows; the unseen comparisons in 200 English new-wording rows. 0 train/dev overlaps (pinned:
+  `test_round_four_trains_clean_and_reads_comparisons_it_never_trained_on`).
+- **The set** on Drive (`rules/rule_reader_sft_v4.jsonl`, sha `cb7a7260...`): 11,057 records (9,964 train, 1,093
+  held); 0 overlaps; 0 slot boundaries tokenized otherwise. The notebook trains it into `rules/cubby450m_rules_v4/`.
 - **Commits:**
 - **Files:**
 - **Tests:**

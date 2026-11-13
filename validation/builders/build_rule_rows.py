@@ -133,7 +133,7 @@ def ifeval_form(kind: str, plan: dict) -> list | None:
 def render(kind, lang, which, rng) -> tuple[str, dict, int]:
     slots, plan = draw(kind, lang, rng)
     if which == "new" and "rel" in slots:                # the held-apart rows also word the comparison otherwise
-        slots["rel"] = rng.choice(RT.REL_NEW[lang][rp.leaves(plan)[0]["op"]])
+        slots["rel"] = rng.choice(REL_NEW[lang][rp.leaves(plan)[0]["op"]])
     ts = WORDINGS[kind][lang][which]
     i = rng.randrange(len(ts))
     return ts[i].format(**slots), plan, i
@@ -155,12 +155,30 @@ CLASH = {frozenset({"english_capital", "english_lowercase"}), frozenset({"json_f
 def use_wordings(name: str) -> None:
     """``v1`` (round 1, `rule_templates.T`), ``v2`` (round 2, `rule_wordings_v2`) or ``v3`` (round 3,
     `rule_wordings_v3`, with its own training comparisons)."""
-    global WORDINGS, REL
-    WORDINGS = RT.T if name == "v1" else __import__(f"rule_wordings_{name}").templates(RT.T)
-    REL = __import__("rule_wordings_v3").REL if name == "v3" else RT.REL
+    global WORDINGS, REL, REL_NEW
+    mod = None if name == "v1" else __import__(f"rule_wordings_{name}")
+    WORDINGS = RT.T if mod is None else mod.templates(RT.T)
+    REL = getattr(mod, "REL", RT.REL) if name in ("v3", "v4") else RT.REL       # v4: everyday comparisons allowed
+    REL_NEW = getattr(mod, "REL_NEW", RT.REL_NEW) if mod is not None else RT.REL_NEW
+    global CLEAN
+    CLEAN = None
+    if name == "v4":                                     # everyday comparisons meet IFEval's short runs for some numbers:
+        import bench_overlap as BO                       # a train/dev row that would share 5 words with a benchmark
+        bench = BO.benchmark_grams()                     # prompt is drawn again (where the prompts are on this machine)
+        CLEAN = (lambda text: not BO.overlaps(text, bench)) if bench else None
 
 
-WORDINGS, REL = RT.T, RT.REL
+WORDINGS, REL, REL_NEW, CLEAN = RT.T, RT.REL, RT.REL_NEW, None
+
+
+def _clean_train(draw):
+    """`draw()` again until the training text shares 5 words with no benchmark prompt (v4; at most 50 draws)."""
+    got = draw()
+    for _ in range(50):
+        if CLEAN is None or CLEAN(got[0]):
+            return got
+        got = draw()
+    raise SystemExit(f"no clean wording after 50 draws: {got[0]}")
 
 
 def build(per: int, seed: int) -> list[dict]:
@@ -169,7 +187,7 @@ def build(per: int, seed: int) -> list[dict]:
     for kind in kinds:
         for lang in ("en", "fr"):
             for j in range(per):
-                text, plan, t = render(kind, lang, "train", rng)
+                text, plan, t = _clean_train(lambda: render(kind, lang, "train", rng))
                 rows.append({"kind": kind, "lang": lang, "instruction": text, "plan": plan, "template": t,
                              "ifeval": [f for f in [ifeval_form(kind, plan)] if f], "split": "dev" if rng.random() < 0.1 else "train"})
             for j in range(max(1, per // 5)):
@@ -181,8 +199,11 @@ def build(per: int, seed: int) -> list[dict]:
             a, b = rng.sample(kinds, 2)
             if frozenset({a, b}) in CLASH:
                 continue
-            (ta, pa, _), (tb, pb, _) = render(a, lang, "train", rng), render(b, lang, "train", rng)
-            rows.append({"kind": f"{a}+{b}", "lang": lang, "instruction": f"{ta} {tb}", "plan": flat_and(pa, pb),
+            def pair(a=a, b=b):
+                (ta, pa, _), (tb, pb, _) = render(a, lang, "train", rng), render(b, lang, "train", rng)
+                return f"{ta} {tb}", pa, pb
+            text, pa, pb = _clean_train(pair)
+            rows.append({"kind": f"{a}+{b}", "lang": lang, "instruction": text, "plan": flat_and(pa, pb),
                          "template": None, "ifeval": [f for f in (ifeval_form(a, pa), ifeval_form(b, pb)) if f],
                          "split": "dev" if rng.random() < 0.1 else "train"})
     for i, r in enumerate(rows):
@@ -198,7 +219,7 @@ def main() -> None:
     ap.add_argument("--out", default=None)
     ap.add_argument("--per", type=int, default=250)
     ap.add_argument("--seed", type=int, default=0)
-    ap.add_argument("--wordings", default="v1", choices=("v1", "v2", "v3"), help="round 1's wordings, or round 2's (more a kind)")
+    ap.add_argument("--wordings", default="v1", choices=("v1", "v2", "v3", "v4"), help="round 1's wordings, or round 2's (more a kind)")
     a = ap.parse_args()
     use_wordings(a.wordings)
     out = Path(a.out or Path(local_paths.value("CUBBY_DATASETS") or ".") /
@@ -209,7 +230,7 @@ def main() -> None:
         for r in rows:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
     tsrc = (Path(__file__).parent / "rule_templates.py").read_bytes() + (
-        b"".join((Path(__file__).parent / f"rule_wordings_{v}.py").read_bytes() for v in ("v2", "v3")
+        b"".join((Path(__file__).parent / f"rule_wordings_{v}.py").read_bytes() for v in ("v2", "v3", "v4")
                  if a.wordings >= v))
     counts = Counter((r["split"], r["lang"]) for r in rows)
     man = {"order": "0067", "seed": a.seed, "per": a.per, "rows": len(rows),

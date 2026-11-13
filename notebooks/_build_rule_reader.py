@@ -27,16 +27,16 @@ def code(text):
 
 CELLS = [
     md(r"""
-# 0067: the rule reader's adapter, round 3
+# 0067: the rule reader's adapter, round 4
 
-Round 1 (3 wordings a kind): 82.3% agreement with IFEval's checker on new wordings. Round 2 (10 a kind): 92.7%, its
-misses in all capitals and in comparisons worded as training never had. Round 3 adds wordings for those (capitals and
-lowercase said without the word, more comparison phrasings) and is read on a fresh new-wording split.
+Agreement with IFEval's checker on new wordings: round 1 82.3%, round 2 92.7%, round 3 91.7%; rounds 2-3's misses are
+mostly "less than", kept out of training, read as ">=". Round 4 (Nick: everyday comparisons allowed) trains with "at
+least" / "less than" and is read on a fresh new-wording split whose comparisons training never had.
 
 **Runtime:** an A100 (the set is 9,977 short training records, at most 89 tokens each; one epoch is about 312 steps
 of 32, minutes rather than hours). It reads, from Drive: `runs/base450m_cont/base450m_cont_final.pt` (the base every
-served adapter is on), the token cache's tokenizer, and `rules/rule_reader_sft_v3.jsonl` with its manifest. It writes
-`rules/cubby450m_rules_v3/` (`talk_lora.safetensors` + `talk_lora.json`, the talk trainer's file names; the trunk
+served adapter is on), the token cache's tokenizer, and `rules/rule_reader_sft_v4.jsonl` with its manifest. It writes
+`rules/cubby450m_rules_v4/` (`talk_lora.safetensors` + `talk_lora.json`, the talk trainer's file names; the trunk
 loads it as the `rules` role). Training only: the read runs at home. **Disconnect when it prints `trained:`.**
 """),
     code(r"""
@@ -50,8 +50,8 @@ from google.colab import drive; drive.mount('/content/drive')
 REPO, DRIVE = '/content/CubbyLLM', '/content/drive/MyDrive/cubbyllm'
 CKPT      = f'{DRIVE}/runs/base450m_cont/base450m_cont_final.pt'
 TOKENIZER = f'{DRIVE}/token_cache_cont/tokenizer/grillcheese_bbpe128k.json'
-DATA      = f'{DRIVE}/rules/rule_reader_sft_v3.jsonl'      # round 3 (2: _v2; 1: rule_reader_sft.jsonl)
-OUT       = f'{DRIVE}/rules/cubby450m_rules_v3'          # rounds 1 and 2's adapters are not touched
+DATA      = f'{DRIVE}/rules/rule_reader_sft_v4.jsonl'      # round 4 (3: _v3; 2: _v2; 1: rule_reader_sft.jsonl)
+OUT       = f'{DRIVE}/rules/cubby450m_rules_v4'          # earlier rounds' adapters are not touched
 for p in (CKPT, TOKENIZER, DATA, DATA + '.manifest.json'):
     assert os.path.exists(p), p
 man = json.load(open(DATA + '.manifest.json'))
@@ -74,7 +74,7 @@ EPOCHS, BATCH, LR, RANK, ALPHA, MAX_LEN = 1, 32, 2e-4, 16, 32, 160
 os.environ['CB_NO_FLEX'] = '1'                # the reference attention path; the trainer does not compile flex
 assert not os.path.exists(f'{OUT}/DONE'), f'{OUT} is already trained: move it aside to train again'
 os.makedirs(OUT, exist_ok=True)
-tag = '_rules_v3'
+tag = '_rules_v4'
 cmd = [sys.executable, '-u', 'validation/train_talk_torch.py', '--ckpt', CKPT, '--tokenizer', TOKENIZER,
        '--data', DATA, '--out', OUT, '--epochs', str(EPOCHS), '--batch', str(BATCH), '--lr', str(LR),
        '--rank', str(RANK), '--alpha', str(ALPHA), '--max-len', str(MAX_LEN), '--seed', '0', '--tag', tag]

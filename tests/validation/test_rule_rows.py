@@ -119,3 +119,30 @@ def test_round_three_trains_clean_and_reads_fresh_wordings():
     finally:
         B.use_wordings("v1")
     assert not hits, hits[:3]
+
+
+def test_round_four_trains_clean_and_reads_comparisons_it_never_trained_on():
+    """Round 4 (Nick: everyday comparisons allowed in training): its new wordings are fresh; its test comparisons are in
+    no training comparison list; its train/dev rows share 5 words with no benchmark prompt."""
+    import pytest
+    import bench_overlap as BO
+    import rule_wordings_v3 as V3
+    import rule_wordings_v4 as V4
+    T3, T4 = V3.templates(RT.T), V4.templates(RT.T)
+    for k, by_lang in T4.items():
+        for lang, w in by_lang.items():
+            earlier = set(T3[k][lang]["train"] + T3[k][lang]["new"])
+            assert len(w["new"]) == 3 and not set(w["new"]) & (set(w["train"]) | earlier), (k, lang)
+    for lang in ("en", "fr"):
+        trained = {p for ps in V4.REL[lang].values() for p in ps}
+        assert not trained & {p for ps in V4.REL_NEW[lang].values() for p in ps}, lang
+    assert {"at least", "less than"} <= {p for ps in V4.REL["en"].values() for p in ps}
+    if not BO.benchmark_grams():
+        pytest.skip("no benchmark prompts on this machine")
+    try:
+        B.use_wordings("v4")
+        rows = B.build(per=250, seed=3)
+    finally:
+        B.use_wordings("v1")
+    bench = BO.benchmark_grams()
+    assert not [r for r in rows if r["split"] in ("train", "dev") and BO.overlaps(r["instruction"], bench)]
