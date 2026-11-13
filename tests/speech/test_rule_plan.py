@@ -16,31 +16,10 @@ RWT = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(RWT)
 
 
-def plan_of(rule: dict) -> dict:
-    """exp_if_follow's kinds as plans (each a measurement, a comparison and a value, joined)."""
-    k = rule["kind"]
-    if k == "words":
-        return {"m": "word count", "op": "<=" if "max" in rule else ">=", "v": rule.get("max", rule.get("min"))}
-    if k == "sentences":
-        if "exact" in rule:
-            return {"m": "sentence count", "op": "==", "v": rule["exact"]}
-        return {"and": [{"m": "sentence count", "op": ">", "v": 0}, {"m": "sentence count", "op": "<=", "v": rule["max"]}]}
-    if k in ("forbid", "require"):
-        return {"m": "word", "op": "lacks" if k == "forbid" else "has", "v": rule["word"]}
-    if k == "language":
-        return {"m": "language", "op": "==", "v": rule["lang"]}
-    if k == "list":
-        p = [{"m": "list item count", "op": ">=", "v": 2}] + ([{"m": "list item count", "op": "==", "v": rule["n"]}] if "n" in rule else [])
-        return {"and": p}
-    if k == "json":
-        return {"and": [{"m": "json", "op": "==", "v": "yes"}] + [{"m": "json key", "op": "has", "v": key} for key in rule["keys"]]}
-    if k == "no_markdown":
-        return {"m": "markdown", "op": "==", "v": "no"}
-    if k == "case":
-        return {"m": "case", "op": "==", "v": rule["case"]}
-    if k == "first":
-        return {"or": [{"m": "opening", "op": "has", "v": alt.strip()} for alt in rule["text"].split("|")]}
-    raise KeyError(k)
+_spec2 = importlib.util.spec_from_file_location("_ift", pathlib.Path(__file__).parents[2] / "validation" / "exp_if_turn.py")
+IFT = importlib.util.module_from_spec(_spec2)
+_spec2.loader.exec_module(IFT)
+plan_of = IFT.plan_of                                    # the mapping line 4's run measures with (one copy)
 
 
 @pytest.fixture(scope="module")
@@ -97,3 +76,11 @@ def test_an_argument_is_required_where_it_is_taken_and_refused_elsewhere():
     assert "takes an argument" in rp.check({"m": "count of the word", "op": ">=", "v": 1})
     assert "takes an argument" in rp.check({"m": "starts with", "arg": "", "op": "==", "v": "yes"})
     assert "takes no argument" in rp.check({"m": "word count", "arg": "x", "op": "<=", "v": 3})
+
+
+def test_a_json_key_is_compared_as_written(vm):
+    """Found by line 4's run (2026-11-12): keys were lowercased, so "U1" passed a rule asking for "u1" while
+    exp_if_follow's check (and JSON) said no. Words and openings are folded; a key is not."""
+    plan = {"and": [{"m": "json", "op": "==", "v": "yes"}, {"m": "json key", "op": "has", "v": "u1"}]}
+    assert rp.run(plan, '{"U1": "I"}', vm)["held"] is False and rp.run(plan, '{"u1": "I"}', vm)["held"] is True
+    assert rp.run({"m": "word", "op": "has", "v": "Paris"}, "we saw paris", vm)["held"] is True

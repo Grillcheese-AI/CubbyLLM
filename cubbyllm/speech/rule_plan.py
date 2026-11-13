@@ -30,6 +30,8 @@ __wiring__ = "STANDALONE"
 NUM_OPS = ("<=", ">=", "<", ">", "==", "!=")
 SET_OPS = ("has", "lacks")
 MULTI = ("word", "json key", "opening")                  # relations with several values (a list in the program)
+FOLDED = ("word", "opening", "last word")                # the reply world gives these lowercased: a value is folded
+#   to match; a JSON key is compared as written (keys are case-sensitive: "U1" is not "u1")
 
 
 def _esc(s: str) -> str:
@@ -78,7 +80,7 @@ def _key(lf: dict) -> tuple:
 
 
 def _lit(rel: str, v) -> str:
-    return str(int(v)) if _is_num(rel) else f'"{_esc(str(v).lower() if rel in MULTI else v)}"'
+    return str(int(v)) if _is_num(rel) else f'"{_esc(str(v).lower() if rel in FOLDED else v)}"'
 
 
 class _Writer:
