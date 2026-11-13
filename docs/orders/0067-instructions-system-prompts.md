@@ -862,3 +862,25 @@ runs:
 - **Cost:** stated before the run (estimated under $5) and spent on Nick's go, as for the panels.
 - **Where it applies:** the second reader's rows first. The plan reader's first Colab round runs as built: it is the
   baseline. Drafted wordings join the plan reader only in a later round, so their effect can be told apart.
+
+## Cowork's check of the reader's rounds 1 to 6 (2026-11-13)
+Read: every round's sections above and their logs' summaries. The work is careful: each new-wording split fresh, each
+held-out read once, the kill lines recorded where hit, the reader left unwired. Three things to settle before round
+6's read, and one proposal.
+- **IFBench is spent.** Round 5 read it once (written 25.7%; agreement 70.8%; false passes 21.7%: the kill line).
+  Round 6 was built in answer to that read, so reading IFBench again is a second read, a diagnostic, and is labelled so;
+  it cannot pass line 3. A clean held-out read needs kinds no round has seen: M-IFEval's five French kinds (fetched
+  off-repo once its licence is read) or a set of new kinds written by hand with their programs, before any row of the
+  next round is built.
+- **The licences ride along in the adapters.** From round 4 on, the reader trains on Stanford Alpaca's prompts (CC
+  BY-NC 4.0: non-commercial); round 6 adds Dolly-15k (CC BY-SA 3.0: share-alike). Each adapter's json and this order
+  record the licences of its rows. `cubby450m_rules_v4` to `v6` are for research and demos; a reader for a commercial
+  Cubby is trained without Alpaca, and with Dolly only if Nick accepts share-alike for it (his call; a lawyer's question
+  if it is ever sold).
+- **`--micro-tokens`** (round 6) keeps the gradient of a full batch in chunks that fit the card. The talk trainer can
+  use it to bring the talk adapters back to batch 32 (0010's question); why batch 32 stopped fitting is still open.
+- **Proposed (Nick's call): say the rule back.** Five rounds show the reader, on a kind it has not seen, writes the
+  nearest familiar rule with confidence. Whoever set the rule can catch that: a system prompt's compiled rule book is
+  shown once, in plain words, to the person who set it, before it applies ("Rule 3: every reply starts with P.S."), and
+  is fixed there; an instruction in the conversation is said back in Cubby's voice ("Got it: under 50 words."). A rule
+  shown and not corrected is applied; a rule corrected is recompiled. Recorded as a step of the turn if Nick agrees.
