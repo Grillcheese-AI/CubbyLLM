@@ -1,7 +1,7 @@
 """Order 0072, pinned: the static guard refuses a program that compares an unbound name, reads a list outside a length
-check (or with an index that can go below 0 unchecked), binds more than 250 items, or carries strings sharing a VM name
-key; every program the templates write passes it; and the fake host is never reached for an ask-first verb without a
-yes given in this turn."""
+check (or with an index that can go below 0 unchecked) or binds more than 250 items (a shared 2-byte VM name key no
+longer matters: cubelang P6-9); every program the templates write passes it; and the fake host is never reached for an
+ask-first verb without a yes given in this turn."""
 from __future__ import annotations
 
 import random
@@ -38,9 +38,9 @@ def test_an_index_outside_a_length_check_is_refused():
                               'while (i < n_in) { let x = in_val[i]; add i, 1; } return 0; } }')
 
 
-def test_long_lists_and_shared_keys_are_refused():
+def test_long_lists_are_refused_and_2_byte_keys_no_longer_matter():
     assert G.check(HEAD + "let in_val = [" + ", ".join(str(i) for i in range(251)) + "]; return 0; } }")
-    assert G.check(HEAD + 'let a = "thing"; create ok: number; assign ok = 0; if (a == "government") { assign ok = 1; } return ok; } }')
+    assert not G.check(HEAD + 'let a = "thing"; create ok: number; assign ok = 0; if (a == "government") { assign ok = 1; } return ok; } }')
 
 
 def test_every_template_passes_the_guard():
@@ -48,7 +48,7 @@ def test_every_template_passes_the_guard():
     for (verb, kind), variant in sorted(VC.VARIANT_OF.items()):
         for brk in (None,):
             data = VC.build(verb, variant, rng, "en", brk)
-            assert not G.check(VP.program(kind, variant, data)) or "name key" in " ".join(G.check(VP.program(kind, variant, data)))
+            assert not G.check(VP.program(kind, variant, data))
 
 
 @pytest.fixture(scope="module")

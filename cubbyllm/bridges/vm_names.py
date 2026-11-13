@@ -12,8 +12,10 @@ share a key is not run: its rule is "asked", never checked.
 left out); empty when every string has its own key. Fails closed: without the `blake3` module every program reports
 a collision (so nothing is checked on a guess).
 
-Wiring: STANDALONE (`cubbyllm/speech/rule_plan.run` and 0067's step-2 build call it; the serve path's other VM programs
-do not yet: proposed in 0067).
+**Retired from every run path (2026-11-13):** cubelang P6-9 (`676df1d`, the build ``CUBELANG_EXE`` names) keys by 8
+bytes and raises on a collision, so the VM tells such strings apart itself. Kept to find 2-byte pairs in old logs.
+
+Wiring: STANDALONE (nothing calls it in front of the VM any more; `verb_guard` reads its `KEYWORDS`).
 """
 from __future__ import annotations
 

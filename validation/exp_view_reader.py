@@ -4,7 +4,7 @@ replies against the generator's verdict.
 
 Per row: the split (each check's span and kind against the row's own), the text no segment covers (flagged "asked":
 nothing is dropped silently), the program compiled and run on the 8 replies (each reply's views bound by the host;
-a reply too long for the VM or a program that does not compile or shares a VM name key is "asked", never a verdict).
+a reply too long for the VM or a program that does not compile or does not run is "asked", never a verdict).
 Lines (0067's addendum): every sentence accounted for (0 dropped silently, kill); each part's span and kind for at least
 90% of parts on held-out compositions; the join's agreement at least 95%, false passes at most 2% (kill above 5%);
 5-8 parts at least 90% of the in-length agreement.
@@ -26,7 +26,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from cubbyllm import local_paths  # noqa: E402
 from cubbyllm.bridges import cubelang_client as cc  # noqa: E402
-from cubbyllm.bridges import vm_identity, vm_names  # noqa: E402
+from cubbyllm.bridges import vm_identity  # noqa: E402
 from cubbyllm.speech import reply_views as RV  # noqa: E402
 from cubbyllm.speech import view_grammar as VG  # noqa: E402
 from cubbyllm.speech import view_reader as VR  # noqa: E402
@@ -47,8 +47,6 @@ def verdict(vm, program: str, reply: str):
         src = bind(program, reply)
     except RV.TooLong:
         return None, "a view too long for the VM"
-    if vm_names.collisions(src):
-        return None, "strings share a VM name key"
     try:
         res = vm.run(src, fn="solve").get("result")
     except Exception as e:                                # does not compile or does not run: asked

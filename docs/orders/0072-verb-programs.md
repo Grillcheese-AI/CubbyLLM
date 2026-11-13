@@ -214,3 +214,15 @@ file, a service, a device or an account takes **act**.
   long; P6-9's wider keys may change the times, so the P6 rerun reports them again.
 - **Next:** the cases rerun once on the cowork VM rebuilt with cubelang P6 (Cowork names the commit in the inbox),
   with every change listed.
+
+## The P6 rerun (Code A, 2026-11-13; the cowork VM rebuilt with cubelang `676df1d`)
+`validation/logs/verb_programs_2026-11-13_p6.json`: the same cases (seed 0), the same evaluator.
+- **Verdicts: no change.** 2,100 of 2,100 agree; the gate 560 of 560 (ask-first without a yes: 48 of 48 asked, the host
+  reached 0 times).
+- **Time: the line fails on this build.** Worst p95 at 50 items **82.8 ms** (merge; line 50 ms; 34 ms before); sort
+  68.6 ms; every program 1.5-3x slower (replace 1.1 -> 1.8 ms). Not this machine: the same programs on main cubelang's
+  September build, now: merge 21.6 ms median, sort 18.0, replace 0.7; on `676df1d`: 76.8, 63.1, 1.7 (3.5x). The
+  slowdown is in the build (P6's changes; the 8-byte keys and the collision check are the first suspects): written to
+  Code B for cubelang's fix list. On our side, host-sorted keys would make sort and merge linear (Cowork's earlier
+  note); not done without a word, since the order is closed and the cause is the VM's.
+- The 2-byte name-key guard is out of every run path (`verb_guard`'s fourth rule dropped; its test flipped).

@@ -1,13 +1,14 @@
 """cubbyllm/speech/verb_guard.py -- the static guard a verb program passes before it runs (order 0072, build step 2).
 
-Until cubelang's P6-1 (a missing value compares equal to any string), P6-8 (long lists) and P6-9 (16-bit name keys)
-are on the build ``CUBELANG_EXE`` names, a program is not run unless:
+A program is not run unless (cubelang P6-1, P6-8 and P6-9 are on the build since `676df1d`: the VM itself now refuses a
+missing value, an index past the end, a list over 253 items and a name-key collision; these checks stay, cheap and
+before the VM):
 1. every name a condition compares is bound before it (``create``, ``let``, ``for (let x of``, a parameter);
 2. every index ``L[I]`` sits inside a block whose condition is ``I < n_<g>`` where ``L`` is ``<g>_<col>`` (a group of
    parallel lists the host binds with its length ``n_<g>``), and an index ever decreased (``sub I``) also inside
    ``I >= 0``;
-3. no list literal holds more than 250 items;
-4. no two of its strings or names share the VM's name key (`cubbyllm/bridges/vm_names.py`).
+3. no list literal holds more than 250 items.
+(Until P6-9, also: no two strings sharing the VM's 2-byte name key; the build keys by 8 bytes now.)
 
 `check(source)` -> [reasons] (empty: it may run).
 
@@ -71,7 +72,6 @@ def _lists(src: str) -> list[tuple[str, int]]:
 
 def check(src: str) -> list[str]:
     why = [f"the list {name} has {n} items (the VM takes at most {MAX_ITEMS})" for name, n in _lists(src) if n > MAX_ITEMS]
-    why += [f"strings share a VM name key: {c}" for c in vm_names.collisions(src)[:3]]
     bound: set[str] = set()
     decreased = set(re.findall(r"\bsub (\w+),", src))
     stack: list[str | None] = []

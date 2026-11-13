@@ -1026,6 +1026,19 @@ on its shortest reply), 0072's verb programs 49.
   compiled and run against the generator's verdict (agreement, false passes, the checked share); 5-8 over 2-4; seconds
   per instruction (a plumbing run: about 40 ms a token, so about 40 s an instruction).
 
+### The P6 rerun (Code A, 2026-11-13; the cowork VM rebuilt with cubelang `676df1d`)
+- **Steps 2 and 3, rerun once, every change listed** (`validation/rerun_vm_sets.py`, `vm_sets_rerun_2026-11-13_p6.json`):
+  step 2 15,956 of 15,956 verdicts the same; step 3 31,087 of 31,087 the same. **No change.**
+- **Step 0's probe again** (`vm_ops_probe_2026-11-13_p6.json`): a string's character by index now works (`let c =
+  s[0]`), so prefix, suffix, case and contains compose right in the VM (each was a wrong value before: null compared
+  equal); only string concatenation is still missing. The compact forms (`&&`, `else if`, a method call inside a
+  condition) are unchanged.
+- **The 2-byte name-key guard is out of the build path:** `build_view_programs`, `build_long_rows`, `exp_view_reader`
+  and `rule_plan.run` no longer call `vm_names`; its test flipped (the VM tells "thing" from "government"; "lacks
+  'government'" on "a thing here" is checked and holds). `vm_names` stays only to find 2-byte pairs in old logs.
+- **The build is slower** (3.5x on the same programs; 0072's time line now fails: see 0072). The reader's read at home
+  runs on this build; its seconds per instruction will carry it.
+
 ## Cowork's note (2026-11-13): a real long instruction to test the split and the join on
 Nick pointed to the OpenThoughts sets in the training data (`unified/`). Read for this order:
 - **AgentTrove** (`open_thoughts_agent_trove.jsonl`, already in the decay mix's agent shards): all 20,000 rows read

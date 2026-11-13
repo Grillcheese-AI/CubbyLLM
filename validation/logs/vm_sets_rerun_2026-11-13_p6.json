@@ -1,0 +1,27 @@
+{
+ "order": "0067",
+ "what": "steps 2-3 rerun on a new VM build",
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-13 14:24",
+  "sha256": "20b088b57ec67b0d7f5d7833acadcc0ad6b666bec30d1951fc39dfc26942da72",
+  "commit": "676df1d",
+  "older_than_sources": false
+ },
+ "sets": {
+  "step2_view_programs": {
+   "counts": {
+    "runs": 15956,
+    "same": 15956
+   },
+   "changes": []
+  },
+  "step3_long_rows": {
+   "counts": {
+    "runs": 31087,
+    "same": 31087
+   },
+   "changes": []
+  }
+ }
+}

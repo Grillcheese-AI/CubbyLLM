@@ -4,8 +4,8 @@ views, built in reverse and run before they are kept.
 For each program: a pool of replies built for it (`view_replies.py`); a spec drawn from the pool's views
 (`view_programs.sample`: its values and thresholds come from the replies, held-out test kinds never drawn); compiled to
 CubeLang (`view_compile.py`); then run in the VM on K replies of the pool, half that the spec passes and half that it
-fails (by the Python evaluator), each reply's views short enough for the VM (`reply_views.MAX_ROWS`) and no two of the
-program's strings sharing the VM's 16-bit name key (`cubbyllm/bridges/vm_names.py`). Kept only when
+fails (by the Python evaluator), each reply's views short enough for the VM (`reply_views.MAX_ROWS`). (Until cubelang
+P6-9, `676df1d`, replies whose program carried two strings sharing the VM's 2-byte name key were left out.) Kept only when
 the VM's verdict is the evaluator's on every reply and some replies pass and some fail. A disagreement stops the build:
 it is a compiler or VM defect, never a row.
 
@@ -30,7 +30,6 @@ import view_replies as VR  # noqa: E402
 
 from cubbyllm import local_paths  # noqa: E402
 from cubbyllm.bridges import cubelang_client as cc  # noqa: E402
-from cubbyllm.bridges import vm_names  # noqa: E402
 from cubbyllm.bridges import vm_identity  # noqa: E402
 from cubbyllm.speech import reply_views as RV  # noqa: E402
 
@@ -78,8 +77,7 @@ def main() -> None:
             continue
         assert VP.held_out(spec) is None
         used = VC.views_of(spec)
-        cand = [(t, VP.evaluate(spec, v)) for t, v in zip(replies, views)        # the VM can read the reply, and no two
-                if fits(t, used) and not vm_names.collisions(VC.program(spec, t))]  # strings share a 16-bit name key
+        cand = [(t, VP.evaluate(spec, v)) for t, v in zip(replies, views) if fits(t, used)]   # the VM can read the reply
         yes, no = [c for c in cand if c[1]], [c for c in cand if not c[1]]
         if len(yes) < 2 or len(no) < 2:
             why["too few short replies on one side"] += 1
