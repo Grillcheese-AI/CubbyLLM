@@ -1,0 +1,423 @@
+{
+ "order": "0067",
+ "what": "IFBench, where the reader wrote a rule: the rule against IFBench's checker over replies",
+ "plans": "_rule_ifbench_2026-11-13_v5_plans.json",
+ "written": 77,
+ "replies_per_rule": 10,
+ "line": {
+  "agreement": ">= 0.95",
+  "false_passes": "<= 0.02 (kill > 0.05)"
+ },
+ "pairs": 770,
+ "agreement": 0.7078,
+ "false_passes": 0.2169,
+ "rule_held_share": 0.2442,
+ "checker_pass_share": 0.1026,
+ "false_passes_among_rule_held": 0.8883,
+ "per_kind": {
+  "count:conjunctions": {
+   "pairs": 10,
+   "agree": 7,
+   "false passes": 3,
+   "rule held": 3,
+   "checker passes": 0
+  },
+  "count:numbers": {
+   "pairs": 20,
+   "agree": 15,
+   "false passes": 5,
+   "rule held": 5,
+   "checker passes": 0
+  },
+  "count:punctuation": {
+   "pairs": 10,
+   "agree": 10,
+   "false passes": 0,
+   "rule held": 0,
+   "checker passes": 0
+  },
+  "count:unique_word_count": {
+   "pairs": 60,
+   "agree": 39,
+   "false passes": 21,
+   "rule held": 21,
+   "checker passes": 0
+  },
+  "count:word_count_range": {
+   "pairs": 70,
+   "agree": 40,
+   "false passes": 14,
+   "rule held": 20,
+   "checker passes": 22
+  },
+  "count:words_japanese": {
+   "pairs": 30,
+   "agree": 22,
+   "false passes": 5,
+   "rule held": 5,
+   "checker passes": 3
+  },
+  "custom:date_format_list": {
+   "pairs": 10,
+   "agree": 6,
+   "false passes": 4,
+   "rule held": 4,
+   "checker passes": 0
+  },
+  "custom:multiples": {
+   "pairs": 10,
+   "agree": 5,
+   "false passes": 5,
+   "rule held": 5,
+   "checker passes": 0
+  },
+  "custom:sentence_alphabet": {
+   "pairs": 10,
+   "agree": 8,
+   "false passes": 2,
+   "rule held": 2,
+   "checker passes": 0
+  },
+  "format:no_bullets_bullets": {
+   "pairs": 20,
+   "agree": 12,
+   "false passes": 8,
+   "rule held": 8,
+   "checker passes": 0
+  },
+  "format:no_whitespace": {
+   "pairs": 10,
+   "agree": 6,
+   "false passes": 1,
+   "rule held": 2,
+   "checker passes": 4
+  },
+  "format:parentheses": {
+   "pairs": 10,
+   "agree": 7,
+   "false passes": 3,
+   "rule held": 3,
+   "checker passes": 0
+  },
+  "format:quote_unquote": {
+   "pairs": 30,
+   "agree": 11,
+   "false passes": 5,
+   "rule held": 9,
+   "checker passes": 18
+  },
+  "format:quotes": {
+   "pairs": 20,
+   "agree": 14,
+   "false passes": 6,
+   "rule held": 6,
+   "checker passes": 0
+  },
+  "format:sub-bullets": {
+   "pairs": 30,
+   "agree": 22,
+   "false passes": 7,
+   "rule held": 7,
+   "checker passes": 1
+  },
+  "format:thesis": {
+   "pairs": 50,
+   "agree": 42,
+   "false passes": 8,
+   "rule held": 8,
+   "checker passes": 0
+  },
+  "format:title_case": {
+   "pairs": 10,
+   "agree": 8,
+   "false passes": 0,
+   "rule held": 4,
+   "checker passes": 6
+  },
+  "ratio:overlap": {
+   "pairs": 40,
+   "agree": 34,
+   "false passes": 6,
+   "rule held": 6,
+   "checker passes": 0
+  },
+  "ratio:sentence_words": {
+   "pairs": 10,
+   "agree": 6,
+   "false passes": 4,
+   "rule held": 4,
+   "checker passes": 0
+  },
+  "ratio:stop_words": {
+   "pairs": 60,
+   "agree": 43,
+   "false passes": 14,
+   "rule held": 14,
+   "checker passes": 3
+  },
+  "repeat:repeat_span": {
+   "pairs": 40,
+   "agree": 37,
+   "false passes": 3,
+   "rule held": 3,
+   "checker passes": 0
+  },
+  "sentence:alliteration_increment": {
+   "pairs": 20,
+   "agree": 15,
+   "false passes": 5,
+   "rule held": 5,
+   "checker passes": 0
+  },
+  "sentence:increment": {
+   "pairs": 60,
+   "agree": 42,
+   "false passes": 8,
+   "rule held": 14,
+   "checker passes": 16
+  },
+  "sentence:keyword": {
+   "pairs": 80,
+   "agree": 63,
+   "false passes": 17,
+   "rule held": 17,
+   "checker passes": 0
+  },
+  "words:alphabet": {
+   "pairs": 40,
+   "agree": 26,
+   "false passes": 14,
+   "rule held": 14,
+   "checker passes": 0
+  },
+  "words:consonants": {
+   "pairs": 40,
+   "agree": 26,
+   "false passes": 14,
+   "rule held": 14,
+   "checker passes": 0
+  },
+  "words:keywords_specific_position": {
+   "pairs": 40,
+   "agree": 33,
+   "false passes": 7,
+   "rule held": 7,
+   "checker passes": 0
+  },
+  "words:odd_even_syllables": {
+   "pairs": 20,
+   "agree": 14,
+   "false passes": 6,
+   "rule held": 6,
+   "checker passes": 0
+  },
+  "words:palindrome": {
+   "pairs": 30,
+   "agree": 26,
+   "false passes": 4,
+   "rule held": 4,
+   "checker passes": 0
+  },
+  "words:paragraph_last_first": {
+   "pairs": 20,
+   "agree": 17,
+   "false passes": 3,
+   "rule held": 3,
+   "checker passes": 0
+  },
+  "words:repeats": {
+   "pairs": 20,
+   "agree": 9,
+   "false passes": 4,
+   "rule held": 4,
+   "checker passes": 7
+  }
+ },
+ "false_pass_examples": [
+  {
+   "kinds": [
+    "words:keywords_specific_position"
+   ],
+   "rule": "sentence count >= 23 ; count of the word \"discrete\" >= 1",
+   "reply": "It's a small town, but people don't leave it. The answer depends on the season and the weather. Her notes were short and"
+  },
+  {
+   "kinds": [
+    "words:keywords_specific_position"
+   ],
+   "rule": "sentence count >= 23 ; count of the word \"discrete\" >= 1",
+   "reply": "The morning was quiet and the street was empty. They sold bread, fruit and fresh cheese. We walked to the market before "
+  },
+  {
+   "kinds": [
+    "words:keywords_specific_position"
+   ],
+   "rule": "sentence count >= 23 ; count of the word \"discrete\" >= 1",
+   "reply": "Most of the work happens in the evening. A good plan starts with a simple question. The morning was quiet and the street"
+  },
+  {
+   "kinds": [
+    "words:keywords_specific_position"
+   ],
+   "rule": "sentence count >= 23 ; count of the word \"discrete\" >= 1",
+   "reply": "We walked to the market before noon. Nobody knew why the bridge was closed. The morning was quiet and the street was emp"
+  },
+  {
+   "kinds": [
+    "words:keywords_specific_position"
+   ],
+   "rule": "sentence count >= 23 ; count of the word \"discrete\" >= 1",
+   "reply": "We walked to the market before noon. The answer depends on the season and the weather. Nobody knew why the bridge was cl"
+  },
+  {
+   "kinds": [
+    "words:keywords_specific_position"
+   ],
+   "rule": "sentence count >= 25 ; count of the word \"lottery\" >= 1",
+   "reply": "The answer depends on the season and the weather. We walked to the market before noon. Her notes were short and very cle"
+  },
+  {
+   "kinds": [
+    "words:keywords_specific_position"
+   ],
+   "rule": "sentence count >= 25 ; count of the word \"lottery\" >= 1",
+   "reply": "The train was late again this week. The morning was quiet and the street was empty. A good plan starts with a simple que"
+  },
+  {
+   "kinds": [
+    "count:numbers"
+   ],
+   "rule": "count of the word \"future\" >= 13 ; count of the word \"time-hopping\" >= 1",
+   "reply": "The train was late again this week. A good plan starts with a simple question. The answer depends on the season and the "
+  },
+  {
+   "kinds": [
+    "count:numbers"
+   ],
+   "rule": "count of the word \"future\" >= 13 ; count of the word \"time-hopping\" >= 1",
+   "reply": "The answer depends on the season and the weather. Her notes were short and very clear. They sold bread, fruit and fresh "
+  },
+  {
+   "kinds": [
+    "count:numbers",
+    "count:conjunctions"
+   ],
+   "rule": "count of the word \"life\" >= 15 ; highlight count >= 5",
+   "reply": "*A good plan starts with a simple question* *It's a small town, but people don't leave it* *It's a small town, but peopl"
+  },
+  {
+   "kinds": [
+    "count:numbers",
+    "count:conjunctions"
+   ],
+   "rule": "count of the word \"life\" >= 15 ; highlight count >= 5",
+   "reply": "*Her notes were short and very clear* *The morning was quiet and the street was empty* *Nobody knew why the bridge was c"
+  },
+  {
+   "kinds": [
+    "count:numbers",
+    "count:conjunctions"
+   ],
+   "rule": "count of the word \"life\" >= 15 ; highlight count >= 5",
+   "reply": "*The train was late again this week* *The answer depends on the season and the weather* *Her notes were short and very c"
+  },
+  {
+   "kinds": [
+    "count:word_count_range"
+   ],
+   "rule": "word count >= 57 ; word count >= 61",
+   "reply": "Most of the work happens in the evening. It's a small town, but people don't leave it. It's a small town, but people don"
+  },
+  {
+   "kinds": [
+    "count:word_count_range"
+   ],
+   "rule": "word count >= 57 ; word count >= 61",
+   "reply": "A good plan starts with a simple question. It's a small town, but people don't leave it. Her notes were short and very c"
+  },
+  {
+   "kinds": [
+    "count:word_count_range"
+   ],
+   "rule": "word count >= 57 ; word count >= 61",
+   "reply": "Nobody knew why the bridge was closed. Her notes were short and very clear. Her notes were short and very clear. The ans"
+  },
+  {
+   "kinds": [
+    "count:word_count_range"
+   ],
+   "rule": "word count >= 57 ; word count >= 61",
+   "reply": "The answer depends on the season and the weather. Most of the work happens in the evening. It's a small town, but people"
+  },
+  {
+   "kinds": [
+    "count:word_count_range"
+   ],
+   "rule": "word count >= 24 ; sentence count >= 7",
+   "reply": "\"A good plan starts with a simple question. A good plan starts with a simple question. The morning was quiet and the str"
+  },
+  {
+   "kinds": [
+    "count:words_japanese"
+   ],
+   "rule": "word count >= 5 ; starts with \"Focusing on Quality Assurance will allow us to align knowledge on what\" == yes",
+   "reply": "Focusing on Quality Assurance will allow us to align knowledge on what Most of the work happens"
+  },
+  {
+   "kinds": [
+    "count:words_japanese"
+   ],
+   "rule": "word count >= 5 ; starts with \"Focusing on Quality Assurance will allow us to align knowledge on what\" == yes",
+   "reply": "Focusing on Quality Assurance will allow us to align knowledge on what A good plan starts with"
+  },
+  {
+   "kinds": [
+    "count:words_japanese"
+   ],
+   "rule": "word count >= 5 ; starts with \"Focusing on Quality Assurance will allow us to align knowledge on what\" == yes",
+   "reply": "Focusing on Quality Assurance will allow us to align knowledge on what The answer depends on the season"
+  },
+  {
+   "kinds": [
+    "count:words_japanese"
+   ],
+   "rule": "word count >= 5 ; starts with \"Focusing on Quality Assurance will allow us to align knowledge on what\" == yes",
+   "reply": "Focusing on Quality Assurance will allow us to align knowledge on what Most of the"
+  },
+  {
+   "kinds": [
+    "count:words_japanese"
+   ],
+   "rule": "word count >= 5 ; starts with \"Focusing on Quality Assurance will allow us to align knowledge on what\" == yes",
+   "reply": "Focusing on Quality Assurance will allow us to align knowledge on what We walked to the market"
+  },
+  {
+   "kinds": [
+    "count:unique_word_count"
+   ],
+   "rule": "word count >= 55 ; language == en",
+   "reply": "Most of the work happens in the evening. Most of the work happens in the evening. A good plan starts with a simple quest"
+  },
+  {
+   "kinds": [
+    "count:unique_word_count"
+   ],
+   "rule": "word count >= 55 ; language == en",
+   "reply": "The train was late again this week. A good plan starts with a simple question. The answer depends on the season and the "
+  },
+  {
+   "kinds": [
+    "count:unique_word_count"
+   ],
+   "rule": "word count >= 55 ; language == en",
+   "reply": "The morning was quiet and the street was empty. A good plan starts with a simple question. It's a small town, but people"
+  }
+ ],
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-11 15:18",
+  "sha256": "3120403f35b007eb85a2302086da7fb1447830573f0f2d540e4c62fdb0cbc37b",
+  "commit": "3f37515",
+  "older_than_sources": false
+ }
+}

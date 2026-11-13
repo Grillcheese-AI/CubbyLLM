@@ -596,12 +596,18 @@ Trained 397 steps on an A100 (held answer loss 0.0079). Read at home on grilly2,
   most written rules are invented: numbers and words not in the prompt ("sentence count == 22 ; paragraph count == 33"
   for a keyword position; "count of the word "life" >= 15"; a word range 57-61 read as two `>=`). Line 3's held-out
   part is not met on written share (25.7% < 50%), and the written rules look like false-pass risk.
+- **IFBench's checker** (Nick allowed downloaded code, 2026-11-13; `validation/ifbench_check.py`,
+  `exp_rule_ifbench_agree.py`, `rule_ifbench_agree_2026-11-13_v5.json`): the 77 written rules, 10 replies each (half
+  aimed at the rule's own edge, half plain), labelled by IFBench's checker (every instruction of the prompt) and judged
+  by the VM running the rule. Agreement **70.8%**, false passes **21.7% (kill > 5%)**; of the replies a written rule
+  passed, 88.8% fail the checker. **Line 3's held-out kill line is hit on IFBench too.** The worst kinds: unique word
+  count, a keyword in a sentence, word-count ranges, stop-word ratios, alphabet and consonant rules: each read as the
+  nearest familiar measurement.
 - **Reading:** abstention is learned on short instructions (0/270 -> 79% on unseen short phrases) but not on long real
   prompts: there the reader mostly says `none` and, a quarter of the time, invents. Training rows are short (instructions
   alone, or Nick's prompts at most 300 characters); IFBench's prompts are a task with the constraint inside (median
   293 characters, up to 904). Unwired; CB_RULES off.
-- **Next (Nick's call):** run IFBench's checker (its code, downloaded, needs his yes) to measure the written rules'
-  agreement; and rows built from long, real, human-written prompts with known licences (a constraint joined inside a
+- **Next (Nick's call):** rows built from long, real, human-written prompts with known licences (a constraint joined inside a
   prompt; `asked` and `none` on long prompts). Nick proposed `crumb/Clean-Instruct-3M`: no licence and no card on the
   Hub, its sources unlisted (the preview shows templated tasks, a StackOverflow post, answers that read model-written),
   1.17 GB; not fetched. Alternatives with known licences and human prompts: OASST1 (Apache-2.0), Dolly-15k (CC BY-SA
