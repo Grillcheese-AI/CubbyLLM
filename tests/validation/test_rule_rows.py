@@ -42,3 +42,17 @@ def test_every_ifeval_kind_has_replies_on_both_sides_of_its_edge():
         for iid, kw in r["ifeval"]:
             out = rule_replies.replies(iid, kw, r["lang"], rng, 3)
             assert len(out) == 3 and all(isinstance(x, str) for x in out)
+
+
+def test_the_sft_records_are_the_readers_own_form():
+    sys.path.insert(0, str(ROOT / "validation" / "sft"))
+    import build_rule_reader_sft as S
+    from cubbyllm.speech import rule_reader as rr
+    rows = B.build(per=6, seed=2)
+    recs = [S.record(r) for r in rows if r["split"] in S.SPLIT]
+    assert recs and {r["split"] for r in recs} <= {"train", "held"} and not any(r["split"] == "new_wording" for r in rows
+                                                                                 if r["id"] in {x["id"] for x in recs})
+    for rec in recs:
+        assert rec["prompt"].startswith(rr.HEAD) and rec["prompt"].endswith("\nRule:") and rec["answer"].endswith("\n")
+        last_text, last_slot = S.slot_texts(rec)[-1]
+        assert last_text + " " + last_slot == rec["prompt"] + " " + rec["answer"].rstrip("\n")

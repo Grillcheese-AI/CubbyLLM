@@ -272,6 +272,18 @@ Two held-out kinds (forbidden words, bullet lists) are already measured by the r
 - **Found on the way:** IFEval counts words with `\w+` ("don't" is 2) and the reply world with exp_if_follow's split
   ("don't" is 1); no row in this read hit it (the gold read's word-count rows agree 40 of 40), but a reply with
   apostrophes near the bound would. Recorded, not changed: changing it would break exp_if_follow's agreement.
+### Step 3's adapter round, built for Colab (Nick, 2026-11-12: "yes"; Claude Code)
+- **The set** (`validation/sft/build_rule_reader_sft.py`; on Drive as `rules/rule_reader_sft.jsonl` with its manifest):
+  11,072 records from the rows, 9,977 train and 1,095 held (the dev rows); the 1,800 new-wording rows left out, and no
+  held-out kind anywhere. Prompt: the reader's own (no examples); answer: the plan's surface form and a newline (where
+  the reader ends a rule). All 75,113 slot boundaries tokenize the same written whole or slot by slot, and the
+  export's tokenizer and the token cache's encode every record alike (at most 89 tokens).
+- **The notebook** (`notebooks/_build_rule_reader.py` -> `rule_reader.ipynb`, for Cowork): the talk trainer, a fresh
+  LoRA on base450m_cont with the served layout (rank 16, alpha 32), one epoch, batch 32, lr 2e-4, max length 160;
+  writes `rules/cubby450m_rules_v1/`. A CPU smoke of the trainer on this set ran.
+- **The read at home, in this order:** the dev rows (the instruction alone), then the new-wording rows once, then
+  their plans against IFEval's checker (line 3: written for 90%, agreement 98%); the held-out kinds once, only if that
+  line is met.
 - **Commits:**
 - **Files:**
 - **Tests:**
