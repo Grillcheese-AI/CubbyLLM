@@ -60,7 +60,7 @@ def main() -> None:
             per[k].update({"prompts": 1, got["how"]: 1})
         kept[str(it["key"])] = {"kinds": it["kinds"], "how": got["how"], "plan": got["plan"], "surface": got["surface"]}
         if got["how"] == "written" and len(written) < 40:
-            written.append({"kinds": it["kinds"], "prompt_end": it["prompt"][-160:], "rule": got["surface"]})
+            written.append({"kinds": it["kinds"], "key": str(it["key"]), "rule": got["surface"]})   # ids only: no prompt text
     n = len(items)
     out = {"order": "0067", "what": "IFBench's test prompts, read whole by the reader: how often an unseen kind is "
                                     "answered 'asked' instead of a rule; agreement waits for IFBench's checker",

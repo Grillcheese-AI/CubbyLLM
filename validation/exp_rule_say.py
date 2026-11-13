@@ -7,7 +7,8 @@
    wrong rules from the held-out reads (round 4 on IFEval's held-out kinds, `rule_heldout_2026-11-13_v4.json`; round 6
    on IFBench, `_rule_ifbench_2026-11-13_v6_plans.json`), a rule counted wrong when the benchmark's checker disagrees
    with it on any of its replies (the replies rebuilt exactly as those reads built them); 100 drawn by seed (half each),
-   each with its instruction and the line Cubby would say back (`rule_say.said_back`).
+   each with its id and the line Cubby would say back (`rule_say.said_back`); the instructions' text stays off-repo
+   (``$CUBBY_DATASETS/rule_say_0067``): no benchmark prompt in a committed file.
 
   python validation/exp_rule_say.py [--out validation/logs/rule_say_<date>.json] [--sample <jsonl>]
 """
@@ -77,8 +78,8 @@ def wrong_ifeval(vm) -> list[dict]:
     for p in pairs:
         if rp.run(by[p["item"]]["plan"], p["reply"], lambda s, fn: vm.run(s, fn=fn))["held"] != truth[p["id"]]:
             bad.add(p["item"])
-    return [{"source": "IFEval held-out (round 4)", "kind": by[i]["kind"], "instruction": by[i]["instruction"],
-             "plan": by[i]["plan"]} for i in sorted(bad)]
+    return [{"source": "IFEval held-out (round 4)", "id": f"ifeval_heldout_v4:{i}", "kind": by[i]["kind"],
+             "instruction": by[i]["instruction"], "plan": by[i]["plan"]} for i in sorted(bad)]
 
 
 def wrong_ifbench(vm) -> list[dict]:
@@ -98,8 +99,8 @@ def wrong_ifbench(vm) -> list[dict]:
     for p in pairs:
         if rp.run(plans[p["key"]]["plan"], p["reply"], lambda s, fn: vm.run(s, fn=fn))["held"] != truth[p["id"]]:
             bad.add(p["key"])
-    return [{"source": "IFBench (round 6)", "kind": ",".join(plans[k]["kinds"]), "instruction": items[k]["prompt"],
-             "plan": plans[k]["plan"]} for k in sorted(bad)]
+    return [{"source": "IFBench (round 6)", "id": f"ifbench:{k}", "kind": ",".join(plans[k]["kinds"]),
+             "instruction": items[k]["prompt"], "plan": plans[k]["plan"]} for k in sorted(bad)]
 
 
 def main() -> None:
@@ -116,8 +117,12 @@ def main() -> None:
     out = {"order": "0067", "what": "say the rule back: its lines", "line_1_shown_before_applied": sim,
            "wrong_rules": {"ifeval_heldout_round4": len(a_wrong), "ifbench_round6": len(b_wrong)},
            "sample": len(rows), "vm": vm_identity.identity()}
-    if a.sample:
-        Path(a.sample).write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows), encoding="utf-8")
+    if a.sample:                                          # the benchmarks' text stays off-repo; the log keeps ids
+        off = Path(local_paths.value("CUBBY_DATASETS") or ".") / "rule_say_0067"
+        off.mkdir(parents=True, exist_ok=True)
+        (off / Path(a.sample).name).write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows), encoding="utf-8")
+        Path(a.sample).write_text("".join(json.dumps({k: v for k, v in r.items() if k != "instruction"}, ensure_ascii=False)
+                                          + "\n" for r in rows), encoding="utf-8")
     if a.out:
         Path(a.out).write_text(json.dumps(out, indent=1, ensure_ascii=False), encoding="utf-8")
     print(json.dumps(out, indent=1, ensure_ascii=False))
