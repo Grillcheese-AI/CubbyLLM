@@ -258,3 +258,61 @@ Read: the three sections above, `if_follow_2026-11-12_talk_v3a.json`, `rule_kind
   `None` by default and bit-identical then) would move rules from "checked" to "enforced" here, and would also serve
   0068's route 1 (the allowed list), route 5 on the served path, and the selection seat of the qFHRR synthesis. It is
   a grilly2 change, so it waits for Nick's word and goes on a branch for his review.
+
+## Cowork's addendum (2026-11-12): complex instructions (proposed; built after the alpha)
+Nick, 2026-11-12: "how about complex instructions ?", then "yes" to this addendum. Nothing here starts before the
+alpha's lines are read and Nick says go.
+
+**What the alpha covers:** atomic rules over the reply world, joined by and, or and not, scoped to the session, a
+turn or a topic, held across turns, ranked by who set them, compiled once. **Where complex instructions go past it,
+and the extension for each.** The architecture does not change: one plan family, no code for any kind of instruction.
+- **A. Structure.**
+  - **Positions** in the reply world: the opening, sentence, paragraph or list item i, the last line. "A two-line
+    summary, then three risks as a list" is one plan.
+  - **Conditions on the question:** a plan may read the turn's question facts (its language, the kind it asks, the
+    items it names, its topic) as well as the reply's. "If they ask about price, give the range only" is a plan.
+  - **Nesting:** plans inside plans.
+- **B. Content rules, over the reply's record, not its words.** Cubby's replies come from a record of the facts used
+  and said, so a rule can read those facts:
+  - "never mention items of this list" (the operator's competitors);
+  - "always include the price" (a fact of that property is said, or Cubby says it does not have it);
+  - "compare A and B" (at least one fact of each is said);
+  - "only facts from the operator's world".
+
+  The VM checks them on the record. They are also **enforced before any writing:** the host lets into the plan only
+  the facts the rules allow.
+- **C. Process rules, over the turn's record:** "ask for the order number before answering" (no answer while that
+  slot is empty); "check stock first" (the plan holds the lookup). The turn controller enforces them; the VM checks
+  the record.
+- **D. Style that can be measured** becomes relations, each a helper adopted on examples with its tests (0062's way):
+  reading level (Flesch-Kincaid grade in English, Kandel-Moles in French), *tu* or *vous*, sentence length, the share
+  of words from a fixed formal list. What no measurement covers ("be persuasive") stays "asked", logged by kind.
+- **E. Contradictions at compile time.** The rules in force are checked for joint satisfiability where the relations
+  allow it (two bounds on one measurement, has and lacks of one value, two claims on one position). Across levels the
+  higher rule wins, as in the alpha. Within one level, Cubby asks which one wins and names both rules.
+- **The reader** (splitting a complex instruction into rules) is the program seat's job. Measured first as it is, its
+  slots constrained; an adapter round only if its line is missed (Nick's call); growing the model only if the adapter
+  misses too (0045's path, Nick's call).
+
+**Acceptance (pre-registered; read after the alpha).** Sets are built in reverse, by rule, as the alpha's are: atomic
+rules composed into instructions with known structure, rendered from templates in English and French. No model writes
+an instruction or a rule.
+1. **Kill, as the alpha's line 1:** a reply said that breaks a rule its record marks enforced or checked: 0.
+2. **The reader splits.** On held-out compositions (structures no training row has): the exact rule set recovered for
+   at least 80%; each recovered rule agrees with the generator's own checker on at least 95% of replies built to pass
+   and to fail; a rule that passes replies the instruction forbids at most 2% (**kill** above 5%).
+3. **More constraints at once** (levels of 1 to 5 constraints, FollowBench's design, built by rule, EN and FR): the
+   followed share at level 5 is at least 0.8 times level 1; broken stays 0 at every level.
+4. **Content rules** (contrast sets of 200, EN and FR): a forbidden item said 0 times (**kill**); a required fact in
+   every said reply, or an explicit "I don't have it", never a reply without it (**kill**).
+5. **Process rules** (dialogues of 20 turns): 0 answers before the required slot is filled (**kill**).
+6. **Contradictions** (200 sets within one level, EN and FR): a question naming both rules in every case; across
+   levels, the alpha's line 2.
+7. **New kinds of constraint:** IFBench's out-of-domain constraints, as the alpha's line 3 (a rule written for at least
+   half; agreement with IFBench's checker at least 95% where written).
+8. **Reported:** Multi-IF (multi-turn; English and French) and InFoBench's decomposed requirements, on their parts a
+   program can score, beside their published numbers; the share of real users' instructions left "asked", by kind.
+- **Benchmarks are for measuring:** licences checked first; no benchmark prompt in a training row; parts those sets
+  grade with a model judge are not scored here (no model judges a reply).
+- **Not claimed:** that Cubby follows more complex instructions than a frontier model. The claims are the kill lines
+  and the content and process checks, which a model that writes free text cannot show.
