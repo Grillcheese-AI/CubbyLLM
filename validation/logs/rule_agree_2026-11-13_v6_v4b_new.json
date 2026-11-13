@@ -1,0 +1,471 @@
+{
+ "order": "0067",
+ "what": "rule plans run by the VM against IFEval's checker on replies built to pass and fail",
+ "arm": "seat",
+ "rows": 134,
+ "replies_per_rule": 10,
+ "seed": 0,
+ "splits": "new_wording",
+ "counts": {
+  "pairs": 1310,
+  "agree": 1281,
+  "checker passes": 559,
+  "rule passes, checker fails": 2,
+  "asked": 0,
+  "not written": 30
+ },
+ "agreement": 0.9779,
+ "rule_passes_checker_fails": 0.0015,
+ "checker_pass_share": 0.4267,
+ "per_kind": {
+  "english_capital": {
+   "pairs": 150,
+   "agree": 143,
+   "checker passes": 41,
+   "rule passes, checker fails": 2,
+   "asked": 0,
+   "agreement": 0.953
+  },
+  "english_lowercase": {
+   "pairs": 60,
+   "agree": 60,
+   "checker passes": 8,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "existence": {
+   "pairs": 60,
+   "agree": 60,
+   "checker passes": 35,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "frequency": {
+   "pairs": 60,
+   "agree": 60,
+   "checker passes": 23,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "json_format": {
+   "pairs": 90,
+   "agree": 90,
+   "checker passes": 35,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "letter_frequency": {
+   "pairs": 80,
+   "agree": 80,
+   "checker passes": 32,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "multiple_sections": {
+   "pairs": 80,
+   "agree": 80,
+   "checker passes": 49,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_highlighted_sections": {
+   "pairs": 90,
+   "agree": 90,
+   "checker passes": 56,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_paragraphs": {
+   "pairs": 40,
+   "agree": 40,
+   "checker passes": 14,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_sentences": {
+   "pairs": 70,
+   "agree": 70,
+   "checker passes": 40,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_words": {
+   "pairs": 100,
+   "agree": 100,
+   "checker passes": 50,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "quotation": {
+   "pairs": 110,
+   "agree": 89,
+   "checker passes": 58,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.809
+  },
+  "repeat_prompt": {
+   "pairs": 100,
+   "agree": 100,
+   "checker passes": 28,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "response_language": {
+   "pairs": 70,
+   "agree": 69,
+   "checker passes": 34,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.986
+  },
+  "title": {
+   "pairs": 70,
+   "agree": 70,
+   "checker passes": 34,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "two_responses": {
+   "pairs": 80,
+   "agree": 80,
+   "checker passes": 22,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  }
+ },
+ "misses": [
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "C'EST UNE PETITE VILLE, MAIS ON NE LA QUITTE PAS. SES NOTES ÉTAIENT COURTES ET TRÈS CLAIRES.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "upper is the case of the reply",
+    "fr is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "LA PLUPART DU TRAVAIL SE FAIT LE SOIR. UN BON PLAN COMMENCE PAR UNE QUESTION SIMPLE.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "upper is the case of the reply",
+    "fr is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "A GOOD PLAN STARTS WITH A SIMPLE QUESTION. A GOOD PLAN STARTS WITH A SIMPLE QUESTION.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "upper is the case of the reply",
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "HER NOTES WERE SHORT AND VERY CLEAR. HER NOTES WERE SHORT AND VERY CLEAR.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "upper is the case of the reply",
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": " \"Ses notes étaient courtes et très claires. La réponse dépend de la saison et du temps.\" ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "ses is the opening of the reply",
+    "ses notes is the opening of the reply",
+    "ses notes étaient is the opening of the reply",
+    "ses notes étaient courtes is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": " \"La réponse dépend de la saison et du temps. Nous avons marché jusqu'au marché avant midi.\" ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "la is the opening of the reply",
+    "la réponse is the opening of the reply",
+    "la réponse dépend is the opening of the reply",
+    "la réponse dépend de is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"Personne ne savait pourquoi le pont était fermé. La réponse dépend de la saison et du temps.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "personne is the opening of the reply",
+    "personne ne is the opening of the reply",
+    "personne ne savait is the opening of the reply",
+    "personne ne savait pourquoi is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": " \"Personne ne savait pourquoi le pont était fermé. Ses notes étaient courtes et très claires.\" ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "personne is the opening of the reply",
+    "personne ne is the opening of the reply",
+    "personne ne savait is the opening of the reply",
+    "personne ne savait pourquoi is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": " \"Her notes were short and very clear. The answer depends on the season and the weather.\" ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "her is the opening of the reply",
+    "her notes is the opening of the reply",
+    "her notes were is the opening of the reply",
+    "her notes were short is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"They sold bread, fruit and fresh cheese. We walked to the market before noon.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "they is the opening of the reply",
+    "they sold is the opening of the reply",
+    "they sold bread is the opening of the reply",
+    "they sold bread fruit is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"The answer depends on the season and the weather. The train was late again this week.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "the is the opening of the reply",
+    "the answer is the opening of the reply",
+    "the answer depends is the opening of the reply",
+    "the answer depends on is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"Her notes were short and very clear. We walked to the market before noon.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "her is the opening of the reply",
+    "her notes is the opening of the reply",
+    "her notes were is the opening of the reply",
+    "her notes were short is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "response_language",
+   "kwargs": {
+    "language": "fr"
+   },
+   "reply": "La plupart du travail se fait le soir.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "none is the language of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": " \"La matinée était calme et la rue était vide. La réponse dépend de la saison et du temps.\" ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "la is the opening of the reply",
+    "la matinée is the opening of the reply",
+    "la matinée était is the opening of the reply",
+    "la matinée était calme is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"La matinée était calme et la rue était vide. Un bon plan commence par une question simple.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "la is the opening of the reply",
+    "la matinée is the opening of the reply",
+    "la matinée était is the opening of the reply",
+    "la matinée était calme is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"La plupart du travail se fait le soir. La plupart du travail se fait le soir.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "la is the opening of the reply",
+    "la plupart is the opening of the reply",
+    "la plupart du is the opening of the reply",
+    "la plupart du travail is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": " \"La matinée était calme et la rue était vide. C'est une petite ville, mais on ne la quitte pas.\" ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "la is the opening of the reply",
+    "la matinée is the opening of the reply",
+    "la matinée était is the opening of the reply",
+    "la matinée était calme is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"La réponse dépend de la saison et du temps. La plupart du travail se fait le soir.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "la is the opening of the reply",
+    "la réponse is the opening of the reply",
+    "la réponse dépend is the opening of the reply",
+    "la réponse dépend de is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"La matinée était calme et la rue était vide. La réponse dépend de la saison et du temps.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "la is the opening of the reply",
+    "la matinée is the opening of the reply",
+    "la matinée était is the opening of the reply",
+    "la matinée était calme is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "NOUS AVONS MARCHÉ JUSQU'AU MARCHÉ AVANT MIDI. LE TRAIN ÉTAIT ENCORE EN RETARD CETTE SEMAINE.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "upper is the case of the reply",
+    "fr is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "LA PLUPART DU TRAVAIL SE FAIT LE SOIR. SES NOTES ÉTAIENT COURTES ET TRÈS CLAIRES.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "upper is the case of the reply",
+    "fr is the language of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"They sold bread, fruit and fresh cheese. Nobody knew why the bridge was closed.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "they is the opening of the reply",
+    "they sold is the opening of the reply",
+    "they sold bread is the opening of the reply",
+    "they sold bread fruit is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": " \"Her notes were short and very clear. Her notes were short and very clear.\" ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "her is the opening of the reply",
+    "her notes is the opening of the reply",
+    "her notes were is the opening of the reply",
+    "her notes were short is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": " \"It's a small town, but people don't leave it. Nobody knew why the bridge was closed.\" ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "it's is the opening of the reply",
+    "it's a is the opening of the reply",
+    "it's a small is the opening of the reply",
+    "it's a small town is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": " \"We walked to the market before noon. They sold bread, fruit and fresh cheese.\" ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "we is the opening of the reply",
+    "we walked is the opening of the reply",
+    "we walked to is the opening of the reply",
+    "we walked to the is the opening of the reply"
+   ]
+  }
+ ],
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-11 15:18",
+  "sha256": "3120403f35b007eb85a2302086da7fb1447830573f0f2d540e4c62fdb0cbc37b",
+  "commit": "3f37515",
+  "older_than_sources": false
+ }
+}

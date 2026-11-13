@@ -1,0 +1,174 @@
+{
+ "order": "0067",
+ "what": "rule plans run by the VM against IFEval's checker on replies built to pass and fail",
+ "arm": "seat",
+ "rows": 319,
+ "replies_per_rule": 10,
+ "seed": 0,
+ "splits": "real_rule_test",
+ "counts": {
+  "pairs": 3190,
+  "agree": 3179,
+  "checker passes": 1365,
+  "rule passes, checker fails": 0,
+  "asked": 0
+ },
+ "agreement": 0.9966,
+ "rule_passes_checker_fails": 0.0,
+ "checker_pass_share": 0.4279,
+ "per_kind": {
+  "real_rule": {
+   "pairs": 3190,
+   "agree": 3179,
+   "checker passes": 1365,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.997
+  }
+ },
+ "misses": [
+  {
+   "kind": "real_rule",
+   "kwargs": {},
+   "reply": "NOUS AVONS MARCHÉ JUSQU'AU MARCHÉ AVANT MIDI. LA PLUPART DU TRAVAIL SE FAIT LE SOIR.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "upper is the case of the reply",
+    "fr is the language of the reply"
+   ]
+  },
+  {
+   "kind": "real_rule",
+   "kwargs": {
+    "language": "en"
+   },
+   "reply": "They sold bread, fruit and fresh cheese. Her notes were short and very clear.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "en is the language of the reply",
+    "no is the starts with \"Donne moi 3 arguments en faveur de la question \" of the reply"
+   ]
+  },
+  {
+   "kind": "real_rule",
+   "kwargs": {
+    "language": "en"
+   },
+   "reply": "It's a small town, but people don't leave it.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "en is the language of the reply",
+    "no is the starts with \"Donne moi 3 arguments en faveur de la question \" of the reply"
+   ]
+  },
+  {
+   "kind": "real_rule",
+   "kwargs": {
+    "language": "en"
+   },
+   "reply": "The morning was quiet and the street was empty. They sold bread, fruit and fresh cheese.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "en is the language of the reply",
+    "no is the starts with \"Donne moi 3 arguments en faveur de la question \" of the reply"
+   ]
+  },
+  {
+   "kind": "real_rule",
+   "kwargs": {
+    "num_paragraphs": 2
+   },
+   "reply": "La matinée était calme et la rue était vide. Nous avons marché jusqu'au marché avant midi.\n***\nLe train était encore en retard cette semaine. Personne ne savait",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "2 is the paragraph count of the reply",
+    "0 is the empty paragraph count of the reply"
+   ]
+  },
+  {
+   "kind": "real_rule",
+   "kwargs": {
+    "num_paragraphs": 2
+   },
+   "reply": "Un bon plan commence par une question simple. Personne ne savait pourquoi le pont était fermé.\n***\nLe train était encore en retard cette semaine. Ses notes étai",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "2 is the paragraph count of the reply",
+    "0 is the empty paragraph count of the reply"
+   ]
+  },
+  {
+   "kind": "real_rule",
+   "kwargs": {
+    "num_paragraphs": 2
+   },
+   "reply": "Ils vendaient du pain, des fruits et du fromage. La réponse dépend de la saison et du temps.\n***\nSes notes étaient courtes et très claires. La matinée était cal",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "2 is the paragraph count of the reply",
+    "0 is the empty paragraph count of the reply"
+   ]
+  },
+  {
+   "kind": "real_rule",
+   "kwargs": {},
+   "reply": "SES NOTES ÉTAIENT COURTES ET TRÈS CLAIRES. UN BON PLAN COMMENCE PAR UNE QUESTION SIMPLE.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "upper is the case of the reply",
+    "fr is the language of the reply"
+   ]
+  },
+  {
+   "kind": "real_rule",
+   "kwargs": {},
+   "reply": "A GOOD PLAN STARTS WITH A SIMPLE QUESTION. THEY SOLD BREAD, FRUIT AND FRESH CHEESE.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "upper is the case of the reply",
+    "en is the language of the reply",
+    "no is the starts with \"Use a soothing tone.\" of the reply"
+   ]
+  },
+  {
+   "kind": "real_rule",
+   "kwargs": {},
+   "reply": "WE WALKED TO THE MARKET BEFORE NOON. THEY SOLD BREAD, FRUIT AND FRESH CHEESE.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "upper is the case of the reply",
+    "en is the language of the reply",
+    "no is the starts with \"Use a soothing tone.\" of the reply"
+   ]
+  },
+  {
+   "kind": "real_rule",
+   "kwargs": {},
+   "reply": "NOBODY KNEW WHY THE BRIDGE WAS CLOSED. THEY SOLD BREAD, FRUIT AND FRESH CHEESE.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "upper is the case of the reply",
+    "en is the language of the reply",
+    "no is the starts with \"Use a soothing tone.\" of the reply"
+   ]
+  }
+ ],
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-11 15:18",
+  "sha256": "3120403f35b007eb85a2302086da7fb1447830573f0f2d540e4c62fdb0cbc37b",
+  "commit": "3f37515",
+  "older_than_sources": false
+ }
+}

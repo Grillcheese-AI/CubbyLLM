@@ -644,6 +644,35 @@ Apache-2.0, its licence beside it; `$CUBBY_DATASETS/dolly15k`: 13 MB, CC BY-SA 3
   70 GB, off otherwise, and refuses a set with records over `MAX_LEN`.
 - **The read planned:** dev; the three real test splits (real rules through IFEval's checker); the regression splits
   (second reads, labelled); IFBench again (written share, then agreement with its checker).
+### The reader's sixth round, read (Nick, 2026-11-13; Claude Code, Code A)
+Trained on Colab's third try (an A100 80 GB; an L4 and an A100 40 GB ran out of memory first, the third try ran
+without `--micro-tokens`): 702 steps, 3.0 min, held answer loss 0.0057. Read at home: grilly2 `03279a0` (the hook,
+merged to main as `d593633`), the cowork VM, slots constrained. Licences beside the adapter (`row_licences.json`).
+- **Dev** (`rule_reader_2026-11-13_v6_dev.json`): 147/150 exact; 13/13 `asked` rows abstained; 0 invented.
+- **Real prompts, held out** (`..._v6_real.json`, 360 each, 300 EN + 60 FR):
+  - no rule: **1 rule invented in 360**, 15 `asked`, 344 `none`;
+  - a rule inside: 357/360 exact; IFEval's checker **99.7%** agreement, **0 false passes** in 3,190 replies
+    (`rule_agree_2026-11-13_v6_real_rule.json`);
+  - a phrase no measurement covers (held-out phrases): 315 `asked`, 42 `none`, **3 rules written** (0.8%).
+- **Second reads (regression):** round 5's unmeasurable test 79/92 `asked`, **0 rules written** (round 5: 6); natural
+  115/116, 97.7% / 2.3% (unchanged); rule-free tasks **0 invented in 300** (round 5: 1); v4b new wordings 137/150,
+  97.8% / 0.15% (round 5: 96.2% / 0.54%).
+- **IFBench, a diagnostic** (spent by round 5; `rule_ifbench_2026-11-13_v6.json`, `rule_ifbench_agree_2026-11-13_v6.json`):
+  a rule written for **66.0%** (round 5: 25.7%), `asked` 15.3%, `none` 18.7%. Where written, agreement **56.8%**, false
+  passes **36.3%** (round 5: 21.7%); of the replies a written rule passed, 87% fail IFBench's checker. Worst: stop-word
+  ratios, palindromes, a keyword in a given sentence, consonant rules, unique word counts, each read as a count the
+  reply world keeps ("keyword paradox seven times" -> `count of the word "paradox" >= 1`; a keyword position ->
+  `sentence count >= 22`).
+- **Reading:** on the kinds it knows the plan reader now reads real, long prompts nearly perfectly and abstains on
+  unmeasurable phrases; on constraint kinds it has no measurement for, round 6 taught it that a constraint inside a
+  long prompt is to be written, so it writes the nearest measurement more often. A fixed-form reader cannot say a
+  kind it has no form for is new; the abstention it learned is for phrases, not for structures. That is the case for
+  the second reader (CubeLang, the addendum), which this read unblocks as its baseline. The plan reader stays unwired;
+  CB_RULES off.
+- **A host guard worth testing (proposed, not built):** every number and quoted word in a written plan must appear in
+  the instruction (as digits or a number word), else the plan is `asked`. It would refuse the invented numbers
+  ("sentence count >= 22" from a prompt with no 22) but not a wrong measurement with a right number ("count of the
+  word paradox >= 1" from "seven times"). Measured on round 6's IFBench plans before any decision.
 - **Commits:**
 - **Files:**
 - **Tests:**

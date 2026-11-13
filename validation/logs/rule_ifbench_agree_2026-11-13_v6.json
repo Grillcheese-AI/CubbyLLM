@@ -1,0 +1,518 @@
+{
+ "order": "0067",
+ "what": "IFBench, where the reader wrote a rule: the rule against IFBench's checker over replies",
+ "plans": "_rule_ifbench_2026-11-13_v6_plans.json",
+ "written": 198,
+ "replies_per_rule": 10,
+ "line": {
+  "agreement": ">= 0.95",
+  "false_passes": "<= 0.02 (kill > 0.05)"
+ },
+ "pairs": 1980,
+ "agreement": 0.5677,
+ "false_passes": 0.3626,
+ "rule_held_share": 0.4152,
+ "checker_pass_share": 0.1222,
+ "false_passes_among_rule_held": 0.8735,
+ "per_kind": {
+  "count:conjunctions": {
+   "pairs": 50,
+   "agree": 29,
+   "false passes": 21,
+   "rule held": 21,
+   "checker passes": 0
+  },
+  "count:keywords_multiple": {
+   "pairs": 50,
+   "agree": 29,
+   "false passes": 21,
+   "rule held": 21,
+   "checker passes": 0
+  },
+  "count:numbers": {
+   "pairs": 50,
+   "agree": 30,
+   "false passes": 20,
+   "rule held": 20,
+   "checker passes": 0
+  },
+  "count:person_names": {
+   "pairs": 60,
+   "agree": 37,
+   "false passes": 23,
+   "rule held": 23,
+   "checker passes": 0
+  },
+  "count:punctuation": {
+   "pairs": 30,
+   "agree": 17,
+   "false passes": 13,
+   "rule held": 13,
+   "checker passes": 0
+  },
+  "count:unique_word_count": {
+   "pairs": 90,
+   "agree": 50,
+   "false passes": 40,
+   "rule held": 40,
+   "checker passes": 0
+  },
+  "count:word_count_range": {
+   "pairs": 110,
+   "agree": 82,
+   "false passes": 25,
+   "rule held": 45,
+   "checker passes": 23
+  },
+  "count:words_japanese": {
+   "pairs": 50,
+   "agree": 14,
+   "false passes": 34,
+   "rule held": 48,
+   "checker passes": 16
+  },
+  "custom:character_reverse": {
+   "pairs": 10,
+   "agree": 6,
+   "false passes": 4,
+   "rule held": 4,
+   "checker passes": 0
+  },
+  "custom:european_capitals_sort": {
+   "pairs": 10,
+   "agree": 5,
+   "false passes": 5,
+   "rule held": 5,
+   "checker passes": 0
+  },
+  "custom:multiples": {
+   "pairs": 10,
+   "agree": 8,
+   "false passes": 2,
+   "rule held": 2,
+   "checker passes": 0
+  },
+  "custom:sentence_alphabet": {
+   "pairs": 10,
+   "agree": 6,
+   "false passes": 4,
+   "rule held": 4,
+   "checker passes": 0
+  },
+  "custom:word_reverse": {
+   "pairs": 10,
+   "agree": 7,
+   "false passes": 3,
+   "rule held": 3,
+   "checker passes": 0
+  },
+  "format:emoji": {
+   "pairs": 30,
+   "agree": 20,
+   "false passes": 10,
+   "rule held": 10,
+   "checker passes": 0
+  },
+  "format:line_indent": {
+   "pairs": 20,
+   "agree": 12,
+   "false passes": 8,
+   "rule held": 8,
+   "checker passes": 0
+  },
+  "format:list": {
+   "pairs": 30,
+   "agree": 19,
+   "false passes": 11,
+   "rule held": 11,
+   "checker passes": 0
+  },
+  "format:no_bullets_bullets": {
+   "pairs": 50,
+   "agree": 15,
+   "false passes": 35,
+   "rule held": 35,
+   "checker passes": 0
+  },
+  "format:no_whitespace": {
+   "pairs": 10,
+   "agree": 2,
+   "false passes": 8,
+   "rule held": 8,
+   "checker passes": 0
+  },
+  "format:parentheses": {
+   "pairs": 20,
+   "agree": 20,
+   "false passes": 0,
+   "rule held": 0,
+   "checker passes": 0
+  },
+  "format:quote_unquote": {
+   "pairs": 30,
+   "agree": 4,
+   "false passes": 10,
+   "rule held": 10,
+   "checker passes": 16
+  },
+  "format:quotes": {
+   "pairs": 80,
+   "agree": 56,
+   "false passes": 24,
+   "rule held": 24,
+   "checker passes": 0
+  },
+  "format:sub-bullets": {
+   "pairs": 120,
+   "agree": 41,
+   "false passes": 18,
+   "rule held": 18,
+   "checker passes": 61
+  },
+  "format:thesis": {
+   "pairs": 90,
+   "agree": 55,
+   "false passes": 35,
+   "rule held": 35,
+   "checker passes": 0
+  },
+  "format:title_case": {
+   "pairs": 40,
+   "agree": 27,
+   "false passes": 11,
+   "rule held": 11,
+   "checker passes": 2
+  },
+  "ratio:overlap": {
+   "pairs": 80,
+   "agree": 49,
+   "false passes": 31,
+   "rule held": 31,
+   "checker passes": 0
+  },
+  "ratio:sentence_balance": {
+   "pairs": 30,
+   "agree": 16,
+   "false passes": 13,
+   "rule held": 13,
+   "checker passes": 1
+  },
+  "ratio:sentence_words": {
+   "pairs": 70,
+   "agree": 45,
+   "false passes": 25,
+   "rule held": 25,
+   "checker passes": 0
+  },
+  "ratio:stop_words": {
+   "pairs": 120,
+   "agree": 46,
+   "false passes": 73,
+   "rule held": 75,
+   "checker passes": 3
+  },
+  "repeat:repeat_change": {
+   "pairs": 30,
+   "agree": 25,
+   "false passes": 5,
+   "rule held": 5,
+   "checker passes": 0
+  },
+  "repeat:repeat_span": {
+   "pairs": 40,
+   "agree": 20,
+   "false passes": 20,
+   "rule held": 20,
+   "checker passes": 0
+  },
+  "sentence:alliteration_increment": {
+   "pairs": 30,
+   "agree": 19,
+   "false passes": 6,
+   "rule held": 12,
+   "checker passes": 11
+  },
+  "sentence:increment": {
+   "pairs": 80,
+   "agree": 45,
+   "false passes": 23,
+   "rule held": 36,
+   "checker passes": 25
+  },
+  "sentence:keyword": {
+   "pairs": 130,
+   "agree": 84,
+   "false passes": 46,
+   "rule held": 46,
+   "checker passes": 0
+  },
+  "words:alphabet": {
+   "pairs": 60,
+   "agree": 52,
+   "false passes": 8,
+   "rule held": 8,
+   "checker passes": 0
+  },
+  "words:consonants": {
+   "pairs": 130,
+   "agree": 82,
+   "false passes": 44,
+   "rule held": 44,
+   "checker passes": 4
+  },
+  "words:keywords_specific_position": {
+   "pairs": 40,
+   "agree": 23,
+   "false passes": 17,
+   "rule held": 17,
+   "checker passes": 0
+  },
+  "words:last_first": {
+   "pairs": 50,
+   "agree": 46,
+   "false passes": 3,
+   "rule held": 15,
+   "checker passes": 13
+  },
+  "words:no_consecutive": {
+   "pairs": 50,
+   "agree": 30,
+   "false passes": 6,
+   "rule held": 9,
+   "checker passes": 17
+  },
+  "words:odd_even_syllables": {
+   "pairs": 90,
+   "agree": 60,
+   "false passes": 19,
+   "rule held": 27,
+   "checker passes": 19
+  },
+  "words:palindrome": {
+   "pairs": 70,
+   "agree": 9,
+   "false passes": 61,
+   "rule held": 61,
+   "checker passes": 0
+  },
+  "words:paragraph_last_first": {
+   "pairs": 60,
+   "agree": 50,
+   "false passes": 10,
+   "rule held": 10,
+   "checker passes": 0
+  },
+  "words:prime_lengths": {
+   "pairs": 30,
+   "agree": 9,
+   "false passes": 21,
+   "rule held": 30,
+   "checker passes": 9
+  },
+  "words:repeats": {
+   "pairs": 50,
+   "agree": 29,
+   "false passes": 14,
+   "rule held": 31,
+   "checker passes": 24
+  },
+  "words:start_verb": {
+   "pairs": 10,
+   "agree": 5,
+   "false passes": 5,
+   "rule held": 5,
+   "checker passes": 0
+  },
+  "words:words_position": {
+   "pairs": 30,
+   "agree": 19,
+   "false passes": 11,
+   "rule held": 11,
+   "checker passes": 0
+  }
+ },
+ "false_pass_examples": [
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "rule": "count of the word \"paradox\" >= 1",
+   "reply": "A good plan starts with a simple question. The morning was quiet and the street was empty. The answer depends on the sea"
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "rule": "count of the word \"paradox\" >= 1",
+   "reply": "They sold bread, fruit and fresh cheese. A good plan starts with a simple question. The answer depends on the season and"
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "rule": "count of the word \"paradox\" >= 1",
+   "reply": "Her notes were short and very clear. Most of the work happens in the evening. It's a small town, but people don't leave "
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "rule": "count of the word \"paradox\" >= 1",
+   "reply": "Nobody knew why the bridge was closed. We walked to the market before noon. Most of the work happens in the evening. par"
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "rule": "count of the word \"paradox\" >= 1",
+   "reply": "The train was late again this week. Most of the work happens in the evening. Nobody knew why the bridge was closed. para"
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "rule": "count of the word \"meridian\" >= 1",
+   "reply": "Her notes were short and very clear. Most of the work happens in the evening. It's a small town, but people don't leave "
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "rule": "count of the word \"meridian\" >= 1",
+   "reply": "The answer depends on the season and the weather. They sold bread, fruit and fresh cheese. We walked to the market befor"
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "rule": "count of the word \"meridian\" >= 1",
+   "reply": "The train was late again this week. A good plan starts with a simple question. The train was late again this week. merid"
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "rule": "count of the word \"door\" >= 1",
+   "reply": "The answer depends on the season and the weather. Her notes were short and very clear. A good plan starts with a simple "
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "rule": "count of the word \"door\" >= 1",
+   "reply": "They sold bread, fruit and fresh cheese. The morning was quiet and the street was empty. Most of the work happens in the"
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "rule": "count of the word \"door\" >= 1",
+   "reply": "It's a small town, but people don't leave it. The answer depends on the season and the weather. Her notes were short and"
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "rule": "count of the word \"door\" >= 1",
+   "reply": "They sold bread, fruit and fresh cheese. Most of the work happens in the evening. Nobody knew why the bridge was closed."
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "rule": "count of the word \"door\" >= 1",
+   "reply": "It's a small town, but people don't leave it. The morning was quiet and the street was empty. Nobody knew why the bridge"
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "rule": "count of the word \"keyword\" >= 1",
+   "reply": "Most of the work happens in the evening. A good plan starts with a simple question. The morning was quiet and the street"
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "rule": "count of the word \"keyword\" >= 1",
+   "reply": "Most of the work happens in the evening. A good plan starts with a simple question. The morning was quiet and the street"
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "rule": "count of the word \"keyword\" >= 1",
+   "reply": "The train was late again this week. Most of the work happens in the evening. The morning was quiet and the street was em"
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "rule": "count of the word \"keyword\" >= 1",
+   "reply": "They sold bread, fruit and fresh cheese. Her notes were short and very clear. The answer depends on the season and the w"
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "rule": "count of the word \"keyword\" >= 1",
+   "reply": "The morning was quiet and the street was empty. Most of the work happens in the evening. They sold bread, fruit and fres"
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "rule": "count of the word \"keyword\" >= 1",
+   "reply": "They sold bread, fruit and fresh cheese. A good plan starts with a simple question. Her notes were short and very clear."
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "rule": "count of the word \"keyword\" >= 1",
+   "reply": "Nobody knew why the bridge was closed. It's a small town, but people don't leave it. A good plan starts with a simple qu"
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "rule": "count of the word \"keyword\" >= 1",
+   "reply": "We walked to the market before noon. Her notes were short and very clear. Most of the work happens in the evening. keywo"
+  },
+  {
+   "kinds": [
+    "count:conjunctions"
+   ],
+   "rule": "count of the word \"coordinating\" >= 3",
+   "reply": "It's a small town, but people don't leave it. It's a small town, but people don't leave it. The morning was quiet and th"
+  },
+  {
+   "kinds": [
+    "count:conjunctions"
+   ],
+   "rule": "count of the word \"coordinating\" >= 3",
+   "reply": "Most of the work happens in the evening. It's a small town, but people don't leave it. A good plan starts with a simple "
+  },
+  {
+   "kinds": [
+    "count:conjunctions"
+   ],
+   "rule": "count of the word \"coordinating\" >= 3",
+   "reply": "We walked to the market before noon. We walked to the market before noon. The morning was quiet and the street was empty"
+  },
+  {
+   "kinds": [
+    "count:conjunctions"
+   ],
+   "rule": "count of the word \"coordinating\" >= 4",
+   "reply": "They sold bread, fruit and fresh cheese. Her notes were short and very clear. The train was late again this week. coordi"
+  }
+ ],
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-11 15:18",
+  "sha256": "3120403f35b007eb85a2302086da7fb1447830573f0f2d540e4c62fdb0cbc37b",
+  "commit": "3f37515",
+  "older_than_sources": false
+ }
+}
