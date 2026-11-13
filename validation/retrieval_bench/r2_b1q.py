@@ -43,6 +43,10 @@ import json
 __wiring__ = "STANDALONE"
 
 MAX_WORDS, IN_MAX, SHORT, MAX_HOPS = 6, 20, 3, 8
+# order 0069, B: how "located in" counts. "walk" (as built, 0046): a chain reaching the cue makes a candidate hold it.
+# "veto": a candidate holds the cue only by a statement of its own; a chain reaching the cue for ANOTHER candidate
+# turns a pick into undecided, and a chain never makes a pick. Set by `r2_choosing --b1q-walk`.
+WALK = "walk"
 
 
 def relation_wordings(pids, lx: dict, langs=("en", "fr")) -> set[str]:
@@ -188,8 +192,27 @@ def write_segment(path: str, rows: list[dict], profiles: dict, items_of_all: dic
     return n
 
 
+def _walk(session, kpath: str, q: str, want: set) -> tuple[bool, float]:
+    """Along `located in`, one VM hop at a time, up to a country: (a chain from `q` reaches one of `want`, wall ms)."""
+    from retrieval_bench import r2_vm as V
+    seen, front, wall = {q}, [q], 0.0
+    for _ in range(MAX_HOPS):
+        nxt = []
+        for x in front:
+            b = V.branch(session, kpath, x, "P131")
+            wall += b["wall_ms"] or 0
+            nxt += [v for v in b["values"] if v not in seen]
+        if want & set(nxt):
+            return True, wall
+        seen |= set(nxt)
+        front = nxt
+        if not front:
+            break
+    return False, wall
+
+
 def b1q(session, kpath: str, named: list[str], pid: str | None, cues: list[str], items_of: dict) -> dict:
-    """B1q over the candidates that bear the name."""
+    """B1q over the candidates that bear the name (``WALK``: how "located in" counts)."""
     from retrieval_bench import r2_vm as V
     checked = longest([c for c in cues if items_of.get(c)])
     if not checked:
@@ -208,21 +231,10 @@ def b1q(session, kpath: str, named: list[str], pid: str | None, cues: list[str],
             if b["values"]:
                 qual = True
                 break
-        if not qual:                                     # along `located in`, one VM hop at a time, up to a country
-            want, seen, front = {v for c in checked for v in items_of.get(c) or ()}, {q}, [q]
-            for _ in range(MAX_HOPS):
-                nxt = []
-                for x in front:
-                    b = V.branch(session, kpath, x, "P131")
-                    wall += b["wall_ms"] or 0
-                    nxt += [v for v in b["values"] if v not in seen]
-                if want & set(nxt):
-                    qual = True
-                    break
-                seen |= set(nxt)
-                front = nxt
-                if not front:
-                    break
+        want = {v for c in checked for v in items_of.get(c) or ()}
+        if not qual and WALK == "walk":                  # the chain makes the candidate hold the cue
+            qual, w = _walk(session, kpath, q, want)
+            wall += w
         bs.append({"item": q, "values": rel["values"] if qual else [], "wall_ms": rel["wall_ms"]})
     if pid:
         out = V.decide(bs)
@@ -230,6 +242,15 @@ def b1q(session, kpath: str, named: list[str], pid: str | None, cues: list[str],
         stand = [b["item"] for b in bs if b["values"]]
         out = {"outcome": "pick", "item": stand[0], "by": "the only one the context's facts hold"} if len(stand) == 1 else \
             {"outcome": "undecided", "items": stand or named}
+    if WALK == "veto" and out.get("outcome") == "pick":  # another candidate reached through a chain: no pick
+        want = {v for c in checked for v in items_of.get(c) or ()}
+        for q in named:
+            if q != out["item"]:
+                hit, w = _walk(session, kpath, q, want)
+                wall += w
+                if hit:
+                    out = {"outcome": "undecided", "items": [out["item"], q], "why": "a chain reaches the cue for another candidate"}
+                    break
     return {**out, "k": len(named), "wall_ms": round(wall, 3), "qualifier": "checked"}
 
 

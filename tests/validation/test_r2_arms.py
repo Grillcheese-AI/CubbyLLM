@@ -177,6 +177,33 @@ def test_b1q_walks_located_in_one_vm_hop_at_a_time(monkeypatch):
     assert out["outcome"] != "ask" and out.get("item") == "Q1"            # Cape Town is in the Western Cape; Q2 is not
 
 
+def test_the_veto_never_makes_a_pick_and_a_chain_for_another_candidate_turns_one_into_undecided(monkeypatch):
+    """Order 0069, B: with WALK = "veto" a candidate holds a cue only by its own statement; a "located in" chain that
+    reaches the cue for another candidate makes a pick undecided; a chain alone never makes a pick."""
+    from retrieval_bench import r2_b1q as Q
+    monkeypatch.setattr(Q, "WALK", "veto")
+    cue = {"western cape": ["Q127167"]}
+    # Q1 reaches the cue only through a chain: under the walk it would be picked; under the veto nothing stands
+    facts = {("Q1", "P19"): ["Q9"], ("Q2", "P19"): ["Q9"], ("Q1", "P131"): ["Q5465"], ("Q5465", "P131"): ["Q127167"],
+             ("Q2", "P131"): ["Q8"]}
+    monkeypatch.setattr(V, "branch", lambda s, k, q, p: {"item": q, "values": facts.get((q, p), []), "wall_ms": 0.1})
+    assert Q.b1q(None, "", ["Q1", "Q2"], "P19", ["western cape"], cue)["outcome"] != "pick"
+    assert Q.b1q(None, "", ["Q1", "Q2"], None, ["western cape"], cue)["outcome"] != "pick"
+    # Q2 holds the cue by its own statement: picked, unless a chain reaches the cue for Q1 (it does here)
+    facts[("Q2", "~ western cape")] = ["western cape"]
+    out = Q.b1q(None, "", ["Q1", "Q2"], "P19", ["western cape"], cue)
+    assert out["outcome"] == "undecided" and "chain" in out["why"]
+    # no chain for the other candidate: the pick stands
+    facts[("Q5465", "P131")] = []
+    out = Q.b1q(None, "", ["Q1", "Q2"], "P19", ["western cape"], cue)
+    assert out["outcome"] == "pick" and out["item"] == "Q2"
+    # under the walk (as built) the same facts pick as before
+    monkeypatch.setattr(Q, "WALK", "walk")
+    facts[("Q5465", "P131")] = ["Q127167"]
+    del facts[("Q2", "~ western cape")]
+    assert Q.b1q(None, "", ["Q1", "Q2"], "P19", ["western cape"], cue).get("item") == "Q1"
+
+
 def test_b1q_s_compared_rule_two_names_compared_or_chosen_are_no_cue_for_each_other():
     """Cowork's check of the seed-0 rerun (2026-11-04 night): "Does California have more electoral votes than Rhode
     Island?" -- California is the other side, not a qualifier of Rhode Island. A same-side qualifier stays; "où" is no

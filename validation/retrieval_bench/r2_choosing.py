@@ -201,9 +201,13 @@ def main() -> None:
     ap.add_argument("--no-el", action="store_true", help="the fame set only")
     ap.add_argument("--tag", default="", help="appended to the log's name (a partial rerun keeps the full run's log)")
     ap.add_argument("--fame-set", default="fame_set", help="fame_set (seed 0, dev) or fame_set_seed1 (read once)")
+    ap.add_argument("--b1q-walk", choices=("walk", "veto"), default="walk",
+                    help="order 0069 B: a 'located in' chain makes a candidate hold a cue (walk) or only vetoes a pick")
     ap.add_argument("--b1-qfhrr", type=float, nargs="*", default=None,
                     help="the comparison arm (B1, then qFHRR among the branches that verify) at these margins")
     a = ap.parse_args()
+    from retrieval_bench import r2_b1q
+    r2_b1q.WALK = a.b1q_walk
     t0 = time.time()
     test = a.split == "test"
     taus = [] if a.no_bm25 else [a.tau] if test and a.tau is not None else a.taus
@@ -226,7 +230,7 @@ def main() -> None:
     from retrieval_bench.r2_gates import budget, gates
     rep["gates"] = gates(summary)
     rep["b1_budget"] = budget(rows)
-    rep["args"] = {"fame_set": a.fame_set, "no_fame": a.no_fame, "no_el": a.no_el, "no_vm": a.no_vm, "no_qfhrr": a.no_qfhrr, "no_bm25": a.no_bm25,
+    rep["args"] = {"b1q_walk": a.b1q_walk, "fame_set": a.fame_set, "no_fame": a.no_fame, "no_el": a.no_el, "no_vm": a.no_vm, "no_qfhrr": a.no_qfhrr, "no_bm25": a.no_bm25,
                    "fame_n": a.fame_n, "tag": a.tag}
     path = os.path.join(os.path.dirname(HERE), "logs", f"retrieval_R2_{a.split}_{rep['date']}{a.tag}.json")
     json.dump(rep, open(path, "w", encoding="utf-8"), indent=1)
