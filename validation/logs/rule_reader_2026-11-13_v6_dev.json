@@ -1,0 +1,297 @@
+{
+ "order": "0067",
+ "what": "the program seat as it is reads instructions into rule plans, slots constrained",
+ "adapter": "cubby450m_rules_v6",
+ "rows_file_lines": 26267,
+ "n_per_split": 150,
+ "k": 8,
+ "seed": 0,
+ "examples_kinds": [
+  "word count < 100",
+  "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+  "case == lower ; language == en",
+  "count of the word \"musique\" >= 3",
+  "markdown == no",
+  "section count \"PART\" >= 3",
+  "count of the letter \"e\" >= 5",
+  "starts with \"Donne-moi trois conseils pour mieux dormir.\" == yes"
+ ],
+ "arms": {
+  "zero": {
+   "dev": {
+    "counts": {
+     "rows": 150,
+     "written": 107,
+     "exact": 147,
+     "measurement right": 147,
+     "rows en": 99,
+     "exact en": 98,
+     "rule-free rows": 30,
+     "invented a rule": 0,
+     "asked rows": 13,
+     "said asked": 13,
+     "wrote a rule for an asked row": 0,
+     "said none where there was a rule": 0,
+     "rows fr": 51,
+     "exact fr": 49
+    },
+    "per_kind": {
+     "asked_confident+rule": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "asked_direct": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "asked_encouraging+rule": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "english_capital": {
+      "rows": 2,
+      "exact": 2,
+      "measurement right": 2
+     },
+     "english_lowercase": {
+      "rows": 2,
+      "exact": 2,
+      "measurement right": 2
+     },
+     "english_lowercase+repeat_prompt": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "existence": {
+      "rows": 2,
+      "exact": 2,
+      "measurement right": 2
+     },
+     "first": {
+      "rows": 6,
+      "exact": 6,
+      "measurement right": 6
+     },
+     "first+letter_frequency": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "first+number_paragraphs": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "frequency+letter_frequency": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "frequency+multiple_sections": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "json_format": {
+      "rows": 6,
+      "exact": 6,
+      "measurement right": 6
+     },
+     "json_format+frequency": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "letter_frequency": {
+      "rows": 5,
+      "exact": 5,
+      "measurement right": 5
+     },
+     "letter_frequency+english_capital": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "letter_frequency+number_highlighted_sections": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "multiple_sections": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "natural_sentences": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "no_markdown": {
+      "rows": 4,
+      "exact": 4,
+      "measurement right": 4
+     },
+     "none": {
+      "rows": 12,
+      "exact": 12,
+      "measurement right": 12
+     },
+     "number_highlighted_sections": {
+      "rows": 6,
+      "exact": 6,
+      "measurement right": 6
+     },
+     "number_paragraphs": {
+      "rows": 3,
+      "exact": 3,
+      "measurement right": 3
+     },
+     "number_sentences": {
+      "rows": 5,
+      "exact": 5,
+      "measurement right": 5
+     },
+     "number_words": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "number_words+response_language": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "quotation": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "quotation+number_paragraphs": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "real_asked_casual": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "real_asked_few_adjectives": {
+      "rows": 2,
+      "exact": 2,
+      "measurement right": 2
+     },
+     "real_asked_gentle": {
+      "rows": 2,
+      "exact": 2,
+      "measurement right": 2
+     },
+     "real_asked_historical_event": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "real_asked_humorous": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "real_asked_moral": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "real_asked_passive": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "real_asked_persuasive": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "real_asked_rhetorical": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "real_asked_rhyme": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "real_none": {
+      "rows": 18,
+      "exact": 18,
+      "measurement right": 18
+     },
+     "real_rule": {
+      "rows": 25,
+      "exact": 25,
+      "measurement right": 25
+     },
+     "repeat_prompt": {
+      "rows": 2,
+      "exact": 2,
+      "measurement right": 2
+     },
+     "response_language": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "title": {
+      "rows": 3,
+      "exact": 3,
+      "measurement right": 3
+     },
+     "title+no_markdown": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "two_responses": {
+      "rows": 4,
+      "exact": 4,
+      "measurement right": 4
+     },
+     "two_responses+english_capital": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "two_responses+number_paragraphs": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     }
+    },
+    "some_misses": [
+     {
+      "kind": "two_responses+number_paragraphs",
+      "want": "response count == 2 ; empty response count == 0 ; distinct response count == 2 ; paragraph count == 4 ; empty paragraph count == 0",
+      "got": "response count == 2 ; empty response count == 0 ; distinct response count == 2 ; paragraph count == 4 ; paragraph count == 4"
+     },
+     {
+      "kind": "asked_confident+rule",
+      "want": "response count == 2 ; empty response count == 0 ; distinct response count == 2",
+      "got": "response count == 2 ; empty response count == 0 ; distinct response count == 2 ; language == en"
+     },
+     {
+      "kind": "frequency+letter_frequency",
+      "want": "count of the word \"histoire\" >= 3 ; count of the letter \"q\" < 11",
+      "got": "count of the letter \"q\" >= 3 ; count of the letter \"q\" < 11"
+     }
+    ]
+   },
+   "seconds": 82.4,
+   "seat_calls": 723
+  }
+ }
+}

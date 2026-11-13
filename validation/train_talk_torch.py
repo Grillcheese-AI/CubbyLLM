@@ -235,11 +235,14 @@ def main():
         return tot / max(n, 1.0)
 
     base_sha = ckpt_sha256(args.ckpt)
+    man_p = args.data + ".manifest.json"
+    data_man = json.load(open(man_p, encoding="utf-8")) if os.path.isfile(man_p) else {}
 
     def meta_out(step):
         return {"step": step, "rank": args.rank, "alpha": args.alpha, "targets": targets, "trainer": "torch",
                 "ckpt": os.path.basename(args.ckpt) if args.ckpt else "smoke", "ckpt_sha256": base_sha,
-                "data": os.path.basename(args.data), "epochs": args.epochs, "batch": args.batch, "lr": args.lr, "tag": args.tag}
+                "data": os.path.basename(args.data), "epochs": args.epochs, "batch": args.batch, "lr": args.lr, "tag": args.tag,
+                "row_licences": data_man.get("row_licences")}     # from the set's manifest, when it says (0067)
 
     logs = os.path.join(HERE, "logs")
     os.makedirs(logs, exist_ok=True)

@@ -40,6 +40,16 @@ def record(r: dict) -> dict:
             "answer": ("asked" if r.get("asked") else rr.surface(r["plan"])) + "\n"}
 
 
+def row_licences(rows_p: Path) -> dict:
+    """The licences of the outside text in the rows (from the rows' manifest), for the adapter's json (Cowork, 0067:
+    an adapter carries its rows' licences). The drawn templates are this repo's own."""
+    man_p = rows_p.parent / "manifest.json"
+    man = json.loads(man_p.read_text(encoding="utf-8")) if man_p.exists() else {}
+    out = {"templates": "this repo's own (Apache-2.0)"}
+    out.update({k: v for k, v in man.items() if "licence" in k})
+    return out
+
+
 def slot_texts(rec: dict) -> list[tuple[str, str]]:
     """(text written so far, the next slot) at every boundary the reader writes."""
     out, text = [], rec["prompt"]
@@ -116,7 +126,8 @@ def main() -> None:
                1 for r in rows if r["split"] == "new_wording"),
            "benchmarks_checked": sorted(bench), "records_sharing_5_words_with_a_benchmark": len(leaks),
            "slot_boundaries_checked": checked, "slot_boundaries_tokenized_otherwise": bad, "examples": examples,
-           "max_len": a.max_len or None, "records_over_max_len": dict(over) if a.max_len else None}
+           "max_len": a.max_len or None, "records_over_max_len": dict(over) if a.max_len else None,
+           "row_licences": row_licences(rows_p)}
     Path(str(out) + ".manifest.json").write_text(json.dumps(man, indent=1, ensure_ascii=False), encoding="utf-8")
     print(json.dumps(man, indent=1, ensure_ascii=False))
 
