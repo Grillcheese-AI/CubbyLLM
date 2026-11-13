@@ -8,7 +8,9 @@ package ``instruction_following_eval/``), nltk's data ``$CUBBY_IFEVAL_NLTK``.
       pairs:    {"id", "instruction_id", "kwargs", "reply"} per line
       verdicts: {"id", "followed": bool} per line
   <checker's python> validation/ifeval_check.py --describe <specs.jsonl> <out.jsonl>
-      specs:    {"id", "instruction_id", "kwargs"} -> {"id", "instruction"}: the checker's own wording of the rule
+      specs:    {"id", "instruction_id", "kwargs"} -> {"id", "instruction"}: the checker's own wording of the rule;
+                {"id", "instruction_id", "seed"} (no kwargs) -> {"id", "instruction", "kwargs"}: the checker draws its
+                own arguments (Python's random, seeded) and says which
 
 langdetect is seeded (``DetectorFactory.seed = 0``) so a verdict repeats.
 """
@@ -44,6 +46,13 @@ def main() -> None:
         for line in f:
             p = json.loads(line)
             inst = reg[p["instruction_id"]](p["instruction_id"])
+            if describe and "kwargs" not in p:           # the checker draws its own arguments, seeded
+                import random
+                random.seed(p["seed"])
+                text = inst.build_description()
+                out.write(json.dumps({"id": p["id"], "instruction": text, "kwargs": inst.get_instruction_args()},
+                                     ensure_ascii=False) + "\n")
+                continue
             text = inst.build_description(**_kwargs(p["kwargs"]))
             if describe:
                 out.write(json.dumps({"id": p["id"], "instruction": text}, ensure_ascii=False) + "\n")

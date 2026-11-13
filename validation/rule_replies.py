@@ -90,6 +90,37 @@ def build(iid: str, kw: dict, lang: str, rng: random.Random) -> str:
     if iid == "startend:quotation":
         t = text(lang, rng, 2)
         return rng.choice([f'"{t}"', t, f'"{t}', f' "{t}" '])
+    return held_out(iid, kw or {}, lang, rng)
+
+
+def held_out(iid: str, kw: dict, lang: str, rng: random.Random) -> str:
+    """Replies for the held-out kinds (line 3's held-out read): built only to sit near each edge; the checker labels."""
+    t = text(lang, rng, 2)
+    if iid == "punctuation:no_comma":
+        return rng.choice([t.replace(",", ""), t.replace(",", "") + " Yes, indeed.", t])
+    if iid == "startend:end_checker":
+        ep = kw["end_phrase"]
+        return rng.choice([f"{t} {ep}", t, f"{t} {ep} More.", f"{ep} {t}", f'"{t} {ep}"'])
+    if iid == "detectable_content:postscript":
+        mk = kw["postscript_marker"]
+        return rng.choice([f"{t}\n\n{mk} one more thing.", t, f"{t} {mk.lower()} x", f"{t}\nPS note"])
+    if iid == "detectable_content:number_placeholders":
+        return t + " " + " ".join(f"[item{i}]" for i in range(around(int(kw["num_placeholders"]), rng)))
+    if iid == "detectable_format:constrained_response":
+        return rng.choice(["My answer is yes.", f"My answer is no. {t}", t, "my answer is maybe", "My answer is maybe."])
+    if iid == "detectable_format:number_bullet_lists":
+        return "\n".join(f"{rng.choice(['*', '*', '-'])} {text(lang, rng, 1)}" for _ in range(around(int(kw["num_bullets"]), rng)))
+    if iid == "keywords:forbidden_words":
+        return t + (f" {rng.choice(kw['forbidden_words'])}." if rng.random() < 0.5 else "")
+    if iid == "length_constraints:nth_paragraph_first_word":
+        n, nth, fw = int(kw["num_paragraphs"]), int(kw["nth_paragraph"]), kw["first_word"]
+        paras = [text(lang, rng, 1) for _ in range(around(n, rng) or 1)]
+        if nth <= len(paras) and rng.random() < 0.6:
+            paras[nth - 1] = f"{fw.capitalize()} {paras[nth - 1]}"
+        return "\n\n".join(paras)
+    if iid == "change_case:capital_word_frequency":
+        caps = ["ALPHA", "BRAVO", "DELTA", "ECHO", "HOTEL", "KILO", "LIMA", "OSCAR", "ROMEO", "TANGO"]
+        return t + " " + " ".join(rng.choice(caps) for _ in range(around(int(kw["capital_frequency"]), rng)))
     raise KeyError(iid)
 
 

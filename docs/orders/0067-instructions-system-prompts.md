@@ -532,6 +532,34 @@ instruction, the reader writes the rule) waits for the reader's line 3.
   quotation 0.72 (an extra leaf, `count of the word "end"`, on a right rule), number of words 0.89.
 - **Line 3, new wordings: written met, agreement missed by 2.3 points**; false passes nearly nil. The held-out kinds
   are read next, as Nick said.
+### Line 3's held-out read: the kill line is hit (Claude Code, 2026-11-13)
+- **The read** (`validation/exp_rule_heldout.py`, once; `rule_heldout_2026-11-13_v4.json`; the round-4 adapter, the
+  cowork VM): each of the 9 held-out IFEval kinds in IFEval's own wording, 30 instructions a kind with arguments the
+  checker drew from seeds 0-29 (`ifeval_check.py --describe`); where a rule was written, 5 replies built near its
+  edge (`rule_replies.held_out`), labelled by IFEval's checker, judged by the VM. M-IFEval's French kinds: not read
+  (its prompts are not on this machine).
+
+| line 3, held-out | line | the 7 untouched kinds | forbidden words (apart) | bullet lists (apart) |
+|---|---|---|---|---|
+| a rule written | >= 50% | **85.7%** (180 / 210) | 73% | 100% |
+| agreement where written | >= 95% | **47.8%** (900 replies) | 42.7% | 64.0% |
+| rule passes, checker fails | <= 2%, **kill > 5%** | **6.4%: kill** | 1.8% | 0% |
+
+- **What it wrote:** the nearest familiar shape, confidently: "refrain from the use of any commas" -> the quotation
+  rule (30 of 30, though `count of the character ","` exists); "finish your response with this exact phrase" ->
+  `starts with` (not `ends with`); all-capital words -> `count of the word "words"` (false passes 37%); placeholders ->
+  quotation / highlights; a postscript -> `opening has P S`; forbidden words -> `count of the word "not" >= 1`;
+  "answer with one of the following options" -> `none` (30 of 30). It said `asked` 0 times in 270.
+- **Why, as far as the rows show:** no training row ever had `asked` as its answer. Every row either carried a rule the
+  reader could write or (round 4) none at all, so the reader never learned "a rule I cannot measure". On an unseen
+  kind it forces the nearest plan. That is the opposite of what the turn needs: a wrong rule is checked faithfully,
+  so its errors reach the user as wrong refusals or, here 6.4% of the time, as passes the instruction forbids.
+- **Line 3: killed on held-out kinds** (and missed on new wordings by 2.3 points). **The reader is not wired into the
+  turn**; `CB_RULES` stays off by default; rules reach the turn only as plans the host was given.
+- **What a next attempt would need** (Nick's call): rows whose answer is `asked` (instructions about tone, style,
+  persuasion, formality ... that no measurement covers), so abstaining is learned; and a fresh set of held-out kinds,
+  since these 9 are now read. An abstention read (how often an unseen kind gets `asked` instead of a wrong rule) would
+  join line 3.
 - **Commits:**
 - **Files:**
 - **Tests:**

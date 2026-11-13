@@ -1,0 +1,5915 @@
+{
+ "order": "0067",
+ "what": "line 3's held-out read: IFEval's held-out kinds, IFEval's own wording, the reader",
+ "adapter": "cubby450m_rules_v4",
+ "per_kind_instructions": 30,
+ "replies_per_rule": 5,
+ "line": {
+  "written_share": ">= 0.5",
+  "agreement": ">= 0.95",
+  "false_passes": "<= 0.02 (kill > 0.05)"
+ },
+ "seven_untouched_kinds": {
+  "instructions": 210,
+  "written": 180,
+  "written_share": 0.8571,
+  "pairs": 900,
+  "agreement": 0.4778,
+  "false_passes": 0.0644,
+  "checker_pass_share": 0.4944
+ },
+ "apart": {
+  "keywords:forbidden_words": {
+   "instructions": 30,
+   "written": 22,
+   "written_share": 0.7333,
+   "pairs": 110,
+   "agreement": 0.4273,
+   "false_passes": 0.0182,
+   "checker_pass_share": 0.5818
+  },
+  "detectable_format:number_bullet_lists": {
+   "instructions": 30,
+   "written": 30,
+   "written_share": 1.0,
+   "pairs": 150,
+   "agreement": 0.64,
+   "false_passes": 0.0,
+   "checker_pass_share": 0.36
+  }
+ },
+ "per_kind": {
+  "change_case:capital_word_frequency": {
+   "instructions": 30,
+   "written": 30,
+   "pairs": 150,
+   "agree": 50,
+   "false passes": 56,
+   "checker passes": 73,
+   "written_share": 1.0,
+   "agreement": 0.3333,
+   "false_passes": 0.3733,
+   "checker_pass_share": 0.4867
+  },
+  "detectable_content:number_placeholders": {
+   "instructions": 30,
+   "written": 30,
+   "pairs": 150,
+   "agree": 46,
+   "false passes": 0,
+   "checker passes": 104,
+   "written_share": 1.0,
+   "agreement": 0.3067,
+   "false_passes": 0.0,
+   "checker_pass_share": 0.6933
+  },
+  "detectable_content:postscript": {
+   "instructions": 30,
+   "written": 30,
+   "pairs": 150,
+   "agree": 72,
+   "false passes": 0,
+   "checker passes": 78,
+   "written_share": 1.0,
+   "agreement": 0.48,
+   "false_passes": 0.0,
+   "checker_pass_share": 0.52
+  },
+  "detectable_format:constrained_response": {
+   "instructions": 30,
+   "none": 30,
+   "written": 0,
+   "written_share": 0.0,
+   "pairs": 0,
+   "agreement": 0.0,
+   "false_passes": 0.0,
+   "checker_pass_share": 0.0
+  },
+  "detectable_format:number_bullet_lists": {
+   "instructions": 30,
+   "written": 30,
+   "pairs": 150,
+   "agree": 96,
+   "false passes": 0,
+   "checker passes": 54,
+   "written_share": 1.0,
+   "agreement": 0.64,
+   "false_passes": 0.0,
+   "checker_pass_share": 0.36
+  },
+  "keywords:forbidden_words": {
+   "instructions": 30,
+   "written": 22,
+   "none": 8,
+   "pairs": 110,
+   "agree": 47,
+   "false passes": 2,
+   "checker passes": 64,
+   "written_share": 0.7333,
+   "agreement": 0.4273,
+   "false_passes": 0.0182,
+   "checker_pass_share": 0.5818
+  },
+  "length_constraints:nth_paragraph_first_word": {
+   "instructions": 30,
+   "written": 30,
+   "pairs": 150,
+   "agree": 120,
+   "false passes": 2,
+   "checker passes": 32,
+   "written_share": 1.0,
+   "agreement": 0.8,
+   "false_passes": 0.0133,
+   "checker_pass_share": 0.2133
+  },
+  "punctuation:no_comma": {
+   "instructions": 30,
+   "written": 30,
+   "pairs": 150,
+   "agree": 57,
+   "false passes": 0,
+   "checker passes": 93,
+   "written_share": 1.0,
+   "agreement": 0.38,
+   "false_passes": 0.0,
+   "checker_pass_share": 0.62
+  },
+  "startend:end_checker": {
+   "instructions": 30,
+   "written": 30,
+   "pairs": 150,
+   "agree": 85,
+   "false passes": 0,
+   "checker passes": 65,
+   "written_share": 1.0,
+   "agreement": 0.5667,
+   "false_passes": 0.0,
+   "checker_pass_share": 0.4333
+  }
+ },
+ "french_kinds": "not read: M-IFEval's prompts are not on this machine (licence unread)",
+ "misses": [
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 13 times.",
+   "rule": "count of the word \"words\" >= 13",
+   "reply": "A good plan starts with a simple question. A good plan starts with a simple question. HOTEL ROMEO OSCAR LIMA HOTEL OSCAR",
+   "checker": true,
+   "rule_held": false
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 13 times.",
+   "rule": "count of the word \"words\" >= 13",
+   "reply": "We walked to the market before noon. Her notes were short and very clear. KILO TANGO ECHO ROMEO OSCAR OSCAR ROMEO HOTEL ",
+   "checker": true,
+   "rule_held": false
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 13 times.",
+   "rule": "count of the word \"words\" >= 13",
+   "reply": "The morning was quiet and the street was empty. Most of the work happens in the evening. KILO ECHO KILO BRAVO ECHO TANGO",
+   "checker": true,
+   "rule_held": false
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 13 times.",
+   "rule": "count of the word \"words\" >= 13",
+   "reply": "Her notes were short and very clear. The train was late again this week. BRAVO HOTEL ROMEO HOTEL BRAVO ROMEO KILO ROMEO ",
+   "checker": true,
+   "rule_held": false
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 5 times.",
+   "rule": "count of the word \"words\" < 5",
+   "reply": "They sold bread, fruit and fresh cheese. We walked to the market before noon. LIMA KILO TANGO ECHO HOTEL DELTA",
+   "checker": false,
+   "rule_held": true
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 5 times.",
+   "rule": "count of the word \"words\" < 5",
+   "reply": "We walked to the market before noon. We walked to the market before noon. DELTA DELTA ALPHA BRAVO ROMEO LIMA ROMEO",
+   "checker": false,
+   "rule_held": true
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 5 times.",
+   "rule": "count of the word \"words\" < 5",
+   "reply": "The answer depends on the season and the weather. They sold bread, fruit and fresh cheese. KILO BRAVO KILO TANGO BRAVO",
+   "checker": false,
+   "rule_held": true
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 2 times.",
+   "rule": "count of the word \"words\" < 2",
+   "reply": "They sold bread, fruit and fresh cheese. Most of the work happens in the evening. KILO ECHO ECHO ALPHA",
+   "checker": false,
+   "rule_held": true
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 2 times.",
+   "rule": "count of the word \"words\" < 2",
+   "reply": "The answer depends on the season and the weather. We walked to the market before noon. ECHO KILO DELTA KILO",
+   "checker": false,
+   "rule_held": true
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 2 times.",
+   "rule": "count of the word \"words\" < 2",
+   "reply": "Most of the work happens in the evening. The train was late again this week. BRAVO ALPHA BRAVO",
+   "checker": false,
+   "rule_held": true
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 8 times.",
+   "rule": "count of the word \"words\" < 8",
+   "reply": "It's a small town, but people don't leave it. Most of the work happens in the evening. BRAVO LIMA BRAVO KILO BRAVO ALPHA",
+   "checker": false,
+   "rule_held": true
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 8 times.",
+   "rule": "count of the word \"words\" < 8",
+   "reply": "Nobody knew why the bridge was closed. We walked to the market before noon. ECHO ALPHA ALPHA ROMEO LIMA TANGO BRAVO HOTE",
+   "checker": false,
+   "rule_held": true
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 8 times.",
+   "rule": "count of the word \"words\" < 8",
+   "reply": "They sold bread, fruit and fresh cheese. The morning was quiet and the street was empty. BRAVO LIMA ECHO HOTEL KILO OSCA",
+   "checker": false,
+   "rule_held": true
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 8 times.",
+   "rule": "count of the word \"words\" >= 8",
+   "reply": "The morning was quiet and the street was empty. They sold bread, fruit and fresh cheese. LIMA TANGO ROMEO HOTEL KILO LIM",
+   "checker": true,
+   "rule_held": false
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 8 times.",
+   "rule": "count of the word \"words\" >= 8",
+   "reply": "They sold bread, fruit and fresh cheese. We walked to the market before noon. ALPHA ROMEO HOTEL DELTA ECHO OSCAR KILO TA",
+   "checker": true,
+   "rule_held": false
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 8 times.",
+   "rule": "count of the word \"words\" >= 8",
+   "reply": "The answer depends on the season and the weather. Her notes were short and very clear. TANGO DELTA HOTEL LIMA LIMA BRAVO",
+   "checker": true,
+   "rule_held": false
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 8 times.",
+   "rule": "count of the word \"words\" >= 8",
+   "reply": "Most of the work happens in the evening. A good plan starts with a simple question. ALPHA DELTA OSCAR BRAVO HOTEL DELTA ",
+   "checker": true,
+   "rule_held": false
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 20 times.",
+   "rule": "count of the word \"words\" >= 20",
+   "reply": "The morning was quiet and the street was empty. The morning was quiet and the street was empty. ROMEO TANGO BRAVO ECHO B",
+   "checker": true,
+   "rule_held": false
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 20 times.",
+   "rule": "count of the word \"words\" >= 20",
+   "reply": "A good plan starts with a simple question. Most of the work happens in the evening. ALPHA DELTA DELTA HOTEL KILO KILO KI",
+   "checker": true,
+   "rule_held": false
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 19 times.",
+   "rule": "count of the word \"words\" < 19",
+   "reply": "They sold bread, fruit and fresh cheese. Her notes were short and very clear. BRAVO OSCAR BRAVO OSCAR LIMA ALPHA HOTEL K",
+   "checker": false,
+   "rule_held": true
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 19 times.",
+   "rule": "count of the word \"words\" < 19",
+   "reply": "The morning was quiet and the street was empty. We walked to the market before noon. ROMEO ROMEO HOTEL OSCAR OSCAR TANGO",
+   "checker": false,
+   "rule_held": true
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 19 times.",
+   "rule": "count of the word \"words\" < 19",
+   "reply": "The morning was quiet and the street was empty. The train was late again this week. ECHO BRAVO OSCAR LIMA HOTEL ECHO ALP",
+   "checker": false,
+   "rule_held": true
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 19 times.",
+   "rule": "count of the word \"words\" < 19",
+   "reply": "They sold bread, fruit and fresh cheese. Nobody knew why the bridge was closed. LIMA LIMA ROMEO OSCAR KILO OSCAR OSCAR E",
+   "checker": false,
+   "rule_held": true
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 19 times.",
+   "rule": "count of the word \"words\" < 19",
+   "reply": "Nobody knew why the bridge was closed. A good plan starts with a simple question. HOTEL OSCAR BRAVO BRAVO ROMEO ALPHA BR",
+   "checker": false,
+   "rule_held": true
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 11 times.",
+   "rule": "count of the word \"words\" < 11",
+   "reply": "Most of the work happens in the evening. A good plan starts with a simple question. LIMA TANGO TANGO ECHO ALPHA ALPHA DE",
+   "checker": false,
+   "rule_held": true
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 11 times.",
+   "rule": "count of the word \"words\" < 11",
+   "reply": "Her notes were short and very clear. We walked to the market before noon. HOTEL HOTEL LIMA LIMA LIMA ALPHA DELTA DELTA E",
+   "checker": false,
+   "rule_held": true
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 11 times.",
+   "rule": "count of the word \"words\" < 11",
+   "reply": "The morning was quiet and the street was empty. The morning was quiet and the street was empty. LIMA DELTA OSCAR TANGO B",
+   "checker": false,
+   "rule_held": true
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 8 times.",
+   "rule": "count of the word \"words\" >= 8",
+   "reply": "We walked to the market before noon. The train was late again this week. KILO ECHO LIMA OSCAR BRAVO ALPHA TANGO OSCAR TA",
+   "checker": true,
+   "rule_held": false
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 8 times.",
+   "rule": "count of the word \"words\" >= 8",
+   "reply": "We walked to the market before noon. Most of the work happens in the evening. DELTA LIMA HOTEL BRAVO ROMEO ECHO ALPHA LI",
+   "checker": true,
+   "rule_held": false
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 8 times.",
+   "rule": "count of the word \"words\" >= 8",
+   "reply": "The morning was quiet and the street was empty. The train was late again this week. TANGO TANGO ECHO ECHO BRAVO ROMEO RO",
+   "checker": true,
+   "rule_held": false
+  }
+ ],
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-11 15:18",
+  "sha256": "3120403f35b007eb85a2302086da7fb1447830573f0f2d540e4c62fdb0cbc37b",
+  "commit": "3f37515",
+  "older_than_sources": false
+ },
+ "reads": [
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 13 times.",
+   "kwargs": {
+    "capital_frequency": 13,
+    "capital_relation": "at least"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": ">=",
+    "v": 13
+   },
+   "surface": "count of the word \"words\" >= 13",
+   "id": "change_case:capital_word_frequency#0"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 5 times.",
+   "kwargs": {
+    "capital_frequency": 5,
+    "capital_relation": "less than"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": "<",
+    "v": 5
+   },
+   "surface": "count of the word \"words\" < 5",
+   "id": "change_case:capital_word_frequency#1"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 2 times.",
+   "kwargs": {
+    "capital_frequency": 2,
+    "capital_relation": "less than"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": "<",
+    "v": 2
+   },
+   "surface": "count of the word \"words\" < 2",
+   "id": "change_case:capital_word_frequency#2"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 8 times.",
+   "kwargs": {
+    "capital_frequency": 8,
+    "capital_relation": "less than"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": "<",
+    "v": 8
+   },
+   "surface": "count of the word \"words\" < 8",
+   "id": "change_case:capital_word_frequency#3"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 8 times.",
+   "kwargs": {
+    "capital_frequency": 8,
+    "capital_relation": "at least"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": ">=",
+    "v": 8
+   },
+   "surface": "count of the word \"words\" >= 8",
+   "id": "change_case:capital_word_frequency#4"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 20 times.",
+   "kwargs": {
+    "capital_frequency": 20,
+    "capital_relation": "at least"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": ">=",
+    "v": 20
+   },
+   "surface": "count of the word \"words\" >= 20",
+   "id": "change_case:capital_word_frequency#5"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 19 times.",
+   "kwargs": {
+    "capital_frequency": 19,
+    "capital_relation": "less than"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": "<",
+    "v": 19
+   },
+   "surface": "count of the word \"words\" < 19",
+   "id": "change_case:capital_word_frequency#6"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 11 times.",
+   "kwargs": {
+    "capital_frequency": 11,
+    "capital_relation": "less than"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": "<",
+    "v": 11
+   },
+   "surface": "count of the word \"words\" < 11",
+   "id": "change_case:capital_word_frequency#7"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 8 times.",
+   "kwargs": {
+    "capital_frequency": 8,
+    "capital_relation": "at least"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": ">=",
+    "v": 8
+   },
+   "surface": "count of the word \"words\" >= 8",
+   "id": "change_case:capital_word_frequency#8"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 15 times.",
+   "kwargs": {
+    "capital_frequency": 15,
+    "capital_relation": "at least"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": ">=",
+    "v": 15
+   },
+   "surface": "count of the word \"words\" >= 15",
+   "id": "change_case:capital_word_frequency#9"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 19 times.",
+   "kwargs": {
+    "capital_frequency": 19,
+    "capital_relation": "less than"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": "<",
+    "v": 19
+   },
+   "surface": "count of the word \"words\" < 19",
+   "id": "change_case:capital_word_frequency#10"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 15 times.",
+   "kwargs": {
+    "capital_frequency": 15,
+    "capital_relation": "at least"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": ">=",
+    "v": 15
+   },
+   "surface": "count of the word \"words\" >= 15",
+   "id": "change_case:capital_word_frequency#11"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 16 times.",
+   "kwargs": {
+    "capital_frequency": 16,
+    "capital_relation": "at least"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": ">=",
+    "v": 16
+   },
+   "surface": "count of the word \"words\" >= 16",
+   "id": "change_case:capital_word_frequency#12"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 9 times.",
+   "kwargs": {
+    "capital_frequency": 9,
+    "capital_relation": "at least"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": ">=",
+    "v": 9
+   },
+   "surface": "count of the word \"words\" >= 9",
+   "id": "change_case:capital_word_frequency#13"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 4 times.",
+   "kwargs": {
+    "capital_frequency": 4,
+    "capital_relation": "less than"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": "<",
+    "v": 4
+   },
+   "surface": "count of the word \"words\" < 4",
+   "id": "change_case:capital_word_frequency#14"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 7 times.",
+   "kwargs": {
+    "capital_frequency": 7,
+    "capital_relation": "less than"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": "<",
+    "v": 7
+   },
+   "surface": "count of the word \"words\" < 7",
+   "id": "change_case:capital_word_frequency#15"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 12 times.",
+   "kwargs": {
+    "capital_frequency": 12,
+    "capital_relation": "at least"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": ">=",
+    "v": 12
+   },
+   "surface": "count of the word \"words\" >= 12",
+   "id": "change_case:capital_word_frequency#16"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 17 times.",
+   "kwargs": {
+    "capital_frequency": 17,
+    "capital_relation": "at least"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": ">=",
+    "v": 17
+   },
+   "surface": "count of the word \"words\" >= 17",
+   "id": "change_case:capital_word_frequency#17"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 6 times.",
+   "kwargs": {
+    "capital_frequency": 6,
+    "capital_relation": "less than"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": "<",
+    "v": 6
+   },
+   "surface": "count of the word \"words\" < 6",
+   "id": "change_case:capital_word_frequency#18"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 2 times.",
+   "kwargs": {
+    "capital_frequency": 2,
+    "capital_relation": "less than"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": "<",
+    "v": 2
+   },
+   "surface": "count of the word \"words\" < 2",
+   "id": "change_case:capital_word_frequency#19"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 5 times.",
+   "kwargs": {
+    "capital_frequency": 5,
+    "capital_relation": "at least"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": ">=",
+    "v": 5
+   },
+   "surface": "count of the word \"words\" >= 5",
+   "id": "change_case:capital_word_frequency#20"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 6 times.",
+   "kwargs": {
+    "capital_frequency": 6,
+    "capital_relation": "at least"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": ">=",
+    "v": 6
+   },
+   "surface": "count of the word \"words\" >= 6",
+   "id": "change_case:capital_word_frequency#21"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 5 times.",
+   "kwargs": {
+    "capital_frequency": 5,
+    "capital_relation": "less than"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": "<",
+    "v": 5
+   },
+   "surface": "count of the word \"words\" < 5",
+   "id": "change_case:capital_word_frequency#22"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 10 times.",
+   "kwargs": {
+    "capital_frequency": 10,
+    "capital_relation": "less than"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": "<",
+    "v": 10
+   },
+   "surface": "count of the word \"words\" < 10",
+   "id": "change_case:capital_word_frequency#23"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 13 times.",
+   "kwargs": {
+    "capital_frequency": 13,
+    "capital_relation": "less than"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": "<",
+    "v": 13
+   },
+   "surface": "count of the word \"words\" < 13",
+   "id": "change_case:capital_word_frequency#24"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 13 times.",
+   "kwargs": {
+    "capital_frequency": 13,
+    "capital_relation": "less than"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": "<",
+    "v": 13
+   },
+   "surface": "count of the word \"words\" < 13",
+   "id": "change_case:capital_word_frequency#25"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 7 times.",
+   "kwargs": {
+    "capital_frequency": 7,
+    "capital_relation": "less than"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": "<",
+    "v": 7
+   },
+   "surface": "count of the word \"words\" < 7",
+   "id": "change_case:capital_word_frequency#26"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear at least 16 times.",
+   "kwargs": {
+    "capital_frequency": 16,
+    "capital_relation": "at least"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": ">=",
+    "v": 16
+   },
+   "surface": "count of the word \"words\" >= 16",
+   "id": "change_case:capital_word_frequency#27"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 4 times.",
+   "kwargs": {
+    "capital_frequency": 4,
+    "capital_relation": "less than"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": "<",
+    "v": 4
+   },
+   "surface": "count of the word \"words\" < 4",
+   "id": "change_case:capital_word_frequency#28"
+  },
+  {
+   "kind": "change_case:capital_word_frequency",
+   "instruction": "In your response, words with all capital letters should appear less than 18 times.",
+   "kwargs": {
+    "capital_frequency": 18,
+    "capital_relation": "less than"
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "words",
+    "op": "<",
+    "v": 18
+   },
+   "surface": "count of the word \"words\" < 18",
+   "id": "change_case:capital_word_frequency#29"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 4 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 4
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 4
+   },
+   "surface": "highlight count >= 4",
+   "id": "detectable_content:number_placeholders#0"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 2 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 2
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "detectable_content:number_placeholders#1"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 1 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 1
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 1
+   },
+   "surface": "highlight count >= 1",
+   "id": "detectable_content:number_placeholders#2"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 2 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 2
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "detectable_content:number_placeholders#3"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 2 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 2
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "detectable_content:number_placeholders#4"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 3 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 3
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 3
+   },
+   "surface": "highlight count >= 3",
+   "id": "detectable_content:number_placeholders#5"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 1 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 1
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 1
+   },
+   "surface": "highlight count >= 1",
+   "id": "detectable_content:number_placeholders#6"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 3 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 3
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 3
+   },
+   "surface": "highlight count >= 3",
+   "id": "detectable_content:number_placeholders#7"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 2 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 2
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "detectable_content:number_placeholders#8"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 4 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 4
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 4
+   },
+   "surface": "highlight count >= 4",
+   "id": "detectable_content:number_placeholders#9"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 1 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 1
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 1
+   },
+   "surface": "highlight count >= 1",
+   "id": "detectable_content:number_placeholders#10"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 4 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 4
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 4
+   },
+   "surface": "highlight count >= 4",
+   "id": "detectable_content:number_placeholders#11"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 4 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 4
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 4
+   },
+   "surface": "highlight count >= 4",
+   "id": "detectable_content:number_placeholders#12"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 3 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 3
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 3
+   },
+   "surface": "highlight count >= 3",
+   "id": "detectable_content:number_placeholders#13"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 1 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 1
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 1
+   },
+   "surface": "highlight count >= 1",
+   "id": "detectable_content:number_placeholders#14"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 2 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 2
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "detectable_content:number_placeholders#15"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 3 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 3
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 3
+   },
+   "surface": "highlight count >= 3",
+   "id": "detectable_content:number_placeholders#16"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 4 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 4
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 4
+   },
+   "surface": "highlight count >= 4",
+   "id": "detectable_content:number_placeholders#17"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 2 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 2
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "detectable_content:number_placeholders#18"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 1 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 1
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 1
+   },
+   "surface": "highlight count >= 1",
+   "id": "detectable_content:number_placeholders#19"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 2 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 2
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "detectable_content:number_placeholders#20"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 2 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 2
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "detectable_content:number_placeholders#21"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 2 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 2
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "detectable_content:number_placeholders#22"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 3 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 3
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 3
+   },
+   "surface": "highlight count >= 3",
+   "id": "detectable_content:number_placeholders#23"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 4 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 4
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 4
+   },
+   "surface": "highlight count >= 4",
+   "id": "detectable_content:number_placeholders#24"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 4 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 4
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 4
+   },
+   "surface": "highlight count >= 4",
+   "id": "detectable_content:number_placeholders#25"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 2 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 2
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "detectable_content:number_placeholders#26"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 4 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 4
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 4
+   },
+   "surface": "highlight count >= 4",
+   "id": "detectable_content:number_placeholders#27"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 1 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 1
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 1
+   },
+   "surface": "highlight count >= 1",
+   "id": "detectable_content:number_placeholders#28"
+  },
+  {
+   "kind": "detectable_content:number_placeholders",
+   "instruction": "The response must contain at least 1 placeholders represented by square brackets, such as [address].",
+   "kwargs": {
+    "num_placeholders": 1
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 1
+   },
+   "surface": "highlight count >= 1",
+   "id": "detectable_content:number_placeholders#29"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.P.S",
+   "kwargs": {
+    "postscript_marker": "P.P.S"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "P P"
+     },
+     {
+      "m": "count of the word",
+      "arg": "P.P.S",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "opening has P P ; count of the word \"P.P.S\" >= 1",
+   "id": "detectable_content:postscript#0"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.S.",
+   "kwargs": {
+    "postscript_marker": "P.S."
+   },
+   "how": "written",
+   "plan": {
+    "m": "opening",
+    "op": "has",
+    "v": "P S"
+   },
+   "surface": "opening has P S",
+   "id": "detectable_content:postscript#1"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.S.",
+   "kwargs": {
+    "postscript_marker": "P.S."
+   },
+   "how": "written",
+   "plan": {
+    "m": "opening",
+    "op": "has",
+    "v": "P S"
+   },
+   "surface": "opening has P S",
+   "id": "detectable_content:postscript#2"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.S.",
+   "kwargs": {
+    "postscript_marker": "P.S."
+   },
+   "how": "written",
+   "plan": {
+    "m": "opening",
+    "op": "has",
+    "v": "P S"
+   },
+   "surface": "opening has P S",
+   "id": "detectable_content:postscript#3"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.S.",
+   "kwargs": {
+    "postscript_marker": "P.S."
+   },
+   "how": "written",
+   "plan": {
+    "m": "opening",
+    "op": "has",
+    "v": "P S"
+   },
+   "surface": "opening has P S",
+   "id": "detectable_content:postscript#4"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.P.S",
+   "kwargs": {
+    "postscript_marker": "P.P.S"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "P P"
+     },
+     {
+      "m": "count of the word",
+      "arg": "P.P.S",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "opening has P P ; count of the word \"P.P.S\" >= 1",
+   "id": "detectable_content:postscript#5"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.S.",
+   "kwargs": {
+    "postscript_marker": "P.S."
+   },
+   "how": "written",
+   "plan": {
+    "m": "opening",
+    "op": "has",
+    "v": "P S"
+   },
+   "surface": "opening has P S",
+   "id": "detectable_content:postscript#6"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.P.S",
+   "kwargs": {
+    "postscript_marker": "P.P.S"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "P P"
+     },
+     {
+      "m": "count of the word",
+      "arg": "P.P.S",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "opening has P P ; count of the word \"P.P.S\" >= 1",
+   "id": "detectable_content:postscript#7"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.S.",
+   "kwargs": {
+    "postscript_marker": "P.S."
+   },
+   "how": "written",
+   "plan": {
+    "m": "opening",
+    "op": "has",
+    "v": "P S"
+   },
+   "surface": "opening has P S",
+   "id": "detectable_content:postscript#8"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.P.S",
+   "kwargs": {
+    "postscript_marker": "P.P.S"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "P P"
+     },
+     {
+      "m": "count of the word",
+      "arg": "P.P.S",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "opening has P P ; count of the word \"P.P.S\" >= 1",
+   "id": "detectable_content:postscript#9"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.S.",
+   "kwargs": {
+    "postscript_marker": "P.S."
+   },
+   "how": "written",
+   "plan": {
+    "m": "opening",
+    "op": "has",
+    "v": "P S"
+   },
+   "surface": "opening has P S",
+   "id": "detectable_content:postscript#10"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.P.S",
+   "kwargs": {
+    "postscript_marker": "P.P.S"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "P P"
+     },
+     {
+      "m": "count of the word",
+      "arg": "P.P.S",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "opening has P P ; count of the word \"P.P.S\" >= 1",
+   "id": "detectable_content:postscript#11"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.P.S",
+   "kwargs": {
+    "postscript_marker": "P.P.S"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "P P"
+     },
+     {
+      "m": "count of the word",
+      "arg": "P.P.S",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "opening has P P ; count of the word \"P.P.S\" >= 1",
+   "id": "detectable_content:postscript#12"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.P.S",
+   "kwargs": {
+    "postscript_marker": "P.P.S"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "P P"
+     },
+     {
+      "m": "count of the word",
+      "arg": "P.P.S",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "opening has P P ; count of the word \"P.P.S\" >= 1",
+   "id": "detectable_content:postscript#13"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.S.",
+   "kwargs": {
+    "postscript_marker": "P.S."
+   },
+   "how": "written",
+   "plan": {
+    "m": "opening",
+    "op": "has",
+    "v": "P S"
+   },
+   "surface": "opening has P S",
+   "id": "detectable_content:postscript#14"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.S.",
+   "kwargs": {
+    "postscript_marker": "P.S."
+   },
+   "how": "written",
+   "plan": {
+    "m": "opening",
+    "op": "has",
+    "v": "P S"
+   },
+   "surface": "opening has P S",
+   "id": "detectable_content:postscript#15"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.P.S",
+   "kwargs": {
+    "postscript_marker": "P.P.S"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "P P"
+     },
+     {
+      "m": "count of the word",
+      "arg": "P.P.S",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "opening has P P ; count of the word \"P.P.S\" >= 1",
+   "id": "detectable_content:postscript#16"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.P.S",
+   "kwargs": {
+    "postscript_marker": "P.P.S"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "P P"
+     },
+     {
+      "m": "count of the word",
+      "arg": "P.P.S",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "opening has P P ; count of the word \"P.P.S\" >= 1",
+   "id": "detectable_content:postscript#17"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.S.",
+   "kwargs": {
+    "postscript_marker": "P.S."
+   },
+   "how": "written",
+   "plan": {
+    "m": "opening",
+    "op": "has",
+    "v": "P S"
+   },
+   "surface": "opening has P S",
+   "id": "detectable_content:postscript#18"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.S.",
+   "kwargs": {
+    "postscript_marker": "P.S."
+   },
+   "how": "written",
+   "plan": {
+    "m": "opening",
+    "op": "has",
+    "v": "P S"
+   },
+   "surface": "opening has P S",
+   "id": "detectable_content:postscript#19"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.S.",
+   "kwargs": {
+    "postscript_marker": "P.S."
+   },
+   "how": "written",
+   "plan": {
+    "m": "opening",
+    "op": "has",
+    "v": "P S"
+   },
+   "surface": "opening has P S",
+   "id": "detectable_content:postscript#20"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.S.",
+   "kwargs": {
+    "postscript_marker": "P.S."
+   },
+   "how": "written",
+   "plan": {
+    "m": "opening",
+    "op": "has",
+    "v": "P S"
+   },
+   "surface": "opening has P S",
+   "id": "detectable_content:postscript#21"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.S.",
+   "kwargs": {
+    "postscript_marker": "P.S."
+   },
+   "how": "written",
+   "plan": {
+    "m": "opening",
+    "op": "has",
+    "v": "P S"
+   },
+   "surface": "opening has P S",
+   "id": "detectable_content:postscript#22"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.P.S",
+   "kwargs": {
+    "postscript_marker": "P.P.S"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "P P"
+     },
+     {
+      "m": "count of the word",
+      "arg": "P.P.S",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "opening has P P ; count of the word \"P.P.S\" >= 1",
+   "id": "detectable_content:postscript#23"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.P.S",
+   "kwargs": {
+    "postscript_marker": "P.P.S"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "P P"
+     },
+     {
+      "m": "count of the word",
+      "arg": "P.P.S",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "opening has P P ; count of the word \"P.P.S\" >= 1",
+   "id": "detectable_content:postscript#24"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.P.S",
+   "kwargs": {
+    "postscript_marker": "P.P.S"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "P P"
+     },
+     {
+      "m": "count of the word",
+      "arg": "P.P.S",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "opening has P P ; count of the word \"P.P.S\" >= 1",
+   "id": "detectable_content:postscript#25"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.S.",
+   "kwargs": {
+    "postscript_marker": "P.S."
+   },
+   "how": "written",
+   "plan": {
+    "m": "opening",
+    "op": "has",
+    "v": "P S"
+   },
+   "surface": "opening has P S",
+   "id": "detectable_content:postscript#26"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.P.S",
+   "kwargs": {
+    "postscript_marker": "P.P.S"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "P P"
+     },
+     {
+      "m": "count of the word",
+      "arg": "P.P.S",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "opening has P P ; count of the word \"P.P.S\" >= 1",
+   "id": "detectable_content:postscript#27"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.S.",
+   "kwargs": {
+    "postscript_marker": "P.S."
+   },
+   "how": "written",
+   "plan": {
+    "m": "opening",
+    "op": "has",
+    "v": "P S"
+   },
+   "surface": "opening has P S",
+   "id": "detectable_content:postscript#28"
+  },
+  {
+   "kind": "detectable_content:postscript",
+   "instruction": "At the end of your response, please explicitly add a postscript starting with P.S.",
+   "kwargs": {
+    "postscript_marker": "P.S."
+   },
+   "how": "written",
+   "plan": {
+    "m": "opening",
+    "op": "has",
+    "v": "P S"
+   },
+   "surface": "opening has P S",
+   "id": "detectable_content:postscript#29"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#0"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#1"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#2"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#3"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#4"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#5"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#6"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#7"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#8"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#9"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#10"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#11"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#12"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#13"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#14"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#15"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#16"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#17"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#18"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#19"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#20"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#21"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#22"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#23"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#24"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#25"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#26"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#27"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#28"
+  },
+  {
+   "kind": "detectable_format:constrained_response",
+   "instruction": "Answer with one of the following options: ('My answer is yes.', 'My answer is no.', 'My answer is maybe.')",
+   "kwargs": null,
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "detectable_format:constrained_response#29"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 4 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 4
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 4
+   },
+   "surface": "highlight count >= 4",
+   "id": "detectable_format:number_bullet_lists#0"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 2 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 2
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "count of the word",
+      "arg": "point",
+      "op": ">=",
+      "v": 2
+     },
+     {
+      "m": "highlight count",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "count of the word \"point\" >= 2 ; highlight count >= 1",
+   "id": "detectable_format:number_bullet_lists#1"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 1 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 1
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "count of the word",
+      "arg": "bullet",
+      "op": ">=",
+      "v": 1
+     },
+     {
+      "m": "highlight count",
+      "op": ">=",
+      "v": 2
+     }
+    ]
+   },
+   "surface": "count of the word \"bullet\" >= 1 ; highlight count >= 2",
+   "id": "detectable_format:number_bullet_lists#2"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 2 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 2
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "count of the word",
+      "arg": "point",
+      "op": ">=",
+      "v": 2
+     },
+     {
+      "m": "highlight count",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "count of the word \"point\" >= 2 ; highlight count >= 1",
+   "id": "detectable_format:number_bullet_lists#3"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 2 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 2
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "count of the word",
+      "arg": "point",
+      "op": ">=",
+      "v": 2
+     },
+     {
+      "m": "highlight count",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "count of the word \"point\" >= 2 ; highlight count >= 1",
+   "id": "detectable_format:number_bullet_lists#4"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 5 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 5
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 5
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     }
+    ]
+   },
+   "surface": "paragraph count == 5 ; empty paragraph count == 0",
+   "id": "detectable_format:number_bullet_lists#5"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 5 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 5
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 5
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     }
+    ]
+   },
+   "surface": "paragraph count == 5 ; empty paragraph count == 0",
+   "id": "detectable_format:number_bullet_lists#6"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 3 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 3
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 3
+   },
+   "surface": "highlight count >= 3",
+   "id": "detectable_format:number_bullet_lists#7"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 2 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 2
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "count of the word",
+      "arg": "point",
+      "op": ">=",
+      "v": 2
+     },
+     {
+      "m": "highlight count",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "count of the word \"point\" >= 2 ; highlight count >= 1",
+   "id": "detectable_format:number_bullet_lists#8"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 4 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 4
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 4
+   },
+   "surface": "highlight count >= 4",
+   "id": "detectable_format:number_bullet_lists#9"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 5 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 5
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 5
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     }
+    ]
+   },
+   "surface": "paragraph count == 5 ; empty paragraph count == 0",
+   "id": "detectable_format:number_bullet_lists#10"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 4 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 4
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 4
+   },
+   "surface": "highlight count >= 4",
+   "id": "detectable_format:number_bullet_lists#11"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 4 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 4
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 4
+   },
+   "surface": "highlight count >= 4",
+   "id": "detectable_format:number_bullet_lists#12"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 3 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 3
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 3
+   },
+   "surface": "highlight count >= 3",
+   "id": "detectable_format:number_bullet_lists#13"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 1 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 1
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "count of the word",
+      "arg": "bullet",
+      "op": ">=",
+      "v": 1
+     },
+     {
+      "m": "highlight count",
+      "op": ">=",
+      "v": 2
+     }
+    ]
+   },
+   "surface": "count of the word \"bullet\" >= 1 ; highlight count >= 2",
+   "id": "detectable_format:number_bullet_lists#14"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 2 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 2
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "count of the word",
+      "arg": "point",
+      "op": ">=",
+      "v": 2
+     },
+     {
+      "m": "highlight count",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "count of the word \"point\" >= 2 ; highlight count >= 1",
+   "id": "detectable_format:number_bullet_lists#15"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 3 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 3
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 3
+   },
+   "surface": "highlight count >= 3",
+   "id": "detectable_format:number_bullet_lists#16"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 5 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 5
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 5
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     }
+    ]
+   },
+   "surface": "paragraph count == 5 ; empty paragraph count == 0",
+   "id": "detectable_format:number_bullet_lists#17"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 2 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 2
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "count of the word",
+      "arg": "point",
+      "op": ">=",
+      "v": 2
+     },
+     {
+      "m": "highlight count",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "count of the word \"point\" >= 2 ; highlight count >= 1",
+   "id": "detectable_format:number_bullet_lists#18"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 1 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 1
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "count of the word",
+      "arg": "bullet",
+      "op": ">=",
+      "v": 1
+     },
+     {
+      "m": "highlight count",
+      "op": ">=",
+      "v": 2
+     }
+    ]
+   },
+   "surface": "count of the word \"bullet\" >= 1 ; highlight count >= 2",
+   "id": "detectable_format:number_bullet_lists#19"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 2 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 2
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "count of the word",
+      "arg": "point",
+      "op": ">=",
+      "v": 2
+     },
+     {
+      "m": "highlight count",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "count of the word \"point\" >= 2 ; highlight count >= 1",
+   "id": "detectable_format:number_bullet_lists#20"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 2 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 2
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "count of the word",
+      "arg": "point",
+      "op": ">=",
+      "v": 2
+     },
+     {
+      "m": "highlight count",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "count of the word \"point\" >= 2 ; highlight count >= 1",
+   "id": "detectable_format:number_bullet_lists#21"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 2 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 2
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "count of the word",
+      "arg": "point",
+      "op": ">=",
+      "v": 2
+     },
+     {
+      "m": "highlight count",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "count of the word \"point\" >= 2 ; highlight count >= 1",
+   "id": "detectable_format:number_bullet_lists#22"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 3 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 3
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 3
+   },
+   "surface": "highlight count >= 3",
+   "id": "detectable_format:number_bullet_lists#23"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 4 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 4
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 4
+   },
+   "surface": "highlight count >= 4",
+   "id": "detectable_format:number_bullet_lists#24"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 4 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 4
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 4
+   },
+   "surface": "highlight count >= 4",
+   "id": "detectable_format:number_bullet_lists#25"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 2 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 2
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "count of the word",
+      "arg": "point",
+      "op": ">=",
+      "v": 2
+     },
+     {
+      "m": "highlight count",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "count of the word \"point\" >= 2 ; highlight count >= 1",
+   "id": "detectable_format:number_bullet_lists#26"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 4 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 4
+   },
+   "how": "written",
+   "plan": {
+    "m": "highlight count",
+    "op": ">=",
+    "v": 4
+   },
+   "surface": "highlight count >= 4",
+   "id": "detectable_format:number_bullet_lists#27"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 1 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 1
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "count of the word",
+      "arg": "bullet",
+      "op": ">=",
+      "v": 1
+     },
+     {
+      "m": "highlight count",
+      "op": ">=",
+      "v": 2
+     }
+    ]
+   },
+   "surface": "count of the word \"bullet\" >= 1 ; highlight count >= 2",
+   "id": "detectable_format:number_bullet_lists#28"
+  },
+  {
+   "kind": "detectable_format:number_bullet_lists",
+   "instruction": "Your answer must contain exactly 5 bullet points. Use the markdown bullet points such as:\n* This is point 1. \n* This is point 2",
+   "kwargs": {
+    "num_bullets": 5
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 5
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     }
+    ]
+   },
+   "surface": "paragraph count == 5 ; empty paragraph count == 0",
+   "id": "detectable_format:number_bullet_lists#29"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['resident', 'sector'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "resident",
+     "sector"
+    ]
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "sector'] in the response",
+    "op": "==",
+    "v": 1
+   },
+   "surface": "count of the word \"sector'] in the response\" == 1",
+   "id": "keywords:forbidden_words#0"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['board', 'tourist'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "board",
+     "tourist"
+    ]
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "tourist'] in the response",
+    "op": "==",
+    "v": 1
+   },
+   "surface": "count of the word \"tourist'] in the response\" == 1",
+   "id": "keywords:forbidden_words#1"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['author', 'celebration'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "author",
+     "celebration"
+    ]
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "celebration'] in the response",
+    "op": "==",
+    "v": 1
+   },
+   "surface": "count of the word \"celebration'] in the response\" == 1",
+   "id": "keywords:forbidden_words#2"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['cry', 'representative'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "cry",
+     "representative"
+    ]
+   },
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "keywords:forbidden_words#3"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['delivery', 'image'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "delivery",
+     "image"
+    ]
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "not",
+    "op": ">=",
+    "v": 1
+   },
+   "surface": "count of the word \"not\" >= 1",
+   "id": "keywords:forbidden_words#4"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['piano', 'shift'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "piano",
+     "shift"
+    ]
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "not",
+    "op": ">=",
+    "v": 1
+   },
+   "surface": "count of the word \"not\" >= 1",
+   "id": "keywords:forbidden_words#5"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['hotel', 'physics'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "hotel",
+     "physics"
+    ]
+   },
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "keywords:forbidden_words#6"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['calendar', 'expression'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "calendar",
+     "expression"
+    ]
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "expression'] in the response",
+    "op": "==",
+    "v": 1
+   },
+   "surface": "count of the word \"expression'] in the response\" == 1",
+   "id": "keywords:forbidden_words#7"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['exercise', 'reserve'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "exercise",
+     "reserve"
+    ]
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "reserve'] in the response",
+    "op": "==",
+    "v": 1
+   },
+   "surface": "count of the word \"reserve'] in the response\" == 1",
+   "id": "keywords:forbidden_words#8"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['pool', 'profession'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "pool",
+     "profession"
+    ]
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "profession'] in the response",
+    "op": "==",
+    "v": 1
+   },
+   "surface": "count of the word \"profession'] in the response\" == 1",
+   "id": "keywords:forbidden_words#9"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['command', 'wing'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "command",
+     "wing"
+    ]
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "wing'] in the response",
+    "op": "==",
+    "v": 1
+   },
+   "surface": "count of the word \"wing'] in the response\" == 1",
+   "id": "keywords:forbidden_words#10"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['kill', 'truck'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "kill",
+     "truck"
+    ]
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "truck'] in the response",
+    "op": "==",
+    "v": 1
+   },
+   "surface": "count of the word \"truck'] in the response\" == 1",
+   "id": "keywords:forbidden_words#11"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['initial', 'thought'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "initial",
+     "thought"
+    ]
+   },
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "keywords:forbidden_words#12"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['accident', 'standard'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "accident",
+     "standard"
+    ]
+   },
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "keywords:forbidden_words#13"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['confidence', 'load'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "confidence",
+     "load"
+    ]
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "load'] in the response",
+    "op": "==",
+    "v": 1
+   },
+   "surface": "count of the word \"load'] in the response\" == 1",
+   "id": "keywords:forbidden_words#14"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['sweet', 'type'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "sweet",
+     "type"
+    ]
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "type'] in the response",
+    "op": "==",
+    "v": 1
+   },
+   "surface": "count of the word \"type'] in the response\" == 1",
+   "id": "keywords:forbidden_words#15"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['abroad', 'tower'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "abroad",
+     "tower"
+    ]
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "in",
+    "op": ">=",
+    "v": 1
+   },
+   "surface": "count of the word \"in\" >= 1",
+   "id": "keywords:forbidden_words#16"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['request', 'volume'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "request",
+     "volume"
+    ]
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "response",
+    "op": ">=",
+    "v": 1
+   },
+   "surface": "count of the word \"response\" >= 1",
+   "id": "keywords:forbidden_words#17"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['listen', 'salary'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "listen",
+     "salary"
+    ]
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "not",
+    "op": ">=",
+    "v": 1
+   },
+   "surface": "count of the word \"not\" >= 1",
+   "id": "keywords:forbidden_words#18"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['order', 'strain'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "order",
+     "strain"
+    ]
+   },
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "keywords:forbidden_words#19"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['future', 'rich'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "future",
+     "rich"
+    ]
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "the",
+    "op": ">=",
+    "v": 1
+   },
+   "surface": "count of the word \"the\" >= 1",
+   "id": "keywords:forbidden_words#20"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['possible', 'tackle'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "possible",
+     "tackle"
+    ]
+   },
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "keywords:forbidden_words#21"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['pause', 'upper'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "pause",
+     "upper"
+    ]
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "upper'] in the response",
+    "op": "==",
+    "v": 1
+   },
+   "surface": "count of the word \"upper'] in the response\" == 1",
+   "id": "keywords:forbidden_words#22"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['screw', 'suspect'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "screw",
+     "suspect"
+    ]
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "suspect'] in the response",
+    "op": "==",
+    "v": 1
+   },
+   "surface": "count of the word \"suspect'] in the response\" == 1",
+   "id": "keywords:forbidden_words#23"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['list', 'proposal'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "list",
+     "proposal"
+    ]
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "proposal'] in the response",
+    "op": "==",
+    "v": 1
+   },
+   "surface": "count of the word \"proposal'] in the response\" == 1",
+   "id": "keywords:forbidden_words#24"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['cancer', 'comfortable'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "cancer",
+     "comfortable"
+    ]
+   },
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "keywords:forbidden_words#25"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['interaction', 'survey'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "interaction",
+     "survey"
+    ]
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "response",
+    "op": ">=",
+    "v": 1
+   },
+   "surface": "count of the word \"response\" >= 1",
+   "id": "keywords:forbidden_words#26"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['ad', 'commercial'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "ad",
+     "commercial"
+    ]
+   },
+   "how": "none",
+   "plan": null,
+   "surface": "none",
+   "id": "keywords:forbidden_words#27"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['door', 'water'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "door",
+     "water"
+    ]
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "water'] in the response",
+    "op": "==",
+    "v": 1
+   },
+   "surface": "count of the word \"water'] in the response\" == 1",
+   "id": "keywords:forbidden_words#28"
+  },
+  {
+   "kind": "keywords:forbidden_words",
+   "instruction": "Do not include keywords ['a', 'midnight'] in the response.",
+   "kwargs": {
+    "forbidden_words": [
+     "a",
+     "midnight"
+    ]
+   },
+   "how": "written",
+   "plan": {
+    "m": "count of the word",
+    "arg": "midnight'] in the response",
+    "op": "==",
+    "v": 1
+   },
+   "surface": "count of the word \"midnight'] in the response\" == 1",
+   "id": "keywords:forbidden_words#29"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 4 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 4 must start with word pattern.",
+   "kwargs": {
+    "num_paragraphs": 4,
+    "nth_paragraph": 4,
+    "first_word": "pattern"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 4
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "paragraphs",
+      "op": ">=",
+      "v": 3
+     }
+    ]
+   },
+   "surface": "paragraph count == 4 ; empty paragraph count == 0 ; count of the word \"paragraphs\" >= 3",
+   "id": "length_constraints:nth_paragraph_first_word#0"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 2 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 3 must start with word specific.",
+   "kwargs": {
+    "num_paragraphs": 2,
+    "nth_paragraph": 3,
+    "first_word": "specific"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 2
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "paragraphs",
+      "op": ">=",
+      "v": 3
+     }
+    ]
+   },
+   "surface": "paragraph count == 2 ; empty paragraph count == 0 ; count of the word \"paragraphs\" >= 3",
+   "id": "length_constraints:nth_paragraph_first_word#1"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 1 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 1 must start with word ear.",
+   "kwargs": {
+    "num_paragraphs": 1,
+    "nth_paragraph": 1,
+    "first_word": "ear"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 1
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "paragraphs",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "paragraph count == 1 ; empty paragraph count == 0 ; count of the word \"paragraphs\" >= 1",
+   "id": "length_constraints:nth_paragraph_first_word#2"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 2 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 3 must start with word use.",
+   "kwargs": {
+    "num_paragraphs": 2,
+    "nth_paragraph": 3,
+    "first_word": "use"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 2
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "paragraphs",
+      "op": ">=",
+      "v": 3
+     }
+    ]
+   },
+   "surface": "paragraph count == 2 ; empty paragraph count == 0 ; count of the word \"paragraphs\" >= 3",
+   "id": "length_constraints:nth_paragraph_first_word#3"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 2 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 2 must start with word question.",
+   "kwargs": {
+    "num_paragraphs": 2,
+    "nth_paragraph": 2,
+    "first_word": "question"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 2
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "question",
+      "op": ">=",
+      "v": 2
+     }
+    ]
+   },
+   "surface": "paragraph count == 2 ; empty paragraph count == 0 ; count of the word \"question\" >= 2",
+   "id": "length_constraints:nth_paragraph_first_word#4"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 5 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 3 must start with word flow.",
+   "kwargs": {
+    "num_paragraphs": 5,
+    "nth_paragraph": 3,
+    "first_word": "flow"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 5
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "word count",
+      "op": ">=",
+      "v": 3
+     }
+    ]
+   },
+   "surface": "paragraph count == 5 ; empty paragraph count == 0 ; word count >= 3",
+   "id": "length_constraints:nth_paragraph_first_word#5"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 5 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 1 must start with word effective.",
+   "kwargs": {
+    "num_paragraphs": 5,
+    "nth_paragraph": 1,
+    "first_word": "effective"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 5
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "paragraphs",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "paragraph count == 5 ; empty paragraph count == 0 ; count of the word \"paragraphs\" >= 1",
+   "id": "length_constraints:nth_paragraph_first_word#6"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 3 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 2 must start with word currency.",
+   "kwargs": {
+    "num_paragraphs": 3,
+    "nth_paragraph": 2,
+    "first_word": "currency"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 3
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "currency",
+      "op": ">=",
+      "v": 2
+     }
+    ]
+   },
+   "surface": "paragraph count == 3 ; empty paragraph count == 0 ; count of the word \"currency\" >= 2",
+   "id": "length_constraints:nth_paragraph_first_word#7"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 2 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 2 must start with word fortune.",
+   "kwargs": {
+    "num_paragraphs": 2,
+    "nth_paragraph": 2,
+    "first_word": "fortune"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 2
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "fortune",
+      "op": ">=",
+      "v": 2
+     }
+    ]
+   },
+   "surface": "paragraph count == 2 ; empty paragraph count == 0 ; count of the word \"fortune\" >= 2",
+   "id": "length_constraints:nth_paragraph_first_word#8"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 4 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 5 must start with word collar.",
+   "kwargs": {
+    "num_paragraphs": 4,
+    "nth_paragraph": 5,
+    "first_word": "collar"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 4
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "paragraphs",
+      "op": ">=",
+      "v": 5
+     }
+    ]
+   },
+   "surface": "paragraph count == 4 ; empty paragraph count == 0 ; count of the word \"paragraphs\" >= 5",
+   "id": "length_constraints:nth_paragraph_first_word#9"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 5 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 1 must start with word mixture.",
+   "kwargs": {
+    "num_paragraphs": 5,
+    "nth_paragraph": 1,
+    "first_word": "mixture"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 5
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "paragraphs",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "paragraph count == 5 ; empty paragraph count == 0 ; count of the word \"paragraphs\" >= 1",
+   "id": "length_constraints:nth_paragraph_first_word#10"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 4 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 5 must start with word guy.",
+   "kwargs": {
+    "num_paragraphs": 4,
+    "nth_paragraph": 5,
+    "first_word": "guy"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 4
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "guy",
+      "op": ">=",
+      "v": 5
+     }
+    ]
+   },
+   "surface": "paragraph count == 4 ; empty paragraph count == 0 ; count of the word \"guy\" >= 5",
+   "id": "length_constraints:nth_paragraph_first_word#11"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 4 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 3 must start with word shock.",
+   "kwargs": {
+    "num_paragraphs": 4,
+    "nth_paragraph": 3,
+    "first_word": "shock"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 4
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "shock",
+      "op": ">=",
+      "v": 3
+     }
+    ]
+   },
+   "surface": "paragraph count == 4 ; empty paragraph count == 0 ; count of the word \"shock\" >= 3",
+   "id": "length_constraints:nth_paragraph_first_word#12"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 3 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 3 must start with word care.",
+   "kwargs": {
+    "num_paragraphs": 3,
+    "nth_paragraph": 3,
+    "first_word": "care"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 3
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "care",
+      "op": ">=",
+      "v": 3
+     }
+    ]
+   },
+   "surface": "paragraph count == 3 ; empty paragraph count == 0 ; count of the word \"care\" >= 3",
+   "id": "length_constraints:nth_paragraph_first_word#13"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 1 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 1 must start with word republic.",
+   "kwargs": {
+    "num_paragraphs": 1,
+    "nth_paragraph": 1,
+    "first_word": "republic"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 1
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "republic",
+      "op": ">=",
+      "v": 2
+     }
+    ]
+   },
+   "surface": "paragraph count == 1 ; empty paragraph count == 0 ; count of the word \"republic\" >= 2",
+   "id": "length_constraints:nth_paragraph_first_word#14"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 2 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 1 must start with word climate.",
+   "kwargs": {
+    "num_paragraphs": 2,
+    "nth_paragraph": 1,
+    "first_word": "climate"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 2
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "climate",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "paragraph count == 2 ; empty paragraph count == 0 ; count of the word \"climate\" >= 1",
+   "id": "length_constraints:nth_paragraph_first_word#15"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 3 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 4 must start with word contribution.",
+   "kwargs": {
+    "num_paragraphs": 3,
+    "nth_paragraph": 4,
+    "first_word": "contribution"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 3
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "contribution",
+      "op": ">=",
+      "v": 4
+     }
+    ]
+   },
+   "surface": "paragraph count == 3 ; empty paragraph count == 0 ; count of the word \"contribution\" >= 4",
+   "id": "length_constraints:nth_paragraph_first_word#16"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 5 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 4 must start with word image.",
+   "kwargs": {
+    "num_paragraphs": 5,
+    "nth_paragraph": 4,
+    "first_word": "image"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 5
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "image",
+      "op": ">=",
+      "v": 4
+     }
+    ]
+   },
+   "surface": "paragraph count == 5 ; empty paragraph count == 0 ; count of the word \"image\" >= 4",
+   "id": "length_constraints:nth_paragraph_first_word#17"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 2 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 1 must start with word bread.",
+   "kwargs": {
+    "num_paragraphs": 2,
+    "nth_paragraph": 1,
+    "first_word": "bread"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 2
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "distinct response count",
+      "op": "==",
+      "v": 2
+     }
+    ]
+   },
+   "surface": "paragraph count == 2 ; empty paragraph count == 0 ; distinct response count == 2",
+   "id": "length_constraints:nth_paragraph_first_word#18"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 1 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 1 must start with word minor.",
+   "kwargs": {
+    "num_paragraphs": 1,
+    "nth_paragraph": 1,
+    "first_word": "minor"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 1
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "minor",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "paragraph count == 1 ; empty paragraph count == 0 ; count of the word \"minor\" >= 1",
+   "id": "length_constraints:nth_paragraph_first_word#19"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 2 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 2 must start with word peak.",
+   "kwargs": {
+    "num_paragraphs": 2,
+    "nth_paragraph": 2,
+    "first_word": "peak"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 2
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "peak",
+      "op": ">=",
+      "v": 2
+     }
+    ]
+   },
+   "surface": "paragraph count == 2 ; empty paragraph count == 0 ; count of the word \"peak\" >= 2",
+   "id": "length_constraints:nth_paragraph_first_word#20"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 2 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 2 must start with word picture.",
+   "kwargs": {
+    "num_paragraphs": 2,
+    "nth_paragraph": 2,
+    "first_word": "picture"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 2
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "picture",
+      "op": ">=",
+      "v": 2
+     }
+    ]
+   },
+   "surface": "paragraph count == 2 ; empty paragraph count == 0 ; count of the word \"picture\" >= 2",
+   "id": "length_constraints:nth_paragraph_first_word#21"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 2 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 1 must start with word parking.",
+   "kwargs": {
+    "num_paragraphs": 2,
+    "nth_paragraph": 1,
+    "first_word": "parking"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 2
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "parking",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "paragraph count == 2 ; empty paragraph count == 0 ; count of the word \"parking\" >= 1",
+   "id": "length_constraints:nth_paragraph_first_word#22"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 3 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 1 must start with word performance.",
+   "kwargs": {
+    "num_paragraphs": 3,
+    "nth_paragraph": 1,
+    "first_word": "performance"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 3
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "performance",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "paragraph count == 3 ; empty paragraph count == 0 ; count of the word \"performance\" >= 1",
+   "id": "length_constraints:nth_paragraph_first_word#23"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 4 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 5 must start with word affair.",
+   "kwargs": {
+    "num_paragraphs": 4,
+    "nth_paragraph": 5,
+    "first_word": "affair"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 4
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "affair",
+      "op": ">=",
+      "v": 5
+     }
+    ]
+   },
+   "surface": "paragraph count == 4 ; empty paragraph count == 0 ; count of the word \"affair\" >= 5",
+   "id": "length_constraints:nth_paragraph_first_word#24"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 4 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 1 must start with word coat.",
+   "kwargs": {
+    "num_paragraphs": 4,
+    "nth_paragraph": 1,
+    "first_word": "coat"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 4
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "coat",
+      "op": ">=",
+      "v": 2
+     }
+    ]
+   },
+   "surface": "paragraph count == 4 ; empty paragraph count == 0 ; count of the word \"coat\" >= 2",
+   "id": "length_constraints:nth_paragraph_first_word#25"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 2 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 3 must start with word conflict.",
+   "kwargs": {
+    "num_paragraphs": 2,
+    "nth_paragraph": 3,
+    "first_word": "conflict"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 2
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "paragraphs",
+      "op": ">=",
+      "v": 3
+     }
+    ]
+   },
+   "surface": "paragraph count == 2 ; empty paragraph count == 0 ; count of the word \"paragraphs\" >= 3",
+   "id": "length_constraints:nth_paragraph_first_word#26"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 4 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 3 must start with word bottle.",
+   "kwargs": {
+    "num_paragraphs": 4,
+    "nth_paragraph": 3,
+    "first_word": "bottle"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 4
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "bottle",
+      "op": ">=",
+      "v": 3
+     }
+    ]
+   },
+   "surface": "paragraph count == 4 ; empty paragraph count == 0 ; count of the word \"bottle\" >= 3",
+   "id": "length_constraints:nth_paragraph_first_word#27"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 1 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 1 must start with word goal.",
+   "kwargs": {
+    "num_paragraphs": 1,
+    "nth_paragraph": 1,
+    "first_word": "goal"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 1
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "goal",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "paragraph count == 1 ; empty paragraph count == 0 ; count of the word \"goal\" >= 1",
+   "id": "length_constraints:nth_paragraph_first_word#28"
+  },
+  {
+   "kind": "length_constraints:nth_paragraph_first_word",
+   "instruction": "There should be 5 paragraphs. Paragraphs and only paragraphs are separated with each other by two new lines as if it was '\\n\\n' in python. Paragraph 1 must start with word familiar.",
+   "kwargs": {
+    "num_paragraphs": 5,
+    "nth_paragraph": 1,
+    "first_word": "familiar"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "paragraph count",
+      "op": "==",
+      "v": 5
+     },
+     {
+      "m": "empty paragraph count",
+      "op": "==",
+      "v": 0
+     },
+     {
+      "m": "count of the word",
+      "arg": "familiar",
+      "op": ">=",
+      "v": 1
+     }
+    ]
+   },
+   "surface": "paragraph count == 5 ; empty paragraph count == 0 ; count of the word \"familiar\" >= 1",
+   "id": "length_constraints:nth_paragraph_first_word#29"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#0"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#1"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#2"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#3"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#4"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#5"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#6"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#7"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#8"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#9"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#10"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#11"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#12"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#13"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#14"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#15"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#16"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#17"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#18"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#19"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#20"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#21"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#22"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#23"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#24"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#25"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#26"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#27"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#28"
+  },
+  {
+   "kind": "punctuation:no_comma",
+   "instruction": "In your entire response, refrain from the use of any commas.",
+   "kwargs": null,
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "ends with",
+      "arg": "\"",
+      "op": "==",
+      "v": "yes"
+     }
+    ]
+   },
+   "surface": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+   "id": "punctuation:no_comma#29"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Is there anything else I can help with?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Is there anything else I can help with?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Is there anything else I can help with",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "there"
+     }
+    ]
+   },
+   "surface": "starts with \"Is there anything else I can help with\" == yes ; opening has there",
+   "id": "startend:end_checker#0"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Any other questions?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Any other questions?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Any other questions",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "with this exact phrase"
+     }
+    ]
+   },
+   "surface": "starts with \"Any other questions\" == yes ; opening has with this exact phrase",
+   "id": "startend:end_checker#1"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Any other questions?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Any other questions?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Any other questions",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "with this exact phrase"
+     }
+    ]
+   },
+   "surface": "starts with \"Any other questions\" == yes ; opening has with this exact phrase",
+   "id": "startend:end_checker#2"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Any other questions?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Any other questions?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Any other questions",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "with this exact phrase"
+     }
+    ]
+   },
+   "surface": "starts with \"Any other questions\" == yes ; opening has with this exact phrase",
+   "id": "startend:end_checker#3"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Any other questions?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Any other questions?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Any other questions",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "with this exact phrase"
+     }
+    ]
+   },
+   "surface": "starts with \"Any other questions\" == yes ; opening has with this exact phrase",
+   "id": "startend:end_checker#4"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Is there anything else I can help with?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Is there anything else I can help with?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Is there anything else I can help with",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "there"
+     }
+    ]
+   },
+   "surface": "starts with \"Is there anything else I can help with\" == yes ; opening has there",
+   "id": "startend:end_checker#5"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Any other questions?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Any other questions?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Any other questions",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "with this exact phrase"
+     }
+    ]
+   },
+   "surface": "starts with \"Any other questions\" == yes ; opening has with this exact phrase",
+   "id": "startend:end_checker#6"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Is there anything else I can help with?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Is there anything else I can help with?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Is there anything else I can help with",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "there"
+     }
+    ]
+   },
+   "surface": "starts with \"Is there anything else I can help with\" == yes ; opening has there",
+   "id": "startend:end_checker#7"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Any other questions?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Any other questions?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Any other questions",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "with this exact phrase"
+     }
+    ]
+   },
+   "surface": "starts with \"Any other questions\" == yes ; opening has with this exact phrase",
+   "id": "startend:end_checker#8"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Is there anything else I can help with?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Is there anything else I can help with?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Is there anything else I can help with",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "there"
+     }
+    ]
+   },
+   "surface": "starts with \"Is there anything else I can help with\" == yes ; opening has there",
+   "id": "startend:end_checker#9"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Any other questions?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Any other questions?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Any other questions",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "with this exact phrase"
+     }
+    ]
+   },
+   "surface": "starts with \"Any other questions\" == yes ; opening has with this exact phrase",
+   "id": "startend:end_checker#10"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Is there anything else I can help with?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Is there anything else I can help with?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Is there anything else I can help with",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "there"
+     }
+    ]
+   },
+   "surface": "starts with \"Is there anything else I can help with\" == yes ; opening has there",
+   "id": "startend:end_checker#11"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Is there anything else I can help with?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Is there anything else I can help with?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Is there anything else I can help with",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "there"
+     }
+    ]
+   },
+   "surface": "starts with \"Is there anything else I can help with\" == yes ; opening has there",
+   "id": "startend:end_checker#12"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Is there anything else I can help with?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Is there anything else I can help with?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Is there anything else I can help with",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "there"
+     }
+    ]
+   },
+   "surface": "starts with \"Is there anything else I can help with\" == yes ; opening has there",
+   "id": "startend:end_checker#13"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Any other questions?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Any other questions?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Any other questions",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "with this exact phrase"
+     }
+    ]
+   },
+   "surface": "starts with \"Any other questions\" == yes ; opening has with this exact phrase",
+   "id": "startend:end_checker#14"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Any other questions?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Any other questions?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Any other questions",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "with this exact phrase"
+     }
+    ]
+   },
+   "surface": "starts with \"Any other questions\" == yes ; opening has with this exact phrase",
+   "id": "startend:end_checker#15"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Is there anything else I can help with?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Is there anything else I can help with?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Is there anything else I can help with",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "there"
+     }
+    ]
+   },
+   "surface": "starts with \"Is there anything else I can help with\" == yes ; opening has there",
+   "id": "startend:end_checker#16"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Is there anything else I can help with?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Is there anything else I can help with?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Is there anything else I can help with",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "there"
+     }
+    ]
+   },
+   "surface": "starts with \"Is there anything else I can help with\" == yes ; opening has there",
+   "id": "startend:end_checker#17"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Any other questions?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Any other questions?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Any other questions",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "with this exact phrase"
+     }
+    ]
+   },
+   "surface": "starts with \"Any other questions\" == yes ; opening has with this exact phrase",
+   "id": "startend:end_checker#18"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Any other questions?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Any other questions?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Any other questions",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "with this exact phrase"
+     }
+    ]
+   },
+   "surface": "starts with \"Any other questions\" == yes ; opening has with this exact phrase",
+   "id": "startend:end_checker#19"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Any other questions?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Any other questions?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Any other questions",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "with this exact phrase"
+     }
+    ]
+   },
+   "surface": "starts with \"Any other questions\" == yes ; opening has with this exact phrase",
+   "id": "startend:end_checker#20"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Any other questions?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Any other questions?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Any other questions",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "with this exact phrase"
+     }
+    ]
+   },
+   "surface": "starts with \"Any other questions\" == yes ; opening has with this exact phrase",
+   "id": "startend:end_checker#21"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Any other questions?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Any other questions?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Any other questions",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "with this exact phrase"
+     }
+    ]
+   },
+   "surface": "starts with \"Any other questions\" == yes ; opening has with this exact phrase",
+   "id": "startend:end_checker#22"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Is there anything else I can help with?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Is there anything else I can help with?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Is there anything else I can help with",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "there"
+     }
+    ]
+   },
+   "surface": "starts with \"Is there anything else I can help with\" == yes ; opening has there",
+   "id": "startend:end_checker#23"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Is there anything else I can help with?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Is there anything else I can help with?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Is there anything else I can help with",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "there"
+     }
+    ]
+   },
+   "surface": "starts with \"Is there anything else I can help with\" == yes ; opening has there",
+   "id": "startend:end_checker#24"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Is there anything else I can help with?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Is there anything else I can help with?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Is there anything else I can help with",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "there"
+     }
+    ]
+   },
+   "surface": "starts with \"Is there anything else I can help with\" == yes ; opening has there",
+   "id": "startend:end_checker#25"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Any other questions?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Any other questions?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Any other questions",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "with this exact phrase"
+     }
+    ]
+   },
+   "surface": "starts with \"Any other questions\" == yes ; opening has with this exact phrase",
+   "id": "startend:end_checker#26"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Is there anything else I can help with?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Is there anything else I can help with?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Is there anything else I can help with",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "there"
+     }
+    ]
+   },
+   "surface": "starts with \"Is there anything else I can help with\" == yes ; opening has there",
+   "id": "startend:end_checker#27"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Any other questions?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Any other questions?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Any other questions",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "with this exact phrase"
+     }
+    ]
+   },
+   "surface": "starts with \"Any other questions\" == yes ; opening has with this exact phrase",
+   "id": "startend:end_checker#28"
+  },
+  {
+   "kind": "startend:end_checker",
+   "instruction": "Finish your response with this exact phrase Any other questions?. No other words should follow this phrase.",
+   "kwargs": {
+    "end_phrase": "Any other questions?"
+   },
+   "how": "written",
+   "plan": {
+    "and": [
+     {
+      "m": "starts with",
+      "arg": "Any other questions",
+      "op": "==",
+      "v": "yes"
+     },
+     {
+      "m": "opening",
+      "op": "has",
+      "v": "with this exact phrase"
+     }
+    ]
+   },
+   "surface": "starts with \"Any other questions\" == yes ; opening has with this exact phrase",
+   "id": "startend:end_checker#29"
+  }
+ ]
+}
