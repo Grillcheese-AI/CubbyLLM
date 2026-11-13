@@ -10,39 +10,40 @@
   "test_long": 300
  },
  "by_lang": {
-  "fr": 1631,
-  "en": 2269
+  "fr": 1556,
+  "en": 2344
  },
  "by_parts": {
-  "2": 1082,
-  "3": 1280,
-  "4": 1238,
-  "5": 76,
-  "6": 87,
-  "7": 70,
-  "8": 67
+  "2": 1095,
+  "3": 1238,
+  "4": 1267,
+  "5": 70,
+  "6": 85,
+  "7": 69,
+  "8": 76
  },
  "segments_by_kind": {
-  "task": 3109,
-  "check": 12884,
-  "process": 1557,
-  "none": 3777,
-  "asked": 3881
+  "task": 3079,
+  "check": 12923,
+  "process": 1593,
+  "none": 3948,
+  "asked": 3899
  },
  "groups": {
-  "one": 8696,
-  "either": 1075,
-  "unless": 460,
-  "if": 559
+  "one": 8625,
+  "either": 1099,
+  "unless": 533,
+  "if": 517
  },
  "drop_reasons": {
-  "train: too few usable replies on one side": 177,
-  "train: shares 5 words with a benchmark": 28,
-  "dev: shares 5 words with a benchmark": 6,
+  "train: too few usable replies on one side": 154,
+  "train: shares 5 words with a benchmark": 24,
   "dev: too few usable replies on one side": 19,
-  "test: too few usable replies on one side": 20
+  "dev: shares 5 words with a benchmark": 5,
+  "test: too few usable replies on one side": 23,
+  "test_long: too few usable replies on one side": 1
  },
- "vm_runs_agreeing": 31091,
+ "vm_runs_agreeing": 31087,
  "vm_disagreements": 0,
  "benchmarks_checked": [
   "IFBench",
@@ -55,5 +56,5 @@
   "commit": "3f37515",
   "older_than_sources": false
  },
- "rows_sha256": "ff415be429dff0538e0efa9ddc4a14658910a5eb5cc89262c70139759a4e29b7"
+ "rows_sha256": "ca2e6a0ecfa78f24da5fa3044daf850cfd285e47b9becaf382e1876bd61933a1"
 }

@@ -23,6 +23,7 @@ word at a given position, indents and list levels (not filter columns at all).
 from __future__ import annotations
 
 import random
+import re
 from collections import Counter
 
 __wiring__ = "STANDALONE"
@@ -110,8 +111,9 @@ def held_out(spec: dict) -> str | None:
 def _values(views: list[dict], view: str, col: str) -> list:
     """The values a column takes, the ones found in a fifth to four fifths of the replies first."""
     seen = Counter()
-    for vs in views:
-        seen.update({r[col] for r in vs[view]})
+    for vs in views:                                      # no value a person would not write in one line
+        seen.update({r[col] for r in vs[view] if not isinstance(r[col], str) or (r[col].strip() and not
+                                                                                 re.search(r"[\n\r\t]", r[col]))})
     n = max(1, len(views))
     order = sorted(seen, key=lambda x: (str(type(x)), x))  # set order follows the process's string hashing: sorted,
     mid = [x for x in order if 0.2 <= seen[x] / n <= 0.8]   # the same seed draws the same programs in every run
@@ -145,6 +147,7 @@ def sample_atom(rng: random.Random, views: list[dict], tries: int = 40) -> dict 
             pos = rng.choice([1, 2, 3, -1])
             at = [vs[view][pos - 1 if pos > 0 else -1][col] for vs in views
                   if (len(vs[view]) >= pos if pos > 0 else vs[view])]
+            at = [x for x in at if not isinstance(x, str) or (x.strip() and not re.search(r"[\n\r\t]", x))]
             if not at:
                 continue
             atom = {"q": "at", "view": view, "pos": pos, "col": col,

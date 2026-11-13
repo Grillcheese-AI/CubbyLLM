@@ -66,6 +66,44 @@ def suppress_processor(token_ids: list):
     return SuppressTokensLogitsProcessor(token_ids)
 
 
+def ranked_processor(choose, widths=(32, 512)):
+    """grilly2's processor that lets ``choose(ids_so_far, ranked_ids) -> allowed ids`` pick among a row's best-scored
+    ids (the best ``widths[0]`` first, then more, then every id best first), every other id masked out (order 0067's
+    second reader: decoding held to a grammar). None when this grilly2 has no hook."""
+    try:
+        from grilly import full, int64, tensor
+    except ImportError:
+        return None
+    import math
+
+    import numpy as np
+
+    class _Ranked:
+        def __call__(self, input_ids, scores):
+            rows, vocab = scores.shape
+            allowed = []
+            for i in range(rows):
+                ids = [int(t) for t in input_ids[i].tolist()]
+                s = np.asarray(scores[i].tolist(), dtype=np.float64)
+                pick, order = [], None
+                for w in widths:
+                    top = np.argpartition(-s, min(w, vocab - 1))[:w]
+                    pick = choose(ids, [int(t) for t in top[np.argsort(-s[top])]])
+                    if pick:
+                        break
+                if not pick:
+                    order = np.argsort(-s)
+                    pick = choose(ids, [int(t) for t in order])
+                if not pick:
+                    raise ValueError("no token keeps the answer in its grammar")
+                allowed.append(pick)
+            width = max(len(a) for a in allowed)
+            mask = full((rows, vocab), -math.inf)
+            mask.scatter_(1, tensor([a + [a[0]] * (width - len(a)) for a in allowed], dtype=int64), value=0.0)
+            return scores + mask
+    return _Ranked()
+
+
 def generate(model, rows: list, max_new_tokens: int, eos: int, temperature: float = 0.0, top_k: int = 40,
              seed: "int | None" = None, g=None, logits_processor=None, prefix_allowed_tokens_fn=None) -> list:
     """Rows of token ids -> each row with its continuation (as lists), greedy; sampled at ``temperature`` > 0, seeded
