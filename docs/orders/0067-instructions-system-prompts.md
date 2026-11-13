@@ -1160,3 +1160,32 @@ its tests. Who builds it, and when, is Nick's next call.
   judged by Code A. Cowork re-read 6 drawn at random (seed 7): all 6 judgments hold (e.g. "the word \"words\" at least
   8 times" for "words in all capitals at least 8 times"; "under 2 words" for alternating syllables).
 - Open: the API that shows a system prompt's rule book to its setter (step 1; `RuleBook.show_book` is ready).
+
+### Step 1, built: roles in the API (Code A, 2026-11-13, while the view reader's Colab run waits)
+Behind `CB_API_ROLES=1` (off: `POST /turn` reads `{"text"}` as before, `/rules/` is unknown; a test pins it).
+- **`POST /turn` takes messages** with a role (`system`, `user`, `assistant`, `tool`), the shape other clients send, and
+  a session (`cubby_serve/rule_api.py`). A `system` message carries its level: `global` (the permission `rules:global`,
+  the operator), `company` (cubby-auth's `tenant_role` "admin" of the caller's company), `user` (any signed-in caller,
+  for their own session; the default). The role is checked before anything is set; with no cubby-auth sign-in nobody
+  can set a prompt (closed, never open). The last `user` message is the turn's text; `assistant` and `tool` set nothing.
+- **Compiled once, shown to its setter:** a prompt is split into sentences, each read once by the plan reader into a
+  rule of its level, or kept "asked" / "none" (`cubbyllm/speech/rule_stack.py`); the same text from the same setter is
+  not read again; a new prompt at the same place withdraws the old one's rules from that turn. The reply carries the
+  rule book in plain words (`RuleBook.show_book`) to whoever set it; a company may ask `"confirm_before_apply": true`
+  (`POST /rules/confirm`, its admin). `POST /rules/correct` recompiles one rule, by its setter only, said back ("Got
+  it, from now on: ...") and applied from the next turn.
+- **Sessions:** made by the server on the first call (an unguessable id) and returned; a signed-in creator's session is
+  theirs (another caller 403, an id the server did not make 404). A turn's rules are a stack: global, the session's
+  company, the session's own prompt, the conversation; highest first. A turn without a session reads the global rules.
+- **What a user sees:** a turn's rule rows above the user's own level show how each acted and its outcome only, not
+  the operator's or the company's sentence nor who set it; the audit view shows all.
+- **Tests** (`tests/serve/test_rule_api.py`, a running server, a fake reader and a fake sign-in, 8): off = as before;
+  who may set which level; compiled once and shown to its setter; a session is its creator's; each level reaches only
+  its own sessions and a user sees no higher sentence; a new prompt replaces the old and a correction applies from the
+  next turn, by its setter only; "confirm before apply"; assistant and tool messages set nothing. Full suite: 1,644
+  passed, 12 skipped, the known red only (order 0002); on the cowork VM build (`676df1d`).
+- **Not done, said so:** nothing in the server's boot mounts the plan reader yet (`brain.rule_reader`; its adapter waits
+  for the view reader's read): with none, every sentence of a prompt is kept "asked", and the rule book says so. The
+  chat is still one conversation (its history and hormones are shared by every session; only the rules are per
+  session). Stated facts and the voice are not split out of a prompt yet (step 5). Rules from the user's own turns
+  (the conversation level) are step 4's "compile what is new"; the API does not read a user line into a rule.

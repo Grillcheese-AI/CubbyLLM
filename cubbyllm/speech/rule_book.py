@@ -64,9 +64,10 @@ class Rule:
 
 
 class RuleBook:
-    def __init__(self, confirm: tuple = ()) -> None:
+    def __init__(self, confirm: tuple = (), prefix: str = "rule") -> None:
         self.rules: list[Rule] = []
         self.confirm_levels = set(confirm)
+        self.prefix = prefix                             # rule ids: "<prefix>1", ... (books stacked in a session differ)
 
     def set(self, plan: dict, level: str, set_by: str, at: int, scope: str = "session", text: str = "", **meta) -> Rule:
         """A rule from `at` on. Refused (ValueError) when the plan is not one the family runs, or the level or scope is
@@ -76,7 +77,7 @@ class RuleBook:
             raise ValueError(f"not a rule: {why}")
         if level not in LEVELS or scope not in SCOPES:
             raise ValueError(f"level {level!r} / scope {scope!r}: levels {LEVELS}, scopes {SCOPES}")
-        r = Rule(id=f"rule{len(self.rules) + 1}", plan=plan, level=level, set_by=set_by, set_at=int(at), scope=scope,
+        r = Rule(id=f"{self.prefix}{len(self.rules) + 1}", plan=plan, level=level, set_by=set_by, set_at=int(at), scope=scope,
                  text=text, meta=dict(meta), held=level in self.confirm_levels)
         self.rules.append(r)
         return r
