@@ -1,0 +1,505 @@
+{
+ "order": "0067",
+ "what": "rule plans run by the VM against IFEval's checker on replies built to pass and fail",
+ "arm": "seat",
+ "rows": 130,
+ "replies_per_rule": 10,
+ "seed": 0,
+ "splits": "new_wording",
+ "counts": {
+  "pairs": 1300,
+  "agree": 1177,
+  "checker passes": 536,
+  "rule passes, checker fails": 66,
+  "asked": 0
+ },
+ "agreement": 0.9054,
+ "rule_passes_checker_fails": 0.0508,
+ "checker_pass_share": 0.4123,
+ "per_kind": {
+  "english_capital": {
+   "pairs": 110,
+   "agree": 105,
+   "checker passes": 24,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.955
+  },
+  "english_lowercase": {
+   "pairs": 90,
+   "agree": 83,
+   "checker passes": 18,
+   "rule passes, checker fails": 3,
+   "asked": 0,
+   "agreement": 0.922
+  },
+  "existence": {
+   "pairs": 60,
+   "agree": 60,
+   "checker passes": 27,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "frequency": {
+   "pairs": 60,
+   "agree": 20,
+   "checker passes": 23,
+   "rule passes, checker fails": 25,
+   "asked": 0,
+   "agreement": 0.333
+  },
+  "json_format": {
+   "pairs": 50,
+   "agree": 50,
+   "checker passes": 13,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "letter_frequency": {
+   "pairs": 70,
+   "agree": 50,
+   "checker passes": 32,
+   "rule passes, checker fails": 13,
+   "asked": 0,
+   "agreement": 0.714
+  },
+  "multiple_sections": {
+   "pairs": 90,
+   "agree": 82,
+   "checker passes": 48,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.911
+  },
+  "number_highlighted_sections": {
+   "pairs": 100,
+   "agree": 100,
+   "checker passes": 70,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_paragraphs": {
+   "pairs": 50,
+   "agree": 50,
+   "checker passes": 17,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_sentences": {
+   "pairs": 80,
+   "agree": 68,
+   "checker passes": 35,
+   "rule passes, checker fails": 12,
+   "asked": 0,
+   "agreement": 0.85
+  },
+  "number_words": {
+   "pairs": 100,
+   "agree": 80,
+   "checker passes": 49,
+   "rule passes, checker fails": 13,
+   "asked": 0,
+   "agreement": 0.8
+  },
+  "quotation": {
+   "pairs": 130,
+   "agree": 130,
+   "checker passes": 54,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "repeat_prompt": {
+   "pairs": 110,
+   "agree": 100,
+   "checker passes": 40,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.909
+  },
+  "response_language": {
+   "pairs": 70,
+   "agree": 69,
+   "checker passes": 39,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.986
+  },
+  "title": {
+   "pairs": 50,
+   "agree": 50,
+   "checker passes": 24,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "two_responses": {
+   "pairs": 80,
+   "agree": 80,
+   "checker passes": 23,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  }
+ },
+ "misses": [
+  {
+   "kind": "repeat_prompt",
+   "kwargs": {
+    "prompt_to_repeat": "Donne-moi trois conseils pour mieux dormir."
+   },
+   "reply": "Donne-moi trois conseils pour mieux dormir. La matinée était calme et la rue était vide. La matinée était calme et la rue était vide.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "donne-moi is the opening of the reply",
+    "donne-moi trois is the opening of the reply",
+    "donne-moi trois conseils is the opening of the reply",
+    "donne-moi trois conseils pour is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "repeat_prompt",
+   "kwargs": {
+    "prompt_to_repeat": "Donne-moi trois conseils pour mieux dormir."
+   },
+   "reply": "Donne-moi trois conseils pour mieux dormir. Un bon plan commence par une question simple. Personne ne savait pourquoi le pont était fermé.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "donne-moi is the opening of the reply",
+    "donne-moi trois is the opening of the reply",
+    "donne-moi trois conseils is the opening of the reply",
+    "donne-moi trois conseils pour is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "repeat_prompt",
+   "kwargs": {
+    "prompt_to_repeat": "Donne-moi trois conseils pour mieux dormir."
+   },
+   "reply": "Donne-moi trois conseils pour mieux dormir. Personne ne savait pourquoi le pont était fermé. Personne ne savait pourquoi le pont était fermé.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "donne-moi is the opening of the reply",
+    "donne-moi trois is the opening of the reply",
+    "donne-moi trois conseils is the opening of the reply",
+    "donne-moi trois conseils pour is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "LA PLUPART DU TRAVAIL SE FAIT LE SOIR. UN BON PLAN COMMENCE PAR UNE QUESTION SIMPLE.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "upper is the case of the reply",
+    "fr is the language of the reply"
+   ]
+  },
+  {
+   "kind": "repeat_prompt",
+   "kwargs": {
+    "prompt_to_repeat": "Donne-moi trois conseils pour mieux dormir."
+   },
+   "reply": "Donne-moi trois conseils pour mieux dormir. Nous avons marché jusqu'au marché avant midi. La matinée était calme et la rue était vide.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "donne-moi is the opening of the reply",
+    "donne-moi trois is the opening of the reply",
+    "donne-moi trois conseils is the opening of the reply",
+    "donne-moi trois conseils pour is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "repeat_prompt",
+   "kwargs": {
+    "prompt_to_repeat": "Donne-moi trois conseils pour mieux dormir."
+   },
+   "reply": "Donne-moi trois conseils pour mieux dormir. Le train était encore en retard cette semaine. La plupart du travail se fait le soir.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "donne-moi is the opening of the reply",
+    "donne-moi trois is the opening of the reply",
+    "donne-moi trois conseils is the opening of the reply",
+    "donne-moi trois conseils pour is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "repeat_prompt",
+   "kwargs": {
+    "prompt_to_repeat": "Donne-moi trois conseils pour mieux dormir."
+   },
+   "reply": "Donne-moi trois conseils pour mieux dormir. Le train était encore en retard cette semaine. Le train était encore en retard cette semaine.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "donne-moi is the opening of the reply",
+    "donne-moi trois is the opening of the reply",
+    "donne-moi trois conseils is the opening of the reply",
+    "donne-moi trois conseils pour is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "repeat_prompt",
+   "kwargs": {
+    "prompt_to_repeat": "Donne-moi trois conseils pour mieux dormir."
+   },
+   "reply": "Donne-moi trois conseils pour mieux dormir. Personne ne savait pourquoi le pont était fermé. Un bon plan commence par une question simple.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "donne-moi is the opening of the reply",
+    "donne-moi trois is the opening of the reply",
+    "donne-moi trois conseils is the opening of the reply",
+    "donne-moi trois conseils pour is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "repeat_prompt",
+   "kwargs": {
+    "prompt_to_repeat": "Donne-moi trois conseils pour mieux dormir."
+   },
+   "reply": "Donne-moi trois conseils pour mieux dormir. Ses notes étaient courtes et très claires. La réponse dépend de la saison et du temps.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "donne-moi is the opening of the reply",
+    "donne-moi trois is the opening of the reply",
+    "donne-moi trois conseils is the opening of the reply",
+    "donne-moi trois conseils pour is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "repeat_prompt",
+   "kwargs": {
+    "prompt_to_repeat": "Donne-moi trois conseils pour mieux dormir."
+   },
+   "reply": "Donne-moi trois conseils pour mieux dormir. Ses notes étaient courtes et très claires. La matinée était calme et la rue était vide.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "donne-moi is the opening of the reply",
+    "donne-moi trois is the opening of the reply",
+    "donne-moi trois conseils is the opening of the reply",
+    "donne-moi trois conseils pour is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "repeat_prompt",
+   "kwargs": {
+    "prompt_to_repeat": "Donne-moi trois conseils pour mieux dormir."
+   },
+   "reply": "Donne-moi trois conseils pour mieux dormir. C'est une petite ville, mais on ne la quitte pas. Ses notes étaient courtes et très claires.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "donne-moi is the opening of the reply",
+    "donne-moi trois is the opening of the reply",
+    "donne-moi trois conseils is the opening of the reply",
+    "donne-moi trois conseils pour is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "number_sentences",
+   "kwargs": {
+    "num_sentences": 8,
+    "relation": "less than"
+   },
+   "reply": "La plupart du travail se fait le soir. Le train était encore en retard cette semaine. C'est une petite ville, mais on ne la quitte pas. La réponse dépend de la ",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "8 is the sentence count of the reply"
+   ]
+  },
+  {
+   "kind": "number_sentences",
+   "kwargs": {
+    "num_sentences": 8,
+    "relation": "less than"
+   },
+   "reply": "La réponse dépend de la saison et du temps. La réponse dépend de la saison et du temps. C'est une petite ville, mais on ne la quitte pas. La matinée était calme",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "9 is the sentence count of the reply"
+   ]
+  },
+  {
+   "kind": "number_sentences",
+   "kwargs": {
+    "num_sentences": 8,
+    "relation": "less than"
+   },
+   "reply": "Le train était encore en retard cette semaine. La réponse dépend de la saison et du temps. C'est une petite ville, mais on ne la quitte pas. C'est une petite vi",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "10 is the sentence count of the reply"
+   ]
+  },
+  {
+   "kind": "number_sentences",
+   "kwargs": {
+    "num_sentences": 8,
+    "relation": "less than"
+   },
+   "reply": "Ils vendaient du pain, des fruits et du fromage. La réponse dépend de la saison et du temps. La plupart du travail se fait le soir. Personne ne savait pourquoi ",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "10 is the sentence count of the reply"
+   ]
+  },
+  {
+   "kind": "number_sentences",
+   "kwargs": {
+    "num_sentences": 8,
+    "relation": "less than"
+   },
+   "reply": "La matinée était calme et la rue était vide. Personne ne savait pourquoi le pont était fermé. Un bon plan commence par une question simple. Personne ne savait p",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "9 is the sentence count of the reply"
+   ]
+  },
+  {
+   "kind": "number_sentences",
+   "kwargs": {
+    "num_sentences": 8,
+    "relation": "less than"
+   },
+   "reply": "La plupart du travail se fait le soir. C'est une petite ville, mais on ne la quitte pas. C'est une petite ville, mais on ne la quitte pas. Personne ne savait po",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "8 is the sentence count of the reply"
+   ]
+  },
+  {
+   "kind": "number_sentences",
+   "kwargs": {
+    "num_sentences": 8,
+    "relation": "less than"
+   },
+   "reply": "Personne ne savait pourquoi le pont était fermé. Ils vendaient du pain, des fruits et du fromage. Nous avons marché jusqu'au marché avant midi. La plupart du tr",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "9 is the sentence count of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "NOUS AVONS MARCHÉ JUSQU'AU MARCHÉ AVANT MIDI. C'EST UNE PETITE VILLE, MAIS ON NE LA QUITTE PAS.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "upper is the case of the reply",
+    "fr is the language of the reply"
+   ]
+  },
+  {
+   "kind": "letter_frequency",
+   "kwargs": {
+    "letter": "w",
+    "let_frequency": 4,
+    "let_relation": "less than"
+   },
+   "reply": "w in sky to at w by a w dry w it up by w",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "5 is the count of the letter \"w\" of the reply"
+   ]
+  },
+  {
+   "kind": "letter_frequency",
+   "kwargs": {
+    "letter": "w",
+    "let_frequency": 4,
+    "let_relation": "less than"
+   },
+   "reply": "hymn w by by in rhythm of w to so w w",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "4 is the count of the letter \"w\" of the reply"
+   ]
+  },
+  {
+   "kind": "letter_frequency",
+   "kwargs": {
+    "letter": "w",
+    "let_frequency": 4,
+    "let_relation": "less than"
+   },
+   "reply": "to w w in in w dry on w to w",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "5 is the count of the letter \"w\" of the reply"
+   ]
+  },
+  {
+   "kind": "letter_frequency",
+   "kwargs": {
+    "letter": "w",
+    "let_frequency": 4,
+    "let_relation": "less than"
+   },
+   "reply": "of w so w the sky on it at w w up",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "4 is the count of the letter \"w\" of the reply"
+   ]
+  },
+  {
+   "kind": "letter_frequency",
+   "kwargs": {
+    "letter": "w",
+    "let_frequency": 4,
+    "let_relation": "less than"
+   },
+   "reply": "w up w in dry w w w w so of to up to it",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "6 is the count of the letter \"w\" of the reply"
+   ]
+  },
+  {
+   "kind": "letter_frequency",
+   "kwargs": {
+    "letter": "w",
+    "let_frequency": 4,
+    "let_relation": "less than"
+   },
+   "reply": "to w w of w to in",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "3 is the count of the letter \"w\" of the reply"
+   ]
+  }
+ ],
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-11 15:18",
+  "sha256": "3120403f35b007eb85a2302086da7fb1447830573f0f2d540e4c62fdb0cbc37b",
+  "commit": "3f37515",
+  "older_than_sources": false
+ }
+}

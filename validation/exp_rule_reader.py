@@ -37,7 +37,7 @@ def rels(plan):
 
 def examples(rows, k, seed):
     rng = random.Random(seed)
-    train = [r for r in rows if r["split"] == "train" and "+" not in r["kind"]]
+    train = [r for r in rows if r["split"] == "train" and "+" not in r["kind"] and r.get("template") is not None]
     kinds = rng.sample(sorted({r["kind"] for r in train}), k)
     return [(r["instruction"], r["plan"]) for r in
             (rng.choice([x for x in train if x["kind"] == kd and x["lang"] == ("en", "fr")[i % 2]]) for i, kd in enumerate(kinds))]

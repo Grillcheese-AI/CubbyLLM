@@ -496,6 +496,30 @@ instruction, the reader writes the rule) waits for the reader's line 3.
 - **The read adds two lines of its own:** the natural rules held out (exact; IFEval's checker where it can state the
   rule) and the rule-free prompts held out (**how often the reader invents a rule**: a rule invented on a plain task
   would make the turn refuse a good answer).
+### The reader's fourth round, read (Claude Code, 2026-11-13)
+- **The adapter** (`cubby450m_rules_v4`, on `rule_reader_sft_v4.jsonl` with Nick's annotated prompts, hash checked;
+  371 steps, 1.5 minutes; held answer loss 0.0077), read on grilly2, the instruction alone, the cowork VM. Each held-out
+  split read once.
+
+| read | rows | exact | IFEval's checker: agreement | false passes |
+|---|---|---|---|---|
+| dev (templated and Alpaca dev rows) | 150 | 148 (26 rule-free: 0 invented) | — | — |
+| fresh new wordings | 150 | 136 (90.7%; EN 80/81, FR 56/69) | **90.5%** (130 rules, 1,300 replies) | 5.1% |
+| Nick's natural length rules, held out | 116 | 110 (94.8%) | **97.7%** (30 rules IFEval states, 300 replies) | 2.3% |
+| Nick's rule-free prompts, held out | 300 | 299 said `none` | — | **1 rule invented (0.3%)** |
+
+- **All capitals fixed** (0.955; round 2: 0.62). **The comparisons are still the gap on new wordings:** word frequency
+  0.33, letters 0.71, words 0.80, sentences 0.85; the new split's comparisons are phrasings no round trained on
+  ("lower than", "beneath", "en deçà de"), and the reader still writes ">=" for most of them. Three rounds show the
+  reader learns the shape of rules across wordings, and does not learn comparison words it never saw.
+- **On real prompts** (Nick's annotated Alpaca prompts, held out): 97.7% agreement, 2.3% false passes; 2 of 116 read
+  `none` where there was a rule (the rule is lost; nothing is broken). **On plain tasks:** 1 rule invented in 300.
+- **Line 3, new wordings of seen kinds: missed** (90.5% against 98%; written 100%). The held-out kinds stay unread.
+  Logs: `rule_reader_2026-11-13_v4_{dev,new,alpaca}.json`, `rule_agree_2026-11-13_v4_{new,natural}.json`.
+- **For Nick:** the new-wording line, as built, asks the reader to read comparison words it has never been shown; four
+  rounds have not met it that way. Real prompts read at 97.7%. Whether to read the held-out kinds now (line 3's
+  second part), change how the new-wording split words its comparisons, or wire the reader as it is behind its flag
+  with these rates recorded, is his call.
 - **Commits:**
 - **Files:**
 - **Tests:**

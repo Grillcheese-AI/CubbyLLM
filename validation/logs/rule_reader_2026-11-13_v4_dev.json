@@ -1,0 +1,254 @@
+{
+ "order": "0067",
+ "what": "the program seat as it is reads instructions into rule plans, slots constrained",
+ "adapter": "cubby450m_rules_v4",
+ "rows_file_lines": 15390,
+ "n_per_split": 150,
+ "k": 8,
+ "seed": 0,
+ "examples_kinds": [
+  "word count < 100",
+  "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+  "case == lower ; language == en",
+  "count of the word \"musique\" >= 3",
+  "markdown == no",
+  "section count \"PART\" >= 3",
+  "count of the letter \"e\" >= 5",
+  "starts with \"Donne-moi trois conseils pour mieux dormir.\" == yes"
+ ],
+ "arms": {
+  "zero": {
+   "dev": {
+    "counts": {
+     "rows": 150,
+     "written": 124,
+     "exact": 148,
+     "measurement right": 150,
+     "rows fr": 66,
+     "exact fr": 65,
+     "rule-free rows": 26,
+     "invented a rule": 0,
+     "said none where there was a rule": 0,
+     "rows en": 84,
+     "exact en": 83
+    },
+    "per_kind": {
+     "english_capital": {
+      "rows": 5,
+      "exact": 4,
+      "measurement right": 5
+     },
+     "english_capital+frequency": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "english_capital+multiple_sections": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "english_capital+number_paragraphs": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "english_lowercase": {
+      "rows": 5,
+      "exact": 5,
+      "measurement right": 5
+     },
+     "english_lowercase+multiple_sections": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "existence": {
+      "rows": 3,
+      "exact": 3,
+      "measurement right": 3
+     },
+     "first": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "frequency": {
+      "rows": 9,
+      "exact": 9,
+      "measurement right": 9
+     },
+     "frequency+response_language": {
+      "rows": 2,
+      "exact": 2,
+      "measurement right": 2
+     },
+     "json_format": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "json_format+english_lowercase": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "json_format+number_highlighted_sections": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "letter_frequency": {
+      "rows": 3,
+      "exact": 3,
+      "measurement right": 3
+     },
+     "letter_frequency+json_format": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "letter_frequency+repeat_prompt": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "multiple_sections": {
+      "rows": 8,
+      "exact": 8,
+      "measurement right": 8
+     },
+     "natural_sentences": {
+      "rows": 6,
+      "exact": 6,
+      "measurement right": 6
+     },
+     "natural_words": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "no_markdown": {
+      "rows": 5,
+      "exact": 5,
+      "measurement right": 5
+     },
+     "no_markdown+two_responses": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "none": {
+      "rows": 26,
+      "exact": 26,
+      "measurement right": 26
+     },
+     "number_highlighted_sections": {
+      "rows": 9,
+      "exact": 9,
+      "measurement right": 9
+     },
+     "number_paragraphs": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "number_paragraphs+no_markdown": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "number_paragraphs+number_highlighted_sections": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 1
+     },
+     "number_sentences": {
+      "rows": 4,
+      "exact": 4,
+      "measurement right": 4
+     },
+     "number_words": {
+      "rows": 6,
+      "exact": 6,
+      "measurement right": 6
+     },
+     "number_words+quotation": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "quotation": {
+      "rows": 6,
+      "exact": 6,
+      "measurement right": 6
+     },
+     "quotation+frequency": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "quotation+letter_frequency": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "repeat_prompt": {
+      "rows": 3,
+      "exact": 3,
+      "measurement right": 3
+     },
+     "repeat_prompt+letter_frequency": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "repeat_prompt+number_sentences": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "response_language": {
+      "rows": 4,
+      "exact": 4,
+      "measurement right": 4
+     },
+     "response_language+number_paragraphs": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "title": {
+      "rows": 2,
+      "exact": 2,
+      "measurement right": 2
+     },
+     "two_responses": {
+      "rows": 4,
+      "exact": 4,
+      "measurement right": 4
+     },
+     "two_responses+english_capital": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     }
+    },
+    "some_misses": [
+     {
+      "kind": "number_paragraphs+number_highlighted_sections",
+      "want": "paragraph count == 5 ; empty paragraph count == 0 ; highlight count >= 2",
+      "got": "paragraph count == 5 ; empty paragraph count == 2 ; highlight count >= 2"
+     },
+     {
+      "kind": "english_capital",
+      "want": "case == upper ; language == en",
+      "got": "case == lower ; language == en"
+     }
+    ]
+   },
+   "seconds": 91.5,
+   "seat_calls": 851
+  }
+ }
+}

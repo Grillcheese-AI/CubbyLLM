@@ -1,0 +1,109 @@
+{
+ "order": "0067",
+ "what": "the program seat as it is reads instructions into rule plans, slots constrained",
+ "adapter": "cubby450m_rules_v4",
+ "rows_file_lines": 15390,
+ "n_per_split": 300,
+ "k": 8,
+ "seed": 0,
+ "examples_kinds": [
+  "word count < 100",
+  "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+  "case == lower ; language == en",
+  "count of the word \"musique\" >= 3",
+  "markdown == no",
+  "section count \"PART\" >= 3",
+  "count of the letter \"e\" >= 5",
+  "starts with \"Donne-moi trois conseils pour mieux dormir.\" == yes"
+ ],
+ "arms": {
+  "zero": {
+   "natural_test": {
+    "counts": {
+     "rows": 116,
+     "written": 114,
+     "exact": 110,
+     "measurement right": 113,
+     "rows en": 116,
+     "exact en": 110,
+     "rule-free rows": 0,
+     "invented a rule": 0,
+     "said none where there was a rule": 2
+    },
+    "per_kind": {
+     "natural_sentences": {
+      "rows": 90,
+      "exact": 86,
+      "measurement right": 88
+     },
+     "natural_words": {
+      "rows": 26,
+      "exact": 24,
+      "measurement right": 25
+     }
+    },
+    "some_misses": [
+     {
+      "kind": "natural_words",
+      "want": "word count <= 200",
+      "got": "word count <= 200 ; empty paragraph count == 0"
+     },
+     {
+      "kind": "natural_words",
+      "want": "word count <= 15",
+      "got": "word count >= 15"
+     },
+     {
+      "kind": "natural_sentences",
+      "want": "sentence count == 4",
+      "got": "none"
+     },
+     {
+      "kind": "natural_sentences",
+      "want": "sentence count == 1",
+      "got": "sentence count == 2"
+     },
+     {
+      "kind": "natural_sentences",
+      "want": "sentence count >= 3 ; sentence count <= 5",
+      "got": "sentence count == 3 ; sentence count <= 5"
+     },
+     {
+      "kind": "natural_sentences",
+      "want": "sentence count == 1",
+      "got": "none"
+     }
+    ]
+   },
+   "none_test": {
+    "counts": {
+     "rows": 300,
+     "written": 1,
+     "exact": 299,
+     "measurement right": 299,
+     "rows en": 300,
+     "exact en": 299,
+     "rule-free rows": 300,
+     "invented a rule": 1,
+     "said none where there was a rule": 0
+    },
+    "per_kind": {
+     "none": {
+      "rows": 300,
+      "exact": 299,
+      "measurement right": 299
+     }
+    },
+    "some_misses": [
+     {
+      "kind": "none",
+      "want": "none",
+      "got": "sentence count == 1"
+     }
+    ]
+   },
+   "seconds": 77.7,
+   "seat_calls": 805
+  }
+ }
+}
