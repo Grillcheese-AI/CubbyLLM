@@ -644,6 +644,53 @@ Apache-2.0, its licence beside it; `$CUBBY_DATASETS/dolly15k`: 13 MB, CC BY-SA 3
   70 GB, off otherwise, and refuses a set with records over `MAX_LEN`.
 - **The read planned:** dev; the three real test splits (real rules through IFEval's checker); the regression splits
   (second reads, labelled); IFBench again (written share, then agreement with its checker).
+### The reader's sixth round, read (Nick, 2026-11-13; Claude Code, Code A)
+Trained on Colab's third try (an A100 80 GB; an L4 and an A100 40 GB ran out of memory first, the third try ran
+without `--micro-tokens`): 702 steps, 3.0 min, held answer loss 0.0057. Read at home: grilly2 `03279a0` (the hook,
+merged to main as `d593633`), the cowork VM, slots constrained. Licences beside the adapter (`row_licences.json`).
+- **Dev** (`rule_reader_2026-11-13_v6_dev.json`): 147/150 exact; 13/13 `asked` rows abstained; 0 invented.
+- **Real prompts, held out** (`..._v6_real.json`, 360 each, 300 EN + 60 FR):
+  - no rule: **1 rule invented in 360**, 15 `asked`, 344 `none`;
+  - a rule inside: 357/360 exact; IFEval's checker **99.7%** agreement, **0 false passes** in 3,190 replies
+    (`rule_agree_2026-11-13_v6_real_rule.json`);
+  - a phrase no measurement covers (held-out phrases): 315 `asked`, 42 `none`, **3 rules written** (0.8%).
+- **Second reads (regression):** round 5's unmeasurable test 79/92 `asked`, **0 rules written** (round 5: 6); natural
+  115/116, 97.7% / 2.3% (unchanged); rule-free tasks **0 invented in 300** (round 5: 1); v4b new wordings 137/150,
+  97.8% / 0.15% (round 5: 96.2% / 0.54%).
+- **IFBench, a diagnostic** (spent by round 5; `rule_ifbench_2026-11-13_v6.json`, `rule_ifbench_agree_2026-11-13_v6.json`):
+  a rule written for **66.0%** (round 5: 25.7%), `asked` 15.3%, `none` 18.7%. Where written, agreement **56.8%**, false
+  passes **36.3%** (round 5: 21.7%); of the replies a written rule passed, 87% fail IFBench's checker. Worst: stop-word
+  ratios, palindromes, a keyword in a given sentence, consonant rules, unique word counts, each read as a count the
+  reply world keeps ("keyword paradox seven times" -> `count of the word "paradox" >= 1`; a keyword position ->
+  `sentence count >= 22`).
+- **Reading:** on the kinds it knows the plan reader now reads real, long prompts nearly perfectly and abstains on
+  unmeasurable phrases; on constraint kinds it has no measurement for, round 6 taught it that a constraint inside a
+  long prompt is to be written, so it writes the nearest measurement more often. A fixed-form reader cannot say a
+  kind it has no form for is new; the abstention it learned is for phrases, not for structures. That is the case for
+  the second reader (CubeLang, the addendum), which this read unblocks as its baseline. The plan reader stays unwired;
+  CB_RULES off.
+- **A host guard worth testing (proposed, not built):** every number and quoted word in a written plan must appear in
+  the instruction (as digits or a number word), else the plan is `asked`. It would refuse the invented numbers
+  ("sentence count >= 22" from a prompt with no 22) but not a wrong measurement with a right number ("count of the
+  word paradox >= 1" from "seven times"). Measured on round 6's IFBench plans before any decision.
+### The host guard, built and measured (Cowork, 2026-11-13: "build and measure it, no model call"; Code A)
+`cubbyllm/speech/rule_guard.py` (unwired; CB_RULES off): a written plan is `asked` unless (1) every count it compares
+above 1 is in the instruction as digits or a number word (EN, FR), (2) every argument it carries is in the
+instruction, (3) its measurement's unit is named there (a lexicon per measurement, EN and FR). The lexicon was
+tuned on the train and dev rows' own plans only: 0 of 15,903 asked. Tests: `tests/speech/test_rule_guard.py`.
+Read once (`validation/exp_rule_guard.py`, `rule_guard_2026-11-13_v6.json`):
+- **The line (seen kinds in real prompts):** round 6's real-prompt rule test: the guard asks on **0 of 357** plans
+  that are right today (line: at most 1 point) and catches 1 of the 3 wrong ones. Natural prompts 0 of 115.
+- Also read: v4b's new wordings (not real prompts, so outside the line): 4 of 137 right plans asked (2.9%), two
+  wordings the lexicon lacks ("une première réponse et une seconde": two without the word; "be certain to write
+  travel": no word for "word"). Not added: the split is read; a later lexicon change takes a fresh read. Wrong plans
+  on the held-out unmeasurable phrases: 2 of 3 caught; the 1 rule invented on 360 rule-free real prompts: not caught.
+- **IFBench (a diagnostic):** the guard asks on 58 of the 198 written plans (part 1: 17, part 2: 4, part 3: 49) and
+  catches **167 of 718** false passes (part 1: 15, part 2: 14, part 3: 155); false passes 36.3% -> **27.8%**, still far
+  above the kill line. It would also turn 20 right verdicts into "asked". Most false passes keep the instruction's own
+  unit and word with another meaning ("keyword paradox seven times" -> the word "paradox" at least once): a check on
+  words cannot see a measurement read as a neighbour. The guard is a floor for the plan reader, not a fix; the second
+  reader is.
 - **Commits:**
 - **Files:**
 - **Tests:**
@@ -832,6 +879,60 @@ changes only in the cubelang repo with Nick's yes.
 (paraphrases only; the programs stay generated and run; his rule of 2026-11-10 allows model-written wording, never a
 fact); the Colab round for this reader when its set is built.
 
+### Step 0, read: the generator's operations on the VM build (Nick, 2026-11-13: "go ahead with step 0"; Code A)
+`validation/vm_ops_probe.py` runs one small `ISolve` program per operation on the cowork build (`3f37515`, sha
+`3120403f...`) and counts it present only when it returns the expected value (`vm_ops_probe_2026-11-13.json`).
+- **Present (run, right values):** list literals and `for (let x of xs)`; a list's length and an index, each bound
+  first (`let n = xs.len()`, `let v = xs[i]`); lists of lists; maps (`let v = m["k"]`); a string's length (`let n =
+  s.len()`); counting with a filter; all and any (a flag in a loop); the six numeric comparisons; `==` / `!=` between
+  strings (variable to literal and variable to variable); functions with parameters; `while`; `add` / `sub` / `mul`;
+  an `else` branch and nested `if`s; a string handed in by the host.
+- **Missing, with the form that works today:**
+  1. `&&`, `||`, `!` as operands of a condition (compile error "BinOp/UnaryOp cannot be encoded as an operand"):
+     nested `if`s, a flag set by two `if`s, an `else` branch (what `rule_plan` already writes).
+  2. `else if` (parse error): `else { if ... }`.
+  3. Arithmetic inside an expression (`a + b * 2`): `add` / `mul` statements. A call, a method call or an index only
+     as a `let`'s right side, never inside a condition or a `return`.
+  4. `break`: a `while` on a flag.
+  5. Whole-number division and modulo: `div` gives 3.5 for 7/2; modulo only as a subtracting loop.
+  6. String helpers (prefix, suffix, upper/lower case, contains, concatenation): none; and they cannot be composed
+     in the VM, because **indexing a string returns null** (`"hello"[1]`, no error). Workable through the host's
+     views (step 1): a word's characters handed in as a list (indexing a list of strings works), a character's case
+     handed in as a view.
+- **A defect, kill-line relevant:** a missing value (null: an index past a list's end, a string index, a misspelled
+  variable name) or the number 0 **compares equal to any string literal** (`==` true, `!=` false); against a number it
+  acts as 0 (`< 7` true). A generated program with an off-by-one index or a typo would pass a string check. Today's
+  rule programs never reach it: the reply world measures a value for every relation (112 argument-relation checks on
+  empty and odd replies: 0 empty measurements). Until the VM is fixed, the generator binds every value it compares
+  from the host and never indexes past a view's length.
+- **For cubelang's fix list (waits for Nick's yes):** (a) comparing null, or a string with a number, is an error (the
+  rule is then not checked: "asked"), never equal; (b) `s[i]` on a string returns its character, or an error; (c)
+  `&&`, `||`, `!` and `else if` in conditions; (d) expressions with calls, indexes and arithmetic as operands; (e)
+  whole-number division and `%`; (f) `break`; (g) string helpers (`starts_with`, `ends_with`, `upper`, `lower`,
+  `contains`, concatenation). (a) is the one that blocks the second reader's kill line; (b)-(g) make programs
+  shorter and easier to constrain to a grammar, and each has a working form today.
+- **Found on the way (fixed):** `rule_plan.check` did not check a value's type: a count compared with "yes" crashed
+  while the program was written, instead of coming back "asked". It is refused now (test added); 0 of the 2,855
+  plans the readers wrote in the logs are newly refused.
+
+### Step 1, built: the reply's primitive views (Cowork, 2026-11-13: "step 1: go"; Code A)
+`cubbyllm/speech/reply_views.py` (unwired; the generator, step 2, reads it): the reply as seven tables, one row per
+item in reading order, each row with its place (`i`) and its characters (`start`, `end`):
+- `char` (kind, case), `word` (lower, len, first, last, their lowercase, case, the sentence / line / paragraph it sits
+  in), `sentence` (word count, first and last word, end mark), `line` (word count, first word, indent, a list marker
+  or not), `paragraph` (between blank lines or `***`; word and sentence counts, first word), `item` (marker, level,
+  text, word count), `json` (path, key, value, type; when the whole reply, fences off, is JSON).
+- Words, sentences, lines and list items are the reply world's own splits, so the views agree with its measurements
+  (a lone "-" is a word there too). The existing measurements stay.
+- **Every value is computed in Python; the VM only reads lists** (cubelang's P6 not yet on the build: a string is
+  never indexed in the VM, a missing value never compared). `literals(text, views)` binds each column as a parallel
+  list (`word_first_lower[i]`) with `n_<view>`; an empty view still binds every column as `[]`, so no name a program
+  reads is ever unbound. `statements` gives the record's lines ("<value> is the <column> of word 3 of the reply").
+- Tests (`tests/speech/test_reply_views.py`, 18): counts agree with the reply world; every item is found where it says;
+  lists, JSON and case; an empty reply binds every column; programs over the views run in the VM and agree with Python
+  (upper-case words, words starting with a letter, questions); quotes, backslashes and newlines survive the literal.
+- Next: step 2, the program generator over these views.
+
 ## Cowork's note (2026-11-13): a real long instruction to test the split and the join on
 Nick pointed to the OpenThoughts sets in the training data (`unified/`). Read for this order:
 - **AgentTrove** (`open_thoughts_agent_trove.jsonl`, already in the decay mix's agent shards): all 20,000 rows read
@@ -908,3 +1009,13 @@ and of the split of a system prompt (step 5); behind `CB_RULES`, as they are.
   - **reported:** on the reader's wrong rules from the held-out reads (round 4's IFEval kinds, IFBench), the share whose
     said-back sentence shows the error to a reader at a glance, judged by hand on a sample of 100 and written down
     before the next round's results are seen.
+
+## Nick's call (2026-11-13): the VM's comparisons are fixed in cubelang
+Nick: "yes", to comparing a missing value being an error, and to the fix list. Cowork wrote the seven items as
+cubelang's **P6** (`CUBELANG_FIXES.md`, cubelang `805feda`, docs only, not pushed): P6-1 is (a) above, comparing null
+or a string with a number fails with `TypeMismatch`, an index past the end fails with `IndexOutOfRange`, an undeclared
+name is a compile error; P6-2 is (b); P6-3 to P6-7 are (c) to (g). Each probe program that fails today becomes one of
+its tests. Who builds it, and when, is Nick's next call.
+- **Until P6-1 runs on the build `CUBELANG_EXE` names:** no generated program runs unless every value it compares is
+  bound from the reply world's views by the host, and nothing indexes a string in the VM (the rule above stands). The
+  second reader's kill line is read only on a build with P6-1.

@@ -1,0 +1,567 @@
+{
+ "order": "0067",
+ "what": "IFBench's test prompts, read whole by the reader: how often an unseen kind is answered 'asked' instead of a rule; agreement waits for IFBench's checker",
+ "adapter": "cubby450m_rules_v6",
+ "prompts": 300,
+ "kinds": 58,
+ "how": {
+  "written": 198,
+  "none": 56,
+  "asked": 46
+ },
+ "shares": {
+  "written": 0.66,
+  "none": 0.1867,
+  "asked": 0.1533
+ },
+ "per_kind": {
+  "count:conjunctions": {
+   "prompts": 7,
+   "none": 2,
+   "written": 5
+  },
+  "count:keywords_multiple": {
+   "prompts": 5,
+   "written": 5
+  },
+  "count:numbers": {
+   "prompts": 8,
+   "written": 5,
+   "none": 2,
+   "asked": 1
+  },
+  "count:person_names": {
+   "prompts": 6,
+   "written": 6
+  },
+  "count:pronouns": {
+   "prompts": 8,
+   "none": 4,
+   "asked": 4
+  },
+  "count:punctuation": {
+   "prompts": 6,
+   "written": 3,
+   "asked": 3
+  },
+  "count:unique_word_count": {
+   "prompts": 9,
+   "written": 9
+  },
+  "count:word_count_range": {
+   "prompts": 11,
+   "written": 11
+  },
+  "count:words_japanese": {
+   "prompts": 5,
+   "written": 5
+  },
+  "custom:character_reverse": {
+   "prompts": 1,
+   "written": 1
+  },
+  "custom:csv_city": {
+   "prompts": 1,
+   "none": 1
+  },
+  "custom:csv_quotes": {
+   "prompts": 1,
+   "none": 1
+  },
+  "custom:csv_special_character": {
+   "prompts": 1,
+   "none": 1
+  },
+  "custom:date_format_list": {
+   "prompts": 1,
+   "none": 1
+  },
+  "custom:european_capitals_sort": {
+   "prompts": 1,
+   "written": 1
+  },
+  "custom:mcq_count_length": {
+   "prompts": 1,
+   "none": 1
+  },
+  "custom:multiples": {
+   "prompts": 1,
+   "written": 1
+  },
+  "custom:reverse_newline": {
+   "prompts": 1,
+   "none": 1
+  },
+  "custom:sentence_alphabet": {
+   "prompts": 1,
+   "written": 1
+  },
+  "custom:word_reverse": {
+   "prompts": 1,
+   "written": 1
+  },
+  "format:emoji": {
+   "prompts": 9,
+   "asked": 6,
+   "written": 3
+  },
+  "format:line_indent": {
+   "prompts": 9,
+   "none": 7,
+   "written": 2
+  },
+  "format:list": {
+   "prompts": 9,
+   "written": 3,
+   "asked": 6
+  },
+  "format:newline": {
+   "prompts": 6,
+   "asked": 5,
+   "none": 1
+  },
+  "format:no_bullets_bullets": {
+   "prompts": 5,
+   "written": 5
+  },
+  "format:no_whitespace": {
+   "prompts": 4,
+   "none": 3,
+   "written": 1
+  },
+  "format:options": {
+   "prompts": 6,
+   "none": 5,
+   "asked": 1
+  },
+  "format:output_template": {
+   "prompts": 4,
+   "none": 4
+  },
+  "format:parentheses": {
+   "prompts": 8,
+   "none": 6,
+   "written": 2
+  },
+  "format:quote_unquote": {
+   "prompts": 5,
+   "written": 3,
+   "none": 1,
+   "asked": 1
+  },
+  "format:quotes": {
+   "prompts": 8,
+   "written": 8
+  },
+  "format:sub-bullets": {
+   "prompts": 12,
+   "written": 12
+  },
+  "format:thesis": {
+   "prompts": 9,
+   "written": 9
+  },
+  "format:title_case": {
+   "prompts": 4,
+   "written": 4
+  },
+  "ratio:overlap": {
+   "prompts": 12,
+   "asked": 4,
+   "written": 8
+  },
+  "ratio:sentence_balance": {
+   "prompts": 7,
+   "none": 3,
+   "written": 3,
+   "asked": 1
+  },
+  "ratio:sentence_type": {
+   "prompts": 6,
+   "none": 2,
+   "asked": 4
+  },
+  "ratio:sentence_words": {
+   "prompts": 7,
+   "written": 7
+  },
+  "ratio:stop_words": {
+   "prompts": 12,
+   "written": 12
+  },
+  "repeat:repeat_change": {
+   "prompts": 3,
+   "written": 3
+  },
+  "repeat:repeat_simple": {
+   "prompts": 2,
+   "none": 2
+  },
+  "repeat:repeat_span": {
+   "prompts": 4,
+   "written": 4
+  },
+  "sentence:alliteration_increment": {
+   "prompts": 5,
+   "written": 3,
+   "asked": 2
+  },
+  "sentence:increment": {
+   "prompts": 8,
+   "written": 8
+  },
+  "sentence:keyword": {
+   "prompts": 15,
+   "written": 13,
+   "asked": 1,
+   "none": 1
+  },
+  "words:alphabet": {
+   "prompts": 6,
+   "written": 6
+  },
+  "words:consonants": {
+   "prompts": 15,
+   "asked": 2,
+   "written": 13
+  },
+  "words:keywords_specific_position": {
+   "prompts": 4,
+   "written": 4
+  },
+  "words:last_first": {
+   "prompts": 5,
+   "written": 5
+  },
+  "words:no_consecutive": {
+   "prompts": 8,
+   "written": 5,
+   "asked": 2,
+   "none": 1
+  },
+  "words:odd_even_syllables": {
+   "prompts": 9,
+   "written": 9
+  },
+  "words:palindrome": {
+   "prompts": 7,
+   "written": 7
+  },
+  "words:paragraph_last_first": {
+   "prompts": 6,
+   "written": 6
+  },
+  "words:prime_lengths": {
+   "prompts": 5,
+   "written": 3,
+   "asked": 2
+  },
+  "words:repeats": {
+   "prompts": 5,
+   "written": 5
+  },
+  "words:start_verb": {
+   "prompts": 6,
+   "asked": 4,
+   "none": 1,
+   "written": 1
+  },
+  "words:vowel": {
+   "prompts": 10,
+   "none": 5,
+   "asked": 5
+  },
+  "words:words_position": {
+   "prompts": 3,
+   "written": 3
+  }
+ },
+ "some_written": [
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "prompt_end": "in your response, keyword whisper three times in your response, keyword labyrinth five times in your response, and keyword paradox seven times in your response.",
+   "rule": "count of the word \"paradox\" >= 1"
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "prompt_end": "in your response, keyword eclipse three times in your response, keyword threshold five times in your response, and keyword cascade seven times in your response.",
+   "rule": "count of the word \"meridian\" >= 1"
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "prompt_end": "ead twice in your response, keyword blue three times in your response, keyword lamp five times in your response, and keyword river seven times in your response.",
+   "rule": "count of the word \"door\" >= 1"
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "prompt_end": "hm twice in your response, keyword fish three times in your response, keyword puzzle five times in your response, and keyword dawn seven times in your response.",
+   "rule": "count of the word \"keyword\" >= 1"
+  },
+  {
+   "kinds": [
+    "count:keywords_multiple"
+   ],
+   "prompt_end": "es a former president of the USA enjoy presidential immunity from criminal prosecution for conduct alleged to involve official acts during his tenure in office?",
+   "rule": "count of the word \"keyword\" >= 1"
+  },
+  {
+   "kinds": [
+    "count:conjunctions"
+   ],
+   "prompt_end": "my father. Can I leave him, when he is blind and helpless, to deal with weakness and poverty, when I have the ability to make his old age comfortable and happy?",
+   "rule": "count of the word \"coordinating\" >= 3"
+  },
+  {
+   "kinds": [
+    "count:conjunctions"
+   ],
+   "prompt_end": "ver, even though the inner and outer coats of the artery remain intact, an intramural hematoma may form that obliterates the lumen of the artery..  explain more",
+   "rule": "count of the word \"coordinating\" >= 4"
+  },
+  {
+   "kinds": [
+    "count:conjunctions"
+   ],
+   "prompt_end": "s leverage the potential of video games to inspire and involve players in their own healing. Use at least 4 different coordinating conjunctions in the response.",
+   "rule": "count of the word \"video\" >= 4"
+  },
+  {
+   "kinds": [
+    "words:keywords_specific_position"
+   ],
+   "prompt_end": " that sentence. Reference Text: How is it possible that a given AI language model can generate different outputs for the same text prompt in different sessions?",
+   "rule": "sentence count >= 22 ; word count == 1"
+  },
+  {
+   "kinds": [
+    "words:keywords_specific_position"
+   ],
+   "prompt_end": " 34-th word of that sentence. Reference Text: Are there discrete random variables X, Y where the E(X) and E(Y) are finite but E(X + Y) is undefined or infinite?",
+   "rule": "sentence count < 23"
+  },
+  {
+   "kinds": [
+    "words:keywords_specific_position"
+   ],
+   "prompt_end": " earth with the stories from every family. They decided to learn the craft of housebuilding with the help of a touch of arcane magic from their self-made staff.",
+   "rule": "sentence count >= 24"
+  },
+  {
+   "kinds": [
+    "words:keywords_specific_position"
+   ],
+   "prompt_end": "or had been captured eternally, blending the surreal stillness of Giorgio de Chirico's paintings with the unsettling horror of Shirley Jackson's 'The Lottery\". ",
+   "rule": "sentence count >= 25"
+  },
+  {
+   "kinds": [
+    "words:words_position"
+   ],
+   "prompt_end": "beside the famed Nikola Tesla, as they work together in an otherworldly dimension where wires and circuits intertwine with the very fabric of space-time itself.",
+   "rule": "word count >= 1 ; word count <= 3"
+  },
+  {
+   "kinds": [
+    "words:words_position"
+   ],
+   "prompt_end": "valuable perspectives to the ongoing discussion, promoting a well-informed and equitable understanding of video games and their role in our lives and societies.",
+   "rule": "word count == 2 ; starts with \"The purpose of this background is to provide a foundation for a\" == yes"
+  },
+  {
+   "kinds": [
+    "words:words_position"
+   ],
+   "prompt_end": "ponse should be the word despite. Reference Text: Developments in new types of architecture, literature and art contributed to a new national American identity.",
+   "rule": "word count >= 1 ; starts with \"\"\" == yes ; ends with \"\"\" == yes"
+  },
+  {
+   "kinds": [
+    "count:numbers"
+   ],
+   "prompt_end": "Is it plausible that frequent hardship can make a society more resilient? Include exactly 2 numbers in the response.",
+   "rule": "count of the word \"frequent\" >= 2"
+  },
+  {
+   "kinds": [
+    "count:numbers"
+   ],
+   "prompt_end": "l components of the cell membrane and their respective functions is crucial for understanding cellular processes and their implications in biology and medicine.",
+   "rule": "count of the word \"response\" >= 5"
+  },
+  {
+   "kinds": [
+    "count:numbers",
+    "count:conjunctions"
+   ],
+   "prompt_end": "Include exactly 15 numbers in the response. Use at least 5 different coordinating conjunctions in the response. what is the meaning of life?",
+   "rule": "count of the word \"life\" >= 15"
+  },
+  {
+   "kinds": [
+    "count:numbers",
+    "count:conjunctions"
+   ],
+   "prompt_end": "Include exactly 7 numbers in the response. Use at least 4 different coordinating conjunctions in the response. What is ideological colonization?",
+   "rule": "count of the word \"in\" >= 7"
+  },
+  {
+   "kinds": [
+    "count:numbers",
+    "count:unique_word_count"
+   ],
+   "prompt_end": "e. Use at least 36 unique words in the response. How can planners and urban designers create cities that are more conducive to good mental health and wellbeing?",
+   "rule": "count of the word \"mental health\" >= 36"
+  },
+  {
+   "kinds": [
+    "count:person_names"
+   ],
+   "prompt_end": "t, Nathan, Victoria, Elijah, Layla, Nicholas, Audrey, David, Hannah, Christopher, Penelope, Thomas, Nora, Andrew, Aria, Joseph, Claire, Ryan, Stella, Jonathan .",
+   "rule": "count of the word \"person\" >= 1"
+  },
+  {
+   "kinds": [
+    "count:person_names"
+   ],
+   "prompt_end": "the remnants of a hastily discarded meal, an eerily quiet scene reminiscent of Edward Hopper's 'Nighthawks', yet carrying the weight of a post-apocalyptic world",
+   "rule": "count of the word \"person\" >= 18"
+  },
+  {
+   "kinds": [
+    "count:person_names"
+   ],
+   "prompt_end": "\" as \"the ability of the model to apply its learned knowledge to new unseen concepts,\" citing a 2013 paper. Is this a sensible definition for text-to-image AIs?",
+   "rule": "count of the word \"person\" >= 3"
+  },
+  {
+   "kinds": [
+    "count:person_names"
+   ],
+   "prompt_end": "t, Nathan, Victoria, Elijah, Layla, Nicholas, Audrey, David, Hannah, Christopher, Penelope, Thomas, Nora, Andrew, Aria, Joseph, Claire, Ryan, Stella, Jonathan .",
+   "rule": "count of the word \"write\" >= 14"
+  },
+  {
+   "kinds": [
+    "count:person_names"
+   ],
+   "prompt_end": "t, Nathan, Victoria, Elijah, Layla, Nicholas, Audrey, David, Hannah, Christopher, Penelope, Thomas, Nora, Andrew, Aria, Joseph, Claire, Ryan, Stella, Jonathan .",
+   "rule": "count of the word \"person\" >= 23"
+  },
+  {
+   "kinds": [
+    "count:punctuation"
+   ],
+   "prompt_end": "volve just a few scenes, ideally a single moment that is pivotal for the character, but doesn't require much exposition. It should immediately jump into action.",
+   "rule": "highlight count >= 1"
+  },
+  {
+   "kinds": [
+    "count:punctuation"
+   ],
+   "prompt_end": "c journey to save the cosmos's life forms, restoring planets and challenging those who dare to harm them. Join the mission to preserve life's endless diversity.",
+   "rule": "highlight count >= 1"
+  },
+  {
+   "kinds": [
+    "count:punctuation"
+   ],
+   "prompt_end": "ned, with landscape returning to what it was in 1491. Use every standard punctuation mark at least once, including semicolons, colons, and the interrobang (?!).",
+   "rule": "highlight count >= 1"
+  },
+  {
+   "kinds": [
+    "count:word_count_range"
+   ],
+   "prompt_end": " restrained rule exerted profound influence on later Western political philosophy and theories of statecraft. The response must contain between 71 and 73 words.",
+   "rule": "word count >= 71"
+  },
+  {
+   "kinds": [
+    "count:word_count_range"
+   ],
+   "prompt_end": "I want to create a new cost function to calculate the similarity score of n number of set of features The response must contain between 57 and 61 words.",
+   "rule": "word count >= 57 ; word count <= 61"
+  },
+  {
+   "kinds": [
+    "count:word_count_range"
+   ],
+   "prompt_end": " structure, necessitates a sophisticated distribution scheme that ensures both a widespread diffusion and a surreptitious installation on the victims' systems.\"",
+   "rule": "word count >= 24 ; word count <= 28"
+  },
+  {
+   "kinds": [
+    "count:word_count_range"
+   ],
+   "prompt_end": " As a doctor, you can see no signs of swelling, and it's confirmed not to be a respiratory infection. What are the possible causes from the data you can gather?",
+   "rule": "word count >= 77 ; count of the word \"neck\" >= 1"
+  },
+  {
+   "kinds": [
+    "count:word_count_range"
+   ],
+   "prompt_end": "The response must contain between 30 and 73 words. Why is progrp and nse raise above normal range when petct shows no abnormality",
+   "rule": "word count >= 30 ; word count < 73"
+  },
+  {
+   "kinds": [
+    "count:word_count_range",
+    "format:list"
+   ],
+   "prompt_end": "opic that will help me understand 80% of it. The response must contain between 90 and 100 words. Answer with a list of items, instead of bullet points use !?!?.",
+   "rule": "word count >= 90 ; starts with \"list of items\" == yes"
+  },
+  {
+   "kinds": [
+    "count:words_japanese"
+   ],
+   "prompt_end": "surance will allow us to align knowledge on what Quality Assurance is all about, and the responsibilities we all play a part in when embedding quality outcomes.",
+   "rule": "word count >= 5"
+  },
+  {
+   "kinds": [
+    "count:words_japanese"
+   ],
+   "prompt_end": "ery\" layer of hell in an alternate future after God presumably died, and the treacherous wanted salvation. Every 29th word of your response must be in Japanese.",
+   "rule": "language == en"
+  },
+  {
+   "kinds": [
+    "count:words_japanese"
+   ],
+   "prompt_end": "y 17th word of your response must be in Japanese. What are some fun true or false questions to give to students? They are to be used to introduce a new teacher.",
+   "rule": "language == en"
+  },
+  {
+   "kinds": [
+    "count:words_japanese"
+   ],
+   "prompt_end": "Please generate a detailed literature review on modern state on blockchain usage in Identity Verification Every 5th word of your response must be in Japanese.",
+   "rule": "word count >= 5"
+  },
+  {
+   "kinds": [
+    "count:words_japanese"
+   ],
+   "prompt_end": "n the creators of large neural networks or AIs like ChatGPT or Midjourney fully understand how they work?  Every 25th word of your response must be in Japanese.",
+   "rule": "language == en"
+  },
+  {
+   "kinds": [
+    "count:unique_word_count"
+   ],
+   "prompt_end": "t of the $r$ th rank-one tensor, $\\mathbf{a}_r^{(i)} \\in \\mathbb{R}^{n_i}$ is the $r$ th factor of $i$ th mode with unit norm where $i \\in[d]$ and $r \\in[R]$. \"",
+   "rule": "word count >= 55"
+  }
+ ],
+ "seconds": 174.2,
+ "agreement": "not read: IFBench's checker code waits for Nick's yes"
+}

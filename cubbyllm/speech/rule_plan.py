@@ -65,6 +65,8 @@ def check(plan: dict) -> str | None:
             return f"{lf['op']} does not apply to {lf['m']!r}"
         if "v" not in lf:
             return "a leaf with no value"
+        if _is_num(lf["m"]) and (isinstance(lf["v"], bool) or not isinstance(lf["v"], int)):
+            return f"{lf['m']!r} compares a whole number, not {lf['v']!r}"      # (it crashed writing the program)
     for key in ("and", "or"):
         if key in plan and not plan[key]:
             return f"an empty {key}"

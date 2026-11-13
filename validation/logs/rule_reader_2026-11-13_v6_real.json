@@ -1,0 +1,306 @@
+{
+ "order": "0067",
+ "what": "the program seat as it is reads instructions into rule plans, slots constrained",
+ "adapter": "cubby450m_rules_v6",
+ "rows_file_lines": 26267,
+ "n_per_split": 360,
+ "k": 8,
+ "seed": 0,
+ "examples_kinds": [
+  "word count < 100",
+  "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+  "case == lower ; language == en",
+  "count of the word \"musique\" >= 3",
+  "markdown == no",
+  "section count \"PART\" >= 3",
+  "count of the letter \"e\" >= 5",
+  "starts with \"Donne-moi trois conseils pour mieux dormir.\" == yes"
+ ],
+ "arms": {
+  "zero": {
+   "real_none_test": {
+    "counts": {
+     "rows": 360,
+     "written": 1,
+     "exact": 344,
+     "measurement right": 359,
+     "rows en": 300,
+     "exact en": 289,
+     "rule-free rows": 360,
+     "invented a rule": 1,
+     "asked rows": 0,
+     "said asked": 15,
+     "wrote a rule for an asked row": 0,
+     "said none where there was a rule": 0,
+     "rows fr": 60,
+     "exact fr": 55
+    },
+    "per_kind": {
+     "real_none": {
+      "rows": 360,
+      "exact": 344,
+      "measurement right": 359
+     }
+    },
+    "some_misses": [
+     {
+      "kind": "real_none",
+      "want": "none",
+      "got": "asked"
+     },
+     {
+      "kind": "real_none",
+      "want": "none",
+      "got": "asked"
+     },
+     {
+      "kind": "real_none",
+      "want": "none",
+      "got": "asked"
+     },
+     {
+      "kind": "real_none",
+      "want": "none",
+      "got": "asked"
+     },
+     {
+      "kind": "real_none",
+      "want": "none",
+      "got": "asked"
+     },
+     {
+      "kind": "real_none",
+      "want": "none",
+      "got": "asked"
+     },
+     {
+      "kind": "real_none",
+      "want": "none",
+      "got": "asked"
+     },
+     {
+      "kind": "real_none",
+      "want": "none",
+      "got": "count of the word \"france\" >= 1"
+     },
+     {
+      "kind": "real_none",
+      "want": "none",
+      "got": "asked"
+     },
+     {
+      "kind": "real_none",
+      "want": "none",
+      "got": "asked"
+     },
+     {
+      "kind": "real_none",
+      "want": "none",
+      "got": "asked"
+     },
+     {
+      "kind": "real_none",
+      "want": "none",
+      "got": "asked"
+     }
+    ]
+   },
+   "real_rule_test": {
+    "counts": {
+     "rows": 360,
+     "written": 360,
+     "exact": 357,
+     "measurement right": 357,
+     "rows en": 300,
+     "exact en": 299,
+     "rule-free rows": 0,
+     "invented a rule": 0,
+     "asked rows": 0,
+     "said asked": 0,
+     "wrote a rule for an asked row": 0,
+     "said none where there was a rule": 0,
+     "rows fr": 60,
+     "exact fr": 58
+    },
+    "per_kind": {
+     "real_rule": {
+      "rows": 360,
+      "exact": 357,
+      "measurement right": 357
+     }
+    },
+    "some_misses": [
+     {
+      "kind": "real_rule",
+      "want": "case == upper ; language == en",
+      "got": "case == upper ; language == en ; starts with \"Use a soothing tone.\" == yes"
+     },
+     {
+      "kind": "real_rule",
+      "want": "language == en",
+      "got": "language == en ; starts with \"Donne moi 3 arguments en faveur de la question \" == yes"
+     },
+     {
+      "kind": "real_rule",
+      "want": "paragraph count == 2 ; empty paragraph count == 0",
+      "got": "paragraph count == 2 ; empty paragraph count == 0 ; empty paragraph count == 2"
+     }
+    ]
+   },
+   "real_asked_test": {
+    "counts": {
+     "rows": 360,
+     "written": 3,
+     "exact": 315,
+     "measurement right": 357,
+     "rows en": 300,
+     "exact en": 259,
+     "rule-free rows": 0,
+     "invented a rule": 0,
+     "asked rows": 360,
+     "said asked": 315,
+     "wrote a rule for an asked row": 3,
+     "said none where there was a rule": 0,
+     "rows fr": 60,
+     "exact fr": 56
+    },
+    "per_kind": {
+     "real_asked_active_verbs": {
+      "rows": 26,
+      "exact": 26,
+      "measurement right": 26
+     },
+     "real_asked_balanced": {
+      "rows": 23,
+      "exact": 23,
+      "measurement right": 23
+     },
+     "real_asked_calm": {
+      "rows": 22,
+      "exact": 22,
+      "measurement right": 22
+     },
+     "real_asked_counterargument": {
+      "rows": 24,
+      "exact": 23,
+      "measurement right": 24
+     },
+     "real_asked_dialogue": {
+      "rows": 24,
+      "exact": 21,
+      "measurement right": 23
+     },
+     "real_asked_everyday_example": {
+      "rows": 28,
+      "exact": 19,
+      "measurement right": 27
+     },
+     "real_asked_mysterious": {
+      "rows": 20,
+      "exact": 17,
+      "measurement right": 20
+     },
+     "real_asked_neutral": {
+      "rows": 27,
+      "exact": 27,
+      "measurement right": 27
+     },
+     "real_asked_pirate": {
+      "rows": 30,
+      "exact": 26,
+      "measurement right": 30
+     },
+     "real_asked_plain": {
+      "rows": 26,
+      "exact": 24,
+      "measurement right": 26
+     },
+     "real_asked_questions": {
+      "rows": 21,
+      "exact": 17,
+      "measurement right": 21
+     },
+     "real_asked_shakespeare": {
+      "rows": 34,
+      "exact": 27,
+      "measurement right": 34
+     },
+     "real_asked_step_by_step": {
+      "rows": 24,
+      "exact": 16,
+      "measurement right": 23
+     },
+     "real_asked_weigh": {
+      "rows": 31,
+      "exact": 27,
+      "measurement right": 31
+     }
+    },
+    "some_misses": [
+     {
+      "kind": "real_asked_everyday_example",
+      "want": "none",
+      "got": "count of the word \"people\" >= 1"
+     },
+     {
+      "kind": "real_asked_everyday_example",
+      "want": "none",
+      "got": "none"
+     },
+     {
+      "kind": "real_asked_everyday_example",
+      "want": "none",
+      "got": "none"
+     },
+     {
+      "kind": "real_asked_dialogue",
+      "want": "none",
+      "got": "none"
+     },
+     {
+      "kind": "real_asked_counterargument",
+      "want": "none",
+      "got": "none"
+     },
+     {
+      "kind": "real_asked_pirate",
+      "want": "none",
+      "got": "none"
+     },
+     {
+      "kind": "real_asked_step_by_step",
+      "want": "none",
+      "got": "none"
+     },
+     {
+      "kind": "real_asked_mysterious",
+      "want": "none",
+      "got": "none"
+     },
+     {
+      "kind": "real_asked_step_by_step",
+      "want": "none",
+      "got": "none"
+     },
+     {
+      "kind": "real_asked_step_by_step",
+      "want": "none",
+      "got": "none"
+     },
+     {
+      "kind": "real_asked_shakespeare",
+      "want": "none",
+      "got": "none"
+     },
+     {
+      "kind": "real_asked_shakespeare",
+      "want": "none",
+      "got": "none"
+     }
+    ]
+   },
+   "seconds": 332.8,
+   "seat_calls": 2786
+  }
+ }
+}

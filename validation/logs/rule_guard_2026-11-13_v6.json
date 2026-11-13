@@ -1,0 +1,124 @@
+{
+ "order": "0067",
+ "what": "the host guard on round 6's plans: seen kinds (once) and IFBench (a diagnostic)",
+ "line": "seen kinds: the guard asks at most 1 point of the plans that are right today",
+ "tuned_on": "train and dev rows' own plans (0 of 15,903 asked)",
+ "seen": {
+  "real_rule_test": {
+   "counts": {
+    "written": 360,
+    "right": 357,
+    "right, guard asks": 0,
+    "wrong": 3,
+    "wrong, guard asks": 1,
+    "right_asked_share": 0.0
+   },
+   "right_plans_the_guard_asks": []
+  },
+  "real_none_test": {
+   "counts": {
+    "written": 1,
+    "right": 0,
+    "right, guard asks": 0,
+    "wrong": 1,
+    "wrong, guard asks": 0,
+    "right_asked_share": 0.0
+   },
+   "right_plans_the_guard_asks": []
+  },
+  "real_asked_test": {
+   "counts": {
+    "written": 3,
+    "right": 0,
+    "right, guard asks": 0,
+    "wrong": 3,
+    "wrong, guard asks": 2,
+    "right_asked_share": 0.0
+   },
+   "right_plans_the_guard_asks": []
+  },
+  "natural_test": {
+   "counts": {
+    "written": 116,
+    "right": 115,
+    "right, guard asks": 0,
+    "wrong": 1,
+    "wrong, guard asks": 0,
+    "right_asked_share": 0.0
+   },
+   "right_plans_the_guard_asks": []
+  },
+  "none_test": {
+   "counts": {
+    "right_asked_share": 0.0
+   },
+   "right_plans_the_guard_asks": []
+  },
+  "asked_test": {
+   "counts": {
+    "right_asked_share": 0.0
+   },
+   "right_plans_the_guard_asks": []
+  },
+  "new_wording": {
+   "counts": {
+    "written": 147,
+    "right": 137,
+    "right, guard asks": 4,
+    "wrong": 10,
+    "wrong, guard asks": 0,
+    "right_asked_share": 0.0292
+   },
+   "right_plans_the_guard_asks": [
+    {
+     "instruction": "Écris une première réponse et une seconde différente, séparées par ******.",
+     "plan": "response count == 2 ; empty response count == 0 ; distinct response count == 2",
+     "guard": "2 is not in the instruction (response count)"
+    },
+    {
+     "instruction": "Écris une première réponse et une seconde différente, séparées par ******.",
+     "plan": "response count == 2 ; empty response count == 0 ; distinct response count == 2",
+     "guard": "2 is not in the instruction (response count)"
+    },
+    {
+     "instruction": "Be certain to write travel.",
+     "plan": "count of the word \"travel\" >= 1",
+     "guard": "the instruction names no unit of 'count of the word'"
+    },
+    {
+     "instruction": "Be certain to write bridge.",
+     "plan": "count of the word \"bridge\" >= 1",
+     "guard": "the instruction names no unit of 'count of the word'"
+    }
+   ]
+  }
+ },
+ "ifbench": {
+  "written_plans": 198,
+  "plans_the_guard_asks": 58,
+  "plans_by_part": {
+   "1": 17,
+   "2": 4,
+   "3": 49
+  },
+  "pairs": {
+   "pairs": 1980,
+   "false passes": 718,
+   "agree": 1124,
+   "false passes caught by part 1": 15,
+   "false passes caught by part 2": 14,
+   "false passes caught by part 3": 155,
+   "false passes caught by the guard": 167,
+   "right verdicts the guard would ask": 20
+  },
+  "false_passes_left": 551,
+  "false_pass_share_with_the_guard": 0.2783,
+  "vm": {
+   "path": "cubelang-cowork/target/release/cubelang.exe",
+   "modified": "2026-11-11 15:18",
+   "sha256": "3120403f35b007eb85a2302086da7fb1447830573f0f2d540e4c62fdb0cbc37b",
+   "commit": "3f37515",
+   "older_than_sources": false
+  }
+ }
+}

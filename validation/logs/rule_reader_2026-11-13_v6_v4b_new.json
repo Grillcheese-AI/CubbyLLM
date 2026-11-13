@@ -1,0 +1,197 @@
+{
+ "order": "0067",
+ "what": "the program seat as it is reads instructions into rule plans, slots constrained",
+ "adapter": "cubby450m_rules_v6",
+ "rows_file_lines": 12844,
+ "n_per_split": 150,
+ "k": 8,
+ "seed": 0,
+ "examples_kinds": [
+  "word count < 30",
+  "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+  "case == lower ; language == en",
+  "count of the word \"pont\" < 2",
+  "markdown == no",
+  "section count \"Part\" >= 2",
+  "count of the letter \"t\" >= 2",
+  "starts with \"Décris un matin tranquille.\" == yes"
+ ],
+ "arms": {
+  "zero": {
+   "new_wording": {
+    "counts": {
+     "rows": 150,
+     "written": 147,
+     "exact": 137,
+     "measurement right": 137,
+     "rows en": 78,
+     "exact en": 72,
+     "rule-free rows": 0,
+     "invented a rule": 0,
+     "asked rows": 0,
+     "said asked": 3,
+     "wrote a rule for an asked row": 0,
+     "said none where there was a rule": 0,
+     "rows fr": 72,
+     "exact fr": 65
+    },
+    "per_kind": {
+     "english_capital": {
+      "rows": 15,
+      "exact": 15,
+      "measurement right": 15
+     },
+     "english_lowercase": {
+      "rows": 6,
+      "exact": 6,
+      "measurement right": 6
+     },
+     "existence": {
+      "rows": 9,
+      "exact": 6,
+      "measurement right": 6
+     },
+     "first": {
+      "rows": 9,
+      "exact": 9,
+      "measurement right": 9
+     },
+     "frequency": {
+      "rows": 6,
+      "exact": 6,
+      "measurement right": 6
+     },
+     "json_format": {
+      "rows": 9,
+      "exact": 9,
+      "measurement right": 9
+     },
+     "letter_frequency": {
+      "rows": 8,
+      "exact": 2,
+      "measurement right": 2
+     },
+     "multiple_sections": {
+      "rows": 8,
+      "exact": 8,
+      "measurement right": 8
+     },
+     "no_markdown": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "number_highlighted_sections": {
+      "rows": 9,
+      "exact": 9,
+      "measurement right": 9
+     },
+     "number_paragraphs": {
+      "rows": 4,
+      "exact": 4,
+      "measurement right": 4
+     },
+     "number_sentences": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "number_words": {
+      "rows": 10,
+      "exact": 10,
+      "measurement right": 10
+     },
+     "quotation": {
+      "rows": 11,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "repeat_prompt": {
+      "rows": 10,
+      "exact": 10,
+      "measurement right": 10
+     },
+     "response_language": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "title": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "two_responses": {
+      "rows": 8,
+      "exact": 8,
+      "measurement right": 8
+     }
+    },
+    "some_misses": [
+     {
+      "kind": "letter_frequency",
+      "want": "count of the letter \"m\" < 7",
+      "got": "count of the word \"m\" < 7"
+     },
+     {
+      "kind": "existence",
+      "want": "count of the word \"pont\" >= 1",
+      "got": "asked"
+     },
+     {
+      "kind": "letter_frequency",
+      "want": "count of the letter \"x\" >= 8",
+      "got": "count of the word \"x\" >= 8"
+     },
+     {
+      "kind": "quotation",
+      "want": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+      "got": "opening has around the whole answer"
+     },
+     {
+      "kind": "quotation",
+      "want": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+      "got": "opening has et finis par autour de"
+     },
+     {
+      "kind": "letter_frequency",
+      "want": "count of the letter \"f\" >= 4",
+      "got": "count of the word \"f\" >= 4"
+     },
+     {
+      "kind": "letter_frequency",
+      "want": "count of the letter \"j\" < 4",
+      "got": "count of the word \"j\" < 4"
+     },
+     {
+      "kind": "existence",
+      "want": "count of the word \"énergie\" >= 1",
+      "got": "asked"
+     },
+     {
+      "kind": "letter_frequency",
+      "want": "count of the letter \"q\" < 12",
+      "got": "count of the word \"q\" < 12"
+     },
+     {
+      "kind": "quotation",
+      "want": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+      "got": "opening has au début un à la"
+     },
+     {
+      "kind": "existence",
+      "want": "count of the word \"music\" >= 1",
+      "got": "asked"
+     },
+     {
+      "kind": "quotation",
+      "want": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+      "got": "opening has around the whole answer"
+     }
+    ]
+   },
+   "seconds": 90.2,
+   "seat_calls": 835
+  }
+ }
+}
