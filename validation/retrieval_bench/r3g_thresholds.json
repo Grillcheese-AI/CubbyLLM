@@ -1,0 +1,412 @@
+{
+ "what": "order 0070: the guards' thresholds, set on guard-dev only by the pre-registered rule (r3g_guards)",
+ "date": "2026-11-13",
+ "data": "guard-dev, 434 rows of split 4bef4d41d3258d14a1e4e4b8222a4367687fe0a74f775ea4b40d5be179cecb5a",
+ "arms": {
+  "lexicon_content": {
+   "G1": {
+    "t": {
+     "m": 0.5
+    },
+    "flag": null,
+    "guard_dev": {
+     "handovers": 103,
+     "hidden_n": 434,
+     "loss": 0.0092,
+     "present_recall_at_5": 0.3825,
+     "present_wrong_rate": 0.1452,
+     "false_refusals": 4,
+     "wrongs_refused": 1,
+     "sq_recall_at_5": 0.5369,
+     "sq_ok": true
+    }
+   },
+   "G2": {
+    "t": {
+     "s": 0.05
+    },
+    "flag": null,
+    "guard_dev": {
+     "handovers": 75,
+     "hidden_n": 434,
+     "loss": 0.0046,
+     "present_recall_at_5": 0.3871,
+     "present_wrong_rate": 0.1452,
+     "false_refusals": 2,
+     "wrongs_refused": 1,
+     "sq_recall_at_5": 0.557,
+     "sq_ok": true
+    }
+   },
+   "G1+G2": {
+    "t": {
+     "m": 0.5,
+     "s": 0.05
+    },
+    "flag": null,
+    "guard_dev": {
+     "handovers": 72,
+     "hidden_n": 434,
+     "loss": 0.0138,
+     "present_recall_at_5": 0.3779,
+     "present_wrong_rate": 0.1429,
+     "false_refusals": 6,
+     "wrongs_refused": 2,
+     "sq_recall_at_5": 0.5302,
+     "sq_ok": true
+    }
+   },
+   "none": {
+    "t": {},
+    "flag": null,
+    "guard_dev": {
+     "handovers": 114,
+     "hidden_n": 434,
+     "loss": 0.0,
+     "present_recall_at_5": 0.3917,
+     "present_wrong_rate": 0.1475,
+     "false_refusals": 0,
+     "wrongs_refused": 0,
+     "sq_recall_at_5": 0.5638,
+     "sq_ok": true
+    }
+   }
+  },
+  "450m": {
+   "G1": {
+    "t": {
+     "m": 1.0
+    },
+    "flag": null,
+    "guard_dev": {
+     "handovers": 60,
+     "hidden_n": 434,
+     "loss": 0.0,
+     "present_recall_at_5": 0.2811,
+     "present_wrong_rate": 0.0783,
+     "false_refusals": 0,
+     "wrongs_refused": 0,
+     "sq_recall_at_5": 0.4497,
+     "sq_ok": true
+    }
+   },
+   "G2": {
+    "t": {
+     "s": 0.05
+    },
+    "flag": null,
+    "guard_dev": {
+     "handovers": 36,
+     "hidden_n": 434,
+     "loss": 0.0,
+     "present_recall_at_5": 0.2811,
+     "present_wrong_rate": 0.076,
+     "false_refusals": 0,
+     "wrongs_refused": 1,
+     "sq_recall_at_5": 0.4497,
+     "sq_ok": true
+    }
+   },
+   "G1+G2": {
+    "t": {
+     "m": 1.0,
+     "s": 0.05
+    },
+    "flag": null,
+    "guard_dev": {
+     "handovers": 36,
+     "hidden_n": 434,
+     "loss": 0.0,
+     "present_recall_at_5": 0.2811,
+     "present_wrong_rate": 0.076,
+     "false_refusals": 0,
+     "wrongs_refused": 1,
+     "sq_recall_at_5": 0.4497,
+     "sq_ok": true
+    }
+   },
+   "none": {
+    "t": {},
+    "flag": null,
+    "guard_dev": {
+     "handovers": 60,
+     "hidden_n": 434,
+     "loss": 0.0,
+     "present_recall_at_5": 0.2811,
+     "present_wrong_rate": 0.0783,
+     "false_refusals": 0,
+     "wrongs_refused": 0,
+     "sq_recall_at_5": 0.4497,
+     "sq_ok": true
+    }
+   },
+   "G3": {
+    "t": {},
+    "flag": null,
+    "guard_dev": {
+     "handovers": 34,
+     "hidden_n": 434,
+     "loss": 0.0369,
+     "present_recall_at_5": 0.2442,
+     "present_wrong_rate": 0.0392,
+     "false_refusals": 15,
+     "wrongs_refused": 18,
+     "sq_recall_at_5": 0.4161,
+     "sq_ok": true
+    }
+   }
+  },
+  "450m_wd": {
+   "G1": {
+    "t": {
+     "m": 0.9
+    },
+    "flag": null,
+    "guard_dev": {
+     "handovers": 138,
+     "hidden_n": 434,
+     "loss": 0.0,
+     "present_recall_at_5": 0.4977,
+     "present_wrong_rate": 0.2834,
+     "false_refusals": 0,
+     "wrongs_refused": 0,
+     "sq_recall_at_5": 0.7987,
+     "sq_ok": true
+    }
+   },
+   "G2": {
+    "t": {
+     "s": 0.3
+    },
+    "flag": null,
+    "guard_dev": {
+     "handovers": 130,
+     "hidden_n": 434,
+     "loss": 0.0,
+     "present_recall_at_5": 0.4977,
+     "present_wrong_rate": 0.2834,
+     "false_refusals": 0,
+     "wrongs_refused": 0,
+     "sq_recall_at_5": 0.7987,
+     "sq_ok": true
+    }
+   },
+   "G1+G2": {
+    "t": {
+     "m": 0.9,
+     "s": 0.3
+    },
+    "flag": null,
+    "guard_dev": {
+     "handovers": 129,
+     "hidden_n": 434,
+     "loss": 0.0,
+     "present_recall_at_5": 0.4977,
+     "present_wrong_rate": 0.2834,
+     "false_refusals": 0,
+     "wrongs_refused": 0,
+     "sq_recall_at_5": 0.7987,
+     "sq_ok": true
+    }
+   },
+   "none": {
+    "t": {},
+    "flag": null,
+    "guard_dev": {
+     "handovers": 139,
+     "hidden_n": 434,
+     "loss": 0.0,
+     "present_recall_at_5": 0.4977,
+     "present_wrong_rate": 0.2834,
+     "false_refusals": 0,
+     "wrongs_refused": 0,
+     "sq_recall_at_5": 0.7987,
+     "sq_ok": true
+    }
+   },
+   "G3": {
+    "t": {},
+    "flag": null,
+    "guard_dev": {
+     "handovers": 24,
+     "hidden_n": 434,
+     "loss": 0.2097,
+     "present_recall_at_5": 0.288,
+     "present_wrong_rate": 0.0484,
+     "false_refusals": 90,
+     "wrongs_refused": 103,
+     "sq_recall_at_5": 0.5034,
+     "sq_ok": true
+    }
+   }
+  },
+  "qfhrr@0.0": {
+   "G1": {
+    "t": {
+     "m": 0.9
+    },
+    "flag": null,
+    "guard_dev": {
+     "handovers": 417,
+     "hidden_n": 434,
+     "loss": 0.0,
+     "present_recall_at_5": 0.7304,
+     "present_wrong_rate": 0.2535,
+     "false_refusals": 0,
+     "wrongs_refused": 2,
+     "sq_recall_at_5": 0.8859,
+     "sq_ok": true
+    }
+   },
+   "G2": {
+    "t": {
+     "s": 0.2
+    },
+    "flag": null,
+    "guard_dev": {
+     "handovers": 321,
+     "hidden_n": 434,
+     "loss": 0.0023,
+     "present_recall_at_5": 0.7281,
+     "present_wrong_rate": 0.2512,
+     "false_refusals": 1,
+     "wrongs_refused": 3,
+     "sq_recall_at_5": 0.8792,
+     "sq_ok": true
+    }
+   },
+   "G1+G2": {
+    "t": {
+     "m": 0.9,
+     "s": 0.2
+    },
+    "flag": null,
+    "guard_dev": {
+     "handovers": 317,
+     "hidden_n": 434,
+     "loss": 0.0023,
+     "present_recall_at_5": 0.7281,
+     "present_wrong_rate": 0.2465,
+     "false_refusals": 1,
+     "wrongs_refused": 5,
+     "sq_recall_at_5": 0.8792,
+     "sq_ok": true
+    }
+   },
+   "none": {
+    "t": {},
+    "flag": null,
+    "guard_dev": {
+     "handovers": 429,
+     "hidden_n": 434,
+     "loss": 0.0,
+     "present_recall_at_5": 0.7304,
+     "present_wrong_rate": 0.2581,
+     "false_refusals": 0,
+     "wrongs_refused": 0,
+     "sq_recall_at_5": 0.8859,
+     "sq_ok": true
+    }
+   },
+   "G3": {
+    "t": {},
+    "flag": null,
+    "guard_dev": {
+     "handovers": 100,
+     "hidden_n": 434,
+     "loss": 0.3133,
+     "present_recall_at_5": 0.4171,
+     "present_wrong_rate": 0.1175,
+     "false_refusals": 114,
+     "wrongs_refused": 83,
+     "sq_recall_at_5": 0.5705,
+     "sq_ok": false
+    }
+   }
+  },
+  "qfhrr@0.25": {
+   "G1": {
+    "t": {
+     "m": 0.7
+    },
+    "flag": null,
+    "guard_dev": {
+     "handovers": 157,
+     "hidden_n": 434,
+     "loss": 0.0139,
+     "present_recall_at_5": 0.4101,
+     "present_wrong_rate": 0.0853,
+     "false_refusals": 6,
+     "wrongs_refused": 5,
+     "sq_recall_at_5": 0.5973,
+     "sq_ok": true
+    }
+   },
+   "G2": {
+    "t": {
+     "s": 0.05
+    },
+    "flag": null,
+    "guard_dev": {
+     "handovers": 127,
+     "hidden_n": 434,
+     "loss": 0.0139,
+     "present_recall_at_5": 0.4101,
+     "present_wrong_rate": 0.0899,
+     "false_refusals": 6,
+     "wrongs_refused": 3,
+     "sq_recall_at_5": 0.5705,
+     "sq_ok": true
+    }
+   },
+   "G1+G2": {
+    "t": {
+     "m": 0.9,
+     "s": 0.05
+    },
+    "flag": null,
+    "guard_dev": {
+     "handovers": 126,
+     "hidden_n": 434,
+     "loss": 0.0139,
+     "present_recall_at_5": 0.4101,
+     "present_wrong_rate": 0.0876,
+     "false_refusals": 6,
+     "wrongs_refused": 4,
+     "sq_recall_at_5": 0.5705,
+     "sq_ok": true
+    }
+   },
+   "none": {
+    "t": {},
+    "flag": null,
+    "guard_dev": {
+     "handovers": 178,
+     "hidden_n": 434,
+     "loss": 0.0,
+     "present_recall_at_5": 0.424,
+     "present_wrong_rate": 0.0968,
+     "false_refusals": 0,
+     "wrongs_refused": 0,
+     "sq_recall_at_5": 0.6107,
+     "sq_ok": true
+    }
+   },
+   "G3": {
+    "t": {},
+    "flag": null,
+    "guard_dev": {
+     "handovers": 50,
+     "hidden_n": 434,
+     "loss": 0.1752,
+     "present_recall_at_5": 0.2488,
+     "present_wrong_rate": 0.0668,
+     "false_refusals": 62,
+     "wrongs_refused": 27,
+     "sq_recall_at_5": 0.4228,
+     "sq_ok": true
+    }
+   }
+  }
+ }
+}
