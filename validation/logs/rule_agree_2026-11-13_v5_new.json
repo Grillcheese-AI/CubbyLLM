@@ -1,0 +1,498 @@
+{
+ "order": "0067",
+ "what": "rule plans run by the VM against IFEval's checker on replies built to pass and fail",
+ "arm": "seat",
+ "rows": 131,
+ "replies_per_rule": 10,
+ "seed": 0,
+ "splits": "new_wording",
+ "counts": {
+  "pairs": 1310,
+  "agree": 1206,
+  "checker passes": 538,
+  "rule passes, checker fails": 62,
+  "asked": 0
+ },
+ "agreement": 0.9206,
+ "rule_passes_checker_fails": 0.0473,
+ "checker_pass_share": 0.4107,
+ "per_kind": {
+  "english_capital": {
+   "pairs": 100,
+   "agree": 96,
+   "checker passes": 31,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.96
+  },
+  "english_lowercase": {
+   "pairs": 90,
+   "agree": 86,
+   "checker passes": 21,
+   "rule passes, checker fails": 3,
+   "asked": 0,
+   "agreement": 0.956
+  },
+  "existence": {
+   "pairs": 50,
+   "agree": 50,
+   "checker passes": 20,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "frequency": {
+   "pairs": 70,
+   "agree": 30,
+   "checker passes": 26,
+   "rule passes, checker fails": 26,
+   "asked": 0,
+   "agreement": 0.429
+  },
+  "json_format": {
+   "pairs": 50,
+   "agree": 50,
+   "checker passes": 18,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "letter_frequency": {
+   "pairs": 70,
+   "agree": 50,
+   "checker passes": 25,
+   "rule passes, checker fails": 15,
+   "asked": 0,
+   "agreement": 0.714
+  },
+  "multiple_sections": {
+   "pairs": 90,
+   "agree": 86,
+   "checker passes": 42,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.956
+  },
+  "number_highlighted_sections": {
+   "pairs": 110,
+   "agree": 110,
+   "checker passes": 70,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_paragraphs": {
+   "pairs": 50,
+   "agree": 50,
+   "checker passes": 13,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_sentences": {
+   "pairs": 80,
+   "agree": 60,
+   "checker passes": 37,
+   "rule passes, checker fails": 13,
+   "asked": 0,
+   "agreement": 0.75
+  },
+  "number_words": {
+   "pairs": 100,
+   "agree": 90,
+   "checker passes": 46,
+   "rule passes, checker fails": 5,
+   "asked": 0,
+   "agreement": 0.9
+  },
+  "quotation": {
+   "pairs": 120,
+   "agree": 120,
+   "checker passes": 66,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "repeat_prompt": {
+   "pairs": 120,
+   "agree": 120,
+   "checker passes": 43,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "response_language": {
+   "pairs": 70,
+   "agree": 68,
+   "checker passes": 34,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.971
+  },
+  "title": {
+   "pairs": 60,
+   "agree": 60,
+   "checker passes": 29,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "two_responses": {
+   "pairs": 80,
+   "agree": 80,
+   "checker passes": 17,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  }
+ },
+ "misses": [
+  {
+   "kind": "multiple_sections",
+   "kwargs": {
+    "section_spliter": "PART",
+    "num_sections": 2
+   },
+   "reply": "Ses notes étaient courtes et très claires.\nPART 1\nLa matinée était calme et la rue était vide.\nPART 2\nLe train était encore en retard cette semaine.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "no is the starts with \"\"\" of the reply",
+    "no is the ends with \"\"\" of the reply"
+   ]
+  },
+  {
+   "kind": "multiple_sections",
+   "kwargs": {
+    "section_spliter": "PART",
+    "num_sections": 2
+   },
+   "reply": "La réponse dépend de la saison et du temps.\nPART 1\nPersonne ne savait pourquoi le pont était fermé.\nPART 2\nUn bon plan commence par une question simple.\nPART 3\n",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "no is the starts with \"\"\" of the reply",
+    "no is the ends with \"\"\" of the reply"
+   ]
+  },
+  {
+   "kind": "multiple_sections",
+   "kwargs": {
+    "section_spliter": "PART",
+    "num_sections": 2
+   },
+   "reply": "Ils vendaient du pain, des fruits et du fromage.\nPART 1\nPersonne ne savait pourquoi le pont était fermé.\nPART 2\nPersonne ne savait pourquoi le pont était fermé.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "no is the starts with \"\"\" of the reply",
+    "no is the ends with \"\"\" of the reply"
+   ]
+  },
+  {
+   "kind": "multiple_sections",
+   "kwargs": {
+    "section_spliter": "PART",
+    "num_sections": 2
+   },
+   "reply": "Le train était encore en retard cette semaine.\nPART 1\nNous avons marché jusqu'au marché avant midi.\nPART 2\nUn bon plan commence par une question simple.\nPART 3\n",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "no is the starts with \"\"\" of the reply",
+    "no is the ends with \"\"\" of the reply"
+   ]
+  },
+  {
+   "kind": "number_sentences",
+   "kwargs": {
+    "num_sentences": 8,
+    "relation": "less than"
+   },
+   "reply": "La plupart du travail se fait le soir. Ses notes étaient courtes et très claires. C'est une petite ville, mais on ne la quitte pas. Le train était encore en ret",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "10 is the sentence count of the reply"
+   ]
+  },
+  {
+   "kind": "number_sentences",
+   "kwargs": {
+    "num_sentences": 8,
+    "relation": "less than"
+   },
+   "reply": "Ses notes étaient courtes et très claires. C'est une petite ville, mais on ne la quitte pas. Ses notes étaient courtes et très claires. Ils vendaient du pain, d",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "10 is the sentence count of the reply"
+   ]
+  },
+  {
+   "kind": "number_sentences",
+   "kwargs": {
+    "num_sentences": 8,
+    "relation": "less than"
+   },
+   "reply": "Ses notes étaient courtes et très claires. Ses notes étaient courtes et très claires. La plupart du travail se fait le soir. La matinée était calme et la rue ét",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "9 is the sentence count of the reply"
+   ]
+  },
+  {
+   "kind": "number_sentences",
+   "kwargs": {
+    "num_sentences": 8,
+    "relation": "less than"
+   },
+   "reply": "Personne ne savait pourquoi le pont était fermé. C'est une petite ville, mais on ne la quitte pas. Ils vendaient du pain, des fruits et du fromage. La plupart d",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "6 is the sentence count of the reply"
+   ]
+  },
+  {
+   "kind": "number_sentences",
+   "kwargs": {
+    "num_sentences": 8,
+    "relation": "less than"
+   },
+   "reply": "Personne ne savait pourquoi le pont était fermé. C'est une petite ville, mais on ne la quitte pas. Un bon plan commence par une question simple. Ses notes étaie",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "10 is the sentence count of the reply"
+   ]
+  },
+  {
+   "kind": "number_sentences",
+   "kwargs": {
+    "num_sentences": 8,
+    "relation": "less than"
+   },
+   "reply": "Le train était encore en retard cette semaine. La plupart du travail se fait le soir. Ses notes étaient courtes et très claires. Ils vendaient du pain, des frui",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "6 is the sentence count of the reply"
+   ]
+  },
+  {
+   "kind": "number_sentences",
+   "kwargs": {
+    "num_sentences": 8,
+    "relation": "less than"
+   },
+   "reply": "C'est une petite ville, mais on ne la quitte pas. Le train était encore en retard cette semaine. Personne ne savait pourquoi le pont était fermé. Ils vendaient ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "6 is the sentence count of the reply"
+   ]
+  },
+  {
+   "kind": "number_sentences",
+   "kwargs": {
+    "num_sentences": 8,
+    "relation": "less than"
+   },
+   "reply": "Nous avons marché jusqu'au marché avant midi. La réponse dépend de la saison et du temps. Personne ne savait pourquoi le pont était fermé. La plupart du travail",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "8 is the sentence count of the reply"
+   ]
+  },
+  {
+   "kind": "number_sentences",
+   "kwargs": {
+    "num_sentences": 8,
+    "relation": "less than"
+   },
+   "reply": "La matinée était calme et la rue était vide. C'est une petite ville, mais on ne la quitte pas. La matinée était calme et la rue était vide. Ses notes étaient co",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "8 is the sentence count of the reply"
+   ]
+  },
+  {
+   "kind": "number_sentences",
+   "kwargs": {
+    "num_sentences": 8,
+    "relation": "less than"
+   },
+   "reply": "Ses notes étaient courtes et très claires. Personne ne savait pourquoi le pont était fermé. La réponse dépend de la saison et du temps. La matinée était calme e",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "8 is the sentence count of the reply"
+   ]
+  },
+  {
+   "kind": "frequency",
+   "kwargs": {
+    "keyword": "musique",
+    "frequency": 3,
+    "relation": "less than"
+   },
+   "reply": "La matinée était calme et la rue était vide. musique is here. musique is here. musique is here. musique is here.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "4 is the count of the word \"musique\" of the reply"
+   ]
+  },
+  {
+   "kind": "frequency",
+   "kwargs": {
+    "keyword": "musique",
+    "frequency": 3,
+    "relation": "less than"
+   },
+   "reply": "Personne ne savait pourquoi le pont était fermé. musique is here. musique is here. musique is here. musique is here.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "4 is the count of the word \"musique\" of the reply"
+   ]
+  },
+  {
+   "kind": "frequency",
+   "kwargs": {
+    "keyword": "musique",
+    "frequency": 3,
+    "relation": "less than"
+   },
+   "reply": "Le train était encore en retard cette semaine. musique is here. musique is here. musique is here. musique is here. musique is here.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "5 is the count of the word \"musique\" of the reply"
+   ]
+  },
+  {
+   "kind": "frequency",
+   "kwargs": {
+    "keyword": "musique",
+    "frequency": 3,
+    "relation": "less than"
+   },
+   "reply": "Personne ne savait pourquoi le pont était fermé. musique is here.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "1 is the count of the word \"musique\" of the reply"
+   ]
+  },
+  {
+   "kind": "frequency",
+   "kwargs": {
+    "keyword": "musique",
+    "frequency": 3,
+    "relation": "less than"
+   },
+   "reply": "Ses notes étaient courtes et très claires. musique is here. musique is here.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "2 is the count of the word \"musique\" of the reply"
+   ]
+  },
+  {
+   "kind": "frequency",
+   "kwargs": {
+    "keyword": "musique",
+    "frequency": 3,
+    "relation": "less than"
+   },
+   "reply": "Personne ne savait pourquoi le pont était fermé. musique is here. musique is here.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "2 is the count of the word \"musique\" of the reply"
+   ]
+  },
+  {
+   "kind": "frequency",
+   "kwargs": {
+    "keyword": "musique",
+    "frequency": 3,
+    "relation": "less than"
+   },
+   "reply": "La matinée était calme et la rue était vide. musique is here. musique is here.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "2 is the count of the word \"musique\" of the reply"
+   ]
+  },
+  {
+   "kind": "frequency",
+   "kwargs": {
+    "keyword": "musique",
+    "frequency": 3,
+    "relation": "less than"
+   },
+   "reply": "Le train était encore en retard cette semaine. musique is here. musique is here.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "2 is the count of the word \"musique\" of the reply"
+   ]
+  },
+  {
+   "kind": "frequency",
+   "kwargs": {
+    "keyword": "musique",
+    "frequency": 3,
+    "relation": "less than"
+   },
+   "reply": "Nous avons marché jusqu'au marché avant midi. musique is here. musique is here. musique is here.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "3 is the count of the word \"musique\" of the reply"
+   ]
+  },
+  {
+   "kind": "frequency",
+   "kwargs": {
+    "keyword": "musique",
+    "frequency": 3,
+    "relation": "less than"
+   },
+   "reply": "La plupart du travail se fait le soir. musique is here.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "1 is the count of the word \"musique\" of the reply"
+   ]
+  },
+  {
+   "kind": "letter_frequency",
+   "kwargs": {
+    "letter": "h",
+    "let_frequency": 9,
+    "let_relation": "less than"
+   },
+   "reply": "or h in h h on h so as on h to h h h",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "8 is the count of the letter \"h\" of the reply"
+   ]
+  }
+ ],
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-11 15:18",
+  "sha256": "3120403f35b007eb85a2302086da7fb1447830573f0f2d540e4c62fdb0cbc37b",
+  "commit": "3f37515",
+  "older_than_sources": false
+ }
+}

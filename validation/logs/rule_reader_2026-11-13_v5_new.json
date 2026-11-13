@@ -1,0 +1,192 @@
+{
+ "order": "0067",
+ "what": "the program seat as it is reads instructions into rule plans, slots constrained",
+ "adapter": "cubby450m_rules_v5",
+ "rows_file_lines": 15851,
+ "n_per_split": 150,
+ "k": 8,
+ "seed": 0,
+ "examples_kinds": [
+  "word count < 100",
+  "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+  "case == lower ; language == en",
+  "count of the word \"musique\" >= 3",
+  "markdown == no",
+  "section count \"PART\" >= 3",
+  "count of the letter \"e\" >= 5",
+  "starts with \"Donne-moi trois conseils pour mieux dormir.\" == yes"
+ ],
+ "arms": {
+  "zero": {
+   "new_wording": {
+    "counts": {
+     "rows": 150,
+     "written": 150,
+     "exact": 139,
+     "measurement right": 149,
+     "rows fr": 69,
+     "exact fr": 59,
+     "rule-free rows": 0,
+     "invented a rule": 0,
+     "asked rows": 0,
+     "said asked": 0,
+     "wrote a rule for an asked row": 0,
+     "said none where there was a rule": 0,
+     "rows en": 81,
+     "exact en": 80
+    },
+    "per_kind": {
+     "english_capital": {
+      "rows": 10,
+      "exact": 10,
+      "measurement right": 10
+     },
+     "english_lowercase": {
+      "rows": 9,
+      "exact": 8,
+      "measurement right": 9
+     },
+     "existence": {
+      "rows": 5,
+      "exact": 5,
+      "measurement right": 5
+     },
+     "first": {
+      "rows": 11,
+      "exact": 11,
+      "measurement right": 11
+     },
+     "frequency": {
+      "rows": 7,
+      "exact": 3,
+      "measurement right": 7
+     },
+     "json_format": {
+      "rows": 5,
+      "exact": 5,
+      "measurement right": 5
+     },
+     "letter_frequency": {
+      "rows": 7,
+      "exact": 5,
+      "measurement right": 7
+     },
+     "multiple_sections": {
+      "rows": 9,
+      "exact": 8,
+      "measurement right": 8
+     },
+     "no_markdown": {
+      "rows": 8,
+      "exact": 8,
+      "measurement right": 8
+     },
+     "number_highlighted_sections": {
+      "rows": 11,
+      "exact": 11,
+      "measurement right": 11
+     },
+     "number_paragraphs": {
+      "rows": 5,
+      "exact": 5,
+      "measurement right": 5
+     },
+     "number_sentences": {
+      "rows": 8,
+      "exact": 6,
+      "measurement right": 8
+     },
+     "number_words": {
+      "rows": 10,
+      "exact": 9,
+      "measurement right": 10
+     },
+     "quotation": {
+      "rows": 12,
+      "exact": 12,
+      "measurement right": 12
+     },
+     "repeat_prompt": {
+      "rows": 12,
+      "exact": 12,
+      "measurement right": 12
+     },
+     "response_language": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "title": {
+      "rows": 6,
+      "exact": 6,
+      "measurement right": 6
+     },
+     "two_responses": {
+      "rows": 8,
+      "exact": 8,
+      "measurement right": 8
+     }
+    },
+    "some_misses": [
+     {
+      "kind": "frequency",
+      "want": "count of the word \"musique\" < 3",
+      "got": "count of the word \"musique\" >= 3"
+     },
+     {
+      "kind": "number_sentences",
+      "want": "sentence count < 8",
+      "got": "sentence count >= 8"
+     },
+     {
+      "kind": "multiple_sections",
+      "want": "section count \"PART\" >= 2",
+      "got": "starts with \"\"\" == yes ; ends with \"\"\" == yes"
+     },
+     {
+      "kind": "letter_frequency",
+      "want": "count of the letter \"h\" < 9",
+      "got": "count of the letter \"h\" >= 9"
+     },
+     {
+      "kind": "frequency",
+      "want": "count of the word \"fenêtre\" < 2",
+      "got": "count of the word \"fenêtre\" >= 2"
+     },
+     {
+      "kind": "number_words",
+      "want": "word count < 30",
+      "got": "word count >= 30"
+     },
+     {
+      "kind": "letter_frequency",
+      "want": "count of the letter \"w\" < 4",
+      "got": "count of the letter \"w\" >= 4"
+     },
+     {
+      "kind": "frequency",
+      "want": "count of the word \"planète\" < 3",
+      "got": "count of the word \"planète\" >= 3"
+     },
+     {
+      "kind": "frequency",
+      "want": "count of the word \"histoire\" < 4",
+      "got": "count of the word \"histoire\" >= 4"
+     },
+     {
+      "kind": "number_sentences",
+      "want": "sentence count < 5",
+      "got": "sentence count >= 5"
+     },
+     {
+      "kind": "english_lowercase",
+      "want": "case == lower ; language == en",
+      "got": "case == upper ; language == en"
+     }
+    ]
+   },
+   "seconds": 94.7,
+   "seat_calls": 877
+  }
+ }
+}

@@ -1,0 +1,137 @@
+{
+ "order": "0067",
+ "what": "rule plans run by the VM against IFEval's checker on replies built to pass and fail",
+ "arm": "seat",
+ "rows": 30,
+ "replies_per_rule": 10,
+ "seed": 0,
+ "splits": "natural_test",
+ "counts": {
+  "pairs": 300,
+  "agree": 293,
+  "checker passes": 132,
+  "rule passes, checker fails": 7,
+  "asked": 0
+ },
+ "agreement": 0.9767,
+ "rule_passes_checker_fails": 0.0233,
+ "checker_pass_share": 0.44,
+ "per_kind": {
+  "natural_sentences": {
+   "pairs": 40,
+   "agree": 40,
+   "checker passes": 16,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "natural_words": {
+   "pairs": 260,
+   "agree": 253,
+   "checker passes": 116,
+   "rule passes, checker fails": 7,
+   "asked": 0,
+   "agreement": 0.973
+  }
+ },
+ "misses": [
+  {
+   "kind": "natural_words",
+   "kwargs": {
+    "num_words": 16,
+    "relation": "less than"
+   },
+   "reply": "It so the by by or or by it up as to or at or to of.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "17 is the word count of the reply"
+   ]
+  },
+  {
+   "kind": "natural_words",
+   "kwargs": {
+    "num_words": 16,
+    "relation": "less than"
+   },
+   "reply": "The morning was quiet and the street was empty. We walked to the market before noon.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "16 is the word count of the reply"
+   ]
+  },
+  {
+   "kind": "natural_words",
+   "kwargs": {
+    "num_words": 16,
+    "relation": "less than"
+   },
+   "reply": "The answer depends on the season and the weather. It's a small town, but people don't leave it. We walked to the market before noon.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "25 is the word count of the reply"
+   ]
+  },
+  {
+   "kind": "natural_words",
+   "kwargs": {
+    "num_words": 16,
+    "relation": "less than"
+   },
+   "reply": "In the at we at a so to the the as on up in a we on.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "17 is the word count of the reply"
+   ]
+  },
+  {
+   "kind": "natural_words",
+   "kwargs": {
+    "num_words": 16,
+    "relation": "less than"
+   },
+   "reply": "We walked to the market before noon. It's a small town, but people don't leave it. It's a small town, but people don't leave it. They sold bread, fruit and fres",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "47 is the word count of the reply"
+   ]
+  },
+  {
+   "kind": "natural_words",
+   "kwargs": {
+    "num_words": 16,
+    "relation": "less than"
+   },
+   "reply": "The train was late again this week. They sold bread, fruit and fresh cheese. Nobody knew why the bridge was closed. They sold bread, fruit and fresh cheese.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "28 is the word count of the reply"
+   ]
+  },
+  {
+   "kind": "natural_words",
+   "kwargs": {
+    "num_words": 16,
+    "relation": "less than"
+   },
+   "reply": "The morning was quiet and the street was empty. The train was late again this week. The morning was quiet and the street was empty. The train was late again thi",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "56 is the word count of the reply"
+   ]
+  }
+ ],
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-11 15:18",
+  "sha256": "3120403f35b007eb85a2302086da7fb1447830573f0f2d540e4c62fdb0cbc37b",
+  "commit": "3f37515",
+  "older_than_sources": false
+ }
+}

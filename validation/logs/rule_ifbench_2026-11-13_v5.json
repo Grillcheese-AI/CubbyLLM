@@ -1,0 +1,579 @@
+{
+ "order": "0067",
+ "what": "IFBench's test prompts, read whole by the reader: how often an unseen kind is answered 'asked' instead of a rule; agreement waits for IFBench's checker",
+ "adapter": "cubby450m_rules_v5",
+ "prompts": 300,
+ "kinds": 58,
+ "how": {
+  "none": 211,
+  "asked": 12,
+  "written": 77
+ },
+ "shares": {
+  "none": 0.7033,
+  "asked": 0.04,
+  "written": 0.2567
+ },
+ "per_kind": {
+  "count:conjunctions": {
+   "prompts": 7,
+   "none": 5,
+   "asked": 1,
+   "written": 1
+  },
+  "count:keywords_multiple": {
+   "prompts": 5,
+   "none": 5
+  },
+  "count:numbers": {
+   "prompts": 8,
+   "none": 6,
+   "written": 2
+  },
+  "count:person_names": {
+   "prompts": 6,
+   "asked": 1,
+   "none": 5
+  },
+  "count:pronouns": {
+   "prompts": 8,
+   "none": 8
+  },
+  "count:punctuation": {
+   "prompts": 6,
+   "written": 1,
+   "none": 5
+  },
+  "count:unique_word_count": {
+   "prompts": 9,
+   "none": 2,
+   "written": 6,
+   "asked": 1
+  },
+  "count:word_count_range": {
+   "prompts": 11,
+   "none": 4,
+   "written": 7
+  },
+  "count:words_japanese": {
+   "prompts": 5,
+   "written": 3,
+   "none": 2
+  },
+  "custom:character_reverse": {
+   "prompts": 1,
+   "none": 1
+  },
+  "custom:csv_city": {
+   "prompts": 1,
+   "none": 1
+  },
+  "custom:csv_quotes": {
+   "prompts": 1,
+   "none": 1
+  },
+  "custom:csv_special_character": {
+   "prompts": 1,
+   "none": 1
+  },
+  "custom:date_format_list": {
+   "prompts": 1,
+   "written": 1
+  },
+  "custom:european_capitals_sort": {
+   "prompts": 1,
+   "none": 1
+  },
+  "custom:mcq_count_length": {
+   "prompts": 1,
+   "none": 1
+  },
+  "custom:multiples": {
+   "prompts": 1,
+   "written": 1
+  },
+  "custom:reverse_newline": {
+   "prompts": 1,
+   "none": 1
+  },
+  "custom:sentence_alphabet": {
+   "prompts": 1,
+   "written": 1
+  },
+  "custom:word_reverse": {
+   "prompts": 1,
+   "none": 1
+  },
+  "format:emoji": {
+   "prompts": 9,
+   "none": 9
+  },
+  "format:line_indent": {
+   "prompts": 9,
+   "none": 9
+  },
+  "format:list": {
+   "prompts": 9,
+   "none": 9
+  },
+  "format:newline": {
+   "prompts": 6,
+   "none": 5,
+   "asked": 1
+  },
+  "format:no_bullets_bullets": {
+   "prompts": 5,
+   "written": 2,
+   "none": 3
+  },
+  "format:no_whitespace": {
+   "prompts": 4,
+   "none": 2,
+   "asked": 1,
+   "written": 1
+  },
+  "format:options": {
+   "prompts": 6,
+   "none": 6
+  },
+  "format:output_template": {
+   "prompts": 4,
+   "none": 4
+  },
+  "format:parentheses": {
+   "prompts": 8,
+   "none": 7,
+   "written": 1
+  },
+  "format:quote_unquote": {
+   "prompts": 5,
+   "written": 3,
+   "none": 2
+  },
+  "format:quotes": {
+   "prompts": 8,
+   "none": 6,
+   "written": 2
+  },
+  "format:sub-bullets": {
+   "prompts": 12,
+   "none": 9,
+   "written": 3
+  },
+  "format:thesis": {
+   "prompts": 9,
+   "written": 5,
+   "none": 4
+  },
+  "format:title_case": {
+   "prompts": 4,
+   "none": 3,
+   "written": 1
+  },
+  "ratio:overlap": {
+   "prompts": 12,
+   "none": 6,
+   "asked": 2,
+   "written": 4
+  },
+  "ratio:sentence_balance": {
+   "prompts": 7,
+   "none": 5,
+   "asked": 2
+  },
+  "ratio:sentence_type": {
+   "prompts": 6,
+   "none": 5,
+   "asked": 1
+  },
+  "ratio:sentence_words": {
+   "prompts": 7,
+   "none": 6,
+   "written": 1
+  },
+  "ratio:stop_words": {
+   "prompts": 12,
+   "written": 6,
+   "none": 6
+  },
+  "repeat:repeat_change": {
+   "prompts": 3,
+   "none": 3
+  },
+  "repeat:repeat_simple": {
+   "prompts": 2,
+   "none": 2
+  },
+  "repeat:repeat_span": {
+   "prompts": 4,
+   "written": 4
+  },
+  "sentence:alliteration_increment": {
+   "prompts": 5,
+   "none": 3,
+   "written": 2
+  },
+  "sentence:increment": {
+   "prompts": 8,
+   "none": 2,
+   "written": 6
+  },
+  "sentence:keyword": {
+   "prompts": 15,
+   "none": 7,
+   "written": 8
+  },
+  "words:alphabet": {
+   "prompts": 6,
+   "none": 2,
+   "written": 4
+  },
+  "words:consonants": {
+   "prompts": 15,
+   "none": 9,
+   "asked": 2,
+   "written": 4
+  },
+  "words:keywords_specific_position": {
+   "prompts": 4,
+   "written": 4
+  },
+  "words:last_first": {
+   "prompts": 5,
+   "none": 4,
+   "asked": 1
+  },
+  "words:no_consecutive": {
+   "prompts": 8,
+   "none": 8
+  },
+  "words:odd_even_syllables": {
+   "prompts": 9,
+   "written": 2,
+   "none": 7
+  },
+  "words:palindrome": {
+   "prompts": 7,
+   "none": 4,
+   "written": 3
+  },
+  "words:paragraph_last_first": {
+   "prompts": 6,
+   "none": 4,
+   "written": 2
+  },
+  "words:prime_lengths": {
+   "prompts": 5,
+   "none": 4,
+   "asked": 1
+  },
+  "words:repeats": {
+   "prompts": 5,
+   "none": 3,
+   "written": 2
+  },
+  "words:start_verb": {
+   "prompts": 6,
+   "none": 6
+  },
+  "words:vowel": {
+   "prompts": 10,
+   "none": 10
+  },
+  "words:words_position": {
+   "prompts": 3,
+   "none": 3
+  }
+ },
+ "some_written": [
+  {
+   "kinds": [
+    "words:keywords_specific_position"
+   ],
+   "prompt_end": " that sentence. Reference Text: How is it possible that a given AI language model can generate different outputs for the same text prompt in different sessions?",
+   "rule": "sentence count == 22 ; paragraph count == 33"
+  },
+  {
+   "kinds": [
+    "words:keywords_specific_position"
+   ],
+   "prompt_end": " 34-th word of that sentence. Reference Text: Are there discrete random variables X, Y where the E(X) and E(Y) are finite but E(X + Y) is undefined or infinite?",
+   "rule": "sentence count >= 23 ; count of the word \"discrete\" >= 1"
+  },
+  {
+   "kinds": [
+    "words:keywords_specific_position"
+   ],
+   "prompt_end": " earth with the stories from every family. They decided to learn the craft of housebuilding with the help of a touch of arcane magic from their self-made staff.",
+   "rule": "sentence count == 24 ; count of the word \"housebuilding\" >= 1"
+  },
+  {
+   "kinds": [
+    "words:keywords_specific_position"
+   ],
+   "prompt_end": "or had been captured eternally, blending the surreal stillness of Giorgio de Chirico's paintings with the unsettling horror of Shirley Jackson's 'The Lottery\". ",
+   "rule": "sentence count >= 25 ; count of the word \"lottery\" >= 1"
+  },
+  {
+   "kinds": [
+    "count:numbers"
+   ],
+   "prompt_end": "1960's having to use her knowledge of \"future\" forensics to leave clues to enable her modern colleagues to catch a time-hopping serial-killer, before he dies.  ",
+   "rule": "count of the word \"future\" >= 13 ; count of the word \"time-hopping\" >= 1"
+  },
+  {
+   "kinds": [
+    "count:numbers",
+    "count:conjunctions"
+   ],
+   "prompt_end": "Include exactly 15 numbers in the response. Use at least 5 different coordinating conjunctions in the response. what is the meaning of life?",
+   "rule": "count of the word \"life\" >= 15 ; highlight count >= 5"
+  },
+  {
+   "kinds": [
+    "count:punctuation"
+   ],
+   "prompt_end": "volve just a few scenes, ideally a single moment that is pivotal for the character, but doesn't require much exposition. It should immediately jump into action.",
+   "rule": "starts with \"\"\" == yes ; ends with \"\"\" == yes ; highlight count >= 1"
+  },
+  {
+   "kinds": [
+    "count:word_count_range"
+   ],
+   "prompt_end": "I want to create a new cost function to calculate the similarity score of n number of set of features The response must contain between 57 and 61 words.",
+   "rule": "word count >= 57 ; word count >= 61"
+  },
+  {
+   "kinds": [
+    "count:word_count_range"
+   ],
+   "prompt_end": " structure, necessitates a sophisticated distribution scheme that ensures both a widespread diffusion and a surreptitious installation on the victims' systems.\"",
+   "rule": "word count >= 24 ; sentence count >= 7"
+  },
+  {
+   "kinds": [
+    "count:word_count_range"
+   ],
+   "prompt_end": " As a doctor, you can see no signs of swelling, and it's confirmed not to be a respiratory infection. What are the possible causes from the data you can gather?",
+   "rule": "word count >= 77 ; count of the word \"throat\" >= 1"
+  },
+  {
+   "kinds": [
+    "count:word_count_range"
+   ],
+   "prompt_end": "The response must contain between 30 and 73 words. Why is progrp and nse raise above normal range when petct shows no abnormality",
+   "rule": "word count >= 30 ; sentence count < 1"
+  },
+  {
+   "kinds": [
+    "count:words_japanese"
+   ],
+   "prompt_end": "surance will allow us to align knowledge on what Quality Assurance is all about, and the responsibilities we all play a part in when embedding quality outcomes.",
+   "rule": "word count >= 5 ; starts with \"Focusing on Quality Assurance will allow us to align knowledge on what\" == yes"
+  },
+  {
+   "kinds": [
+    "count:words_japanese"
+   ],
+   "prompt_end": "y 17th word of your response must be in Japanese. What are some fun true or false questions to give to students? They are to be used to introduce a new teacher.",
+   "rule": "language == en ; opening has a new teacher"
+  },
+  {
+   "kinds": [
+    "count:words_japanese"
+   ],
+   "prompt_end": "Please generate a detailed literature review on modern state on blockchain usage in Identity Verification Every 5th word of your response must be in Japanese.",
+   "rule": "count of the word \"modern\" >= 5 ; word count >= 5"
+  },
+  {
+   "kinds": [
+    "count:unique_word_count"
+   ],
+   "prompt_end": "t of the $r$ th rank-one tensor, $\\mathbf{a}_r^{(i)} \\in \\mathbb{R}^{n_i}$ is the $r$ th factor of $i$ th mode with unit norm where $i \\in[d]$ and $r \\in[R]$. \"",
+   "rule": "word count >= 55 ; language == en"
+  },
+  {
+   "kinds": [
+    "count:unique_word_count"
+   ],
+   "prompt_end": "Use at least 85 unique words in the response. what is lua code?",
+   "rule": "word count >= 85 ; count of the word \"lua\" >= 1"
+  },
+  {
+   "kinds": [
+    "count:unique_word_count"
+   ],
+   "prompt_end": "whats the difference between you and gpt 3.0 Use at least 135 unique words in the response.",
+   "rule": "word count >= 3 ; count of the word \"Use\" >= 135"
+  },
+  {
+   "kinds": [
+    "count:unique_word_count"
+   ],
+   "prompt_end": "Use at least 160 unique words in the response. generate a medium hard sql question for an interview",
+   "rule": "word count >= 160 ; response count >= 1"
+  },
+  {
+   "kinds": [
+    "count:unique_word_count"
+   ],
+   "prompt_end": "Use at least 128 unique words in the response. Pure breed , what's this means",
+   "rule": "word count >= 128"
+  },
+  {
+   "kinds": [
+    "count:unique_word_count"
+   ],
+   "prompt_end": " breathes new life into ancient traditions, opening doors to shapes and forms previously consigned to the imagination. Go through this and add relevant examples",
+   "rule": "word count >= 170 ; count of the word \"craftsmanship\" >= 1"
+  },
+  {
+   "kinds": [
+    "format:no_bullets_bullets"
+   ],
+   "prompt_end": " points denoted by *. Write down the equation of motion of a spring pendulum and use it to obtain dynamic equations of its own undamped and damped oscillations.",
+   "rule": "sentence count >= 2 ; response count >= 1"
+  },
+  {
+   "kinds": [
+    "format:no_bullets_bullets"
+   ],
+   "prompt_end": "against the deistic understanding of God Your answer must contain at least two sentences ending in a period followed by at least two bullet points denoted by *.",
+   "rule": "starts with \"\"\" == yes ; ends with \"\"\" == yes ; paragraph count >= 2"
+  },
+  {
+   "kinds": [
+    "format:quote_unquote"
+   ],
+   "prompt_end": ") and the summit outside some random gas station in the outskirts of the bad part of the city (the most beautiful blissful thing you've ever seen in your life.)",
+   "rule": "starts with \"Every quoted phrase must be followed by an unquoted explanation.\" == yes"
+  },
+  {
+   "kinds": [
+    "format:quote_unquote"
+   ],
+   "prompt_end": "han tildado de «izquierdista», de poseer una sensibilidad especial hacia causas «progresistas»\" Every quoted phrase must be followed by an unquoted explanation.",
+   "rule": "starts with \"\"\" == yes ; ends with \"\"\" == yes ; highlight count >= 1"
+  },
+  {
+   "kinds": [
+    "format:quote_unquote"
+   ],
+   "prompt_end": "anation. Is the following statement true for every artificial neural network?: \"Each neuron in a neural network connects to all of the nodes in the next layer\".",
+   "rule": "starts with \"\"\" == yes ; ends with \"\"\" == yes"
+  },
+  {
+   "kinds": [
+    "format:quotes"
+   ],
+   "prompt_end": " understanding the context of the Quran Include quotes within quotes within quotes, at least 3 levels deep, alternating between double quotes and single quotes.",
+   "rule": "starts with \"\"\" == yes ; ends with \"\"\" == yes ; highlight count >= 3"
+  },
+  {
+   "kinds": [
+    "format:quotes"
+   ],
+   "prompt_end": "en double quotes and single quotes. for orthogonal projection does it only work if the 2 basis spanning v is orthoginal in order to prohject a point on to the v",
+   "rule": "starts with \"\"\" == yes ; ends with \"\"\" == yes ; language == en ; highlight count >= 3"
+  },
+  {
+   "kinds": [
+    "format:sub-bullets",
+    "ratio:stop_words"
+   ],
+   "prompt_end": "Write a fictional, imaginative, descriptive timeline of an alternate universe where the new world was only discovered in the 1900s with the advent of satellites",
+   "rule": "starts with \"\"\" == yes ; ends with \"\"\" == yes ; count of the word \"satellites\" >= 1"
+  },
+  {
+   "kinds": [
+    "format:sub-bullets",
+    "ratio:stop_words"
+   ],
+   "prompt_end": "oint denoted by - for each bullet point. Ensure that stop words constitute no more than 37% of the total words in your response. how to build financial literacy",
+   "rule": "starts with \"\"\" == yes ; ends with \"\"\" == yes ; word count >= 37"
+  },
+  {
+   "kinds": [
+    "format:sub-bullets",
+    "ratio:stop_words"
+   ],
+   "prompt_end": " * and at least one sub-bullet point denoted by - for each bullet point. Ensure that stop words constitute no more than 30% of the total words in your response.",
+   "rule": "count of the word \"co2\" >= 1 ; word count >= 30"
+  },
+  {
+   "kinds": [
+    "format:thesis"
+   ],
+   "prompt_end": "sible that streaming services encrypt their video so it's not rippable? Won't the unencrypted data need to enter the memory at some point, and thus be readable?",
+   "rule": "starts with \"\"\" == yes ; ends with \"\"\" == yes ; case == lower ; language == en"
+  },
+  {
+   "kinds": [
+    "format:thesis"
+   ],
+   "prompt_end": "Each section must begin with a thesis statement in italics, use HTML to indicate the italics. Let E(X) = mu, Y = X - mu. Show that E(Y^4) <= 16(E(X^4) + mu^4)",
+   "rule": "starts with \"\"\" == yes ; ends with \"\"\" == yes ; title count >= 4"
+  },
+  {
+   "kinds": [
+    "ratio:overlap"
+   ],
+   "prompt_end": "t War, but remember almost nothing. You remember looking to your side, and seeing a man get shot in the head, and his brains fall out from the back of his head.",
+   "rule": "count of the word \"dementia\" >= 59"
+  },
+  {
+   "kinds": [
+    "ratio:overlap",
+    "sentence:keyword"
+   ],
+   "prompt_end": " to urbanize a desert? Maintain a trigram overlap of 13% (±2%) with the provided reference text. The response must include keyword giraffe in the 7-th sentence.",
+   "rule": "count of the word \"urbanize\" >= 13 ; sentence count >= 7"
+  },
+  {
+   "kinds": [
+    "ratio:overlap",
+    "sentence:keyword"
+   ],
+   "prompt_end": "ence. Write a believable sci fi history about a parasite that could loosely retain the form, memories and personality of its' hosts, eventually being destroyed.",
+   "rule": "count of the word \"trigram\" >= 1 ; paragraph count == 23 ; empty paragraph count == 0"
+  },
+  {
+   "kinds": [
+    "ratio:overlap",
+    "sentence:keyword"
+   ],
+   "prompt_end": " with the provided reference text. The response must include keyword tinstuff in the 6-th sentence. Describe eternal asteroid made of nuclearly locked astatines",
+   "rule": "count of the word \"astatines\" >= 11 ; sentence count >= 6"
+  },
+  {
+   "kinds": [
+    "ratio:sentence_words"
+   ],
+   "prompt_end": "g the Middle Ages as a whole and continued to shape most of Europe up until the end of the Middle Ages. How true is this and what did they do to define the era?",
+   "rule": "sentence count == 3 ; empty paragraph count == 0"
+  },
+  {
+   "kinds": [
+    "ratio:stop_words"
+   ],
+   "prompt_end": "python extract filename from filepath Ensure that stop words constitute no more than 23% of the total words in your response.",
+   "rule": "count of the word \"filename\" >= 1 ; word count >= 23"
+  },
+  {
+   "kinds": [
+    "ratio:stop_words"
+   ],
+   "prompt_end": " combinations is enormous, they cannot be represented explicitly in the model but rather must be indexed by the propositions that each action enforces directly.",
+   "rule": "count of the word \"stop\" >= 1 ; count of the word \"action\" >= 39"
+  },
+  {
+   "kinds": [
+    "ratio:stop_words"
+   ],
+   "prompt_end": "wer warranty costs. can you give me the answer without the bullet point  Ensure that stop words constitute no more than 53% of the total words in your response.",
+   "rule": "word count >= 53 ; count of the word \"stop\" >= 1"
+  }
+ ],
+ "seconds": 125.9,
+ "agreement": "not read: IFBench's checker code waits for Nick's yes"
+}

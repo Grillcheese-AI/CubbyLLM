@@ -573,11 +573,39 @@ instruction, the reader writes the rule) waits for the reader's line 3.
   repeated 4 times (`--repeat-asked 4`) so abstaining weighs like `none`: train 10,552 rules, 1,483 `none`, 652 `asked`.
   0 overlaps; 0 slot boundaries tokenized otherwise. The notebook trains it into `rules/cubby450m_rules_v5/`.
 - **A fresh held-out set:** IFEval's 25 kinds are all spent, so IFBench's test set (AllenAI, 300 prompts, 58 kinds no
-  row was built from; data ODC-BY-1.0, checker code Apache-2.0) is fetched off-repo (`E:/datasets/ifbench`, 94 KB).
+  row was built from; data ODC-BY-1.0, checker code Apache-2.0) is fetched off-repo (`$CUBBY_DATASETS/ifbench`, 94 KB).
   Running its checker code (downloaded) was held by this machine's permission check: it waits for Nick's yes.
 - **The read planned:** dev; `asked_test` (abstention on unmeasurable instructions never trained on); the regression
   splits (round 4's natural and rule-free tests, the v4b new wordings: second reads, labelled as such); IFBench (how
   often an unseen kind gets `asked` instead of a wrong rule; agreement and false passes where written).
+### The reader's fifth round, read (Nick, 2026-11-13: "colab ran"; Claude Code)
+Trained 397 steps on an A100 (held answer loss 0.0079). Read at home on grilly2, the cowork VM, slots constrained.
+- **Dev** (`rule_reader_2026-11-13_v5_dev.json`): 146/150 exact; 0 rules invented on 26 rule-free rows; 2/2 `asked`.
+- **Abstention, unmeasurable instructions never trained on** (`asked_test`, 92; `..._v5_heldout_splits.json`): `asked`
+  73 (79.3%), `none` 13 (no rule either: mostly Nick's style-phrase prompts), **a rule written 6 (6.5%)**, 5 of them
+  French: British spelling read as `language == en` (3), a word of the phrase made a count ("registre", "deux"), "un ton
+  sérieux" read as an opening.
+- **Second reads (regression, labelled as such):** natural length rules 110/116 exact, IFEval's checker **97.7%**
+  agreement, **2.3%** false passes (round 4: the same); rule-free tasks **1 rule invented in 300** (round 4: 1), 3
+  answered `asked`; v4b new wordings **96.2%** / **0.54%** (round 4: 95.7% / 0.16%; quotation read with the wording's
+  own words in 31 of 110 pairs, none passing falsely).
+- **Round 5's own new wordings** (unseen comparisons, a v4-style split): 139/150 exact; **92.1%** / **4.7%** (round 4:
+  90.5% / 5.1%). Comparisons no round trained on still read as `>=`.
+- **IFBench, fresh held-out kinds** (`rule_ifbench_2026-11-13_v5.json`; 300 prompts read whole, 58 kinds): a rule
+  written **77 (25.7%)**, `none` 211 (70.3%), `asked` 12 (4.0%). Agreement not read (the checker waits). Read by eye,
+  most written rules are invented: numbers and words not in the prompt ("sentence count == 22 ; paragraph count == 33"
+  for a keyword position; "count of the word "life" >= 15"; a word range 57-61 read as two `>=`). Line 3's held-out
+  part is not met on written share (25.7% < 50%), and the written rules look like false-pass risk.
+- **Reading:** abstention is learned on short instructions (0/270 -> 79% on unseen short phrases) but not on long real
+  prompts: there the reader mostly says `none` and, a quarter of the time, invents. Training rows are short (instructions
+  alone, or Nick's prompts at most 300 characters); IFBench's prompts are a task with the constraint inside (median
+  293 characters, up to 904). Unwired; CB_RULES off.
+- **Next (Nick's call):** run IFBench's checker (its code, downloaded, needs his yes) to measure the written rules'
+  agreement; and rows built from long, real, human-written prompts with known licences (a constraint joined inside a
+  prompt; `asked` and `none` on long prompts). Nick proposed `crumb/Clean-Instruct-3M`: no licence and no card on the
+  Hub, its sources unlisted (the preview shows templated tasks, a StackOverflow post, answers that read model-written),
+  1.17 GB; not fetched. Alternatives with known licences and human prompts: OASST1 (Apache-2.0), Dolly-15k (CC BY-SA
+  3.0).
 - **Commits:**
 - **Files:**
 - **Tests:**

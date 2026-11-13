@@ -1,0 +1,447 @@
+{
+ "order": "0067",
+ "what": "rule plans run by the VM against IFEval's checker on replies built to pass and fail",
+ "arm": "seat",
+ "rows": 134,
+ "replies_per_rule": 10,
+ "seed": 0,
+ "splits": "new_wording",
+ "counts": {
+  "pairs": 1290,
+  "agree": 1241,
+  "checker passes": 556,
+  "rule passes, checker fails": 7,
+  "asked": 0,
+  "not written": 50
+ },
+ "agreement": 0.962,
+ "rule_passes_checker_fails": 0.0054,
+ "checker_pass_share": 0.431,
+ "per_kind": {
+  "english_capital": {
+   "pairs": 150,
+   "agree": 143,
+   "checker passes": 41,
+   "rule passes, checker fails": 2,
+   "asked": 0,
+   "agreement": 0.953
+  },
+  "english_lowercase": {
+   "pairs": 60,
+   "agree": 60,
+   "checker passes": 8,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "existence": {
+   "pairs": 70,
+   "agree": 70,
+   "checker passes": 41,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "frequency": {
+   "pairs": 60,
+   "agree": 60,
+   "checker passes": 23,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "json_format": {
+   "pairs": 90,
+   "agree": 90,
+   "checker passes": 35,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "letter_frequency": {
+   "pairs": 80,
+   "agree": 75,
+   "checker passes": 32,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.938
+  },
+  "multiple_sections": {
+   "pairs": 80,
+   "agree": 80,
+   "checker passes": 49,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_highlighted_sections": {
+   "pairs": 90,
+   "agree": 90,
+   "checker passes": 56,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_paragraphs": {
+   "pairs": 40,
+   "agree": 40,
+   "checker passes": 14,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_sentences": {
+   "pairs": 70,
+   "agree": 70,
+   "checker passes": 40,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_words": {
+   "pairs": 100,
+   "agree": 95,
+   "checker passes": 50,
+   "rule passes, checker fails": 5,
+   "asked": 0,
+   "agreement": 0.95
+  },
+  "quotation": {
+   "pairs": 110,
+   "agree": 79,
+   "checker passes": 58,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.718
+  },
+  "repeat_prompt": {
+   "pairs": 70,
+   "agree": 70,
+   "checker passes": 19,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "response_language": {
+   "pairs": 70,
+   "agree": 69,
+   "checker passes": 34,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.986
+  },
+  "title": {
+   "pairs": 70,
+   "agree": 70,
+   "checker passes": 34,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "two_responses": {
+   "pairs": 80,
+   "agree": 80,
+   "checker passes": 22,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  }
+ },
+ "misses": [
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "C'EST UNE PETITE VILLE, MAIS ON NE LA QUITTE PAS. SES NOTES ÉTAIENT COURTES ET TRÈS CLAIRES.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "upper is the case of the reply",
+    "fr is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "LA PLUPART DU TRAVAIL SE FAIT LE SOIR. UN BON PLAN COMMENCE PAR UNE QUESTION SIMPLE.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "upper is the case of the reply",
+    "fr is the language of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"Most of the work happens in the evening. The train was late again this week.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "no is the starts with \"at the start, one at the end.\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"Nobody knew why the bridge was closed. Her notes were short and very clear.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "no is the starts with \"at the start, one at the end.\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"They sold bread, fruit and fresh cheese. The morning was quiet and the street was empty.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "no is the starts with \"at the start, one at the end.\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"It's a small town, but people don't leave it. The morning was quiet and the street was empty.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "no is the starts with \"at the start, one at the end.\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"It's a small town, but people don't leave it. Her notes were short and very clear.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "no is the starts with \"at the start, one at the end.\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": " \"The morning was quiet and the street was empty. Her notes were short and very clear.\" ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "no is the starts with \"at the start, one at the end.\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": " \"Nobody knew why the bridge was closed. It's a small town, but people don't leave it.\" ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "no is the starts with \"at the start, one at the end.\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"A good plan starts with a simple question. A good plan starts with a simple question.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "no is the starts with \"at the start, one at the end.\" of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "A GOOD PLAN STARTS WITH A SIMPLE QUESTION. A GOOD PLAN STARTS WITH A SIMPLE QUESTION.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "upper is the case of the reply",
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "number_words",
+   "kwargs": {
+    "num_words": 300,
+    "relation": "less than"
+   },
+   "reply": "A up so it the by of of the by we on or up at we up on to on we of at so the on on on it as up as or as the as of so the of so as as as up we on by or to of a a",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "0 is the count of the word \"sous\" of the reply"
+   ]
+  },
+  {
+   "kind": "number_words",
+   "kwargs": {
+    "num_words": 300,
+    "relation": "less than"
+   },
+   "reply": "In as or it up or by at we to on of or a we by so of it in up as by up by we at by we or or as at of a it at a it on by in as on by it in a up we we it so it to",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "0 is the count of the word \"sous\" of the reply"
+   ]
+  },
+  {
+   "kind": "number_words",
+   "kwargs": {
+    "num_words": 300,
+    "relation": "less than"
+   },
+   "reply": "We up up at up by it up in on by so of by as it we it up by of it a on in or a or on we it as so in by as the the we in a of we to to of or we so in up the up o",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "0 is the count of the word \"sous\" of the reply"
+   ]
+  },
+  {
+   "kind": "number_words",
+   "kwargs": {
+    "num_words": 300,
+    "relation": "less than"
+   },
+   "reply": "As a we by on so the in as or it we the in a at a of on on it the or by so we a so in it at at we we it as the on as of so by in in on in or at or on on so at s",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "0 is the count of the word \"sous\" of the reply"
+   ]
+  },
+  {
+   "kind": "number_words",
+   "kwargs": {
+    "num_words": 300,
+    "relation": "less than"
+   },
+   "reply": "Up of in the the we to the up up up on so a we at by up up of to in as the by on by up as at it it to by at up a it or or on a so at so as we to it we up on to ",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "0 is the count of the word \"sous\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": " \"Most of the work happens in the evening. We walked to the market before noon.\" ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "no is the starts with \"at the start, one at the end.\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"They sold bread, fruit and fresh cheese. It's a small town, but people don't leave it.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "no is the starts with \"at the start, one at the end.\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": " \"We walked to the market before noon. The answer depends on the season and the weather.\" ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "no is the starts with \"at the start, one at the end.\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": " \"Most of the work happens in the evening. The answer depends on the season and the weather.\" ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "no is the starts with \"at the start, one at the end.\" of the reply"
+   ]
+  },
+  {
+   "kind": "letter_frequency",
+   "kwargs": {
+    "letter": "x",
+    "let_frequency": 8,
+    "let_relation": "at least"
+   },
+   "reply": "the by x x x x x it so x x x x it as dry sky",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the count of the word \"texte\" of the reply"
+   ]
+  },
+  {
+   "kind": "letter_frequency",
+   "kwargs": {
+    "letter": "x",
+    "let_frequency": 8,
+    "let_relation": "at least"
+   },
+   "reply": "x so x x x x x in x x x a x sky or rhythm",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the count of the word \"texte\" of the reply"
+   ]
+  },
+  {
+   "kind": "letter_frequency",
+   "kwargs": {
+    "letter": "x",
+    "let_frequency": 8,
+    "let_relation": "at least"
+   },
+   "reply": "x as x x x at we of on x x hymn x x x we as so",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the count of the word \"texte\" of the reply"
+   ]
+  },
+  {
+   "kind": "letter_frequency",
+   "kwargs": {
+    "letter": "x",
+    "let_frequency": 8,
+    "let_relation": "at least"
+   },
+   "reply": "as x x as in so by x sky x x at up up x x on x",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the count of the word \"texte\" of the reply"
+   ]
+  },
+  {
+   "kind": "letter_frequency",
+   "kwargs": {
+    "letter": "x",
+    "let_frequency": 8,
+    "let_relation": "at least"
+   },
+   "reply": "x or at so the we x at rhythm x it it x x or x x x",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the count of the word \"texte\" of the reply"
+   ]
+  }
+ ],
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-11 15:18",
+  "sha256": "3120403f35b007eb85a2302086da7fb1447830573f0f2d540e4c62fdb0cbc37b",
+  "commit": "3f37515",
+  "older_than_sources": false
+ }
+}

@@ -1,0 +1,257 @@
+{
+ "order": "0067",
+ "what": "the program seat as it is reads instructions into rule plans, slots constrained",
+ "adapter": "cubby450m_rules_v5",
+ "rows_file_lines": 15851,
+ "n_per_split": 300,
+ "k": 8,
+ "seed": 0,
+ "examples_kinds": [
+  "word count < 100",
+  "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+  "case == lower ; language == en",
+  "count of the word \"musique\" >= 3",
+  "markdown == no",
+  "section count \"PART\" >= 3",
+  "count of the letter \"e\" >= 5",
+  "starts with \"Donne-moi trois conseils pour mieux dormir.\" == yes"
+ ],
+ "arms": {
+  "zero": {
+   "asked_test": {
+    "counts": {
+     "rows": 92,
+     "written": 6,
+     "exact": 73,
+     "measurement right": 86,
+     "rows en": 76,
+     "exact en": 62,
+     "rule-free rows": 0,
+     "invented a rule": 0,
+     "asked rows": 92,
+     "said asked": 73,
+     "wrote a rule for an asked row": 6,
+     "said none where there was a rule": 0,
+     "rows fr": 16,
+     "exact fr": 11
+    },
+    "per_kind": {
+     "asked_alpaca": {
+      "rows": 60,
+      "exact": 52,
+      "measurement right": 60
+     },
+     "asked_balanced": {
+      "rows": 4,
+      "exact": 2,
+      "measurement right": 3
+     },
+     "asked_british": {
+      "rows": 4,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "asked_calm": {
+      "rows": 4,
+      "exact": 4,
+      "measurement right": 4
+     },
+     "asked_expert": {
+      "rows": 4,
+      "exact": 3,
+      "measurement right": 4
+     },
+     "asked_formal": {
+      "rows": 4,
+      "exact": 2,
+      "measurement right": 3
+     },
+     "asked_questions": {
+      "rows": 4,
+      "exact": 3,
+      "measurement right": 4
+     },
+     "asked_serious": {
+      "rows": 4,
+      "exact": 2,
+      "measurement right": 3
+     },
+     "asked_warm": {
+      "rows": 4,
+      "exact": 4,
+      "measurement right": 4
+     }
+    },
+    "some_misses": [
+     {
+      "kind": "asked_alpaca",
+      "want": "none",
+      "got": "none"
+     },
+     {
+      "kind": "asked_alpaca",
+      "want": "none",
+      "got": "none"
+     },
+     {
+      "kind": "asked_serious",
+      "want": "none",
+      "got": "none"
+     },
+     {
+      "kind": "asked_alpaca",
+      "want": "none",
+      "got": "none"
+     },
+     {
+      "kind": "asked_alpaca",
+      "want": "none",
+      "got": "none"
+     },
+     {
+      "kind": "asked_british",
+      "want": "none",
+      "got": "language == en"
+     },
+     {
+      "kind": "asked_british",
+      "want": "none",
+      "got": "case == lower ; language == en"
+     },
+     {
+      "kind": "asked_balanced",
+      "want": "none",
+      "got": "none"
+     },
+     {
+      "kind": "asked_alpaca",
+      "want": "none",
+      "got": "none"
+     },
+     {
+      "kind": "asked_alpaca",
+      "want": "none",
+      "got": "none"
+     },
+     {
+      "kind": "asked_british",
+      "want": "none",
+      "got": "language == en"
+     },
+     {
+      "kind": "asked_serious",
+      "want": "none",
+      "got": "opening has un ton sérieux"
+     }
+    ]
+   },
+   "natural_test": {
+    "counts": {
+     "rows": 116,
+     "written": 113,
+     "exact": 110,
+     "measurement right": 112,
+     "rows en": 116,
+     "exact en": 110,
+     "rule-free rows": 0,
+     "invented a rule": 0,
+     "asked rows": 0,
+     "said asked": 0,
+     "wrote a rule for an asked row": 0,
+     "said none where there was a rule": 3
+    },
+    "per_kind": {
+     "natural_sentences": {
+      "rows": 90,
+      "exact": 86,
+      "measurement right": 87
+     },
+     "natural_words": {
+      "rows": 26,
+      "exact": 24,
+      "measurement right": 25
+     }
+    },
+    "some_misses": [
+     {
+      "kind": "natural_words",
+      "want": "word count <= 200",
+      "got": "word count <= 200 ; empty paragraph count == 0"
+     },
+     {
+      "kind": "natural_words",
+      "want": "word count <= 15",
+      "got": "word count >= 15"
+     },
+     {
+      "kind": "natural_sentences",
+      "want": "sentence count == 4",
+      "got": "none"
+     },
+     {
+      "kind": "natural_sentences",
+      "want": "sentence count >= 3 ; sentence count <= 5",
+      "got": "sentence count == 3 ; sentence count == 5"
+     },
+     {
+      "kind": "natural_sentences",
+      "want": "sentence count == 1",
+      "got": "none"
+     },
+     {
+      "kind": "natural_sentences",
+      "want": "sentence count == 1",
+      "got": "none"
+     }
+    ]
+   },
+   "none_test": {
+    "counts": {
+     "rows": 300,
+     "written": 1,
+     "exact": 296,
+     "measurement right": 299,
+     "rows en": 300,
+     "exact en": 296,
+     "rule-free rows": 300,
+     "invented a rule": 1,
+     "asked rows": 0,
+     "said asked": 3,
+     "wrote a rule for an asked row": 0,
+     "said none where there was a rule": 0
+    },
+    "per_kind": {
+     "none": {
+      "rows": 300,
+      "exact": 296,
+      "measurement right": 299
+     }
+    },
+    "some_misses": [
+     {
+      "kind": "none",
+      "want": "none",
+      "got": "asked"
+     },
+     {
+      "kind": "none",
+      "want": "none",
+      "got": "count of the word \"subject\" >= 1"
+     },
+     {
+      "kind": "none",
+      "want": "none",
+      "got": "asked"
+     },
+     {
+      "kind": "none",
+      "want": "none",
+      "got": "asked"
+     }
+    ]
+   },
+   "seconds": 89.1,
+   "seat_calls": 919
+  }
+ }
+}
