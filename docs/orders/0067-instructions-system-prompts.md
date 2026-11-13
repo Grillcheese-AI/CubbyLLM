@@ -884,3 +884,27 @@ held-out read once, the kill lines recorded where hit, the reader left unwired. 
   shown once, in plain words, to the person who set it, before it applies ("Rule 3: every reply starts with P.S."), and
   is fixed there; an instruction in the conversation is said back in Cubby's voice ("Got it: under 50 words."). A rule
   shown and not corrected is applied; a rule corrected is recompiled. Recorded as a step of the turn if Nick agrees.
+
+## Cowork's addendum (2026-11-13): say the rule back (Nick: "yes")
+Why: five rounds show the reader, on a kind of instruction it has not seen, writes the nearest familiar rule with
+confidence. The person who set the rule can catch that if Cubby says what it understood. Part of the turn (step 4)
+and of the split of a system prompt (step 5); behind `CB_RULES`, as they are.
+- **Rendered, not written:** each rule is said in words by templates from its plan (one per relation and comparison,
+  English and French), never by a model, so what is said is exactly what will be checked. A rule kept as "asked" is
+  said as such ("I'll keep it formal; I can't check that one").
+- **A system prompt:** compiling it returns the rule book in plain words to whoever set it (the operator, a company's
+  admin, a user for their session), each rule beside the sentence it came from, and where every other sentence went
+  (a stated fact, the voice, "asked", not an instruction). Through the API, the rule book is in the compile's reply.
+  The setter may correct a rule; a correction recompiles that rule. A rule shown and not corrected is applied. A
+  company may ask for "confirm before apply", which holds the new rules until confirmed.
+- **In the conversation:** when an instruction sets, changes or withdraws a rule, Cubby says it back once, in one short
+  line in its voice ("Got it: under 50 words, all lowercase."), not again at every turn. "No, 50 words in all" from
+  the user recompiles the rule at the next turn.
+- **The record** keeps the said-back text, who saw it, and whether it was corrected; the board shows it.
+- **Lines:**
+  - every rule applied was shown to whoever set it: 100% (**kill** below);
+  - a correction replaces the rule from the next turn on (tests, both levels);
+  - the said-back line is template text only (tests: no model call on that path);
+  - **reported:** on the reader's wrong rules from the held-out reads (round 4's IFEval kinds, IFBench), the share whose
+    said-back sentence shows the error to a reader at a glance, judged by hand on a sample of 100 and written down
+    before the next round's results are seen.
