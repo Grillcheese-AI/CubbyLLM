@@ -637,6 +637,11 @@ Apache-2.0, its licence beside it; `$CUBBY_DATASETS/dolly15k`: 13 MB, CC BY-SA 3
   round 5 lost none at 160, but long prompts would have been dropped. The notebook trains at `MAX_LEN` 640 (the
   longest prompt is 546 tokens) and the SFT manifest now counts records over it (0).
 - `build_rule_rows.py` reached 316 lines: its extra row sets moved to `rule_rows_extra.py`.
+- **The first Colab try ran out of memory** (2026-11-13, on a 22 GB L4, not an A100): a batch of 32 long prompts at
+  step 1. `train_talk_torch.py --micro-tokens N` cuts a batch into chunks of at most N padded tokens, each chunk's
+  loss weighted by its share of the answer tokens (the same gradient: `tests/validation/test_talk_micro_batches.py`;
+  off, one chunk weighted exactly 1.0, the smoke run's losses identical). The notebook sets 4,096 on a card under
+  70 GB, off otherwise, and refuses a set with records over `MAX_LEN`.
 - **The read planned:** dev; the three real test splits (real rules through IFEval's checker); the regression splits
   (second reads, labelled); IFBench again (written share, then agreement with its checker).
 - **Commits:**

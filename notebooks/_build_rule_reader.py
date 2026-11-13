@@ -63,6 +63,7 @@ man = json.load(open(DATA + '.manifest.json'))
 print(man['records'], 'records', man['by_split'], '| new-wording rows left out:', man['new_wording_rows_left_out'],
       '| slot boundaries tokenized otherwise:', man['slot_boundaries_tokenized_otherwise'])
 assert man['slot_boundaries_tokenized_otherwise'] == 0
+assert not man.get('records_over_max_len'), f"records longer than MAX_LEN would be skipped: {man['records_over_max_len']}"
 assert 'IFEval' in man['benchmarks_checked'] and man['records_sharing_5_words_with_a_benchmark'] == 0, 'a benchmark prompt in the set'
 print('benchmarks checked:', man['benchmarks_checked'], '| records sharing 5 words with one:', man['records_sharing_5_words_with_a_benchmark'])
 !nvidia-smi --query-gpu=name,memory.total --format=csv
@@ -71,7 +72,9 @@ print('benchmarks checked:', man['benchmarks_checked'], '| records sharing 5 wor
 ## The settings
 
 The served adapters' LoRA layout (rank 16, alpha 32, every projection of every layer: the trunk refuses an adapter
-with another), lr 2e-4 with 50 warmup steps then cosine, batch 32, max length 160, one epoch, seed 0. The `held`
+with another), lr 2e-4 with 50 warmup steps then cosine, batch 32, max length 640 (round 6's long prompts; round 5: 160), one
+epoch, seed 0. On a card under 70 GB a batch is cut into chunks of at most 4,096 padded tokens (`--micro-tokens`: the
+same gradient; round 6's first try ran a 22 GB L4 out of memory on a batch of 32 long prompts). The `held`
 split (the dev rows: the same wordings as train, other rules) is the held-out answer loss printed every 100 steps.
 """),
     code(r"""
@@ -80,9 +83,13 @@ os.environ['CB_NO_FLEX'] = '1'                # the reference attention path; th
 assert not os.path.exists(f'{OUT}/DONE'), f'{OUT} is already trained: move it aside to train again'
 os.makedirs(OUT, exist_ok=True)
 tag = '_rules_v6'
+import torch
+MICRO = 0 if torch.cuda.get_device_properties(0).total_memory >= 70e9 else 4096
+print('micro-batch tokens:', MICRO or 'off (the whole batch at once)')
 cmd = [sys.executable, '-u', 'validation/train_talk_torch.py', '--ckpt', CKPT, '--tokenizer', TOKENIZER,
        '--data', DATA, '--out', OUT, '--epochs', str(EPOCHS), '--batch', str(BATCH), '--lr', str(LR),
-       '--rank', str(RANK), '--alpha', str(ALPHA), '--max-len', str(MAX_LEN), '--seed', '0', '--tag', tag]
+       '--rank', str(RANK), '--alpha', str(ALPHA), '--max-len', str(MAX_LEN), '--seed', '0', '--tag', tag,
+       '--micro-tokens', str(MICRO)]
 p = None
 try:
     with open(f'{OUT}/train.log', 'a', encoding='utf-8', buffering=1) as f:

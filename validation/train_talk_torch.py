@@ -138,6 +138,22 @@ def masked_loss(model, x, y, m, dev, amp):
     return F.cross_entropy(logits.float(), y[sel])
 
 
+def chunks(rows, budget):
+    """`rows` in order, cut so each chunk pads to at most `budget` tokens (0: one chunk). A batch's gradient is the sum of
+    its chunks' losses, each weighted by its share of the answer tokens: the same mean as the whole batch."""
+    if not budget:
+        return [rows]
+    out, cur, longest = [], [], 0
+    for r in rows:
+        n = len(r["p"]) + len(r["t"])
+        if cur and max(longest, n) * (len(cur) + 1) > budget:
+            out.append(cur)
+            cur, longest = [], 0
+        cur.append(r)
+        longest = max(longest, n)
+    return out + [cur]
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--ckpt", default="")
@@ -158,6 +174,7 @@ def main():
     ap.add_argument("--save-every", type=int, default=200)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--tag", default="")
+    ap.add_argument("--micro-tokens", type=int, default=0, help="a batch in chunks of at most N padded tokens (0: off)")
     args = ap.parse_args()
     rng = random.Random(args.seed)
     torch.manual_seed(args.seed)
@@ -210,10 +227,11 @@ def main():
         tot, n = 0.0, 0.0
         with torch.no_grad():
             for s in range(0, len(held), args.batch):
-                x, y, m, _ = make_batch(held[s:s + args.batch])
-                k = float(m.sum())
-                tot += float(masked_loss(model, x, y, m, dev, amp)) * k
-                n += k
+                for part in chunks(held[s:s + args.batch], args.micro_tokens):
+                    x, y, m, _ = make_batch(part)
+                    k = float(m.sum())
+                    tot += float(masked_loss(model, x, y, m, dev, amp)) * k
+                    n += k
         return tot / max(n, 1.0)
 
     base_sha = ckpt_sha256(args.ckpt)
@@ -233,12 +251,17 @@ def main():
     while step < total:
         if not order:
             order = batches(train, args.batch, rng)
-        x, y, m, _ = make_batch([train[i] for i in order.pop()])
+        rows = [train[i] for i in order.pop()]
         for g in opt.param_groups:
             g["lr"] = lr_at(step)
-        loss = masked_loss(model, x, y, m, dev, amp)
         opt.zero_grad(set_to_none=True)
-        loss.backward()
+        built = [make_batch(p) for p in chunks(rows, args.micro_tokens)]   # off: one chunk, weight exactly 1.0
+        ans, loss = sum(float(b[2].sum()) for b in built), 0.0
+        for x, y, m, _ in built:
+            part = masked_loss(model, x, y, m, dev, amp) * (float(m.sum()) / ans)
+            part.backward()
+            loss = loss + part.detach()
+        x = np.concatenate([b[0].ravel() for b in built])
         gn = float(torch.nn.utils.clip_grad_norm_(params, 1.0))
         opt.step()
         lv = float(loss.detach())
