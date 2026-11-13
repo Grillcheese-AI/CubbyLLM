@@ -3,7 +3,8 @@ fake brain, a fake rule reader and a fake sign-in. Pinned: off, /turn is as befo
 without the role cannot set a company's or the global prompt (nor anyone, with no sign-in); a prompt is compiled once
 and its rule book is shown to whoever set it; a session is its creator's; each level reaches only its own sessions;
 a user never sees the operator's or the company's sentence; a correction applies from the next turn, by its setter
-only; "confirm before apply" holds a company's rules; assistant and tool messages set nothing."""
+only; "confirm before apply" holds a company's rules; assistant and tool messages set nothing; two users' sessions,
+their turns interleaved, never see each other's words (in the seat's context or the record) nor each other's rules."""
 from __future__ import annotations
 
 import json
@@ -188,3 +189,66 @@ def test_assistant_and_tool_messages_set_nothing(serve):
                                             {"role": "assistant", "content": "All lowercase."}, user("hi")]}, "bo")
     assert code == 200 and out["in_force"] == [] and not brain._rule_store.books
     assert post("/turn", {"messages": [{"role": "developer", "content": "x"}]}, "bo")[0] == 400
+
+
+class Seat:
+    """A talk seat that records every prompt it is handed and echoes nothing of it."""
+    name = "fake"
+
+    def __init__(self):
+        self.prompts, self.last = [], {}
+
+    def emit(self, prompt, max_new_tokens=768, system=None, context=None, **kw):
+        self.prompts.append(prompt)
+        self.last = {"hit_limit": False, "steered": False}
+        return "fine."
+
+    def vocab_strings(self):
+        return ["<EOS>", "fine"]
+
+    def specials(self):
+        return {0}
+
+
+class RealBrain(Brain):
+    def __init__(self):
+        from cubbyllm.speech.chat import CubbyChat
+        from cubbyllm.speech.identity import load_facts
+        super().__init__()
+        self.chat = CubbyChat(Seat(), load_facts())
+        self.seat = self.chat.emitter
+
+    def turn(self, text, feedback=None):
+        return self.chat.turn(text, feedback, mediate=False)
+
+
+def test_two_sessions_never_see_each_others_words(serve):
+    brain, post = serve()
+    real = RealBrain()
+    brain.chat, brain.turn = real.chat, real.turn
+    words = {"bo": ["my cat is called pepper", "pepper sleeps all day", "tell me about pepper"],
+             "cy": ["my bank pin is secret", "the secret is in a drawer", "where is my secret"]}
+    sid = {who: post("/turn", {"messages": [user(words[who][0])]}, who)[1]["session"] for who in ("bo", "cy")}
+    for i in (1, 2):
+        for who in ("bo", "cy"):                                              # interleaved
+            n = len(real.seat.prompts)
+            code, rec = post("/turn", {"session": sid[who], "messages": [user(words[who][i])]}, who)
+            other = words["cy" if who == "bo" else "bo"]
+            seen = " ".join(real.seat.prompts[n:]) + json.dumps(rec)
+            assert code == 200 and words[who][i - 1] in " ".join(real.seat.prompts[n:])   # its own last line rides along
+            assert not any(w in seen for w in other)
+    for who in ("bo", "cy"):
+        hist = brain._rule_store.sessions[sid[who]].chat["history"]
+        assert [h["user"] for h in hist] == words[who]
+    assert real.chat.history == []                                           # the chat's own conversation untouched
+
+
+def test_a_sessions_rules_never_reach_another_interleaved(serve):
+    _, post = serve()
+    s_bo = post("/turn", {"messages": [sysmsg("Under 50 words.")]}, "bo")[1]["session"]
+    s_cy = post("/turn", {"messages": [sysmsg("All lowercase.")]}, "cy")[1]["session"]
+    for _ in range(3):
+        bo = post("/turn", {"session": s_bo, "messages": [user("hi")]}, "bo")[1]
+        cy = post("/turn", {"session": s_cy, "messages": [user("hi")]}, "cy")[1]
+        assert [r["text"] for r in bo["rules"]] == ["Under 50 words."]
+        assert [r["text"] for r in cy["rules"]] == ["All lowercase."]

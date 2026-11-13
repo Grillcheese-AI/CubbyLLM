@@ -16,6 +16,10 @@ On, `POST /turn` also takes messages with a role, in the shape other models' cli
   is text that is read, below the user); the chat keeps its own history.
 - **session**: made by the server on the first call and returned (``"session"``); a session is its creator's (another
   caller is refused); an id the server did not make is unknown. Without one, a turn reads the global rules only.
+  A session's conversation is its own: its history (the last exchange in the context, the replies ranked against),
+  the words its user has used (the appraisal's novelty) and its last choice are swapped into the one chat for its
+  turn and out after, so no turn sees another session's words. The hormones stay the one Cubby's. Rules count the
+  server's turns (one clock for every book), not a session's.
 
     POST /rules/correct  {"level", "rule", "text", "session"?}  -> the corrected reading said back (its setter only)
     POST /rules/confirm  {"rules": [...]}                       -> a company's held rules confirmed (its admin)
@@ -56,10 +60,18 @@ class Refused(Exception):
         self.code, self.why = code, why
 
 
+CONVERSATION = ("history", "_seen_vocab", "last_choice", "last_rejection")    # the chat's per-conversation state
+
+
+def fresh() -> dict:
+    return {"history": [], "_seen_vocab": set(), "last_choice": {}, "last_rejection": None}
+
+
 class Session:
     def __init__(self, owner, tenant) -> None:
         self.owner, self.tenant = owner, tenant
         self.conversation = RuleBook(prefix="conversation-rule")
+        self.chat = fresh()                                     # this session's own conversation (CONVERSATION)
 
 
 class RuleStore:
@@ -68,6 +80,7 @@ class RuleStore:
         self.books: dict = {}                      # (level, place) -> RuleBook, kept across prompts (rules never deleted)
         self.prompts: dict = {}                    # (level, place) -> the last compile {"text", "set_by", "result"}
         self.sessions: OrderedDict = OrderedDict()
+        self.clock = 0                             # the server's turns under the flag: every book's turn
 
     def book(self, key: tuple) -> RuleBook:
         if key not in self.books:
@@ -93,7 +106,7 @@ class RuleStore:
         books = [self.books.get(("global", None))]
         if s is not None:
             books += [self.books.get(("company", s.tenant)) if s.tenant else None, self.books.get(("user", sid))]
-        return RuleStack(books, s.conversation if s is not None else RuleBook(prefix="conversation-rule"))
+        return RuleStack(books, s.conversation if s is not None else RuleBook(prefix="conversation-rule"), self.clock)
 
 
 def store_of(brain) -> RuleStore:
@@ -104,7 +117,7 @@ def store_of(brain) -> RuleStore:
 
 
 def clock(brain) -> int:
-    return len(getattr(getattr(brain, "chat", None), "history", None) or [])
+    return store_of(brain).clock
 
 
 def caller(h, brain):
@@ -183,7 +196,7 @@ def turn(h, brain, req: dict, run) -> tuple[int, dict]:
             text = str(req.get("text", "")).strip()
             if not text:
                 return 400, {"error": "empty text"}
-            return 200, _run(brain, store, store.stack(None, None), text, run, h._who())
+            return 200, _run(brain, store, None, text, run, h._who())
         systems, text = parse(req)
         ident = caller(h, brain)                       # a signed-in caller's session is theirs from its first turn
         sid, s = store.session(req.get("session"), ident)
@@ -193,23 +206,31 @@ def turn(h, brain, req: dict, run) -> tuple[int, dict]:
             compiled.append(set_prompt(brain, store, key, m["content"], ident, lang, bool(m.get("confirm_before_apply"))))
         if not text:
             return 200, {"session": sid, "compiled": compiled}
-        rec = _run(brain, store, store.stack(sid, s), text, run, h._who())
+        rec = _run(brain, store, (sid, s), text, run, h._who())
         return 200, dict(rec, session=sid, compiled=compiled)
     except Refused as e:
         return e.code, {"error": e.why}
 
 
-def _run(brain, store: RuleStore, stack: RuleStack, text: str, run, audience: str) -> dict:
-    chat = getattr(brain, "chat", None)
-    with store.turn_lock:                                                       # one chat: its rule book is this turn's
-        old = getattr(chat, "rules", None)
+def _run(brain, store: RuleStore, session, text: str, run, audience: str) -> dict:
+    """The turn on the one chat, with this session's rules and conversation swapped in (none: the chat's own)."""
+    chat, (sid, s) = getattr(brain, "chat", None), session or (None, None)
+    with store.turn_lock:
+        stack = store.stack(sid, s)
+        saved = {k: getattr(chat, k, None) for k in ("rules",) + CONVERSATION} if chat is not None else {}
         if chat is not None:
             chat.rules = stack
+            for k, v in (s.chat.items() if s is not None else ()):
+                setattr(chat, k, v)
         try:
             rec = run(text)
         finally:
             if chat is not None:
-                chat.rules = old
+                if s is not None:
+                    s.chat = {k: getattr(chat, k, None) for k in CONVERSATION}
+                for k, v in saved.items():
+                    setattr(chat, k, v)
+            store.clock += 1
     if rec.get("rules"):
         rec["rules"] = shown_rows(rec["rules"], audience)
     return rec

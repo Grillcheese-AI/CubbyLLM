@@ -1,10 +1,12 @@
 """cubbyllm/speech/rule_stack.py -- a session's rules across the levels, and a system prompt compiled once into its
 book (order 0067, step 1: roles in the API).
 
-- `RuleStack(books, conversation)`: what a turn reads as its rule book (`chat.CubbyChat.rules`): the rules in force
-  from every level's book (global, the company's, the session's system prompt), highest level first, then the
+- `RuleStack(books, conversation, now)`: what a turn reads as its rule book (`chat.CubbyChat.rules`): the rules in
+  force from every level's book (global, the company's, the session's system prompt), highest level first, then the
   conversation's own; rules said back in the conversation go to the conversation's book. Each book keeps its own
-  rules (ids differ by the book's prefix), so a level's prompt replaced or corrected changes that book alone.
+  rules (ids differ by the book's prefix), so a level's prompt replaced or corrected changes that book alone. ``now``:
+  the server's turn clock, read instead of the turn the chat passes (each session's chat history counts its own
+  turns, while a global rule's turns are the server's); None: the chat's turn, as a plain book.
 - `split(text)`: a system prompt's sentences, in order (a sentence ends at . ! ? or a line break).
 - `compile_prompt(text, level, set_by, at, read, book, lang)`: each sentence read once (``read(sentence)`` ->
   {"how": "written" | "asked" | "none", "plan"}); a written plan becomes a rule of `level` in `book`, set by `set_by`
@@ -27,19 +29,22 @@ _END = re.compile(r"(?<=[.!?])\s+|\n+")
 
 
 class RuleStack:
-    def __init__(self, books: list, conversation: RuleBook) -> None:
+    def __init__(self, books: list, conversation: RuleBook, now: int | None = None) -> None:
         self.books = [b for b in books if b is not None]
-        self.conversation = conversation
+        self.conversation, self.now = conversation, now
+
+    def _t(self, turn: int) -> int:
+        return turn if self.now is None else self.now
 
     def in_force(self, turn: int) -> list:
-        got = [r for b in self.books + [self.conversation] for r in b.in_force(turn)]
+        got = [r for b in self.books + [self.conversation] for r in b.in_force(self._t(turn))]
         return sorted(got, key=lambda r: LEVELS.index(r.level))       # stable: within a level, each book's own order
 
     def unshown(self, turn: int) -> list:
-        return self.conversation.unshown(turn)
+        return self.conversation.unshown(self._t(turn))
 
-    def show(self, *a, **k) -> str:
-        return self.conversation.show(*a, **k)
+    def show(self, rule_ids: list, to: str, at: int, *a, **k) -> str:
+        return self.conversation.show(rule_ids, to, self._t(at), *a, **k)
 
     def get(self, rule_id: str):
         for b in self.books + [self.conversation]:

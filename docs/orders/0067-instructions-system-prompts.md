@@ -1186,6 +1186,24 @@ Behind `CB_API_ROLES=1` (off: `POST /turn` reads `{"text"}` as before, `/rules/`
   passed, 12 skipped, the known red only (order 0002); on the cowork VM build (`676df1d`).
 - **Not done, said so:** nothing in the server's boot mounts the plan reader yet (`brain.rule_reader`; its adapter waits
   for the view reader's read): with none, every sentence of a prompt is kept "asked", and the rule book says so. The
-  chat is still one conversation (its history and hormones are shared by every session; only the rules are per
-  session). Stated facts and the voice are not split out of a prompt yet (step 5). Rules from the user's own turns
+  chat's history was still shared by every session (done since: below). Stated facts and the voice are not split out of a prompt yet (step 5). Rules from the user's own turns
   (the conversation level) are step 4's "compile what is new"; the API does not read a user line into a rule.
+
+### Step 1, finished: no conversation shared across sessions (Code A, 2026-11-13; Cowork: "a leak between people")
+- Under `CB_API_ROLES=1` each server-made session has its own conversation: the chat's history (the last exchange in
+  the seat's context, the replies a candidate is ranked against), the words its user has used (the appraisal's
+  novelty), its last choice and last rejection are swapped into the one chat for the session's turn and out after,
+  under one lock (`cubby_serve/rule_api.py`). A turn without a session uses the chat's own conversation, as before.
+- **One clock for the rules:** a session's history counts its own turns, so every book now counts the server's turns
+  (`RuleStack(..., now)` reads the server's clock instead of the chat's turn); a global rule set at the server's turn
+  t applies in every session from there.
+- **Tests** (2 more, 10 in `tests/serve/test_rule_api.py`): two users, two sessions, turns interleaved through the real
+  `CubbyChat` with a seat that records every prompt: each turn's context carries its own session's last line and
+  nothing of the other's, in the context or the record; each session's history holds its own lines only; the chat's
+  own conversation is untouched. With the swap disabled the test fails (checked once). Rules: two sessions' own
+  prompts, interleaved over three turns, each turn reads only its own. Off: unchanged (the first test). Full suite:
+  1,646 passed, 12 skipped, the known red only.
+- **Still one Cubby, said so:** the hormones (the neurochemistry's state and its emotion) stay the one Cubby's across
+  sessions, as Cowork's note leaves them; and what a user teaches the worlds (the memory cortex) goes through the
+  worlds' gate into the shared stores, as before: a stated fact, not a conversation. Either is a call for Nick if it
+  should be per session too.
