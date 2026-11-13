@@ -1,5 +1,5 @@
 # 0072 - Verb programs: one CubeLang program per instruction verb, by kind (the check, the gate, the read-back)
-status: review (Code A, 2026-11-13)
+status: done (2026-11-13, Cowork: every line met; rerun once on the cubelang P6 build; see Cowork's check at the end)
 written: 2026-11-13 by Cowork - approved: 2026-11-13 by Nick ("we should craft cubelang programs for each of those instruction words / type") - hypothesis: none (0067's second reader)
 
 ## Why
@@ -194,3 +194,23 @@ file, a service, a device or an account takes **act**.
   branch); "ask first unless in a sandbox" is a change inside one; a verb with no act in a context is refused.
 - **Questions:** sort and merge at 250 items take about half a second (quadratic counting). Faster forms need a map or
   host-sorted keys; worth an order only if the reader meets lists that long.
+
+## Cowork's check (2026-11-13): done
+- **Every line met** (`verb_programs_2026-11-13.json`, the cowork VM `3f37515`): 2,100 of 2,100 cases agree over
+  105 verb-kind pairs, 0 disagreements; the kill (a missing value compared) not hit, every program guarded first; the
+  gate 560 of 560, ask-first without a yes in that turn asked 48 of 48 with the fake host never reached; p95 34 ms at
+  50 items (line 50 ms), and at 250 items sort 588 ms, merge 624 ms, filter 104 ms, the rest under 7 ms. The table
+  holds 67 of 67 verbs (pinned). French imperatives by rule: 176 of 177 agree with UniMorph off-repo, the one
+  difference UniMorph's own ("extraie").
+- **The evaluator read** (`validation/builders/verb_contracts.py`): written apart from the templates and as the order
+  states the contracts: sort is the same counts in order; pick with "all" is complete; merge is the union of the
+  inputs' counts; each edit is equal outside the named places; the gate asks first without a yes. Redrawing the 57
+  cases whose breakage did not break, and the 6 the guard refused, happened before any VM run.
+- **What this shows and what it does not:** each kind's program runs on the VM as its contract says, and an action
+  that cannot be undone never reaches a tool without a yes. Whether an instruction is read into the right verb and
+  arguments is the reader's (0067 step 5). The timing was not checked against Code B's load; the line held anyway.
+  Act verbs ran against the fake host only.
+- **The quadratic counting at 250 items:** no order now. Host-sorted keys are the fix if the reader meets lists that
+  long; P6-9's wider keys may change the times, so the P6 rerun reports them again.
+- **Next:** the cases rerun once on the cowork VM rebuilt with cubelang P6 (Cowork names the commit in the inbox),
+  with every change listed.
