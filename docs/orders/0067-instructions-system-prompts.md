@@ -746,3 +746,56 @@ Read: the two sections above, `rule_agree_2026-11-12_gold.json`, `rule_reader_20
 - **Then the hold is lifted:** once those two are rebuilt into the set, Nick may run `rule_reader.ipynb`.
 - **M-IFEval's French check skips** (the set is not on this machine; its licence unread). It runs when the set is
   fetched, after the licence is read; until then the French wordings are ours, translated from our English.
+
+## Cowork's addendum (2026-11-13): a second reader that writes CubeLang, splits long instructions and joins the parts
+Nick, 2026-11-13: "for instructs we should maybe create a dataset based on what we use with cubelang code samples so
+it learns to generate unseen commands", then "it should be able to split long instructions and join them as parts
+into logical steps too". Queue: after the plan reader's Colab round is read, which is this reader's baseline. It is
+the reader the complex-instructions addendum's line 2 asks for.
+
+**Why a second reader.** The plan reader fills a fixed form (one of about twenty measurements, a comparison, a
+value), so a kind of instruction nobody wrote a measurement for can only be "asked". A reader that writes the check
+in CubeLang composes a few primitive views of the reply instead; an unseen instruction is a new composition, not new
+host code. The 450M's programs seat already writes CubeLang for questions; this reader starts from it.
+
+**Build:**
+0. **The VM, checked against a build** (never the docs): which operations the generator below needs exist (loops
+   over a list, counts, filters, all and any, string equality, prefix and suffix, case, numeric comparison, `&&` and
+   `||` as operands). What is missing goes on cubelang's fix list; a cubelang change waits for Nick's yes.
+1. **Primitive views in the reply world:** the reply's characters, words, sentences, lines, paragraphs, list items,
+   JSON keys and values, each as a list with positions, handed to the VM as statements. The existing measurements
+   stay; new kinds use the views.
+2. **A program generator:** a grammar over the views and CubeLang's constructs (count, filter, all, any, position,
+   compare; and, or, not, if-then, unless, an order of parts). Each program is run on replies built for it and kept
+   only if some pass and some fail.
+3. **Long instructions, built in reverse.** 2 to 8 parts, each a program with its wording from templates (EN and FR),
+   joined by connective wordings ("and then", "unless", "if ... otherwise", "the same in French"), the parts in varied
+   order, with sentences that are not instructions mixed in. Each row's target:
+   - **the split:** every sentence or clause of the instruction mapped to a part (with its span and its kind: a check
+     on the reply, a content rule, a process step, "asked") or to "not an instruction";
+   - **the join:** one CubeLang program, a function per part and a main that joins them in the stated logic and order.
+4. **CubeLang code as a syntax curriculum:** the repo's examples and tests and the programs seat's rows. No benchmark.
+5. **The reader:** decoding constrained to CubeLang's grammar through 0071's hook, so every program parses; a part
+   whose program does not compile is "asked", never "checked".
+6. **The record:** each part with its source span, how it acts (enforced, checked, asked) and the joined program, so
+   a user can see how their instruction was understood. Nothing is dropped silently.
+
+**Acceptance (pre-registered; each held-out read once):**
+1. **Every sentence accounted for:** a part, "asked", or "not an instruction". Dropped silently: 0 (**kill**).
+2. **The split:** each part's span and kind recovered for at least 90% of parts on held-out compositions.
+3. **The join:** the reader's program agrees with the generator's on at least 95% of replies built to pass and to
+   fail; it passes a reply the generator's program fails at most 2% (**kill** above 5%).
+4. **Longer than seen:** trained on up to 4 parts, read on 5 to 8; agreement at least 90% of the in-length rate.
+5. **Unseen kinds:** 0067's held-out kinds and IFBench's out-of-domain constraints: a compiling program for at least
+   half; where written, agreement with the benchmark's own checker at least 95% and false passes at most 2% (**kill**
+   above 5%).
+6. **Against the plan reader:** the same held-out reads, side by side.
+7. **Reported:** the share left "asked" by kind, program lengths, compile failures, seconds per instruction.
+
+**Constraints:** no model writes a rule or a program (rows built in reverse, every program run before it is kept);
+no benchmark sentence in a training row (the overlap test); CubeLang's capabilities read from a build; cubelang
+changes only in the cubelang repo with Nick's yes.
+
+**Nick's calls before the build:** the cubelang fixes step 0 finds; whether a model may draft wording templates
+(paraphrases only; the programs stay generated and run; his rule of 2026-11-10 allows model-written wording, never a
+fact); the Colab round for this reader when its set is built.
