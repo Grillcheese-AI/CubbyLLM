@@ -234,3 +234,14 @@ file, a service, a device or an account takes **act**.
 - The verdict lines stand; the time line is recorded as **failing on `676df1d`** and is read again once on the build
   that carries cubelang's P6-10 (P6 without the slowdown, Code B). Host-sorted keys (a linear check) are not built
   now: they would hide a VM regression rather than fix it.
+
+## The time line read again on cubelang `b3b3360` (P6-10; Code A, 2026-11-13 16:10, Cowork: "re-read 0072's time line")
+`validation/logs/verb_programs_2026-11-13_p6-10.json`: the whole run once (seed 0), the cowork VM rebuilt from
+`b3b3360` (vm_identity in the log), nothing else running from Code A, Code B holding; the machine at 15-16% CPU before
+and after (23 s run).
+- **Time: the line is met.** Worst p95 at 50 items **19.4 ms** (merge; line 50 ms; 82.8 on `676df1d`, 34 before P6);
+  sort 17.4, filter 8.5; at 250 items (reported): sort 417 ms, merge 384, filter 82 (1,635 / 1,641 / 271 on `676df1d`).
+- **Verdicts: no change.** 2,100 of 2,100 agree, 0 disagreements; the gate 560 of 560 (ask-first without a yes: 48 of
+  48 asked, the host reached 0 times). Refused by the static guard: 0 (6 on `676df1d`, all the retired 2-byte key
+  rule's; it is out of the run path). Label redraws 45 (57): the same seed walks another path once those 6 are not
+  refused and redrawn.
