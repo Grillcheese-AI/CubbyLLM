@@ -50,7 +50,8 @@ def test_not_and_inequality(vm):
 def test_a_plan_that_names_no_measurement_is_asked_never_checked():
     no_run = lambda src, fn: pytest.fail("the VM is never asked")   # noqa: E731
     for plan in ({"m": "tone", "op": "==", "v": "warm"}, {"m": "word count", "op": "about", "v": 3},
-                 {"m": "word", "op": "<=", "v": 2}, {"and": []}, {"text": "be nice"}):
+                 {"m": "word", "op": "<=", "v": 2}, {"and": []}, {"text": "be nice"},
+                 {"m": "word count", "op": "==", "v": "yes"}, {"m": "count of the word", "op": ">=", "v": 1.5, "arg": "a"}):
         got = rp.run(plan, "anything", no_run)
         assert got["how"] == "asked" and got["held"] is None and got["why"], plan
 

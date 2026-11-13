@@ -1,0 +1,685 @@
+{
+ "order": "0067",
+ "what": "the second reader's step 0: the generator's operations, run on the VM build",
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-11 15:18",
+  "sha256": "3120403f35b007eb85a2302086da7fb1447830573f0f2d540e4c62fdb0cbc37b",
+  "commit": "3f37515",
+  "older_than_sources": false
+ },
+ "summary": {
+  "list literal + for-of": "present",
+  "list length": "present",
+  "list index": "present",
+  "count with a filter": "present",
+  "string equality": "present",
+  "string inequality": "present",
+  "numeric comparison": "present",
+  "&& as an operand": "present",
+  "|| as an operand": "present",
+  "not": "present",
+  "else if": "present",
+  "all over a list": "present",
+  "any over a list": "present",
+  "arithmetic expression": "present",
+  "modulo": "present",
+  "while + break": "present",
+  "nested lists": "present",
+  "a function with parameters": "present",
+  "string length": "present",
+  "string index": "present",
+  "prefix": "present",
+  "suffix": "present",
+  "case": "wrong value",
+  "substring / contains": "present",
+  "string concatenation": "missing",
+  "map access": "present",
+  "a string from the host": "present",
+  "string variable == string variable": "present",
+  "number variable == number variable": "present",
+  "number variable < number variable": "present",
+  "string variable == literal": "present"
+ },
+ "probes": [
+  {
+   "operation": "list literal + for-of",
+   "spelling": "numbers",
+   "status": "works",
+   "want": 15,
+   "got": "15",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let xs = [3, 5, 7]; for (let x of xs) { add r, x; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "list literal + for-of",
+   "spelling": "strings",
+   "status": "works",
+   "want": 3,
+   "got": "3",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let xs = [\"a\", \"b\", \"a\"]; for (let x of xs) { add r, 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "list length",
+   "spelling": ".len()",
+   "status": "fails",
+   "want": 4,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:9: expression form MethodCall cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        let xs = [1, 2, 3, 4]; return xs.len();\n    }\n}\n"
+  },
+  {
+   "operation": "list index",
+   "spelling": "xs[i]",
+   "status": "fails",
+   "want": 9,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:9: expression form Index cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        let xs = [4, 9, 2]; create i: number; assign i = 1; return xs[i];\n    }\n}\n"
+  },
+  {
+   "operation": "count with a filter",
+   "spelling": "if in loop",
+   "status": "works",
+   "want": 2,
+   "got": "2",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let xs = [3, 5, 7, 1]; for (let x of xs) { if (x > 4) { add r, 1; } } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "string equality",
+   "spelling": "==",
+   "status": "works",
+   "want": 2,
+   "got": "2",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let xs = [\"a\", \"b\", \"a\"]; for (let w of xs) { if (w == \"a\") { add r, 1; } } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "string inequality",
+   "spelling": "!=",
+   "status": "works",
+   "want": 1,
+   "got": "1",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let xs = [\"a\", \"b\", \"a\"]; for (let w of xs) { if (w != \"a\") { add r, 1; } } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "numeric comparison",
+   "spelling": "<",
+   "status": "works",
+   "want": 1,
+   "got": "1",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; if (2 < 3) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "numeric comparison",
+   "spelling": "<=",
+   "status": "works",
+   "want": 1,
+   "got": "1",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; if (3 <= 3) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "numeric comparison",
+   "spelling": ">",
+   "status": "works",
+   "want": 1,
+   "got": "1",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; if (3 > 2) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "numeric comparison",
+   "spelling": ">=",
+   "status": "works",
+   "want": 0,
+   "got": "0",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; if (2 >= 3) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "numeric comparison",
+   "spelling": "==",
+   "status": "works",
+   "want": 1,
+   "got": "1",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; if (3 == 3) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "numeric comparison",
+   "spelling": "!=",
+   "status": "works",
+   "want": 0,
+   "got": "0",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; if (3 != 3) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "&& as an operand",
+   "spelling": "a && b",
+   "status": "fails",
+   "want": 1,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:73: expression form BinOp cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; create a: number; assign a = 2; if (a > 1 && a < 5) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "&& as an operand",
+   "spelling": "false side",
+   "status": "fails",
+   "want": 0,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:73: expression form BinOp cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; create a: number; assign a = 7; if (a > 1 && a < 5) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "|| as an operand",
+   "spelling": "a || b",
+   "status": "fails",
+   "want": 1,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:73: expression form BinOp cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; create a: number; assign a = 7; if (a < 1 || a > 5) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "|| as an operand",
+   "spelling": "false side",
+   "status": "fails",
+   "want": 0,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:73: expression form BinOp cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; create a: number; assign a = 3; if (a < 1 || a > 5) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "not",
+   "spelling": "!(...)",
+   "status": "fails",
+   "want": 1,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:73: expression form UnaryOp cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; create a: number; assign a = 3; if (!(a > 5)) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "else if",
+   "spelling": "else if",
+   "status": "fails",
+   "want": 2,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: parse error: 3:107: expected LBrace, got If",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; create a: number; assign a = 3; if (a > 5) { assign r = 1; } else if (a > 2) { assign r = 2; } else { assign r = 3; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "all over a list",
+   "spelling": "flag",
+   "status": "works",
+   "want": 1,
+   "got": "1",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create ok: number; assign ok = 1; let xs = [3, 5, 7]; for (let x of xs) { if (x < 3) { assign ok = 0; } } return ok;\n    }\n}\n"
+  },
+  {
+   "operation": "any over a list",
+   "spelling": "flag",
+   "status": "works",
+   "want": 1,
+   "got": "1",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create hit: number; assign hit = 0; let xs = [3, 5, 7]; for (let x of xs) { if (x == 5) { assign hit = 1; } } return hit;\n    }\n}\n"
+  },
+  {
+   "operation": "arithmetic expression",
+   "spelling": "a + b * 2",
+   "status": "fails",
+   "want": 11,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:73: expression form BinOp cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create a: number; assign a = 3; create b: number; assign b = 4; let c = a + b * 2; return c;\n    }\n}\n"
+  },
+  {
+   "operation": "modulo",
+   "spelling": "a % 2",
+   "status": "fails",
+   "want": 1,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:41: expression form BinOp cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create a: number; assign a = 7; let c = a % 2; return c;\n    }\n}\n"
+  },
+  {
+   "operation": "while + break",
+   "spelling": "while",
+   "status": "fails",
+   "want": 4,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: strict: unrecognized or no-op statement (expression `Ident(\"break\")` has no compiled effect) in P::solve (non-executing in safe-subset VM)",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; create i: number; assign i = 0; while (i < 10) { add i, 1; if (i == 4) { break; } } return i;\n    }\n}\n"
+  },
+  {
+   "operation": "nested lists",
+   "spelling": "[[..],[..]]",
+   "status": "fails",
+   "want": 3,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:65: expression form MethodCall cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let xs = [[1, 2], [3]]; for (let row of xs) { add r, row.len(); } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "a function with parameters",
+   "spelling": "call",
+   "status": "fails",
+   "want": 6,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 2:41: expression form BinOp cannot be encoded as an operand in P::twice; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    function twice(x: number): number { let y = x * 2; return y; }\n    public function solve(mention: str): number { create r: number; assign r = 0; let v = twice(3); return v; }\n}\n"
+  },
+  {
+   "operation": "string length",
+   "spelling": ".len()",
+   "status": "fails",
+   "want": 5,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:9: expression form MethodCall cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        let s = \"hello\"; return s.len();\n    }\n}\n"
+  },
+  {
+   "operation": "string length",
+   "spelling": "len(s)",
+   "status": "fails",
+   "want": 5,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: CALL: function `len` not found in program `P` (and no `use`'d module exposes it)",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        let s = \"hello\"; return len(s);\n    }\n}\n"
+  },
+  {
+   "operation": "string index",
+   "spelling": "s[0]",
+   "status": "fails",
+   "want": 1,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:58: expression form Index cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let s = \"hello\"; if (s[0] == \"h\") { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "prefix",
+   "spelling": ".starts_with",
+   "status": "fails",
+   "want": 1,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:58: expression form MethodCall cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let s = \"hello\"; if (s.starts_with(\"he\")) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "prefix",
+   "spelling": ".startsWith",
+   "status": "fails",
+   "want": 1,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:58: expression form MethodCall cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let s = \"hello\"; if (s.startsWith(\"he\")) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "prefix",
+   "spelling": "starts_with(s, p)",
+   "status": "fails",
+   "want": 1,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:58: expression form Call cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let s = \"hello\"; if (starts_with(s, \"he\")) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "suffix",
+   "spelling": ".ends_with",
+   "status": "fails",
+   "want": 1,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:58: expression form MethodCall cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let s = \"hello\"; if (s.ends_with(\"lo\")) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "suffix",
+   "spelling": ".endsWith",
+   "status": "fails",
+   "want": 1,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:58: expression form MethodCall cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let s = \"hello\"; if (s.endsWith(\"lo\")) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "suffix",
+   "spelling": "ends_with(s, p)",
+   "status": "fails",
+   "want": 1,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:58: expression form Call cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let s = \"hello\"; if (ends_with(s, \"lo\")) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "case",
+   "spelling": ".to_upper",
+   "status": "fails",
+   "want": 1,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:58: expression form MethodCall cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let s = \"hello\"; if (s.to_upper() == \"HELLO\") { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "case",
+   "spelling": ".toUpperCase",
+   "status": "fails",
+   "want": 1,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:58: expression form MethodCall cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let s = \"hello\"; if (s.toUpperCase() == \"HELLO\") { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "case",
+   "spelling": "upper(s)",
+   "status": "fails",
+   "want": 1,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:58: expression form Call cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let s = \"hello\"; if (upper(s) == \"HELLO\") { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "case",
+   "spelling": ".to_lower",
+   "status": "fails",
+   "want": 1,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:58: expression form MethodCall cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let s = \"HeLLo\"; if (s.to_lower() == \"hello\") { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "substring / contains",
+   "spelling": ".contains",
+   "status": "fails",
+   "want": 1,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:58: expression form MethodCall cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let s = \"hello\"; if (s.contains(\"ell\")) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "string concatenation",
+   "spelling": "+",
+   "status": "fails",
+   "want": 1,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:41: expression form BinOp cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let s = \"he\" + \"llo\"; if (s == \"hello\") { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "map access",
+   "spelling": "m[\"k\"]",
+   "status": "fails",
+   "want": 5,
+   "got": null,
+   "error": "CubelangRunError: cubelang error: 3:9: expression form Index cannot be encoded as an operand in P::solve; compute it into a register first with add/sub/mul/div, then pass the register",
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        let m = {\"k\": 5}; return m[\"k\"];\n    }\n}\n"
+  },
+  {
+   "operation": "a string from the host",
+   "spelling": "the mention argument",
+   "status": "works",
+   "want": 1,
+   "got": "1",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; if (mention == \"probe\") { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "list length",
+   "spelling": "let n = xs.len()",
+   "status": "works",
+   "want": 4,
+   "got": "4",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        let xs = [1, 2, 3, 4]; let n = xs.len(); return n;\n    }\n}\n"
+  },
+  {
+   "operation": "list index",
+   "spelling": "let v = xs[i]",
+   "status": "works",
+   "want": 9,
+   "got": "9",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        let xs = [4, 9, 2]; create i: number; assign i = 1; let v = xs[i]; return v;\n    }\n}\n"
+  },
+  {
+   "operation": "&& as an operand",
+   "spelling": "nested ifs",
+   "status": "works",
+   "want": 1,
+   "got": "1",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; create a: number; assign a = 2; if (a > 1) { if (a < 5) { assign r = 1; } } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "|| as an operand",
+   "spelling": "two ifs, one flag",
+   "status": "works",
+   "want": 1,
+   "got": "1",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; create a: number; assign a = 7; if (a < 1) { assign r = 1; } if (a > 5) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "not",
+   "spelling": "else branch",
+   "status": "works",
+   "want": 1,
+   "got": "1",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; create a: number; assign a = 3; if (a > 5) { } else { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "else if",
+   "spelling": "else { if }",
+   "status": "works",
+   "want": 2,
+   "got": "2",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; create a: number; assign a = 3; if (a > 5) { assign r = 1; } else { if (a > 2) { assign r = 2; } else { assign r = 3; } } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "arithmetic expression",
+   "spelling": "add / mul statements",
+   "status": "works",
+   "want": 11,
+   "got": "11",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create c: number; assign c = 4; mul c, 2; add c, 3; return c;\n    }\n}\n"
+  },
+  {
+   "operation": "modulo",
+   "spelling": "div statement (whole?)",
+   "status": "wrong value",
+   "want": 3,
+   "got": "3.5",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create c: number; assign c = 7; div c, 2; return c;\n    }\n}\n"
+  },
+  {
+   "operation": "while + break",
+   "spelling": "while, no break",
+   "status": "works",
+   "want": 4,
+   "got": "4",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; create i: number; assign i = 0; while (i < 4) { add i, 1; } return i;\n    }\n}\n"
+  },
+  {
+   "operation": "nested lists",
+   "spelling": "let n = row.len()",
+   "status": "works",
+   "want": 3,
+   "got": "3",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let xs = [[1, 2], [3]]; for (let row of xs) { let n = row.len(); add r, n; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "a function with parameters",
+   "spelling": "mul in the callee",
+   "status": "works",
+   "want": 6,
+   "got": "6",
+   "error": null,
+   "source": "program P implements ISolve {\n    function twice(x: number): number { create y: number; assign y = x; mul y, 2; return y; }\n    public function solve(mention: str): number { let v = twice(3); return v; }\n}\n"
+  },
+  {
+   "operation": "map access",
+   "spelling": "let v = m[\"k\"]",
+   "status": "works",
+   "want": 5,
+   "got": "5",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        let m = {\"k\": 5}; let v = m[\"k\"]; return v;\n    }\n}\n"
+  },
+  {
+   "operation": "string index",
+   "spelling": "let c = s[0]",
+   "status": "works",
+   "want": 1,
+   "got": "1",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let s = \"hello\"; let c = s[0]; if (c == \"h\") { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "string length",
+   "spelling": "let n = s.len()",
+   "status": "works",
+   "want": 5,
+   "got": "5",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        let s = \"hello\"; let n = s.len(); return n;\n    }\n}\n"
+  },
+  {
+   "operation": "prefix",
+   "spelling": "composed: char loop",
+   "status": "works",
+   "want": 1,
+   "got": "1",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create ok: number; assign ok = 1; let s = \"hello\"; let p = \"he\"; let n = p.len(); create i: number; assign i = 0; while (i < n) { let a = s[i]; let b = p[i]; if (a == b) { } else { assign ok = 0; } add i, 1; } return ok;\n    }\n}\n"
+  },
+  {
+   "operation": "prefix",
+   "spelling": "composed: char loop, a miss",
+   "status": "wrong value",
+   "want": 0,
+   "got": "1",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create ok: number; assign ok = 1; let s = \"hello\"; let p = \"hx\"; let n = p.len(); create i: number; assign i = 0; while (i < n) { let a = s[i]; let b = p[i]; if (a == b) { } else { assign ok = 0; } add i, 1; } return ok;\n    }\n}\n"
+  },
+  {
+   "operation": "suffix",
+   "spelling": "composed: char loop from the end",
+   "status": "works",
+   "want": 1,
+   "got": "1",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create ok: number; assign ok = 1; let s = \"hello\"; let p = \"lo\"; let n = p.len(); let m = s.len(); create i: number; assign i = 0; create j: number; while (i < n) { assign j = m; sub j, n; add j, i; let a = s[j]; let b = p[i]; if (a == b) { } else { assign ok = 0; } add i, 1; } return ok;\n    }\n}\n"
+  },
+  {
+   "operation": "case",
+   "spelling": "composed: alphabet membership",
+   "status": "wrong value",
+   "want": 3,
+   "got": "130",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create caps: number; assign caps = 0; let s = \"HeLLo\"; let up = [\"A\",\"B\",\"C\",\"D\",\"E\",\"F\",\"G\",\"H\",\"I\",\"J\",\"K\",\"L\",\"M\",\"N\",\"O\",\"P\",\"Q\",\"R\",\"S\",\"T\",\"U\",\"V\",\"W\",\"X\",\"Y\",\"Z\"]; let n = s.len(); create i: number; assign i = 0; while (i < n) { let c = s[i]; for (let u of up) { if (c == u) { add caps, 1; } } add i, 1; } return caps;\n    }\n}\n"
+  },
+  {
+   "operation": "modulo",
+   "spelling": "composed: subtract in a loop",
+   "status": "works",
+   "want": 1,
+   "got": "1",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create c: number; assign c = 7; while (c >= 2) { sub c, 2; } return c;\n    }\n}\n"
+  },
+  {
+   "operation": "string variable == string variable",
+   "spelling": "let, unequal",
+   "status": "works",
+   "want": 0,
+   "got": "0",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let a = \"x\"; let b = \"y\"; if (a == b) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "string variable == string variable",
+   "spelling": "create/assign, unequal",
+   "status": "works",
+   "want": 0,
+   "got": "0",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; create a: str; assign a = \"x\"; create b: str; assign b = \"y\"; if (a == b) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "string variable == string variable",
+   "spelling": "let, equal",
+   "status": "works",
+   "want": 1,
+   "got": "1",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let a = \"x\"; let b = \"x\"; if (a == b) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "string variable == string variable",
+   "spelling": "chars of two strings, unequal",
+   "status": "wrong value",
+   "want": 0,
+   "got": "1",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let s = \"ab\"; let a = s[0]; let b = s[1]; if (a == b) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "number variable == number variable",
+   "spelling": "unequal",
+   "status": "works",
+   "want": 0,
+   "got": "0",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; create a: number; assign a = 3; create b: number; assign b = 4; if (a == b) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "number variable < number variable",
+   "spelling": "4 < 3",
+   "status": "works",
+   "want": 0,
+   "got": "0",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; create a: number; assign a = 4; create b: number; assign b = 3; if (a < b) { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "string variable == literal",
+   "spelling": "unequal",
+   "status": "works",
+   "want": 0,
+   "got": "0",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create r: number; assign r = 0; let a = \"x\"; if (a == \"y\") { assign r = 1; } return r;\n    }\n}\n"
+  },
+  {
+   "operation": "suffix",
+   "spelling": "composed, a miss",
+   "status": "wrong value",
+   "want": 0,
+   "got": "1",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create ok: number; assign ok = 1; let s = \"hello\"; let p = \"xo\"; let n = p.len(); let m = s.len(); create i: number; assign i = 0; create j: number; while (i < n) { assign j = m; sub j, n; add j, i; let a = s[j]; let b = p[i]; if (a == b) { } else { assign ok = 0; } add i, 1; } return ok;\n    }\n}\n"
+  },
+  {
+   "operation": "substring / contains",
+   "spelling": "composed: window compare",
+   "status": "works",
+   "want": 1,
+   "got": "1",
+   "error": null,
+   "source": "program P implements ISolve {\n    public function solve(mention: str): number {\n        create hit: number; assign hit = 0; let s = \"hello\"; let p = \"ell\"; let n = p.len(); let m = s.len(); create k: number; assign k = 0; create last: number; assign last = m; sub last, n; create i: number; create ok: number; create j: number; while (k <= last) { assign ok = 1; assign i = 0; while (i < n) { assign j = k; add j, i; let a = s[j]; let b = p[i]; if (a == b) { } else { assign ok = 0; } add i, 1; } if (ok == 1) { assign hit = 1; } add k, 1; } return hit;\n    }\n}\n"
+  }
+ ]
+}

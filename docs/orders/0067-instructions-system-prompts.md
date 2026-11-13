@@ -861,6 +861,42 @@ changes only in the cubelang repo with Nick's yes.
 (paraphrases only; the programs stay generated and run; his rule of 2026-11-10 allows model-written wording, never a
 fact); the Colab round for this reader when its set is built.
 
+### Step 0, read: the generator's operations on the VM build (Nick, 2026-11-13: "go ahead with step 0"; Code A)
+`validation/vm_ops_probe.py` runs one small `ISolve` program per operation on the cowork build (`3f37515`, sha
+`3120403f...`) and counts it present only when it returns the expected value (`vm_ops_probe_2026-11-13.json`).
+- **Present (run, right values):** list literals and `for (let x of xs)`; a list's length and an index, each bound
+  first (`let n = xs.len()`, `let v = xs[i]`); lists of lists; maps (`let v = m["k"]`); a string's length (`let n =
+  s.len()`); counting with a filter; all and any (a flag in a loop); the six numeric comparisons; `==` / `!=` between
+  strings (variable to literal and variable to variable); functions with parameters; `while`; `add` / `sub` / `mul`;
+  an `else` branch and nested `if`s; a string handed in by the host.
+- **Missing, with the form that works today:**
+  1. `&&`, `||`, `!` as operands of a condition (compile error "BinOp/UnaryOp cannot be encoded as an operand"):
+     nested `if`s, a flag set by two `if`s, an `else` branch (what `rule_plan` already writes).
+  2. `else if` (parse error): `else { if ... }`.
+  3. Arithmetic inside an expression (`a + b * 2`): `add` / `mul` statements. A call, a method call or an index only
+     as a `let`'s right side, never inside a condition or a `return`.
+  4. `break`: a `while` on a flag.
+  5. Whole-number division and modulo: `div` gives 3.5 for 7/2; modulo only as a subtracting loop.
+  6. String helpers (prefix, suffix, upper/lower case, contains, concatenation): none; and they cannot be composed
+     in the VM, because **indexing a string returns null** (`"hello"[1]`, no error). Workable through the host's
+     views (step 1): a word's characters handed in as a list (indexing a list of strings works), a character's case
+     handed in as a view.
+- **A defect, kill-line relevant:** a missing value (null: an index past a list's end, a string index, a misspelled
+  variable name) or the number 0 **compares equal to any string literal** (`==` true, `!=` false); against a number it
+  acts as 0 (`< 7` true). A generated program with an off-by-one index or a typo would pass a string check. Today's
+  rule programs never reach it: the reply world measures a value for every relation (112 argument-relation checks on
+  empty and odd replies: 0 empty measurements). Until the VM is fixed, the generator binds every value it compares
+  from the host and never indexes past a view's length.
+- **For cubelang's fix list (waits for Nick's yes):** (a) comparing null, or a string with a number, is an error (the
+  rule is then not checked: "asked"), never equal; (b) `s[i]` on a string returns its character, or an error; (c)
+  `&&`, `||`, `!` and `else if` in conditions; (d) expressions with calls, indexes and arithmetic as operands; (e)
+  whole-number division and `%`; (f) `break`; (g) string helpers (`starts_with`, `ends_with`, `upper`, `lower`,
+  `contains`, concatenation). (a) is the one that blocks the second reader's kill line; (b)-(g) make programs
+  shorter and easier to constrain to a grammar, and each has a working form today.
+- **Found on the way (fixed):** `rule_plan.check` did not check a value's type: a count compared with "yes" crashed
+  while the program was written, instead of coming back "asked". It is refused now (test added); 0 of the 2,855
+  plans the readers wrote in the logs are newly refused.
+
 ## Cowork's note (2026-11-13): a real long instruction to test the split and the join on
 Nick pointed to the OpenThoughts sets in the training data (`unified/`). Read for this order:
 - **AgentTrove** (`open_thoughts_agent_trove.jsonl`, already in the decay mix's agent shards): all 20,000 rows read
