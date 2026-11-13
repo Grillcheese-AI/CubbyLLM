@@ -57,16 +57,23 @@ def copy_pair(wrapped: dict, weights: dict, g=None) -> None:
 
 
 def generate(model, rows: list, max_new_tokens: int, eos: int, temperature: float = 0.0, top_k: int = 40,
-             seed: "int | None" = None, g=None) -> list:
+             seed: "int | None" = None, g=None, logits_processor=None, prefix_allowed_tokens_fn=None) -> list:
     """Rows of token ids -> each row with its continuation (as lists), greedy; sampled at ``temperature`` > 0, seeded
-    by ``seed``. Stops a row at ``eos``. ``g``: the grilly module (``grilly()`` when None)."""
+    by ``seed``. Stops a row at ``eos``. ``g``: the grilly module (``grilly()`` when None).
+
+    ``logits_processor`` / ``prefix_allowed_tokens_fn`` (order 0071): grilly2's hook, transformers' names, handed to
+    ``model.generate`` only when given (processors ``(input_ids, scores) -> scores`` on device tensors, run after the
+    repetition penalty and before sampling; ``grilly.infer.logits_process`` has the common ones). Both None: the call
+    is the one before the hook, word for word."""
     g = g or grilly()
     if seed is not None and temperature > 0:
         g.manual_seed(int(seed))
+    hook = {k: v for k, v in (("logits_processor", logits_processor),
+                              ("prefix_allowed_tokens_fn", prefix_allowed_tokens_fn)) if v is not None}
     with g.no_grad():
         if temperature > 0:
             out = model.generate(g.tensor(rows), max_new_tokens=max_new_tokens, eos_token_id=eos,
-                                 do_sample=True, temperature=float(temperature), top_k=int(top_k), top_p=1.0)
+                                 do_sample=True, temperature=float(temperature), top_k=int(top_k), top_p=1.0, **hook)
         else:
-            out = model.generate(g.tensor(rows), max_new_tokens=max_new_tokens, eos_token_id=eos)
+            out = model.generate(g.tensor(rows), max_new_tokens=max_new_tokens, eos_token_id=eos, **hook)
     return out.tolist()

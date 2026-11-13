@@ -1,5 +1,5 @@
 # 0071 - A logits hook in grilly2's generate: the host can steer each token as it is written
-status: open (queue: within 0067, before its step 4 builds the "enforced" class; then 0070 and 0069 as Nick set)
+status: review (built 2026-11-12; the grilly2 branch waits for Nick's review)
 written: 2026-11-12 by Cowork - approved: 2026-11-12 by Nick ("yes") - hypothesis: none
 
 ## Why
@@ -63,11 +63,49 @@ through when given (`cubbyllm/ops/` stays the only grilly importer). Default `No
 - Beam search, `stopping_criteria` and transformers' other generation arguments.
 
 ## Report
-<!-- Claude Code fills this in, then sets status: review -->
-- **Commits:**
-- **Files:**
-- **Tests:**
-- **Measured:** <against each acceptance line>
-- **Not verified here:**
-- **Found on the way:**
-- **Questions:**
+- **Commits:** grilly2 `03279a0` on the new branch `generate-logits-hook` (from `main` `8724f7a`; pushed, not merged;
+  `main` untouched). CubbyLLM: this commit (the seam, its test, the bench and its log).
+- **Files:** grilly2: `python/grilly/infer/logits_process.py` (new: `LogitsProcessor`, `LogitsProcessorList`,
+  `PrefixConstrainedLogitsProcessor`, `SuppressTokensLogitsProcessor` with transformers' names, and
+  `AllowedTokensLogitsProcessor`, the allowed-list helper: its 0/-inf mask built on the device once per vocabulary
+  size); `python/grilly/infer/generation.py` (`generate(..., logits_processor=None, prefix_allowed_tokens_fn=None)`);
+  `tests/python/test_logits_process.py` (19 tests). CubbyLLM: `cubbyllm/ops/grilly_seats.py` (`generate` hands both
+  to the model only when given), `tests/ops/test_grilly_seats_hook.py`, `validation/bench_logits_hook.py`,
+  `validation/logs/logits_hook_cost_2026-11-12.json`.
+- **How it runs:** with either argument given, a step runs `sampling.processed_logits` (the repetition penalty alone),
+  then the prefix constraint, then the caller's processors in order, then `next_token` with the penalty off
+  (temperature, top-k, top-p, the draw), which is transformers' order (`_get_logits_processor` in 5.5.1). The token history is
+  kept on the device whenever processors run (they read `input_ids`). With both `None` the step is the fused kernel
+  as before. When a padded batch drops finished rows, processors see the running rows only; the prefix function still
+  hears each row's batch index as given (the loop sets it).
+- **Tests / measured, against each line:**
+  - *Unchanged when off:* 60 `generate` outputs on grilly2's Qwen2 test weights (3 seeds x tied/untied x penalty
+    1.0/1.3 x greedy, seeded sampling, left-padded greedy and sampled, padded with EOS and rows dropped) dumped on
+    `main` and on the branch: **identical**. Pinned: `None` equals omitted; an identity processor changes no token,
+    greedy, seeded sampling and with rows dropped (this pins the split path, penalty then sampling kernel, against
+    the fused kernel). **Met.**
+  - *An allowed list holds:* every new token in the set at every step, greedy and sampled, even and padded, as a
+    processor and as a prefix function (8 cases); suppressed tokens never come; with rows dropped, each row keeps
+    its own set and the function hears batch ids 1 and 2 after row 0 ends. **Met.**
+  - *transformers parity* (5.5.1, torch 2.10 CPU, the references grilly2's CI pins): a bias processor,
+    `SuppressTokens` and a prefix window that moves with length and row give the same greedy tokens as transformers'
+    `generate`, penalty 1.0 and 1.3, even and padded; the test also checks they change what it says unsteered.
+    **Met** (local; CI runs it where it has the reference).
+  - *The seats:* grilly2's decode suites (`test_generation`, `test_sampling`, `test_cubby`, `test_lfm2`,
+    `test_decode_stress`, `test_lora`): 116 passed. CubbyLLM: the seam passes nothing new to the model when the hook
+    is absent (the call is the one before, word for word); `tests/emit`, `tests/ops`, `tests/speech`,
+    `test_spatial_grilly` pass; under grilly2's venv an allowed list holds through `grilly_seats.generate` on a tiny
+    Cubby model. **Met.**
+  - *Cost on the home card, the 450M* (`validation/logs/logits_hook_cost_2026-11-12.json`; greedy, batch 1, a 32-token
+    prompt, 64 new tokens, (t(65) - t(1)) / 64, median of 5 interleaved rounds): none **22.35 ms** a step; identity
+    **22.42 ms (+0.35%)**; allowed 1,000 ids 22.50 ms (+0.68%); allowed 18,000 ids 22.73 ms (+1.73%); a prefix
+    function returning 1,000 ids (mask built every step) 22.60 ms (+1.14%). **Line met** (identity <= 2%; kill
+    > 10%). The rounds spread by about 0.4-0.7 ms within an arm, as large as the differences; every arm is
+    inside 2% of none.
+- **Not verified here:** CI's run of the parity test (lavapipe); a batch above 1 and sampled decoding in the cost
+  bench (the tests cover their correctness, not their cost).
+- **Found on the way:** grilly2's checkout on this machine now sits on `generate-logits-hook` (it was on
+  `ci-and-release`, whose Python is the same as `main`'s); the stack imports grilly2 from that checkout, and with
+  the hook absent it decodes exactly as before. Switch back with `git switch ci-and-release` in grilly2 if wanted.
+- **Questions:** none blocking. 0067's step 4 can use `AllowedTokensLogitsProcessor` / `SuppressTokensLogitsProcessor`
+  through `grilly_seats.generate` once Nick merges the branch (until then it runs from the branch's checkout).
