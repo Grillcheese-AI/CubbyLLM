@@ -673,6 +673,24 @@ merged to main as `d593633`), the cowork VM, slots constrained. Licences beside 
   the instruction (as digits or a number word), else the plan is `asked`. It would refuse the invented numbers
   ("sentence count >= 22" from a prompt with no 22) but not a wrong measurement with a right number ("count of the
   word paradox >= 1" from "seven times"). Measured on round 6's IFBench plans before any decision.
+### The host guard, built and measured (Cowork, 2026-11-13: "build and measure it, no model call"; Code A)
+`cubbyllm/speech/rule_guard.py` (unwired; CB_RULES off): a written plan is `asked` unless (1) every count it compares
+above 1 is in the instruction as digits or a number word (EN, FR), (2) every argument it carries is in the
+instruction, (3) its measurement's unit is named there (a lexicon per measurement, EN and FR). The lexicon was
+tuned on the train and dev rows' own plans only: 0 of 15,903 asked. Tests: `tests/speech/test_rule_guard.py`.
+Read once (`validation/exp_rule_guard.py`, `rule_guard_2026-11-13_v6.json`):
+- **The line (seen kinds in real prompts):** round 6's real-prompt rule test: the guard asks on **0 of 357** plans
+  that are right today (line: at most 1 point) and catches 1 of the 3 wrong ones. Natural prompts 0 of 115.
+- Also read: v4b's new wordings (not real prompts, so outside the line): 4 of 137 right plans asked (2.9%), two
+  wordings the lexicon lacks ("une première réponse et une seconde": two without the word; "be certain to write
+  travel": no word for "word"). Not added: the split is read; a later lexicon change takes a fresh read. Wrong plans
+  on the held-out unmeasurable phrases: 2 of 3 caught; the 1 rule invented on 360 rule-free real prompts: not caught.
+- **IFBench (a diagnostic):** the guard asks on 58 of the 198 written plans (part 1: 17, part 2: 4, part 3: 49) and
+  catches **167 of 718** false passes (part 1: 15, part 2: 14, part 3: 155); false passes 36.3% -> **27.8%**, still far
+  above the kill line. It would also turn 20 right verdicts into "asked". Most false passes keep the instruction's own
+  unit and word with another meaning ("keyword paradox seven times" -> the word "paradox" at least once): a check on
+  words cannot see a measurement read as a neighbour. The guard is a floor for the plan reader, not a fix; the second
+  reader is.
 - **Commits:**
 - **Files:**
 - **Tests:**
