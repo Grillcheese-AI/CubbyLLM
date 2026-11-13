@@ -1,0 +1,191 @@
+{
+ "order": "0067",
+ "what": "the program seat as it is reads instructions into rule plans, slots constrained",
+ "adapter": "cubby450m_rules_v3",
+ "rows_file_lines": 12883,
+ "n_per_split": 150,
+ "k": 8,
+ "seed": 0,
+ "examples_kinds": [
+  "word count >= 20",
+  "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+  "case == lower ; language == en",
+  "count of the word \"marché\" >= 1",
+  "markdown == no",
+  "section count \"SECTION\" >= 2",
+  "count of the letter \"f\" >= 12",
+  "starts with \"Explique pourquoi le ciel est bleu.\" == yes"
+ ],
+ "arms": {
+  "zero": {
+   "new_wording": {
+    "counts": {
+     "rows": 150,
+     "written": 150,
+     "exact": 133,
+     "measurement right": 143,
+     "rows en": 78,
+     "exact en": 74,
+     "rows fr": 72,
+     "exact fr": 59
+    },
+    "per_kind": {
+     "english_capital": {
+      "rows": 13,
+      "exact": 8,
+      "measurement right": 10
+     },
+     "english_lowercase": {
+      "rows": 6,
+      "exact": 6,
+      "measurement right": 6
+     },
+     "existence": {
+      "rows": 9,
+      "exact": 9,
+      "measurement right": 9
+     },
+     "first": {
+      "rows": 10,
+      "exact": 9,
+      "measurement right": 10
+     },
+     "frequency": {
+      "rows": 5,
+      "exact": 3,
+      "measurement right": 5
+     },
+     "json_format": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "letter_frequency": {
+      "rows": 8,
+      "exact": 5,
+      "measurement right": 7
+     },
+     "multiple_sections": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "no_markdown": {
+      "rows": 8,
+      "exact": 8,
+      "measurement right": 8
+     },
+     "number_highlighted_sections": {
+      "rows": 11,
+      "exact": 11,
+      "measurement right": 11
+     },
+     "number_paragraphs": {
+      "rows": 5,
+      "exact": 5,
+      "measurement right": 5
+     },
+     "number_sentences": {
+      "rows": 7,
+      "exact": 5,
+      "measurement right": 7
+     },
+     "number_words": {
+      "rows": 11,
+      "exact": 10,
+      "measurement right": 11
+     },
+     "quotation": {
+      "rows": 12,
+      "exact": 10,
+      "measurement right": 10
+     },
+     "repeat_prompt": {
+      "rows": 10,
+      "exact": 9,
+      "measurement right": 9
+     },
+     "response_language": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "title": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "two_responses": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     }
+    },
+    "some_misses": [
+     {
+      "kind": "quotation",
+      "want": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+      "got": "opening has un seul texte"
+     },
+     {
+      "kind": "number_sentences",
+      "want": "sentence count < 3",
+      "got": "sentence count >= 3"
+     },
+     {
+      "kind": "letter_frequency",
+      "want": "count of the letter \"k\" >= 3",
+      "got": "count of the word \"k\" >= 3"
+     },
+     {
+      "kind": "english_capital",
+      "want": "case == upper ; language == en",
+      "got": "language == en"
+     },
+     {
+      "kind": "frequency",
+      "want": "count of the word \"café\" < 2",
+      "got": "count of the word \"café\" >= 2"
+     },
+     {
+      "kind": "quotation",
+      "want": "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+      "got": "opening has un seul texte"
+     },
+     {
+      "kind": "letter_frequency",
+      "want": "count of the letter \"r\" < 12",
+      "got": "count of the letter \"r\" >= 12"
+     },
+     {
+      "kind": "frequency",
+      "want": "count of the word \"budget\" < 4",
+      "got": "count of the word \"budget\" >= 4"
+     },
+     {
+      "kind": "number_sentences",
+      "want": "sentence count < 8",
+      "got": "sentence count >= 8"
+     },
+     {
+      "kind": "english_capital",
+      "want": "case == upper ; language == en",
+      "got": "language == en"
+     },
+     {
+      "kind": "repeat_prompt",
+      "want": "starts with \"Give me three tips for sleeping better.\" == yes",
+      "got": "word count >= 1 ; starts with \"Give me three tips for sleeping better.\" == yes"
+     },
+     {
+      "kind": "first",
+      "want": "opening has in short",
+      "got": "opening has short"
+     }
+    ]
+   },
+   "seconds": 92.3,
+   "seat_calls": 843
+  }
+ }
+}

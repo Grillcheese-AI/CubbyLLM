@@ -1,0 +1,466 @@
+{
+ "order": "0067",
+ "what": "rule plans run by the VM against IFEval's checker on replies built to pass and fail",
+ "arm": "seat",
+ "rows": 132,
+ "replies_per_rule": 10,
+ "seed": 0,
+ "splits": "new_wording",
+ "counts": {
+  "pairs": 1320,
+  "agree": 1210,
+  "checker passes": 576,
+  "rule passes, checker fails": 64,
+  "asked": 0
+ },
+ "agreement": 0.9167,
+ "rule_passes_checker_fails": 0.0485,
+ "checker_pass_share": 0.4364,
+ "per_kind": {
+  "english_capital": {
+   "pairs": 130,
+   "agree": 101,
+   "checker passes": 35,
+   "rule passes, checker fails": 20,
+   "asked": 0,
+   "agreement": 0.777
+  },
+  "english_lowercase": {
+   "pairs": 60,
+   "agree": 60,
+   "checker passes": 13,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "existence": {
+   "pairs": 90,
+   "agree": 90,
+   "checker passes": 45,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "frequency": {
+   "pairs": 50,
+   "agree": 30,
+   "checker passes": 21,
+   "rule passes, checker fails": 12,
+   "asked": 0,
+   "agreement": 0.6
+  },
+  "json_format": {
+   "pairs": 70,
+   "agree": 70,
+   "checker passes": 29,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "letter_frequency": {
+   "pairs": 80,
+   "agree": 60,
+   "checker passes": 35,
+   "rule passes, checker fails": 15,
+   "asked": 0,
+   "agreement": 0.75
+  },
+  "multiple_sections": {
+   "pairs": 70,
+   "agree": 70,
+   "checker passes": 36,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_highlighted_sections": {
+   "pairs": 110,
+   "agree": 110,
+   "checker passes": 74,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_paragraphs": {
+   "pairs": 50,
+   "agree": 50,
+   "checker passes": 14,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_sentences": {
+   "pairs": 70,
+   "agree": 50,
+   "checker passes": 34,
+   "rule passes, checker fails": 13,
+   "asked": 0,
+   "agreement": 0.714
+  },
+  "number_words": {
+   "pairs": 110,
+   "agree": 100,
+   "checker passes": 60,
+   "rule passes, checker fails": 4,
+   "asked": 0,
+   "agreement": 0.909
+  },
+  "quotation": {
+   "pairs": 120,
+   "agree": 109,
+   "checker passes": 60,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.908
+  },
+  "repeat_prompt": {
+   "pairs": 100,
+   "agree": 100,
+   "checker passes": 36,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "response_language": {
+   "pairs": 70,
+   "agree": 70,
+   "checker passes": 37,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "title": {
+   "pairs": 70,
+   "agree": 70,
+   "checker passes": 40,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "two_responses": {
+   "pairs": 70,
+   "agree": 70,
+   "checker passes": 7,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  }
+ },
+ "misses": [
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "Her notes were short and very clear. The morning was quiet and the street was empty.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "nobody knew why the bridge was closed. it's a small town, but people don't leave it.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "Most of the work happens in the evening. The answer depends on the season and the weather.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "We walked to the market before noon. The morning was quiet and the street was empty.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "They sold bread, fruit and fresh cheese. A good plan starts with a simple question.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "LA PLUPART DU TRAVAIL SE FAIT LE SOIR. UN BON PLAN COMMENCE PAR UNE QUESTION SIMPLE.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "fr is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "Most of the work happens in the evening. A good plan starts with a simple question.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": " \"Le train était encore en retard cette semaine. La plupart du travail se fait le soir.\" ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "le is the opening of the reply",
+    "le train is the opening of the reply",
+    "le train était is the opening of the reply",
+    "le train était encore is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": " \"Ses notes étaient courtes et très claires. Nous avons marché jusqu'au marché avant midi.\" ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "ses is the opening of the reply",
+    "ses notes is the opening of the reply",
+    "ses notes étaient is the opening of the reply",
+    "ses notes étaient courtes is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": " \"La réponse dépend de la saison et du temps. La réponse dépend de la saison et du temps.\" ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "la is the opening of the reply",
+    "la réponse is the opening of the reply",
+    "la réponse dépend is the opening of the reply",
+    "la réponse dépend de is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"Un bon plan commence par une question simple. Un bon plan commence par une question simple.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "un is the opening of the reply",
+    "un bon is the opening of the reply",
+    "un bon plan is the opening of the reply",
+    "un bon plan commence is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"La réponse dépend de la saison et du temps. Ses notes étaient courtes et très claires.\"",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "la is the opening of the reply",
+    "la réponse is the opening of the reply",
+    "la réponse dépend is the opening of the reply",
+    "la réponse dépend de is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": " \"La matinée était calme et la rue était vide. Ils vendaient du pain, des fruits et du fromage.\" ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "la is the opening of the reply",
+    "la matinée is the opening of the reply",
+    "la matinée était is the opening of the reply",
+    "la matinée était calme is the opening of the reply"
+   ]
+  },
+  {
+   "kind": "letter_frequency",
+   "kwargs": {
+    "letter": "d",
+    "let_frequency": 10,
+    "let_relation": "less than"
+   },
+   "reply": "d d d on d d d to at d of d d of d",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "10 is the count of the letter \"d\" of the reply"
+   ]
+  },
+  {
+   "kind": "letter_frequency",
+   "kwargs": {
+    "letter": "d",
+    "let_frequency": 10,
+    "let_relation": "less than"
+   },
+   "reply": "in up hymn d sky d so by d d d d we on d d to as",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "8 is the count of the letter \"d\" of the reply"
+   ]
+  },
+  {
+   "kind": "letter_frequency",
+   "kwargs": {
+    "letter": "d",
+    "let_frequency": 10,
+    "let_relation": "less than"
+   },
+   "reply": "d d we to d d the d d the d to sky d d d sky",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "10 is the count of the letter \"d\" of the reply"
+   ]
+  },
+  {
+   "kind": "letter_frequency",
+   "kwargs": {
+    "letter": "d",
+    "let_frequency": 10,
+    "let_relation": "less than"
+   },
+   "reply": "d d d d or d the d rhythm d d d d so d d",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "12 is the count of the letter \"d\" of the reply"
+   ]
+  },
+  {
+   "kind": "letter_frequency",
+   "kwargs": {
+    "letter": "d",
+    "let_frequency": 10,
+    "let_relation": "less than"
+   },
+   "reply": "it d d d at to of rhythm d by of on in d to d we rhythm d d",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "8 is the count of the letter \"d\" of the reply"
+   ]
+  },
+  {
+   "kind": "letter_frequency",
+   "kwargs": {
+    "letter": "d",
+    "let_frequency": 10,
+    "let_relation": "less than"
+   },
+   "reply": "hymn d to rhythm up a hymn d d d at d sky d d d d of hymn we d",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "10 is the count of the letter \"d\" of the reply"
+   ]
+  },
+  {
+   "kind": "letter_frequency",
+   "kwargs": {
+    "letter": "d",
+    "let_frequency": 10,
+    "let_relation": "less than"
+   },
+   "reply": "at d of in d d to d d d d we up d d d d sky d",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "12 is the count of the letter \"d\" of the reply"
+   ]
+  },
+  {
+   "kind": "letter_frequency",
+   "kwargs": {
+    "letter": "d",
+    "let_frequency": 10,
+    "let_relation": "less than"
+   },
+   "reply": "d d d sky d d by or d or d we it d d we on a a it d",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "10 is the count of the letter \"d\" of the reply"
+   ]
+  },
+  {
+   "kind": "letter_frequency",
+   "kwargs": {
+    "letter": "d",
+    "let_frequency": 10,
+    "let_relation": "less than"
+   },
+   "reply": "a d a d d d by d d so a we up d d d hymn d",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "10 is the count of the letter \"d\" of the reply"
+   ]
+  },
+  {
+   "kind": "letter_frequency",
+   "kwargs": {
+    "letter": "d",
+    "let_frequency": 10,
+    "let_relation": "less than"
+   },
+   "reply": "d a sky up as d so d on d d d rhythm the d d d d we",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "10 is the count of the letter \"d\" of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "most of the work happens in the evening. the answer depends on the season and the weather.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "en is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "A good plan starts with a simple question. They sold bread, fruit and fresh cheese.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "en is the language of the reply"
+   ]
+  }
+ ],
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-11 15:18",
+  "sha256": "3120403f35b007eb85a2302086da7fb1447830573f0f2d540e4c62fdb0cbc37b",
+  "commit": "3f37515",
+  "older_than_sources": false
+ }
+}

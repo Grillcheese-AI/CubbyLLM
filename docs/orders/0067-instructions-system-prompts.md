@@ -435,6 +435,31 @@ instruction, the reader writes the rule) waits for the reader's line 3.
 - **The set** on Drive (`rules/rule_reader_sft_v3.jsonl`, sha `bba37b82...`): 11,083 records (9,945 train, 1,138
   held); 0 overlaps; 0 slot boundaries tokenized otherwise. The notebook trains it into `rules/cubby450m_rules_v3/`
   with round 1's settings; earlier adapters untouched.
+### The reader's third round, read (Claude Code, 2026-11-13)
+- **The adapter** (`cubby450m_rules_v3`, on `rule_reader_sft_v3.jsonl`, hash checked; 311 steps; held answer loss
+  0.0090), read on grilly2, the instruction alone, the cowork VM.
+- **Dev:** 148 of 150 exact, the measurement right on 150 (`rule_reader_2026-11-13_v3_dev.json`).
+- **The fresh new wordings, read once** (`rule_reader_2026-11-13_v3_new.json`, `rule_agree_2026-11-13_v3_new.json`):
+  133 of 150 exact (EN 74/78, FR 59/72); against IFEval's checker (132 rules, 1,320 replies) **agreement 91.7%, the
+  rule passes a reply the checker fails 4.8%.**
+
+| round | training wordings a kind | new wordings exact | agreement | false passes |
+|---|---|---|---|---|
+| 1 | 3 | 100 / 150 | 82.3% | 8.7% |
+| 2 | 10 | 131 / 150 | 92.7% | 3.9% |
+| 3 | 13-20 | 133 / 150 | 91.7% | 4.8% |
+
+- **All capitals improved** (0.62 -> 0.78). **The comparisons did not:** word frequency 0.60, sentences 0.71, letters
+  0.75; nearly every remaining miss is "less than" written as ">=". Training words "<" as fewer than / under / below
+  / short of, and now ">=" partly by negations (not fewer than, not below, not under); "less than", which training
+  never shows by the order's split, falls on the wrong side.
+- **Line 3, new wordings of seen kinds: missed again** (91.7% against 98%); false passes under 5%. The held-out kinds
+  stay unread. The split is spent; nothing was tuned on it.
+- **The question this leaves (Nick's or Cowork's call, not taken here):** whether everyday comparison phrases ("at
+  least", "less than") may appear in training wordings. They were kept out because IFEval uses them, but they are
+  ordinary English, and the 5-word overlap check would still keep IFEval's sentences out. If they may, the new-wording
+  split would need other unseen comparisons ("a maximum of" for "<=" is not the same rule, so the choice needs care).
+  If not, more training comparisons alone did not close the gap this round.
 - **Commits:**
 - **Files:**
 - **Tests:**
