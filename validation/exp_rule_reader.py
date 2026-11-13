@@ -53,6 +53,7 @@ def main() -> None:
     ap.add_argument("--k", type=int, default=8)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--arms", default="zero,few")
+    ap.add_argument("--splits", default="dev,new_wording", help="read dev first; new wordings once, after")
     ap.add_argument("--out", default=None)
     ap.add_argument("--keep", default=None, help="write the plans read, {arm: {row id: plan or null}}")
     a = ap.parse_args()
@@ -60,6 +61,7 @@ def main() -> None:
     rows = [json.loads(line) for line in open(rows_p, encoding="utf-8")]
     rng = random.Random(a.seed)
     sample = {s: rng.sample([r for r in rows if r["split"] == s], a.n) for s in ("dev", "new_wording")}
+    sample = {s: v for s, v in sample.items() if s in a.splits.split(",")}   # the same draw whichever is read
     shots = examples(rows, a.k, a.seed)
     trunk = Cubby450mTrunk(a.export, a.tokenizer, {"programs": a.adapter})
     tk, eos = trunk.tokenizer, trunk.eos

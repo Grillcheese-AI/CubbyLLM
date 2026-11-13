@@ -12,8 +12,9 @@ For each slot the host hands the decoder the token sequences of the slot's optio
 - the argument, for a relation that takes one: a span of the instruction's own words, or ``"`` (one character of the
   instruction for a letter or character count);
 - the comparison: the ops `rule_plan` allows for that relation;
-- the value: a number (0..MAX_N) for a count; the relation's known values (``lower``, ``en``, ``yes`` ...); a span of
-  the instruction for a word, an opening, a JSON key or a last word;
+- the value: a number (0..MAX_N) for a count; the relation's known values (``lower``, ``en``, ``yes`` ...); for a
+  word, a last word or an opening, the instruction's words as the reply world reads them (an opening up to its
+  ``OPENING`` words); a span of the instruction for a JSON key;
 - then `` ;`` (another leaf, up to MAX_LEAVES) or a newline (the end, as each example ends).
 The seat chooses inside each slot; the host only says what is allowed. The result passes `rule_plan.check` by
 construction; "asked" is a result, never a guess.
@@ -33,7 +34,7 @@ from . import rule_plan as rp
 __wiring__ = "STANDALONE"
 
 MAX_N = 400
-MAX_LEAVES = 4
+MAX_LEAVES = 6                                           # the rows compose up to 5 (3 + 2)
 MAX_SPAN = 12
 VALUES = {"case": ["lower", "upper", "mixed", "none"], "language": ["en", "fr", "es", "none"], "json": ["yes", "no"],
           "markdown": ["yes", "no"], "starts with": ["yes", "no"], "ends with": ["yes", "no"],
@@ -112,6 +113,10 @@ def _ops(rel: str) -> list[str]:
 def _values(rel: str, instruction: str) -> list[str]:
     if rp._is_num(rel):
         return [str(n) for n in range(MAX_N + 1)]
+    if rel in ("word", "last word", "opening"):          # words as the reply world reads them: no punctuation
+        ws = rw.words_of(instruction)
+        top = rw.OPENING if rel == "opening" else 1
+        return sorted({" ".join(ws[i:i + n]) for n in range(1, top + 1) for i in range(len(ws) - n + 1)})
     if rel in SPAN_VALUED:
         return [s for s in spans(instruction) if s != '"']
     return VALUES.get(rel, ["yes", "no"])

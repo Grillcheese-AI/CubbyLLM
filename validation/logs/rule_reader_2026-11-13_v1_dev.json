@@ -1,0 +1,266 @@
+{
+ "order": "0067",
+ "what": "the program seat as it is reads instructions into rule plans, slots constrained",
+ "adapter": "cubby450m_rules_v1",
+ "rows_file_lines": 12872,
+ "n_per_split": 150,
+ "k": 8,
+ "seed": 0,
+ "examples_kinds": [
+  "word count < 20",
+  "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+  "case == lower ; language == en",
+  "count of the word \"médecin\" < 2",
+  "markdown == no",
+  "section count \"SECTION\" >= 2",
+  "count of the letter \"m\" < 4",
+  "starts with \"Explique pourquoi le ciel est bleu.\" == yes"
+ ],
+ "arms": {
+  "zero": {
+   "dev": {
+    "counts": {
+     "rows": 150,
+     "written": 150,
+     "exact": 149,
+     "measurement right": 150,
+     "rows fr": 90,
+     "exact fr": 90,
+     "rows en": 60,
+     "exact en": 59
+    },
+    "per_kind": {
+     "english_capital": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "english_capital+number_paragraphs": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "english_capital+two_responses": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "english_lowercase": {
+      "rows": 6,
+      "exact": 6,
+      "measurement right": 6
+     },
+     "english_lowercase+multiple_sections": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "english_lowercase+number_paragraphs": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "english_lowercase+repeat_prompt": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "existence": {
+      "rows": 8,
+      "exact": 8,
+      "measurement right": 8
+     },
+     "existence+number_paragraphs": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "existence+number_sentences": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "existence+response_language": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "first": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "first+english_lowercase": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "first+response_language": {
+      "rows": 2,
+      "exact": 2,
+      "measurement right": 2
+     },
+     "frequency": {
+      "rows": 12,
+      "exact": 12,
+      "measurement right": 12
+     },
+     "frequency+existence": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 1
+     },
+     "json_format": {
+      "rows": 6,
+      "exact": 6,
+      "measurement right": 6
+     },
+     "json_format+title": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "letter_frequency": {
+      "rows": 6,
+      "exact": 6,
+      "measurement right": 6
+     },
+     "letter_frequency+number_paragraphs": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "letter_frequency+repeat_prompt": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "letter_frequency+two_responses": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "multiple_sections": {
+      "rows": 10,
+      "exact": 10,
+      "measurement right": 10
+     },
+     "multiple_sections+quotation": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "no_markdown": {
+      "rows": 5,
+      "exact": 5,
+      "measurement right": 5
+     },
+     "no_markdown+number_words": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "no_markdown+two_responses": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "number_highlighted_sections": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "number_highlighted_sections+english_capital": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "number_highlighted_sections+english_lowercase": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "number_highlighted_sections+existence": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "number_highlighted_sections+quotation": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "number_paragraphs": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     },
+     "number_sentences": {
+      "rows": 4,
+      "exact": 4,
+      "measurement right": 4
+     },
+     "number_words": {
+      "rows": 8,
+      "exact": 8,
+      "measurement right": 8
+     },
+     "quotation": {
+      "rows": 9,
+      "exact": 9,
+      "measurement right": 9
+     },
+     "quotation+two_responses": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "repeat_prompt": {
+      "rows": 6,
+      "exact": 6,
+      "measurement right": 6
+     },
+     "response_language": {
+      "rows": 5,
+      "exact": 5,
+      "measurement right": 5
+     },
+     "response_language+existence": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "title": {
+      "rows": 3,
+      "exact": 3,
+      "measurement right": 3
+     },
+     "title+number_words": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "title+quotation": {
+      "rows": 1,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "two_responses": {
+      "rows": 7,
+      "exact": 7,
+      "measurement right": 7
+     }
+    },
+    "some_misses": [
+     {
+      "kind": "frequency+existence",
+      "want": "count of the word \"silence\" < 4 ; count of the word \"garden\" >= 1",
+      "got": "count of the word \"silence\" < 4 ; count of the word \"garden\" >= 4"
+     }
+    ]
+   },
+   "seconds": 124.3,
+   "seat_calls": 1058
+  }
+ }
+}
