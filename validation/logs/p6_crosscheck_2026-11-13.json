@@ -1,0 +1,127 @@
+{
+ "what": "cubelang fix list P6-1, P6-2, P6-8, P6-9: the cross-check from CubbyLLM, before Cowork merges agent-b/p6",
+ "date": "2026-11-13",
+ "builds": {
+  "cowork VM (baseline)": "cubelang-cowork release, 3f37515",
+  "P6-1/P6-2/P6-8": "cubelang-b release, a50fccc",
+  "final (+ P6-9, `cubelang keys`)": "cubelang-b release, 676df1d"
+ },
+ "probe": {
+  "before": "vm_ops_probe_2026-11-13.json: 37 works, 29 fails, 5 wrong values",
+  "a50fccc": "vm_ops_probe_2026-11-13_p6b.json: 41 works, 29 fails, 1 wrong value (div gives 3.5, P6-5)",
+  "676df1d": "vm_ops_probe_2026-11-13_p6final.json: 41 works, 29 fails, 1 wrong value (div gives 3.5, P6-5)",
+  "changed": [
+   "prefix, composed char loop, a miss: 1 -> 0",
+   "case, composed alphabet membership: 130 -> 3",
+   "string variable == string variable, chars of two strings unequal: 1 -> 0",
+   "suffix, composed, a miss: 1 -> 0",
+   "while + break: fails before and after; its error is now `UndeclaredName` for `break` (break is P6-6)"
+  ],
+  "a probe that worked before and fails now": 0
+ },
+ "cubbyllm_tests": {
+  "a50fccc": "1530 outcomes, identical to the cowork VM's; the only failure tests/test_guards.py::test_every_module_declares_wiring (red before)",
+  "676df1d": "1544 outcomes after merging master, identical to the cowork VM's; the same one failure",
+  "vm tests run, none skipped": "bridges/test_cubelang_* 11, reasoning/test_live_vm 1, speech/test_rule_plan 7, test_rule_turn 7, test_reply_views 18, brain/test_serve 27"
+ },
+ "r2_b1q_dev": {
+  "baseline": "retrieval_R2_dev_2026-11-04_b1q_compared.json (0046's last dev run, same args)",
+  "a50fccc": "retrieval_R2_dev_2026-11-13_b1q_p6b.json: 0 of 2965 rows differ (b1, b1q, tiers)",
+  "676df1d": "retrieval_R2_dev_2026-11-13_b1q_p6final.json: 0 of 2965 rows differ (b1, b1q, tiers)",
+  "b1q": {
+   "right": 849,
+   "wrong": 43,
+   "refused": 163,
+   "undecided": 910,
+   "held": 998,
+   "single": 2
+  }
+ },
+ "key_scan": {
+  "log": "vm_key_scan_2026-11-13.json (validation/vm_key_scan.py, old 2-byte key, spellings from `cubelang keys`)",
+  "sets": {
+   "0046_b1q": {
+    "programs": 1,
+    "compiled": 1,
+    "parse_errors": 0,
+    "programs_with_a_shared_key": 0,
+    "pairs": 0,
+    "pairs_by_kind": {},
+    "literal_pairs_compared": 0
+   },
+   "0054_replay": {
+    "programs": 9507,
+    "compiled": 8138,
+    "parse_errors": 1369,
+    "programs_with_a_shared_key": 0,
+    "pairs": 0,
+    "pairs_by_kind": {},
+    "literal_pairs_compared": 0
+   },
+   "0067_turn": {
+    "programs": 580,
+    "compiled": 580,
+    "parse_errors": 0,
+    "programs_with_a_shared_key": 0,
+    "pairs": 0,
+    "pairs_by_kind": {},
+    "literal_pairs_compared": 0
+   },
+   "0067_plans": {
+    "programs": 2855,
+    "compiled": 2855,
+    "parse_errors": 0,
+    "programs_with_a_shared_key": 0,
+    "pairs": 0,
+    "pairs_by_kind": {},
+    "literal_pairs_compared": 0
+   },
+   "0067_views": {
+    "programs": 15948,
+    "compiled": 15948,
+    "parse_errors": 0,
+    "programs_with_a_shared_key": 37,
+    "pairs": 37,
+    "pairs_by_kind": {
+     "label+literal": 35,
+     "label+name": 1,
+     "literal+name": 1
+    },
+    "literal_pairs_compared": 0
+   },
+   "0067_views_unguarded": {
+    "programs": 15968,
+    "compiled": 15968,
+    "parse_errors": 0,
+    "programs_with_a_shared_key": 489,
+    "pairs": 511,
+    "pairs_by_kind": {
+     "literal": 397,
+     "literal+name": 82,
+     "label+literal": 27,
+     "label+name": 2,
+     "name": 3
+    },
+    "literal_pairs_compared": 6
+   },
+   "logs": {
+    "programs": 6688,
+    "compiled": 6677,
+    "parse_errors": 11,
+    "programs_with_a_shared_key": 0,
+    "pairs": 0,
+    "pairs_by_kind": {},
+    "literal_pairs_compared": 0
+   },
+   "code": {
+    "programs": 37,
+    "compiled": 24,
+    "parse_errors": 13,
+    "programs_with_a_shared_key": 0,
+    "pairs": 0,
+    "pairs_by_kind": {},
+    "literal_pairs_compared": 0
+   }
+  }
+ }
+}

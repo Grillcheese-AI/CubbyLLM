@@ -1,0 +1,787 @@
+{
+ "what": "cubelang P6-9's cross-check: programs CubbyLLM ran and kept, two spellings on one OLD 2-byte key",
+ "date": "2026-11-13",
+ "key": "BLAKE3 first 2 bytes (before P6-9)",
+ "sets": {
+  "0046_b1q": {
+   "programs": 1,
+   "compiled": 1,
+   "parse_errors": 0,
+   "programs_with_a_shared_key": 0,
+   "pairs": 0,
+   "pairs_by_kind": {},
+   "literal_pairs_compared": [],
+   "a_literal_of_a_pair_in_a_comparison": 0,
+   "label_pairs": [],
+   "name_pairs": [],
+   "examples": []
+  },
+  "0054_replay": {
+   "programs": 9507,
+   "compiled": 8138,
+   "parse_errors": 1369,
+   "programs_with_a_shared_key": 0,
+   "pairs": 0,
+   "pairs_by_kind": {},
+   "literal_pairs_compared": [],
+   "a_literal_of_a_pair_in_a_comparison": 0,
+   "label_pairs": [],
+   "name_pairs": [],
+   "examples": []
+  },
+  "0067_turn": {
+   "programs": 580,
+   "compiled": 580,
+   "parse_errors": 0,
+   "programs_with_a_shared_key": 0,
+   "pairs": 0,
+   "pairs_by_kind": {},
+   "literal_pairs_compared": [],
+   "a_literal_of_a_pair_in_a_comparison": 0,
+   "label_pairs": [],
+   "name_pairs": [],
+   "examples": []
+  },
+  "0067_plans": {
+   "programs": 2855,
+   "compiled": 2855,
+   "parse_errors": 0,
+   "programs_with_a_shared_key": 0,
+   "pairs": 0,
+   "pairs_by_kind": {},
+   "literal_pairs_compared": [],
+   "a_literal_of_a_pair_in_a_comparison": 0,
+   "label_pairs": [],
+   "name_pairs": [],
+   "examples": []
+  },
+  "0067_views": {
+   "programs": 15948,
+   "compiled": 15948,
+   "parse_errors": 0,
+   "programs_with_a_shared_key": 37,
+   "pairs": 37,
+   "pairs_by_kind": {
+    "label+literal": 35,
+    "label+name": 1,
+    "literal+name": 1
+   },
+   "literal_pairs_compared": [],
+   "a_literal_of_a_pair_in_a_comparison": 0,
+   "label_pairs": [],
+   "name_pairs": [],
+   "examples": [
+    {
+     "program": "view_programs_0067#p000035#4",
+     "key": "2f56",
+     "spellings": [
+      "_else_3",
+      "année hiver"
+     ],
+     "kinds": [
+      "label",
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067#p000071#0",
+     "key": "2f56",
+     "spellings": [
+      "Planet slow great long place it job was area game travel or side time important?",
+      "_else_3"
+     ],
+     "kinds": [
+      "label",
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067#p000243#3",
+     "key": "a4ac",
+     "spellings": [
+      "JEUNE",
+      "_while_7"
+     ],
+     "kinds": [
+      "label",
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067#p000421#2",
+     "key": "a4ac",
+     "spellings": [
+      "JEUNE",
+      "_while_7"
+     ],
+     "kinds": [
+      "label",
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067#p000506#2",
+     "key": "4e5c",
+     "spellings": [
+      "Livre école haut CLAIR école.",
+      "_endwhile_2"
+     ],
+     "kinds": [
+      "label",
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067#p000700#0",
+     "key": "2f2e",
+     "spellings": [
+      "* law eye river",
+      "_endif_4"
+     ],
+     "kinds": [
+      "label",
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067#p000799#2",
+     "key": "a4ac",
+     "spellings": [
+      "JEUNE",
+      "_while_7"
+     ],
+     "kinds": [
+      "label",
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067#p000871#0",
+     "key": "a4ac",
+     "spellings": [
+      "Bad teacher government slow in to door is. Bright world part large father. High money and at power winter company kid.",
+      "_while_7"
+     ],
+     "kinds": [
+      "label",
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067#p000878#2",
+     "key": "a4ac",
+     "spellings": [
+      "JEUNE",
+      "_while_7"
+     ],
+     "kinds": [
+      "label",
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067#p000897#7",
+     "key": "9273",
+     "spellings": [
+      "MONTH",
+      "_endif_18"
+     ],
+     "kinds": [
+      "label",
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067#p000953#7",
+     "key": "2f2e",
+     "spellings": [
+      "_endif_4",
+      "quiet member"
+     ],
+     "kinds": [
+      "label",
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067#p001014#1",
+     "key": "a4ac",
+     "spellings": [
+      "JEUNE",
+      "_while_7"
+     ],
+     "kinds": [
+      "label",
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067#p001070#0",
+     "key": "7f64",
+     "spellings": [
+      "Planète rapide problème pain on vert route ville semaine pierre eau ville des voyage la même ville année hiver pour.",
+      "_endif_12"
+     ],
+     "kinds": [
+      "label",
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067#p001078#6",
+     "key": "a4ac",
+     "spellings": [
+      "JEUNE",
+      "_while_7"
+     ],
+     "kinds": [
+      "label",
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067#p001098#2",
+     "key": "a4ac",
+     "spellings": [
+      "JEUNE",
+      "_while_7"
+     ],
+     "kinds": [
+      "label",
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067#p001170#7",
+     "key": "a4ac",
+     "spellings": [
+      "JEUNE",
+      "_while_7"
+     ],
+     "kinds": [
+      "label",
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067#p001177#7",
+     "key": "9273",
+     "spellings": [
+      "MONTH",
+      "_endif_18"
+     ],
+     "kinds": [
+      "label",
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067#p001207#7",
+     "key": "2f2e",
+     "spellings": [
+      "***\n  * old back is\n* world hand table\n* people public country\n* important child the part river",
+      "_endif_4"
+     ],
+     "kinds": [
+      "label",
+      "name"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067#p001375#3",
+     "key": "4e5c",
+     "spellings": [
+      "Quiet way.",
+      "_endwhile_2"
+     ],
+     "kinds": [
+      "label",
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067#p001413#4",
+     "key": "a4ac",
+     "spellings": [
+      "JEUNE",
+      "_while_7"
+     ],
+     "kinds": [
+      "label",
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    }
+   ]
+  },
+  "0067_views_unguarded": {
+   "programs": 15968,
+   "compiled": 15968,
+   "parse_errors": 0,
+   "programs_with_a_shared_key": 489,
+   "pairs": 511,
+   "pairs_by_kind": {
+    "literal": 397,
+    "literal+name": 82,
+    "label+literal": 27,
+    "label+name": 2,
+    "name": 3
+   },
+   "literal_pairs_compared": [
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p000398#3",
+     "key": "2b81",
+     "spellings": [
+      "Planète",
+      "place"
+     ],
+     "kinds": [
+      "literal"
+     ],
+     "compared": true,
+     "a_literal_in_a_comparison": true
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p000594#3",
+     "key": "8ac4",
+     "spellings": [
+      "QUE",
+      "none"
+     ],
+     "kinds": [
+      "literal"
+     ],
+     "compared": true,
+     "a_literal_in_a_comparison": true
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p001090#1",
+     "key": "8ac4",
+     "spellings": [
+      "QUE",
+      "none"
+     ],
+     "kinds": [
+      "literal"
+     ],
+     "compared": true,
+     "a_literal_in_a_comparison": true
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p001401#7",
+     "key": "8ac4",
+     "spellings": [
+      "QUE",
+      "none"
+     ],
+     "kinds": [
+      "literal"
+     ],
+     "compared": true,
+     "a_literal_in_a_comparison": true
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p001489#7",
+     "key": "8ac4",
+     "spellings": [
+      "QUE",
+      "none"
+     ],
+     "kinds": [
+      "literal"
+     ],
+     "compared": true,
+     "a_literal_in_a_comparison": true
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p001713#4",
+     "key": "8ac4",
+     "spellings": [
+      "QUE",
+      "none"
+     ],
+     "kinds": [
+      "literal"
+     ],
+     "compared": true,
+     "a_literal_in_a_comparison": true
+    }
+   ],
+   "a_literal_of_a_pair_in_a_comparison": 7,
+   "label_pairs": [],
+   "name_pairs": [
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p000850#2",
+     "key": "b21e",
+     "spellings": [
+      "n_sentence",
+      "young\n  3."
+     ],
+     "kinds": [
+      "name"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p001221#2",
+     "key": "d77f",
+     "spellings": [
+      "```json\n{\"notes\": true, \"title\": [\"night\"], \"city\": \"moment\", \"status\": [\"old\"], \"items\": false, \"count\": \"week\"}\n```",
+      "sentence_first_word"
+     ],
+     "kinds": [
+      "name"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p001491#5",
+     "key": "876c",
+     "spellings": [
+      "***\nPartie table monde vieux temps ville on vie on rapide.",
+      "c4"
+     ],
+     "kinds": [
+      "name"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    }
+   ],
+   "examples": [
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p000000#0",
+     "key": "15d0",
+     "spellings": [
+      "government",
+      "thing"
+     ],
+     "kinds": [
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p000000#4",
+     "key": "15d0",
+     "spellings": [
+      "government",
+      "thing"
+     ],
+     "kinds": [
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p000011#4",
+     "key": "15d0",
+     "spellings": [
+      "government",
+      "thing"
+     ],
+     "kinds": [
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p000011#6",
+     "key": "15d0",
+     "spellings": [
+      "government",
+      "thing"
+     ],
+     "kinds": [
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p000013#7",
+     "key": "15d0",
+     "spellings": [
+      "government",
+      "thing"
+     ],
+     "kinds": [
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p000014#3",
+     "key": "6f1b",
+     "spellings": [
+      "Office",
+      "n_word"
+     ],
+     "kinds": [
+      "literal",
+      "name"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p000014#3",
+     "key": "15d0",
+     "spellings": [
+      "government",
+      "thing"
+     ],
+     "kinds": [
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p000025#0",
+     "key": "15d0",
+     "spellings": [
+      "government",
+      "thing"
+     ],
+     "kinds": [
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p000027#3",
+     "key": "8ac4",
+     "spellings": [
+      "QUE",
+      "none"
+     ],
+     "kinds": [
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p000028#4",
+     "key": "15d0",
+     "spellings": [
+      "government",
+      "thing"
+     ],
+     "kinds": [
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p000033#0",
+     "key": "6f1b",
+     "spellings": [
+      "Office",
+      "n_word"
+     ],
+     "kinds": [
+      "literal",
+      "name"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p000033#2",
+     "key": "15d0",
+     "spellings": [
+      "government",
+      "thing"
+     ],
+     "kinds": [
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p000041#4",
+     "key": "6f1b",
+     "spellings": [
+      "Office",
+      "n_word"
+     ],
+     "kinds": [
+      "literal",
+      "name"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p000052#6",
+     "key": "6f1b",
+     "spellings": [
+      "Office",
+      "n_word"
+     ],
+     "kinds": [
+      "literal",
+      "name"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p000052#6",
+     "key": "15d0",
+     "spellings": [
+      "government",
+      "thing"
+     ],
+     "kinds": [
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p000052#7",
+     "key": "15d0",
+     "spellings": [
+      "government",
+      "thing"
+     ],
+     "kinds": [
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p000059#1",
+     "key": "8ac4",
+     "spellings": [
+      "QUE",
+      "none"
+     ],
+     "kinds": [
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p000060#0",
+     "key": "15d0",
+     "spellings": [
+      "government",
+      "thing"
+     ],
+     "kinds": [
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p000060#4",
+     "key": "6f1b",
+     "spellings": [
+      "Office",
+      "n_word"
+     ],
+     "kinds": [
+      "literal",
+      "name"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    },
+    {
+     "program": "view_programs_0067_unseeded_2026-11-13#p000060#5",
+     "key": "15d0",
+     "spellings": [
+      "government",
+      "thing"
+     ],
+     "kinds": [
+      "literal"
+     ],
+     "compared": false,
+     "a_literal_in_a_comparison": false
+    }
+   ]
+  },
+  "logs": {
+   "programs": 6688,
+   "compiled": 6677,
+   "parse_errors": 11,
+   "programs_with_a_shared_key": 0,
+   "pairs": 0,
+   "pairs_by_kind": {},
+   "literal_pairs_compared": [],
+   "a_literal_of_a_pair_in_a_comparison": 0,
+   "label_pairs": [],
+   "name_pairs": [],
+   "examples": []
+  },
+  "code": {
+   "programs": 37,
+   "compiled": 24,
+   "parse_errors": 13,
+   "programs_with_a_shared_key": 0,
+   "pairs": 0,
+   "pairs_by_kind": {},
+   "literal_pairs_compared": [],
+   "a_literal_of_a_pair_in_a_comparison": 0,
+   "label_pairs": [],
+   "name_pairs": [],
+   "examples": []
+  }
+ }
+}
