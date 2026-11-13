@@ -69,13 +69,19 @@ def template_words(r: dict) -> list[str]:
     return [w for w in fold(t or "").split() if w not in (n, v)]
 
 
-def el_rows(split: str, n: int) -> list[dict]:
+def el_rows(split: str, n: int, only: dict | None = None) -> list[dict]:
+    """The entity-linking rows: `n` a set and language by seed 0, or (`only`, order 0069's fresh read) exactly those ids."""
     from retrieval_sets.common import read_rows, sample
     out = []
     for name in EL:
         for lang in ("en", "fr"):
             rows = read_rows(name, split=split, lang=lang)
-            for r in sample(rows, n) if rows else []:
+            if only is not None:
+                keep = set(only.get(name) or ()) if lang == "en" else set()
+                picked = sorted((r for r in rows if r["id"] in keep), key=lambda r: r["id"])
+            else:
+                picked = sample(rows, n) if rows else []
+            for r in picked:
                 for k, m in enumerate(r["mentions"]):
                     if m.get("qid") and m.get("text"):
                         out.append({"id": f"{r['id']}#{k}", "set": name, "lang": lang, "question": r["question"],
@@ -201,6 +207,8 @@ def main() -> None:
     ap.add_argument("--no-el", action="store_true", help="the fame set only")
     ap.add_argument("--tag", default="", help="appended to the log's name (a partial rerun keeps the full run's log)")
     ap.add_argument("--fame-set", default="fame_set", help="fame_set (seed 0, dev) or fame_set_seed1 (read once)")
+    ap.add_argument("--el-fresh", action="store_true",
+                    help="order 0069's fresh read: the frozen fresh EL test rows (r2_fresh), not seed 0's sample")
     ap.add_argument("--b1q-rules", nargs="*", default=[], choices=("namesake_cue", "namesake_cue_class", "article"),
                     help="order 0069 step D's rules 2 and 3 (each measured on dev before it is kept)")
     ap.add_argument("--b1q-walk", choices=("walk", "veto"), default="veto",
@@ -215,7 +223,11 @@ def main() -> None:
     taus = [] if a.no_bm25 else [a.tau] if test and a.tau is not None else a.taus
     qtaus = [] if a.no_qfhrr else [a.tau_qfhrr] if test and a.tau_qfhrr is not None else a.taus
     fame = [] if a.no_fame else fame_rows(a.fame_set)
-    rows = (fame[:a.fame_n] if a.fame_n else fame) + ([] if a.no_el else el_rows(a.split, a.n))
+    fresh = None
+    if a.el_fresh:
+        from retrieval_bench.r2_fresh import ids
+        fresh = ids()
+    rows = (fame[:a.fame_n] if a.fame_n else fame) + ([] if a.no_el else el_rows(a.split, a.n, fresh))
     qinfo = run(rows, taus, use_vm=not a.no_vm, qfhrr_taus=qtaus, b1_qfhrr_taus=a.b1_qfhrr or ())
     summary = summarize(rows)
     rep = {"what": "order 0046 R2: choosing among a name's items", "date": _dt.date.today().isoformat(), "split": a.split,
@@ -232,7 +244,7 @@ def main() -> None:
     from retrieval_bench.r2_gates import budget, gates
     rep["gates"] = gates(summary)
     rep["b1_budget"] = budget(rows)
-    rep["args"] = {"b1q_walk": a.b1q_walk, "b1q_rules": sorted(a.b1q_rules), "fame_set": a.fame_set, "no_fame": a.no_fame, "no_el": a.no_el, "no_vm": a.no_vm, "no_qfhrr": a.no_qfhrr, "no_bm25": a.no_bm25,
+    rep["args"] = {"el_fresh": a.el_fresh, "b1q_walk": a.b1q_walk, "b1q_rules": sorted(a.b1q_rules), "fame_set": a.fame_set, "no_fame": a.no_fame, "no_el": a.no_el, "no_vm": a.no_vm, "no_qfhrr": a.no_qfhrr, "no_bm25": a.no_bm25,
                    "fame_n": a.fame_n, "tag": a.tag}
     rep["vm"] = None if a.no_vm else __import__("cubbyllm.bridges.vm_identity", fromlist=["x"]).identity()   # the VM it ran on
     path = os.path.join(os.path.dirname(HERE), "logs", f"retrieval_R2_{a.split}_{rep['date']}{a.tag}.json")

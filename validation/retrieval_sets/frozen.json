@@ -19,5 +19,19 @@
   "file": "fame_set_seed1.jsonl",
   "frozen": "2026-11-04 01:30:16",
   "note": "order 0046's fame set: 500 names drawn by seed 1 from 34026 eligible, not seed 0's 500 names, rule (c) applied; rows {('bare', 'en'): 500, ('bare', 'fr'): 500, ('qualified', 'en'): 491, ('qualified', 'fr'): 461}"
+ },
+ "r2_fresh_el_seed2": {
+  "sha256": "9c5d31b5c33b3a0eead0a7ddc2f6e9f458d073f38ede0eaeea7b68334475c5d5",
+  "bytes": 25048,
+  "file": "r2_fresh_el_seed2.json",
+  "frozen": "2026-11-13 18:36:33",
+  "note": "order 0069's fresh EL rows: 300 a set (EN, test) by seed 2, none of R2's test read; {'mintaka': {'test_rows': 4000, 'read_by_r2_test': 298, 'drawn': 300}, 'webqsp_el': {'test_rows': 1603, 'read_by_r2_test': 300, 'drawn': 300}, 'shadowlink': {'test_rows': 1356, 'read_by_r2_test': 300, 'drawn': 300}}"
+ },
+ "fame_set_seed2": {
+  "sha256": "e4870e9d6582e1d408164d711fbbc556457c0926c926e6912e73582ce299973a",
+  "bytes": 822371,
+  "file": "fame_set_seed2.jsonl",
+  "frozen": "2026-11-13 18:37:58",
+  "note": "order 0046's fame set: 500 names drawn by seed 2 from 33526 eligible, not the 1000 names of seeds 0 to 1, rule (c) applied; rows {('bare', 'en'): 500, ('bare', 'fr'): 500, ('qualified', 'en'): 557, ('qualified', 'fr'): 543}"
  }
 }

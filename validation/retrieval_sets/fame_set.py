@@ -277,14 +277,16 @@ def main() -> None:
     out = OUT if a.seed == SEED else OUT.replace(".jsonl", f"_seed{a.seed}.jsonl")
     if os.path.exists(out):
         raise SystemExit(f"{out} exists: a fame set is frozen once (move it aside to rebuild)")
-    seed0 = {json.loads(x)["name"] for x in open(OUT, encoding="utf-8")} if a.seed != SEED else set()
+    # a fresh seed excludes every name an earlier frozen fame set drew (seed 0, and since order 0069 seed 1 too)
+    earlier = [OUT] + [OUT.replace(".jsonl", f"_seed{k}.jsonl") for k in range(1, a.seed)] if a.seed != SEED else []
+    seed0 = {json.loads(x)["name"] for p in earlier if os.path.exists(p) for x in open(p, encoding="utf-8")}
     rows, pool = build(a.n, a.folder, a.seed, seed0, "fame" if a.seed == SEED else f"fame{a.seed}")
     with open(out, "w", encoding="utf-8", newline="\n") as f:
         for r in rows:
             f.write(json.dumps(r, ensure_ascii=False, sort_keys=True) + "\n")
     c = collections.Counter((r["form"], r["lang"]) for r in rows)
     key = "fame_set" if a.seed == SEED else f"fame_set_seed{a.seed}"
-    rule = "" if a.seed == SEED else f", not seed 0's {len(seed0)} names, rule (c) applied"
+    rule = "" if a.seed == SEED else f", not the {len(seed0)} names of seeds 0 to {a.seed - 1}, rule (c) applied"
     h = freeze(key, out, f"order 0046's fame set: {a.n} names drawn by seed {a.seed} from {pool} eligible{rule}; rows {dict(c)}")
     print(f"{pool} eligible names; {len(rows)} rows {dict(c)}; relations {dict(collections.Counter(r['relation'] for r in rows if r['form'] == 'bare' and r['lang'] == 'en'))}; sha256 {h}")
 
