@@ -1013,3 +1013,17 @@ French, as a list, without emoji.
 - **Nothing from other assistants' chats.** The old `chat` family taught the stock talk (the read above);
   instruction rows from model-written sets would teach it again.
 - **Measured** by `exp_if_follow.py` and 0067's sets, beside the host's checks a to h.
+
+### Cowork's correction: why batch 32 stopped fitting (2026-11-12, not measured yet)
+- **The guess above cannot be the change by itself.** September's `talk_v2_2` and November's control trained on the
+  same file (`talk_v2_2.jsonl`), with the same 128k head and the same loss: `masked_loss` in
+  `validation/train_talk_torch.py` has not changed since September (its two later commits add the base's hash and the
+  adapter's file name). So the loss's scores took the same memory in both runs, and batch 32 fit in September.
+- **What did change between the two runs:** the base (`base450m_final.pt` to `base450m_cont_final.pt`) and the trunk's
+  code from 2026-10-17 to 2026-10-22 (the spatial link, banded and flex attention, the memory read's backward, the
+  far-fact layout). The cause is among these. Which one is not measured.
+- **The measurement:** the bytes the backward pass keeps per answer token, for each base, on the CPU at a small batch,
+  scaled to 32, with the trunk and the loss counted apart. It needs the November base on the PC. That checkpoint is on
+  Drive only (2.15 GB), so the download is Nick's call.
+- **Either way, the chunked loss (`CB_FUSED_CE`) frees the loss's share.** It is in `validation/train_base.py` only,
+  and the talk trainer does not use it.
