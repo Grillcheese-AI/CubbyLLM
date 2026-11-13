@@ -1,5 +1,5 @@
 # 0069 - The namesake check's misses: R2's test wrongs by cause, the "located in" walk as a veto, then one fresh read
-status: open (assigned to Code B, after 0070; Nick, 2026-11-13)
+status: open (assigned to Code B, after 0070 and cubelang's P6-1 and P6-2; Nick, 2026-11-13)
 written: 2026-11-12 by Cowork - approved: 2026-11-12 by Nick ("yes", to writing the qFHRR panel's first two steps as orders) - hypothesis: none (0046's R2 lines)
 
 ## Why
