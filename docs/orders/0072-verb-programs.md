@@ -1,5 +1,5 @@
 # 0072 - Verb programs: one CubeLang program per instruction verb, by kind (the check, the gate, the read-back)
-status: open (Nick sets who builds it: Code A after 0067's step 2, or Code B after 0069)
+status: open (Code A, after 0067's step 3; Nick, 2026-11-13)
 written: 2026-11-13 by Cowork - approved: 2026-11-13 by Nick ("we should craft cubelang programs for each of those instruction words / type") - hypothesis: none (0067's second reader)
 
 ## Why
@@ -111,9 +111,12 @@ file, a service, a device or an account takes **act**.
 
 ## Build
 1. **The table as code** (`cubbyllm/speech/verb_kinds.py`, beside `task_verbs.py`): each verb with its English and
-   French forms (French from Nick's conjugation source, which Code A is reading: infinitive and the imperative forms),
-   its kinds, the arguments each kind needs (object, condition, key, place, value, target language, ...), its act class
-   and read-back. Pinned by a test (67 of 67) and committed before any case is built.
+   French forms, its kinds, the arguments each kind needs (object, condition, key, place, value, target language, ...),
+   its act class and read-back. Pinned by a test (67 of 67) and committed before any case is built.
+   - **French forms (Nick, 2026-11-13):** the infinitive and the imperative forms (tu, nous, vous) made by rule from
+     the verb's group, with a short hand-written list for the irregular verbs. Checked against UniMorph French
+     (CC BY-SA 3.0) kept off-repo in `$CUBBY_DATASETS`: only the agreement count is committed, never a UniMorph row.
+     Nick's own conjugation source has no licence and is not used. The same check covers `task_verbs.py`'s French cues.
 2. **One template per kind,** compiled to CubeLang over the reply's views (0067 step 1) and host-bound values; the
    probe's programs are the starting point. A static guard before a program runs: every compared name is bound by the
    host or is a loop variable over a bound list, every index follows a length check, no list over 250 items (until
