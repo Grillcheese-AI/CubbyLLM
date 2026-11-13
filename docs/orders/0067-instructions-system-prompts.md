@@ -370,3 +370,29 @@ an instruction or a rule.
   grade with a model judge are not scored here (no model judges a reply).
 - **Not claimed:** that Cubby follows more complex instructions than a frontier model. The claims are the kill lines
   and the content and process checks, which a model that writes free text cannot show.
+
+## Cowork's check of step 3 and its adapter round (2026-11-12, late): hold the round until the wordings are clean
+Read: the two sections above, `rule_agree_2026-11-12_gold.json`, `rule_reader_2026-11-12_asis.json`,
+`validation/builders/rule_templates.py`, `validation/sft/build_rule_reader_sft.py`.
+- **Accepted:** the reply world's measurements for the seen kinds; the plan family against IFEval's own checker,
+  998 of 1,000 agree, and the rule never passes a reply the checker fails; the reader with constrained slots through
+  0071's hook; the seat as it is missing line 3 (50.4% agreement, 32.3% false passes); the held-out kinds left unread.
+- **Not accepted yet: the training wordings.** In `rule_templates.py`, the first `train` wording of most seen kinds
+  is IFEval's own instruction sentence, word for word or nearly: "Your entire output should be wrapped in JSON
+  format."; "Your entire response should be in English, and in all lowercase letters. No capital letters are
+  allowed."; "In your response, the word {kw} should appear {rel} {n} times."; "First repeat the request word for
+  word without change, then give your answer"; "Wrap your entire response with double quotation marks."; the
+  sections, highlight, title, capitals, language, letter and two-responses wordings likewise. That puts the
+  benchmark's prompts into training rows, which the order's constraints forbid ("No benchmark prompt reaches a
+  training row"), and line 4's IFEval read would measure recall of IFEval's sentences, not the reader.
+- **Before the adapter round runs:**
+  1. Every `train` wording that shares 5 or more consecutive words with an IFEval prompt (slots filled) is rewritten
+     in our own words. The same check against M-IFEval's French prompts for the French wordings.
+  2. A test pins it: no `train` or `dev` wording shares 5 consecutive words with any IFEval or M-IFEval prompt. It
+     reads the benchmarks from their off-repo place (an environment variable) and skips where they are absent.
+  3. IFEval's own phrasings are then a true new-wording read: IFEval itself. The `new` split may keep wordings close
+     to IFEval's, since nothing trains on it.
+  4. The SFT set and the notebook are rebuilt from the clean wordings; the dev read of the seat as it is stays as
+     recorded (it trained on nothing).
+- **For Nick:** the Colab notebook `rule_reader.ipynb` should not be run until this is done. An adapter already
+  trained from the current set would be set aside, not used.
