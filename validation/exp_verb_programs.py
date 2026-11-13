@@ -80,7 +80,7 @@ def main() -> None:
                     else next(c for c in VA.cases_act(verb, rng, a.n) if c["variant"] == case["variant"]
                               and c["breakage"] == case["breakage"])["data"]
             got, why, _ = run(vm, case)
-            for _ in range(20):                            # a case the guard refuses (a shared VM key) is drawn again
+            for _ in range(20):                            # a case the guard refuses is drawn again
                 if not why or kind == "act":
                     break
                 refused.append({"verb": verb, "kind": kind, "variant": case["variant"], "why": why[:3], "redrawn": True})

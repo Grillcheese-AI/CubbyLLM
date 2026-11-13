@@ -1,5 +1,6 @@
 """serve_post -- every POST route of the stand-in server (split out of serve_api.py, order 0030): the board's
-plugin actions, /ask/feedback, /turn, /ask, /pac/say. `handle_post(h, brain)` runs on the request handler `h`.
+plugin actions, /ask/feedback, /turn, /ask, /pac/say; with CB_API_ROLES=1, /turn's roles and sessions and /rules/
+(`cubby_serve/rule_api.py`, order 0067). `handle_post(h, brain)` runs on the request handler `h`.
 
 Wired: WIRED (cubby_serve.api's handler).
 """
@@ -38,13 +39,20 @@ def handle_post(h, brain) -> None:
         except Exception as e:
             h._send(500, {"error": str(e)[:300]})
         return
-    if h.path not in ("/turn", "/ask", "/pac/say"):
+    from cubby_serve import rule_api
+    roles = rule_api.on() and (h.path == "/turn" or h.path.startswith("/rules/"))   # order 0067 (CB_API_ROLES=1)
+    if h.path not in ("/turn", "/ask", "/pac/say") and not roles:
         h._send(404, {"error": "unknown path"})
         return
     from cubbyllm.speech.audience import for_user
     try:
         n = int(h.headers.get("Content-Length", 0))
         req = json.loads(h.rfile.read(n) or b"{}")
+        if roles:                                 # roles, sessions and system prompts; the turn itself unchanged
+            code, out = (rule_api.turn(h, brain, req, lambda t: _turn(h, brain, t, req)) if h.path == "/turn"
+                         else rule_api.rules_post(h, brain, h.path.split("?", 1)[0], req))
+            h._send(code, _json_safe(out if code != 200 or h._who() == "audit" or "reply" not in out else for_user(out)))
+            return
         text = str(req.get("text", "")).strip()
         if not text:
             h._send(400, {"error": "empty text"})
@@ -71,16 +79,22 @@ def handle_post(h, brain) -> None:
                 on_question(brain, text, rec)
             h._send(200, _json_safe(rec if h._who() == "audit" else for_user(rec)))   # sources stay internal
             return
-        harness = getattr(brain, "harness", None)   # --harness: the turn is a frame, a budget and a ledger row
-        woke = []
-        if getattr(brain, "plugins", None) is not None:  # order 0028: a turn's plugins (the talk role) first
-            from cubby_serve.plugins import on_question
-            woke = on_question(brain, text)
-        rec = (harness.turn(text, feedback=req.get("feedback")) if harness is not None
-               else brain.turn(text, feedback=req.get("feedback")))
-        rec.pop("raw", None)
-        if woke:
-            rec["plugins"] = [f"plugin:{n}" for n in woke]
+        rec = _turn(h, brain, text, req)
         h._send(200, _json_safe(rec if h._who() == "audit" else for_user(rec)))
     except Exception as e:
         h._send(500, {"error": str(e)[:300]})
+
+
+def _turn(h, brain, text: str, req: dict) -> dict:
+    """One chat turn, as the server runs it: the plugins woken, the harness if mounted, the raw output dropped."""
+    harness = getattr(brain, "harness", None)       # --harness: the turn is a frame, a budget and a ledger row
+    woke = []
+    if getattr(brain, "plugins", None) is not None:  # order 0028: a turn's plugins (the talk role) first
+        from cubby_serve.plugins import on_question
+        woke = on_question(brain, text)
+    rec = (harness.turn(text, feedback=req.get("feedback")) if harness is not None
+           else brain.turn(text, feedback=req.get("feedback")))
+    rec.pop("raw", None)
+    if woke:
+        rec["plugins"] = [f"plugin:{n}" for n in woke]
+    return rec

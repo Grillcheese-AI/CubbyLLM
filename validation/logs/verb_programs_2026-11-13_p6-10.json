@@ -1,0 +1,707 @@
+{
+ "order": "0072",
+ "what": "the verb programs on their cases: the VM against the evaluator; the gate; time",
+ "pairs": 105,
+ "cases": 2100,
+ "agree": 2100,
+ "disagreements": 0,
+ "refused_by_the_guard": 0,
+ "label_redraws": 45,
+ "gate": {
+  "instructions": 560,
+  "right": 560,
+  "ask_first_without_a_yes_this_turn": 48,
+  "of_which_asked": 48,
+  "host_reached_without_a_yes": 0,
+  "wrong": []
+ },
+ "time": {
+  "filter@50": {
+   "items": 50,
+   "median_ms": 7.15,
+   "p95_ms": 8.53
+  },
+  "filter@250": {
+   "items": 250,
+   "median_ms": 40.62,
+   "p95_ms": 81.98
+  },
+  "sort@50": {
+   "items": 50,
+   "median_ms": 16.11,
+   "p95_ms": 17.36
+  },
+  "sort@250": {
+   "items": 250,
+   "median_ms": 398.86,
+   "p95_ms": 417.37
+  },
+  "move@50": {
+   "items": 50,
+   "median_ms": 1.28,
+   "p95_ms": 1.39
+  },
+  "move@250": {
+   "items": 250,
+   "median_ms": 3.49,
+   "p95_ms": 3.74
+  },
+  "replace@50": {
+   "items": 50,
+   "median_ms": 0.77,
+   "p95_ms": 0.92
+  },
+  "replace@250": {
+   "items": 250,
+   "median_ms": 2.38,
+   "p95_ms": 2.54
+  },
+  "add@50": {
+   "items": 50,
+   "median_ms": 1.05,
+   "p95_ms": 1.25
+  },
+  "add@250": {
+   "items": 249,
+   "median_ms": 2.52,
+   "p95_ms": 3.18
+  },
+  "delete@50": {
+   "items": 50,
+   "median_ms": 0.82,
+   "p95_ms": 1.1
+  },
+  "delete@250": {
+   "items": 249,
+   "median_ms": 2.62,
+   "p95_ms": 3.93
+  },
+  "set@50": {
+   "items": 50,
+   "median_ms": 1.08,
+   "p95_ms": 1.19
+  },
+  "set@250": {
+   "items": 250,
+   "median_ms": 3.66,
+   "p95_ms": 4.24
+  },
+  "copy@50": {
+   "items": 50,
+   "median_ms": 1.05,
+   "p95_ms": 1.13
+  },
+  "copy@250": {
+   "items": 250,
+   "median_ms": 3.63,
+   "p95_ms": 3.85
+  },
+  "merge@50": {
+   "items": 50,
+   "median_ms": 18.33,
+   "p95_ms": 19.37
+  },
+  "merge@250": {
+   "items": 244,
+   "median_ms": 372.7,
+   "p95_ms": 384.32
+  },
+  "apply@50": {
+   "items": 50,
+   "median_ms": 0.92,
+   "p95_ms": 1.22
+  },
+  "apply@250": {
+   "items": 250,
+   "median_ms": 2.24,
+   "p95_ms": 2.94
+  },
+  "same@50": {
+   "items": 50,
+   "median_ms": 0.77,
+   "p95_ms": 1.02
+  },
+  "same@250": {
+   "items": 250,
+   "median_ms": 2.25,
+   "p95_ms": 2.61
+  },
+  "aggregate@50": {
+   "items": 50,
+   "median_ms": 0.46,
+   "p95_ms": 0.5
+  },
+  "aggregate@250": {
+   "items": 250,
+   "median_ms": 1.05,
+   "p95_ms": 1.17
+  },
+  "mapped@50": {
+   "items": 50,
+   "median_ms": 0.7,
+   "p95_ms": 0.8
+  },
+  "mapped@250": {
+   "items": 250,
+   "median_ms": 2.11,
+   "p95_ms": 2.31
+  },
+  "required@50": {
+   "items": 50,
+   "median_ms": 0.5,
+   "p95_ms": 0.58
+  },
+  "required@250": {
+   "items": 250,
+   "median_ms": 0.39,
+   "p95_ms": 0.42
+  },
+  "equal@50": {
+   "items": 50,
+   "median_ms": 0.68,
+   "p95_ms": 0.72
+  },
+  "equal@250": {
+   "items": 250,
+   "median_ms": 2.12,
+   "p95_ms": 2.3
+  }
+ },
+ "p95_ms_at_50_worst": 19.37,
+ "per_pair": {
+  "add/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "add/edit": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "analyze/write": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "apply/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "apply/edit": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "build/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "calculate/compute": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "check/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "check/verdict": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "clear/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "clear/edit": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "close/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "compare/compute": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "compare/verdict": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "compare/write": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "compile/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "configure/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "connect/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "copy/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "copy/edit": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "create/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "create/write": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "define/write": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "delete/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "delete/edit": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "deploy/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "describe/write": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "disable/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "download/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "edit/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "edit/edit": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "enable/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "evaluate/compute": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "evaluate/write": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "execute/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "explain/write": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "export/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "export/compute": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "extract/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "extract/pick": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "filter/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "filter/pick": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "find/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "find/pick": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "format/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "format/edit": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "generate/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "generate/write": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "get/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "get/pick": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "identify/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "identify/pick": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "import/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "install/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "list/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "list/pick": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "load/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "merge/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "merge/edit": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "modify/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "modify/edit": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "move/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "move/reorder": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "open/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "parse/compute": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "print/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "print/compute": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "process/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "process/compute": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "read/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "read/pick": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "remove/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "remove/edit": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "rename/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "rename/edit": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "replace/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "replace/edit": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "reset/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "reset/edit": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "restart/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "run/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "save/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "search/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "search/pick": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "select/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "select/pick": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "send/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "set/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "set/edit": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "sort/reorder": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "start/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "stop/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "summarize/write": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "test/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "test/verdict": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "translate/write": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "update/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "update/edit": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "upload/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "validate/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "validate/verdict": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "verify/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "verify/verdict": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "write/act": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  },
+  "write/write": {
+   "cases": 20,
+   "broken": 10,
+   "agree": 20
+  }
+ },
+ "disagreement_cases": [],
+ "refusals": [],
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-13 16:06",
+  "sha256": "a2dfaa016536ccbeb2f2c29b2c095b0ef3a5d9480065440089e04e90b244e42f",
+  "commit": "b3b3360",
+  "older_than_sources": false
+ }
+}

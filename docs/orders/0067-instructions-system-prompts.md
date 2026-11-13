@@ -1026,6 +1026,19 @@ on its shortest reply), 0072's verb programs 49.
   compiled and run against the generator's verdict (agreement, false passes, the checked share); 5-8 over 2-4; seconds
   per instruction (a plumbing run: about 40 ms a token, so about 40 s an instruction).
 
+### The P6 rerun (Code A, 2026-11-13; the cowork VM rebuilt with cubelang `676df1d`)
+- **Steps 2 and 3, rerun once, every change listed** (`validation/rerun_vm_sets.py`, `vm_sets_rerun_2026-11-13_p6.json`):
+  step 2 15,956 of 15,956 verdicts the same; step 3 31,087 of 31,087 the same. **No change.**
+- **Step 0's probe again** (`vm_ops_probe_2026-11-13_p6.json`): a string's character by index now works (`let c =
+  s[0]`), so prefix, suffix, case and contains compose right in the VM (each was a wrong value before: null compared
+  equal); only string concatenation is still missing. The compact forms (`&&`, `else if`, a method call inside a
+  condition) are unchanged.
+- **The 2-byte name-key guard is out of the build path:** `build_view_programs`, `build_long_rows`, `exp_view_reader`
+  and `rule_plan.run` no longer call `vm_names`; its test flipped (the VM tells "thing" from "government"; "lacks
+  'government'" on "a thing here" is checked and holds). `vm_names` stays only to find 2-byte pairs in old logs.
+- **The build is slower** (3.5x on the same programs; 0072's time line now fails: see 0072). The reader's read at home
+  runs on this build; its seconds per instruction will carry it.
+
 ## Cowork's note (2026-11-13): a real long instruction to test the split and the join on
 Nick pointed to the OpenThoughts sets in the training data (`unified/`). Read for this order:
 - **AgentTrove** (`open_thoughts_agent_trove.jsonl`, already in the decay mix's agent shards): all 20,000 rows read
@@ -1103,6 +1116,33 @@ and of the split of a system prompt (step 5); behind `CB_RULES`, as they are.
     said-back sentence shows the error to a reader at a glance, judged by hand on a sample of 100 and written down
     before the next round's results are seen.
 
+### Say the rule back, built and measured (Code A, 2026-11-13, while the view reader's Colab run waits)
+- **Rendered, not written** (`cubbyllm/speech/rule_say.py`): every relation and comparison of the reply world said by
+  templates, English and French ("under 50 words", "all lowercase", "without the word "river"", "the word "paradox" at
+  least once"); "and" as ", ", "or", "not (...)". All 2,855 plans the readers wrote in the logs are said in both
+  languages without a gap. Cubby's lines: "Got it: ..." / "Got it, from now on: ..." / "Got it: no more ..." / an asked
+  rule "I'll keep "be formal" in mind; I can't check that one." (FR, with tu: "C'est noté : ..."). The module imports
+  nothing but the standard library: no seat, no model on this path.
+- **The rule book** (`rule_book.py`): `show` says rules back to whoever set them (Cubby's line) and `show_book` gives a
+  system prompt's book to its setter (each rule beside its sentence; every other sentence with where it went); a rule
+  applies only once shown to its setter (`in_force` checks it), so no unseen rule is ever applied; `correct` says the
+  new reading back now and replaces the old one from the next turn (linked both ways); a level in `confirm` holds its
+  new rules until `confirm`. The chat (behind `CB_RULES`) says a rule set in the conversation back once, in the user's
+  language, in the turn's record (`said_back`); a system rule never shown to its setter does not apply.
+- **Lines** (`validation/exp_rule_say.py`, `rule_say_2026-11-13.json`, tests `tests/speech/test_rule_say.py`):
+  - every rule applied was shown to whoever set it: **21,954 of 21,954** rule-turns in 1,000 simulated sessions (set at
+    every level, shown to the setter or to someone else or not yet, corrected, confirmed, withdrawn): **100%**, kill not hit;
+  - a correction replaces the rule from the next turn, at both levels (tests: a system prompt's book and the chat);
+  - the said-back line is template text only (test: the module imports nothing that could reach a model);
+  - **reported, judged on a sample of 100** of the reader's wrong rules (round 4 on IFEval's held-out kinds: 215 wrong;
+    round 6 on IFBench: 170 wrong; 50 drawn from each by seed; `rule_say_sample_2026-11-13.jsonl`): the said-back line
+    shows the error to its setter at a glance in **94 of 100** (IFEval 49 of 50, IFBench 45 of 50). Not shown: three
+    "unique words" read as "words", a word range said back right while counted otherwise, a paragraph's first word
+    said as "at least once", a three-sentence rule whose other parts were dropped. Judged by Claude Code reading each
+    pair, written down before the view reader's results; a human re-judgment is Cowork's or Nick's call.
+- The existing callers show their rules first (`exp_if_turn.py`: the host's rules shown to "the prompt" that set
+  them; the step 4 tests through a `put` helper).
+
 ## Nick's call (2026-11-13): the VM's comparisons are fixed in cubelang
 Nick: "yes", to comparing a missing value being an error, and to the fix list. Cowork wrote the seven items as
 cubelang's **P6** (`CUBELANG_FIXES.md`, cubelang `805feda`, docs only, not pushed): P6-1 is (a) above, comparing null
@@ -1112,3 +1152,72 @@ its tests. Who builds it, and when, is Nick's next call.
 - **Until P6-1 runs on the build `CUBELANG_EXE` names:** no generated program runs unless every value it compares is
   bound from the reply world's views by the host, and nothing indexes a string in the VM (the rule above stands). The
   second reader's kill line is read only on a build with P6-1.
+
+## Cowork's check (2026-11-13): say the rule back, accepted (`74292c1`)
+- Line 1 met: 21,954 of 21,954 applied rule-turns shown to their setter first (1,000 simulated sessions). A correction
+  applies from the next turn; no model on the path; "confirm before apply" holds new rules.
+- Reported: 94 of 100 wrong readings visible at a glance in the said-back line (`rule_say_sample_2026-11-13.jsonl`),
+  judged by Code A. Cowork re-read 6 drawn at random (seed 7): all 6 judgments hold (e.g. "the word \"words\" at least
+  8 times" for "words in all capitals at least 8 times"; "under 2 words" for alternating syllables).
+- Open: the API that shows a system prompt's rule book to its setter (step 1; `RuleBook.show_book` is ready).
+
+### Step 1, built: roles in the API (Code A, 2026-11-13, while the view reader's Colab run waits)
+Behind `CB_API_ROLES=1` (off: `POST /turn` reads `{"text"}` as before, `/rules/` is unknown; a test pins it).
+- **`POST /turn` takes messages** with a role (`system`, `user`, `assistant`, `tool`), the shape other clients send, and
+  a session (`cubby_serve/rule_api.py`). A `system` message carries its level: `global` (the permission `rules:global`,
+  the operator), `company` (cubby-auth's `tenant_role` "admin" of the caller's company), `user` (any signed-in caller,
+  for their own session; the default). The role is checked before anything is set; with no cubby-auth sign-in nobody
+  can set a prompt (closed, never open). The last `user` message is the turn's text; `assistant` and `tool` set nothing.
+- **Compiled once, shown to its setter:** a prompt is split into sentences, each read once by the plan reader into a
+  rule of its level, or kept "asked" / "none" (`cubbyllm/speech/rule_stack.py`); the same text from the same setter is
+  not read again; a new prompt at the same place withdraws the old one's rules from that turn. The reply carries the
+  rule book in plain words (`RuleBook.show_book`) to whoever set it; a company may ask `"confirm_before_apply": true`
+  (`POST /rules/confirm`, its admin). `POST /rules/correct` recompiles one rule, by its setter only, said back ("Got
+  it, from now on: ...") and applied from the next turn.
+- **Sessions:** made by the server on the first call (an unguessable id) and returned; a signed-in creator's session is
+  theirs (another caller 403, an id the server did not make 404). A turn's rules are a stack: global, the session's
+  company, the session's own prompt, the conversation; highest first. A turn without a session reads the global rules.
+- **What a user sees:** a turn's rule rows above the user's own level show how each acted and its outcome only, not
+  the operator's or the company's sentence nor who set it; the audit view shows all.
+- **Tests** (`tests/serve/test_rule_api.py`, a running server, a fake reader and a fake sign-in, 8): off = as before;
+  who may set which level; compiled once and shown to its setter; a session is its creator's; each level reaches only
+  its own sessions and a user sees no higher sentence; a new prompt replaces the old and a correction applies from the
+  next turn, by its setter only; "confirm before apply"; assistant and tool messages set nothing. Full suite: 1,644
+  passed, 12 skipped, the known red only (order 0002); on the cowork VM build (`676df1d`).
+- **Not done, said so:** nothing in the server's boot mounts the plan reader yet (`brain.rule_reader`; its adapter waits
+  for the view reader's read): with none, every sentence of a prompt is kept "asked", and the rule book says so. The
+  chat's history was still shared by every session (done since: below). Stated facts and the voice are not split out of a prompt yet (step 5). Rules from the user's own turns
+  (the conversation level) are step 4's "compile what is new"; the API does not read a user line into a rule.
+
+### Step 1, finished: no conversation shared across sessions (Code A, 2026-11-13; Cowork: "a leak between people")
+- Under `CB_API_ROLES=1` each server-made session has its own conversation: the chat's history (the last exchange in
+  the seat's context, the replies a candidate is ranked against), the words its user has used (the appraisal's
+  novelty), its last choice and last rejection are swapped into the one chat for the session's turn and out after,
+  under one lock (`cubby_serve/rule_api.py`). A turn without a session uses the chat's own conversation, as before.
+- **One clock for the rules:** a session's history counts its own turns, so every book now counts the server's turns
+  (`RuleStack(..., now)` reads the server's clock instead of the chat's turn); a global rule set at the server's turn
+  t applies in every session from there.
+- **Tests** (2 more, 10 in `tests/serve/test_rule_api.py`): two users, two sessions, turns interleaved through the real
+  `CubbyChat` with a seat that records every prompt: each turn's context carries its own session's last line and
+  nothing of the other's, in the context or the record; each session's history holds its own lines only; the chat's
+  own conversation is untouched. With the swap disabled the test fails (checked once). Rules: two sessions' own
+  prompts, interleaved over three turns, each turn reads only its own. Off: unchanged (the first test). Full suite:
+  1,646 passed, 12 skipped, the known red only.
+- **Still one Cubby, said so:** the hormones (the neurochemistry's state and its emotion) stay the one Cubby's across
+  sessions, as Cowork's note leaves them; and what a user teaches the worlds (the memory cortex) goes through the
+  worlds' gate into the shared stores, as before: a stated fact, not a conversation. Either is a call for Nick if it
+  should be per session too.
+
+### Nick's call (2026-11-13): the mood "per company / user"; built (Code A)
+- Under `CB_API_ROLES=1` the mood (the neurochemistry's ODE and its emotion, the user's state as read, the hormones a
+  turn reads, the last appraisal) is no longer the one Cubby's across sessions: a company member's session shares its
+  company's mood; a signed-in caller without a company has their own; an anonymous session its own
+  (`cubby_serve/api_sessions.py`, which now also holds each session's conversation; swapped in for the turn, out
+  after). A turn without a session reads the chat's own, as before; `/state` shows the chat's own.
+- Read as: the company when there is one, else the user. If Nick meant each user apart inside a company too, it is
+  one line (`mood_key`).
+- **Test** (`test_the_mood_is_per_company_else_per_user`, 11 in the file): four callers (two of one company, one of
+  another, one with none); three angry turns in one company's session move that company's mood and nobody else's,
+  nor the chat's own; the two members of one company read one mood (the same ODE goes on). It fails with one mood
+  for all (checked once). Full suite: 1,647 passed, 12 skipped, the known red only; it ran from about 15:58 to 16:03,
+  across the start of Cowork's hold (said in the inbox).

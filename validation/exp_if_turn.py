@@ -100,7 +100,8 @@ def main() -> None:
     for i, r in enumerate(rows):
         book = RuleBook()
         for rule in r["rules"]:
-            book.set(plan_of(rule), "user", "the prompt", at=0, text=rule["kind"])
+            r_ = book.set(plan_of(rule), "user", "the prompt", at=0, text=rule["kind"])
+            book.show([r_.id], "the prompt", 0)                 # said back to its setter before it applies (0067)
         tr = rt.TurnRules(book, 0, None if a.no_steer else seat, run)
         st = tr.steering
         hook = {}

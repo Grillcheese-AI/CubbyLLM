@@ -234,6 +234,7 @@ def main() -> None:
     rep["b1_budget"] = budget(rows)
     rep["args"] = {"b1q_walk": a.b1q_walk, "b1q_rules": sorted(a.b1q_rules), "fame_set": a.fame_set, "no_fame": a.no_fame, "no_el": a.no_el, "no_vm": a.no_vm, "no_qfhrr": a.no_qfhrr, "no_bm25": a.no_bm25,
                    "fame_n": a.fame_n, "tag": a.tag}
+    rep["vm"] = None if a.no_vm else __import__("cubbyllm.bridges.vm_identity", fromlist=["x"]).identity()   # the VM it ran on
     path = os.path.join(os.path.dirname(HERE), "logs", f"retrieval_R2_{a.split}_{rep['date']}{a.tag}.json")
     json.dump(rep, open(path, "w", encoding="utf-8"), indent=1)
     print(json.dumps({"summary": summary, "tau_from_dev": rep["tau_from_dev"]}, indent=1))

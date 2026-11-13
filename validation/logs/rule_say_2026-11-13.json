@@ -1,0 +1,38 @@
+{
+ "order": "0067",
+ "what": "say the rule back: its lines",
+ "line_1_shown_before_applied": {
+  "sessions": 1000,
+  "rule_turns_applied": 21954,
+  "shown_to_their_setter_first": 21954,
+  "share": 1.0
+ },
+ "wrong_rules": {
+  "ifeval_heldout_round4": 215,
+  "ifbench_round6": 170
+ },
+ "sample": 100,
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-13 14:24",
+  "sha256": "20b088b57ec67b0d7f5d7833acadcc0ad6b666bec30d1951fc39dfc26942da72",
+  "commit": "676df1d",
+  "older_than_sources": false
+ },
+ "sample_judged": {
+  "shows_the_error_at_a_glance": 94,
+  "of": 100,
+  "ifeval_heldout": 49,
+  "ifbench": 45,
+  "criterion": "the person who set the instruction, reading only Cubby's line, would see it is not what they asked",
+  "judged_by": "Claude Code (Code A), reading each pair; written before the view reader's results; a human re-judgment is Cowork's or Nick's call",
+  "not_shown": {
+   "12": "weaker rule that sounds related: 'paragraph 1 starts with' said as 'at least once'",
+   "53": "'unique words' said as 'words': close enough to pass unnoticed",
+   "73": "said back right on its face ('at least 57, at most 61 words'); the error is in how words are counted",
+   "82": "'unique words' said as 'words'",
+   "84": "'unique words' said as 'words'",
+   "97": "the visible part ('3 sentences') is right; the rest (same length, indents) is missing"
+  }
+ }
+}

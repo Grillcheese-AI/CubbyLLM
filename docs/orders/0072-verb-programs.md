@@ -214,3 +214,34 @@ file, a service, a device or an account takes **act**.
   long; P6-9's wider keys may change the times, so the P6 rerun reports them again.
 - **Next:** the cases rerun once on the cowork VM rebuilt with cubelang P6 (Cowork names the commit in the inbox),
   with every change listed.
+
+## The P6 rerun (Code A, 2026-11-13; the cowork VM rebuilt with cubelang `676df1d`)
+`validation/logs/verb_programs_2026-11-13_p6.json`: the same cases (seed 0), the same evaluator.
+- **Verdicts: no change.** 2,100 of 2,100 agree; the gate 560 of 560 (ask-first without a yes: 48 of 48 asked, the host
+  reached 0 times).
+- **Time: the line fails on this build.** Worst p95 at 50 items **82.8 ms** (merge; line 50 ms; 34 ms before); sort
+  68.6 ms; every program 1.5-3x slower (replace 1.1 -> 1.8 ms). Not this machine: the same programs on main cubelang's
+  September build, now: merge 21.6 ms median, sort 18.0, replace 0.7; on `676df1d`: 76.8, 63.1, 1.7 (3.5x). The
+  slowdown is in the build (P6's changes; the 8-byte keys and the collision check are the first suspects): written to
+  Code B for cubelang's fix list. On our side, host-sorted keys would make sort and merge linear (Cowork's earlier
+  note); not done without a word, since the order is closed and the cause is the VM's.
+- The 2-byte name-key guard is out of every run path (`verb_guard`'s fourth rule dropped; its test flipped).
+
+## Cowork's note (2026-11-13): on cubelang 676df1d the time line fails; it is read again after P6-10
+- Code A's rerun on the rebuilt cowork VM (`cbdab3f`, `verb_programs_2026-11-13_p6.json`): every verdict unchanged
+  (2,100 of 2,100, the gate 560 of 560), but p95 at 50 items is **82.8 ms** (merge), over the 50 ms line it met at 34 ms
+  on `3f37515`. The cause is the VM: the same programs on main cubelang's September build run 3.5 times faster today.
+- The verdict lines stand; the time line is recorded as **failing on `676df1d`** and is read again once on the build
+  that carries cubelang's P6-10 (P6 without the slowdown, Code B). Host-sorted keys (a linear check) are not built
+  now: they would hide a VM regression rather than fix it.
+
+## The time line read again on cubelang `b3b3360` (P6-10; Code A, 2026-11-13 16:10, Cowork: "re-read 0072's time line")
+`validation/logs/verb_programs_2026-11-13_p6-10.json`: the whole run once (seed 0), the cowork VM rebuilt from
+`b3b3360` (vm_identity in the log), nothing else running from Code A, Code B holding; the machine at 15-16% CPU before
+and after (23 s run).
+- **Time: the line is met.** Worst p95 at 50 items **19.4 ms** (merge; line 50 ms; 82.8 on `676df1d`, 34 before P6);
+  sort 17.4, filter 8.5; at 250 items (reported): sort 417 ms, merge 384, filter 82 (1,635 / 1,641 / 271 on `676df1d`).
+- **Verdicts: no change.** 2,100 of 2,100 agree, 0 disagreements; the gate 560 of 560 (ask-first without a yes: 48 of
+  48 asked, the host reached 0 times). Refused by the static guard: 0 (6 on `676df1d`, all the retired 2-byte key
+  rule's; it is out of the run path). Label redraws 45 (57): the same seed walks another path once those 6 are not
+  refused and redrawn.

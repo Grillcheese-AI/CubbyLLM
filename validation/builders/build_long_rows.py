@@ -10,8 +10,8 @@ French, by hand-written templates (`view_wording`, `view_long_pools`).
 
 Targets: ``segments`` (every sentence or clause with its character span and kind: check (its part), task, asked,
 process, none) and ``join`` (the program the reader writes). Kept when the VM's verdict on the joined program is the
-evaluator's on all 8 replies (half pass, half fail), no reply's views too long for the VM and no two strings sharing
-the VM's name key; a disagreement stops the build. Train and dev rows sharing 5 words with IFEval or IFBench are
+evaluator's on all 8 replies (half pass, half fail), no reply's views too long for the VM (until cubelang P6-9, also no
+two strings sharing the VM's 2-byte name key); a disagreement stops the build. Train and dev rows sharing 5 words with IFEval or IFBench are
 dropped.
 
   python validation/builders/build_long_rows.py [--train 3000] [--held 300] [--seed 0] [--out $CUBBY_DATASETS/long_rows_0067]
@@ -39,7 +39,7 @@ import view_wording as W  # noqa: E402
 
 from cubbyllm import local_paths  # noqa: E402
 from cubbyllm.bridges import cubelang_client as cc  # noqa: E402
-from cubbyllm.bridges import vm_identity, vm_names  # noqa: E402
+from cubbyllm.bridges import vm_identity  # noqa: E402
 from cubbyllm.speech import reply_views as RV  # noqa: E402
 
 __wiring__ = "STANDALONE"
@@ -176,7 +176,7 @@ def build_one(rng, vm, views, replies, k, lang, phrases, bench, split, stop_dir)
     join, spec = VJ.join(parts, groups), VJ.spec(parts, groups)
     used = sorted({v for p in parts for v in VC.views_of(p)})
     cand = [(t, VP.evaluate(spec, v)) for t, v in zip(replies, views)
-            if all(len(v[u]) <= RV.MAX_ROWS for u in used) and not vm_names.collisions(VJ.program(join, parts, t))]
+            if all(len(v[u]) <= RV.MAX_ROWS for u in used)]
     yes, no = [c for c in cand if c[1]], [c for c in cand if not c[1]]
     if len(yes) < 2 or len(no) < 2:
         return None, "too few usable replies on one side"

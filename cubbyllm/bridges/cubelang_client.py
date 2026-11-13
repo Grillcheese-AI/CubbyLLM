@@ -54,13 +54,20 @@ class CubelangRunError(RuntimeError):
     """cubelang reported an error (ok: false) or exited non-zero."""
 
 
+class CubelangStale(CubelangNotFound):
+    """The binary found is older than its own sources: refused (no usable VM), unless ``CB_ALLOW_STALE_VM=1``."""
+
+
 def find_cubelang_exe(explicit: str | None = None) -> pathlib.Path:
-    """Locate cubelang.exe: explicit arg, then $CUBELANG_EXE, then the sibling
-    repo's release build. Raises CubelangNotFound if none exist."""
+    """Locate cubelang.exe: explicit arg, then ``CUBELANG_EXE`` (the environment, then ``paths.local.json``, through
+    `local_paths.value`), then the sibling repo's release build. Raises CubelangNotFound if none exist, and
+    CubelangStale when the first one found is older than its sources (Nick, 2026-11-13: every run sure of its VM;
+    ``CB_ALLOW_STALE_VM=1`` lets one through for that run, with the warning)."""
+    from ..local_paths import value
     candidates = []
     if explicit:
         candidates.append(pathlib.Path(explicit))
-    env = os.environ.get("CUBELANG_EXE")
+    env = value("CUBELANG_EXE")
     if env:
         candidates.append(pathlib.Path(env))
     # sibling repo: <...>/CubbyLLM/../cubelang/target/release/cubelang(.exe)
@@ -70,7 +77,7 @@ def find_cubelang_exe(explicit: str | None = None) -> pathlib.Path:
         candidates.append(repo_root.parent / "cubelang" / "target" / "release" / name)
     for c in candidates:
         if c.is_file():
-            _warn_if_stale(c)
+            _refuse_if_stale(c)
             return c
     raise CubelangNotFound(
         f"set $CUBELANG_EXE or build the cubelang repo; tried: {[str(c) for c in candidates]}"
@@ -88,20 +95,26 @@ def newest_source(exe: pathlib.Path) -> pathlib.Path | None:
     return None
 
 
-def _warn_if_stale(exe: pathlib.Path) -> None:
+def _refuse_if_stale(exe: pathlib.Path) -> None:
     """2026-09-12: a `cubelang.exe` from May sat at the checkout's root beside sources
-    from August; nothing here resolved to it (target/release is what is searched),
-    but a hand-set $CUBELANG_EXE or `--exe` could. A binary older than the newest
-    source is measured with a VM the sources no longer describe -- say so, once."""
+    from August. A binary older than the newest source is a VM the sources no longer
+    describe: refused since 2026-11-13 (the sibling build of 2026-09-29 still compared
+    a missing value and keyed names by 2 bytes), unless ``CB_ALLOW_STALE_VM=1`` (then
+    the warning only)."""
     try:
         src = newest_source(exe)
-        if src is not None and src.stat().st_mtime > exe.stat().st_mtime + 1:
-            import sys, time
-            fmt = lambda t: time.strftime("%Y-%m-%d %H:%M", time.localtime(t))
-            print(f"[cubelang_client] WARNING: {exe} ({fmt(exe.stat().st_mtime)}) is older than {src} "
-                  f"({fmt(src.stat().st_mtime)}) -- rebuild with `cargo build --release`", file=sys.stderr)
+        stale = src is not None and src.stat().st_mtime > exe.stat().st_mtime + 1
     except OSError:
-        pass
+        return
+    if not stale:
+        return
+    import sys, time
+    fmt = lambda t: time.strftime("%Y-%m-%d %H:%M", time.localtime(t))
+    why = (f"{exe} ({fmt(exe.stat().st_mtime)}) is older than {src} ({fmt(src.stat().st_mtime)}): rebuild with "
+           f"`cargo build --release`, or set CUBELANG_EXE to a current build")
+    if os.environ.get("CB_ALLOW_STALE_VM", "0") != "1":
+        raise CubelangStale(why + " (CB_ALLOW_STALE_VM=1 runs it anyway)")
+    print(f"[cubelang_client] WARNING: {why}", file=sys.stderr)
 
 
 def run_program(

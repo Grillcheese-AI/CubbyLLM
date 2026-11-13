@@ -4,13 +4,17 @@ replies against the generator's verdict.
 
 Per row: the split (each check's span and kind against the row's own), the text no segment covers (flagged "asked":
 nothing is dropped silently), the program compiled and run on the 8 replies (each reply's views bound by the host;
-a reply too long for the VM or a program that does not compile or shares a VM name key is "asked", never a verdict).
+a reply too long for the VM or a program that does not compile or does not run is "asked", never a verdict).
 Lines (0067's addendum): every sentence accounted for (0 dropped silently, kill); each part's span and kind for at least
 90% of parts on held-out compositions; the join's agreement at least 95%, false passes at most 2% (kill above 5%);
 5-8 parts at least 90% of the in-length agreement.
 
   python validation/exp_view_reader.py --export <450M export> --tokenizer <json> --adapter <view reader adapter>
-      [--splits test,test_long] [--n 100] [--max-new 1800] [--out <json>] [--keep <answers.jsonl>]
+      [--splits test,test_long] [--n 100] [--max-new 1800] [--out <json>] [--keep <answers.jsonl>] [--chunk i/k]
+  python validation/exp_view_reader.py --merge <chunk json> ... --out <json>
+
+``--chunk i/k`` reads the i-th of k equal slices of each split's seeded sample (the same sample as a whole read), so a
+long read on the local card runs in short pieces; ``--merge`` sums the chunks' counts into the one report.
 """
 from __future__ import annotations
 
@@ -26,10 +30,11 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from cubbyllm import local_paths  # noqa: E402
 from cubbyllm.bridges import cubelang_client as cc  # noqa: E402
-from cubbyllm.bridges import vm_identity, vm_names  # noqa: E402
+from cubbyllm.bridges import vm_identity  # noqa: E402
 from cubbyllm.speech import reply_views as RV  # noqa: E402
 from cubbyllm.speech import view_grammar as VG  # noqa: E402
 from cubbyllm.speech import view_reader as VR  # noqa: E402
+from cubbyllm.speech import view_types as VT  # noqa: E402
 
 __wiring__ = "STANDALONE"
 
@@ -47,8 +52,6 @@ def verdict(vm, program: str, reply: str):
         src = bind(program, reply)
     except RV.TooLong:
         return None, "a view too long for the VM"
-    if vm_names.collisions(src):
-        return None, "strings share a VM name key"
     try:
         res = vm.run(src, fn="solve").get("result")
     except Exception as e:                                # does not compile or does not run: asked
@@ -65,11 +68,47 @@ def covered(instruction: str, segs: list) -> int:
     return sum(1 for k, c in enumerate(instruction) if not mask[k] and not c.isspace())
 
 
+def summarize(t: Counter) -> dict:
+    n = max(1, t["checked"])
+    return {"counts": dict(t), "span_and_kind": round(t["parts with span and kind"] / max(1, t["parts"]), 4),
+            "agreement": round(t["agree"] / n, 4), "false_passes": round(t["false passes"] / n, 4),
+            "checked_share": round(t["checked"] / max(1, t["replies"]), 4),
+            "seconds_per_instruction": round(t["seconds"] / max(1, t["rows"]), 1)}
+
+
+def with_ratio(report: dict) -> dict:
+    if "test" in report["splits"] and "test_long" in report["splits"]:
+        a_in, a_long = report["splits"]["test"]["agreement"], report["splits"]["test_long"]["agreement"]
+        report["long_over_in_length"] = round(a_long / a_in, 4) if a_in else None
+    return report
+
+
+def merge(files: list, out: str | None) -> None:
+    parts = [json.loads(Path(f).read_text(encoding="utf-8")) for f in files]
+    report = {k: parts[0].get(k) for k in ("order", "what", "adapter", "vm", "grammar")}
+    report["chunks"] = [p.get("chunk") for p in parts]
+    report["splits"] = {}
+    for split in parts[0]["splits"]:
+        t = Counter()
+        for p in parts:
+            t.update(p["splits"][split]["counts"])
+        report["splits"][split] = summarize(t)
+    with_ratio(report)
+    print(json.dumps(report, indent=1))
+    if out:
+        Path(out).write_text(json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--export", required=True)
-    ap.add_argument("--tokenizer", required=True)
-    ap.add_argument("--adapter", required=True)
+    ap.add_argument("--merge", nargs="+", default=None)
+    ap.add_argument("--export")
+    ap.add_argument("--tokenizer")
+    ap.add_argument("--adapter")
+    ap.add_argument("--chunk", default="0/1")
+    ap.add_argument("--grammar", default="typed", choices=("typed", "lines"),
+                    help="typed: view_types.TypedGrammar (literals of the column's type, a part's own names, calls in "
+                         "order); lines: view_grammar.Grammar, the line shapes only (the first read's)")
     ap.add_argument("--rows", default=None)
     ap.add_argument("--splits", default="test,test_long")
     ap.add_argument("--n", type=int, default=100)
@@ -77,6 +116,11 @@ def main() -> None:
     ap.add_argument("--out", default=None)
     ap.add_argument("--keep", default=None)
     a = ap.parse_args()
+    if a.merge:
+        return merge(a.merge, a.out)
+    if not (a.export and a.tokenizer and a.adapter):
+        ap.error("--export, --tokenizer and --adapter are needed for a read")
+    ci, ck = (int(x) for x in a.chunk.split("/"))
     rows_p = Path(a.rows or Path(local_paths.value("CUBBY_DATASETS") or ".") / "long_rows_0067" / "rows.jsonl")
     rows = [json.loads(ln) for ln in open(rows_p, encoding="utf-8")]
     from cubbyllm.emit.seats_450m import Cubby450mTrunk
@@ -90,15 +134,17 @@ def main() -> None:
             pieces[t] = tk.decode([t])
         return pieces[t]
     report, kept = {"order": "0067", "what": "the second reader read on held-out instructions", "adapter": Path(a.adapter).name,
-                    "vm": vm_identity.identity(), "splits": {}}, []
+                    "vm": vm_identity.identity(), "chunk": a.chunk, "grammar": a.grammar, "splits": {}}, []
     for split in a.splits.split(","):
         pool = [r for r in rows if r["split"] == split]
         sample = random.Random(0).sample(pool, min(a.n, len(pool)))
+        sample = sample[len(sample) * ci // ck: len(sample) * (ci + 1) // ck]
         t = Counter()
         for r in sample:
             t0 = time.time()
             ids = tk.encode(VR.prompt(r["instruction"])).ids
-            proc = ranked_processor(VG.chooser(VG.Grammar(r["instruction"]), piece, eos, len(ids)))
+            gram = (VT.TypedGrammar if a.grammar == "typed" else VG.Grammar)(r["instruction"])
+            proc = ranked_processor(VG.chooser(gram, piece, eos, len(ids)))
             out = trunk.generate("programs", [ids], a.max_new, logits_processor=proc)[0]
             answer = tk.decode([x for x in out if x != eos])
             t["seconds"] += time.time() - t0
@@ -126,15 +172,9 @@ def main() -> None:
                 t["agree"] += int(v == rep["held"])
                 t["false passes"] += int(v and not rep["held"])
             kept.append({"id": r["id"], "split": split, "answer": answer})
-        n = max(1, t["checked"])
-        report["splits"][split] = {"counts": dict(t), "span_and_kind": round(t["parts with span and kind"] / max(1, t["parts"]), 4),
-                                   "agreement": round(t["agree"] / n, 4), "false_passes": round(t["false passes"] / n, 4),
-                                   "checked_share": round(t["checked"] / max(1, t["replies"]), 4),
-                                   "seconds_per_instruction": round(t["seconds"] / max(1, t["rows"]), 1)}
+        report["splits"][split] = summarize(t)
         print(split, json.dumps(report["splits"][split]), flush=True)
-    if "test" in report["splits"] and "test_long" in report["splits"]:
-        a_in, a_long = report["splits"]["test"]["agreement"], report["splits"]["test_long"]["agreement"]
-        report["long_over_in_length"] = round(a_long / a_in, 4) if a_in else None
+    with_ratio(report)
     if a.out:
         Path(a.out).write_text(json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8")
     if a.keep:
