@@ -132341,5 +132341,13 @@
   "tag": "_0069_veto",
   "b1q_walk": "veto"
  },
- "args_note": "b1q_walk added after the run: the harness did not record it then (this run was started with --b1q-walk veto; 53 rows differ from the walk run)"
+ "args_note": "b1q_walk added after the run: the harness did not record it then (this run was started with --b1q-walk veto; 53 rows differ from the walk run)",
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-13 14:24",
+  "sha256": "20b088b57ec67b0d7f5d7833acadcc0ad6b666bec30d1951fc39dfc26942da72",
+  "commit": "676df1d",
+  "older_than_sources": false
+ },
+ "vm_note": "added by hand 2026-11-13 (Cowork's note of 17:50): the harness did not record its VM then. The binary is identified by the run's time against the binary's build time; the sha256 was recorded on that same binary by vm_ops_probe_2026-11-13_p6.json (Code A)"
 }

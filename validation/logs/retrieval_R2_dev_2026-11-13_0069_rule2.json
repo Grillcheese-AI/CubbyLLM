@@ -23233,8 +23233,8 @@
    "pids_given": null,
    "cues": [
     "district",
-    "elmal\u0131",
-    "elmal\u0131 district"
+    "elmalı",
+    "elmalı district"
    ]
   },
   {
@@ -23272,7 +23272,7 @@
    "shared_today": null,
    "pids_given": null,
    "cues": [
-    "elmal\u0131"
+    "elmalı"
    ]
   },
   {
@@ -26489,7 +26489,7 @@
    "shared_today": null,
    "pids_given": null,
    "cues": [
-    "golbas\u0131"
+    "golbası"
    ]
   },
   {
@@ -26527,7 +26527,7 @@
    "shared_today": null,
    "pids_given": null,
    "cues": [
-    "golbas\u0131"
+    "golbası"
    ]
   },
   {
@@ -26565,7 +26565,7 @@
    "shared_today": null,
    "pids_given": null,
    "cues": [
-    "polatl\u0131"
+    "polatlı"
    ]
   },
   {
@@ -26603,7 +26603,7 @@
    "shared_today": null,
    "pids_given": null,
    "cues": [
-    "polatl\u0131"
+    "polatlı"
    ]
   },
   {
@@ -28656,8 +28656,8 @@
    "pids_given": null,
    "cues": [
     "district",
-    "elmal\u0131",
-    "elmal\u0131 district"
+    "elmalı",
+    "elmalı district"
    ]
   },
   {
@@ -28695,7 +28695,7 @@
    "shared_today": null,
    "pids_given": null,
    "cues": [
-    "elmal\u0131"
+    "elmalı"
    ]
   },
   {
@@ -99750,9 +99750,9 @@
    "shared_today": null,
    "pids_given": null,
    "cues": [
-    "anl\u00e6g",
-    "anl\u00e6g on the old",
-    "anl\u00e6g on the old ramparts",
+    "anlæg",
+    "anlæg on the old",
+    "anlæg on the old ramparts",
     "beautifully",
     "beautifully situated",
     "beautifully situated in the green",
@@ -99764,8 +99764,8 @@
     "green",
     "green park",
     "green parklands",
-    "green parklands of the \u00f8stre",
-    "green parklands of the \u00f8stre anl\u00e6g",
+    "green parklands of the østre",
+    "green parklands of the østre anlæg",
     "museum",
     "museum building",
     "museum building the museum",
@@ -99776,17 +99776,17 @@
     "old ramparts of copenhagen",
     "park",
     "parklands",
-    "parklands of the \u00f8stre",
-    "parklands of the \u00f8stre anl\u00e6g",
+    "parklands of the østre",
+    "parklands of the østre anlæg",
     "ramparts",
     "ramparts of copenhagen",
     "situated",
     "situated in the green",
     "situated in the green parklands",
-    "\u00f8stre",
-    "\u00f8stre anl\u00e6g",
-    "\u00f8stre anl\u00e6g on the old",
-    "\u00f8stre anl\u00e6g on the old ramparts"
+    "østre",
+    "østre anlæg",
+    "østre anlæg on the old",
+    "østre anlæg on the old ramparts"
    ]
   },
   {
@@ -132337,5 +132337,13 @@
   "no_bm25": true,
   "fame_n": 0,
   "tag": "_0069_rule2"
- }
+ },
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-13 16:06",
+  "sha256": "a2dfaa016536ccbeb2f2c29b2c095b0ef3a5d9480065440089e04e90b244e42f",
+  "commit": "b3b3360",
+  "older_than_sources": false
+ },
+ "vm_note": "added by hand 2026-11-13 (Cowork's note of 17:50): the harness did not record its VM then. The binary is identified by the run's time against the binary's build time; the sha256 was recorded on that same binary by retrieval_R2_latency's smoke run, 18:34"
 }
