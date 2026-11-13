@@ -1152,3 +1152,11 @@ its tests. Who builds it, and when, is Nick's next call.
 - **Until P6-1 runs on the build `CUBELANG_EXE` names:** no generated program runs unless every value it compares is
   bound from the reply world's views by the host, and nothing indexes a string in the VM (the rule above stands). The
   second reader's kill line is read only on a build with P6-1.
+
+## Cowork's check (2026-11-13): say the rule back, accepted (`74292c1`)
+- Line 1 met: 21,954 of 21,954 applied rule-turns shown to their setter first (1,000 simulated sessions). A correction
+  applies from the next turn; no model on the path; "confirm before apply" holds new rules.
+- Reported: 94 of 100 wrong readings visible at a glance in the said-back line (`rule_say_sample_2026-11-13.jsonl`),
+  judged by Code A. Cowork re-read 6 drawn at random (seed 7): all 6 judgments hold (e.g. "the word \"words\" at least
+  8 times" for "words in all capitals at least 8 times"; "under 2 words" for alternating syllables).
+- Open: the API that shows a system prompt's rule book to its setter (step 1; `RuleBook.show_book` is ready).
