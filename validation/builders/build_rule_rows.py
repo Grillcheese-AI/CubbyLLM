@@ -45,7 +45,7 @@ def both(*ps) -> dict:
 
 
 def _rel(rng, lang, op):
-    return rng.choice(RT.REL[lang][op])
+    return rng.choice(REL[lang][op])
 
 
 def draw(kind: str, lang: str, rng: random.Random) -> tuple[dict, dict]:
@@ -153,12 +153,14 @@ CLASH = {frozenset({"english_capital", "english_lowercase"}), frozenset({"json_f
 
 
 def use_wordings(name: str) -> None:
-    """``v1`` (round 1, `rule_templates.T`) or ``v2`` (round 2, `rule_wordings_v2.templates`)."""
-    global WORDINGS
-    WORDINGS = RT.T if name == "v1" else __import__("rule_wordings_v2").templates(RT.T)
+    """``v1`` (round 1, `rule_templates.T`), ``v2`` (round 2, `rule_wordings_v2`) or ``v3`` (round 3,
+    `rule_wordings_v3`, with its own training comparisons)."""
+    global WORDINGS, REL
+    WORDINGS = RT.T if name == "v1" else __import__(f"rule_wordings_{name}").templates(RT.T)
+    REL = __import__("rule_wordings_v3").REL if name == "v3" else RT.REL
 
 
-WORDINGS = RT.T
+WORDINGS, REL = RT.T, RT.REL
 
 
 def build(per: int, seed: int) -> list[dict]:
@@ -196,18 +198,19 @@ def main() -> None:
     ap.add_argument("--out", default=None)
     ap.add_argument("--per", type=int, default=250)
     ap.add_argument("--seed", type=int, default=0)
-    ap.add_argument("--wordings", default="v1", choices=("v1", "v2"), help="round 1's wordings, or round 2's (more a kind)")
+    ap.add_argument("--wordings", default="v1", choices=("v1", "v2", "v3"), help="round 1's wordings, or round 2's (more a kind)")
     a = ap.parse_args()
     use_wordings(a.wordings)
     out = Path(a.out or Path(local_paths.value("CUBBY_DATASETS") or ".") /
-               ("rule_rows_0067" if a.wordings == "v1" else "rule_rows_0067_v2"))
+               ("rule_rows_0067" if a.wordings == "v1" else f"rule_rows_0067_{a.wordings}"))
     rows = build(a.per, a.seed)
     out.mkdir(parents=True, exist_ok=True)
     with open(out / "rows.jsonl", "w", encoding="utf-8") as f:
         for r in rows:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
     tsrc = (Path(__file__).parent / "rule_templates.py").read_bytes() + (
-        (Path(__file__).parent / "rule_wordings_v2.py").read_bytes() if a.wordings == "v2" else b"")
+        b"".join((Path(__file__).parent / f"rule_wordings_{v}.py").read_bytes() for v in ("v2", "v3")
+                 if a.wordings >= v))
     counts = Counter((r["split"], r["lang"]) for r in rows)
     man = {"order": "0067", "seed": a.seed, "per": a.per, "rows": len(rows),
            "by_split_lang": {f"{s}/{l}": n for (s, l), n in sorted(counts.items())},

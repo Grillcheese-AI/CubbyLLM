@@ -420,6 +420,21 @@ instruction, the reader writes the rule) waits for the reader's line 3.
   line 3's kill sets for held-out kinds. **The held-out kinds stay unread.** This split is spent; nothing was tuned on it.
 - **What remains is narrow:** saying "capital" without the word (CAPS, uppercase, "no lowercase") and comparisons in
   words training never had. A third round, if Nick wants one, would add wordings for those two and draw a fresh split.
+### The reader's third round, built for Colab (Nick, 2026-11-13: "yes build it"; Claude Code)
+- **Aimed at round 2's two gaps** (`validation/builders/rule_wordings_v3.py`): all capitals and all lowercase said
+  without the word (caps, uppercase, block letters, "no lowercase", "no uppercase", "no caps"; 7 more a kind and
+  language, each kind the other's contrast), more letter- and word-count wordings, and more training comparisons
+  ("not below", "short of", "not as many as", "not fewer than"; French alike). "No less than" and "at minimum" were
+  tried and left out: each met an IFEval prompt in 5 words. IFEval's "at least" / "less than" stay out of training and
+  still word the new rows.
+- Training: round 2's 10 a kind, round 2's spent new wordings (one reworded on its way in), and the additions; a
+  **fresh new-wording split** (3 a kind and language, in no training list and no earlier round).
+- **Rows** (`--wordings v3 --seed 2`, off-repo `rule_rows_0067_v3`, sha `d72b9f71...`): 12,883; rounds 1 and 2 still
+  rebuild bit for bit. 0 train/dev rows share 5 words with IFEval (pinned:
+  `test_round_three_trains_clean_and_reads_fresh_wordings`).
+- **The set** on Drive (`rules/rule_reader_sft_v3.jsonl`, sha `bba37b82...`): 11,083 records (9,945 train, 1,138
+  held); 0 overlaps; 0 slot boundaries tokenized otherwise. The notebook trains it into `rules/cubby450m_rules_v3/`
+  with round 1's settings; earlier adapters untouched.
 - **Commits:**
 - **Files:**
 - **Tests:**

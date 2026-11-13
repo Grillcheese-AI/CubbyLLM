@@ -93,3 +93,29 @@ def test_round_two_trains_clean_and_reads_fresh_wordings():
     finally:
         B.use_wordings("v1")
     assert not hits, hits[:3]
+
+
+def test_round_three_trains_clean_and_reads_fresh_wordings():
+    """Round 3: its new wordings are in no training list and appear in no earlier round; its training comparisons
+    never use IFEval's "at least" / "less than" (the new rows still do); its train/dev rows share 5 words with no
+    benchmark prompt."""
+    import pytest
+    import bench_overlap as BO
+    import rule_wordings_v2 as V2
+    import rule_wordings_v3 as V3
+    T2, T3 = V2.templates(RT.T), V3.templates(RT.T)
+    for k, by_lang in T3.items():
+        for lang, w in by_lang.items():
+            earlier = set(T2[k][lang]["train"] + T2[k][lang]["new"] + RT.T[k][lang]["train"] + RT.T[k][lang]["new"])
+            assert len(w["new"]) == 3 and not set(w["new"]) & (set(w["train"]) | earlier), (k, lang)
+    assert not {"at least", "less than"} & {p for ps in V3.REL["en"].values() for p in ps}
+    bench = BO.benchmark_grams()
+    if not bench:
+        pytest.skip("no benchmark prompts on this machine")
+    try:
+        B.use_wordings("v3")
+        hits = [r["instruction"] for r in B.build(per=250, seed=2)
+                if r["split"] in ("train", "dev") and BO.overlaps(r["instruction"], bench)]
+    finally:
+        B.use_wordings("v1")
+    assert not hits, hits[:3]
