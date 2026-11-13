@@ -75,3 +75,19 @@ with the same adapter data. Order 0045's growth path exists for that comparison.
 - Retrain the text table with a bigger teacher to fix names (4.1 says the gap is structural).
 - Set any qFHRR margin as a chooser on its own again (4.2).
 - Let a similarity, or a graph embedding, ever stand in for a stored fact.
+
+## 6. Loci tokens (added before the run, when Nick asked for them in the brief)
+- **Names:** loci keys cover what qFHRR cannot. A key comes from the name's own subword pieces, so no name is out of
+  vocabulary. But a key is identity, not meaning, and two namesakes share it. So loci tokens address a name the host
+  has already resolved; they do not choose between namesakes. B1q stays the chooser.
+- **Relations:** the loci key from the relation's words breaks on a paraphrase by construction, and that is exactly
+  where qFHRR is measured to be tolerant (the n-gram memory: 74.3% of paraphrases reach their row against 4.0% of
+  different facts). Proposal: the host resolves the asked relation to a property first (the item's own properties,
+  the absence test, then qFHRR or the bounded 450M), and the loci key binds that property's fixed code, not the
+  question's words. The loci path's "relation never addressed" miss then becomes the relation choice we already
+  measure. Read on the free-text toy with held-out wordings first, then on the 450M.
+- **Namesakes inside one context:** one address holds one value, so two namesakes in the same scene would collide.
+  Once the host has chosen, the key should bind the item's id code, not its name.
+- **The division of labour:** qFHRR ranks only among candidates the store bounds (routing, the relation among an
+  item's own properties); the symbolic check chooses the entity; loci tokens carry the chosen facts into the trunk's
+  context by address; the VM certifies. Neither qFHRR nor loci tokens chooses an entity.

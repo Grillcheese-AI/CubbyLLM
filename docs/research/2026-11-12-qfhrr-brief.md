@@ -23,13 +23,16 @@ Deliver, in this order:
    the cost (CPU or GPU hours, memory, serving latency); and which hard rule of section 2 it comes near. A proposal
    that breaks a hard rule is out.
 3. **The trade-offs.** A table with one row per job: finding a name; choosing between namesakes; choosing the
-   relation; reading French; routing to a world; retrieval over a known corpus; the n-gram memory. For each, which part
-   should do it: the qFHRR table, an exact symbolic index or check, the 450M (or a grown model), or a combination in a
-   stated order. Give latency, memory and accuracy where sections 3 to 5 measure them and "unknown" otherwise, and the
-   failure mode (a wrong answer, a refusal, or slowness).
+   relation; reading French; routing to a world; retrieval over a known corpus; the n-gram memory; reading a fact the
+   host placed in the context. For each, which part should do it: the qFHRR table, an exact symbolic index or check,
+   loci tokens (section 6), the 450M (or a grown model), or a combination in a stated order. Give latency, memory and
+   accuracy where sections 3 to 6 measure them and "unknown" otherwise, and the failure mode (a wrong answer, a
+   refusal, or slowness).
 4. **Growing the model.** Nick is open to growing it. For which jobs above would a larger model be the lever, and
    for which would it not? What size, what it would have to show, and which cheaper lever should be tried first.
-5. **What you would not do,** and your open questions.
+5. **Loci tokens.** For each of the three weaknesses, say whether loci tokens (section 6) help, hurt, or leave it as
+   it is, and how qFHRR and loci tokens should divide the work or combine.
+6. **What you would not do,** and your open questions.
 
 Keep it under about 5,000 words. Plain, exact prose. Cite the numbers you rely on by section.
 
@@ -172,3 +175,36 @@ Keep it under about 5,000 words. Plain, exact prose. Cite the numbers you rely o
   program and certifies the answer, or refuses with a reason.
 - **Growing the model is open.** Training runs on rented or Colab cards, usually an A100 80 GB. A LoRA run over about
   216k rows takes a little over an hour there.
+
+## 6. Loci tokens (hypothesis H-K10): Cubby's other code for facts
+Added on Nick's note: "I think Loci tokens should probably be mentioned too".
+- **What they are:** a fact the host writes into the context is bound to a place at the input. Each piece of the
+  object, as the trunk's own token embedding, is bound to an address (binding is a product of unit-modulus spectra,
+  the same algebra as qFHRR's). An asking token reads it back by unbinding, through a learned read at the middle
+  layer and a copy path into the logits: the method of loci. The host writes the facts; the trunk does not produce
+  them from its weights.
+- **Measured on the 450M:**
+  - facts seen once, more than 800 tokens back, read at 0.946 exact (run 5), by training the copy path's 1,027
+    parameters for about 10 minutes, the text unchanged;
+  - at equal training tokens from the same start (run 6): 0.804 exact through the place against 0.019 for the same
+    text read the ordinary way, with the text mix's held-out loss unharmed (2.2398 against 2.2491).
+- **Addresses keyed by the words** (a CPU toy at width 256; not run on the 450M):
+  - the key is key(s, r) = u(e(s)) bound with u(e(r)), where u(x) = unitary(W x), W a fixed random orthogonal
+    projection, and e the trunk's token embedding; piece i of the object sits at the key bound with a fixed random
+    unitary P_i;
+  - the asker points at its subject and relation tokens and computes the key from what it points at;
+  - subjects never seen in training read 0.854 to 0.899, where hashed addresses read 0.000;
+  - the key is symmetric in subject and relation, because binding commutes;
+  - the switch between the copy and the trunk answers about 12% of present facts wrong, more than the absent ones.
+- **Names as single input units:** binding a name's pieces by position into one unit (the sum of e(piece_i) bound
+  with S(i), up to about 55 pieces at width 1,024) was counted on the training mix. Proper names are 5.2% of its
+  tokens, so spans are not a lever for training cost; they stay a recall mechanism.
+- **As the question loop's reader:** given an entity, a relation and the store's facts about the entity, the trunk
+  answers from a scene of those facts or says it does not know. It misses when the relation is one its training
+  shard never addressed (the shard's relations are the wiki world's, with Wikidata's labels mapped onto them), when
+  the store holds several values (one address holds one value), or when the copy's gate stays shut.
+- **Serving:** being ported to grilly2. A linked base exported to grilly2 gives torch's logits within 1e-4; the
+  run-6 read at home is next.
+- **By construction:** a key comes from the trunk's subword embeddings, so every name has one (no vocabulary miss),
+  but it carries identity, not meaning; two items with the same name get the same key; and a relation's key comes
+  from its words, so a different wording of the same relation is a different address.

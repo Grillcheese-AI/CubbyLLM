@@ -200,6 +200,9 @@ in and why. Disagree with the framing where it is wrong.
 """
 
 
+TIMEOUT = 900             # seconds a request may take; a panel with high effort and large budgets raises it
+
+
 def ask(model: str, offline: bool, max_tokens: int, effort: str, system: str = "", question: str = "") -> dict:
     """One model, one question. Reasoning tokens count against max_tokens (see panel_cube_limits.ask):
     the budget covers thinking AND answering. Settings are in the cache key; an empty answer is never cached."""
@@ -221,7 +224,7 @@ def ask(model: str, offline: bool, max_tokens: int, effort: str, system: str = "
         "HTTP-Referer": "https://github.com/Grillcheese-AI/CubbyLLM", "X-Title": "CubbyLLM panel"})
     t0 = time.time()
     try:
-        raw = json.loads(urllib.request.urlopen(req, timeout=900).read())
+        raw = json.loads(urllib.request.urlopen(req, timeout=TIMEOUT).read())
     except Exception as e:                               # a model that fails is a row, not a crash
         return {"model": model, "text": "", "error": f"{type(e).__name__}: {str(e)[:200]}"}
     ch = (raw.get("choices") or [{}])[0]

@@ -17,23 +17,29 @@ import sys
 import urllib.request
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import panel_fluent_harness as harness  # noqa: E402
 from panel_fluent_harness import ask  # noqa: E402
+
+harness.TIMEOUT = 2400    # high effort and 64k budgets: a pro-mode answer can take well over 15 minutes
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 BRIEF = ROOT / "docs" / "research" / "2026-11-12-qfhrr-brief.md"
 OUT = ROOT / "docs" / "research" / "2026-11-12-qfhrr-panel.md"
 MODELS_URL = "https://openrouter.ai/api/v1/models"
 
-# the CheezML panel's members (2026-11-07), re-checked against the live list at run time
-PANEL = {   # model: (max_tokens, effort) -- budgets from the fact-store panel's experience
-    "openai/gpt-6.1-sol-pro": (24000, "medium"),
-    "anthropic/claude-opus-5.5": (48000, "medium"),
-    "google/gemini-4-argon": (24000, "medium"),
-    "deepseek/deepseek-v4-pro-0813": (32000, "low"),
-    "qwen/qwen3.8-max-prime": (24000, "medium"),
-    "z-ai/glm-5.3-prime": (24000, "medium"),
-    "x-ai/grok-4.7": (24000, "medium"),
-    "moonshotai/kimi-k3.1-pro": (24000, "medium"),
+# Nick (2026-11-12): "I dont mind if the run cost 10$ and we have top competent models". Each lab's top model on the
+# live list that day (Anthropic's Fable 5.2 in place of Opus 5.5; Google's Argon is its flagship reasoning model;
+# OpenAI's Sol in pro mode), high effort, 64,000 tokens each (thinking and answer). Upper bound at the day's prices:
+# $6.47 if every member spends its whole budget. Re-checked against the live list at run time.
+PANEL = {   # model: (max_tokens, effort)
+    "openai/gpt-6.1-sol-pro": (64000, "high"),
+    "anthropic/claude-fable-5.2": (64000, "high"),
+    "google/gemini-4-argon": (64000, "high"),
+    "deepseek/deepseek-v4-pro-0813": (64000, "high"),
+    "qwen/qwen3.8-max-prime": (64000, "high"),
+    "z-ai/glm-5.3-prime": (64000, "high"),
+    "x-ai/grok-4.7": (64000, "high"),
+    "moonshotai/kimi-k3.1-pro": (64000, "high"),
 }
 
 SYSTEM = ("You are one member of an independent design panel. Answer the brief exactly, in the order of its "
