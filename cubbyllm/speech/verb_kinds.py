@@ -120,5 +120,25 @@ def _resolve(verbs: dict) -> dict:
 
 
 VERBS = _resolve({name: verb(name) for name in TABLE})
+WHEN = {  # an act's condition -> the context flag it reads (True: the act applies)
+    "with unsaved changes": lambda c: c.get("unsaved", False), "unless in a sandbox": lambda c: not c.get("sandbox", False),
+    "unless in a sandbox (as execute)": lambda c: not c.get("sandbox", False), "in a sandbox": lambda c: c.get("sandbox", False),
+    "for data": lambda c: not c.get("software", False), "for software (as install)": lambda c: c.get("software", False),
+    "into a shared branch": lambda c: c.get("shared", False), "(as delete)": lambda c: True,
+    "(leaves the machine)": lambda c: True}
+STRICT = {"read": 0, "change": 1, "ask first": 2}
 
-__all__ = ["CLASSES", "IRREGULAR", "KINDS", "KIND_ARGS", "VERBS", "imperative", "verb"]
+
+def act_class(name: str, ctx: dict | None = None) -> dict | None:
+    """The act that applies to `name` in `ctx` (flags: unsaved, sandbox, software, shared), the strictest when several
+    do; "ask first unless in a sandbox" is a change inside one; None when nothing outside the reply is done (the host
+    refuses: no tool)."""
+    ctx = ctx or {}
+    live = [a for a in VERBS[name]["acts"] if a["when"] is None or WHEN[a["when"]](ctx)]
+    if not live and ctx.get("sandbox"):
+        live = [dict(a, **{"class": "change", "when": "in a sandbox"}) for a in VERBS[name]["acts"]
+                if (a["when"] or "").startswith("unless in a sandbox")]
+    return max(live, key=lambda a: STRICT[a["class"]]) if live else None
+
+
+__all__ = ["CLASSES", "IRREGULAR", "KINDS", "KIND_ARGS", "VERBS", "act_class", "imperative", "verb"]
