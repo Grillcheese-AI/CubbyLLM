@@ -143,7 +143,26 @@ entity-linking sets' dev rows are English only; the fame set is English and Fren
 - **Rule 3: not built** (Cowork, 2026-11-13): Mintaka wrong 9 -> 10 (qualified resolved 0.7033).
 - **Rule 2b** (Cowork, 2026-11-13, written before it ran): a namesake cue qualifies a candidate only when the candidate
   holds the cue's item through instance of, subclass of or occupation (`--b1q-rules namesake_cue_class`; the facts
-  `<item> ~class <cue>` in the segment). Measured next, with the veto; the same keep line.
+  `<item> ~class <cue>` in the segment). Measured with the veto; the same keep line.
+
+**Rule 2b on dev** (`retrieval_R2_dev_2026-11-13_0069_rule2b.json`; a first run stopped at 2,000 rows with exit 1 and no
+traceback, from outside, and was rerun whole):
+
+| B1q, dev, with the veto | veto alone | rule 2b |
+|---|---|---|
+| fame/qualified | 667 / 0 / 97 / 146 (0.7330) | 227 / 0 / 537 / 146 (0.2495) |
+| fame/en | 373 / 0 / 52 / 41 (0.3861) | 130 / 0 / 295 / 41 (0.1346) |
+| fame/fr | 294 / 0 / 45 / 105 (0.3114) | 97 / 0 / 242 / 105 (0.1028) |
+| fame/bare | 998 held, 2 single | 998 held, 2 single |
+| mintaka | 55 / 9 / 325 / 44 (0.1270) | 27 / 10 / 352 / 44 (0.0624) |
+| webqsp_el | 26 / 5 / 282 / 10 (0.0805) | 6 / 2 / 305 / 10 (0.0186) |
+| shadowlink/Top | 8 / 15 / 76 / 4 (0.0777) | 5 / 8 / 86 / 4 (0.0485) |
+| shadowlink/Shadow | 13 / 14 / 73 / 8 (0.1204) | 6 / 9 / 85 / 8 (0.0556) |
+| shadowlink/Tail | 33 / 0 / 52 / 3 (0.3750) | 14 / 1 / 70 / 3 (0.1591) |
+
+- **Rule 2b fails the keep line:** seed 0's qualified resolved 0.2495 (line 0.70), and more wrong picks than the veto alone
+  on Mintaka (9 -> 10) and ShadowLink Tail (0 -> 1); it cuts them on WebQSP_EL (5 -> 2), ShadowLink Top (15 -> 8) and
+  Shadow (14 -> 9). By the line it is not built; B1q stands frozen as the veto alone (rule 1).
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
