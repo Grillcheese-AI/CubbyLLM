@@ -179,6 +179,22 @@ Two places, each built plain first and replaced only if its test says it pays:
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
+
+### Line 3's split, pre-registered before any row (Claude Code, 2026-11-12)
+`validation/logs/rule_kinds_split_2026-11-12.json`: IFEval's 25 kinds (`google/IFEval`, Apache-2.0, the file's sha-256
+recorded), sorted, shuffled by `random.Random(0)`, the first 9 held out; all five of M-IFEval's French-only kinds held
+out. **Held out:** `change_case:capital_word_frequency`, `detectable_content:number_placeholders`,
+`detectable_content:postscript`, `detectable_format:constrained_response`, `detectable_format:number_bullet_lists`,
+`keywords:forbidden_words`, `length_constraints:nth_paragraph_first_word`, `punctuation:no_comma`,
+`startend:end_checker`; and the French ones. **Seen:** the other 16. No row of a held-out kind is built for training.
+Two held-out kinds (forbidden words, bullet lists) are already measured by the reply world's starter relations
+(exp_if_follow's ten); the draw was not redone for that.
+
+### Built so far
+- Step 2, the reply world (`1d614af`): `cubbyllm/speech/reply_world.py`.
+- Step 3's runner (`aeb9143`): `cubbyllm/speech/rule_plan.py`, a plan compiled to CubeLang and run by the VM. On the
+  release binary: comparisons, string equality, a for over a list literal and nested ifs run; `&&` is not compiled as
+  an operand, so "and" is nested ifs.
 - **Commits:**
 - **Files:**
 - **Tests:**
