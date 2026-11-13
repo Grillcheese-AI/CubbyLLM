@@ -20,6 +20,10 @@ number was declared). The line shapes cannot see these; `TypedGrammar` adds, as 
    ``if (pA == 0) ...``) at most as many times as it says "if" ("si"). The ``== 0`` that opens an "if" group is
    refused as it is written, so the reader always has "and" to go on with.
 
+5. **every part is joined:** ``return`` may be written only when every part's result and every group but one is read
+   by a later group, and it returns that one (the first typed read showed parts written and never joined: a part
+   nothing joins cannot fail a reply, so it passes replies it should not).
+
 Rules 1-3 read the answer's text only; rule 4 reads the instruction's words for its cues. The gold answers of every row
 pass (`tests/speech/test_view_types.py`).
 
@@ -46,6 +50,9 @@ _IF = re.compile(r"if \((x\d+) (<=|>=|==|!=|<|>)(?: (.))?")
 _QUOTED = re.compile(r'"(?:[^"\\\n]|\\.)*"?')
 _OPEN_IF = re.compile(r"\s+if \(p\d+ == 0")                         # an "if" group, from its first test
 _OPEN_OR = re.compile(r"\s+if \(p\d+ == 1\) \{ assign g\d+ = 1; \} if")   # an "or" group, from its second test
+_RETURN = re.compile(r"        r")                                   # "return", from its first letter
+_MADE = re.compile(r"(?:let|create) ([pg]\d+)\b")
+_READ = re.compile(r"if \(([pg]\d+) ==")
 CUES = {"or": re.compile(r"\b(?:or|either|unless|ou|soit|sauf)\b", re.I), "if": re.compile(r"\b(?:if|si)\b", re.I)}
 
 
@@ -110,7 +117,8 @@ def typed_ok(prog: str) -> bool:
 
 
 def joins_ok(prog: str, instruction: str) -> bool:
-    """Rule 4: the "or" and "if" groups written so far are no more than the instruction's words for them."""
+    """Rules 4 and 5: the "or" and "if" groups written so far are no more than the instruction's words for them; and
+    ``return`` is written only once every part's result and every group is joined but one, which it returns."""
     lines = prog.split("\n")
     at = next((i for i, ln in enumerate(lines) if ln.startswith("    public function solve")), None)
     if at is None:
@@ -118,7 +126,18 @@ def joins_ok(prog: str, instruction: str) -> bool:
     body = lines[at + 1:]
     n_if = sum(1 for ln in body if _OPEN_IF.match(ln))
     n_or = sum(1 for ln in body if _OPEN_OR.match(ln))
-    return n_if <= len(CUES["if"].findall(instruction)) and n_or <= len(CUES["or"].findall(instruction))
+    if n_if > len(CUES["if"].findall(instruction)) or n_or > len(CUES["or"].findall(instruction)):
+        return False
+    r = next((i for i, ln in enumerate(body) if _RETURN.match(ln)), None)
+    if r is None:
+        return True
+    made = [v for ln in body[:r] for v in _MADE.findall(ln)]
+    read = {v for ln in body[:r] for v in _READ.findall(ln)}
+    loose = [v for v in made if v not in read]                  # a part's result or a group nothing joins yet
+    if len(loose) != 1:
+        return False
+    var = body[r].strip()[len("return "):].rstrip(";")
+    return loose[0].startswith(var) and (not body[r].rstrip().endswith(";") or var == loose[0])
 
 
 class TypedGrammar(Grammar):

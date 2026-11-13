@@ -83,3 +83,14 @@ def test_and_is_the_default_and_or_only_when_the_instruction_says_it():
     assert VT.joins_ok(TWO + CALLS + OR, "Soit deux phrases, soit une réponse courte.")
     assert not VT.joins_ok(TWO + CALLS + OR + OR.replace("g1", "g2"), "Use two sentences or keep it short.")  # one "or"
     assert not VT.joins_ok(TWO + CALLS + OR, "Keep the colors bright.")             # "or" inside a word is no cue
+
+
+def test_return_comes_only_once_every_part_is_joined():
+    instr = "Use two sentences. Keep it short."
+    whole = TWO + CALLS + "        create g1: number; assign g1 = 0;\n" + AND + "        return g1;\n    }\n}"
+    assert VT.joins_ok(whole, instr)
+    dropped = TWO + CALLS + "        create g1: number; assign g1 = 0;\n        if (p1 == 1) { assign g1 = 1; }\n"
+    assert not VT.joins_ok(dropped + "        r", instr)                     # part 2 never joined: no return yet
+    assert not VT.joins_ok(TWO + CALLS + "        return p1;", instr)
+    assert VT.joins_ok(TWO + CALLS + "        create g1: number; assign g1 = 0;\n" + AND + "        return g", instr)
+    assert not VT.joins_ok(TWO + CALLS + "        create g1: number; assign g1 = 0;\n" + AND + "        return p1;", instr)
