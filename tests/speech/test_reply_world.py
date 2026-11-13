@@ -112,3 +112,9 @@ def test_relations_with_an_argument():
     assert arg("Repeat this first. Then more.", "starts with", "repeat THIS first") == ["yes"]
     assert arg("Intro SECTION 1 a SECTION 2 b", "section count", "SECTION") == ["2"]
     assert rw.measure_arg("x", "count of the word", "x") == [("the reply", 'count of the word "x"', "1")]
+
+
+def test_json_only_is_the_whole_reply():
+    assert vals('{"a": 1}', "json only") == ["yes"] and vals('```json\n{"a": 1}\n```', "json only") == ["yes"]
+    assert vals('Here it is: {"a": 1}', "json only") == ["no"] and vals('Here it is: {"a": 1}', "json") == ["yes"]
+    assert vals("[1, 2]", "json only") == ["yes"] and vals("plain", "json only") == ["no"]

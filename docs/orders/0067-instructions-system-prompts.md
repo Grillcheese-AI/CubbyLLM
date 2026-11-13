@@ -230,6 +230,48 @@ Two held-out kinds (forbidden words, bullet lists) are already measured by the r
 - Step 3's runner (`aeb9143`): `cubbyllm/speech/rule_plan.py`, a plan compiled to CubeLang and run by the VM. On the
   release binary: comparisons, string equality, a for over a list literal and nested ifs run; `&&` is not compiled as
   an operand, so "and" is nested ifs.
+### Step 3, the rows and the seat as it is (Claude Code, 2026-11-12)
+- **The reply world for the seen kinds** (`b582ea8`, then this commit): paragraphs between `***` (and empty ones
+  between them), responses between `******` (count, empty, distinct), highlighted spans, `<<titles>>`, `json only`
+  (the whole reply, a code fence taken off; `json` stays exp_if_follow's "contains an object"), and relations with an
+  argument: count of the word X, of the letter X, of the character X, starts with X, ends with X, section count X.
+  Written for the 16 seen kinds; no held-out kind was read for a helper.
+- **The rows** (`validation/builders/build_rule_rows.py`, wordings in `rule_templates.py`, seed 0, kept off-repo
+  under `$CUBBY_DATASETS/rule_rows_0067`): 12,872 rows, 18 kinds (IFEval's 16 seen kinds, exp_if_follow's no-markdown
+  and required opening), English and French; `train` and `dev` from 3 wordings a kind and language, `new_wording`
+  from 2 more held apart (1,800 rows); one row in five two rules of different kinds in one instruction. Each row
+  carries its rule as IFEval states it (instruction id, kwargs). `tests/validation/test_rule_rows.py` pins that no
+  held-out kind has a wording.
+- **The reader** (`cubbyllm/speech/rule_reader.py`, STANDALONE): the program seat writes a short surface form
+  (`word count < 50 ; case == lower`), one slot at a time, each slot's options handed to the decoder as a trie
+  through 0071's `prefix_allowed_tokens_fn`: the measurement (or `asked`), the argument (a span of the instruction;
+  one character for a letter count), the comparison the relation allows, the value (0..400, the relation's known
+  values, or a span), then `;` or the end. The plan passes `rule_plan.check` by construction.
+- **The plan family against IFEval's checker, no seat** (`validation/exp_rule_agree.py`, gold arm;
+  `validation/logs/rule_agree_2026-11-12_gold.json`): 100 rules of the dev and new-wording splits, 10 replies each
+  built near the rule's edge (`validation/rule_replies.py`), labelled by IFEval's own checker
+  (`validation/ifeval_check.py`, in the checker's own interpreter, off-repo): **998 of 1,000 agree**; the rule passes
+  a reply the checker fails **0** times; the checker passes 45% of the replies. The 2 left: IFEval's language
+  detector calls upper-case French "English" (the rule is the stricter). Before `json only`, 994 (JSON inside other
+  text passed the rule and failed the checker 4 times; `_rule_agree_2026-11-12_gold_json_contains.json`, scratch).
+- **The seat as it is** (`validation/exp_rule_reader.py`; the 450M with the programs adapter
+  `cubby450m_v12e_w_step_cont`; `validation/logs/rule_reader_2026-11-12_asis.json`; 150 dev and 150 new-wording rows):
+
+| arm | dev, the same plan | new wordings, the same plan | new wordings, the right measurement |
+|---|---|---|---|
+| the instruction alone | 1 / 150 | 0 / 150 | 14 / 150 |
+| 8 examples first (train rows) | 16 / 150 (10.7%) | 7 / 150 (4.7%) | 20 / 150 |
+
+  Its few-shot plans against IFEval's checker on the new wordings (`validation/logs/rule_agree_2026-11-12_seat_asis.json`,
+  135 rules with an IFEval form, 1,350 replies): **agreement 50.4%; the rule passes a reply the checker fails 32.3%.**
+  It mostly copies an example's shape (`count of the word "French" < 11`). Five minutes for 300 rows on the card.
+- **Line 3, new wordings of seen kinds: missed** (written 100%, which means nothing when every slot is constrained;
+  agreement 50.4% against 98%). By the order, the adapter round on Colab is now Nick's call. **The held-out kinds
+  are not read**: a held-out read with this seat would spend them on a known miss; they wait for the reader that
+  passes the seen kinds' line.
+- **Found on the way:** IFEval counts words with `\w+` ("don't" is 2) and the reply world with exp_if_follow's split
+  ("don't" is 1); no row in this read hit it (the gold read's word-count rows agree 40 of 40), but a reply with
+  apostrophes near the bound would. Recorded, not changed: changing it would break exp_if_follow's agreement.
 - **Commits:**
 - **Files:**
 - **Tests:**

@@ -1,0 +1,421 @@
+{
+ "order": "0067",
+ "what": "rule plans run by the VM against IFEval's checker on replies built to pass and fail",
+ "arm": "seat",
+ "rows": 135,
+ "replies_per_rule": 10,
+ "seed": 0,
+ "splits": "new_wording",
+ "counts": {
+  "pairs": 1350,
+  "agree": 680,
+  "checker passes": 553,
+  "rule passes, checker fails": 436,
+  "asked": 0
+ },
+ "agreement": 0.5037,
+ "rule_passes_checker_fails": 0.323,
+ "checker_pass_share": 0.4096,
+ "per_kind": {
+  "english_capital": {
+   "pairs": 150,
+   "agree": 68,
+   "checker passes": 35,
+   "rule passes, checker fails": 68,
+   "asked": 0,
+   "agreement": 0.453
+  },
+  "english_lowercase": {
+   "pairs": 60,
+   "agree": 22,
+   "checker passes": 20,
+   "rule passes, checker fails": 38,
+   "asked": 0,
+   "agreement": 0.367
+  },
+  "existence": {
+   "pairs": 90,
+   "agree": 32,
+   "checker passes": 31,
+   "rule passes, checker fails": 57,
+   "asked": 0,
+   "agreement": 0.356
+  },
+  "frequency": {
+   "pairs": 60,
+   "agree": 13,
+   "checker passes": 43,
+   "rule passes, checker fails": 13,
+   "asked": 0,
+   "agreement": 0.217
+  },
+  "json_format": {
+   "pairs": 80,
+   "agree": 41,
+   "checker passes": 35,
+   "rule passes, checker fails": 22,
+   "asked": 0,
+   "agreement": 0.512
+  },
+  "letter_frequency": {
+   "pairs": 80,
+   "agree": 62,
+   "checker passes": 26,
+   "rule passes, checker fails": 14,
+   "asked": 0,
+   "agreement": 0.775
+  },
+  "multiple_sections": {
+   "pairs": 60,
+   "agree": 41,
+   "checker passes": 27,
+   "rule passes, checker fails": 7,
+   "asked": 0,
+   "agreement": 0.683
+  },
+  "number_highlighted_sections": {
+   "pairs": 90,
+   "agree": 38,
+   "checker passes": 62,
+   "rule passes, checker fails": 10,
+   "asked": 0,
+   "agreement": 0.422
+  },
+  "number_paragraphs": {
+   "pairs": 40,
+   "agree": 32,
+   "checker passes": 8,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.8
+  },
+  "number_sentences": {
+   "pairs": 70,
+   "agree": 35,
+   "checker passes": 34,
+   "rule passes, checker fails": 34,
+   "asked": 0,
+   "agreement": 0.5
+  },
+  "number_words": {
+   "pairs": 110,
+   "agree": 50,
+   "checker passes": 54,
+   "rule passes, checker fails": 43,
+   "asked": 0,
+   "agreement": 0.455
+  },
+  "quotation": {
+   "pairs": 110,
+   "agree": 52,
+   "checker passes": 56,
+   "rule passes, checker fails": 21,
+   "asked": 0,
+   "agreement": 0.473
+  },
+  "repeat_prompt": {
+   "pairs": 100,
+   "agree": 49,
+   "checker passes": 30,
+   "rule passes, checker fails": 32,
+   "asked": 0,
+   "agreement": 0.49
+  },
+  "response_language": {
+   "pairs": 80,
+   "agree": 45,
+   "checker passes": 45,
+   "rule passes, checker fails": 30,
+   "asked": 0,
+   "agreement": 0.562
+  },
+  "title": {
+   "pairs": 70,
+   "agree": 41,
+   "checker passes": 35,
+   "rule passes, checker fails": 17,
+   "asked": 0,
+   "agreement": 0.586
+  },
+  "two_responses": {
+   "pairs": 100,
+   "agree": 59,
+   "checker passes": 12,
+   "rule passes, checker fails": 30,
+   "asked": 0,
+   "agreement": 0.59
+  }
+ },
+ "misses": [
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"Nous avons marché jusqu'au marché avant midi. C'est une petite ville, mais on ne la quitte pas.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "0 is the count of the word \"guillemet\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "La matinée était calme et la rue était vide. Nous avons marché jusqu'au marché avant midi.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "0 is the count of the word \"guillemet\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "La matinée était calme et la rue était vide. Nous avons marché jusqu'au marché avant midi.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "0 is the count of the word \"guillemet\" of the reply"
+   ]
+  },
+  {
+   "kind": "quotation",
+   "kwargs": {},
+   "reply": "\"Un bon plan commence par une question simple. Nous avons marché jusqu'au marché avant midi.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "0 is the count of the word \"guillemet\" of the reply"
+   ]
+  },
+  {
+   "kind": "repeat_prompt",
+   "kwargs": {
+    "prompt_to_repeat": "Décris un matin tranquille."
+   },
+   "reply": "Décris un matin tranquille. Personne ne savait pourquoi le pont était fermé. Personne ne savait pourquoi le pont était fermé.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the section count \"Décris\" of the reply"
+   ]
+  },
+  {
+   "kind": "repeat_prompt",
+   "kwargs": {
+    "prompt_to_repeat": "Décris un matin tranquille."
+   },
+   "reply": "Décris un matin tranquille. Nous avons marché jusqu'au marché avant midi. Ses notes étaient courtes et très claires.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the section count \"Décris\" of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "They sold bread, fruit and fresh cheese. Her notes were short and very clear.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "4 is the count of the letter \"a\" of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "Her notes were short and very clear. Most of the work happens in the evening.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "3 is the count of the letter \"a\" of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "personne ne savait pourquoi le pont était fermé. la réponse dépend de la saison et du temps.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "6 is the count of the letter \"a\" of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "UN BON PLAN COMMENCE PAR UNE QUESTION SIMPLE. NOUS AVONS MARCHÉ JUSQU'AU MARCHÉ AVANT MIDI.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "8 is the count of the letter \"a\" of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "it's a small town, but people don't leave it. they sold bread, fruit and fresh cheese.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "5 is the count of the letter \"a\" of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "Most of the work happens in the evening. A good plan starts with a simple question.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "5 is the count of the letter \"a\" of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "la matinée était calme et la rue était vide. personne ne savait pourquoi le pont était fermé.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "9 is the count of the letter \"a\" of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "the answer depends on the season and the weather. nobody knew why the bridge was closed.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "5 is the count of the letter \"a\" of the reply"
+   ]
+  },
+  {
+   "kind": "number_highlighted_sections",
+   "kwargs": {
+    "num_highlights": 4
+   },
+   "reply": "*Ils vendaient du pain, des fruits et du fromage* *Le train était encore en retard cette semaine* *La plupart du travail se fait le soir* *La matinée était calm",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the section count \"4\" of the reply"
+   ]
+  },
+  {
+   "kind": "number_highlighted_sections",
+   "kwargs": {
+    "num_highlights": 4
+   },
+   "reply": "*La réponse dépend de la saison et du temps* *Ils vendaient du pain, des fruits et du fromage* *La matinée était calme et la rue était vide* *Un bon plan commen",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the section count \"4\" of the reply"
+   ]
+  },
+  {
+   "kind": "number_highlighted_sections",
+   "kwargs": {
+    "num_highlights": 4
+   },
+   "reply": "*Nous avons marché jusqu'au marché avant midi* *Personne ne savait pourquoi le pont était fermé* *La matinée était calme et la rue était vide* *Un bon plan comm",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the section count \"4\" of the reply"
+   ]
+  },
+  {
+   "kind": "number_highlighted_sections",
+   "kwargs": {
+    "num_highlights": 4
+   },
+   "reply": "*Le train était encore en retard cette semaine* *La plupart du travail se fait le soir* *Nous avons marché jusqu'au marché avant midi* *C'est une petite ville, ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the section count \"4\" of the reply"
+   ]
+  },
+  {
+   "kind": "number_highlighted_sections",
+   "kwargs": {
+    "num_highlights": 4
+   },
+   "reply": "*La réponse dépend de la saison et du temps* *Personne ne savait pourquoi le pont était fermé* *Nous avons marché jusqu'au marché avant midi* *Ils vendaient du ",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the section count \"4\" of the reply"
+   ]
+  },
+  {
+   "kind": "number_highlighted_sections",
+   "kwargs": {
+    "num_highlights": 4
+   },
+   "reply": "*Nous avons marché jusqu'au marché avant midi* *La matinée était calme et la rue était vide* *La réponse dépend de la saison et du temps* *Ils vendaient du pain",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the section count \"4\" of the reply"
+   ]
+  },
+  {
+   "kind": "number_highlighted_sections",
+   "kwargs": {
+    "num_highlights": 4
+   },
+   "reply": "*Le train était encore en retard cette semaine* *Ses notes étaient courtes et très claires* *Nous avons marché jusqu'au marché avant midi* *Personne ne savait p",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the section count \"4\" of the reply"
+   ]
+  },
+  {
+   "kind": "number_highlighted_sections",
+   "kwargs": {
+    "num_highlights": 4
+   },
+   "reply": "*Ses notes étaient courtes et très claires* *La plupart du travail se fait le soir* *La matinée était calme et la rue était vide* *La plupart du travail se fait",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "0 is the section count \"4\" of the reply"
+   ]
+  },
+  {
+   "kind": "two_responses",
+   "kwargs": {},
+   "reply": "Ils vendaient du pain, des fruits et du fromage.\n******\nUn bon plan commence par une question simple.\n******\nIls vendaient du pain, des fruits et du fromage.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "0 is the section count \"Je veux deux réponses\" of the reply"
+   ]
+  },
+  {
+   "kind": "two_responses",
+   "kwargs": {},
+   "reply": "Le train était encore en retard cette semaine.\n******\nLe train était encore en retard cette semaine.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "0 is the section count \"Je veux deux réponses\" of the reply"
+   ]
+  },
+  {
+   "kind": "two_responses",
+   "kwargs": {},
+   "reply": "Un bon plan commence par une question simple.\n******\nLa plupart du travail se fait le soir.\n******\nUn bon plan commence par une question simple.",
+   "checker": false,
+   "rule": true,
+   "statements": [
+    "0 is the section count \"Je veux deux réponses\" of the reply"
+   ]
+  }
+ ]
+}

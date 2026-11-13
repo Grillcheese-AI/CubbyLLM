@@ -1,0 +1,173 @@
+{
+ "order": "0067",
+ "what": "rule plans run by the VM against IFEval's checker on replies built to pass and fail",
+ "arm": "gold",
+ "rows": 100,
+ "replies_per_rule": 10,
+ "seed": 0,
+ "splits": "dev,new_wording",
+ "counts": {
+  "pairs": 1000,
+  "agree": 998,
+  "checker passes": 452,
+  "rule passes, checker fails": 0,
+  "asked": 0
+ },
+ "agreement": 0.998,
+ "rule_passes_checker_fails": 0.0,
+ "checker_pass_share": 0.452,
+ "per_kind": {
+  "english_capital": {
+   "pairs": 30,
+   "agree": 28,
+   "checker passes": 4,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 0.933
+  },
+  "english_lowercase": {
+   "pairs": 60,
+   "agree": 60,
+   "checker passes": 8,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "existence": {
+   "pairs": 100,
+   "agree": 100,
+   "checker passes": 50,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "frequency": {
+   "pairs": 60,
+   "agree": 60,
+   "checker passes": 23,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "json_format": {
+   "pairs": 20,
+   "agree": 20,
+   "checker passes": 9,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "letter_frequency": {
+   "pairs": 70,
+   "agree": 70,
+   "checker passes": 33,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "multiple_sections": {
+   "pairs": 60,
+   "agree": 60,
+   "checker passes": 35,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_highlighted_sections": {
+   "pairs": 90,
+   "agree": 90,
+   "checker passes": 60,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_paragraphs": {
+   "pairs": 80,
+   "agree": 80,
+   "checker passes": 22,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_sentences": {
+   "pairs": 40,
+   "agree": 40,
+   "checker passes": 27,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "number_words": {
+   "pairs": 40,
+   "agree": 40,
+   "checker passes": 17,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "quotation": {
+   "pairs": 40,
+   "agree": 40,
+   "checker passes": 25,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "repeat_prompt": {
+   "pairs": 80,
+   "agree": 80,
+   "checker passes": 32,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "response_language": {
+   "pairs": 60,
+   "agree": 60,
+   "checker passes": 35,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "title": {
+   "pairs": 110,
+   "agree": 110,
+   "checker passes": 60,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  },
+  "two_responses": {
+   "pairs": 60,
+   "agree": 60,
+   "checker passes": 12,
+   "rule passes, checker fails": 0,
+   "asked": 0,
+   "agreement": 1.0
+  }
+ },
+ "misses": [
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "LA RÉPONSE DÉPEND DE LA SAISON ET DU TEMPS. PERSONNE NE SAVAIT POURQUOI LE PONT ÉTAIT FERMÉ.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "upper is the case of the reply",
+    "fr is the language of the reply"
+   ]
+  },
+  {
+   "kind": "english_capital",
+   "kwargs": {},
+   "reply": "NOUS AVONS MARCHÉ JUSQU'AU MARCHÉ AVANT MIDI. UN BON PLAN COMMENCE PAR UNE QUESTION SIMPLE.",
+   "checker": true,
+   "rule": false,
+   "statements": [
+    "upper is the case of the reply",
+    "fr is the language of the reply"
+   ]
+  }
+ ]
+}

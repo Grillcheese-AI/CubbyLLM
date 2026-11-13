@@ -179,13 +179,15 @@ class Cubby450mTrunk:
         return self._eos
 
     def generate(self, role: str, rows: list, max_new_tokens: int, temperature: float = 0.0,
-                 top_k: int = 40, seed: "int | None" = None) -> list:
-        """`rows` of token ids -> the generated ids per row (the prompt cut off), under the role's adapter."""
+                 top_k: int = 40, seed: "int | None" = None, **hook) -> list:
+        """`rows` of token ids -> the generated ids per row (the prompt cut off), under the role's adapter. ``hook``:
+        ``logits_processor`` / ``prefix_allowed_tokens_fn`` for grilly2's logits hook (order 0071), passed on only
+        when given."""
         with self._lock:
             self.use(role)
             from ..ops import grilly_seats as ops
             out = ops.generate(self._model, rows, max_new_tokens, self._eos, temperature=temperature,
-                               top_k=top_k, seed=seed, g=self._grilly)
+                               top_k=top_k, seed=seed, g=self._grilly, **hook)
             return [r[len(p):] for r, p in zip(out, rows)]
 
 

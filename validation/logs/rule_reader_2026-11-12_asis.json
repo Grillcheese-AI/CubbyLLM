@@ -1,0 +1,943 @@
+{
+ "order": "0067",
+ "what": "the program seat as it is reads instructions into rule plans, slots constrained",
+ "adapter": "cubby450m_v12e_w_step_cont",
+ "rows_file_lines": 12872,
+ "n_per_split": 150,
+ "k": 8,
+ "seed": 0,
+ "examples_kinds": [
+  "word count >= 20",
+  "starts with \"\"\" == yes ; ends with \"\"\" == yes",
+  "case == lower ; language == en",
+  "count of the word \"voyage\" < 2",
+  "markdown == no",
+  "section count \"Part\" >= 4",
+  "count of the letter \"a\" < 11",
+  "starts with \"Dis-moi comment le pain lève.\" == yes"
+ ],
+ "arms": {
+  "zero": {
+   "dev": {
+    "counts": {
+     "rows": 150,
+     "written": 149,
+     "exact": 1,
+     "measurement right": 4,
+     "rows fr": 90,
+     "exact fr": 1,
+     "rows en": 60,
+     "exact en": 0
+    },
+    "per_kind": {
+     "english_capital": {
+      "rows": 7,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "english_capital+first": {
+      "rows": 2,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "english_lowercase": {
+      "rows": 6,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "english_lowercase+number_paragraphs": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "english_lowercase+repeat_prompt": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "existence": {
+      "rows": 8,
+      "exact": 0,
+      "measurement right": 1
+     },
+     "existence+json_format": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "existence+response_language": {
+      "rows": 2,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "first": {
+      "rows": 7,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "first+letter_frequency": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "frequency": {
+      "rows": 12,
+      "exact": 0,
+      "measurement right": 1
+     },
+     "frequency+letter_frequency": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "frequency+no_markdown": {
+      "rows": 2,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "frequency+number_highlighted_sections": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "json_format": {
+      "rows": 7,
+      "exact": 0,
+      "measurement right": 1
+     },
+     "json_format+frequency": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "letter_frequency": {
+      "rows": 5,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "letter_frequency+english_capital": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "letter_frequency+frequency": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "multiple_sections": {
+      "rows": 10,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "multiple_sections+number_sentences": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "multiple_sections+response_language": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "no_markdown": {
+      "rows": 8,
+      "exact": 1,
+      "measurement right": 1
+     },
+     "no_markdown+title": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "number_highlighted_sections": {
+      "rows": 6,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "number_paragraphs": {
+      "rows": 5,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "number_paragraphs+english_capital": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "number_paragraphs+multiple_sections": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "number_sentences": {
+      "rows": 7,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "number_words": {
+      "rows": 6,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "number_words+multiple_sections": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "quotation": {
+      "rows": 8,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "repeat_prompt": {
+      "rows": 6,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "repeat_prompt+english_lowercase": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "repeat_prompt+letter_frequency": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "repeat_prompt+number_paragraphs": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "response_language": {
+      "rows": 5,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "title": {
+      "rows": 3,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "title+json_format": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "two_responses": {
+      "rows": 6,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "two_responses+no_markdown": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "two_responses+number_highlighted_sections": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "two_responses+repeat_prompt": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     }
+    },
+    "some_misses": [
+     {
+      "kind": "response_language",
+      "want": "language == fr",
+      "got": "json == no ; json == no"
+     },
+     {
+      "kind": "two_responses",
+      "want": "response count == 2 ; empty response count == 0 ; distinct response count == 2",
+      "got": "response count > 1"
+     },
+     {
+      "kind": "english_lowercase",
+      "want": "case == lower ; language == en",
+      "got": "line count > 1"
+     },
+     {
+      "kind": "number_paragraphs",
+      "want": "paragraph count == 5 ; empty paragraph count == 0",
+      "got": "json == no ; json == no ; json == no ; json == no"
+     },
+     {
+      "kind": "letter_frequency+english_capital",
+      "want": "count of the letter \"w\" < 4 ; case == upper ; language == en",
+      "got": "response count > 4"
+     },
+     {
+      "kind": "frequency+number_highlighted_sections",
+      "want": "count of the word \"fenêtre\" >= 3 ; highlight count >= 4",
+      "got": "line count < 4"
+     },
+     {
+      "kind": "title",
+      "want": "title count >= 1",
+      "got": "section count \"a\" > 1"
+     },
+     {
+      "kind": "number_words",
+      "want": "word count >= 200",
+      "got": "count of the word \"in\" > 200"
+     },
+     {
+      "kind": "english_capital+first",
+      "want": "case == upper ; language == en ; opening has first of all",
+      "got": "response count > 1"
+     },
+     {
+      "kind": "repeat_prompt",
+      "want": "starts with \"Qu'est-ce qui fait un bon voisin ?\" == yes",
+      "got": "starts with \"un bon voisin\" == no"
+     },
+     {
+      "kind": "no_markdown",
+      "want": "markdown == no",
+      "got": "line count > 1"
+     },
+     {
+      "kind": "two_responses+no_markdown",
+      "want": "response count == 2 ; empty response count == 0 ; distinct response count == 2 ; markdown == no",
+      "got": "line count > 6"
+     }
+    ]
+   },
+   "new_wording": {
+    "counts": {
+     "rows": 150,
+     "written": 150,
+     "exact": 0,
+     "measurement right": 14,
+     "rows en": 79,
+     "exact en": 0,
+     "rows fr": 71,
+     "exact fr": 0
+    },
+    "per_kind": {
+     "english_capital": {
+      "rows": 15,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "english_lowercase": {
+      "rows": 6,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "existence": {
+      "rows": 9,
+      "exact": 0,
+      "measurement right": 3
+     },
+     "first": {
+      "rows": 8,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "frequency": {
+      "rows": 6,
+      "exact": 0,
+      "measurement right": 1
+     },
+     "json_format": {
+      "rows": 8,
+      "exact": 0,
+      "measurement right": 4
+     },
+     "letter_frequency": {
+      "rows": 8,
+      "exact": 0,
+      "measurement right": 6
+     },
+     "multiple_sections": {
+      "rows": 6,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "no_markdown": {
+      "rows": 7,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "number_highlighted_sections": {
+      "rows": 9,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "number_paragraphs": {
+      "rows": 4,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "number_sentences": {
+      "rows": 7,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "number_words": {
+      "rows": 11,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "quotation": {
+      "rows": 11,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "repeat_prompt": {
+      "rows": 10,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "response_language": {
+      "rows": 8,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "title": {
+      "rows": 7,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "two_responses": {
+      "rows": 10,
+      "exact": 0,
+      "measurement right": 0
+     }
+    },
+    "some_misses": [
+     {
+      "kind": "number_sentences",
+      "want": "sentence count >= 5",
+      "got": "form of address == none"
+     },
+     {
+      "kind": "repeat_prompt",
+      "want": "starts with \"Write a short note about the sea.\" == yes",
+      "got": "form of address == none"
+     },
+     {
+      "kind": "english_capital",
+      "want": "case == upper ; language == en",
+      "got": "form of address == both"
+     },
+     {
+      "kind": "number_highlighted_sections",
+      "want": "highlight count >= 3",
+      "got": "form of address == both"
+     },
+     {
+      "kind": "response_language",
+      "want": "language == fr",
+      "got": "count of the word \"French\" > 1"
+     },
+     {
+      "kind": "english_lowercase",
+      "want": "case == lower ; language == en",
+      "got": "form of address == none"
+     },
+     {
+      "kind": "letter_frequency",
+      "want": "count of the letter \"o\" < 3",
+      "got": "count of the letter \"o\" > 1"
+     },
+     {
+      "kind": "response_language",
+      "want": "language == fr",
+      "got": "count of the word \"French\" > 1"
+     },
+     {
+      "kind": "english_capital",
+      "want": "case == upper ; language == en",
+      "got": "form of address == both"
+     },
+     {
+      "kind": "number_sentences",
+      "want": "sentence count < 7",
+      "got": "count of the word \"a\" > 7"
+     },
+     {
+      "kind": "json_format",
+      "want": "json == yes",
+      "got": "json == no"
+     },
+     {
+      "kind": "existence",
+      "want": "count of the word \"énergie\" >= 1",
+      "got": "response count > 1"
+     }
+    ]
+   },
+   "seconds": 150.3,
+   "seat_calls": 1338
+  },
+  "few": {
+   "dev": {
+    "counts": {
+     "rows": 150,
+     "written": 150,
+     "exact": 16,
+     "measurement right": 30,
+     "rows fr": 90,
+     "exact fr": 8,
+     "rows en": 60,
+     "exact en": 8
+    },
+    "per_kind": {
+     "english_capital": {
+      "rows": 7,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "english_capital+first": {
+      "rows": 2,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "english_lowercase": {
+      "rows": 6,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "english_lowercase+number_paragraphs": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "english_lowercase+repeat_prompt": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "existence": {
+      "rows": 8,
+      "exact": 0,
+      "measurement right": 4
+     },
+     "existence+json_format": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "existence+response_language": {
+      "rows": 2,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "first": {
+      "rows": 7,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "first+letter_frequency": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "frequency": {
+      "rows": 12,
+      "exact": 5,
+      "measurement right": 11
+     },
+     "frequency+letter_frequency": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "frequency+no_markdown": {
+      "rows": 2,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "frequency+number_highlighted_sections": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "json_format": {
+      "rows": 7,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "json_format+frequency": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "letter_frequency": {
+      "rows": 5,
+      "exact": 1,
+      "measurement right": 4
+     },
+     "letter_frequency+english_capital": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "letter_frequency+frequency": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "multiple_sections": {
+      "rows": 10,
+      "exact": 0,
+      "measurement right": 1
+     },
+     "multiple_sections+number_sentences": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "multiple_sections+response_language": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "no_markdown": {
+      "rows": 8,
+      "exact": 8,
+      "measurement right": 8
+     },
+     "no_markdown+title": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "number_highlighted_sections": {
+      "rows": 6,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "number_paragraphs": {
+      "rows": 5,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "number_paragraphs+english_capital": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "number_paragraphs+multiple_sections": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "number_sentences": {
+      "rows": 7,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "number_words": {
+      "rows": 6,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "number_words+multiple_sections": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "quotation": {
+      "rows": 8,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "repeat_prompt": {
+      "rows": 6,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "repeat_prompt+english_lowercase": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "repeat_prompt+letter_frequency": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "repeat_prompt+number_paragraphs": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "response_language": {
+      "rows": 5,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "title": {
+      "rows": 3,
+      "exact": 2,
+      "measurement right": 2
+     },
+     "title+json_format": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "two_responses": {
+      "rows": 6,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "two_responses+no_markdown": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "two_responses+number_highlighted_sections": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "two_responses+repeat_prompt": {
+      "rows": 1,
+      "exact": 0,
+      "measurement right": 0
+     }
+    },
+    "some_misses": [
+     {
+      "kind": "response_language",
+      "want": "language == fr",
+      "got": "count of the word \"en\" < 11"
+     },
+     {
+      "kind": "two_responses",
+      "want": "response count == 2 ; empty response count == 0 ; distinct response count == 2",
+      "got": "count of the word \"two\" < 4"
+     },
+     {
+      "kind": "english_lowercase",
+      "want": "case == lower ; language == en",
+      "got": "count of the letter \"a\" < 11"
+     },
+     {
+      "kind": "number_paragraphs",
+      "want": "paragraph count == 5 ; empty paragraph count == 0",
+      "got": "section count \"5\" > 5"
+     },
+     {
+      "kind": "letter_frequency+english_capital",
+      "want": "count of the letter \"w\" < 4 ; case == upper ; language == en",
+      "got": "count of the letter \"w\" < 4"
+     },
+     {
+      "kind": "frequency+number_highlighted_sections",
+      "want": "count of the word \"fenêtre\" >= 3 ; highlight count >= 4",
+      "got": "section count \"3\" >= 4"
+     },
+     {
+      "kind": "number_words",
+      "want": "word count >= 200",
+      "got": "count of the word \"in\" < 2"
+     },
+     {
+      "kind": "english_capital+first",
+      "want": "case == upper ; language == en ; opening has first of all",
+      "got": "count of the word \"first\" < 11"
+     },
+     {
+      "kind": "repeat_prompt",
+      "want": "starts with \"Qu'est-ce qui fait un bon voisin ?\" == yes",
+      "got": "count of the word \"un bon voisin\" < 4"
+     },
+     {
+      "kind": "two_responses+no_markdown",
+      "want": "response count == 2 ; empty response count == 0 ; distinct response count == 2 ; markdown == no",
+      "got": "section count \"Donne\" < 6"
+     },
+     {
+      "kind": "json_format",
+      "want": "json == yes",
+      "got": "count of the word \"en\" < 11"
+     },
+     {
+      "kind": "number_sentences",
+      "want": "sentence count >= 1",
+      "got": "count of the word \"un\" < 1"
+     }
+    ]
+   },
+   "new_wording": {
+    "counts": {
+     "rows": 150,
+     "written": 150,
+     "exact": 7,
+     "measurement right": 20,
+     "rows en": 79,
+     "exact en": 5,
+     "rows fr": 71,
+     "exact fr": 2
+    },
+    "per_kind": {
+     "english_capital": {
+      "rows": 15,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "english_lowercase": {
+      "rows": 6,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "existence": {
+      "rows": 9,
+      "exact": 0,
+      "measurement right": 7
+     },
+     "first": {
+      "rows": 8,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "frequency": {
+      "rows": 6,
+      "exact": 0,
+      "measurement right": 5
+     },
+     "json_format": {
+      "rows": 8,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "letter_frequency": {
+      "rows": 8,
+      "exact": 5,
+      "measurement right": 6
+     },
+     "multiple_sections": {
+      "rows": 6,
+      "exact": 2,
+      "measurement right": 2
+     },
+     "no_markdown": {
+      "rows": 7,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "number_highlighted_sections": {
+      "rows": 9,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "number_paragraphs": {
+      "rows": 4,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "number_sentences": {
+      "rows": 7,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "number_words": {
+      "rows": 11,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "quotation": {
+      "rows": 11,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "repeat_prompt": {
+      "rows": 10,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "response_language": {
+      "rows": 8,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "title": {
+      "rows": 7,
+      "exact": 0,
+      "measurement right": 0
+     },
+     "two_responses": {
+      "rows": 10,
+      "exact": 0,
+      "measurement right": 0
+     }
+    },
+    "some_misses": [
+     {
+      "kind": "number_sentences",
+      "want": "sentence count >= 5",
+      "got": "count of the word \"full\" < 5"
+     },
+     {
+      "kind": "repeat_prompt",
+      "want": "starts with \"Write a short note about the sea.\" == yes",
+      "got": "count of the word \"sea\" < 11"
+     },
+     {
+      "kind": "english_capital",
+      "want": "case == upper ; language == en",
+      "got": "count of the word \"CAPITAL LETTERS\" > 1"
+     },
+     {
+      "kind": "number_highlighted_sections",
+      "want": "highlight count >= 3",
+      "got": "count of the word \"3\" > 1"
+     },
+     {
+      "kind": "response_language",
+      "want": "language == fr",
+      "got": "count of the word \"French\" < 11"
+     },
+     {
+      "kind": "english_lowercase",
+      "want": "case == lower ; language == en",
+      "got": "count of the letter \"a\" < 11"
+     },
+     {
+      "kind": "letter_frequency",
+      "want": "count of the letter \"o\" < 3",
+      "got": "count of the letter \"a\" < 3"
+     },
+     {
+      "kind": "response_language",
+      "want": "language == fr",
+      "got": "count of the word \"French\" < 11"
+     },
+     {
+      "kind": "english_capital",
+      "want": "case == upper ; language == en",
+      "got": "count of the word \"l'anglais\" < 11"
+     },
+     {
+      "kind": "number_sentences",
+      "want": "sentence count < 7",
+      "got": "count of the word \"a\" < 7"
+     },
+     {
+      "kind": "json_format",
+      "want": "json == yes",
+      "got": "section count \"Ne\" > 11"
+     },
+     {
+      "kind": "existence",
+      "want": "count of the word \"énergie\" >= 1",
+      "got": "count of the letter \"a\" < 11"
+     }
+    ]
+   },
+   "seconds": 318.5,
+   "seat_calls": 1490
+  }
+ }
+}

@@ -120,6 +120,21 @@ def _highlights(text: str) -> int:
     return len(one) + len(two)
 
 
+def _json_only(text: str) -> bool:
+    """The whole reply parses as JSON once a code fence around it is taken off (``json`` above: it contains an object)."""
+    body = (text or "").strip()
+    for fence in ("```json", "```Json", "```JSON", "```"):
+        if body.startswith(fence):
+            body = body[len(fence):]
+            break
+    body = body[:-3] if body.endswith("```") else body
+    try:
+        json.loads(body.strip())
+    except ValueError:
+        return False
+    return True
+
+
 def _responses(text: str) -> list[str]:
     return [p.strip() for p in (text or "").split("******") if p.strip()]
 
@@ -131,7 +146,8 @@ RELATIONS.update({
     "empty response count": lambda t: [str(_split_count(t, r"\*\*\*\*\*\*")[1])],
     "distinct response count": lambda t: [str(len(set(_responses(t))))],
     "highlight count": lambda t: [str(_highlights(t))],                                 # *spans* and **spans**
-    "title count": lambda t: [str(sum(1 for x in re.findall(r"<<[^\n]+>>", t or "") if x.strip("<>").strip()))],
+    "json only": lambda t: ["yes" if _json_only(t) else "no"],                          # the whole reply, fences off
+    "title count": lambda t:[str(sum(1 for x in re.findall(r"<<[^\n]+>>", t or "") if x.strip("<>").strip()))],
 })
 
 PARAMETRIC = {                                           # relation -> helper (text, argument -> its values)
