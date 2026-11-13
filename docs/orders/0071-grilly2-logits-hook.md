@@ -1,5 +1,5 @@
 # 0071 - A logits hook in grilly2's generate: the host can steer each token as it is written
-status: done (checked 2026-11-12; the grilly2 branch generate-logits-hook waits for Nick's merge)
+status: done (checked 2026-11-12; merged by Nick into grilly2's main on 2026-11-13: `d593633`, pull request #2)
 written: 2026-11-12 by Cowork - approved: 2026-11-12 by Nick ("yes") - hypothesis: none
 
 ## Why
