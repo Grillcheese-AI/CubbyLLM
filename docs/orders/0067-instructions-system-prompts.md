@@ -960,8 +960,9 @@ item in reading order, each row with its place (`i`) and its characters (`start`
      programs, 0 disagreements). Guard: `cubbyllm/bridges/vm_names.collisions` (fails closed without `blake3`);
      `rule_plan.run` now returns "asked" for a program with a shared key (before: "the reply lacks 'government'" was
      judged failed on "a thing here"), and the build leaves such replies out. **Every VM program in the serve path is
-     exposed** (question programs, facts): proposed, not built, a guard in `cubelang_client` behind a flag; the fix
-     belongs in cubelang (full-length keys or interning by the full string).
+     exposed** (question programs, facts). Nick (2026-11-13): "should be fixed in Code B cubelang version": the fix
+     (full-length keys or interning by the full string) is Code B's, in cubelang; no client guard in the serve path.
+     The host guard stays in `rule_plan.run` and the step-2 build until the fixed build is the one `CUBELANG_EXE` names.
   3. The draw was not reproducible (set order follows the process's string hashing): values are sorted now; the same
      seed draws the same programs under any `PYTHONHASHSEED`. An earlier unseeded build is in `_discard`.
 
