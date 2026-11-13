@@ -10,6 +10,7 @@ Every plan passes `rule_plan.check` (a refused plan stops the build). Pairs of k
 capitals and all lowercase, JSON and paragraphs, ...) are not composed (`CLASH`).
 
   python validation/builders/build_rule_rows.py [--out $CUBBY_DATASETS/rule_rows_0067] [--per 250] [--seed 0]
+      [--wordings v1|v2]   # v2 (round 2): 10 training wordings a kind, a fresh new-wording split; out rule_rows_0067_v2
 Writes rows.jsonl and manifest.json there; prints the counts.
 """
 from __future__ import annotations
@@ -133,7 +134,7 @@ def render(kind, lang, which, rng) -> tuple[str, dict, int]:
     slots, plan = draw(kind, lang, rng)
     if which == "new" and "rel" in slots:                # the held-apart rows also word the comparison otherwise
         slots["rel"] = rng.choice(RT.REL_NEW[lang][rp.leaves(plan)[0]["op"]])
-    ts = RT.T[kind][lang][which]
+    ts = WORDINGS[kind][lang][which]
     i = rng.randrange(len(ts))
     return ts[i].format(**slots), plan, i
 
@@ -151,9 +152,18 @@ CLASH = {frozenset({"english_capital", "english_lowercase"}), frozenset({"json_f
          frozenset({"json_format", "first"}), frozenset({"json_format", "repeat_prompt"})}
 
 
+def use_wordings(name: str) -> None:
+    """``v1`` (round 1, `rule_templates.T`) or ``v2`` (round 2, `rule_wordings_v2.templates`)."""
+    global WORDINGS
+    WORDINGS = RT.T if name == "v1" else __import__("rule_wordings_v2").templates(RT.T)
+
+
+WORDINGS = RT.T
+
+
 def build(per: int, seed: int) -> list[dict]:
     rng, rows = random.Random(seed), []
-    kinds = sorted(RT.T)
+    kinds = sorted(WORDINGS)
     for kind in kinds:
         for lang in ("en", "fr"):
             for j in range(per):
@@ -186,18 +196,22 @@ def main() -> None:
     ap.add_argument("--out", default=None)
     ap.add_argument("--per", type=int, default=250)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--wordings", default="v1", choices=("v1", "v2"), help="round 1's wordings, or round 2's (more a kind)")
     a = ap.parse_args()
-    out = Path(a.out or Path(local_paths.value("CUBBY_DATASETS") or ".") / "rule_rows_0067")
+    use_wordings(a.wordings)
+    out = Path(a.out or Path(local_paths.value("CUBBY_DATASETS") or ".") /
+               ("rule_rows_0067" if a.wordings == "v1" else "rule_rows_0067_v2"))
     rows = build(a.per, a.seed)
     out.mkdir(parents=True, exist_ok=True)
     with open(out / "rows.jsonl", "w", encoding="utf-8") as f:
         for r in rows:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
-    tsrc = (Path(__file__).parent / "rule_templates.py").read_bytes()
+    tsrc = (Path(__file__).parent / "rule_templates.py").read_bytes() + (
+        (Path(__file__).parent / "rule_wordings_v2.py").read_bytes() if a.wordings == "v2" else b"")
     counts = Counter((r["split"], r["lang"]) for r in rows)
     man = {"order": "0067", "seed": a.seed, "per": a.per, "rows": len(rows),
            "by_split_lang": {f"{s}/{l}": n for (s, l), n in sorted(counts.items())},
-           "kinds": sorted(RT.T), "templates_sha256": hashlib.sha256(tsrc).hexdigest(),
+           "kinds": sorted(WORDINGS), "templates_sha256": hashlib.sha256(tsrc).hexdigest(), "wordings": a.wordings,
            "rows_sha256": hashlib.sha256((out / "rows.jsonl").read_bytes()).hexdigest()}
     (out / "manifest.json").write_text(json.dumps(man, indent=1), encoding="utf-8")
     print(json.dumps(man, indent=1))

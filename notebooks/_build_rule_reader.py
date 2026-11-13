@@ -27,12 +27,15 @@ def code(text):
 
 CELLS = [
     md(r"""
-# 0067: the rule reader's adapter
+# 0067: the rule reader's adapter, round 2
+
+Round 1 (`cubby450m_rules_v1`, 3 wordings a kind) read 149 of 150 dev rules exactly and 100 of 150 new wordings
+(82.3% agreement with IFEval's checker). Round 2 trains on 10 wordings a kind and is read on a fresh new-wording split.
 
 **Runtime:** an A100 (the set is 9,977 short training records, at most 89 tokens each; one epoch is about 312 steps
 of 32, minutes rather than hours). It reads, from Drive: `runs/base450m_cont/base450m_cont_final.pt` (the base every
-served adapter is on), the token cache's tokenizer, and `rules/rule_reader_sft.jsonl` with its manifest. It writes
-`rules/cubby450m_rules_v1/` (`talk_lora.safetensors` + `talk_lora.json`, the talk trainer's file names; the trunk
+served adapter is on), the token cache's tokenizer, and `rules/rule_reader_sft_v2.jsonl` with its manifest. It writes
+`rules/cubby450m_rules_v2/` (`talk_lora.safetensors` + `talk_lora.json`, the talk trainer's file names; the trunk
 loads it as the `rules` role). Training only: the read runs at home. **Disconnect when it prints `trained:`.**
 """),
     code(r"""
@@ -46,8 +49,8 @@ from google.colab import drive; drive.mount('/content/drive')
 REPO, DRIVE = '/content/CubbyLLM', '/content/drive/MyDrive/cubbyllm'
 CKPT      = f'{DRIVE}/runs/base450m_cont/base450m_cont_final.pt'
 TOKENIZER = f'{DRIVE}/token_cache_cont/tokenizer/grillcheese_bbpe128k.json'
-DATA      = f'{DRIVE}/rules/rule_reader_sft.jsonl'
-OUT       = f'{DRIVE}/rules/cubby450m_rules_v1'
+DATA      = f'{DRIVE}/rules/rule_reader_sft_v2.jsonl'      # round 2 (round 1: rule_reader_sft.jsonl)
+OUT       = f'{DRIVE}/rules/cubby450m_rules_v2'          # round 1's adapter (v1) is not touched
 for p in (CKPT, TOKENIZER, DATA, DATA + '.manifest.json'):
     assert os.path.exists(p), p
 man = json.load(open(DATA + '.manifest.json'))
@@ -70,7 +73,7 @@ EPOCHS, BATCH, LR, RANK, ALPHA, MAX_LEN = 1, 32, 2e-4, 16, 32, 160
 os.environ['CB_NO_FLEX'] = '1'                # the reference attention path; the trainer does not compile flex
 assert not os.path.exists(f'{OUT}/DONE'), f'{OUT} is already trained: move it aside to train again'
 os.makedirs(OUT, exist_ok=True)
-tag = '_rules_v1'
+tag = '_rules_v2'
 cmd = [sys.executable, '-u', 'validation/train_talk_torch.py', '--ckpt', CKPT, '--tokenizer', TOKENIZER,
        '--data', DATA, '--out', OUT, '--epochs', str(EPOCHS), '--batch', str(BATCH), '--lr', str(LR),
        '--rank', str(RANK), '--alpha', str(ALPHA), '--max-len', str(MAX_LEN), '--seed', '0', '--tag', tag]

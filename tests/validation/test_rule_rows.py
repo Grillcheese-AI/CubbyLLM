@@ -69,3 +69,27 @@ def test_no_training_wording_shares_five_words_with_a_benchmark_prompt():
     hits = [(r["instruction"], BO.overlaps(r["instruction"], bench)) for r in B.build(per=250, seed=0)
             if r["split"] in ("train", "dev") and BO.overlaps(r["instruction"], bench)]
     assert not hits, hits[:3]
+
+
+def test_round_two_trains_clean_and_reads_fresh_wordings():
+    """Round 2 (10 training wordings a kind): its new wordings are in no training list and were never read in round 1;
+    its train/dev rows share 5 words with no benchmark prompt (where the prompts are on this machine)."""
+    import pytest
+    import bench_overlap as BO
+    import rule_wordings_v2 as V2
+    T2 = V2.templates(RT.T)
+    for k, by_lang in T2.items():
+        for lang, w in by_lang.items():
+            assert len(w["train"]) == 10 and len(w["new"]) == 3, (k, lang)
+            assert not set(w["new"]) & set(w["train"]), (k, lang)
+            assert not set(w["new"]) & set(RT.T[k][lang]["train"] + RT.T[k][lang]["new"]), (k, lang)
+    bench = BO.benchmark_grams()
+    if not bench:
+        pytest.skip("no benchmark prompts on this machine")
+    try:
+        B.use_wordings("v2")
+        hits = [r["instruction"] for r in B.build(per=250, seed=1)
+                if r["split"] in ("train", "dev") and BO.overlaps(r["instruction"], bench)]
+    finally:
+        B.use_wordings("v1")
+    assert not hits, hits[:3]

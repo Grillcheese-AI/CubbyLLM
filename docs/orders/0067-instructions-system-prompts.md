@@ -388,6 +388,21 @@ instruction, the reader writes the rule) waits for the reader's line 3.
 - **What a next round would need** (Nick's call): many more wordings a kind. The order allows wording templates to be
   model-drafted (the 2026-11-10 rule; rules never are), each checked against the benchmarks (`bench_overlap.py`) and
   the new-wording templates kept apart; a fresh new-wording split would be drawn, since this one is now read.
+### The reader's second round, built for Colab (Nick, 2026-11-13: "go ahead"; Claude Code)
+- **Wordings** (`validation/builders/rule_wordings_v2.py`): 10 training wordings a kind and language (round 1's 3,
+  round 1's 2 spent new wordings, 5 more), and a **fresh new-wording split** of 3 a kind and language, in no training
+  list and never read in round 1. Drafted by hand here, not through a paid model (the 2026-11-10 rule allows
+  model-drafted wordings; no rule is). Round 1's new wordings that sat close to IFEval are reworded on their way into
+  training (`REWORD`); round 1's own rows stay as they were read. 0 train/dev rows share 5 words with an IFEval
+  prompt; pinned (`test_round_two_trains_clean_and_reads_fresh_wordings`).
+- **Rows** (`build_rule_rows.py --wordings v2 --seed 1`, off-repo `rule_rows_0067_v2`, sha `a806725f...`): 12,870,
+  1,800 new-wording rows. `--wordings v1` still rebuilds round 1's rows bit for bit.
+- **The set** (on Drive, `rules/rule_reader_sft_v2.jsonl`, sha `6bc5c027...`): 11,070 records (9,927 train, 1,143
+  held); 0 sharing 5 words with IFEval; 0 slot boundaries tokenized otherwise.
+- **The notebook** (`rule_reader.ipynb`, rebuilt): the same settings as round 1, the round 2 set, writes
+  `rules/cubby450m_rules_v2/` (round 1's adapter untouched).
+- **The read at home:** dev (`--rows` the v2 rows), then the fresh new wordings once, then IFEval's checker on those
+  plans; the held-out kinds once, only if line 3 is met.
 - **Commits:**
 - **Files:**
 - **Tests:**
