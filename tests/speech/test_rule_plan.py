@@ -79,3 +79,21 @@ def test_a_plan_that_names_no_measurement_is_asked_never_checked():
 def test_the_program_binds_the_reply_statements_it_reads():
     src, sts = rp.program({"m": "word count", "op": "<=", "v": 3}, "one two")
     assert sts == ["2 is the word count of the reply"] and "assign m_word_count = 2;" in src
+
+
+def test_a_relation_with_an_argument_runs_in_the_vm(vm):
+    plan = {"and": [{"m": "count of the word", "arg": "river", "op": ">=", "v": 2},
+                    {"m": "starts with", "arg": '"', "op": "==", "v": "yes"},
+                    {"m": "count of the word", "arg": "sea", "op": "<", "v": 1}]}
+    assert rp.check(plan) is None
+    assert rp.run(plan, '"The river meets the river."', vm)["held"] is True
+    assert rp.run(plan, '"The river meets the sea."', vm)["held"] is False
+    assert rp.run(plan, 'The river, the river.', vm)["held"] is False
+    src, sts = rp.program(plan, '"river river"')
+    assert 'assign m_count_of_the_word_0 = 2;' in src and '2 is the count of the word "river" of the reply' in sts
+
+
+def test_an_argument_is_required_where_it_is_taken_and_refused_elsewhere():
+    assert "takes an argument" in rp.check({"m": "count of the word", "op": ">=", "v": 1})
+    assert "takes an argument" in rp.check({"m": "starts with", "arg": "", "op": "==", "v": "yes"})
+    assert "takes no argument" in rp.check({"m": "word count", "arg": "x", "op": "<=", "v": 3})

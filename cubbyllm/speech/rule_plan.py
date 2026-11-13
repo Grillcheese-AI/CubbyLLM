@@ -4,7 +4,8 @@ the VM (order 0067, step 3: the plan family; its runner).
 A plan (the shape the program seat writes, the way it writes a plan over the store's relations for a question):
 - a leaf ``{"m": <a reply_world relation>, "op": <op>, "v": <value>}``; ops: ``<=``, ``>=``, ``<``, ``>``, ``==``
   and ``!=`` (a count is compared as a number, any other value as a string), ``has`` / ``lacks`` (a relation with
-  several values: the reply's words, its JSON keys, its openings);
+  several values: the reply's words, its JSON keys, its openings); a relation with an argument
+  (`reply_world.PARAMETRIC`: "count of the word", "starts with", ...) names it in ``"arg"``, a non-empty string;
 - ``{"and": [...]}``, ``{"or": [...]}``, ``{"not": plan}``;
 - optional ``"scope"`` (``session``, ``turn``, or a topic) on the outermost node: where the rule applies (the turn,
   step 4, reads it; the VM never does).
@@ -52,8 +53,10 @@ def check(plan: dict) -> str | None:
     if not isinstance(plan, dict) or not (set(plan) & {"m", "and", "or", "not"}):
         return "not a plan"
     for lf in leaves(plan):
-        if lf.get("m") not in rw.RELATIONS:
+        if lf.get("m") not in rw.RELATIONS and lf.get("m") not in rw.PARAMETRIC:
             return f"no measurement {lf.get('m')!r}"
+        if (lf["m"] in rw.PARAMETRIC) != bool(isinstance(lf.get("arg"), str) and lf["arg"] != ""):
+            return f"{lf['m']!r} takes an argument" if lf["m"] in rw.PARAMETRIC else f"{lf['m']!r} takes no argument"
         if lf.get("op") not in NUM_OPS + SET_OPS:
             return f"no op {lf.get('op')!r}"
         if (lf["op"] in SET_OPS) != (lf["m"] in MULTI):
@@ -67,7 +70,11 @@ def check(plan: dict) -> str | None:
 
 
 def _is_num(rel: str) -> bool:
-    return rel.endswith("count")
+    return rel.endswith("count") or rel.startswith("count of")
+
+
+def _key(lf: dict) -> tuple:
+    return lf["m"], lf.get("arg")
 
 
 def _lit(rel: str, v) -> str:
@@ -75,8 +82,9 @@ def _lit(rel: str, v) -> str:
 
 
 class _Writer:
-    def __init__(self, lists: dict) -> None:
+    def __init__(self, lists: dict, names: dict) -> None:
         self.lines, self.n, self.lists = [], 0, lists       # a multi-valued relation: its list literal
+        self.names = names                                  # (relation, argument) -> its variable
 
     def flag(self) -> str:
         self.n += 1
@@ -87,7 +95,7 @@ class _Writer:
     def node(self, p: dict) -> str:
         c = None
         if "m" in p:
-            c, var, op = self.flag(), _var(p["m"]), p["op"]   # (`var` unused for a list)
+            c, var, op = self.flag(), self.names[_key(p)], p["op"]   # (`var` unused for a list)
             if op in SET_OPS:
                 hit = self.flag()
                 if self.lists.get(p["m"]):                   # (an empty list: nothing to find)
@@ -115,20 +123,26 @@ class _Writer:
 
 def program(plan: dict, reply: str) -> tuple[str, list[str]]:
     """(the CubeLang source, the reply's statements it binds). Call `check` first."""
-    rels = list(dict.fromkeys(lf["m"] for lf in leaves(plan)))
-    measured: dict = {}
-    for _s, r, v in rw.measure(reply, rels):
-        measured.setdefault(r, []).append(v)
-    w = _Writer({r: ", ".join(_lit(r, v) for v in measured.get(r, [])) for r in rels if r in MULTI})
-    for r in rels:
-        vals = measured.get(r, [])
+    keys = list(dict.fromkeys(_key(lf) for lf in leaves(plan)))
+    plain = [r for r, a in keys if a is None]
+    measured: dict = {}                                  # (relation, argument) -> its values
+    for _s, r, v in rw.measure(reply, plain):
+        measured.setdefault((r, None), []).append(v)
+    for r, a in keys:
+        if a is not None:
+            measured[(r, a)] = [v for _s, _r, v in rw.measure_arg(reply, r, a)]
+    names = {k: _var(k[0]) if k[1] is None else f"{_var(k[0])}_{i}" for i, k in enumerate(keys)}
+    w = _Writer({r: ", ".join(_lit(r, v) for v in measured.get((r, None), [])) for r, a in keys if r in MULTI}, names)
+    for k in keys:
+        vals, r = measured.get(k, []), k[0]
         if r not in MULTI:
-            w.lines.append(f"        create {_var(r)}: {'number' if _is_num(r) else 'str'};")
-            w.lines.append(f"        assign {_var(r)} = {_lit(r, vals[0]) if vals else '0'};")
+            w.lines.append(f"        create {names[k]}: {'number' if _is_num(r) else 'str'};")
+            w.lines.append(f"        assign {names[k]} = {_lit(r, vals[0]) if vals else '0'};")
     top = w.node(plan)
     body = "\n".join(w.lines + [f"        return {top};"])
     src = f"program ReplyRule implements ISolve {{\n    public function solve(mention: str): number {{\n{body}\n    }}\n}}\n"
-    return src, [f"{v} is the {r} of {rw.SUBJ}" for r in rels for v in measured.get(r, [])]
+    said = lambda k: k[0] if k[1] is None else f'{k[0]} "{k[1]}"'          # noqa: E731
+    return src, [f"{v} is the {said(k)} of {rw.SUBJ}" for k in keys for v in measured.get(k, [])]
 
 
 def run(plan: dict, reply: str, run_fn) -> dict:

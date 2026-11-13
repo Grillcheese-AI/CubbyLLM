@@ -89,3 +89,26 @@ def test_a_rule_over_the_statements_agrees_with_the_measures_own_check():
     for rule in RULES:
         for reply in REPLIES:
             assert held(rule, reply) == IF.check(rule, reply), (rule, reply)
+
+
+def test_the_seen_kinds_measurements():
+    t = "Intro\n*** \nSECTION 1 a *hi* **bold** <<The Title>>\n***\n\n***\nSECTION 2 end"
+    assert vals(t, "paragraph count") == ["3"] and vals(t, "empty paragraph count") == ["1"]
+    assert vals(t, "highlight count") == ["2"] and vals(t, "title count") == ["1"] and vals("<< >>", "title count") == ["0"]
+    two = "First answer.\n******\nSecond answer."
+    assert vals(two, "response count") == ["2"] and vals(two, "distinct response count") == ["2"]
+    assert vals("same ****** same", "distinct response count") == ["1"]
+    assert vals("a ****** ****** b", "empty response count") == ["1"]
+
+
+def arg(text, rel, a):
+    return [v for _s, _r, v in rw.measure_arg(text, rel, a)]
+
+
+def test_relations_with_an_argument():
+    assert arg("The river, the River! rivers", "count of the word", "river") == ["2"]
+    assert arg("Banana", "count of the letter", "a") == ["3"] and arg("a,b,c", "count of the character", ",") == ["2"]
+    assert arg('  "Quoted reply"  ', "starts with", '"') == ["yes"] and arg('"Quoted reply"', "ends with", '"') == ["yes"]
+    assert arg("Repeat this first. Then more.", "starts with", "repeat THIS first") == ["yes"]
+    assert arg("Intro SECTION 1 a SECTION 2 b", "section count", "SECTION") == ["2"]
+    assert rw.measure_arg("x", "count of the word", "x") == [("the reply", 'count of the word "x"', "1")]
