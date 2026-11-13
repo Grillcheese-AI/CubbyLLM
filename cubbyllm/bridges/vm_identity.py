@@ -1,7 +1,8 @@
 """cubbyllm/bridges/vm_identity.py -- which VM a run used, for its summary (Nick, 2026-11-13: every run names its VM).
 
 `identity()` -> {"path", "modified", "sha256", "commit", "older_than_sources"} for the binary `cubelang_client` resolves
-(``$CUBELANG_EXE``, else the sibling checkout's release build). The path is written relative to the folder that holds
+(``CUBELANG_EXE`` from the environment or ``paths.local.json``, else the sibling checkout's release build; a binary
+older than its sources is refused unless ``CB_ALLOW_STALE_VM=1``). The path is written relative to the folder that holds
 this repo (``cubelang-cowork/target/release/cubelang.exe``), never with a drive or a user folder, so a committed log
 can carry it. ``commit`` is the HEAD of the cubelang worktree the binary sits in (read locally with git; None outside
 a checkout); ``older_than_sources`` is True when a source file in that worktree is newer than the binary.

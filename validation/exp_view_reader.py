@@ -10,7 +10,11 @@ Lines (0067's addendum): every sentence accounted for (0 dropped silently, kill)
 5-8 parts at least 90% of the in-length agreement.
 
   python validation/exp_view_reader.py --export <450M export> --tokenizer <json> --adapter <view reader adapter>
-      [--splits test,test_long] [--n 100] [--max-new 1800] [--out <json>] [--keep <answers.jsonl>]
+      [--splits test,test_long] [--n 100] [--max-new 1800] [--out <json>] [--keep <answers.jsonl>] [--chunk i/k]
+  python validation/exp_view_reader.py --merge <chunk json> ... --out <json>
+
+``--chunk i/k`` reads the i-th of k equal slices of each split's seeded sample (the same sample as a whole read), so a
+long read on the local card runs in short pieces; ``--merge`` sums the chunks' counts into the one report.
 """
 from __future__ import annotations
 
@@ -63,11 +67,44 @@ def covered(instruction: str, segs: list) -> int:
     return sum(1 for k, c in enumerate(instruction) if not mask[k] and not c.isspace())
 
 
+def summarize(t: Counter) -> dict:
+    n = max(1, t["checked"])
+    return {"counts": dict(t), "span_and_kind": round(t["parts with span and kind"] / max(1, t["parts"]), 4),
+            "agreement": round(t["agree"] / n, 4), "false_passes": round(t["false passes"] / n, 4),
+            "checked_share": round(t["checked"] / max(1, t["replies"]), 4),
+            "seconds_per_instruction": round(t["seconds"] / max(1, t["rows"]), 1)}
+
+
+def with_ratio(report: dict) -> dict:
+    if "test" in report["splits"] and "test_long" in report["splits"]:
+        a_in, a_long = report["splits"]["test"]["agreement"], report["splits"]["test_long"]["agreement"]
+        report["long_over_in_length"] = round(a_long / a_in, 4) if a_in else None
+    return report
+
+
+def merge(files: list, out: str | None) -> None:
+    parts = [json.loads(Path(f).read_text(encoding="utf-8")) for f in files]
+    report = {k: parts[0][k] for k in ("order", "what", "adapter", "vm")}
+    report["chunks"] = [p.get("chunk") for p in parts]
+    report["splits"] = {}
+    for split in parts[0]["splits"]:
+        t = Counter()
+        for p in parts:
+            t.update(p["splits"][split]["counts"])
+        report["splits"][split] = summarize(t)
+    with_ratio(report)
+    print(json.dumps(report, indent=1))
+    if out:
+        Path(out).write_text(json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--export", required=True)
-    ap.add_argument("--tokenizer", required=True)
-    ap.add_argument("--adapter", required=True)
+    ap.add_argument("--merge", nargs="+", default=None)
+    ap.add_argument("--export")
+    ap.add_argument("--tokenizer")
+    ap.add_argument("--adapter")
+    ap.add_argument("--chunk", default="0/1")
     ap.add_argument("--rows", default=None)
     ap.add_argument("--splits", default="test,test_long")
     ap.add_argument("--n", type=int, default=100)
@@ -75,6 +112,11 @@ def main() -> None:
     ap.add_argument("--out", default=None)
     ap.add_argument("--keep", default=None)
     a = ap.parse_args()
+    if a.merge:
+        return merge(a.merge, a.out)
+    if not (a.export and a.tokenizer and a.adapter):
+        ap.error("--export, --tokenizer and --adapter are needed for a read")
+    ci, ck = (int(x) for x in a.chunk.split("/"))
     rows_p = Path(a.rows or Path(local_paths.value("CUBBY_DATASETS") or ".") / "long_rows_0067" / "rows.jsonl")
     rows = [json.loads(ln) for ln in open(rows_p, encoding="utf-8")]
     from cubbyllm.emit.seats_450m import Cubby450mTrunk
@@ -88,10 +130,11 @@ def main() -> None:
             pieces[t] = tk.decode([t])
         return pieces[t]
     report, kept = {"order": "0067", "what": "the second reader read on held-out instructions", "adapter": Path(a.adapter).name,
-                    "vm": vm_identity.identity(), "splits": {}}, []
+                    "vm": vm_identity.identity(), "chunk": a.chunk, "splits": {}}, []
     for split in a.splits.split(","):
         pool = [r for r in rows if r["split"] == split]
         sample = random.Random(0).sample(pool, min(a.n, len(pool)))
+        sample = sample[len(sample) * ci // ck: len(sample) * (ci + 1) // ck]
         t = Counter()
         for r in sample:
             t0 = time.time()
@@ -124,15 +167,9 @@ def main() -> None:
                 t["agree"] += int(v == rep["held"])
                 t["false passes"] += int(v and not rep["held"])
             kept.append({"id": r["id"], "split": split, "answer": answer})
-        n = max(1, t["checked"])
-        report["splits"][split] = {"counts": dict(t), "span_and_kind": round(t["parts with span and kind"] / max(1, t["parts"]), 4),
-                                   "agreement": round(t["agree"] / n, 4), "false_passes": round(t["false passes"] / n, 4),
-                                   "checked_share": round(t["checked"] / max(1, t["replies"]), 4),
-                                   "seconds_per_instruction": round(t["seconds"] / max(1, t["rows"]), 1)}
+        report["splits"][split] = summarize(t)
         print(split, json.dumps(report["splits"][split]), flush=True)
-    if "test" in report["splits"] and "test_long" in report["splits"]:
-        a_in, a_long = report["splits"]["test"]["agreement"], report["splits"]["test_long"]["agreement"]
-        report["long_over_in_length"] = round(a_long / a_in, 4) if a_in else None
+    with_ratio(report)
     if a.out:
         Path(a.out).write_text(json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8")
     if a.keep:
