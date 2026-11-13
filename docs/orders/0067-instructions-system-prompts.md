@@ -966,6 +966,30 @@ item in reading order, each row with its place (`i`) and its characters (`start`
   3. The draw was not reproducible (set order follows the process's string hashing): values are sorted now; the same
      seed draws the same programs under any `PYTHONHASHSEED`. An earlier unseeded build is in `_discard`.
 
+### Step 3, built: long instructions with their split and join (Code A, 2026-11-13)
+- **Wording** (`validation/builders/view_wording.py`): every atom said in English and French by hand-written templates,
+  as an instruction (`say`), its negation (`say_not`, the negation carried into the atom: "fewer than", "no ...",
+  "the second sentence, if there is one, should not ...") and a condition (`say_cond`, for "if" and "unless"). Counts
+  said as people say them ("at least one", "no", "a number of lines other than 3"). Read by eye on a sample and fixed
+  where a wording said another rule (a numeric "!=" was said "exactly"); 0 French "aucun" without its "ne" in 8,538.
+- **The join** (`view_join.py`): one function per part, taking the view columns it reads as arguments (a called
+  function cannot read the caller's values on this build: probed), and a `solve` that calls the parts in the stated
+  order and joins them: all groups must hold; "A unless B" (A or B), "if B, A", "either A or B".
+- **Rows** (`build_long_rows.py`, `view_long_pools.py`): parts drawn one by one from the replies the parts so far still
+  pass; a negated part checked against the held-out forms as the atom it equals; groups; then a task sentence (Nick's
+  task words, `task_verbs` reads each one back), phrases no measurement covers (round 6's held-out phrases only in
+  held-out rows), a process step, sentences that are not instructions, in EN or FR. Targets: `segments` (each sentence
+  or clause, its character span and kind: check (its part, and "condition" for an if/unless clause), task, asked,
+  process, none) and `join`. Parts numbered as the text states them. Kept when the joined program's VM verdict is the
+  evaluator's on all 8 replies (4 pass, 4 fail); train/dev rows sharing 5 words with IFEval or IFBench dropped (34).
+- **The set** (`$CUBBY_DATASETS/long_rows_0067`, seed 0, sha `ff415be4...`, `long_rows_2026-11-13_manifest.json`):
+  3,900 rows: train 3,000, dev 300, test 300 (2-4 parts, unseen compositions), test_long 300 (5-8 parts, line 4);
+  EN 2,269, FR 1,631; segments: 12,884 checks, 3,109 tasks, 3,881 asked, 1,557 process, 3,777 not instructions;
+  groups: 8,696 single, 1,075 either, 559 if, 460 unless. **31,091 VM runs, 0 disagreements.**
+  Tests: `tests/validation/test_long_rows.py`.
+- Next: step 4 (CubeLang as a syntax curriculum: the repo's examples and tests, the programs seat's rows), step 5
+  (the reader, grammar-constrained through 0071's hook), then its Colab round; 0072 after step 3, as Nick set.
+
 ## Cowork's note (2026-11-13): a real long instruction to test the split and the join on
 Nick pointed to the OpenThoughts sets in the training data (`unified/`). Read for this order:
 - **AgentTrove** (`open_thoughts_agent_trove.jsonl`, already in the decay mix's agent shards): all 20,000 rows read

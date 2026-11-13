@@ -1,0 +1,59 @@
+{
+ "order": "0067",
+ "what": "the second reader's step 3: long instructions with their split and join, run before kept",
+ "seed": 0,
+ "rows": 3900,
+ "by_split": {
+  "train": 3000,
+  "dev": 300,
+  "test": 300,
+  "test_long": 300
+ },
+ "by_lang": {
+  "fr": 1631,
+  "en": 2269
+ },
+ "by_parts": {
+  "2": 1082,
+  "3": 1280,
+  "4": 1238,
+  "5": 76,
+  "6": 87,
+  "7": 70,
+  "8": 67
+ },
+ "segments_by_kind": {
+  "task": 3109,
+  "check": 12884,
+  "process": 1557,
+  "none": 3777,
+  "asked": 3881
+ },
+ "groups": {
+  "one": 8696,
+  "either": 1075,
+  "unless": 460,
+  "if": 559
+ },
+ "drop_reasons": {
+  "train: too few usable replies on one side": 177,
+  "train: shares 5 words with a benchmark": 28,
+  "dev: shares 5 words with a benchmark": 6,
+  "dev: too few usable replies on one side": 19,
+  "test: too few usable replies on one side": 20
+ },
+ "vm_runs_agreeing": 31091,
+ "vm_disagreements": 0,
+ "benchmarks_checked": [
+  "IFBench",
+  "IFEval"
+ ],
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-11 15:18",
+  "sha256": "3120403f35b007eb85a2302086da7fb1447830573f0f2d540e4c62fdb0cbc37b",
+  "commit": "3f37515",
+  "older_than_sources": false
+ },
+ "rows_sha256": "ff415be429dff0538e0efa9ddc4a14658910a5eb5cc89262c70139759a4e29b7"
+}
