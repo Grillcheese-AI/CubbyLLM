@@ -32,7 +32,8 @@ CELLS = [
 The answers only: each instruction read whole by the adapter, its answer held token by token to the grammar (rules
 1-9, `--grammar typed`), the same rows as the read at home (each split's seeded sample). The VM scores the answers at
 home. A batch of 32 instructions decodes in lockstep; about ten minutes for 300 rows on an A100 (the local card: two
-hours).
+hours). `N = 300` reads each split whole (900 rows, about half an hour): the counted read; its counted ids are
+hashed in `validation/logs/view_reader_round2_counted_ids_2026-11-14.json`.
 
 **Set `ADAPTER` below** (`cubby450m_view_reader_v1` or `_v2`). It reads, from Drive, the base, the tokenizer, the
 adapter and `rules/long_rows_0067/rows.jsonl`; it writes `rules/reads/<adapter>_<grammar>_answers.jsonl` (resumable:
@@ -48,7 +49,7 @@ else:
 from google.colab import drive; drive.mount('/content/drive')
 REPO, DRIVE = '/content/CubbyLLM', '/content/drive/MyDrive/cubbyllm'
 ADAPTER   = 'cubby450m_view_reader_v2'          # or 'cubby450m_view_reader_v1'
-GRAMMAR, SPLITS, N, BATCH = 'typed', 'dev,test,test_long', 100, 32
+GRAMMAR, SPLITS, N, BATCH = 'typed', 'dev,test,test_long', 300, 32   # 300 = each split whole (the counted read)
 CKPT      = f'{DRIVE}/runs/base450m_cont/base450m_cont_final.pt'
 TOKENIZER = f'{DRIVE}/token_cache_cont/tokenizer/grillcheese_bbpe128k.json'
 ROWS      = f'{DRIVE}/rules/long_rows_0067/rows.jsonl'
