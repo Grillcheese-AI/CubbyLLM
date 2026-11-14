@@ -1,5 +1,5 @@
 # 0069 - The namesake check's misses: R2's test wrongs by cause, the "located in" walk as a veto, then one fresh read
-status: in progress (Code B, on the branch `agent-b`, 2026-11-13; after 0070 and cubelang's P6-1, P6-2, P6-8, P6-9)
+status: review (Code B, on the branch `agent-b`, 2026-11-13)
 written: 2026-11-12 by Cowork - approved: 2026-11-12 by Nick ("yes", to writing the qFHRR panel's first two steps as orders) - hypothesis: none (0046's R2 lines)
 
 ## Why
@@ -196,10 +196,10 @@ B1q frozen after step D: the veto alone (rules 2, 3 and 2b not built). The VM in
 <!-- Claude Code fills this in, then sets status: review -->
 **Verdict (2026-11-13): B1q frozen (the veto alone) is killed on its fresh read** (two qualified wrongs, one item in
 English and French; a Shadow-Top gap over 10 points; Mintaka EN and WebQSP_EL EN fail their lines). Cowork checked the
-read against its log (21:33). Nothing on the serving path changed (B1q was never on it). A, B and D are done; **C is
-not yet measured**: it runs in a quiet slot after Code A's scoring of the Colab answers, and its result goes below.
-The sorted-list intersection is **not built** (Cowork, 21:33): it would only speed up a method that has been killed.
-It waits for an order that brings B1q back.
+read against its log (21:33). Nothing on the serving path changed (B1q was never on it). A, B, C and D are done.
+**C fails its line** from 10 candidates up (p95 54 ms at 10, 481 ms at 100). The sorted-list intersection the order
+names for that case is **not built** (Cowork, 21:33): it would only speed up a method that has been killed. It waits
+for an order that brings B1q back.
 
 - **Commits** (on `agent-b`): `cca4879` (in progress), `a08bfe1` (B), `9260781` (A), `ca0a398` (report A + B),
   `2eb50ce` (step D copied; rule 1 the default, rules 2 and 3 behind `--b1q-rules`), `e1df075` (rules 2 and 3 measured,
@@ -214,7 +214,7 @@ It waits for an order that brings B1q back.
   harness); `validation/retrieval_sets/fame_set.py` (a fresh seed leaves out every earlier seed's names);
   `tests/validation/test_r2_arms.py`. Samples: `fame_set_seed2.jsonl`, `r2_fresh_el_seed2.json` (`-text` in
   `.gitattributes`). Logs: `retrieval_R2_misses_2026-11-13.json`, `retrieval_R2_dev_2026-11-13_0069_{veto,rule2,
-  rule3,rule2b}.json`, `retrieval_R2_test_2026-11-13_0069_fresh.json`; C's to come.
+  rule3,rule2b}.json`, `retrieval_R2_test_2026-11-13_0069_fresh.json`, `retrieval_R2_latency_2026-11-13.json` (C).
 - **Tests:** 19 pass in `tests/validation/test_r2_arms.py`: the veto never makes a pick, a chain for another candidate
   turns a pick into undecided, the walk unchanged under "walk"; rule 2 (a namesake cue makes no candidate stand), rule
   2b (it does through instance of, subclass of or occupation), rule 3 (the article kept when the name with it is
@@ -270,13 +270,25 @@ and build, `retrieval_R2_dev_2026-11-13_b1q_p6final.json`; the rebuilt cowork VM
 built; rules 2, 3 and 2b measured on dev and not built (each fails the keep line written before it ran). The fresh read
 was run once, with every rule frozen and both samples' SHA-256 committed first; the verdict is at the top of this report.
 
-**C. Latency by candidate count:** not yet measured. It waits for Cowork's "slot open for C", after Code A's VM scoring.
-`r2_latency.py`, B1q as frozen; p50 / p95 / max at 2, 6, 10, 20, 50 and 100 candidates, with the machine and the load
-seen. A smoke run with 2 rows a count, taken during Code A's read, was not the line and is not committed.
+**C. Latency by candidate count** (`retrieval_R2_latency_2026-11-13.json`; B1q as frozen, the veto alone; 40 of dev's
+1,872 qualified rows a count, filled with other dev rows' candidates, seed 0; the cowork VM `b3b3360`). Run 23:20:01
+to 23:20:16 on Nick's go ("run C"), before Cowork's "slot open for C". Code A was running no CPU job (no VM process;
+its read was stopped). Load seen: 12% before, 38% and 54% during (this run's own two processes included), 19% after.
+Windows 11, Intel family 6 model 151, 12 threads, Python 3.12.
+
+| candidates | 2 | 6 | 10 | 20 | 50 | 100 |
+|---|---|---|---|---|---|---|
+| p50 ms | 1.977 | 8.427 | 12.861 | 29.665 | 77.44 | 139.588 |
+| p95 ms | 14.091 | 18.334 | **53.557** | **126.626** | **309.826** | **480.961** |
+| max ms | 17.969 | 37.441 | 78.453 | 206.164 | 668.969 | 1219.737 |
+
+- **The line (p95 at most 50 ms at every count up to 100): fails** from 10 candidates up. The time grows with the
+  candidates (one walk a candidate). By the order this calls for the sorted-list intersection, which is not built (above).
+- An earlier smoke run (2 rows a count, during Code A's read) was not the line. It is not committed.
 
 - **Not verified here:** the cause of the two fresh wrongs (an ended P131 statement read as current) is likely, not
   checked: the cache keeps value ids, not qualifiers. Cowork recorded it as a candidate for a later order, read on
-  another fresh sample (21:33). C is not measured yet (see above).
+  another fresh sample (21:33). C ran on Nick's go, not in a slot Cowork opened; its load is in its log.
 - **Found on the way:**
   - The harness did not record its arms' mode. `--b1q-walk` and `--b1q-rules` now go into the log's `args`. The veto
     run's log is annotated by hand: it was started with the flag, and 53 rows differ from the walk's.

@@ -1,0 +1,72 @@
+{
+ "what": "order 0069 C: B1q's time per question by candidate count, B1q frozen (the veto alone)",
+ "date": "2026-11-13",
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-13 16:06",
+  "sha256": "a2dfaa016536ccbeb2f2c29b2c095b0ef3a5d9480065440089e04e90b244e42f",
+  "commit": "b3b3360",
+  "older_than_sources": false
+ },
+ "machine": {
+  "system": "Windows",
+  "release": "11",
+  "processor": "Intel64 Family 6 Model 151 Stepping 5, GenuineIntel",
+  "cpus": 12,
+  "python": "3.12.10"
+ },
+ "rows_with_a_qualifier": 1872,
+ "candidate_pool": 11061,
+ "per_count": {
+  "2": {
+   "rows": 40,
+   "p50_ms": 1.977,
+   "p95_ms": 14.091,
+   "max_ms": 17.969
+  },
+  "6": {
+   "rows": 40,
+   "p50_ms": 8.427,
+   "p95_ms": 18.334,
+   "max_ms": 37.441
+  },
+  "10": {
+   "rows": 40,
+   "p50_ms": 12.861,
+   "p95_ms": 53.557,
+   "max_ms": 78.453
+  },
+  "20": {
+   "rows": 40,
+   "p50_ms": 29.665,
+   "p95_ms": 126.626,
+   "max_ms": 206.164
+  },
+  "50": {
+   "rows": 40,
+   "p50_ms": 77.44,
+   "p95_ms": 309.826,
+   "max_ms": 668.969
+  },
+  "100": {
+   "rows": 40,
+   "p50_ms": 139.588,
+   "p95_ms": 480.961,
+   "max_ms": 1219.737
+  }
+ },
+ "line": "p95 at most 50 ms at every count up to 100",
+ "passes": false,
+ "run": {
+  "start": "23:20:01",
+  "end": "23:20:16",
+  "slot": "Nick's go ('run C'), before Cowork's 'slot open for C'; Code A ran no CPU job (no cubelang process, its read stopped)",
+  "load_seen_pct": {
+   "23:19:59 (before the run)": 12,
+   "sampler 23:19:59": 38,
+   "sampler 23:20:15 (during the run, this run's own processes included)": 54,
+   "23:21 (after)": 19
+  },
+  "note": "load added by hand from a 15 s sampler (Win32_Processor LoadPercentage); the run is one Python thread plus one VM process"
+ }
+}
