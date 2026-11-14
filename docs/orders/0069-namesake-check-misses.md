@@ -164,6 +164,32 @@ traceback, from outside, and was rerun whole):
   on Mintaka (9 -> 10) and ShadowLink Tail (0 -> 1); it cuts them on WebQSP_EL (5 -> 2), ShadowLink Top (15 -> 8) and
   Shadow (14 -> 9). By the line it is not built; B1q stands frozen as the veto alone (rule 1).
 
+### The fresh read (Claude Code (B), 2026-11-13; read once)
+`retrieval_R2_test_2026-11-13_0069_fresh.json`: fame seed 2 (`fame_set_seed2`, SHA-256 `e4870e9d...`) and the fresh EL test
+rows (`r2_fresh_el_seed2`, `9c5d31b5...`), both committed (`71233cd`, kept byte for byte `6ed0634`) before any arm ran.
+B1q frozen after step D: the veto alone (rules 2, 3 and 2b not built). The VM in the log: the cowork build of `b3b3360`
+(sha256 `a2dfaa01...`). Today's tiers on the same rows.
+
+| fresh read | B1q: right / wrong / undecided / refused | tiers | R2's line |
+|---|---|---|---|
+| fame bare (1,000 rows) | 1,000 held, **0 single** | 1,000 held | 0 single: met |
+| fame qualified (1,100) | 765 / **2** / 127 / 206 (resolved 0.6955) | 0 decided (1,100 undecided) | 0 wrong and >= 70%: **killed** (2 wrong); 0.6955 under 0.70 |
+| fame qualified EN / FR | 426 / 1 / 70 / 60; 339 / 1 / 57 / 146 | | |
+| Mintaka EN (440) | 48 / **16** / 333 / 43 (decided 64) | 80 / 15 / 302 / 43 (decided 95) | not more wrong than tiers, <= 1 in 50, more decided: **fails all three** (3.6%) |
+| WebQSP_EL EN (338) | 34 / 7 / 282 / 15 (decided 41) | 62 / 14 / 247 / 15 (decided 76) | fewer wrong than tiers; 7 / 338 = 2.07% (line 2%) and fewer decided: **fails** |
+| ShadowLink Top, gold bears (46) | 12 / 2 / 32 / 0 (0.857 of spoken picks) | 3 / 2 / 41 / 0 | |
+| ShadowLink Shadow, gold bears (25) | 4 / 0 / 21 / 0 (1.000 of spoken picks) | 0 / 1 / 24 / 0 | within 5 points of Top: **killed**: gap 14.3 points (over 10), on 4 Shadow picks |
+| ShadowLink Tail (89) | 33 / 2 / 51 / 3 | 76 / 1 / 9 / 3 | |
+
+- **The kill lines are met:** two qualified wrongs, and a Shadow-Top gap over 10 points (small counts: 4 and 14 spoken
+  picks).
+- **The two qualified wrongs are one item in both languages:** `fame2:357:q:Q7191272` (en, fr): the gold, a village
+  (`Q7191272`), states its place through `Q2108437`, whose chain no longer reaches South Northamptonshire (`Q1432575`, a
+  district abolished in 2021), so the veto has nothing to refuse with; the pick, the village's railway station
+  (`Q7191274`), states `P131` South Northamptonshire and `P131` `Q60790129` side by side. The likely cause, not checked
+  here (the cached profile keeps value ids, not qualifiers): the station's South Northamptonshire statement is an ended
+  one that B1q reads as current. R4's rule (the source's own rank and dates) would be the general fix; not built here.
+
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
 **Where it stands (2026-11-13):** A and B done and committed; C waits for cubelang P6-10 on the shared VM (the P6 build
