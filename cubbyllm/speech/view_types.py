@@ -135,6 +135,16 @@ def typed_ok(prog: str) -> bool:
             bare = _QUOTED.sub('""', ln)
             if any(n not in params for n in _NAME.findall(bare)):   # a name still being written (at the end) waits
                 return False
+            tail = re.search(r"\b((?:n|char|word|sentence|line|paragraph|item|json)_[a-z_]*)$", bare)
+            if tail and not any(p.startswith(tail.group(1)) for p in params):   # ... but only towards one of its own
+                return False
+            loops = {p[2:] for p in params if p.startswith("n_")} & \
+                {p.split("_")[0] for p in params if not p.startswith("n_")}   # views it has the size and a column of
+            if not loops and re.match(r"\s+(?:w|if \(p|create [kip])", bare):
+                return False                                     # none: no loop or position can be written
+            lv = re.search(r"(?:while \(i\d+|if \(p\d+) < n_([a-z]*)(\)?)", bare)   # a loop / a position over a view
+            if lv and not any(v.startswith(lv.group(1)) if not lv.group(2) else v == lv.group(1) for v in loops):
+                return False                                     # ... only over one of those
             if not _one_view(bare):
                 return False
             lets = dict(_LET.findall(bare))
@@ -151,6 +161,8 @@ def typed_ok(prog: str) -> bool:
             if n_calls < len(sigs):
                 return False
             joining = True
+        if ln.startswith("        l") and n_calls >= len(sigs):    # every part called: no call begins
+            return False
         lp = re.match(r"\s+let p(\d*)(?: = part(\d*))?", ln)
         if lp:                                                   # rule 8: pK = partK, in order, before the join
             want = str(n_calls + 1)
@@ -247,14 +259,32 @@ class TypedGrammar(Grammar):
     """`view_grammar.Grammar` with rules 1-9 on the program (rule 9, the part's own words: `view_words`)."""
 
     def _check(self, text: str) -> tuple[bool, bool]:
-        self._texts = VW.texts(text.split(SEP, 1)[0]) if SEP in text else {}
+        head = text.split(SEP, 1)[0] if SEP in text else None
+        self._texts, self._quotes = (VW.texts(head), VW.quotes(head)) if head is not None else ({}, {})
+        if head is None and not self._room(text):
+            return False, False
         return super()._check(text)
+
+    def _room(self, text: str) -> bool:
+        """A split line begun with nothing of the instruction left to copy has no way on (the typed read wrote
+        ``process | `` after the instruction's last sentence): only ``---`` may follow the last sentence."""
+        lines = text.split("\n")
+        last = lines[-1]
+        if len(lines) < 2 or not last or "---".startswith(last):
+            return True
+        at = 0
+        for ln in lines[1:-1]:
+            _, _, seg = ln.partition(" | ")
+            k = self.instruction.find(seg, at)
+            at = k + len(seg) if k >= 0 else at
+        return bool(self.instruction[at:].strip())
 
     def _program(self, text: str) -> tuple[bool, bool]:
         ok, done = super()._program(text)
         if not ok:
             return False, False
-        good = typed_ok(text) and joins_ok(text, self.instruction) and VW.words_ok(text, getattr(self, "_texts", {}))
+        good = typed_ok(text) and joins_ok(text, self.instruction) and \
+            VW.words_ok(text, getattr(self, "_texts", {}), getattr(self, "_quotes", None))
         return (True, done) if good else (False, False)
 
 

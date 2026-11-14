@@ -50,3 +50,12 @@ def test_never_a_dead_end():
     odd = VW.texts("\ncheck 1 | Write fewer than 48 words.\ncheck 3 | The first list item has a number of words other than 5.\n")
     assert VW.words_ok(P1 + P2, odd)                                                 # checks numbered 1, 3: by order
     assert VW.words_ok(P1, {})                                                       # no check line: rule 9 is off
+
+
+def test_strings_are_held_to_the_column_and_the_text():
+    q = VW.quotes('\ncheck 1 | Do not begin a sentence with the word "calme".\n')
+    line = '        while (i2 < n_sentence) { let x3 = sentence_first_word[i2]; if (x3 == "'
+    assert VW._strings_ok(line + 'calme") { add k1, 1; } add i2, 1; }', q["1"])
+    assert not VW._strings_ok(line + 'nereaine', q["1"])                               # the endless string
+    assert VW._strings_ok('        while (i2 < n_item) { let x3 = item_marker[i2]; if (x3 == "*") {', set())   # its own
+    assert VW._strings_ok('        if (p2 < n_json) { let x3 = json_key[p2]; if (x3 == "anything', set())    # nothing to hold

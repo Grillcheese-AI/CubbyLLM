@@ -120,3 +120,13 @@ def test_parameters_views_and_part_order():
                            "        let p2 = part1(")                           # p1 = part1 first
     assert not VT.typed_ok(HEAD + PART + PART.replace("part1", "part2") + "    public function solve(mention: str): number {\n"
                            "        let p1 = part1(n_sentence, sentence_n_word, sentence_first_word);\n        create g")
+
+
+def test_never_a_dead_end_in_the_join_the_loop_or_the_split():
+    two = HEAD + PART + PART.replace("part1", "part2") + "    public function solve(mention: str): number {\n" + CALLS
+    assert not VT.typed_ok(two + "        l")                                        # every part called: no part3 call
+    no_size = HEAD + "    function part1(item_marker: number, item_n_word: number): number {\n        create k1: number; assign k1 = 0;\n"
+    assert not VT.typed_ok(no_size + "        w")                                     # no n_item: no loop over items
+    pytest.importorskip("regex")
+    g = VT.TypedGrammar("Write two sentences.")
+    assert g.viable("\ncheck 1 | Write two sentences.\n---") and not g.viable("\ncheck 1 | Write two sentences.\np")

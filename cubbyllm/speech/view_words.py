@@ -58,6 +58,45 @@ def texts(head: str) -> dict:
     return out
 
 
+# a string column's own values (every gold string not quoted in its text is one of these)
+FIXED = {"case": ("none", "upper", "title", "lower", "mixed"), "end_mark": (".", "?", "!", "none"), "item": ("yes", "no"),
+         "marker": ("*", "-", "number"), "type": ("number", "string", "null", "array", "bool", "object"),
+         "kind": ("digit", "punct", "letter", "space")}
+NOCASE = ("char", "first_lower", "last_lower", "lower")    # a letter or a word compared lowercased by its view
+_QUOTED = re.compile(r'"([^"]*)"|« ([^»]*) »')
+_STR = re.compile(r'if \((x\d+) (?:==|!=) "((?:[^"\\\n]|\\.)*)("?)')
+_LETS = re.compile(r"let (x\d+) = [a-z]+_([a-z_]+)\[")
+
+
+def quotes(head: str) -> dict:
+    """{check number: the strings its text quotes ("..." or « ... »)}."""
+    out: dict = {}
+    for ln in head.split("\n"):
+        m = _CHECK.match(ln)
+        if m:
+            out.setdefault(m.group(1), set()).update(a or b for a, b in _QUOTED.findall(m.group(2)))
+    return out
+
+
+def _strings_ok(ln: str, quoted: set) -> bool:
+    """Rule 9 for strings: a value compared is one of its column's own (`FIXED`) or quoted in the part's text; judged as
+    a prefix while it is typed (the first typed read wrote ``"nereainereaine...`` to the end of its budget)."""
+    cols = dict(_LETS.findall(ln))
+    for m in _STR.finditer(ln):
+        col = cols.get(m.group(1), "")
+        typed = m.group(2).replace('\\"', '"').replace("\\\\", "\\")
+        ok = set(FIXED.get(col, ())) | quoted
+        if not ok:                                         # nothing to hold it to: free, but never endless
+            if len(typed) > 40:
+                return False
+            continue
+        if col in NOCASE:
+            ok, typed = {s.lower() for s in ok}, typed.lower()
+        if not (typed in ok if m.group(3) else any(s.startswith(typed) for s in ok)):
+            return False
+    return True
+
+
 @lru_cache(maxsize=4096)
 def allowed(low: str) -> tuple[frozenset, frozenset]:
     """(numbers a comparison may use, positions a part may take) for one part's folded text."""
@@ -83,10 +122,12 @@ def named(low: str) -> set:
     return got or set(VIEW_WORDS)
 
 
-def words_ok(prog: str, part_texts: dict) -> bool:
+def words_ok(prog: str, part_texts: dict, part_quotes: dict | None = None) -> bool:
     """The k-th part is the k-th check line's (in the order the split wrote them, whatever their numbers); with no
-    check line the rule leaves the program free (the split decides that, not this rule)."""
+    check line the rule leaves the program free (the split decides that, not this rule). ``part_quotes`` (`quotes`):
+    the strings each check quotes, for the string values (none given: strings are not judged)."""
     order = list(part_texts.values())
+    qorder = [part_quotes.get(k, set()) for k in part_texts] if part_quotes is not None else None
     if not order:
         return True
     part, lines = None, prog.split("\n")
@@ -115,6 +156,8 @@ def words_ok(prog: str, part_texts: dict) -> bool:
             part = None
             continue
         if part is not None:
+            if qorder is not None and not _strings_ok(ln, qorder[part - 1]):
+                return False
             nums, pos = allowed(order[part - 1])
             for rx, ok in ((_NUM, nums), (_POS, pos)):
                 for m in rx.finditer(ln):
@@ -125,4 +168,4 @@ def words_ok(prog: str, part_texts: dict) -> bool:
     return True
 
 
-__all__ = ["ORDINALS", "VIEW_WORDS", "allowed", "texts", "words_ok"]
+__all__ = ["FIXED", "ORDINALS", "VIEW_WORDS", "allowed", "quotes", "texts", "words_ok"]
