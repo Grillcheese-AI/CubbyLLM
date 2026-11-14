@@ -38,3 +38,15 @@ def test_one_part_per_check():
     assert not VW.words_ok(P1 + P2 + P2.replace("part2", "part3"), T)
     solve = "    public function solve(mention: str): number {\n        let p1 = part1(n_word);\n        create g"
     assert not VW.words_ok(P1 + solve, T)                                            # check 2 has no part yet
+
+
+def test_never_a_dead_end():
+    """The first rules 1-9 read stopped mid-name (`part3(n_paragraph: numb`) and after a last part (`function part`):
+    both are refused where another way on still exists."""
+    assert not VW.words_ok("program Instruction implements ISolve {\n    function part1(n_parag", T)   # check 1: words
+    assert VW.words_ok("program Instruction implements ISolve {\n    function part1(n_wo", T)
+    assert not VW.words_ok(P1 + P2 + "    f", T)                                     # both checks have their part
+    assert VW.words_ok(P1 + P2 + "    public function solve(mention: str): number {", T)
+    odd = VW.texts("\ncheck 1 | Write fewer than 48 words.\ncheck 3 | The first list item has a number of words other than 5.\n")
+    assert VW.words_ok(P1 + P2, odd)                                                 # checks numbered 1, 3: by order
+    assert VW.words_ok(P1, {})                                                       # no check line: rule 9 is off

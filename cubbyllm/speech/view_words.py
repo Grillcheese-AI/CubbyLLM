@@ -27,9 +27,12 @@ from __future__ import annotations
 import re
 from functools import lru_cache
 
+from cubbyllm.speech import reply_views as RV
 from cubbyllm.speech import rule_guard as RG
 
 __wiring__ = "STANDALONE"
+
+NAMES = sorted({f"n_{v}" for v in RV.COLUMNS} | {f"{v}_{c}" for v, cs in RV.COLUMNS.items() for c in cs})
 
 VIEW_WORDS = {"word": ("word", "mot"), "sentence": ("sentence", "phrase"), "line": ("line", "ligne"),
               "paragraph": ("paragraph", "paragraphe"), "item": ("item", "list", "element", "liste", "bullet", "puce"),
@@ -69,34 +72,55 @@ def _fits(digits: str, at_end: bool, ok: frozenset) -> bool:
     return any(str(a).startswith(digits) for a in ok) if at_end else int(digits) in ok
 
 
+def _view(name: str) -> str:
+    return name[2:] if name.startswith("n_") else name.split("_")[0]
+
+
+def named(low: str) -> set:
+    """The views a part's text names; every view when it names none (a check line the reader split oddly: the rule
+    then leaves its views free rather than leave the reader no way on)."""
+    got = {v for v, ws in VIEW_WORDS.items() if any(w in low for w in ws)}
+    return got or set(VIEW_WORDS)
+
+
 def words_ok(prog: str, part_texts: dict) -> bool:
-    part = None
-    for ln in prog.split("\n"):
+    """The k-th part is the k-th check line's (in the order the split wrote them, whatever their numbers); with no
+    check line the rule leaves the program free (the split decides that, not this rule)."""
+    order = list(part_texts.values())
+    if not order:
+        return True
+    part, lines = None, prog.split("\n")
+    n_funcs = sum(1 for ln in lines[:-1] if _FUNC.match(ln))
+    for ln in lines:
+        if ln.startswith("    f") and not _FUNC.match(ln) and n_funcs >= len(order):
+            return False                                     # every check has its part: no other function begins
         f = re.match(r"    function part(\d*)", ln)
         if f:
-            if not any(k.startswith(f.group(1)) for k in part_texts):
+            if not any(str(j).startswith(f.group(1)) for j in range(1, len(order) + 1)):
                 return False
             m = _FUNC.match(ln)
             if m:
-                part = m.group(1)
-                if part not in part_texts:
+                part = int(m.group(1))
+                if not 1 <= part <= len(order):
                     return False
-                low = part_texts[part]
-                for name in re.findall(r"([a-z_]+): number", m.group(2)):
-                    view = name[2:] if name.startswith("n_") else name.split("_")[0]
-                    if not any(w in low for w in VIEW_WORDS.get(view, ())):
-                        return False
+                views = named(order[part - 1])
+                *whole, tail = m.group(2).split(",")             # a name is judged as it is typed, not once typed
+                if any(_view(n.split(":")[0].strip()) not in views for n in whole if n.strip()):
+                    return False
+                t = tail.strip().split(":")[0]
+                if t and not any(n.startswith(t) and _view(n) in views for n in NAMES):
+                    return False
             continue
         if ln.startswith("    public function solve"):
             part = None
             continue
         if part is not None:
-            nums, pos = allowed(part_texts[part])
+            nums, pos = allowed(order[part - 1])
             for rx, ok in ((_NUM, nums), (_POS, pos)):
                 for m in rx.finditer(ln):
                     if not _fits(m.group(1), m.end() == len(ln), ok):
                         return False
-        elif ln.startswith(("        c", "        r")) and len(re.findall(r"^    function part\d+\(", prog, re.M)) < len(part_texts):
+        elif ln.startswith(("        c", "        r")) and n_funcs < len(order):
             return False                                     # a check without its part: the join waits
     return True
 
