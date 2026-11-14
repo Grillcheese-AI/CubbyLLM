@@ -43,38 +43,66 @@ def sample(rows: list, split: str, n: int) -> list:
     return random.Random(0).sample(pool, min(n, len(pool)))         # exp_view_reader.py's draw
 
 
-def decode(model, tk, eos, batch: list, grammar: str, max_new: int, dev) -> list[dict]:
-    """One batch of rows -> [{"id", "split", "answer"} (+ "error" when no token fits its grammar)]."""
+def decode(model, tk, eos, batch: list, grammar: str, max_new: int, dev, pool=None, clock=None) -> list[dict]:
+    """One batch of rows -> [{"id", "split", "answer"} (+ "error" when no token fits its grammar)]. ``pool``
+    (`view_read_pool.GrammarPool`): the rows' grammars checked in worker processes, the same choices; ``clock``: a
+    dict the model's and the grammar's seconds are added to."""
     import torch
     pieces: dict = {}
+    clock = {} if clock is None else clock
 
     def piece(t):
         if t not in pieces:
             pieces[t] = tk.decode([t])
         return pieces[t]
     prompts = [tk.encode(VR.prompt(r["instruction"])).ids for r in batch]
-    gram = [grammar_class(grammar)(r["instruction"]) for r in batch]
-    choose = [VG.chooser(g, piece, eos, len(p)) for g, p in zip(gram, prompts)]
+    if pool is None:
+        gram = [grammar_class(grammar)(r["instruction"]) for r in batch]
+        choose = [VG.chooser(g, piece, eos, len(p)) for g, p in zip(gram, prompts)]
+    else:
+        pool.rows([(i, grammar, r["instruction"], eos) for i, r in enumerate(batch)])
+    pending = [None] * len(batch)                          # a row's token appended since the pool last saw it
     gen, done, err = [[] for _ in batch], [False] * len(batch), [None] * len(batch)
     state = model.init_state(len(batch), dev)
     for t in range(max(len(p) for p in prompts) + max_new):
         if all(done):
             break
+        t0 = time.time()
         feed = [p[t] if t < len(p) else (g[-1] if g else eos) for p, g in zip(prompts, gen)]
         with torch.no_grad():                              # float32 (TF32 matmuls): the decode state's rings are float32
             logits, state = model.step(torch.tensor(feed, device=dev), state)
         logits = logits.float()
         top = {w: torch.topk(logits, min(w, logits.shape[-1]), dim=-1).indices.tolist() for w in WIDTHS}
-        for i, (p, g) in enumerate(zip(prompts, gen)):
-            if done[i] or t < len(p) - 1:
-                continue
-            ids, pick = p + g, []
-            for w in WIDTHS:
-                pick = choose[i](ids, top[w][i])
-                if pick:
+        t1 = time.time()
+        live = [i for i, p in enumerate(prompts) if not done[i] and t >= len(p) - 1]
+        picks = {}
+        if pool is None:
+            for i in live:
+                ids = prompts[i] + gen[i]
+                for w in WIDTHS:
+                    picks[i] = choose[i](ids, top[w][i])
+                    if picks[i]:
+                        break
+                if not picks[i]:
+                    clock["full scans"] = clock.get("full scans", 0) + 1
+                    picks[i] = choose[i](ids, torch.argsort(logits[i], descending=True).tolist())
+        else:
+            ask = live
+            for w in (*WIDTHS, None):
+                if not ask:
                     break
-            if not pick:
-                pick = choose[i](ids, torch.argsort(logits[i], descending=True).tolist())
+                if w is None:
+                    clock["full scans"] = clock.get("full scans", 0) + len(ask)
+                got = pool.choose([(i, pending[i], top[w][i] if w else torch.argsort(logits[i], descending=True).tolist())
+                                   for i in ask], piece)
+                for i in ask:
+                    pending[i] = None
+                picks.update(got)
+                ask = [i for i in ask if not got[i]]
+        clock["model"] = clock.get("model", 0.0) + t1 - t0
+        clock["grammar"] = clock.get("grammar", 0.0) + time.time() - t1
+        for i in live:
+            g, pick = gen[i], picks[i]
             if not pick:
                 done[i], err[i] = True, "no token keeps the answer in its grammar"
                 continue
@@ -82,6 +110,7 @@ def decode(model, tk, eos, batch: list, grammar: str, max_new: int, dev) -> list
                 done[i] = True
             if pick[0] != eos:
                 g.append(pick[0])
+                pending[i] = pick[0]
     out = []
     for r, g, e in zip(batch, gen, err):
         rec = {"id": r["id"], "split": r["split"], "answer": tk.decode(g)}
@@ -103,6 +132,8 @@ def main() -> None:
     ap.add_argument("--max-new", type=int, default=1800)
     ap.add_argument("--grammar", default="typed", choices=("typed", "typed8", "lines"))
     ap.add_argument("--out", required=True)
+    ap.add_argument("--workers", type=int, default=max(1, min(16, (os.cpu_count() or 2) - 1)),
+                    help="grammar worker processes (1: checked in this process, one row after another)")
     a = ap.parse_args()
     if a.grammar == "typed8" and set(a.splits.split(",")) != {"dev"}:     # Cowork 2026-11-14: 1-8 against 1-9 on dev
         ap.error("--grammar typed8 reads dev only: test and test_long are read once, under rules 1-9")
@@ -116,6 +147,10 @@ def main() -> None:
         torch.backends.cudnn.allow_tf32 = True
     tk = Tokenizer.from_file(a.tokenizer)
     eos = tk.token_to_id("</s>")
+    pool = None
+    if a.workers > 1:                                      # forked before the model touches the card
+        from view_read_pool import GrammarPool
+        pool = GrammarPool(min(a.workers, a.batch))
     model = load_base(a.ckpt, str(dev))
     meta = load_adapter(model, a.adapter)
     rows = [json.loads(ln) for ln in open(a.rows, encoding="utf-8")]
@@ -126,15 +161,20 @@ def main() -> None:
     todo = [r for r in todo if r["id"] not in done_ids]
     todo.sort(key=lambda r: len(r["instruction"]))         # like lengths together: a batch waits on its longest
     print(f"{len(todo)} rows to read ({len(done_ids)} already), adapter r={meta['rank']} on {dev}", flush=True)
-    t0 = time.time()
+    print(f"grammar: {a.grammar}, {len(pool.conns) if pool else 1} worker(s)", flush=True)
+    t0, clock = time.time(), {}
     with open(a.out, "a", encoding="utf-8") as f:
         for b in range(0, len(todo), a.batch):
             tb = time.time()
-            for rec in decode(model, tk, eos, todo[b:b + a.batch], a.grammar, a.max_new, dev):
+            for rec in decode(model, tk, eos, todo[b:b + a.batch], a.grammar, a.max_new, dev, pool, clock):
                 rec["seconds"] = round((time.time() - tb) / len(todo[b:b + a.batch]), 2)
                 f.write(json.dumps(rec, ensure_ascii=False) + "\n")
             f.flush()
-            print(f"  {min(b + a.batch, len(todo))}/{len(todo)} rows, {time.time() - t0:.0f} s", flush=True)
+            print(f"  {min(b + a.batch, len(todo))}/{len(todo)} rows, {time.time() - t0:.0f} s "
+                  f"(model {clock.get('model', 0):.0f} s, grammar {clock.get('grammar', 0):.0f} s, "
+                  f"{clock.get('full scans', 0)} whole-vocabulary scans)", flush=True)
+    if pool:
+        pool.close()
     print("read:", a.out, flush=True)
 
 

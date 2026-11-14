@@ -142,15 +142,33 @@ def chooser(grammar: Grammar, piece, eos: int, prompt_len: int):
         cache["n"] = len(gen)
         text = cache["text"]
         done = grammar.complete(text)
+        heads: dict = {}                                   # a piece's first 1 and 2 characters, judged once a step
+
+        def head_ok(p: str) -> bool:
+            for k in (1, 2):
+                if len(p) > k:
+                    if p[:k] not in heads:
+                        heads[p[:k]] = grammar.viable(text + p[:k])
+                    if not heads[p[:k]]:
+                        return False
+            return True
+        screen = len(ranked) > SCREEN_AT
         for t in ranked:
             if t == eos:
                 if done:
                     return [t]
                 continue
-            if not done and grammar.viable(text + piece(t)):
+            if not done and (not screen or head_ok(piece(t))) and grammar.viable(text + piece(t)):
                 return [t]
         return []
     return choose
+
+
+# Above this many ranked ids (the whole vocabulary, when none of the top 512 fits) a piece is first judged by its first
+# one and two characters: a refused prefix has no way on, so a piece that starts with one is refused without being
+# judged whole. The same pick as judging every piece (the grammar's refusals are prefix-closed: pinned in
+# tests/speech/test_view_grammar_screen.py); a whole-vocabulary scan went from about 13 s to well under one.
+SCREEN_AT = 4096
 
 
 __all__ = ["Grammar", "LINES", "chooser"]
