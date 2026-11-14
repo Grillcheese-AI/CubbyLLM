@@ -126,5 +126,38 @@ of a negation that is in the words differs.
   isolated-part task; reading each part in its own pass; a margin loss; training on 5 or more parts (line 4).
 - 0067's lines 5 and 6 (unseen kinds, the plan reader side by side): after an arm is kept.
 
+## Settled before the build (Cowork, 2026-11-14, on Code A's reading of the order)
+Code A read the order against the code and raised six points (inbox, 2026-11-14). Each is settled here; where this
+section and the text above differ, this section holds.
+1. **The said form is the sentence's own form, not the stored part with a flag.** `amount` already says a count
+   `> 0` or `!= 0` as "at least one" and `< 1` or `<= 0` as "no": the target carries what is said. Quantifier words
+   go to the quantifier slot ("at least one" is `any`, "no" / "aucun" is `none`, "every" / "chaque" is `all`); a
+   count said with a number is `count` with that comparison and number. **Pinned over the whole set: one sentence
+   never has two targets** (two rows whose check text is the same have the same description, in each arm).
+2. **The words that make a `not` in arm W, and no others:** "not", "do not", "ne ... pas", "n'... pas" on a verb.
+   "no" / "aucun" is the quantifier `none` in both arms. "without" / "sans" and "other than" / "autre que" are the
+   comparison said, in both arms. So the arms differ only where a verb is negated.
+3. **`not all` with two conditions** (said as "at least one ... that does not ... or does not ...": 90 of 10,064
+   parts) is not drawn in the new rows. The slots keep an and-filter only. It is listed for the order on what the
+   descriptions cannot say. `not all` with one condition is said "at least one ... that" with the complement, so its
+   target is `any`.
+4. **A column with two values has one folded spelling:** arm M writes `==` with the value that holds ("is not part
+   of a list" is `item == "no"`); arm W writes `not item == "yes"`. Where the words carry no negation ("ends with
+   closing punctuation"), both arms write the comparison as stored.
+5. **`view_wording_inv`** (goal first and passive) is held to the same list and the same pins.
+6. **Replies that can tell are a target, not a gate, and for the rows that are read:** dev, test and test_long keep
+   the 8 replies plus, where the pool has them, N - 1, N and N + 1 for each numbered part and a group's four
+   combinations; train rows keep 8 (their replies only prove the row). The pool's size is Code A's call within about
+   2.5 times today's build time. No reply is edited to reach a value in this order. Each read row records what it
+   reached, and the report gives the shares (today: all three values for 14% of numbered parts, all four
+   combinations for 10% of groups).
+7. **"Numbers and strings only from the line's own text" (round 2's rule 9) is decided on this order's dev, not
+   assumed:** each arm's dev is decoded with and without it (no training); the variant with fewer false passes is
+   kept, on a tie the one with higher agreement, and it is frozen before test is read. Round 2's own 1-8 against 1-9
+   dev read is reported beside it.
+8. **The move:** only the spec language, `evaluate`, `atoms`, the compiler and the join go under `cubbyllm/speech/`;
+   the drawing code (`sample`, `sample_atom`, `_cond`, `_mixed`) stays in `validation/`. The old names stay as shims
+   for one cycle.
+
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
