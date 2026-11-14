@@ -173,16 +173,18 @@ B1q frozen after step D: the veto alone (rules 2, 3 and 2b not built). The VM in
 | fresh read | B1q: right / wrong / undecided / refused | tiers | R2's line |
 |---|---|---|---|
 | fame bare (1,000 rows) | 1,000 held, **0 single** | 1,000 held | 0 single: met |
-| fame qualified (1,100) | 765 / **2** / 127 / 206 (resolved 0.6955) | 0 decided (1,100 undecided) | 0 wrong and >= 70%: **killed** (2 wrong); 0.6955 under 0.70 |
+| fame qualified (1,100) | 765 / **2** / 127 / 206 (resolved 0.6973 = picks / rows, the log's gate; 0.6955 = rights / rows) | 0 decided (1,100 undecided) | 0 wrong and >= 70%: **killed** (2 wrong); under 0.70 by either count |
 | fame qualified EN / FR | 426 / 1 / 70 / 60; 339 / 1 / 57 / 146 | | |
 | Mintaka EN (440) | 48 / **16** / 333 / 43 (decided 64) | 80 / 15 / 302 / 43 (decided 95) | not more wrong than tiers, <= 1 in 50, more decided: **fails all three** (3.6%) |
 | WebQSP_EL EN (338) | 34 / 7 / 282 / 15 (decided 41) | 62 / 14 / 247 / 15 (decided 76) | fewer wrong than tiers; 7 / 338 = 2.07% (line 2%) and fewer decided: **fails** |
 | ShadowLink Top, gold bears (46) | 12 / 2 / 32 / 0 (0.857 of spoken picks) | 3 / 2 / 41 / 0 | |
-| ShadowLink Shadow, gold bears (25) | 4 / 0 / 21 / 0 (1.000 of spoken picks) | 0 / 1 / 24 / 0 | within 5 points of Top: **killed**: gap 14.3 points (over 10), on 4 Shadow picks |
+| ShadowLink Shadow, gold bears (25) | 4 / 0 / 21 / 0 (1.000 of spoken picks) | 0 / 1 / 24 / 0 | within 5 points of Top: **killed**: gap 14.3 points (over 10), **Shadow ahead**, on 4 Shadow picks |
 | ShadowLink Tail (89) | 33 / 2 / 51 / 3 | 76 / 1 / 9 / 3 | |
 
 - **The kill lines are met:** two qualified wrongs, and a Shadow-Top gap over 10 points (small counts: 4 and 14 spoken
-  picks).
+  picks). The gap is in Shadow's favour, not the fame bias the line guards against (Cowork, 21:33); the verdict rests on
+  the two wrongs either way. The table counts the order's rows (where the gold bears the mention); the log's gate field
+  (`r2_gates.py`) counts every Top and Shadow row: Top 12 of 21 picks, Shadow 4 of 16, 32.1 points with Shadow behind.
 - **The two qualified wrongs are one item in both languages:** `fame2:357:q:Q7191272` (en, fr): the gold, a village
   (`Q7191272`), states its place through `Q2108437`, whose chain no longer reaches South Northamptonshire (`Q1432575`, a
   district abolished in 2021), so the veto has nothing to refuse with; the pick, the village's railway station
@@ -192,17 +194,31 @@ B1q frozen after step D: the veto alone (rules 2, 3 and 2b not built). The VM in
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
-**Where it stands (2026-11-13):** A and B done and committed; C waits for cubelang P6-10 on the shared VM (the P6 build
-was 1.5-3.5x slower; P6-10 is in review); D is Cowork's (the rules), then one fresh read.
+**Verdict (2026-11-13): B1q frozen (the veto alone) is killed on its fresh read** (two qualified wrongs, one item in
+English and French; a Shadow-Top gap over 10 points; Mintaka EN and WebQSP_EL EN fail their lines). Cowork checked the
+read against its log (21:33). Nothing on the serving path changed (B1q was never on it). A, B and D are done; **C is
+not yet measured**: it runs in a quiet slot after Code A's scoring of the Colab answers, and its result goes below.
+The sorted-list intersection is **not built** (Cowork, 21:33): it would only speed up a method that has been killed.
+It waits for an order that brings B1q back.
 
-- **Commits** (on `agent-b`): `cca4879` (in progress), `a08bfe1` (B), `9260781` (A).
+- **Commits** (on `agent-b`): `cca4879` (in progress), `a08bfe1` (B), `9260781` (A), `ca0a398` (report A + B),
+  `2eb50ce` (step D copied; rule 1 the default, rules 2 and 3 behind `--b1q-rules`), `e1df075` (rules 2 and 3 measured,
+  not built; rule 2b built behind a flag), `6fddeda` (rule 2b fails), `243380c` (the VM each R2 run used, added to
+  today's logs by hand), `71233cd` (the fresh samples frozen), `6ed0634` (kept byte for byte), `f0be652` (the fresh
+  read); `bb92153` merges `master` (Code A's `rep["vm"]` line in `r2_choosing.py`).
 - **Files:** `validation/retrieval_bench/r2_misses.py` (each set rebuilt as R2 builds it; B1q's decision repeated from
   the segment's facts, with why each candidate stands), `r2_misses_report.py` (A's tables), `r2_b1q.py` (`WALK`:
-  "walk" as built or "veto"; the walk factored out), `r2_choosing.py` (`--b1q-walk`, recorded in the log's args);
-  `tests/validation/test_r2_arms.py` (the veto, pinned). Logs: `retrieval_R2_misses_2026-11-13.json`,
-  `retrieval_R2_dev_2026-11-13_0069_veto.json`.
-- **Tests:** the veto never makes a pick, a chain for another candidate turns a pick into undecided, the walk unchanged
-  under "walk" (16 pass in the file).
+  "veto" by default, "walk" as built; `RULES`: `namesake_cue` (2), `namesake_cue_class` (2b), `article` (3), none on
+  by default; the `~class` facts in the segment), `r2_choosing.py` (`--b1q-walk`, `--b1q-rules`, `--el-fresh`, all
+  recorded in the log's `args`; the VM in `vm`), `r2_fresh.py` (the fresh EL ids, frozen), `r2_latency.py` (C's
+  harness); `validation/retrieval_sets/fame_set.py` (a fresh seed leaves out every earlier seed's names);
+  `tests/validation/test_r2_arms.py`. Samples: `fame_set_seed2.jsonl`, `r2_fresh_el_seed2.json` (`-text` in
+  `.gitattributes`). Logs: `retrieval_R2_misses_2026-11-13.json`, `retrieval_R2_dev_2026-11-13_0069_{veto,rule2,
+  rule3,rule2b}.json`, `retrieval_R2_test_2026-11-13_0069_fresh.json`; C's to come.
+- **Tests:** 19 pass in `tests/validation/test_r2_arms.py`: the veto never makes a pick, a chain for another candidate
+  turns a pick into undecided, the walk unchanged under "walk"; rule 2 (a namesake cue makes no candidate stand), rule
+  2b (it does through instance of, subclass of or occupation), rule 3 (the article kept when the name with it is
+  in the index), each on made-up items. The rules not built stay behind their flags, off by default.
 
 **A. The misses by cause** (`retrieval_R2_misses_2026-11-13.json`). B1q repeated from the facts equals R2's logs on
 every row before any cause is counted: dev 2,965 / 2,965, test 1,088 / 1,088, seed 1 1,952 / 1,952. A diagnostic of
@@ -250,13 +266,35 @@ and build, `retrieval_R2_dev_2026-11-13_b1q_p6final.json`; the rebuilt cowork VM
   an undecided turned refused or undecided (46 fame qualified rights, 1 ShadowLink Top right).
 - The 2 bare single picks are the shared-today line's (as on every run since 0046).
 
-**C, D:** not yet (C after P6-10 on the shared VM, in a quiet slot; D after Cowork's rules).
+**D. Rules, then the fresh read:** the tables are in "Step D's dev runs" and "The fresh read" above. Rule 1 (the veto)
+built; rules 2, 3 and 2b measured on dev and not built (each fails the keep line written before it ran). The fresh read
+was run once, with every rule frozen and both samples' SHA-256 committed first; the verdict is at the top of this report.
 
-- **Not verified here:** —
+**C. Latency by candidate count:** not yet measured. It waits for Cowork's "slot open for C", after Code A's VM scoring.
+`r2_latency.py`, B1q as frozen; p50 / p95 / max at 2, 6, 10, 20, 50 and 100 candidates, with the machine and the load
+seen. A smoke run with 2 rows a count, taken during Code A's read, was not the line and is not committed.
+
+- **Not verified here:** the cause of the two fresh wrongs (an ended P131 statement read as current) is likely, not
+  checked: the cache keeps value ids, not qualifiers. Cowork recorded it as a candidate for a later order, read on
+  another fresh sample (21:33). C is not measured yet (see above).
 - **Found on the way:**
-  - The harness did not record its arms' mode; `--b1q-walk` now goes into the log's `args` (the veto run's log is
-    annotated by hand: it was started with the flag, and 53 rows differ from the walk's).
+  - The harness did not record its arms' mode. `--b1q-walk` and `--b1q-rules` now go into the log's `args`. The veto
+    run's log is annotated by hand: it was started with the flag, and 53 rows differ from the walk's.
+  - The R2 logs written before Code A's `rep["vm"]` line did not name their VM. Today's were completed by hand, each
+    with the build it ran on, from build and run times (`243380c`).
+  - **Two counts the log's `gates` field makes differently from the order's wording** (Cowork, 21:33):
+    - **Resolved:** `r2_gates.py` divides picks (right + wrong) by rows, giving 0.6973. My first note divided rights by
+      rows, giving 0.6955. On dev the two agree (no qualified wrongs).
+    - **ShadowLink gap:** the gate field counts every Top and Shadow row, giving 32.1 points with Shadow behind. The
+      order counts only rows where the gold bears the mention, giving 14.3 points with Shadow ahead. This report uses
+      the order's rows.
+  - Rule 2b's first dev run stopped at 2,000 rows with exit 1 and no traceback (from outside the process). It was rerun
+    whole; the log is the rerun's.
+  - The fresh samples are `-text` in `.gitattributes`, as seeds 0 and 1 are: a checkout with line-ending conversion
+    would otherwise change their SHA-256.
   - A commit-message slip: `9260781` says "FR 64 of 79"; the base is 83 (79 held by none plus 4 with no qualifier).
-- **Questions:** for D: (1) the name index lacking French labels is a data cause, not a rule: is filling it (R1b's
-  segment, French labels of items already in it) in this order or its own? (2) "a cue that names several items" is
-  the most frequent wrong-pick cause on test (29 of 38): is "a namesake cue never qualifies" a rule you want written?
+- **Questions:**
+  1. Should `r2_gates.py`'s ShadowLink field count only rows where the gold bears the mention, as R2's line is worded?
+     It changes the gate of every later R2 read, so it is not done here.
+  2. The French labels missing from the name index (64 of seed 1's FR rows) were proposed to Nick as their own order
+     (Cowork's step D). Is there an order number, or does it wait?
