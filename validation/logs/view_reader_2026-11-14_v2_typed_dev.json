@@ -1,0 +1,188 @@
+{
+ "order": "0067",
+ "what": "round 2's adapter on the 100 dev rows of the home sample, decoded on Colab, scored in the VM at home",
+ "adapter": "cubby450m_view_reader_v2",
+ "grammar": "typed (rules 1-9)",
+ "decoder": "exp_view_reader_torch.py (Colab A100, batches of 32)",
+ "answers_sha256": "0adb1573e8272c8c0bdb14768f645dd974a3e6e6a9fce2546a3eae7e284a636e",
+ "score": {
+  "order": "0067",
+  "what": "the second reader read on held-out instructions",
+  "adapter": null,
+  "answers": "v2_dev100.jsonl",
+  "vm": {
+   "path": "cubelang-cowork/target/release/cubelang.exe",
+   "modified": "2026-11-13 16:06",
+   "sha256": "a2dfaa016536ccbeb2f2c29b2c095b0ef3a5d9480065440089e04e90b244e42f",
+   "commit": "b3b3360",
+   "older_than_sources": false
+  },
+  "chunk": "0/1",
+  "grammar": "typed",
+  "splits": {
+   "dev": {
+    "counts": {
+     "seconds": 989.7499999999993,
+     "rows": 100,
+     "parts": 307,
+     "parts with span and kind": 278,
+     "characters left uncovered (flagged asked)": 261,
+     "segments": 624,
+     "segment kinds right": 590,
+     "replies": 798,
+     "checked": 778,
+     "agree": 523,
+     "false passes": 94,
+     "asked: a view too long for the VM": 4,
+     "asked: the VM": 16,
+     "rows not read": 200
+    },
+    "span_and_kind": 0.9055,
+    "agreement": 0.6722,
+    "false_passes": 0.1208,
+    "checked_share": 0.9749,
+    "seconds_per_instruction": 9.9
+   }
+  }
+ },
+ "second_chance": {
+  "counts": {
+   "answers": 100,
+   "parts": 315,
+   "parts right as written": 224,
+   "programs right as written": 39,
+   "parts wrong, no single reversal fixes them": 24,
+   "parts fixed by one reversal": 52,
+   "programs fixed whole": 34,
+   "parts not matched to a gold part (span)": 15
+  },
+  "patterns": {
+   "plus de | a view's size": {
+    "negated: > -> <=": 3,
+    "negated: <= -> >": 1
+   },
+   "au moins | a count compared": {
+    "negated: == -> !=": 2,
+    "negated: > -> <=": 1
+   },
+   "not | a count compared": {
+    "negated: > -> <=": 1,
+    "mirrored: > -> <": 1
+   },
+   "pas + ne | a count's filter or a position's value": {
+    "negated: == -> !=": 2
+   },
+   "fewer than | a count's filter or a position's value": {
+    "negated: != -> ==": 1,
+    "negated: == -> !=": 1
+   },
+   "no + ne | a count's filter or a position's value": {
+    "negated: != -> ==": 1,
+    "negated: == -> !=": 1
+   },
+   "at least | a view's size": {
+    "negated: >= -> <": 1,
+    "negated: < -> >=": 1
+   },
+   "at least + ne | a count compared": {
+    "negated: > -> <=": 1,
+    "negated: == -> !=": 1
+   },
+   "au moins + pas + ne | a count's filter or a position's value": {
+    "negated: != -> ==": 1,
+    "negated: == -> !=": 1
+   },
+   "pas | a count's filter or a position's value": {
+    "negated: == -> !=": 2
+   },
+   "not | a count's filter or a position's value": {
+    "negated: == -> !=": 1
+   },
+   "au moins | a view's size": {
+    "negated: >= -> <": 1
+   },
+   "at least + ne | a count's filter or a position's value": {
+    "negated: >= -> <": 1
+   },
+   "at least + fewer than + ne | a count's filter or a position's value": {
+    "negated: < -> >=": 1
+   },
+   "at most + at least + ne | a count's filter or a position's value": {
+    "negated: <= -> >": 1
+   },
+   "more than | a count compared": {
+    "negated: > -> <=": 1
+   },
+   "au moins + plus de + pas + ne | a count compared": {
+    "negated: < -> >=": 1
+   },
+   "plus de | a count compared": {
+    "negated: > -> <=": 1
+   },
+   "au plus + aucun + ne | a count's filter or a position's value": {
+    "negated: < -> >=": 1
+   },
+   "at least + not + ne | a count's filter or a position's value": {
+    "negated: != -> ==": 1
+   },
+   "moins de | a count compared": {
+    "negated: < -> >=": 1
+   },
+   "aucun + ne | a count's filter or a position's value": {
+    "negated: == -> !=": 1
+   },
+   "at least + more than + ne | a count's filter or a position's value": {
+    "negated: > -> <=": 1
+   },
+   "at least + exactly + ne | a count's filter or a position's value": {
+    "negated: == -> !=": 1
+   },
+   "none + not | a count compared": {
+    "negated: != -> ==": 1
+   },
+   "(no cue word) | a view's size": {
+    "negated: == -> !=": 1
+   },
+   "(no cue word) | a count's filter or a position's value": {
+    "negated: == -> !=": 1
+   },
+   "more than | a count's filter or a position's value": {
+    "negated: <= -> >": 1
+   },
+   "more than | a view's size": {
+    "negated: > -> <=": 1
+   },
+   "exactement + aucun + ne | a count compared": {
+    "negated: == -> !=": 1
+   },
+   "at most + at least + ne | a count compared": {
+    "negated: > -> <=": 1
+   },
+   "at most + more than | a count's filter or a position's value": {
+    "negated: <= -> >": 1
+   },
+   "au plus + au moins | a count's filter or a position's value": {
+    "negated: <= -> >": 1
+   },
+   "au moins + plus de | a count's filter or a position's value": {
+    "negated: > -> <=": 1
+   },
+   "aucun + pas + ne | a count's filter or a position's value": {
+    "negated: != -> ==": 1
+   },
+   "au plus + au moins + ne | a count compared": {
+    "negated: > -> <=": 1
+   },
+   "at least | the part's not": {
+    "not added:  -> not": 1
+   },
+   "au moins + moins de | a count compared": {
+    "negated: > -> <=": 1
+   },
+   "fewer than | a view's size": {
+    "negated: >= -> <": 1
+   }
+  }
+ },
+ "baseline": "view_reader_2026-11-13_v1_typed_dev.json (round 1, home decoder, rules 1-8)"
+}
