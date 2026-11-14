@@ -68,7 +68,8 @@ of a negation that is in the words differs.
    the split with descriptions: slots from closed sets, a column only of the line's view, numbers and strings only
    from the line's own text, the text copied in order from the instruction, a join tag only on a check line. The
    host's accounting: every sentence of the instruction is a line or is flagged; a join tag that does not point at a
-   check, or a description that does not compile, makes that part "asked". Nothing is dropped silently.
+   check, or a description that does not compile, makes that part "asked". Nothing is dropped silently. The grammar is
+   built as a state machine: see "The grammar is a state machine" below.
 5. **Two SFT sets** (same records, the target in arm M or arm W) and two notebooks, built on round 2's recipe and
    changing nothing else: rank 16, alpha 32, five epochs, key tokens (the slots) weighted 4. The Colab runs are
    Nick's.
@@ -158,6 +159,51 @@ section and the text above differ, this section holds.
 8. **The move:** only the spec language, `evaluate`, `atoms`, the compiler and the join go under `cubbyllm/speech/`;
    the drawing code (`sample`, `sample_atom`, `_cond`, `_mixed`) stays in `validation/`. The old names stay as shims
    for one cycle.
+
+## The grammar is a state machine (Cowork, 2026-11-14; Nick: "yes add the idea")
+Step 4's grammar is built this way. Where this section and step 4 differ, this section holds.
+
+**Why.** Round 2's decoder asks the grammar, piece after piece, whether the answer with that piece still looks right
+(`viable`). Seen on 0067's dev answers decoded on Colab (2026-11-14), and in the code:
+- an allowed prefix can have no way on: 5 of the 21 unfinished dev answers stop at one (round 1 leaves 19 of 300
+  dev answers unfinished, round 2 leaves 2 of its first 100);
+- a piece that prints nothing is always allowed, because the text does not change (67 ids decode to the empty
+  string; `chooser` judges `text + piece`);
+- when none of the 512 best pieces fits, every id is judged one by one (13 s a scan before `ec7044c`).
+
+This order's answer is one short line a part, so its grammar can be exact.
+
+**What is built** (plain Python under `cubbyllm/speech/`, no new dependency):
+1. **A machine per instruction.** States and moves for the line form of "The target": the kind, the join tag, the
+   description's slots from their closed sets, `|`, the text copied in order from the instruction, then the next
+   line or the end. It is built from the instruction itself: its text, the columns of each view and, in point 7's
+   variant, the numbers and strings of the line's own text. The rules step 4 lists are the machine's moves, not
+   checks made afterwards. Characters or bytes is Code A's choice.
+2. **No dead end, counted in ids.** Every state the decoder can reach has at least one allowed id, and an accepting
+   state can be reached from it. By construction, and pinned (tests below).
+3. **Allowed ids are looked up.** The vocabulary is held once as a prefix tree of its pieces; a state's allowed ids
+   come from walking the tree along the state's moves, and are kept per state. The whole vocabulary is never judged
+   piece by piece.
+4. **A piece that prints nothing is never allowed.** The end token is allowed in an accepting state and nowhere
+   else.
+5. **How an answer ends is recorded.** Each answer keeps `end` (`finished`, `error` or `limit`) and the number of
+   ids generated. A row with no allowed id ends at once with its error, never at the token limit; with point 2 it
+   cannot happen for arms M and W, and if it does the read is not scored until the cause is found. The read prints,
+   per split and arm: finished, ended by error, ended at the limit.
+6. **Arm P** keeps round 2's grammar (`TypedGrammar`, rules 1 to 9) under the same decoder: points 4 and 5 hold for
+   it, points 1 to 3 do not. Its answers that end by error or at the limit are reported as such, beside "asked".
+
+**Tests, added to the order's:**
+- every gold target of both arms is accepted, and every prefix of it is allowed;
+- the machines of at least 50 dev instructions are walked (whole, or to a stated bound where one is too large):
+  every state reached has an allowed id and reaches an accepting state;
+- refused, one case each: a slot outside its set, a column of another view, a number or string not in the line's
+  text (in that variant), text out of order, a join tag on a line that is not a check, a piece that prints nothing;
+- two implementations agree: on the gold targets and on their one-slot mutants, the machine accepts a complete
+  answer if and only if `parse` with the host's checks accepts it.
+
+**Not a dependency.** `google-research/opengrm` (Pynini and Thrax, on OpenFst) is the same idea as a library; its
+builds are for Linux and macOS, so nothing under `cubbyllm/` imports it. Line 8 (time) is unchanged.
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
