@@ -1,5 +1,5 @@
 # 0069 - The namesake check's misses: R2's test wrongs by cause, the "located in" walk as a veto, then one fresh read
-status: review (Code B, on the branch `agent-b`, 2026-11-13)
+status: done (2026-11-13, Cowork: B1q frozen is killed on its fresh read, a negative result as measured; see Cowork's check at the end)
 written: 2026-11-12 by Cowork - approved: 2026-11-12 by Nick ("yes", to writing the qFHRR panel's first two steps as orders) - hypothesis: none (0046's R2 lines)
 
 ## Why
@@ -310,3 +310,27 @@ Windows 11, Intel family 6 model 151, 12 threads, Python 3.12.
      It changes the gate of every later R2 read, so it is not done here.
   2. The French labels missing from the name index (64 of seed 1's FR rows) were proposed to Nick as their own order
      (Cowork's step D). Is there an order number, or does it wait?
+
+## Cowork's check (2026-11-13): done, a negative result
+- **Accepted as done.** B1q frozen (the veto alone) is killed on its fresh read. Nothing changes on the serving path
+  (B1q was never on it).
+- **Checked against the logs, not the report.** The fresh read (`retrieval_R2_test_2026-11-13_0069_fresh.json`, VM
+  `b3b3360`; both samples' SHA-256 recomputed, and committed before the arm started):
+  - fame seed 2: bare 0 single; qualified 765 right / 2 wrong / 127 undecided / 206 refused. Resolved 0.6955 as rights
+    over rows, 0.6973 as picks over rows (the gate's count): under 0.70 either way.
+  - Mintaka EN: 16 wrong against the tiers' 15, 3.6% of rows, 64 decided against 95.
+  - WebQSP_EL EN: 7 wrong against 14, 2.07% of rows, 41 decided against 76.
+  - Step D's dev tables (rules 2, 3 and 2b) agree with their logs; none met the keep line.
+- **What kills it:** the two qualified wrongs (one item, English and French). The Shadow-Top gap (14.3 points on the
+  order's rows) is in Shadow's favour (4 of 4 against 12 of 14): not the fame bias the line guards against, and the
+  verdict does not rest on it.
+- **C:** p95 14.1 / 18.3 / 53.6 / 126.6 / 309.8 / 481.0 ms at 2 / 6 / 10 / 20 / 50 / 100 candidates (about 1.4 ms a
+  candidate at the median): fails from 10 up. Run on Nick's go at 23:20, no other job on the machine (load 12% before).
+  The sorted-list intersection is not built: it would only speed up a killed method.
+- **Carried forward, nothing built here:**
+  1. French labels missing from the name index (64 of seed 1's French rows): its own order, proposed to Nick.
+  2. An ended statement read as current (the two qualified wrongs: a district abolished in 2021): a candidate rule for
+     a later order, read on another fresh sample.
+  3. `r2_gates.py`: a second, named ShadowLink field for the rows where the gold bears the mention, the gap signed,
+     beside the existing field (earlier logs read the existing one).
+- Seed 2 and the fresh EL rows are spent: they are not read again by any arm.
