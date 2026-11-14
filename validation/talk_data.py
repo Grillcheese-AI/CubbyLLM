@@ -39,7 +39,8 @@ def torch_attr(target: str) -> tuple[int, str, str]:
     return i, group, attr
 
 
-def encode_records(path, tk, eos, split, max_len, families=None):
+def encode_records(path, tk, eos, split, max_len, families=None, key_weight=1.0):
+    """``key_weight`` != 1 (order 0067's round 2): each answer token's loss weight, `key_tokens.weights` (off: none)."""
     rows = []
     for line in open(path, encoding="utf-8"):
         r = json.loads(line)
@@ -50,6 +51,9 @@ def encode_records(path, tk, eos, split, max_len, families=None):
         if len(p) + len(t) > max_len:
             continue
         rows.append({"p": p, "t": t, "family": r["family"], "id": r["id"]})
+        if key_weight != 1.0:
+            from key_tokens import weights
+            rows[-1]["w"] = weights(tk, r["answer"], key_weight)
     return rows
 
 
@@ -64,7 +68,7 @@ def make_batch(rows):
         ids = r["p"] + r["t"]
         n = len(ids) - 1
         x[i, :n], y[i, :n] = ids[:-1], ids[1:]
-        m[i, len(r["p"]) - 1:n] = 1.0
+        m[i, len(r["p"]) - 1:n] = r["w"] if "w" in r else 1.0     # a weight per answer token (key_tokens), else 1
     keep = T - min(len(r["p"]) for r in rows) + 1
     return x, y, m, keep
 

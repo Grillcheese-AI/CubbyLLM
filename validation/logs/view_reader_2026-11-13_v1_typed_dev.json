@@ -1,0 +1,43 @@
+{
+ "order": "0067",
+ "what": "the second reader read on held-out instructions",
+ "adapter": "cubby450m_view_reader_v1",
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-13 16:06",
+  "sha256": "a2dfaa016536ccbeb2f2c29b2c095b0ef3a5d9480065440089e04e90b244e42f",
+  "commit": "b3b3360",
+  "older_than_sources": false
+ },
+ "grammar": "typed",
+ "chunks": [
+  "0/4",
+  "1/4",
+  "2/4",
+  "3/4"
+ ],
+ "splits": {
+  "dev": {
+   "counts": {
+    "seconds": 2543.723471879959,
+    "rows": 100,
+    "parts": 307,
+    "parts with span and kind": 244,
+    "characters left uncovered (flagged asked)": 306,
+    "segments": 616,
+    "segment kinds right": 549,
+    "replies": 790,
+    "checked": 774,
+    "agree": 433,
+    "false passes": 97,
+    "answers not parsed (all asked)": 1,
+    "asked: the VM": 16
+   },
+   "span_and_kind": 0.7948,
+   "agreement": 0.5594,
+   "false_passes": 0.1253,
+   "checked_share": 0.9797,
+   "seconds_per_instruction": 25.4
+  }
+ }
+}

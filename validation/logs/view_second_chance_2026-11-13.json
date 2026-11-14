@@ -1,0 +1,162 @@
+{
+ "order": "0067",
+ "what": "the view reader's second chance on dev/train rows: single reversals, the pattern table",
+ "answers": "_view_dev_answers.jsonl",
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-13 16:06",
+  "sha256": "a2dfaa016536ccbeb2f2c29b2c095b0ef3a5d9480065440089e04e90b244e42f",
+  "commit": "b3b3360",
+  "older_than_sources": false
+ },
+ "counts": {
+  "answers": 100,
+  "parts": 312,
+  "parts wrong, no single reversal fixes them": 105,
+  "parts fixed by one reversal": 70,
+  "parts right as written": 101,
+  "programs right as written": 6,
+  "parts not matched to a gold part (span)": 36,
+  "programs fixed whole": 17,
+  "answers not parsed": 1
+ },
+ "patterns": {
+  "not | a count's filter or a position's value": {
+   "negated: != -> ==": 3,
+   "negated: == -> !=": 5
+  },
+  "at least + not + ne | a count's filter or a position's value": {
+   "negated: == -> !=": 2,
+   "negated: != -> ==": 2
+  },
+  "at least + ne | a count compared": {
+   "negated: == -> !=": 3,
+   "negated: > -> <=": 1
+  },
+  "(no cue word) | a count's filter or a position's value": {
+   "negated: == -> !=": 3
+  },
+  "(no cue word) | a view's size": {
+   "negated: > -> <=": 2,
+   "negated: == -> !=": 1
+  },
+  "aucun + ne | a count's filter or a position's value": {
+   "negated: == -> !=": 2
+  },
+  "at most | a count's filter or a position's value": {
+   "mirrored: <= -> >=": 1,
+   "negated: <= -> >": 1
+  },
+  "at least | a count's filter or a position's value": {
+   "negated: >= -> <": 2
+  },
+  "moins de | a count's filter or a position's value": {
+   "negated: < -> >=": 2
+  },
+  "au plus | a view's size": {
+   "negated: >= -> <": 1,
+   "negated: > -> <=": 1
+  },
+  "at most + at least + ne | a count compared": {
+   "negated: > -> <=": 1,
+   "negated: == -> !=": 1
+  },
+  "every | a count's filter or a position's value": {
+   "negated: == -> !=": 1,
+   "negated: != -> ==": 1
+  },
+  "at most + exactly + ne | a count compared": {
+   "mirrored: > -> <": 1,
+   "negated: > -> <=": 1
+  },
+  "no | a view's size": {
+   "negated: != -> ==": 2
+  },
+  "moins de | a count compared": {
+   "mirrored: > -> <": 1,
+   "mirrored: < -> >": 1
+  },
+  "at least + fewer than + ne | a count's filter or a position's value": {
+   "mirrored: < -> >": 1,
+   "negated: < -> >=": 1
+  },
+  "au moins + moins de | a count compared": {
+   "negated: > -> <=": 1
+  },
+  "au moins + pas + ne | a count compared": {
+   "negated: == -> !=": 1
+  },
+  "at least | a view's size": {
+   "negated: < -> >=": 1
+  },
+  "fewer than | a count's filter or a position's value": {
+   "negated: < -> >=": 1
+  },
+  "plus de | a view's size": {
+   "negated: <= -> >": 1
+  },
+  "moins de + pas + ne | a count's filter or a position's value": {
+   "negated: == -> !=": 1
+  },
+  "au moins + plus de + ne | a count compared": {
+   "negated: > -> <=": 1
+  },
+  "chaque | a count's filter or a position's value": {
+   "negated: == -> !=": 1
+  },
+  "chaque + ne | a count's filter or a position's value": {
+   "negated: == -> !=": 1
+  },
+  "at least + more than + ne | a count's filter or a position's value": {
+   "negated: > -> <=": 1
+  },
+  "plus de + aucun + ne | a count's filter or a position's value": {
+   "negated: == -> !=": 1
+  },
+  "more than + ne | a count's filter or a position's value": {
+   "negated: > -> <=": 1
+  },
+  "plus de | a count's filter or a position's value": {
+   "negated: > -> <=": 1
+  },
+  "au moins | a count compared": {
+   "negated: == -> !=": 1
+  },
+  "(no cue word) | the part's not": {
+   "not added:  -> not": 1
+  },
+  "at least + fewer than + ne | a count compared": {
+   "negated: == -> !=": 1
+  },
+  "more than | a count compared": {
+   "negated: > -> <=": 1
+  },
+  "(no cue word) | a count compared": {
+   "negated: == -> !=": 1
+  },
+  "at least + exactly + ne | a count compared": {
+   "negated: > -> <=": 1
+  },
+  "at most | a view's size": {
+   "negated: > -> <=": 1
+  },
+  "au moins + plus de + ne | a count's filter or a position's value": {
+   "negated: > -> <=": 1
+  },
+  "at least + not + ne | a count compared": {
+   "negated: == -> !=": 1
+  },
+  "at most + fewer than | a count compared": {
+   "negated: < -> >=": 1
+  },
+  "at least + ne | a count's filter or a position's value": {
+   "negated: < -> >=": 1
+  },
+  "at most + more than | a count's filter or a position's value": {
+   "negated: <= -> >": 1
+  },
+  "au plus | a count compared": {
+   "negated: > -> <=": 1
+  }
+ }
+}

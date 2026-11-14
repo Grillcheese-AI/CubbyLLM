@@ -12,7 +12,11 @@ The prompt and answer are the reader's own form (`cubbyllm/speech/view_reader.py
 longer than ``--max-len`` are counted (the trainer skips them). Every instruction is checked for 5-word overlap with
 IFEval and IFBench (none may reach a training record).
 
+- ``pair_<n>`` (round 2, ``--pairs``; off by default, the set as before): `build_pair_rows.py`'s polarity pairs, all
+  train (both sides of a pair together).
+
   python validation/sft/build_view_reader_sft.py --out <view_reader_sft.jsonl> [--tokenizer <json>] [--max-len 1280]
+      [--pairs <pair_rows.jsonl>]
 """
 from __future__ import annotations
 
@@ -82,10 +86,15 @@ def main() -> None:
     ap.add_argument("--tokenizer", default=None)
     ap.add_argument("--max-len", type=int, default=1280)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--pairs", default=None, help="round 2: build_pair_rows.py's rows, added as train (off: none)")
     a = ap.parse_args()
     ds = Path(local_paths.value("CUBBY_DATASETS") or ".")
     rng = random.Random(a.seed)
     recs = long_records(ds) + single_records(ds, rng) + curriculum_records(ds, rng)
+    if a.pairs:
+        recs += [{"id": r["id"], "split": "train", "family": r["family"], "lang": r["lang"],
+                  "prompt": VR.prompt(r["instruction"]), "answer": VR.target(r)}
+                 for r in map(json.loads, open(a.pairs, encoding="utf-8"))]
     bench = BO.benchmark_grams(ifbench=True)
     leaks = [r["id"] for r in recs if r["lang"] != "code" and BO.overlaps(r["prompt"].split("Instruction: ", 1)[-1], bench)]
     recs = [r for r in recs if r["id"] not in set(leaks)]
@@ -106,6 +115,7 @@ def main() -> None:
         for r in recs:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
     man = {"order": "0067", "what": "the second reader's SFT set (step 5)", "records": len(recs),
+           "pairs": Path(a.pairs).name if a.pairs else None,
            "by_split": dict(Counter(r["split"] for r in recs)), "by_family": dict(sorted(Counter(r["family"] for r in recs).items())),
            "by_lang": dict(Counter(r["lang"] for r in recs)), "benchmarks_checked": sorted(bench),
            "records_sharing_5_words_with_a_benchmark_dropped": len(leaks), "max_len": a.max_len,
