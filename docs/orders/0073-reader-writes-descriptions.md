@@ -289,3 +289,41 @@ Nothing here is on master; the review is Code A's or Nick's.
 - **Tests** (`tests/validation/test_view_said.py`, 7 cases): each rule on a sentence of its own, in both languages
   where they differ.
 - **Next:** step 3, the rows built again (`long_rows_0073`).
+
+### Step 3, the design before the build (Cowork, 2026-11-14, branch `cowork/0073`): to be read before any row is trained on
+Where the order leaves a choice, this is the one taken. Nothing below is built yet.
+- **Today's draw, measured** (0067's train rows, their said forms): 6,159 numeric comparisons with a number other
+  than 0: 1,554 lower bounds ("at least", "more than"), 2,682 upper bounds, 400 "exactly", 1,523 "other than". The
+  lower share of the bounds is 0.367: a view's size 0.326, a count 0.106 (94 against 794), a position's value 0.489,
+  a filter 0.481. Tied pairs: 772 start at part 1, 457 at part 2, 241 at part 3 (0.525 at the first).
+- **Bounds balanced:** "within 45 to 55%" is read as the lower bounds' share of the bounds said with a number other
+  than 0, in each split; "exactly" and "other than" are counted and reported beside it. The share is also reported
+  by place (size, count, position, filter). How: the draw keeps a running count by place and, among the candidates
+  it already tries for a part (the atom and its negation, six tries), takes the best one on the side that is behind
+  when there is one. A count's lower bound passes fewer replies, so more draws fail; that is the cost.
+- **`not all` of two conditions is not drawn** (point 3).
+- **Groups evenly placed.** Two to four parts, exactly: two parts, a tied pair with probability 0.3; three parts, a
+  pair at 1-2 or at 2-3 with 0.255 each; four parts, one pair at 1-2, 2-3 or 3-4 with 0.157, 0.247 and 0.157, two
+  pairs (1-2 and 3-4) with 0.09, so each of the three places is tied in 0.247 of the rows. Five to eight parts: the
+  places tried in a random order, each tied with 0.3 when both its parts are free.
+- **Each connective before and after its partner:** "If C, A" and "A if C"; "A, unless B" and "Unless B, A"; "Si C,
+  A" and "A si C"; "A, sauf si B" and "Sauf si B, A"; half each. "Either A, or B" has one order.
+- **What a row carries besides today's fields:** for each check its said forms (arm W and arm M) and how it was
+  worded; on the check that carries the connective, its tag (`if`, `unless` or `either`, with `prev` or `next`;
+  "Either" sits on the first of its two checks: `either next`).
+- **Replies that can tell** (dev, test, test_long; train keeps 8): the 8 as today, then from the row's pool, for each
+  part whose own comparison has a number N (a view's size, a count, a position's numeric value) one reply measuring
+  N - 1, one N and one N + 1 where the pool has one, and for each group one reply for each of the four combinations
+  of its two parts' truths. Each added reply is run in the VM like the eight; no reply is edited. The row records
+  which it reached.
+- **Mutants** (every row, the evaluator only): each part's folded form with one slot reversed (a comparison negated,
+  a bound mirrored, `any` and `none` exchanged, `absent` toggled), and each group with its join changed (untied; `if`
+  for `or` and back; the `if` turned round). The row records how many there are and how many its replies tell apart
+  from the gold.
+- **Held out:** no row's instruction is an instruction of 0067's rows; no dev, test or test_long row has a train
+  row's parts and groups (folded forms, values included). The share of held-out rows whose shape without its values
+  occurs in train is reported: it will be high for two parts and is not a gate.
+- **The pool** stays at 80 replies (160 for five to eight parts), refreshed every five rows, unless the reached
+  shares are low; then it is raised within 2.5 times today's build time and the report says so.
+- **1,500 minimal pairs** as in round 2 (one lone part flipped, the twin drawing its wording as the first did, 0.3
+  goal first), under the same draw.
