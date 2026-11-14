@@ -76,6 +76,12 @@ By Cowork. The brief: `2026-11-13-instruction-reader-brief.md`. The answers: `20
   imbalance contributes; it is not the main story, and "at least read as fewer than" was overstated from a few rows
   read by eye.
 
+- **After the panel ran, all 100 dev rows were scored** (Code A, `view_reader_2026-11-14_v2_typed_dev.json`): round
+  2's false passes are 94 / 778 = 0.121 against round 1's 97 / 774 = 0.125, almost no change; the brief's 0.0935 was
+  the shorter 64 rows, and the 33 longest give 44 / 262 = 0.168. Agreement 0.559 to 0.672, span and kind 0.795 to
+  0.906, parts right as written 224 / 315, 52 parts fixed by one reversal, 39 of 100 programs right and 34 more by
+  one reversal. The panel answered on the 64-row figures; its diagnosis does not rest on the level of that rate.
+
 ## 5. What Cowork proposes (for Nick; each step an order with its lines written first)
 1. **Now, no training:**
    - round 2's counted read on the 200 unread rows a split, reported also over replies built to fail, by direction,
