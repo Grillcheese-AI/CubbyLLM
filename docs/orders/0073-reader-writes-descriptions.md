@@ -254,3 +254,38 @@ Nothing here is on master; the review is Code A's or Nick's.
   two-valued column's one spelling, `not all` of two conditions refused, the compiler's refusal and the text of
   `absent: pass`.
 - **Next:** step 2, the wording returns the part as said in both spellings.
+
+### Step 2, built: the wording's said form in both spellings (Cowork, 2026-11-14, branch `cowork/0073`)
+- **Where it lives:** `validation/builders/view_said.py`. `view_wording.py` is at 265 of its 300 lines, so the said
+  forms sit beside it and follow its branches one by one; `view_said.say(part, lang, rng, how)` returns the sentence
+  with arm W's form and arm M's (its fold) from one call. `how` is the imperative (`say` / `say_not`), the condition
+  of an "if" or "unless" (`say_cond`), or the goal-first wording (`view_wording_inv.say_inverted`, point 5). The
+  wording functions are untouched, so every stored sentence is what it was.
+- **The rules, as settled above:** amounts as `amount` says them ("at least one" is `any`, "no" is `none`, a number
+  keeps its comparison; a view's size and a numeric column never carry a `not`); a `not` only where a verb is negated;
+  "if there is one" is `absent: pass`; a list line is said of `item == "yes"`.
+- **What that gives, to read before step 3:**
+  - English and French can differ on the same part in arm W, because only one of them negates a verb: "Do not
+    include any ..." is `not any`, "Ne mets aucun ..." is `none`; "No sentence should begin with ..." is `none` of
+    the plain condition, "Chaque phrase ne commence pas par ..." is `all` of `not` the condition. Arm M differs
+    between the languages only in the second case (`none` against `all` of the turned comparison): both are true to
+    their sentence.
+  - A view's size has no quantifier slot: "Write at least one sentence" is `n >= 1`, "Write no sentences" `n == 0`.
+  - "Use the word X at least once" is `any`, like "Include the word X".
+  - `not all` of two conditions is worded with "or" and has no description (224 stored parts, 448 sentences).
+- **Pinned on every stored part, English and French** (`validation/exp_view_said_pin.py`,
+  `validation/logs/view_said_pin_2026-11-14.json`): 22,083 parts, 93,407 sentences (the imperative 22,083 in each
+  language; the condition 9,950 in each; goal first 14,826 in English and 14,515 in French), 92,959 with a
+  description, 19,303 of them carrying a `not` in arm W.
+  - A `not` exactly where a verb is negated: each form carries as many `not` as its sentence has negation words
+    ("not"; "pas"), quoted values aside: none differs. Arm M's forms carry none.
+  - The truth is the stored part's: arm W's form and arm M's have the stored part's truth on every reply of its
+    row: none differs.
+  - One sentence, one target: 28,582 distinct sentences with a description, none with two forms in either arm.
+  - The VM agrees: arm M's form compiled and run on the row's replies (the imperative in the row's language, where
+    the form is not the stored part itself): 104,602 runs on `b3b3360`, none differs.
+- **One fault found and fixed on the way,** in the pin's own counter: a value that is the quote mark itself
+  (`"""`) hid a "not" from the count. The said form was right; the counter now reads such a value.
+- **Tests** (`tests/validation/test_view_said.py`, 7 cases): each rule on a sentence of its own, in both languages
+  where they differ.
+- **Next:** step 3, the rows built again (`long_rows_0073`).

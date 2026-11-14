@@ -1,0 +1,81 @@
+{
+ "order": "0073",
+ "what": "step 2: each wording's said form (arm W) and its fold (arm M) on every stored part, English and French",
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-13 16:06",
+  "sha256": "a2dfaa016536ccbeb2f2c29b2c095b0ef3a5d9480065440089e04e90b244e42f",
+  "commit": "b3b3360",
+  "older_than_sources": false
+ },
+ "sets": {
+  "long rows": {
+   "counts": {
+    "VM runs": 61499,
+    "forms": 54325,
+    "forms said as all": 3704,
+    "forms said as any": 10492,
+    "forms said as at": 1464,
+    "forms said as at with absent: pass": 3840,
+    "forms said as count": 10224,
+    "forms said as n": 11183,
+    "forms said as none": 13418,
+    "forms with a not": 11437,
+    "parts": 12923,
+    "rows": 3900,
+    "sentences with no description, imp, en": 128,
+    "sentences with no description, imp, fr": 128,
+    "sentences, cond, en": 5786,
+    "sentences, cond, fr": 5786,
+    "sentences, imp, en": 12923,
+    "sentences, imp, fr": 12923,
+    "sentences, inverted, en": 8674,
+    "sentences, inverted, fr": 8489
+   },
+   "disagreements": {
+    "a not without its word": [],
+    "the said form changes the truth": [],
+    "the VM differs": []
+   },
+   "sha256": "ca2e6a0ecfa78f24da5fa3044daf850cfd285e47b9becaf382e1876bd61933a1",
+   "file": "long_rows_0067/rows.jsonl"
+  },
+  "pair rows": {
+   "counts": {
+    "VM runs": 43103,
+    "forms": 38634,
+    "forms said as all": 2325,
+    "forms said as any": 8596,
+    "forms said as at": 1648,
+    "forms said as at with absent: pass": 2516,
+    "forms said as count": 7272,
+    "forms said as n": 7498,
+    "forms said as none": 8779,
+    "forms with a not": 7866,
+    "parts": 9160,
+    "rows": 3000,
+    "sentences with no description, imp, en": 96,
+    "sentences with no description, imp, fr": 96,
+    "sentences, cond, en": 4164,
+    "sentences, cond, fr": 4164,
+    "sentences, imp, en": 9160,
+    "sentences, imp, fr": 9160,
+    "sentences, inverted, en": 6152,
+    "sentences, inverted, fr": 6026
+   },
+   "disagreements": {
+    "a not without its word": [],
+    "the said form changes the truth": [],
+    "the VM differs": []
+   },
+   "sha256": "d4f7fdab44539962d0c572f14967a284e2c0a76f252193155524a04ca6d1d320",
+   "file": "long_rows_0067/pair_rows.jsonl"
+  }
+ },
+ "sentences": {
+  "distinct": 28582,
+  "with two targets": 0,
+  "distinct, en": 14291,
+  "distinct, fr": 14291
+ }
+}
