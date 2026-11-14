@@ -36,7 +36,10 @@ number was declared). The line shapes cannot see these; `TypedGrammar` adds, as 
 8. **parts numbered and called in order:** ``part1``, ``part2``, ... each once; ``let pK = partK(...)`` in that
    order; the join starts only once every part is called (a part defined twice and called twice was written).
 
-Rules 1-3 and 6-8 read the answer's text only; rule 4 reads the instruction's words for its cues. The gold answers of every row
+9. **a part says only what its own words say** (`view_words.py`): its numbers, positions and views are in its
+   ``check`` line's text; one part per check.
+
+Rules 1-3 and 6-8 read the answer's text only; rule 4 reads the instruction's words for its cues; rule 9 the split's. The gold answers of every row
 pass (`tests/speech/test_view_types.py`).
 
 Wiring: STANDALONE (`validation/exp_view_reader.py` reads with it; nothing in the serve path).
@@ -46,7 +49,9 @@ from __future__ import annotations
 import re
 
 from cubbyllm.speech import reply_views as RV
+from cubbyllm.speech import view_words as VW
 from cubbyllm.speech.view_grammar import Grammar, chooser
+from cubbyllm.speech.view_reader import SEP
 
 __wiring__ = "STANDALONE"
 
@@ -239,13 +244,18 @@ def joins_ok(prog: str, instruction: str) -> bool:
 
 
 class TypedGrammar(Grammar):
-    """`view_grammar.Grammar` with rules 1-4 on the program."""
+    """`view_grammar.Grammar` with rules 1-9 on the program (rule 9, the part's own words: `view_words`)."""
+
+    def _check(self, text: str) -> tuple[bool, bool]:
+        self._texts = VW.texts(text.split(SEP, 1)[0]) if SEP in text else {}
+        return super()._check(text)
 
     def _program(self, text: str) -> tuple[bool, bool]:
         ok, done = super()._program(text)
         if not ok:
             return False, False
-        return (True, done) if typed_ok(text) and joins_ok(text, self.instruction) else (False, False)
+        good = typed_ok(text) and joins_ok(text, self.instruction) and VW.words_ok(text, getattr(self, "_texts", {}))
+        return (True, done) if good else (False, False)
 
 
 __all__ = ["CUES", "NUMBER", "TypedGrammar", "chooser", "joins_ok", "kind", "typed_ok"]
