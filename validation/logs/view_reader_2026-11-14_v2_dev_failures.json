@@ -1,0 +1,53 @@
+{
+ "order": "0067",
+ "what": "where the view reader's false passes come from (dev rows)",
+ "answers": "v2_dev100.jsonl",
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-13 16:06",
+  "sha256": "a2dfaa016536ccbeb2f2c29b2c095b0ef3a5d9480065440089e04e90b244e42f",
+  "commit": "b3b3360",
+  "older_than_sources": false
+ },
+ "counts": {
+  "rows": 100,
+  "checked": 778,
+  "checked, built to fail": 390,
+  "false passes": 94,
+  "2. false passes in rows with: one reversal": 52,
+  "2. false passes in rows with: no single reversal": 14,
+  "joins not compared (a span unmatched)": 13,
+  "2. false passes in rows with: span": 3,
+  "2. false passes in rows with: join": 50,
+  "1. parts all right, the program still disagrees": 12,
+  "1. ... of which a group ties another pair": 10
+ },
+ "rates": {
+  "3. false passes / checked": "94/778 = 0.1208",
+  "3. false passes / checked built to fail": "94/390 = 0.2410"
+ },
+ "2. by combination (rows; false passes)": {
+  "join: false passes": 28,
+  "join: rows": 11,
+  "no single reversal + join: false passes": 5,
+  "no single reversal + join: rows": 3,
+  "no single reversal + span: false passes": 0,
+  "no single reversal + span: rows": 5,
+  "no single reversal: false passes": 3,
+  "no single reversal: rows": 5,
+  "none of the four: false passes": 5,
+  "none of the four: rows": 28,
+  "one reversal + join: false passes": 11,
+  "one reversal + join: rows": 7,
+  "one reversal + no single reversal + join: false passes": 6,
+  "one reversal + no single reversal + join: rows": 4,
+  "one reversal + no single reversal: false passes": 0,
+  "one reversal + no single reversal: rows": 2,
+  "one reversal + span: false passes": 2,
+  "one reversal + span: rows": 1,
+  "one reversal: false passes": 33,
+  "one reversal: rows": 27,
+  "span: false passes": 1,
+  "span: rows": 7
+ }
+}
