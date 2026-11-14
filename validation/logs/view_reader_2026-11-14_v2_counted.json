@@ -1,0 +1,87 @@
+{
+ "order": "0067",
+ "what": "the second reader read on held-out instructions",
+ "adapter": null,
+ "answers": "v2_counted.jsonl",
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-13 16:06",
+  "sha256": "a2dfaa016536ccbeb2f2c29b2c095b0ef3a5d9480065440089e04e90b244e42f",
+  "commit": "b3b3360",
+  "older_than_sources": false
+ },
+ "chunk": "0/1",
+ "grammar": "typed",
+ "splits": {
+  "dev": {
+   "counts": {
+    "rows not read": 75,
+    "seconds": 694.3600000000016,
+    "rows": 225,
+    "parts": 701,
+    "parts with span and kind": 631,
+    "characters left uncovered (flagged asked)": 223,
+    "segments": 1387,
+    "segment kinds right": 1316,
+    "replies": 1789,
+    "checked": 1725,
+    "agree": 1200,
+    "false passes": 196,
+    "asked: the VM": 63,
+    "asked: a view too long for the VM": 1
+   },
+   "span_and_kind": 0.9001,
+   "agreement": 0.6957,
+   "false_passes": 0.1136,
+   "checked_share": 0.9642,
+   "seconds_per_instruction": 3.1
+  },
+  "test": {
+   "counts": {
+    "rows not read": 76,
+    "seconds": 646.5500000000008,
+    "rows": 224,
+    "parts": 683,
+    "parts with span and kind": 581,
+    "characters left uncovered (flagged asked)": 975,
+    "segments": 1401,
+    "segment kinds right": 1270,
+    "replies": 1781,
+    "checked": 1709,
+    "agree": 1205,
+    "false passes": 170,
+    "asked: a view too long for the VM": 10,
+    "asked: the VM": 62
+   },
+   "span_and_kind": 0.8507,
+   "agreement": 0.7051,
+   "false_passes": 0.0995,
+   "checked_share": 0.9596,
+   "seconds_per_instruction": 2.9
+  },
+  "test_long": {
+   "counts": {
+    "rows not read": 76,
+    "seconds": 2003.6599999999994,
+    "rows": 224,
+    "parts": 1463,
+    "parts with span and kind": 999,
+    "characters left uncovered (flagged asked)": 9613,
+    "segments": 2033,
+    "segment kinds right": 1752,
+    "replies": 1792,
+    "checked": 264,
+    "agree": 153,
+    "false passes": 37,
+    "asked: the VM": 1521,
+    "asked: a view too long for the VM": 7
+   },
+   "span_and_kind": 0.6828,
+   "agreement": 0.5795,
+   "false_passes": 0.1402,
+   "checked_share": 0.1473,
+   "seconds_per_instruction": 8.9
+  }
+ },
+ "long_over_in_length": 0.8219
+}

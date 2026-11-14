@@ -1,0 +1,87 @@
+{
+ "order": "0067",
+ "what": "the second reader read on held-out instructions",
+ "adapter": null,
+ "answers": "v1_counted.jsonl",
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-13 16:06",
+  "sha256": "a2dfaa016536ccbeb2f2c29b2c095b0ef3a5d9480065440089e04e90b244e42f",
+  "commit": "b3b3360",
+  "older_than_sources": false
+ },
+ "chunk": "0/1",
+ "grammar": "typed",
+ "splits": {
+  "dev": {
+   "counts": {
+    "rows not read": 75,
+    "seconds": 290.1499999999996,
+    "rows": 225,
+    "parts": 701,
+    "parts with span and kind": 558,
+    "characters left uncovered (flagged asked)": 612,
+    "segments": 1373,
+    "segment kinds right": 1210,
+    "replies": 1789,
+    "checked": 1674,
+    "agree": 964,
+    "false passes": 187,
+    "asked: the VM": 112,
+    "asked: a view too long for the VM": 3
+   },
+   "span_and_kind": 0.796,
+   "agreement": 0.5759,
+   "false_passes": 0.1117,
+   "checked_share": 0.9357,
+   "seconds_per_instruction": 1.3
+  },
+  "test": {
+   "counts": {
+    "rows not read": 76,
+    "seconds": 314.63,
+    "rows": 224,
+    "parts": 683,
+    "parts with span and kind": 546,
+    "characters left uncovered (flagged asked)": 1264,
+    "segments": 1388,
+    "segment kinds right": 1211,
+    "replies": 1781,
+    "checked": 1652,
+    "agree": 895,
+    "false passes": 206,
+    "asked: a view too long for the VM": 9,
+    "asked: the VM": 120
+   },
+   "span_and_kind": 0.7994,
+   "agreement": 0.5418,
+   "false_passes": 0.1247,
+   "checked_share": 0.9276,
+   "seconds_per_instruction": 1.4
+  },
+  "test_long": {
+   "counts": {
+    "rows not read": 76,
+    "seconds": 874.0200000000004,
+    "rows": 224,
+    "parts": 1463,
+    "parts with span and kind": 946,
+    "characters left uncovered (flagged asked)": 7042,
+    "segments": 2043,
+    "segment kinds right": 1719,
+    "replies": 1792,
+    "checked": 128,
+    "agree": 66,
+    "false passes": 19,
+    "asked: the VM": 1649,
+    "asked: a view too long for the VM": 15
+   },
+   "span_and_kind": 0.6466,
+   "agreement": 0.5156,
+   "false_passes": 0.1484,
+   "checked_share": 0.0714,
+   "seconds_per_instruction": 3.9
+  }
+ },
+ "long_over_in_length": 0.9516
+}

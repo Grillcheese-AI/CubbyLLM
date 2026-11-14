@@ -1,5 +1,5 @@
 # 0073 - The instruction reader writes descriptions and the host compiles them (round 3: two spellings of a negation, read side by side)
-status: open (Code A; starts when 0067's round 2 is closed: its dev scoring and its counted read)
+status: open (0067's round 2 was closed on 2026-11-14, a negative result on its line 3, so the build can start; builder: Code A, or Cowork on a branch while Code A is signed out, Nick 2026-11-14: "we will continue here then")
 written: 2026-11-14 by Cowork, on Nick's "yes" to writing round 3 as one order on the panel's synthesis - approved: 2026-11-14 by Nick ("I approve 0073", with the arms as defined here, narrower than in the synthesis) - hypothesis: none (0067's second reader)
 
 ## Why

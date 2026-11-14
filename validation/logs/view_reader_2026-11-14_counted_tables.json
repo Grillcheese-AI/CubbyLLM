@@ -1,0 +1,770 @@
+{
+ "order": "0067",
+ "what": "the second reader's stored answers: unfinished answers, replies built to fail, the split against the program, by number of parts (the scorer's totals repeated)",
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-13 16:06",
+  "sha256": "a2dfaa016536ccbeb2f2c29b2c095b0ef3a5d9480065440089e04e90b244e42f",
+  "commit": "b3b3360",
+  "older_than_sources": false
+ },
+ "rows_sha256": "ca2e6a0ecfa78f24da5fa3044daf850cfd285e47b9becaf382e1876bd61933a1",
+ "reads": {
+  "v2 counted": {
+   "answers": "cubby450m_view_reader_v2_typed_answers.jsonl",
+   "answers_sha256": "0844ea6237b8a00c02c695e0ed8999f4b37661c1d356c339f8054219daf486d4",
+   "grammar": "typed",
+   "splits": {
+    "dev": {
+     "counts": {
+      "rows": 225,
+      "answers unfinished": 8,
+      "replies": 1789,
+      "replies built to fail": 889,
+      "checked": 1725,
+      "agree": 1200,
+      "checked, built to pass": 868,
+      "false fails": 329,
+      "checked, built to fail": 857,
+      "false passes": 196,
+      "rows with every reply checked and agreeing": 82
+     },
+     "by_parts": {
+      "2": {
+       "rows": 60,
+       "answers unfinished": 1,
+       "replies": 474,
+       "replies built to fail": 234,
+       "checked": 466,
+       "agree": 352,
+       "checked, built to pass": 236,
+       "false fails": 78,
+       "checked, built to fail": 230,
+       "false passes": 36,
+       "rows with every reply checked and agreeing": 35
+      },
+      "3": {
+       "rows": 79,
+       "answers unfinished": 0,
+       "replies": 631,
+       "replies built to fail": 315,
+       "checked": 631,
+       "agree": 447,
+       "checked, built to pass": 316,
+       "false fails": 104,
+       "checked, built to fail": 315,
+       "false passes": 80,
+       "rows with every reply checked and agreeing": 30
+      },
+      "4": {
+       "rows": 86,
+       "answers unfinished": 7,
+       "replies": 684,
+       "replies built to fail": 340,
+       "checked": 628,
+       "agree": 401,
+       "checked, built to pass": 316,
+       "false fails": 147,
+       "checked, built to fail": 312,
+       "false passes": 80,
+       "rows with every reply checked and agreeing": 17
+      }
+     },
+     "shape": {
+      "check lines < gold parts": 7,
+      "check lines = gold parts": 195,
+      "check lines > gold parts": 23,
+      "finished: 4 parts or fewer written": 217,
+      "finished: as many parts as check lines": 216,
+      "finished: parts and check lines differ": 1,
+      "unfinished: 4 parts written": 8,
+      "unfinished: as many check lines as parts written": 2,
+      "unfinished: more check lines than parts written": 6
+     }
+    },
+    "test": {
+     "counts": {
+      "rows": 224,
+      "answers unfinished": 8,
+      "replies": 1781,
+      "replies built to fail": 885,
+      "checked": 1709,
+      "agree": 1205,
+      "checked, built to pass": 860,
+      "false fails": 334,
+      "checked, built to fail": 849,
+      "false passes": 170,
+      "rows with every reply checked and agreeing": 82
+     },
+     "by_parts": {
+      "2": {
+       "rows": 65,
+       "answers unfinished": 0,
+       "replies": 511,
+       "replies built to fail": 251,
+       "checked": 507,
+       "agree": 398,
+       "checked, built to pass": 256,
+       "false fails": 74,
+       "checked, built to fail": 251,
+       "false passes": 35,
+       "rows with every reply checked and agreeing": 40
+      },
+      "3": {
+       "rows": 83,
+       "answers unfinished": 1,
+       "replies": 664,
+       "replies built to fail": 332,
+       "checked": 656,
+       "agree": 472,
+       "checked, built to pass": 328,
+       "false fails": 118,
+       "checked, built to fail": 328,
+       "false passes": 66,
+       "rows with every reply checked and agreeing": 30
+      },
+      "4": {
+       "rows": 76,
+       "answers unfinished": 7,
+       "replies": 606,
+       "replies built to fail": 302,
+       "checked": 546,
+       "agree": 335,
+       "checked, built to pass": 276,
+       "false fails": 142,
+       "checked, built to fail": 270,
+       "false passes": 69,
+       "rows with every reply checked and agreeing": 12
+      }
+     },
+     "shape": {
+      "check lines < gold parts": 17,
+      "check lines = gold parts": 183,
+      "check lines > gold parts": 24,
+      "finished: 4 parts or fewer written": 216,
+      "finished: as many parts as check lines": 214,
+      "finished: parts and check lines differ": 2,
+      "unfinished: 3 parts written": 1,
+      "unfinished: 4 parts written": 7,
+      "unfinished: as many check lines as parts written": 2,
+      "unfinished: more check lines than parts written": 6
+     }
+    },
+    "test_long": {
+     "counts": {
+      "rows": 224,
+      "answers unfinished": 189,
+      "replies": 1792,
+      "replies built to fail": 896,
+      "rows with every reply checked and agreeing": 2,
+      "checked": 264,
+      "agree": 153,
+      "checked, built to pass": 132,
+      "false fails": 74,
+      "checked, built to fail": 132,
+      "false passes": 37
+     },
+     "by_parts": {
+      "5": {
+       "rows": 49,
+       "answers unfinished": 39,
+       "replies": 392,
+       "replies built to fail": 196,
+       "rows with every reply checked and agreeing": 0,
+       "checked": 72,
+       "agree": 40,
+       "checked, built to pass": 36,
+       "false fails": 21,
+       "checked, built to fail": 36,
+       "false passes": 11
+      },
+      "6": {
+       "rows": 66,
+       "answers unfinished": 55,
+       "replies": 528,
+       "replies built to fail": 264,
+       "rows with every reply checked and agreeing": 2,
+       "checked": 88,
+       "agree": 53,
+       "checked, built to pass": 44,
+       "false fails": 20,
+       "checked, built to fail": 44,
+       "false passes": 15
+      },
+      "7": {
+       "rows": 50,
+       "answers unfinished": 45,
+       "replies": 400,
+       "replies built to fail": 200,
+       "rows with every reply checked and agreeing": 0,
+       "checked": 32,
+       "agree": 16,
+       "checked, built to pass": 16,
+       "false fails": 16,
+       "checked, built to fail": 16,
+       "false passes": 0
+      },
+      "8": {
+       "rows": 59,
+       "answers unfinished": 50,
+       "replies": 472,
+       "replies built to fail": 236,
+       "rows with every reply checked and agreeing": 0,
+       "checked": 72,
+       "agree": 44,
+       "checked, built to pass": 36,
+       "false fails": 17,
+       "checked, built to fail": 36,
+       "false passes": 11
+      }
+     },
+     "shape": {
+      "check lines < gold parts": 104,
+      "check lines = gold parts": 102,
+      "check lines > gold parts": 18,
+      "finished: 4 parts or fewer written": 29,
+      "finished: 5 or more parts written": 6,
+      "finished: as many parts as check lines": 18,
+      "finished: parts and check lines differ": 17,
+      "unfinished: 3 parts written": 1,
+      "unfinished: 4 parts written": 146,
+      "unfinished: 5 or more parts written": 42,
+      "unfinished: as many check lines as parts written": 3,
+      "unfinished: more check lines than parts written": 186
+     }
+    }
+   }
+  },
+  "v1 counted": {
+   "answers": "cubby450m_view_reader_v1_typed_answers.jsonl",
+   "answers_sha256": "60c2b3b16ace5022a587ebcb112d79a6f392e3be52b191f357c817645e413a78",
+   "grammar": "typed",
+   "splits": {
+    "dev": {
+     "counts": {
+      "rows": 225,
+      "answers unfinished": 13,
+      "replies": 1789,
+      "replies built to fail": 889,
+      "checked": 1674,
+      "agree": 964,
+      "checked, built to pass": 842,
+      "false fails": 523,
+      "checked, built to fail": 832,
+      "false passes": 187,
+      "rows with every reply checked and agreeing": 25
+     },
+     "by_parts": {
+      "2": {
+       "rows": 60,
+       "answers unfinished": 0,
+       "replies": 474,
+       "replies built to fail": 234,
+       "checked": 471,
+       "agree": 281,
+       "checked, built to pass": 238,
+       "false fails": 126,
+       "checked, built to fail": 233,
+       "false passes": 64,
+       "rows with every reply checked and agreeing": 11
+      },
+      "3": {
+       "rows": 79,
+       "answers unfinished": 2,
+       "replies": 631,
+       "replies built to fail": 315,
+       "checked": 607,
+       "agree": 352,
+       "checked, built to pass": 304,
+       "false fails": 191,
+       "checked, built to fail": 303,
+       "false passes": 64,
+       "rows with every reply checked and agreeing": 8
+      },
+      "4": {
+       "rows": 86,
+       "answers unfinished": 11,
+       "replies": 684,
+       "replies built to fail": 340,
+       "checked": 596,
+       "agree": 331,
+       "checked, built to pass": 300,
+       "false fails": 206,
+       "checked, built to fail": 296,
+       "false passes": 59,
+       "rows with every reply checked and agreeing": 6
+      }
+     },
+     "shape": {
+      "check lines < gold parts": 24,
+      "check lines = gold parts": 171,
+      "check lines > gold parts": 30,
+      "finished: 4 parts or fewer written": 211,
+      "finished: 5 or more parts written": 1,
+      "finished: as many parts as check lines": 212,
+      "unfinished: 2 parts written": 2,
+      "unfinished: 3 parts written": 3,
+      "unfinished: 4 parts written": 8,
+      "unfinished: as many check lines as parts written": 2,
+      "unfinished: more check lines than parts written": 11
+     }
+    },
+    "test": {
+     "counts": {
+      "rows": 224,
+      "answers unfinished": 14,
+      "replies": 1781,
+      "replies built to fail": 885,
+      "checked": 1652,
+      "agree": 895,
+      "checked, built to pass": 831,
+      "false fails": 551,
+      "checked, built to fail": 821,
+      "false passes": 206,
+      "rows with every reply checked and agreeing": 23
+     },
+     "by_parts": {
+      "2": {
+       "rows": 65,
+       "answers unfinished": 0,
+       "replies": 511,
+       "replies built to fail": 251,
+       "checked": 507,
+       "agree": 299,
+       "checked, built to pass": 256,
+       "false fails": 126,
+       "checked, built to fail": 251,
+       "false passes": 82,
+       "rows with every reply checked and agreeing": 13
+      },
+      "3": {
+       "rows": 83,
+       "answers unfinished": 5,
+       "replies": 664,
+       "replies built to fail": 332,
+       "checked": 616,
+       "agree": 317,
+       "checked, built to pass": 308,
+       "false fails": 220,
+       "checked, built to fail": 308,
+       "false passes": 79,
+       "rows with every reply checked and agreeing": 6
+      },
+      "4": {
+       "rows": 76,
+       "answers unfinished": 9,
+       "replies": 606,
+       "replies built to fail": 302,
+       "checked": 529,
+       "agree": 279,
+       "checked, built to pass": 267,
+       "false fails": 205,
+       "checked, built to fail": 262,
+       "false passes": 45,
+       "rows with every reply checked and agreeing": 4
+      }
+     },
+     "shape": {
+      "check lines < gold parts": 25,
+      "check lines = gold parts": 171,
+      "check lines > gold parts": 28,
+      "finished: 4 parts or fewer written": 210,
+      "finished: as many parts as check lines": 210,
+      "unfinished: 1 parts written": 1,
+      "unfinished: 2 parts written": 1,
+      "unfinished: 3 parts written": 2,
+      "unfinished: 4 parts written": 10,
+      "unfinished: as many check lines as parts written": 1,
+      "unfinished: more check lines than parts written": 13
+     }
+    },
+    "test_long": {
+     "counts": {
+      "rows": 224,
+      "answers unfinished": 208,
+      "replies": 1792,
+      "replies built to fail": 896,
+      "rows with every reply checked and agreeing": 0,
+      "checked": 128,
+      "agree": 66,
+      "checked, built to pass": 64,
+      "false fails": 43,
+      "checked, built to fail": 64,
+      "false passes": 19
+     },
+     "by_parts": {
+      "5": {
+       "rows": 49,
+       "answers unfinished": 39,
+       "replies": 392,
+       "replies built to fail": 196,
+       "rows with every reply checked and agreeing": 0,
+       "checked": 80,
+       "agree": 41,
+       "checked, built to pass": 40,
+       "false fails": 30,
+       "checked, built to fail": 40,
+       "false passes": 9
+      },
+      "6": {
+       "rows": 66,
+       "answers unfinished": 63,
+       "replies": 528,
+       "replies built to fail": 264,
+       "rows with every reply checked and agreeing": 0,
+       "checked": 24,
+       "agree": 7,
+       "checked, built to pass": 12,
+       "false fails": 12,
+       "checked, built to fail": 12,
+       "false passes": 5
+      },
+      "7": {
+       "rows": 50,
+       "answers unfinished": 49,
+       "replies": 400,
+       "replies built to fail": 200,
+       "rows with every reply checked and agreeing": 0,
+       "checked": 8,
+       "agree": 6,
+       "checked, built to pass": 4,
+       "false fails": 0,
+       "checked, built to fail": 4,
+       "false passes": 2
+      },
+      "8": {
+       "rows": 59,
+       "answers unfinished": 57,
+       "replies": 472,
+       "replies built to fail": 236,
+       "rows with every reply checked and agreeing": 0,
+       "checked": 16,
+       "agree": 12,
+       "checked, built to pass": 8,
+       "false fails": 1,
+       "checked, built to fail": 8,
+       "false passes": 3
+      }
+     },
+     "shape": {
+      "check lines < gold parts": 89,
+      "check lines = gold parts": 103,
+      "check lines > gold parts": 32,
+      "finished: 4 parts or fewer written": 14,
+      "finished: 5 or more parts written": 2,
+      "finished: as many parts as check lines": 12,
+      "finished: parts and check lines differ": 4,
+      "unfinished: 1 parts written": 1,
+      "unfinished: 2 parts written": 2,
+      "unfinished: 3 parts written": 7,
+      "unfinished: 4 parts written": 184,
+      "unfinished: 5 or more parts written": 14,
+      "unfinished: as many check lines as parts written": 1,
+      "unfinished: more check lines than parts written": 207
+     }
+    }
+   }
+  },
+  "v2 dev 300, rules 1-9": {
+   "answers": "cubby450m_view_reader_v2_typed_answers.jsonl",
+   "answers_sha256": "0844ea6237b8a00c02c695e0ed8999f4b37661c1d356c339f8054219daf486d4",
+   "grammar": "typed",
+   "splits": {
+    "dev": {
+     "counts": {
+      "rows": 300,
+      "answers unfinished": 10,
+      "replies": 2389,
+      "replies built to fail": 1189,
+      "checked": 2305,
+      "agree": 1592,
+      "checked, built to pass": 1156,
+      "false fails": 455,
+      "checked, built to fail": 1149,
+      "false passes": 258,
+      "rows with every reply checked and agreeing": 108
+     },
+     "by_parts": {
+      "2": {
+       "rows": 84,
+       "answers unfinished": 1,
+       "replies": 666,
+       "replies built to fail": 330,
+       "checked": 656,
+       "agree": 505,
+       "checked, built to pass": 330,
+       "false fails": 107,
+       "checked, built to fail": 326,
+       "false passes": 44,
+       "rows with every reply checked and agreeing": 48
+      },
+      "3": {
+       "rows": 102,
+       "answers unfinished": 0,
+       "replies": 815,
+       "replies built to fail": 407,
+       "checked": 813,
+       "agree": 564,
+       "checked, built to pass": 406,
+       "false fails": 147,
+       "checked, built to fail": 407,
+       "false passes": 102,
+       "rows with every reply checked and agreeing": 38
+      },
+      "4": {
+       "rows": 114,
+       "answers unfinished": 9,
+       "replies": 908,
+       "replies built to fail": 452,
+       "checked": 836,
+       "agree": 523,
+       "checked, built to pass": 420,
+       "false fails": 201,
+       "checked, built to fail": 416,
+       "false passes": 112,
+       "rows with every reply checked and agreeing": 22
+      }
+     },
+     "shape": {
+      "check lines < gold parts": 10,
+      "check lines = gold parts": 258,
+      "check lines > gold parts": 32,
+      "finished: 4 parts or fewer written": 290,
+      "finished: as many parts as check lines": 289,
+      "finished: parts and check lines differ": 1,
+      "unfinished: 4 parts written": 10,
+      "unfinished: as many check lines as parts written": 2,
+      "unfinished: more check lines than parts written": 8
+     }
+    }
+   }
+  },
+  "v2 dev 300, rules 1-8": {
+   "answers": "cubby450m_view_reader_v2_typed8_answers.jsonl",
+   "answers_sha256": "7143b4fb14026191ba06bfb5c6d7c3da73757c119a22cbb733740b461486d85f",
+   "grammar": "typed8",
+   "splits": {
+    "dev": {
+     "counts": {
+      "rows": 300,
+      "answers unfinished": 6,
+      "replies": 2389,
+      "replies built to fail": 1189,
+      "checked": 2337,
+      "agree": 1622,
+      "checked, built to pass": 1172,
+      "false fails": 453,
+      "checked, built to fail": 1165,
+      "false passes": 262,
+      "rows with every reply checked and agreeing": 109
+     },
+     "by_parts": {
+      "2": {
+       "rows": 84,
+       "answers unfinished": 1,
+       "replies": 666,
+       "replies built to fail": 330,
+       "checked": 656,
+       "agree": 510,
+       "checked, built to pass": 330,
+       "false fails": 102,
+       "checked, built to fail": 326,
+       "false passes": 44,
+       "rows with every reply checked and agreeing": 51
+      },
+      "3": {
+       "rows": 102,
+       "answers unfinished": 0,
+       "replies": 815,
+       "replies built to fail": 407,
+       "checked": 813,
+       "agree": 563,
+       "checked, built to pass": 406,
+       "false fails": 151,
+       "checked, built to fail": 407,
+       "false passes": 99,
+       "rows with every reply checked and agreeing": 38
+      },
+      "4": {
+       "rows": 114,
+       "answers unfinished": 5,
+       "replies": 908,
+       "replies built to fail": 452,
+       "checked": 868,
+       "agree": 549,
+       "checked, built to pass": 436,
+       "false fails": 200,
+       "checked, built to fail": 432,
+       "false passes": 119,
+       "rows with every reply checked and agreeing": 20
+      }
+     },
+     "shape": {
+      "check lines < gold parts": 10,
+      "check lines = gold parts": 258,
+      "check lines > gold parts": 32,
+      "finished: 4 parts or fewer written": 291,
+      "finished: 5 or more parts written": 3,
+      "finished: as many parts as check lines": 278,
+      "finished: parts and check lines differ": 16,
+      "unfinished: 4 parts written": 4,
+      "unfinished: 5 or more parts written": 2,
+      "unfinished: as many check lines as parts written": 3,
+      "unfinished: fewer check lines than parts written": 2,
+      "unfinished: more check lines than parts written": 1
+     }
+    }
+   }
+  },
+  "v1 dev 300, rules 1-9": {
+   "answers": "cubby450m_view_reader_v1_typed_answers.jsonl",
+   "answers_sha256": "60c2b3b16ace5022a587ebcb112d79a6f392e3be52b191f357c817645e413a78",
+   "grammar": "typed",
+   "splits": {
+    "dev": {
+     "counts": {
+      "rows": 300,
+      "answers unfinished": 19,
+      "replies": 2389,
+      "replies built to fail": 1189,
+      "checked": 2223,
+      "agree": 1265,
+      "checked, built to pass": 1117,
+      "false fails": 703,
+      "checked, built to fail": 1106,
+      "false passes": 255,
+      "rows with every reply checked and agreeing": 29
+     },
+     "by_parts": {
+      "2": {
+       "rows": 84,
+       "answers unfinished": 0,
+       "replies": 666,
+       "replies built to fail": 330,
+       "checked": 663,
+       "agree": 397,
+       "checked, built to pass": 334,
+       "false fails": 183,
+       "checked, built to fail": 329,
+       "false passes": 83,
+       "rows with every reply checked and agreeing": 14
+      },
+      "3": {
+       "rows": 102,
+       "answers unfinished": 3,
+       "replies": 815,
+       "replies built to fail": 407,
+       "checked": 783,
+       "agree": 452,
+       "checked, built to pass": 392,
+       "false fails": 243,
+       "checked, built to fail": 391,
+       "false passes": 88,
+       "rows with every reply checked and agreeing": 9
+      },
+      "4": {
+       "rows": 114,
+       "answers unfinished": 16,
+       "replies": 908,
+       "replies built to fail": 452,
+       "checked": 777,
+       "agree": 416,
+       "checked, built to pass": 391,
+       "false fails": 277,
+       "checked, built to fail": 386,
+       "false passes": 84,
+       "rows with every reply checked and agreeing": 6
+      }
+     },
+     "shape": {
+      "check lines < gold parts": 34,
+      "check lines = gold parts": 224,
+      "check lines > gold parts": 42,
+      "finished: 4 parts or fewer written": 280,
+      "finished: 5 or more parts written": 1,
+      "finished: as many parts as check lines": 281,
+      "unfinished: 2 parts written": 2,
+      "unfinished: 3 parts written": 3,
+      "unfinished: 4 parts written": 14,
+      "unfinished: as many check lines as parts written": 2,
+      "unfinished: more check lines than parts written": 17
+     }
+    }
+   }
+  },
+  "v1 dev 300, rules 1-8": {
+   "answers": "cubby450m_view_reader_v1_typed8_answers.jsonl",
+   "answers_sha256": "458ae7c60a421fe5207e618438f13b6d49ab958673a37aa0dad09d27c6087a8f",
+   "grammar": "typed8",
+   "splits": {
+    "dev": {
+     "counts": {
+      "rows": 300,
+      "answers unfinished": 2,
+      "replies": 2389,
+      "replies built to fail": 1189,
+      "checked": 2362,
+      "agree": 1360,
+      "checked, built to pass": 1186,
+      "false fails": 731,
+      "checked, built to fail": 1176,
+      "false passes": 271,
+      "rows with every reply checked and agreeing": 34
+     },
+     "by_parts": {
+      "2": {
+       "rows": 84,
+       "answers unfinished": 0,
+       "replies": 666,
+       "replies built to fail": 330,
+       "checked": 663,
+       "agree": 414,
+       "checked, built to pass": 334,
+       "false fails": 168,
+       "checked, built to fail": 329,
+       "false passes": 81,
+       "rows with every reply checked and agreeing": 18
+      },
+      "3": {
+       "rows": 102,
+       "answers unfinished": 0,
+       "replies": 815,
+       "replies built to fail": 407,
+       "checked": 807,
+       "agree": 462,
+       "checked, built to pass": 404,
+       "false fails": 249,
+       "checked, built to fail": 403,
+       "false passes": 96,
+       "rows with every reply checked and agreeing": 10
+      },
+      "4": {
+       "rows": 114,
+       "answers unfinished": 2,
+       "replies": 908,
+       "replies built to fail": 452,
+       "checked": 892,
+       "agree": 484,
+       "checked, built to pass": 448,
+       "false fails": 314,
+       "checked, built to fail": 444,
+       "false passes": 94,
+       "rows with every reply checked and agreeing": 6
+      }
+     },
+     "shape": {
+      "check lines < gold parts": 34,
+      "check lines = gold parts": 224,
+      "check lines > gold parts": 42,
+      "finished: 4 parts or fewer written": 294,
+      "finished: 5 or more parts written": 4,
+      "finished: as many parts as check lines": 273,
+      "finished: parts and check lines differ": 25,
+      "unfinished: 4 parts written": 2,
+      "unfinished: as many check lines as parts written": 2
+     }
+    }
+   }
+  }
+ }
+}

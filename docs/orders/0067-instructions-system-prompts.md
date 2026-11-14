@@ -1,5 +1,5 @@
 # 0067 - Instructions and system prompts: read by the model, kept as rules, enforced and checked by the host
-status: in progress (Nick, 2026-11-12: 0067 first, then 0070, then 0069; 2026-11-13: Code A stays on 0067, and 0070 then 0069 go to Code B, a second Claude Code session, in parallel)
+status: in progress (Nick, 2026-11-12: 0067 first, then 0070, then 0069; 2026-11-13: Code A stays on 0067, and 0070 then 0069 go to Code B, a second Claude Code session, in parallel; 2026-11-14: the second reader's round 2 is closed as a negative result on its line 3, see "Cowork's record and check (2026-11-14)", and 0073 follows)
 written: 2026-11-12 by Cowork - approved: 2026-11-12 by Nick ("perfect open it") - hypothesis: none (H-E20's gate 4 uses the same measure)
 
 ## Why
@@ -1221,3 +1221,92 @@ Behind `CB_API_ROLES=1` (off: `POST /turn` reads `{"text"}` as before, `/rules/`
   nor the chat's own; the two members of one company read one mood (the same ODE goes on). It fails with one mood
   for all (checked once). Full suite: 1,647 passed, 12 skipped, the known red only; it ran from about 15:58 to 16:03,
   across the start of Cowork's hold (said in the inbox).
+
+## Cowork's record and check (2026-11-14): the second reader's counted read, rounds 1 and 2: line 3's kill is hit
+Written by Cowork: Code A's session was signed out before it could write this up (Nick, 2026-11-14: "we will
+continue here then"). Code A scored the counted ids at 02:14; Cowork scored them again from the stored answers and
+got the same counts, row for row of the table below.
+
+**What was read.**
+- Round 1's adapter (`cubby450m_view_reader_v1`) and round 2's (`cubby450m_view_reader_v2`), each decoded once on
+  Colab (`exp_view_reader_torch.py`, batches of 32, rules 1 to 9), each split's seeded sample of 300 whole. Answers:
+  v1 sha256 `60c2b3b1...413a78`, v2 `0844ea62...daf486d4`; 900 answers each, none empty, no `error` key.
+- **The counted ids were hashed before scoring** (`7e8c819`): rows 75 to 299 of each split's sample (the first 75
+  had been read before), less two rows read by eye: dev 225, test 224, test_long 224. Every counted id has an
+  answer in both files.
+- **One decoder.** Round 2's first 100 a split were decoded before `ec7044c`'s screen and the rest after it; the
+  screen changes no answer on those 300 (`f25e4bf`: 626,771 character prefixes judged, none refused), and the worker
+  pool gives the serial read's answers on 4 of 4 dev rows (`3d79abc`).
+- Scored in the shared VM (`b3b3360`, sha `a2dfaa01...`) with `exp_view_reader.py --score`; the counts it does not
+  print come from `exp_view_counted_tables.py`, whose totals repeat the scorer's. The rows file read at home and
+  the one Colab read are the same (sha256 `ca2e6a0e...`).
+
+**The counted result.**
+
+| line | asked | round 1 | round 2 |
+|---|---|---|---|
+| 1. dropped silently | 0 (kill) | 0 | 0 |
+| 2. span and kind, test | at least 0.90 | 546 / 683 = 0.799 | 581 / 683 = 0.851 |
+| 3. agreement, test | at least 0.95 | 895 / 1,652 = 0.542 | 1,205 / 1,709 = 0.705 |
+| 3. false passes, test | at most 0.02, kill above 0.05 | 206 / 1,652 = 0.125 | **170 / 1,709 = 0.0995** |
+| the same over replies built to fail | reported | 206 / 821 = 0.251 | 170 / 849 = 0.200 |
+| 4. agreement, test_long | at least 0.90 of test's | 66 / 128 = 0.516 (0.95 of it) | 153 / 264 = 0.580 (0.82 of it) |
+| replies the VM could check, test | reported | 1,652 / 1,781 = 0.928 | 1,709 / 1,781 = 0.960 |
+| replies the VM could check, test_long | reported | 128 / 1,792 = 0.071 | 264 / 1,792 = 0.147 |
+| answers unfinished, test | reported | 14 / 224 | 8 / 224 |
+| answers unfinished, test_long | reported | 208 / 224 | 189 / 224 |
+| rows with every reply checked and agreeing, test | reported | 23 / 224 | 82 / 224 |
+| replies built to pass that are refused, test | reported | 551 / 831 = 0.663 | 334 / 860 = 0.388 |
+
+- **Line 1 holds:** every answer parsed, and the text no line covers is flagged "asked" (975 characters on test and
+  9,613 on test_long in round 2).
+- **Lines 2 and 3 are missed, and line 3's kill is hit:** round 2 passes 170 of the 849 checked replies that were
+  built to fail.
+- **Line 4 is missed in round 2,** and it is measured on 15% of the long set's replies. Round 1's 0.95 is on 7% of
+  them and says nothing.
+- On the counted dev rows (225): round 2 span and kind 631 / 701 = 0.900, agreement 1,200 / 1,725 = 0.696, false
+  passes 196 / 1,725 = 0.114; round 1 0.796, 0.576, 187 / 1,674 = 0.112.
+- By number of parts, round 2 on test: agreement 398 / 507 = 0.785 (two parts), 472 / 656 = 0.720 (three),
+  335 / 546 = 0.614 (four); false passes over replies built to fail 35 / 251, 66 / 328, 69 / 270.
+
+**Line 4 is read through unfinished answers.** On test_long round 2 leaves 189 of 224 answers unfinished: 39 of 49
+(five parts), 55 of 66 (six), 45 of 50 (seven), 50 of 59 (eight). In 186 of the 189 the split has more check lines
+than the program has part functions, and 146 stop at four parts written, the most the reader was trained on (42 at
+five or more, 1 at three). Of the 35 that finish, 29 wrote four parts or fewer and 17 wrote a number of parts other
+than their check lines. Round 1: 208 unfinished, 207 with more check lines than parts, 184 stopped at four. The cause,
+shown on dev row `l003139` (`3d79abc`): the split holds one check more than the program has parts; rule 9 refuses
+`create` and `return` while a check has no part, nothing refuses `solve` beginning too early, and from there the
+decoder picks ids that print nothing (1,007 of them) until the 1,800-token limit. In-length the same is rare (8 of
+224 on test, 7 of them four-part rows). An unfinished answer is "asked", never a verdict.
+
+**Rules 1 to 8 against 1 to 9, dev only** (all 300 dev rows, each adapter decoded once more with rule 9 off;
+answers sha256 v1 `458ae7c6...`, v2 `7143b4fb...`):
+
+| dev, 300 rows | round 1, rules 1-9 | round 1, rules 1-8 | round 2, rules 1-9 | round 2, rules 1-8 |
+|---|---|---|---|---|
+| replies checked, of 2,389 | 2,223 | 2,362 | 2,305 | 2,337 |
+| agreement | 1,265 = 0.569 | 1,360 = 0.576 | 1,592 = 0.691 | 1,622 = 0.694 |
+| false passes | 255 = 0.1147 | 271 = 0.1147 | 258 = 0.1119 | 262 = 0.1121 |
+| the same over replies built to fail | 255 / 1,106 = 0.231 | 271 / 1,176 = 0.230 | 258 / 1,149 = 0.225 | 262 / 1,165 = 0.225 |
+| answers unfinished | 19 | 2 | 10 | 6 |
+
+Rule 9 does not lower the false-pass rate on either adapter; it leaves more answers unfinished (17 and 4 more). This
+is the read order 0073's point 7 reports beside its own.
+
+**Verdict: a negative result, as measured.** Round 2 hits line 3's kill on the counted test rows (false passes
+0.0995 against 0.05) and misses lines 2, 3 and 4; line 1 holds. Against round 1 on the same rows it is better on
+every line (span and kind 0.799 to 0.851, agreement 0.542 to 0.705, rows wholly right 23 to 82, refused replies that
+should pass 0.663 to 0.388) and its false passes are 0.125 to 0.0995. The second reader in this form, a split and
+then a program, is not served and not wired; lines 5 to 7 are not read on it.
+
+**What goes to order 0073** (open; nothing changes in this order): where round 2's false passes come from on dev
+(`42ec2d4`: a reversed part and the join), the unfinished answers and their cause, the decoder's three faults (0073's
+"The grammar is a state machine"), and rule 9's read above. This order's lines 5 and 6 wait until an arm of 0073 is
+kept.
+
+**Logs** (`validation/logs/`): `view_reader_2026-11-14_v1_counted.json`, `view_reader_2026-11-14_v2_counted.json`
+(the scorer, the counted ids), `view_reader_2026-11-14_counted_tables.json` (unfinished answers, replies built to
+fail, the split against the program, by parts, and dev with rule 9 on and off),
+`view_reader_2026-11-14_{v1,v2}_dev300_{typed,typed8}.json` (the scorer on all 300 dev rows),
+`view_reader_round2_counted_ids_2026-11-14.json`, `view_reader_2026-11-14_v2_first100_prefix_closed.json`,
+`view_reader_2026-11-14_stall_l003139.json`.
