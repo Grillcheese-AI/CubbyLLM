@@ -228,3 +228,29 @@ Nothing here is on master; the review is Code A's or Nick's.
   small spec. The existing tests of the builders, the reader and the grammar pass unchanged (50 in the run with
   these 7).
 - **Not yet:** `absent: pass` for `at`, and `fold` (the second half of step 1).
+
+### Step 1, second half, built: `absent: pass` and `fold` (Cowork, 2026-11-14, branch `cowork/0073`)
+- **Said forms** (`cubbyllm/speech/view_spec.py`): a condition or an atom may carry `"not": True` (on a condition:
+  its comparison; on an atom: its quantifier or comparison; on `at`: the comparison only), a part may be
+  `{"not": atom}` as before, and `at` may carry `"absent": "pass"` ("if there is one": no such row, it holds). The
+  evaluator reads all of them; a spec with none of them is read exactly as before.
+- **`fold(part)`** writes the same part as one atom with no `not`: a comparison turned, `any` and `none` exchanged,
+  `not all` of one condition as `any` of its complement, `not at` as the turned comparison with `absent: pass` (and
+  back). A two-valued column (`line.item`, the only one) gets `==` with the value that holds, whatever was said.
+  `not all` of two conditions raises: it has no folded form (point 3 above).
+- **The compiler** (`view_compile.py`) writes `absent: pass` (the flag starts at 1 and is set again once the row is
+  found) and refuses a said form: a part is folded first, so there is one program per meaning.
+- **Pinned on every stored part and reply** (`validation/exp_view_fold_pin.py`,
+  `validation/logs/view_fold_pin_2026-11-14.json`): 22,083 parts of the 3,900 long rows and 3,000 pair rows.
+  - The fold keeps the evaluator's truth on every reply: 21,859 parts folded, none differs. 224 parts are `not all`
+    of two conditions and have no folded form.
+  - 58,705 other said forms of the same parts (the `not` moved onto the atom, onto each condition, around the part
+    twice, onto the other quantifier) have the part's truth and fold to the same atom: none differs.
+  - Where the fold changed the part (12,023 parts, 3,178 of them `absent: pass`), the folded atom compiled and run in
+    the VM (`b3b3360`) gives the evaluator's verdict on every reply: 96,006 runs, none differs.
+- **Nothing stored moved:** `exp_view_core_rebuild.py` again after the change: 3,900, 3,000 and 2,000 programs byte for
+  byte, 31,087, 23,993 and 15,956 verdicts.
+- **Tests** (`tests/speech/test_view_fold.py`, 6 cases): each fold on replies with and without the row, the
+  two-valued column's one spelling, `not all` of two conditions refused, the compiler's refusal and the text of
+  `absent: pass`.
+- **Next:** step 2, the wording returns the part as said in both spellings.

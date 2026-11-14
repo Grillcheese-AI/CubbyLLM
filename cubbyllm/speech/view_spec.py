@@ -12,6 +12,12 @@ A spec is an atom or ``{"and": [a, b]}``, ``{"or": [a, b]}``, ``{"not": a}``, ``
 
 `evaluate(spec, views)` -> bool, the truth the VM's run must agree with. `atoms(spec)` -> its atoms, in order.
 
+**Said forms (order 0073).** A part can be written as its words say it: a condition, or an atom, carries
+``"not": True`` (the thing it sits on is negated: a condition's comparison; an atom's quantifier or comparison; for
+``at``, the comparison only), and ``at`` carries ``"absent": "pass"`` where the words say "if there is one" (no such
+row: it holds). `fold(part)` is the same part with no ``not`` anywhere, the one spelling the compiler takes; a part
+and its folded form have the same truth on every reply.
+
 Wired: STANDALONE (the row builders, the second reader's reads; the host compiles from it in order 0073's step 4).
 """
 from __future__ import annotations
@@ -29,6 +35,8 @@ FILTERS = {                                               # view -> {column: "st
 }
 NUM_OPS = ("<", "<=", ">", ">=", "==", "!=")
 STR_OPS = ("==", "!=")
+INV = {"<": ">=", "<=": ">", ">": "<=", ">=": "<", "==": "!=", "!=": "=="}
+TWO_VALUED = {("line", "item"): ("yes", "no")}            # one folded spelling: ``==`` the value that holds
 
 
 def cmp(a, op, b) -> bool:
@@ -36,7 +44,7 @@ def cmp(a, op, b) -> bool:
 
 
 def match(row: dict, conds: list[dict]) -> bool:
-    return all(cmp(row[c["col"]], c["op"], c["v"]) for c in conds)
+    return all(cmp(row[c["col"]], c["op"], c["v"]) != bool(c.get("not")) for c in conds)
 
 
 def evaluate(spec: dict, views: dict) -> bool:
@@ -44,22 +52,24 @@ def evaluate(spec: dict, views: dict) -> bool:
         return all(evaluate(s, views) for s in spec["and"])
     if "or" in spec:
         return any(evaluate(s, views) for s in spec["or"])
-    if "not" in spec:
+    if "not" in spec and "q" not in spec:                 # around a spec; on an atom it is the atom's own (below)
         return not evaluate(spec["not"], views)
     if "if" in spec:
         return (not evaluate(spec["if"], views)) or evaluate(spec["then"], views)
     if "unless" in spec:
         return evaluate(spec["unless"][0], views) or evaluate(spec["unless"][1], views)
     rows = views[spec["view"]]
-    q = spec["q"]
+    q, neg = spec["q"], bool(spec.get("not"))
     if q == "n":
-        return cmp(len(rows), spec["op"], spec["v"])
+        return cmp(len(rows), spec["op"], spec["v"]) != neg
     if q == "at":
         idx = spec["pos"] - 1 if spec["pos"] > 0 else len(rows) - 1
-        return 0 <= idx < len(rows) and cmp(rows[idx][spec["col"]], spec["op"], spec["val"])
+        if not 0 <= idx < len(rows):
+            return spec.get("absent") == "pass"           # "if there is one": no such row, it holds
+        return cmp(rows[idx][spec["col"]], spec["op"], spec["val"]) != neg
     k = sum(1 for r in rows if match(r, spec["where"]))
     return {"count": lambda: cmp(k, spec["op"], spec["v"]), "all": lambda: k == len(rows),
-            "any": lambda: k > 0, "none": lambda: k == 0}[q]()
+            "any": lambda: k > 0, "none": lambda: k == 0}[q]() != neg
 
 
 def atoms(spec: dict) -> list[dict]:
@@ -72,4 +82,45 @@ def atoms(spec: dict) -> list[dict]:
     return [a for s in spec.get("and") or spec.get("or") or spec.get("unless") for a in atoms(s)]
 
 
-__all__ = ["FILTERS", "NUM_OPS", "STR_OPS", "atoms", "cmp", "evaluate", "match"]
+def _plain(view: str, c: dict) -> dict:
+    """A condition with no ``not`` and, on a two-valued column, ``==`` the value that holds."""
+    op, v = (INV[c["op"]] if c.get("not") else c["op"]), c["v"]
+    pair = TWO_VALUED.get((view, c["col"]))
+    if pair and op == "!=" and v in pair:
+        op, v = "==", pair[1 - pair.index(v)]
+    return {"col": c["col"], "op": op, "v": v}
+
+
+def fold(part: dict) -> dict:
+    """`part` (an atom, or ``{"not": atom}``, in its said form) as one atom with no ``not``: a comparison turned
+    (`INV`), ``any`` and ``none`` exchanged, ``not all`` of one condition as ``any`` of its complement, ``not at`` as
+    the turned comparison that holds when there is no such row. ``not all`` of two conditions raises ValueError: it
+    is an or-filter, which the slots do not have."""
+    neg = False
+    while "q" not in part:                                 # {"not": ...} around the atom, any depth
+        neg, part = not neg, part["not"]
+    a = {k: v for k, v in part.items() if k != "not"}
+    q, view, own = a["q"], a["view"], bool(part.get("not"))
+    if "where" in a:
+        a["where"] = [_plain(view, c) for c in a["where"]]
+    if q == "at":
+        c = _plain(view, {"col": a["col"], "op": a["op"], "v": a["val"], "not": own != neg})
+        a.update(op=c["op"], val=c["v"])
+        if neg:                                           # the whole atom negated: no such row now holds, or fails
+            if a.pop("absent", None) != "pass":
+                a["absent"] = "pass"
+        return a
+    if own == neg:
+        return a
+    if q in ("n", "count"):
+        a["op"] = INV[a["op"]]
+    elif q in ("any", "none"):
+        a["q"] = "none" if q == "any" else "any"
+    else:                                                 # not every row matches: some row fails the condition
+        if len(a["where"]) != 1:
+            raise ValueError("not all of two conditions has no folded form")
+        a.update(q="any", where=[_plain(view, dict(a["where"][0], **{"not": True}))])
+    return a
+
+
+__all__ = ["FILTERS", "INV", "NUM_OPS", "STR_OPS", "TWO_VALUED", "atoms", "cmp", "evaluate", "fold", "match"]

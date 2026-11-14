@@ -10,6 +10,10 @@ condition), and no index past a view's end (``at`` checks the index first): a mi
 `body(spec)` -> the check's lines; `program(spec, reply)` -> the whole program the host runs: the views the spec reads
 bound from the reply (`reply_views.literals`), then the body.
 
+Order 0073: ``at`` with ``"absent": "pass"`` holds when the view has no such row (its flag starts at 1 and is set
+again once the row is found). A said form (a ``not`` on an atom or on a condition) is not compiled: it is folded
+first (`view_spec.fold`), so there is one program per meaning; `body` raises ValueError on one.
+
 Wired: STANDALONE (the row builders, the second reader's reads; the host compiles with it in order 0073's step 4).
 """
 from __future__ import annotations
@@ -35,6 +39,8 @@ class _W:
 
     def atom(self, a: dict) -> str:
         v = a["view"]
+        if a.get("not") or any(c.get("not") for c in a.get("where", [])):
+            raise ValueError("a said form is folded before it is compiled (view_spec.fold)")
         if a["q"] == "n":
             c = self.flag()
             self.lines.append(f"if (n_{v} {a['op']} {int(a['v'])}) {{ assign {c} = 1; }}")
@@ -45,7 +51,11 @@ class _W:
                 self.lines.append(f"create {p}: number; assign {p} = {a['pos'] - 1};")
             else:
                 self.lines.append(f"create {p}: number; assign {p} = n_{v}; sub {p}, 1;")
-            self.lines.append(f"if ({p} >= 0) {{ if ({p} < n_{v}) {{ let {x} = {v}_{a['col']}[{p}]; "
+            first = ""
+            if a.get("absent") == "pass":                 # "if there is one": it holds until a row is found there
+                self.lines.append(f"assign {c} = 1;")
+                first = f"assign {c} = 0; "
+            self.lines.append(f"if ({p} >= 0) {{ if ({p} < n_{v}) {{ {first}let {x} = {v}_{a['col']}[{p}]; "
                               f"if ({x} {a['op']} {RV._lit(a['val'])}) {{ assign {c} = 1; }} }} }}")
             return c
         k, i = self.name("k"), self.name("i")

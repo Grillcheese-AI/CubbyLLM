@@ -1,0 +1,53 @@
+{
+ "order": "0073",
+ "what": "step 1: fold and absent: pass on every stored part and reply (the evaluator, the said forms, the VM)",
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-13 16:06",
+  "sha256": "a2dfaa016536ccbeb2f2c29b2c095b0ef3a5d9480065440089e04e90b244e42f",
+  "commit": "b3b3360",
+  "older_than_sources": false
+ },
+ "sets": {
+  "long rows": {
+   "counts": {
+    "rows": 3900,
+    "parts": 12923,
+    "said forms": 34325,
+    "parts folded": 12795,
+    "replies": 102078,
+    "parts the fold changed": 7072,
+    "parts with absent: pass": 1920,
+    "VM runs": 56407,
+    "parts with no folded form (not all of two conditions)": 128
+   },
+   "disagreements": {
+    "the fold changes the truth": [],
+    "a said form differs": [],
+    "the VM differs": []
+   },
+   "sha256": "ca2e6a0ecfa78f24da5fa3044daf850cfd285e47b9becaf382e1876bd61933a1",
+   "file": "long_rows_0067/rows.jsonl"
+  },
+  "pair rows": {
+   "counts": {
+    "rows": 3000,
+    "parts": 9160,
+    "said forms": 24380,
+    "parts folded": 9064,
+    "replies": 72493,
+    "parts the fold changed": 4951,
+    "parts with absent: pass": 1258,
+    "VM runs": 39599,
+    "parts with no folded form (not all of two conditions)": 96
+   },
+   "disagreements": {
+    "the fold changes the truth": [],
+    "a said form differs": [],
+    "the VM differs": []
+   },
+   "sha256": "d4f7fdab44539962d0c572f14967a284e2c0a76f252193155524a04ca6d1d320",
+   "file": "long_rows_0067/pair_rows.jsonl"
+  }
+ }
+}
