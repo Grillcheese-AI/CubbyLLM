@@ -38,6 +38,12 @@ from cubbyllm.speech import view_types as VT  # noqa: E402
 
 __wiring__ = "STANDALONE"
 
+
+def grammar_class(name: str):
+    """typed: rules 1-9; typed8: rule 9 off; lines: the line shapes only (looked up when called)."""
+    return {"typed": VT.TypedGrammar, "typed8": VT.TypedGrammar8, "lines": VG.Grammar}[name]
+
+
 HEAD = "public function solve(mention: str): number {"
 
 
@@ -106,7 +112,7 @@ def main() -> None:
     ap.add_argument("--tokenizer")
     ap.add_argument("--adapter")
     ap.add_argument("--chunk", default="0/1")
-    ap.add_argument("--grammar", default="typed", choices=("typed", "lines"),
+    ap.add_argument("--grammar", default="typed", choices=("typed", "typed8", "lines"),
                     help="typed: view_types.TypedGrammar (literals of the column's type, a part's own names, calls in "
                          "order); lines: view_grammar.Grammar, the line shapes only (the first read's)")
     ap.add_argument("--rows", default=None)
@@ -157,7 +163,7 @@ def main() -> None:
             else:
                 t0 = time.time()
                 ids = tk.encode(VR.prompt(r["instruction"])).ids
-                gram = (VT.TypedGrammar if a.grammar == "typed" else VG.Grammar)(r["instruction"])
+                gram = grammar_class(a.grammar)(r["instruction"])
                 proc = ranked_processor(VG.chooser(gram, piece, eos, len(ids)))
                 out = trunk.generate("programs", [ids], a.max_new, logits_processor=proc)[0]
                 answer = tk.decode([x for x in out if x != eos])

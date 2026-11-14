@@ -257,6 +257,7 @@ def joins_ok(prog: str, instruction: str) -> bool:
 
 class TypedGrammar(Grammar):
     """`view_grammar.Grammar` with rules 1-9 on the program (rule 9, the part's own words: `view_words`)."""
+    words = True                                                     # rule 9 on
 
     def _check(self, text: str) -> tuple[bool, bool]:
         head = text.split(SEP, 1)[0] if SEP in text else None
@@ -283,9 +284,14 @@ class TypedGrammar(Grammar):
         ok, done = super()._program(text)
         if not ok:
             return False, False
-        good = typed_ok(text) and joins_ok(text, self.instruction) and \
-            VW.words_ok(text, getattr(self, "_texts", {}), getattr(self, "_quotes", None))
+        good = typed_ok(text) and joins_ok(text, self.instruction) and (not self.words or
+            VW.words_ok(text, getattr(self, "_texts", {}), getattr(self, "_quotes", None)))
         return (True, done) if good else (False, False)
 
 
-__all__ = ["CUES", "NUMBER", "TypedGrammar", "chooser", "joins_ok", "kind", "typed_ok"]
+class TypedGrammar8(TypedGrammar):
+    """Rules 1-8, rule 9 off (the dead-end fixes kept): the dev read of 1-8 against 1-9 (Cowork, 2026-11-14)."""
+    words = False
+
+
+__all__ = ["CUES", "NUMBER", "TypedGrammar", "TypedGrammar8", "chooser", "joins_ok", "kind", "typed_ok"]

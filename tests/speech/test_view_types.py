@@ -130,3 +130,16 @@ def test_never_a_dead_end_in_the_join_the_loop_or_the_split():
     pytest.importorskip("regex")
     g = VT.TypedGrammar("Write two sentences.")
     assert g.viable("\ncheck 1 | Write two sentences.\n---") and not g.viable("\ncheck 1 | Write two sentences.\np")
+
+
+def test_typed8_is_the_typed_grammar_with_rule_9_off():
+    """Cowork 2026-11-14: rules 1-8 read against 1-9 on dev. A number the part's text does not say (rule 9) passes
+    typed8 and not typed; a literal of the wrong type (rule 1) is refused by both."""
+    pytest.importorskip("regex")
+    instruction = 'Do not include any sentence that has a number of words other than 2 and that begins with the word "-".'
+    answer = f'\ncheck 1 | {instruction}\n---\n'
+    unsaid = answer + HEAD + PART.replace("x3 != 2", "x3 != 7")
+    assert not VT.TypedGrammar(instruction).viable(unsaid) and VT.TypedGrammar8(instruction).viable(unsaid)
+    wrong_type = answer + HEAD + PART.replace('x4 == "-"', "x4 == 9")
+    assert not VT.TypedGrammar8(instruction).viable(wrong_type)
+    assert VT.TypedGrammar8(instruction).viable(answer + GOLD) and VT.TypedGrammar8(instruction).complete(answer + GOLD)

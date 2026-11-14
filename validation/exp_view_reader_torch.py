@@ -28,6 +28,13 @@ from cubbyllm.speech import view_reader as VR  # noqa: E402
 from cubbyllm.speech import view_types as VT  # noqa: E402
 
 __wiring__ = "STANDALONE"
+
+
+def grammar_class(name: str):
+    """typed: rules 1-9; typed8: rule 9 off; lines: the line shapes only (looked up when called)."""
+    return {"typed": VT.TypedGrammar, "typed8": VT.TypedGrammar8, "lines": VG.Grammar}[name]
+
+
 WIDTHS = (32, 512)
 
 
@@ -46,7 +53,7 @@ def decode(model, tk, eos, batch: list, grammar: str, max_new: int, dev) -> list
             pieces[t] = tk.decode([t])
         return pieces[t]
     prompts = [tk.encode(VR.prompt(r["instruction"])).ids for r in batch]
-    gram = [(VT.TypedGrammar if grammar == "typed" else VG.Grammar)(r["instruction"]) for r in batch]
+    gram = [grammar_class(grammar)(r["instruction"]) for r in batch]
     choose = [VG.chooser(g, piece, eos, len(p)) for g, p in zip(gram, prompts)]
     gen, done, err = [[] for _ in batch], [False] * len(batch), [None] * len(batch)
     state = model.init_state(len(batch), dev)
@@ -94,9 +101,11 @@ def main() -> None:
     ap.add_argument("--n", type=int, default=100)
     ap.add_argument("--batch", type=int, default=32)
     ap.add_argument("--max-new", type=int, default=1800)
-    ap.add_argument("--grammar", default="typed", choices=("typed", "lines"))
+    ap.add_argument("--grammar", default="typed", choices=("typed", "typed8", "lines"))
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
+    if a.grammar == "typed8" and set(a.splits.split(",")) != {"dev"}:     # Cowork 2026-11-14: 1-8 against 1-9 on dev
+        ap.error("--grammar typed8 reads dev only: test and test_long are read once, under rules 1-9")
     import torch
     from tokenizers import Tokenizer
     from train_base import load_base
