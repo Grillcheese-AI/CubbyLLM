@@ -7,7 +7,8 @@ not give. Round 2 changes three things, nothing else:
   part said the other way; a share of checks said goal first or in the passive), `rules/view_reader_sft_v2.jsonl`;
 - the loss: the program's key tokens (operators, compared values, positions, view names, the join's tests) weighted
   4x (`--key-weight 4`, `validation/key_tokens.py`); the held loss stays the plain mean, comparable with round 1;
-- the adapter: rank 32 (alpha 64, the same scale as round 1's 16/32), five epochs.
+- five epochs; the adapter stays rank 16 / alpha 32 (Nick, 2026-11-13: "so we can use it with other lora": one LoRA
+  layout a trunk, so the reader shares the served seats' trunk).
 Cowork runs it; the read is at home on grilly2. Re-run after editing:
     python notebooks/_build_view_reader2.py
 """
@@ -45,7 +46,7 @@ reversed. Round 2 keeps round 1's recipe and changes three things:
    kept; train only, nothing from dev or test.
 2. **Key tokens weighted 4x** (`--key-weight 4`): the program's operators, compared values, positions, view names and
    the join's tests, about 14% of an answer's tokens. The held loss stays the plain mean, comparable with round 1.
-3. **Rank 32, five epochs** (alpha 64: round 1's scale).
+3. **Five epochs**; the adapter stays rank 16 / alpha 32, the served seats' layout, so it shares their trunk.
 
 **Runtime:** an A100 or the G4 (about 45 minutes). It reads, from Drive: `runs/base450m_cont/base450m_cont_final.pt`,
 the token cache's tokenizer and the set; it writes `rules/cubby450m_view_reader_v2/` (`talk_lora.*`). Training only:
@@ -76,15 +77,14 @@ assert {'IFEval', 'IFBench'} <= set(man['benchmarks_checked']), 'the benchmark c
     md(r"""
 ## The settings
 
-Rank 32, alpha 64 (every projection of every layer, as the served adapters), lr 2e-4 with 50 warmup steps then
+Rank 16, alpha 32 (every projection of every layer, the served adapters' layout), lr 2e-4 with 50 warmup steps then
 cosine, batch 32, max length 1,280, five epochs, seed 0, key tokens weighted 4x. On a card under 70 GB a batch is cut
 into chunks of at most 4,096 padded tokens (`--micro-tokens`: the same gradient).
 
-A rank-32 adapter cannot share a trunk with the rank-16 seats when served (one LoRA layout a trunk): the read at home
-loads it alone.
+Rank 16 / alpha 32 is the served seats' layout (one LoRA layout a trunk): the reader can share their trunk.
 """),
     code(r"""
-EPOCHS, BATCH, LR, RANK, ALPHA, MAX_LEN, KEY_WEIGHT = 5, 32, 2e-4, 32, 64, 1280, 4.0
+EPOCHS, BATCH, LR, RANK, ALPHA, MAX_LEN, KEY_WEIGHT = 5, 32, 2e-4, 16, 32, 1280, 4.0
 os.environ['CB_NO_FLEX'] = '1'                # the reference attention path; the trainer does not compile flex
 assert not os.path.exists(f'{OUT}/DONE'), f'{OUT} is already trained: move it aside to train again'
 os.makedirs(OUT, exist_ok=True)
