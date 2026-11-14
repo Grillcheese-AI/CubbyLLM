@@ -1,0 +1,83 @@
+{
+ "row": "l003139",
+ "seconds": 209,
+ "answer_tokens": 1801,
+ "picks_printing_nothing": 1007,
+ "which": {
+  "MATCH": 1001,
+  "GROUP": 4,
+  "JOIN": 1,
+  "OBJECT": 1
+ },
+ "whole_vocab_scans": 6,
+ "ended": "limit",
+ "complete": false,
+ "first_empty": {
+  "step": 793,
+  "id": 127990,
+  "token": "OBJECT",
+  "rank": 8227,
+  "width": "all",
+  "text_tail": "1 = part1(n_sentence, sentence_n_word);\n        let p2 = part2(item_marker, n_item);\n        let p3 = part3(n_sentence, sentence_n_word);\n        let p4 = part4(n_sentence, sentence_end_mark);\n       ",
+  "refused_above": [
+   [
+    2268,
+    "Ġcreate",
+    " create"
+   ],
+   [
+    1480,
+    "Ġlet",
+    " let"
+   ],
+   [
+    1969,
+    "Ġreturn",
+    " return"
+   ],
+   [
+    7061,
+    "Ġgenerate",
+    " generate"
+   ],
+   [
+    888,
+    "Ġadd",
+    " add"
+   ],
+   [
+    5490,
+    "Ġsolve",
+    " solve"
+   ],
+   [
+    4974,
+    "Ġstore",
+    " store"
+   ],
+   [
+    3407,
+    "Ġwrite",
+    " write"
+   ],
+   [
+    4499,
+    "Ġassign",
+    " assign"
+   ],
+   [
+    8583,
+    "Ġcreates",
+    " creates"
+   ]
+  ],
+  "grammar_allows_a_printable_char": [
+   " "
+  ]
+ },
+ "answer_tail": "c4 = 1; }\n        return c4;\n    }\n    public function solve(mention: str): number {\n        let p1 = part1(n_sentence, sentence_n_word);\n        let p2 = part2(item_marker, n_item);\n        let p3 = part3(n_sentence, sentence_n_word);\n        let p4 = part4(n_sentence, sentence_end_mark);\n        i",
+ "pool": {
+  "rows": 4,
+  "identical": 4
+ }
+}
