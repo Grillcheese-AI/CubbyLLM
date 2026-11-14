@@ -1,14 +1,9 @@
-"""Order 0067, the second reader's step 2: checks over the reply's views (`cubbyllm/speech/reply_views.py`), as specs a
-compiler turns into CubeLang (`view_compile.py`). Rows are built in reverse: a spec is drawn, then run; no model
-writes a check.
+"""Order 0067, the second reader's step 2: checks over the reply's views (`cubbyllm/speech/reply_views.py`), drawn as
+specs a compiler turns into CubeLang. Rows are built in reverse: a spec is drawn, then run; no model writes a check.
 
-**A spec.** An atom asks one thing of one view, the rows filtered by up to two conditions on their columns
-(``{"col", "op", "v"}``, and-ed):
-- ``count``: how many rows match, compared (``op``, ``v``); ``n``: how many rows the view has, compared;
-- ``all`` / ``any`` / ``none``: every row / some row / no row matches (``all`` of no rows holds);
-- ``at``: the row at ``pos`` (1, 2, 3, or -1 the last) has ``col`` ``op`` ``val`` (no such row: it fails).
-A spec is an atom or ``{"and": [a, b]}``, ``{"or": [a, b]}``, ``{"not": a}``, ``{"if": a, "then": b}`` (b whenever a),
-``{"unless": [a, b]}`` (a unless b: a or b).
+**The spec language and its evaluator live in the core** since order 0073's step 1 (`cubbyllm/speech/view_spec.py`:
+`FILTERS`, `cmp`, `evaluate`, `atoms`), so the host and these builders use one implementation. This module keeps
+what draws a spec, and re-exports the core's names under the old ones for one cycle.
 
 **Drawn from the replies.** `sample(rng, views)` draws a spec's values and thresholds from the views of a pool of
 replies built for it (`view_replies.py`), so the spec holds for some and fails for others (at least a fifth each).
@@ -17,70 +12,22 @@ replies built for it (`view_replies.py`), so the spec holds for some and fails f
 grammar can state) are never drawn: no commas or brackets, a word absent, the number of list items, a paragraph's first
 word, capitalised words counted, the reply's or a sentence's last word, punctuation counted, every word title-cased, a
 word at a given position, indents and list levels (not filter columns at all).
-
-`evaluate(spec, views)` -> bool, the truth the VM's run must agree with.
 """
 from __future__ import annotations
 
 import random
 import re
+import sys
 from collections import Counter
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from cubbyllm.speech.view_spec import FILTERS, NUM_OPS, STR_OPS, atoms, cmp, evaluate  # noqa: E402
+from cubbyllm.speech.view_spec import match as _match  # noqa: E402
 
 __wiring__ = "STANDALONE"
 
-FILTERS = {                                               # view -> {column: "str" | "num"}
-    "char": {"kind": "str", "case": "str", "char": "str"},
-    "word": {"lower": "str", "first_lower": "str", "last_lower": "str", "case": "str", "len": "num"},
-    "sentence": {"n_word": "num", "end_mark": "str", "first_word": "str", "last_word": "str"},
-    "line": {"n_word": "num", "first_word": "str", "item": "str"},
-    "paragraph": {"n_word": "num", "n_sentence": "num", "first_word": "str"},
-    "item": {"marker": "str", "n_word": "num"},
-    "json": {"key": "str", "type": "str", "value": "str"},
-}
 VIEW_WEIGHTS = {"char": 1, "word": 4, "sentence": 3, "line": 2, "paragraph": 2, "item": 2, "json": 1}
-NUM_OPS = ("<", "<=", ">", ">=", "==", "!=")
-STR_OPS = ("==", "!=")
-
-
-def cmp(a, op, b) -> bool:
-    return {"<": a < b, "<=": a <= b, ">": a > b, ">=": a >= b, "==": a == b, "!=": a != b}[op]
-
-
-def _match(row: dict, conds: list[dict]) -> bool:
-    return all(cmp(row[c["col"]], c["op"], c["v"]) for c in conds)
-
-
-def evaluate(spec: dict, views: dict) -> bool:
-    if "and" in spec:
-        return all(evaluate(s, views) for s in spec["and"])
-    if "or" in spec:
-        return any(evaluate(s, views) for s in spec["or"])
-    if "not" in spec:
-        return not evaluate(spec["not"], views)
-    if "if" in spec:
-        return (not evaluate(spec["if"], views)) or evaluate(spec["then"], views)
-    if "unless" in spec:
-        return evaluate(spec["unless"][0], views) or evaluate(spec["unless"][1], views)
-    rows = views[spec["view"]]
-    q = spec["q"]
-    if q == "n":
-        return cmp(len(rows), spec["op"], spec["v"])
-    if q == "at":
-        idx = spec["pos"] - 1 if spec["pos"] > 0 else len(rows) - 1
-        return 0 <= idx < len(rows) and cmp(rows[idx][spec["col"]], spec["op"], spec["val"])
-    k = sum(1 for r in rows if _match(r, spec["where"]))
-    return {"count": lambda: cmp(k, spec["op"], spec["v"]), "all": lambda: k == len(rows),
-            "any": lambda: k > 0, "none": lambda: k == 0}[q]()
-
-
-def atoms(spec: dict) -> list[dict]:
-    if "q" in spec:
-        return [spec]
-    if "not" in spec:
-        return atoms(spec["not"])
-    if "if" in spec:
-        return atoms(spec["if"]) + atoms(spec["then"])
-    return [a for s in spec.get("and") or spec.get("or") or spec.get("unless") for a in atoms(s)]
 
 
 def held_out(spec: dict) -> str | None:

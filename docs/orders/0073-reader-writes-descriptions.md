@@ -207,3 +207,24 @@ builds are for Linux and macOS, so nothing under `cubbyllm/` imports it. Line 8 
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
+
+### Step 1, first half, built: one compiler in the core, no change of behaviour (Cowork, 2026-11-14, branch `cowork/0073`)
+Built by Cowork on a branch of its own while Code A was signed out (Nick, 2026-11-14: "we will continue here then").
+Nothing here is on master; the review is Code A's or Nick's.
+- **Moved:** `cubbyllm/speech/view_spec.py` (the spec language: `FILTERS`, `NUM_OPS`, `STR_OPS`, `cmp`, `match`,
+  `evaluate`, `atoms`), `cubbyllm/speech/view_compile.py` (`body`, `views_of`, `program`) and
+  `cubbyllm/speech/view_join.py` (`HEAD`, `spec`, `join`, `program`). The code is the builders', unchanged; the core
+  imports nothing from `validation/`.
+- **Stays in `validation/builders/view_programs.py`:** what draws a spec (`VIEW_WEIGHTS`, `held_out`, `_values`,
+  `_cond`, `_mixed`, `sample_atom`, `sample`). It re-exports the core's names; `view_compile.py` and `view_join.py`
+  there are shims. Every importer (the row builders, the SFT builder, `rerun_vm_sets`, `vm_key_scan`, the tests)
+  is untouched.
+- **Byte for byte** (`validation/exp_view_core_rebuild.py`, `validation/logs/view_core_rebuild_2026-11-14.json`),
+  with the core's code only: long rows 3,900 of 3,900 programs identical and 31,087 of 31,087 stored verdicts; pair
+  rows 3,000 of 3,000 and 23,993 of 23,993; step 2's program rows 2,000 of 2,000 and 15,956 of 15,956. No row
+  differs.
+- **Tests** (`tests/speech/test_view_core.py`, 7 cases): the old names are the core's objects, not copies; the three
+  core modules name nothing under `validation/`; the evaluator, the compiler's text and the join's text pinned on a
+  small spec. The existing tests of the builders, the reader and the grammar pass unchanged (50 in the run with
+  these 7).
+- **Not yet:** `absent: pass` for `at`, and `fold` (the second half of step 1).

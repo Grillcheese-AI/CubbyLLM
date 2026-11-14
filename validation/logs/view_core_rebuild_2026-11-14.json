@@ -1,0 +1,33 @@
+{
+ "order": "0073",
+ "what": "step 1: every stored program rebuilt with the core's compiler and join, every stored verdict with the core's evaluator",
+ "sets": {
+  "long rows": {
+   "rows": 3900,
+   "programs identical": 3900,
+   "replies": 31087,
+   "verdicts identical": 31087,
+   "rows that differ": [],
+   "sha256": "ca2e6a0ecfa78f24da5fa3044daf850cfd285e47b9becaf382e1876bd61933a1",
+   "file": "long_rows_0067/rows.jsonl"
+  },
+  "pair rows": {
+   "rows": 3000,
+   "programs identical": 3000,
+   "replies": 23993,
+   "verdicts identical": 23993,
+   "rows that differ": [],
+   "sha256": "d4f7fdab44539962d0c572f14967a284e2c0a76f252193155524a04ca6d1d320",
+   "file": "long_rows_0067/pair_rows.jsonl"
+  },
+  "program rows": {
+   "rows": 2000,
+   "programs identical": 2000,
+   "replies": 15956,
+   "verdicts identical": 15956,
+   "rows that differ": [],
+   "sha256": "8229de7a9f6f970653e69478625234c7bd43a5af62ebef2f03dc9bd3b63bd270",
+   "file": "view_programs_0067/rows.jsonl"
+  }
+ }
+}
