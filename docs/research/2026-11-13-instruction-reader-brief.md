@@ -1,10 +1,7 @@
 # Brief: the instruction reader, and what it should write (2026-11-13)
 
-**DRAFT. Not sent.** Section 4.4 waits for round 2's counted read, and 4.3 for Code A's committed scoring. The steps
-before a run are at the end.
-
 Written by Cowork for an OpenRouter panel (Nick: "would it be worth it to open a panel for our instruction problem?",
-then "yes" to this draft). Every fact below comes from GRL's repositories, orders and logs. Where something is not
+then "yep launch the panel"). Every fact below comes from GRL's repositories, orders and logs. Where something is not
 stated here, say you don't know; don't fill it in.
 
 ## 1. The task
@@ -169,8 +166,8 @@ missing `not`.
 
 ### 4.3 Round 1 against round 2 on the same 64 dev rows
 The shorter 64 of the 100. Round 1 was read at home with rules 1 to 8, round 2 on a rented card in batches with rules
-1 to 9, so decoder and grammar differ as well as training. Cowork's scoring, off-repo: **to be replaced by Code A's
-committed scoring of all 100.**
+1 to 9, so decoder and grammar differ as well as training. Scored by Cowork with the repo's tools on the dev rows read
+so far; the scoring of all 100 follows.
 
 | | round 1 | round 2 |
 |---|---|---|
@@ -184,7 +181,8 @@ committed scoring of all 100.**
 | false passes | 63 / 502 = 0.1255 | 46 / 492 = 0.0935 |
 
 ### 4.4 Round 2's counted read (test and test_long, rows no one has read)
-**To be filled before the panel runs:** the table of 4.1 for round 2, and agreement by number of parts (5 to 8).
+**Not read yet.** Round 2's numbers in 4.3 are dev numbers. Its read on test and test_long rows that no one has seen
+comes after this brief. Treat round 2 on unseen compositions, and on 5 to 8 parts, as unknown.
 
 ### 4.5 What is left, on dev
 - **Negation.** Round 2's 30 reversals on the 64 rows: 29 negations (a comparison for its complement, or `==` for
@@ -192,7 +190,8 @@ committed scoring of all 100.**
   view's size.
 - **The join.** Seen by eye on three dev rows, not yet counted: where the instruction ties checks 2 and 3 ("check 2,
   unless check 3"), the reader's or-group joined checks 1 and 2, every part being right in one of them.
-- **Long instructions:** from 4.4.
+- **Long instructions.** Not counted (4.4). Seen by eye on two rows of 5 checks in round 2: the fifth check was
+  labelled "check 1" again and no fifth part was written. Round 1 showed no loss on long rows (4.1).
 
 ### 4.6 The gold says one meaning two ways (train and dev, counted by Cowork)
 - Every comparison of a count or of a size is written two ways in near-equal shares: itself, or a `not` around its
@@ -221,9 +220,3 @@ average over the 64 dev rows.
 - **Advice from two outside models, read and not adopted as such:** hold out longer instructions (done: test_long);
   rotary positions (already); a margin loss on the operator token (kept for a round where it is the only change);
   pairs that swap the conditions of two parts.
-
-## Before a run (Cowork)
-1. Fill 4.4 and replace 4.3's table from the committed logs; drop this draft notice.
-2. Write and commit Cowork's own answer, sealed, before any panel answer is read.
-3. State the price to Nick first (the qFHRR panel: eight models, $2.65 as reported by OpenRouter), and run only on
-   his go. No benchmark sentence and nothing private goes into the brief.
