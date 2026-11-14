@@ -106,3 +106,17 @@ def test_no_value_is_read_twice_and_no_group_is_left_unwritten():
     assert not VT.joins_ok(TWO + CALLS + "        create g1: number; assign g1 = 0;\n        if (p1 == 1) { a", instr)
     assert VT.joins_ok(TWO + CALLS + "        create g1: number; assign g1 = 0;\n        if (p1 == 1) { a",
                        "Use two sentences or keep it short.")             # may still become an "or" group
+
+
+def test_parameters_views_and_part_order():
+    p4 = "    function part1(n_sentence: number, sentence_last_word: number, sentence_last_word: numbe"
+    assert not VT.typed_ok(HEAD + p4)                                            # a name declared twice
+    assert not VT.typed_ok(HEAD + "    function part1(n_sentence: number, sentence_las_wo")  # no real name ahead
+    assert VT.typed_ok(HEAD + "    function part1(n_sentence: number, sentence_last_wo")
+    assert not VT.typed_ok(HEAD + PART.replace("let x3 = sentence_n_word[i2]", "let x3 = word_len[i2]")
+                           .replace("n_sentence: number, sentence_n_word", "n_sentence: number, word_len"))  # another view
+    assert not VT.typed_ok(HEAD + PART + PART)                                  # part1 defined twice
+    assert not VT.typed_ok(HEAD + PART + "    public function solve(mention: str): number {\n"
+                           "        let p2 = part1(")                           # p1 = part1 first
+    assert not VT.typed_ok(HEAD + PART + PART.replace("part1", "part2") + "    public function solve(mention: str): number {\n"
+                           "        let p1 = part1(n_sentence, sentence_n_word, sentence_first_word);\n        create g")

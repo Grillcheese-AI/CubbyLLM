@@ -29,7 +29,14 @@ number was declared). The line shapes cannot see these; `TypedGrammar` adds, as 
    held back, a reader looping on ``if (g6 == 1) { if (g6 == 1) ...`` to the end of its budget. All 3,900 gold
    answers have this form.
 
-Rules 1-3 read the answer's text only; rule 4 reads the instruction's words for its cues. The gold answers of every row
+6. **a parameter being written is on its way to a real name not declared yet** (the first typed read: a part declared
+   ``sentence_last_word`` twice, then had no way on);
+7. **a loop or a position reads one view:** ``while (i < n_V)`` and ``if (p < n_V)`` take only ``V_<column>``
+   (``while (i < n_word) { let x = sentence_n_word[i]`` ran past the sentence list's end);
+8. **parts numbered and called in order:** ``part1``, ``part2``, ... each once; ``let pK = partK(...)`` in that
+   order; the join starts only once every part is called (a part defined twice and called twice was written).
+
+Rules 1-3 and 6-8 read the answer's text only; rule 4 reads the instruction's words for its cues. The gold answers of every row
 pass (`tests/speech/test_view_types.py`).
 
 Wiring: STANDALONE (`validation/exp_view_reader.py` reads with it; nothing in the serve path).
@@ -74,16 +81,44 @@ def _done_params(text: str) -> list[str]:
     return re.findall(r"([a-z_]+): number", text)
 
 
+ALL_NAMES = sorted({f"n_{v}" for v in RV.COLUMNS} | {f"{v}_{c}" for v, cs in RV.COLUMNS.items() for c in cs})
+
+
+def _one_view(bare: str) -> bool:
+    """Rule 7: a loop over a view (``while (i < n_V)``) or a position in it (``if (p < n_V)``) reads only that view's
+    columns (another view's list is another length: an index past its end)."""
+    m = re.search(r"(?:while \(i\d+|if \(p\d+) < n_([a-z]+)\) \{ (.*)$", bare)
+    if not m:
+        return True
+    v, rest = m.group(1), m.group(2)
+    if any(w != v for w in re.findall(r"let x\d+ = ([a-z]+)_", rest)):
+        return False
+    tail = re.search(r"let x\d+ = ([a-z_]*)$", rest)            # a column being named
+    return not tail or (v + "_").startswith(tail.group(1)) or tail.group(1).startswith(v + "_")
+
+
 def typed_ok(prog: str) -> bool:
-    """Whether the program written so far (whole lines and the line being written) keeps rules 1-3."""
+    """Whether the program written so far (whole lines and the line being written) keeps rules 1-3 and 6-8."""
     sigs: dict = {}
-    params = None
+    params, n_calls, joining = None, 0, False
     for ln in prog.split("\n"):
+        f = re.match(r"    function part(\d*)$", ln)                # rule 8: parts numbered 1, 2, 3 ...
+        if f and not str(len(sigs) + 1).startswith(f.group(1)):
+            return False
         m = _FUNC.match(ln)
         if m:
+            if m.group(1) != str(len(sigs) + 1):
+                return False
             done = _done_params(m.group(2))
             if any(kind(p) is None for p in done) or len(set(done)) < len(done):
                 return False
+            if not m.group(3):                                   # rule 6: the name being written is a new real one
+                tail = m.group(2).split(",")[-1].strip()
+                name = tail.split(":")[0]
+                if ":" in tail and name in done and tail != name + ": number":   # its type not written yet
+                    return False
+                if ":" not in tail and not any(n.startswith(name) and n not in done for n in ALL_NAMES):
+                    return False
             params = set(done)
             if m.group(3):
                 sigs[m.group(1)] = done
@@ -95,6 +130,8 @@ def typed_ok(prog: str) -> bool:
             bare = _QUOTED.sub('""', ln)
             if any(n not in params for n in _NAME.findall(bare)):   # a name still being written (at the end) waits
                 return False
+            if not _one_view(bare):
+                return False
             lets = dict(_LET.findall(bare))
             for var, op, lit in _IF.findall(ln):
                 col = lets.get(var)
@@ -105,6 +142,21 @@ def typed_ok(prog: str) -> bool:
                 if lit and (lit == '"') != (kind(col) == "string"):
                     return False
             continue
+        if ln.startswith(("        c", "        r")):              # rule 8: the join starts once every part is called
+            if n_calls < len(sigs):
+                return False
+            joining = True
+        lp = re.match(r"\s+let p(\d*)(?: = part(\d*))?", ln)
+        if lp:                                                   # rule 8: pK = partK, in order, before the join
+            want = str(n_calls + 1)
+            if joining or not want.startswith(lp.group(1)) or (lp.group(2) is not None and not want.startswith(lp.group(2))):
+                return False
+            if re.match(r"\s+let p\d+ ", ln) and lp.group(1) != want:
+                return False
+            if re.match(r"\s+let p\d+ = part\d+\(", ln) and lp.group(2) != want:
+                return False
+            if ln.rstrip().endswith(";"):
+                n_calls += 1
         c = _CALL.match(ln)
         if c:
             sig = sigs.get(c.group(1))
