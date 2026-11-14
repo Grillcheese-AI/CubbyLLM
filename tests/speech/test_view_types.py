@@ -63,3 +63,70 @@ def test_the_typed_grammar_refuses_what_the_line_shapes_let_through():
     g = VT.TypedGrammar(instruction)
     assert g.viable(answer + HEAD + PART)
     assert not g.viable(answer + HEAD + PART.replace('x4 == "-"', "x4 == 9"))
+
+
+TWO = HEAD + PART + PART.replace("part1", "part2") + "    public function solve(mention: str): number {\n"
+CALLS = ("        let p1 = part1(n_sentence, sentence_n_word, sentence_first_word);\n"
+         "        let p2 = part2(n_sentence, sentence_n_word, sentence_first_word);\n")
+AND = "        if (p1 == 1) { if (p2 == 1) { assign g1 = 1; } }\n"
+OR = "        if (p1 == 1) { assign g1 = 1; } if (p2 == 1) { assign g1 = 1; }\n"
+IF = "        if (p1 == 0) { assign g1 = 1; } if (p2 == 1) { assign g1 = 1; }\n"
+
+
+def test_and_is_the_default_and_or_only_when_the_instruction_says_it():
+    plain, either, cond = "Use two sentences. Keep it short.", "Either use two sentences, or keep it short.", \
+        "If you use two sentences, keep it short."
+    G = TWO + CALLS + "        create g1: number; assign g1 = 0;\n"
+    assert VT.joins_ok(G + AND, plain)
+    assert not VT.joins_ok(G + OR, plain) and VT.joins_ok(G + OR, either)
+    assert not VT.joins_ok(G + IF, plain) and VT.joins_ok(G + IF, cond)
+    assert not VT.joins_ok(G + "        if (p1 == 0", plain)                      # refused as it opens
+    assert VT.joins_ok(G + OR, "Soit deux phrases, soit une réponse courte.")
+    assert not VT.joins_ok(G + OR, "Keep the colors bright.")                     # "or" inside a word is no cue
+
+
+def test_return_comes_only_once_every_part_is_joined():
+    instr = "Use two sentences. Keep it short."
+    whole = TWO + CALLS + "        create g1: number; assign g1 = 0;\n" + AND + "        return g1;\n    }\n}"
+    assert VT.joins_ok(whole, instr)
+    dropped = TWO + CALLS + "        create g1: number; assign g1 = 0;\n        if (p1 == 1) { assign g1 = 1; }\n"
+    assert not VT.joins_ok(dropped + "        r", instr)                     # part 2 never joined: no return yet
+    assert not VT.joins_ok(TWO + CALLS + "        return p1;", instr)
+    assert VT.joins_ok(TWO + CALLS + "        create g1: number; assign g1 = 0;\n" + AND + "        return g", instr)
+    assert not VT.joins_ok(TWO + CALLS + "        create g1: number; assign g1 = 0;\n" + AND + "        return p1;", instr)
+
+
+def test_no_value_is_read_twice_and_no_group_is_left_unwritten():
+    instr = "Use two sentences. Keep it short."
+    top = TWO + CALLS + "        create g1: number; assign g1 = 0;\n" + AND
+    assert not VT.joins_ok(top + "        create g2: number; assign g2 = 0;\n        if (g1 == 1) { if (g1", instr)
+    assert not VT.joins_ok(top + "        create g2: number; assign g2 = 0;\n        if (p1", instr)     # p1 joined
+    assert not VT.joins_ok(TWO + CALLS + "        create g1: number; assign g1 = 0;\n        create g", instr)
+    assert not VT.joins_ok(TWO + CALLS + "        create g1: number; assign g2", instr)
+    assert not VT.joins_ok(TWO + CALLS + "        create g1: number; assign g1 = 0;\n        if (p1 == 1) { a", instr)
+    assert VT.joins_ok(TWO + CALLS + "        create g1: number; assign g1 = 0;\n        if (p1 == 1) { a",
+                       "Use two sentences or keep it short.")             # may still become an "or" group
+
+
+def test_parameters_views_and_part_order():
+    p4 = "    function part1(n_sentence: number, sentence_last_word: number, sentence_last_word: numbe"
+    assert not VT.typed_ok(HEAD + p4)                                            # a name declared twice
+    assert not VT.typed_ok(HEAD + "    function part1(n_sentence: number, sentence_las_wo")  # no real name ahead
+    assert VT.typed_ok(HEAD + "    function part1(n_sentence: number, sentence_last_wo")
+    assert not VT.typed_ok(HEAD + PART.replace("let x3 = sentence_n_word[i2]", "let x3 = word_len[i2]")
+                           .replace("n_sentence: number, sentence_n_word", "n_sentence: number, word_len"))  # another view
+    assert not VT.typed_ok(HEAD + PART + PART)                                  # part1 defined twice
+    assert not VT.typed_ok(HEAD + PART + "    public function solve(mention: str): number {\n"
+                           "        let p2 = part1(")                           # p1 = part1 first
+    assert not VT.typed_ok(HEAD + PART + PART.replace("part1", "part2") + "    public function solve(mention: str): number {\n"
+                           "        let p1 = part1(n_sentence, sentence_n_word, sentence_first_word);\n        create g")
+
+
+def test_never_a_dead_end_in_the_join_the_loop_or_the_split():
+    two = HEAD + PART + PART.replace("part1", "part2") + "    public function solve(mention: str): number {\n" + CALLS
+    assert not VT.typed_ok(two + "        l")                                        # every part called: no part3 call
+    no_size = HEAD + "    function part1(item_marker: number, item_n_word: number): number {\n        create k1: number; assign k1 = 0;\n"
+    assert not VT.typed_ok(no_size + "        w")                                     # no n_item: no loop over items
+    pytest.importorskip("regex")
+    g = VT.TypedGrammar("Write two sentences.")
+    assert g.viable("\ncheck 1 | Write two sentences.\n---") and not g.viable("\ncheck 1 | Write two sentences.\np")

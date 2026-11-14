@@ -115,25 +115,32 @@ def main() -> None:
     ap.add_argument("--max-new", type=int, default=1800)
     ap.add_argument("--out", default=None)
     ap.add_argument("--keep", default=None)
+    ap.add_argument("--score", default=None, help="answers decoded elsewhere (exp_view_reader_torch.py on Colab): "
+                                                  "scored here in the VM, nothing decoded")
     a = ap.parse_args()
     if a.merge:
         return merge(a.merge, a.out)
-    if not (a.export and a.tokenizer and a.adapter):
-        ap.error("--export, --tokenizer and --adapter are needed for a read")
+    if not a.score and not (a.export and a.tokenizer and a.adapter):
+        ap.error("--export, --tokenizer and --adapter are needed for a read (or --score <answers>)")
     ci, ck = (int(x) for x in a.chunk.split("/"))
     rows_p = Path(a.rows or Path(local_paths.value("CUBBY_DATASETS") or ".") / "long_rows_0067" / "rows.jsonl")
     rows = [json.loads(ln) for ln in open(rows_p, encoding="utf-8")]
-    from cubbyllm.emit.seats_450m import Cubby450mTrunk
-    from cubbyllm.ops.grilly_seats import ranked_processor
-    trunk = Cubby450mTrunk(a.export, a.tokenizer, {"programs": a.adapter})
-    tk, eos, vm = trunk.tokenizer, trunk.eos, cc.CubelangSession()
+    vm, answers = cc.CubelangSession(), {}
+    if a.score:
+        answers = {d["id"]: d for d in map(json.loads, open(a.score, encoding="utf-8"))}
+    else:
+        from cubbyllm.emit.seats_450m import Cubby450mTrunk
+        from cubbyllm.ops.grilly_seats import ranked_processor
+        trunk = Cubby450mTrunk(a.export, a.tokenizer, {"programs": a.adapter})
+        tk, eos = trunk.tokenizer, trunk.eos
     pieces: dict = {}
 
     def piece(t):
         if t not in pieces:
             pieces[t] = tk.decode([t])
         return pieces[t]
-    report, kept = {"order": "0067", "what": "the second reader read on held-out instructions", "adapter": Path(a.adapter).name,
+    report, kept = {"order": "0067", "what": "the second reader read on held-out instructions", "adapter": Path(a.adapter).name if a.adapter else None,
+                    "answers": Path(a.score).name if a.score else None,
                     "vm": vm_identity.identity(), "chunk": a.chunk, "grammar": a.grammar, "splits": {}}, []
     for split in a.splits.split(","):
         pool = [r for r in rows if r["split"] == split]
@@ -141,13 +148,20 @@ def main() -> None:
         sample = sample[len(sample) * ci // ck: len(sample) * (ci + 1) // ck]
         t = Counter()
         for r in sample:
-            t0 = time.time()
-            ids = tk.encode(VR.prompt(r["instruction"])).ids
-            gram = (VT.TypedGrammar if a.grammar == "typed" else VG.Grammar)(r["instruction"])
-            proc = ranked_processor(VG.chooser(gram, piece, eos, len(ids)))
-            out = trunk.generate("programs", [ids], a.max_new, logits_processor=proc)[0]
-            answer = tk.decode([x for x in out if x != eos])
-            t["seconds"] += time.time() - t0
+            if a.score:                                    # decoded elsewhere: its answer and its time as recorded
+                if r["id"] not in answers:
+                    t["rows not read"] += 1
+                    continue
+                answer = answers[r["id"]]["answer"]
+                t["seconds"] += answers[r["id"]].get("seconds", 0.0)
+            else:
+                t0 = time.time()
+                ids = tk.encode(VR.prompt(r["instruction"])).ids
+                gram = (VT.TypedGrammar if a.grammar == "typed" else VG.Grammar)(r["instruction"])
+                proc = ranked_processor(VG.chooser(gram, piece, eos, len(ids)))
+                out = trunk.generate("programs", [ids], a.max_new, logits_processor=proc)[0]
+                answer = tk.decode([x for x in out if x != eos])
+                t["seconds"] += time.time() - t0
             got = VR.parse(answer, r["instruction"])
             t["rows"] += 1
             gold = [(s["kind"], s.get("part"), s["start"], s["end"]) for s in r["segments"] if s["kind"] == "check"]

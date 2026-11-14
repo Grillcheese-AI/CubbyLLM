@@ -106,8 +106,10 @@ def _imp(p, lang, rng) -> str:
     return W.say_not(p["not"], lang, rng) if "not" in p else W.say(p, lang, rng)
 
 
-def compose(rng, parts, groups, lang, phrases) -> tuple[str, list[dict], list[int]]:
-    """(instruction, segments, the order the text states the parts in)."""
+def compose(rng, parts, groups, lang, phrases, imp=None) -> tuple[str, list[dict], list[int]]:
+    """(instruction, segments, the order the text states the parts in). ``imp``: how a part is said (default `_imp`;
+    `build_pair_rows` passes its goal-first wordings)."""
+    _imp = imp or globals()["_imp"]
     pieces = []                                           # (text, segment) ; a group may give two segments
     order = []
     for g in groups:
@@ -169,7 +171,12 @@ def build_one(rng, vm, views, replies, k, lang, phrases, bench, split, stop_dir)
     if parts is None:
         return None, "no parts drawn"
     groups = groups_for(rng, parts)
-    text, segs, order = compose(rng, parts, groups, lang, phrases)
+    return finish(rng, vm, views, replies, parts, groups, lang, phrases, bench, split, stop_dir)
+
+
+def finish(rng, vm, views, replies, parts, groups, lang, phrases, bench, split, stop_dir, imp=None):
+    """A row from drawn parts and groups: worded, numbered in text order, its join run on its replies before kept."""
+    text, segs, order = compose(rng, parts, groups, lang, phrases, imp)
     parts, groups, segs = renumber(parts, groups, segs, order)
     if split in ("train", "dev") and BO.overlaps(text, bench):
         return None, "shares 5 words with a benchmark"

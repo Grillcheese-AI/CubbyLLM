@@ -130,12 +130,17 @@ def load_adapter(model, adapter_dir, name: str = "talk_lora") -> dict:
 
 
 def masked_loss(model, x, y, m, dev, amp):
-    """Mean cross-entropy over the answer tokens; the head sees those positions only."""
+    """Mean cross-entropy over the answer tokens; the head sees those positions only. A mask holding weights other
+    than 1 (``--key-weight``, `key_tokens`) gives the weighted mean; all 1 (off): the plain mean, as before."""
+    w = m[m > 0]
     x, y, sel = (torch.from_numpy(a).to(dev) for a in (x, y, m > 0))
     with torch.autocast("cuda", dtype=torch.bfloat16, enabled=amp):
         h = model.features(x)                              # (B, T, D)
         logits = model.logits_from(h[sel].unsqueeze(0))[0]  # (N, V)
-    return F.cross_entropy(logits.float(), y[sel])
+    if (w == 1).all():
+        return F.cross_entropy(logits.float(), y[sel])
+    w = torch.from_numpy(w).to(dev)
+    return (F.cross_entropy(logits.float(), y[sel], reduction="none") * w).sum() / w.sum()
 
 
 def chunks(rows, budget):
@@ -175,6 +180,8 @@ def main():
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--tag", default="")
     ap.add_argument("--micro-tokens", type=int, default=0, help="a batch in chunks of at most N padded tokens (0: off)")
+    ap.add_argument("--key-weight", type=float, default=1.0, help="train loss weight of the tokens that carry a "
+                    "program's meaning (key_tokens.py; 1: off, the plain mean); the held loss stays unweighted")
     args = ap.parse_args()
     rng = random.Random(args.seed)
     torch.manual_seed(args.seed)
@@ -205,7 +212,7 @@ def main():
     for p in params:
         p.requires_grad_(True)
 
-    train = encode_records(args.data, tk, eos, "train", args.max_len)
+    train = encode_records(args.data, tk, eos, "train", args.max_len, key_weight=args.key_weight)
     held = encode_records(args.data, tk, eos, "held", args.max_len)
     rng.shuffle(held)
     held = held[:args.eval_n]

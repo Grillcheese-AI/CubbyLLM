@@ -1,0 +1,67 @@
+{
+ "order": "0067",
+ "what": "the second reader read on held-out instructions",
+ "adapter": "cubby450m_view_reader_v1",
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-13 16:06",
+  "sha256": "a2dfaa016536ccbeb2f2c29b2c095b0ef3a5d9480065440089e04e90b244e42f",
+  "commit": "b3b3360",
+  "older_than_sources": false
+ },
+ "grammar": "typed",
+ "chunks": [
+  "0/8",
+  "1/8",
+  "2/8",
+  "3/8",
+  "4/8",
+  "5/8"
+ ],
+ "splits": {
+  "test": {
+   "counts": {
+    "seconds": 1825.8682129383087,
+    "rows": 75,
+    "parts": 222,
+    "parts with span and kind": 153,
+    "characters left uncovered (flagged asked)": 224,
+    "segments": 458,
+    "segment kinds right": 381,
+    "replies": 600,
+    "checked": 584,
+    "agree": 322,
+    "false passes": 55,
+    "asked: the VM": 16
+   },
+   "span_and_kind": 0.6892,
+   "agreement": 0.5514,
+   "false_passes": 0.0942,
+   "checked_share": 0.9733,
+   "seconds_per_instruction": 24.3
+  },
+  "test_long": {
+   "counts": {
+    "seconds": 3209.1758041381836,
+    "rows": 75,
+    "parts": 483,
+    "parts with span and kind": 280,
+    "characters left uncovered (flagged asked)": 1209,
+    "segments": 587,
+    "segment kinds right": 513,
+    "replies": 528,
+    "checked": 448,
+    "agree": 237,
+    "false passes": 47,
+    "answers not parsed (all asked)": 9,
+    "asked: the VM": 80
+   },
+   "span_and_kind": 0.5797,
+   "agreement": 0.529,
+   "false_passes": 0.1049,
+   "checked_share": 0.8485,
+   "seconds_per_instruction": 42.8
+  }
+ },
+ "long_over_in_length": 0.9594
+}
