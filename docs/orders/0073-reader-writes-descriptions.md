@@ -1,6 +1,6 @@
 # 0073 - The instruction reader writes descriptions and the host compiles them (round 3: two spellings of a negation, read side by side)
-status: proposed (for Code A; it would start when 0067's round 2 is closed: its dev scoring and its counted read)
-written: 2026-11-14 by Cowork, on Nick's "yes" to writing round 3 as one order on the panel's synthesis - approved: waits for Nick (the arms are defined more narrowly than in the synthesis, from what the wording code shows) - hypothesis: none (0067's second reader)
+status: open (Code A; starts when 0067's round 2 is closed: its dev scoring and its counted read)
+written: 2026-11-14 by Cowork, on Nick's "yes" to writing round 3 as one order on the panel's synthesis - approved: 2026-11-14 by Nick ("I approve 0073", with the arms as defined here, narrower than in the synthesis) - hypothesis: none (0067's second reader)
 
 ## Why
 0067's second reader writes a split and then a CubeLang program of about 1,500 characters. Round 2 took parts right
