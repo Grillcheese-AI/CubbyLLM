@@ -1,0 +1,104 @@
+{
+ "order": "0067",
+ "what": "round 1 against round 2 on the same 100 dev rows, like for like: both decoded on Colab (exp_view_reader_torch.py), rules 1-9, scored in the VM at home",
+ "rows": "the 100 dev rows of the home sample (random.Random(0).sample, first 100)",
+ "v1": {
+  "answers_sha256": "a01fe7904249fdb3585765f788a186bac1399bc122b77be99ed022885b59f8ad",
+  "score": {
+   "order": "0067",
+   "what": "the second reader read on held-out instructions",
+   "adapter": null,
+   "answers": "v1c_dev100.jsonl",
+   "vm": {
+    "path": "cubelang-cowork/target/release/cubelang.exe",
+    "modified": "2026-11-13 16:06",
+    "sha256": "a2dfaa016536ccbeb2f2c29b2c095b0ef3a5d9480065440089e04e90b244e42f",
+    "commit": "b3b3360",
+    "older_than_sources": false
+   },
+   "chunk": "0/1",
+   "grammar": "typed",
+   "splits": {
+    "dev": {
+     "counts": {
+      "seconds": 136.1099999999999,
+      "rows": 100,
+      "parts": 307,
+      "parts with span and kind": 244,
+      "characters left uncovered (flagged asked)": 379,
+      "segments": 620,
+      "segment kinds right": 551,
+      "replies": 798,
+      "checked": 747,
+      "agree": 414,
+      "false passes": 91,
+      "asked: the VM": 48,
+      "asked: a view too long for the VM": 3,
+      "rows not read": 200
+     },
+     "span_and_kind": 0.7948,
+     "agreement": 0.5542,
+     "false_passes": 0.1218,
+     "checked_share": 0.9361,
+     "seconds_per_instruction": 1.4
+    }
+   }
+  },
+  "second_chance": {
+   "answers": 100,
+   "parts": 313,
+   "parts fixed by one reversal": 79,
+   "programs fixed whole": 19,
+   "parts right as written": 117,
+   "programs right as written": 10,
+   "parts not matched to a gold part (span)": 31,
+   "parts wrong, no single reversal fixes them": 86
+  },
+  "failures": {
+   "counts": {
+    "rows": 100,
+    "checked": 747,
+    "checked, built to fail": 372,
+    "false passes": 91,
+    "2. false passes in rows with: one reversal": 76,
+    "joins not compared (a span unmatched)": 22,
+    "2. false passes in rows with: no single reversal": 50,
+    "2. false passes in rows with: span": 12,
+    "2. false passes in rows with: join": 44,
+    "1. parts all right, the program still disagrees": 4,
+    "1. ... of which a group ties another pair": 1
+   },
+   "rates": {
+    "3. false passes / checked": "91/747 = 0.1218",
+    "3. false passes / checked built to fail": "91/372 = 0.2446"
+   },
+   "2. by combination (rows; false passes)": {
+    "join: false passes": 0,
+    "join: rows": 1,
+    "no single reversal + join: false passes": 0,
+    "no single reversal + join: rows": 8,
+    "no single reversal + span: false passes": 3,
+    "no single reversal + span: rows": 3,
+    "no single reversal: false passes": 7,
+    "no single reversal: rows": 16,
+    "none of the four: false passes": 5,
+    "none of the four: rows": 9,
+    "one reversal + join: false passes": 12,
+    "one reversal + join: rows": 5,
+    "one reversal + no single reversal + join: false passes": 32,
+    "one reversal + no single reversal + join: rows": 15,
+    "one reversal + no single reversal + span: false passes": 0,
+    "one reversal + no single reversal + span: rows": 6,
+    "one reversal + no single reversal: false passes": 8,
+    "one reversal + no single reversal: rows": 10,
+    "one reversal + span: false passes": 9,
+    "one reversal + span: rows": 12,
+    "one reversal: false passes": 15,
+    "one reversal: rows": 14,
+    "span: false passes": 0,
+    "span: rows": 1
+   }
+  }
+ },
+ "v2": "view_reader_2026-11-14_v2_typed_dev.json and view_reader_2026-11-14_v2_dev_failures.json"
+}
