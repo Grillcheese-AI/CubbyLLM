@@ -54,7 +54,7 @@ def decode(model, tk, eos, batch: list, grammar: str, max_new: int, dev) -> list
         if all(done):
             break
         feed = [p[t] if t < len(p) else (g[-1] if g else eos) for p, g in zip(prompts, gen)]
-        with torch.no_grad(), torch.autocast("cuda", dtype=torch.bfloat16, enabled=dev.type == "cuda"):
+        with torch.no_grad():                              # float32 (TF32 matmuls): the decode state's rings are float32
             logits, state = model.step(torch.tensor(feed, device=dev), state)
         logits = logits.float()
         top = {w: torch.topk(logits, min(w, logits.shape[-1]), dim=-1).indices.tolist() for w in WIDTHS}
@@ -102,6 +102,9 @@ def main() -> None:
     from train_base import load_base
     from train_talk_torch import load_adapter
     dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if dev.type == "cuda":                                 # no bf16 autocast: the step writes into float32 rings
+        torch.backends.cuda.matmul.allow_tf32 = True
+        torch.backends.cudnn.allow_tf32 = True
     tk = Tokenizer.from_file(a.tokenizer)
     eos = tk.token_to_id("</s>")
     model = load_base(a.ckpt, str(dev))
