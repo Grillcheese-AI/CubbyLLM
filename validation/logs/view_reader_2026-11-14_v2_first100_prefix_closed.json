@@ -1,0 +1,36 @@
+{
+ "order": "0067",
+ "what": "every character prefix of each stored answer judged by its row's grammar: with none refused, the screen of ec7044c changes no pick on these answers",
+ "grammar": "typed",
+ "answers": "cubby450m_view_reader_v2_typed_answers.jsonl",
+ "answers_sha256": "47559690ef9487db2a62c6401714586ac1df088d9db8445246a8d324d6aee8e7",
+ "splits": {
+  "dev": {
+   "answers": 100,
+   "every prefix viable": 100,
+   "a refused prefix": 0,
+   "prefixes": 194575,
+   "refused": [],
+   "counted rows": 25,
+   "counted with a refused prefix": 0
+  },
+  "test": {
+   "answers": 100,
+   "every prefix viable": 100,
+   "a refused prefix": 0,
+   "prefixes": 190940,
+   "refused": [],
+   "counted rows": 24,
+   "counted with a refused prefix": 0
+  },
+  "test_long": {
+   "answers": 100,
+   "every prefix viable": 100,
+   "a refused prefix": 0,
+   "prefixes": 241256,
+   "refused": [],
+   "counted rows": 24,
+   "counted with a refused prefix": 0
+  }
+ }
+}
