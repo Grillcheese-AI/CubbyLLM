@@ -10,6 +10,7 @@ A state is one of:
   free string (at most `MAX_STRING` characters), where the variant leaves values free;
 - ``("text", start, at, ends)``: the line's text, copied from the instruction one character at a time.
 
+An answer starts with a newline; one space may come before it (the trainer writes one before every answer).
 **No gap:** a line's text starts at the first character after the last line's that is not white space, never
 crosses a line break, does not end on white space; a new line starts only while text is left, and the answer is
 whole (`accepting`) only when none is. **Arm W** may write ``not `` before a quantifier and before a column.
@@ -223,7 +224,9 @@ class Machine:
             if ch < " " or len(typed) >= D.MAX_STRING:
                 return None
             return ("str", st[1], typed, True) if ch == "\\" else ("str", st[1], typed + ch, False)
-        if kind == "start":
+        if kind == "start":                                # the trainer writes one space before an answer (`talk_data`)
+            if ch == " " and st == START:
+                return ("start", "spaced")
             first = self._next(0)
             return ("pick", ("kind", first), "") if ch == "\n" and first is not None else None
         return None

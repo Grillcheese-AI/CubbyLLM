@@ -75,7 +75,9 @@ def _line(line: str, arm: str) -> dict:
 
 
 def parse(answer: str, instruction: str, arm: str = "m", strict: bool = True, own_text: bool = False) -> dict:
-    """``own_text`` (point 7's variant): a description says only what its line's text says (`view_own.allows`)."""
+    """``own_text`` (point 7's variant): a description says only what its line's text says (`view_own.allows`).
+    One space may come before the answer's first newline: the trainer writes one there (`talk_data`)."""
+    answer = answer[1:] if answer.startswith(" \n") else answer
     if not answer.startswith("\n"):
         return {"error": "the answer does not start on a new line"}
     out, at = [], 0
@@ -93,8 +95,11 @@ def parse(answer: str, instruction: str, arm: str = "m", strict: bool = True, ow
             ok = k >= 0
         if not ok:
             return {"error": f"a text that is not the instruction's next: {text[:80]!r}"}
-        if own_text and got["form"] is not None and not O.allows(got["form"], text):
-            return {"error": f"a description that says what its text does not: {line[:80]!r}"}
+        if own_text and got["form"] is not None:
+            if not O.allows(got["form"], text):
+                return {"error": f"a description that says what its text does not: {line[:80]!r}"}
+            if k + len(text) in O.Own(instruction, k).inside:       # what the text quotes would not be what was read
+                return {"error": f"a check's line that ends inside a quoted string: {line[:80]!r}"}
         at = k + len(text)
         out.append(dict(got, start=k, end=at))
     if strict and instruction[at:].strip():

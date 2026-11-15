@@ -32,6 +32,8 @@ def test_a_gold_answer_is_taken_whole_only_when_the_instruction_is_used_up(own):
         assert all(m.allows(answer[:i]) and not m.accepts(answer[:i]) for i in ends)       # a line done, text left
         assert not m.allows(answer + "\n") and not m.accepts(answer[:-1])                  # nothing after; nothing short
         assert V.parse(answer, TEXT, arm, own_text=own).get("lines")
+        assert m.accepts(" " + answer) and not m.allows("  ") and not m.allows(" t")       # the trainer's one space, no more
+        assert V.parse(" " + answer, TEXT, arm, own_text=own).get("lines") and "error" in V.parse("  " + answer, TEXT, arm)
     assert not Machine(TEXT, "m", own).allows(W)                                           # arm M has no `not`
 
 

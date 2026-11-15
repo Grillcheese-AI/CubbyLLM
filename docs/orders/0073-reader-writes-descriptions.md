@@ -489,3 +489,57 @@ and on a position's comparison, and nowhere else.
   prefixes allowed (all 6,900 rows, characters; ids on a sample); 50 dev machines walked; one refusal each; the
   two implementations agree; the accounting on a missing sentence, a tag with no partner, a description that
   does not compile.
+
+### Step 4, built: the reader's form, its grammar as a state machine, the host's accounting (Cowork, 2026-11-15, branch `cowork/0073`)
+In `cubbyllm/speech/` (each file under 300 lines; the core imports nothing from `validation/`): `view_desc.py` (the
+description's notation: write, read), `view_split.py` (`prompt`, `target(row, arm)`, `parse`), `view_own.py` (what a
+line's own text lets its description say), `view_machine.py` (the machine, in characters), `view_tokens.py` (the
+prefix tree, the ids allowed from a state, `Reader` with `end`), `view_account.py` (the host's accounting). 0067's
+reader and grammar are untouched: arm P reads with them. Checked on every row of step 3
+(`validation/exp_view_split_gold.py`, log `validation/logs/view_split_gold_2026-11-15.json`; counts only):
+- **The form, on all 6,900 rows and both arms:** each target parses back strictly, and with the own-text rule, to
+  the row's kinds, tags, said forms and spans (6,900 of 6,900, four times). A target is about 430 characters at
+  the median and 1,127 at most; round 2's program alone was about 1,500.
+- **The accounting:** from those lines it gives the row's groups and, byte for byte, the program step 3 ran in the
+  VM, for 6,900 of 6,900 in each arm; nothing asked, nothing flagged.
+- **The machine:** it takes every target whole in both arms and both variants (27,600 runs), so each prefix of each
+  is allowed. Arm M's machine refuses all 3,587 arm W targets that differ from arm M's.
+- **Two implementations agree:** on 48,000 one-slot changes of the gold answers (dev and 300 train rows, both
+  arms: a comparison, a view, a column, a number, a string, a position, a `not`, `absent`, the quantifier, a
+  condition more or fewer, a join tag, a kind, a line cut in two, a line left out or added, the last character
+  left out) the machine takes an answer whole if and only if `parse` reads it: 28,655 taken by both and 19,345
+  refused by both with values free; 22,156 and 25,844 with the own-text rule; the two never differ.
+- **In ids, with the base's tokenizer** (127,996 ids; 67 print nothing and are never allowed; every character of
+  the instructions has a piece of its own): 400 gold targets (100 dev rows, both arms, both variants), encoded as
+  the trainer encodes them, walk to the end token and end `finished`. The grammar costs 1.7 ms an id at the median
+  (2.3 ms on the slowest target), about 0.2 s for an answer of 110 ids, and no id is ever judged one by one. A
+  state allows 5 ids at the median and 127,259 inside a free string.
+- **No dead end:** the machines of 50 dev instructions (200 machines) walked at random in ids reached 417,940
+  states; none was left without an allowed id unless the answer was whole, and from each of 8,000 of them the
+  plainest way on reaches a whole answer.
+- **The own-text rule holds on the gold:** all 43,498 gold descriptions (21,749 checks, both spellings) say only
+  what their line's text says, and the text holds every value by the line's end.
+- **Tests:** `tests/speech/test_view_desc.py` (26), `test_view_split.py` (5), `test_view_own.py` (7),
+  `test_view_machine.py` (22: one refusal each among them), `test_view_tokens.py` (4), `test_view_account.py` (5: a
+  missing sentence, a tag with no partner, a description that does not compile, a tag on a check already in a
+  pair), `tests/validation/test_view_split_gold.py` (3, on a small build).
+
+**Where the build differs from the design above:**
+1. **One space may come before the answer's first newline.** The trainer encodes a space and then the answer
+   (`talk_data.encode_records`), so that is what an adapter is taught to write first. The machine and `parse` take
+   it. Round 2's grammar refused it at the first token.
+2. **A line may hold several sentences,** up to the instruction's next line break. The design did not say; the
+   reader chooses where a line ends, and the scoring compares its spans with the gold.
+3. **A column the view compares lowercased** takes a quoted string as quoted or in lower case. Round 2's rule 9
+   lowercased both sides; 59 gold checks compare a character in upper case, as the text quotes it.
+4. **A free string stays free while its line quotes nothing.** With the own-text rule a string of a column with no
+   values of its own must be one the line's text quotes, unless that text quotes nothing (rule 9's own wording). So
+   the machine lets such a string be anything, and then the line must end before the first quote; if the string is
+   one the text quotes, the line may also run past it. The same for a view: any view, if the line ends before a
+   view is named.
+5. **With the own-text rule a check's line does not end inside a quoted string** (what its text quotes would then
+   not be what the description was held to). Both the machine and `parse`.
+6. **The accounting also asks the check an unresolved tag points at,** not only the tagged one, and both members
+   of a pair when one is asked: a check that was a condition's other half is not checked alone.
+7. **The machine does not look for a tag's partner** (as designed), and it does not hold a line to a sentence's
+   end: it knows line breaks, not sentences.

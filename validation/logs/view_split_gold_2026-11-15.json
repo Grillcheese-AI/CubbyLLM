@@ -1,0 +1,86 @@
+{
+ "order": "0073",
+ "what": "step 4: the reader's form, its grammar and the host's accounting on long_rows_0073",
+ "rows": 6900,
+ "sha256": {
+  "rows.jsonl": "2c5ea63f1300353ff2364eafa559407b5828a5c95b1465e6f3960d1e12440689",
+  "pair_rows.jsonl": "02d3b80194ae58f363a5558e9c614262a0d3d3f2b28245839be97f02be0bd307",
+  "the lines of rows.jsonl by split": {
+   "train": "89be15a650367a5071927908127bc38eb0c25134e5b33e949788d725c2c83b58",
+   "dev": "b94d50c91a564f74cf3f57a026e4283717490fa6eb3add1736c50dc85179e8e4",
+   "test": "a0aae1f4da2f3b47e888113c6ea88b7fa2d4877154dcc87e8b3f4c744324660b",
+   "test_long": "cdb78a584b46da0d8bb8b71d5603a3c35048e766be4ed3d821b117c09960582c"
+  }
+ },
+ "every row": {
+  "arm W's target refused by arm M's machine": 3587,
+  "arm m, free: parsed back to the row's lines": 6900,
+  "arm m, free: taken whole by the machine": 6900,
+  "arm m, own text: parsed back to the row's lines": 6900,
+  "arm m, own text: taken whole by the machine": 6900,
+  "arm m: something asked or flagged": 0,
+  "arm m: targets": 6900,
+  "arm m: the accounting gives the row's groups": 6900,
+  "arm m: the accounting gives the row's program": 6900,
+  "arm w, free: parsed back to the row's lines": 6900,
+  "arm w, free: taken whole by the machine": 6900,
+  "arm w, own text: parsed back to the row's lines": 6900,
+  "arm w, own text: taken whole by the machine": 6900,
+  "arm w: something asked or flagged": 0,
+  "arm w: targets": 6900,
+  "arm w: the accounting gives the row's groups": 6900,
+  "arm w: the accounting gives the row's program": 6900,
+  "rows where the arms differ": 3587
+ },
+ "the machine against parse": {
+  "free: changes": 48000,
+  "free: refused by both": 19345,
+  "free: taken by both": 28655,
+  "free: the two differ": 0,
+  "kind of change: a column": 3578,
+  "kind of change: a comparison": 5868,
+  "kind of change: a condition left out": 1179,
+  "kind of change: a join tag": 6376,
+  "kind of change: a kind": 5720,
+  "kind of change: a line cut in two": 3697,
+  "kind of change: a line left out": 2087,
+  "kind of change: a line more": 1200,
+  "kind of change: a not": 1747,
+  "kind of change: a number": 4345,
+  "kind of change: a position": 710,
+  "kind of change: a string": 2257,
+  "kind of change: a third condition": 1169,
+  "kind of change: a view": 3256,
+  "kind of change: absent": 404,
+  "kind of change: no change": 1200,
+  "kind of change: the last character left out": 1200,
+  "kind of change: the quantifier": 2007,
+  "own text: changes": 48000,
+  "own text: refused by both": 25844,
+  "own text: taken by both": 22156,
+  "own text: the two differ": 0,
+  "rows": 600
+ },
+ "the vocabulary": {
+  "ids": 127996,
+  "pieces that print nothing": 67,
+  "characters of the instructions with no piece of their own": 0
+ },
+ "gold targets in ids": {
+  "targets": 400,
+  "ended `finished`": 400,
+  "ids": 43918,
+  "seconds an id, median": 0.0017,
+  "seconds an id, slowest target": 0.00229,
+  "ids allowed at a step, median": 5.0,
+  "ids allowed at a step, most": 127259,
+  "rows": 100
+ },
+ "machines walked in ids": {
+  "states with no id allowed that are not a whole answer": 0,
+  "machines": 200,
+  "states reached": 417940,
+  "states tried for a way on": 8000,
+  "states with no way on to a whole answer": 0
+ }
+}

@@ -48,7 +48,7 @@ def test_an_answer_is_written_in_ids_and_ends_finished():
 
 def test_allowed_ids_are_the_pieces_the_machine_takes_whole():
     v, m = vocab(), Machine(TEXT, "m")
-    assert T.allowed(m, v, START) == {IDS["\n"], IDS["\nnone"]}
+    assert T.allowed(m, v, START) == {IDS["\n"], IDS["\nnone"], IDS[" "]}      # the trainer's one space may come first
     line = m.run("\ntask | Write a note.\n")
     assert T.allowed(m, v, line) == {IDS[p] for p in ("check ", "check n", "c", "t", "task", "a", "n", "none ")}
     text = m.run("\ntask | Write a note.\ncheck n word < 40 | ")
