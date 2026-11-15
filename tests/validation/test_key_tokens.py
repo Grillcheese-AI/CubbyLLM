@@ -44,6 +44,19 @@ def test_one_weight_per_token_on_the_key_characters():
     assert ">=" in marked and "48" in marked and "n_word" in marked and "check" not in marked
 
 
+SPLIT = ('\ntask | Write a note.\ncheck if next n sentence >= 3 | If the reply has at least 3 sentences,\n'
+         'check not any word where lower == "a | b" | Do not use "a | b".\nasked | Stay kind.')
+
+
+def test_in_a_split_with_no_program_the_key_characters_are_each_checks_tag_and_description():
+    """Order 0073's form: the slots are where the meaning sits; the kind and the copied text are not key."""
+    keys = [SPLIT[s:e] for s, e in K.key_spans(SPLIT)]
+    assert keys == ["if next n sentence >= 3", 'not any word where lower == "a | b"']    # a bar inside a string is not the bar
+    w = K.weights(Tok(), SPLIT, 4.0)
+    marked = "".join((" " + SPLIT)[i] for i, x in enumerate(w[:-1]) if x == 4.0)
+    assert marked == "".join(keys) and len(w) == len(SPLIT) + 2
+
+
 def test_off_the_batch_is_unchanged_and_on_it_carries_the_weights():
     rows = [{"p": [1, 2, 3], "t": [4, 5, 6]}, {"p": [1, 2], "t": [7, 8, 9, 10]}]
     x, y, m, keep = TD.make_batch(rows)

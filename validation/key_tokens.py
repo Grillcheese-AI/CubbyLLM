@@ -11,6 +11,10 @@ so a mean over its tokens barely sees them. Here, in the program (after the spli
 `weights(tk, answer, w)` gives each token of ``tk.encode(" " + answer)`` (and the end token) weight ``w`` when it
 overlaps a key character, else 1.0, in the order `talk_data.encode_records` makes them.
 
+Order 0073's reader writes no program: its answer is the split alone, each check with its description. There the key
+characters are each check line's join tag and description (`split_spans`): the quantifier, the view, the column,
+the comparison, the value, a ``not``.
+
 Wiring: STANDALONE (`validation/train_talk_torch.py --key-weight`; off by default).
 """
 from __future__ import annotations
@@ -26,11 +30,36 @@ _KEY = [re.compile(r"[\s(](<=|>=|==|!=|<|>) "),                         # an ope
         re.compile(r"\b(n_[a-z]+|(?:char|word|sentence|line|paragraph|item|json)_[a-z_]+)\b")]   # a view name
 
 
+def split_spans(answer: str) -> list[tuple[int, int]]:
+    """Order 0073's form (`cubbyllm/speech/view_split.py`: the split alone, no program): on each ``check`` line the
+    join tag and the description, from after ``check `` to the bar. These are the slots, where the answer's meaning
+    sits. A check line whose description does not read gives no span."""
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from cubbyllm.speech import view_desc as D
+    from cubbyllm.speech import view_split as V
+    out, at = [], 0
+    for line in answer.split("\n"):
+        if line.startswith("check "):
+            i = 6
+            join = next((j for j in V.JOINS if line.startswith(j + " ", i)), None)
+            try:
+                _, end = D.read_at(line, i + (len(join) + 1 if join else 0), "w")
+                if line.startswith(V.BAR, end):
+                    out.append((at + i, at + end))
+            except ValueError:
+                pass
+        at += len(line) + 1
+    return out
+
+
 def key_spans(answer: str) -> list[tuple[int, int]]:
-    """Character spans of the key characters in ``answer`` (none before the split's separator)."""
+    """Character spans of the key characters in ``answer``: in a program after the split's separator (0067), or with
+    no separator the slots of each check line (0073, `split_spans`)."""
     at = answer.find(SEP)
     if at < 0:
-        return []
+        return split_spans(answer)
     start = at + len(SEP)
     prog = answer[start:]
     return sorted((start + m.start(1), start + m.end(1)) for rx in _KEY for m in rx.finditer(prog))
@@ -48,4 +77,4 @@ def weights(tk, answer: str, w: float) -> list[float]:
     return out + [1.0]
 
 
-__all__ = ["key_spans", "weights"]
+__all__ = ["key_spans", "split_spans", "weights"]

@@ -43,10 +43,12 @@ def sample(rows: list, split: str, n: int) -> list:
     return random.Random(0).sample(pool, min(n, len(pool)))         # exp_view_reader.py's draw
 
 
-def decode(model, tk, eos, batch: list, grammar: str, max_new: int, dev, pool=None, clock=None) -> list[dict]:
-    """One batch of rows -> [{"id", "split", "answer"} (+ "error" when no token fits its grammar)]. ``pool``
-    (`view_read_pool.GrammarPool`): the rows' grammars checked in worker processes, the same choices; ``clock``: a
-    dict the model's and the grammar's seconds are added to."""
+def decode(model, tk, eos, batch: list, grammar: str, max_new: int, dev, pool=None, clock=None, skip_empty=False) -> list[dict]:
+    """One batch of rows -> [{"id", "split", "answer", "end", "ids"} (+ "error" when no token fits its grammar)].
+    ``pool`` (`view_read_pool.GrammarPool`): the rows' grammars checked in worker processes, the same choices;
+    ``clock``: a dict the model's and the grammar's seconds are added to. ``end``: how the answer ended (finished: the
+    end token; error: no token fits; limit: ``max_new``), ``ids``: how many it took. ``skip_empty`` (order 0073, arm
+    P): an id whose piece prints nothing is never offered to the grammar (off: round 2's read, as it was)."""
     import torch
     pieces: dict = {}
     clock = {} if clock is None else clock
@@ -55,6 +57,9 @@ def decode(model, tk, eos, batch: list, grammar: str, max_new: int, dev, pool=No
         if t not in pieces:
             pieces[t] = tk.decode([t])
         return pieces[t]
+
+    def offer(ranked: list) -> list:
+        return [t for t in ranked if t == eos or piece(t)] if skip_empty else ranked
     prompts = [tk.encode(VR.prompt(r["instruction"])).ids for r in batch]
     if pool is None:
         gram = [grammar_class(grammar)(r["instruction"]) for r in batch]
@@ -62,7 +67,7 @@ def decode(model, tk, eos, batch: list, grammar: str, max_new: int, dev, pool=No
     else:
         pool.rows([(i, grammar, r["instruction"], eos) for i, r in enumerate(batch)])
     pending = [None] * len(batch)                          # a row's token appended since the pool last saw it
-    gen, done, err = [[] for _ in batch], [False] * len(batch), [None] * len(batch)
+    gen, done, err, end = [[] for _ in batch], [False] * len(batch), [None] * len(batch), [None] * len(batch)
     state = model.init_state(len(batch), dev)
     for t in range(max(len(p) for p in prompts) + max_new):
         if all(done):
@@ -80,12 +85,12 @@ def decode(model, tk, eos, batch: list, grammar: str, max_new: int, dev, pool=No
             for i in live:
                 ids = prompts[i] + gen[i]
                 for w in WIDTHS:
-                    picks[i] = choose[i](ids, top[w][i])
+                    picks[i] = choose[i](ids, offer(top[w][i]))
                     if picks[i]:
                         break
                 if not picks[i]:
                     clock["full scans"] = clock.get("full scans", 0) + 1
-                    picks[i] = choose[i](ids, torch.argsort(logits[i], descending=True).tolist())
+                    picks[i] = choose[i](ids, offer(torch.argsort(logits[i], descending=True).tolist()))
         else:
             ask = live
             for w in (*WIDTHS, None):
@@ -93,7 +98,7 @@ def decode(model, tk, eos, batch: list, grammar: str, max_new: int, dev, pool=No
                     break
                 if w is None:
                     clock["full scans"] = clock.get("full scans", 0) + len(ask)
-                got = pool.choose([(i, pending[i], top[w][i] if w else torch.argsort(logits[i], descending=True).tolist())
+                got = pool.choose([(i, pending[i], offer(top[w][i] if w else torch.argsort(logits[i], descending=True).tolist()))
                                    for i in ask], piece)
                 for i in ask:
                     pending[i] = None
@@ -104,16 +109,16 @@ def decode(model, tk, eos, batch: list, grammar: str, max_new: int, dev, pool=No
         for i in live:
             g, pick = gen[i], picks[i]
             if not pick:
-                done[i], err[i] = True, "no token keeps the answer in its grammar"
+                done[i], err[i], end[i] = True, "no token keeps the answer in its grammar", "error"
                 continue
             if pick[0] == eos or len(g) + 1 >= max_new:
-                done[i] = True
+                done[i], end[i] = True, "finished" if pick[0] == eos else "limit"
             if pick[0] != eos:
                 g.append(pick[0])
                 pending[i] = pick[0]
     out = []
-    for r, g, e in zip(batch, gen, err):
-        rec = {"id": r["id"], "split": r["split"], "answer": tk.decode(g)}
+    for r, g, e, how in zip(batch, gen, err, end):
+        rec = {"id": r["id"], "split": r["split"], "answer": tk.decode(g), "end": how or "limit", "ids": len(g)}
         if e:
             rec["error"] = e
         out.append(rec)

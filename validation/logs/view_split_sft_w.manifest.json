@@ -1,0 +1,52 @@
+{
+ "order": "0073",
+ "what": "the reader's SFT set (step 5): the split with each check's description",
+ "arm": "w",
+ "records": 6300,
+ "by_split": {
+  "train": 6000,
+  "held": 300
+ },
+ "by_family": {
+  "long_2": 978,
+  "long_3": 1152,
+  "long_4": 1170,
+  "pair_2": 1054,
+  "pair_3": 1092,
+  "pair_4": 854
+ },
+ "by_lang": {
+  "en": 3781,
+  "fr": 2519
+ },
+ "answers that read back strictly, also with own_text": 6300,
+ "answers that differ from the other arm's": 3200,
+ "the two sets have the same ids, prompts and splits in the same order": true,
+ "rows of test or test_long": 0,
+ "benchmarks_checked": [
+  "IFBench",
+  "IFEval"
+ ],
+ "records_sharing_5_words_with_a_benchmark_dropped": 0,
+ "max_len": 1280,
+ "tokens a record, median": 217.0,
+ "tokens a record, most": 389,
+ "records_over_max_len": {},
+ "answer tokens": 708004,
+ "answer tokens that are key": 170676,
+ "share of answer tokens that are key": 0.2411,
+ "rows_sha256": {
+  "rows.jsonl": "2c5ea63f1300353ff2364eafa559407b5828a5c95b1465e6f3960d1e12440689",
+  "pair_rows.jsonl": "02d3b80194ae58f363a5558e9c614262a0d3d3f2b28245839be97f02be0bd307",
+  "the lines of rows.jsonl by split": {
+   "train": "89be15a650367a5071927908127bc38eb0c25134e5b33e949788d725c2c83b58",
+   "dev": "b94d50c91a564f74cf3f57a026e4283717490fa6eb3add1736c50dc85179e8e4",
+   "test": "a0aae1f4da2f3b47e888113c6ea88b7fa2d4877154dcc87e8b3f4c744324660b",
+   "test_long": "cdb78a584b46da0d8bb8b71d5603a3c35048e766be4ed3d821b117c09960582c"
+  }
+ },
+ "row_licences": {
+  "templates": "this repo's own (Apache-2.0)"
+ },
+ "sha256": "113e53b3734d048812799c2d315cf4bc3bbb6076dcfeb4dfc8c2466f0f5735ef"
+}

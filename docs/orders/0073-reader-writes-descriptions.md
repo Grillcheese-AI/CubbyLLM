@@ -1,5 +1,5 @@
 # 0073 - The instruction reader writes descriptions and the host compiles them (round 3: two spellings of a negation, read side by side)
-status: open (0067's round 2 was closed on 2026-11-14, a negative result on its line 3, so the build can start; builder: Code A, or Cowork on a branch while Code A is signed out, Nick 2026-11-14: "we will continue here then"; steps 1 to 3 built on branch `cowork/0073` by 2026-11-15: the rows exist and the hashes of test and test_long are committed; steps 4 to 7 open)
+status: open (0067's round 2 was closed on 2026-11-14, a negative result on its line 3, so the build can start; builder: Code A, or Cowork on a branch while Code A is signed out, Nick 2026-11-14: "we will continue here then"; steps 1 to 5 built on branch `cowork/0073` by 2026-11-15: the rows exist and the hashes of test and test_long are committed, the grammar is checked on every row, the two SFT sets are on Drive and the notebooks are written; nothing is trained (the Colab runs are Nick's, and the branch must be on GitHub first); of step 6 the decoder is written, its scoring and step 7 are open)
 written: 2026-11-14 by Cowork, on Nick's "yes" to writing round 3 as one order on the panel's synthesis - approved: 2026-11-14 by Nick ("I approve 0073", with the arms as defined here, narrower than in the synthesis) - hypothesis: none (0067's second reader)
 
 ## Why
@@ -543,3 +543,41 @@ reader and grammar are untouched: arm P reads with them. Checked on every row of
    of a pair when one is asked: a check that was a condition's other half is not checked alone.
 7. **The machine does not look for a tag's partner** (as designed), and it does not hold a line to a sentence's
    end: it knows line breaks, not sentences.
+
+### Step 5, built: the two SFT sets and their notebooks; step 6's decoder (Cowork, 2026-11-15, branch `cowork/0073`)
+Nothing is trained: the Colab runs are Nick's.
+- **The sets** (`validation/sft/build_view_split_sft.py`; off-repo, on Drive under `rules/`; manifests in
+  `validation/logs/view_split_sft_m.manifest.json` and `..._w.manifest.json`): `view_split_sft_m.jsonl` and
+  `view_split_sft_w.jsonl`, 6,300 records each: 6,000 train (step 3's 3,000 train rows and its 1,500 pairs) and 300
+  held (dev). Test and test_long are in neither. The two sets have the same ids, prompts and splits in the same
+  order; their answers differ on 3,200 records, the ones where the words negate.
+  - Every answer reads back strictly, also with the own-text rule (6,300 of 6,300 in each arm): no answer is taught
+    that the grammar would refuse. No instruction shares 5 words with IFEval or IFBench.
+  - Tokens a record, as the trainer counts them: 216 at the median (217 in arm W), 389 at most; none is over the
+    trainer's 1,280.
+  - **The key tokens** (`validation/key_tokens.py`, weighted 4 in training) are each check's join tag and
+    description: 166,214 of arm M's 703,542 answer tokens (0.236) and 170,676 of arm W's 708,004 (0.241). Round
+    2's were about 14% of an answer. With no `---` in an answer the spans are the slots; with one, round 2's.
+  - 0067's set also taught one-part instructions and CubeLang programs to continue. Neither is here: this reader
+    writes no program, and "same records, the target in arm M or arm W" is kept to step 3's rows.
+- **The notebooks** (`notebooks/view_split_m.ipynb`, `view_split_w.ipynb`, from `_build_view_split.py`): round 2's
+  recipe and cell, unchanged (rank 16, alpha 32, five epochs, lr 2e-4, batch 32, max length 1,280, seed 0, key
+  weight 4). They differ in the set read and the folder written (`rules/cubby450m_view_split_m`, `..._w`). Each
+  refuses to train unless the set is its arm's, has 6,000 train and 300 held records, and was built from the rows
+  whose SHA-256 is in the code it cloned (`long_rows_0073_2026-11-15_manifest.json`).
+- **They clone branch `cowork/0073`,** which is on this PC only. Colab needs it on GitHub: a push of the branch is
+  Nick's yes. Once the order is merged, `BRANCH` in `_build_view_split.py` goes to `master` and the notebooks are
+  made again.
+- **Step 6's decoder,** written with it so the read needs no second push (`validation/exp_view_split_torch.py`):
+  one decoder for every arm. Arms M and W: each row's answer is held by its instruction's machine and the next
+  token is the best-scored of the ids its state allows; `--own-text` for point 7's variant. Arm P: round 2's
+  chooser (`exp_view_reader_torch.decode`, which now takes `skip_empty` and records `end` and `ids`; off, it reads
+  as it did). Every answer records `end` and `ids`.
+- **Tests:** `tests/validation/test_key_tokens.py` (5: the new form's spans among them), `test_view_split_sft.py`
+  (3, on a small build), `test_view_split_torch.py` (6: a model that scores the gold token highest decodes the
+  gold answers; one that always wants the end token still writes a whole answer inside the grammar; an answer
+  that outruns the limit ends `limit`).
+- **Left of step 6:** the read notebook (dev first, both variants; the variant frozen in the repo before test is
+  read), the rows the read needs on Drive (ids and instructions only), `exp_view_reader.py --score` on
+  descriptions with what "Acceptance" lists, the second chance on dev. Step 7 is arm P's read, with the same
+  decoder.
