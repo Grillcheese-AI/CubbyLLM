@@ -1,0 +1,938 @@
+{
+ "order": "0073",
+ "what": "step 3: long instructions with their split, each check's said form in both spellings and the join of the folded forms, run before kept",
+ "seed": 73,
+ "pairs_said_goal_first": 0.3,
+ "replies_searched_beyond_the_pool": 640,
+ "rows": 6900,
+ "by_split": {
+  "train": 6000,
+  "dev": 300,
+  "test": 300,
+  "test_long": 300
+ },
+ "pairs": 1500,
+ "lower bounds' share of the bounds": {
+  "train": 0.4999,
+  "pairs": 0.5002,
+  "dev": 0.5,
+  "test": 0.4992,
+  "test_long": 0.5,
+  "train with its pairs": 0.5001
+ },
+ "band": [
+  0.45,
+  0.55
+ ],
+ "sets": {
+  "train": {
+   "rows": 3000,
+   "by_lang": {
+    "en": 1811,
+    "fr": 1189
+   },
+   "by_parts": {
+    "2": 888,
+    "3": 1054,
+    "4": 1058
+   },
+   "segments_by_kind": {
+    "check": 9170,
+    "none": 3009,
+    "process": 1187,
+    "asked": 3014,
+    "task": 2416
+   },
+   "groups": {
+    "if": 432,
+    "one": 5990,
+    "either": 760,
+    "unless": 398
+   },
+   "tied pairs by place": {
+    "2": {
+     "pair at 1-2": 267,
+     "rows": 888
+    },
+    "3": {
+     "pair at 1-2": 269,
+     "pair at 2-3": 269,
+     "rows": 1054
+    },
+    "4": {
+     "pair at 1-2": 262,
+     "pair at 2-3": 261,
+     "pair at 3-4": 262,
+     "rows": 1058
+    }
+   },
+   "connectives": {
+    "en either first": 460,
+    "en if after": 117,
+    "en if first": 124,
+    "en unless after": 113,
+    "en unless first": 124,
+    "fr either first": 300,
+    "fr if after": 105,
+    "fr if first": 86,
+    "fr unless after": 78,
+    "fr unless first": 83
+   },
+   "bounds": {
+    "all": {
+     "lower": 3330,
+     "upper": 3331,
+     "exactly": 307,
+     "other": 1172,
+     "lower share": 0.4999
+    },
+    "size": {
+     "lower": 853,
+     "upper": 853,
+     "exactly": 11,
+     "other": 263,
+     "lower share": 0.5
+    },
+    "count": {
+     "lower": 723,
+     "upper": 723,
+     "exactly": 28,
+     "other": 447,
+     "lower share": 0.5
+    },
+    "position": {
+     "lower": 224,
+     "upper": 224,
+     "exactly": 25,
+     "other": 79,
+     "lower share": 0.5
+    },
+    "filter": {
+     "lower": 1530,
+     "upper": 1531,
+     "exactly": 243,
+     "other": 383,
+     "lower share": 0.4998
+    }
+   },
+   "wording": {
+    "how": {
+     "cond": 830,
+     "imp": 8340
+    },
+    "not in arm W's form": {
+     "0": 6876,
+     "1": 2192,
+     "2": 101,
+     "3": 1
+    },
+    "arm M's quantifier": {
+     "all": 703,
+     "any": 1388,
+     "at": 1111,
+     "count": 1921,
+     "n": 2033,
+     "none": 2014
+    }
+   },
+   "replies reach": {
+    "numbered parts": 4509,
+    "values reached": 5636,
+    "values reached, alone": 3543,
+    "all three values": 474,
+    "all three values, alone": 178,
+    "tied pairs": 1590,
+    "combinations reached": 4341,
+    "combinations reached, alone": 3687,
+    "all four combinations": 202,
+    "all four combinations, alone": 96,
+    "replies": 23948,
+    "replies added": 0,
+    "replies built to fail": 11978
+   },
+   "mutants": {
+    "parts": 23324,
+    "parts told": 18050,
+    "parts told alone": 21845,
+    "groups": 6162,
+    "groups told": 4530,
+    "groups told alone": 5309
+   }
+  },
+  "pairs": {
+   "rows": 3000,
+   "by_lang": {
+    "fr": 1202,
+    "en": 1798
+   },
+   "by_parts": {
+    "2": 1054,
+    "3": 1092,
+    "4": 854
+   },
+   "segments_by_kind": {
+    "task": 2396,
+    "check": 8800,
+    "asked": 2960,
+    "none": 3002,
+    "process": 1160
+   },
+   "groups": {
+    "one": 6576,
+    "either": 582,
+    "if": 250,
+    "unless": 280
+   },
+   "tied pairs by place": {
+    "2": {
+     "rows": 1054
+    },
+    "3": {
+     "pair at 1-2": 278,
+     "pair at 2-3": 278,
+     "rows": 1092
+    },
+    "4": {
+     "pair at 1-2": 184,
+     "pair at 2-3": 186,
+     "pair at 3-4": 186,
+     "rows": 854
+    }
+   },
+   "connectives": {
+    "en either first": 358,
+    "en if after": 74,
+    "en if first": 58,
+    "en unless after": 86,
+    "en unless first": 92,
+    "fr either first": 224,
+    "fr if after": 44,
+    "fr if first": 74,
+    "fr unless after": 54,
+    "fr unless first": 48
+   },
+   "bounds": {
+    "all": {
+     "lower": 3148,
+     "upper": 3145,
+     "exactly": 469,
+     "other": 1055,
+     "lower share": 0.5002
+    },
+    "size": {
+     "lower": 789,
+     "upper": 789,
+     "exactly": 56,
+     "other": 238,
+     "lower share": 0.5
+    },
+    "count": {
+     "lower": 600,
+     "upper": 598,
+     "exactly": 127,
+     "other": 441,
+     "lower share": 0.5008
+    },
+    "position": {
+     "lower": 391,
+     "upper": 390,
+     "exactly": 42,
+     "other": 68,
+     "lower share": 0.5006
+    },
+    "filter": {
+     "lower": 1368,
+     "upper": 1368,
+     "exactly": 244,
+     "other": 308,
+     "lower share": 0.5
+    }
+   },
+   "wording": {
+    "how": {
+     "cond": 530,
+     "imp": 6543,
+     "inverted": 1727
+    },
+    "not in arm W's form": {
+     "0": 7062,
+     "1": 1656,
+     "2": 82
+    },
+    "arm M's quantifier": {
+     "all": 550,
+     "any": 1439,
+     "at": 1428,
+     "count": 1766,
+     "n": 1934,
+     "none": 1683
+    }
+   },
+   "replies reach": {
+    "numbered parts": 4594,
+    "values reached": 5657,
+    "values reached, alone": 3633,
+    "all three values": 457,
+    "all three values, alone": 189,
+    "tied pairs": 1112,
+    "combinations reached": 2981,
+    "combinations reached, alone": 2188,
+    "all four combinations": 146,
+    "all four combinations, alone": 36,
+    "replies": 23992,
+    "replies added": 0,
+    "replies built to fail": 12187
+   },
+   "mutants": {
+    "parts": 22423,
+    "parts told": 16954,
+    "parts told alone": 20864,
+    "groups": 4634,
+    "groups told": 3056,
+    "groups told alone": 3934
+   }
+  },
+  "dev": {
+   "rows": 300,
+   "by_lang": {
+    "en": 172,
+    "fr": 128
+   },
+   "by_parts": {
+    "2": 90,
+    "3": 98,
+    "4": 112
+   },
+   "segments_by_kind": {
+    "asked": 310,
+    "task": 234,
+    "check": 922,
+    "none": 282,
+    "process": 123
+   },
+   "groups": {
+    "one": 602,
+    "unless": 33,
+    "if": 40,
+    "either": 87
+   },
+   "tied pairs by place": {
+    "2": {
+     "pair at 1-2": 27,
+     "rows": 90
+    },
+    "3": {
+     "pair at 1-2": 25,
+     "pair at 2-3": 25,
+     "rows": 98
+    },
+    "4": {
+     "pair at 1-2": 28,
+     "pair at 2-3": 27,
+     "pair at 3-4": 28,
+     "rows": 112
+    }
+   },
+   "connectives": {
+    "en either first": 53,
+    "en if after": 12,
+    "en if first": 9,
+    "en unless after": 8,
+    "en unless first": 14,
+    "fr either first": 34,
+    "fr if after": 10,
+    "fr if first": 9,
+    "fr unless after": 3,
+    "fr unless first": 8
+   },
+   "bounds": {
+    "all": {
+     "lower": 335,
+     "upper": 335,
+     "exactly": 22,
+     "other": 110,
+     "lower share": 0.5
+    },
+    "size": {
+     "lower": 107,
+     "upper": 107,
+     "exactly": 1,
+     "other": 25,
+     "lower share": 0.5
+    },
+    "count": {
+     "lower": 53,
+     "upper": 53,
+     "exactly": 1,
+     "other": 42,
+     "lower share": 0.5
+    },
+    "position": {
+     "lower": 22,
+     "upper": 22,
+     "exactly": 3,
+     "other": 7,
+     "lower share": 0.5
+    },
+    "filter": {
+     "lower": 153,
+     "upper": 153,
+     "exactly": 17,
+     "other": 36,
+     "lower share": 0.5
+    }
+   },
+   "wording": {
+    "how": {
+     "cond": 73,
+     "imp": 849
+    },
+    "not in arm W's form": {
+     "0": 692,
+     "1": 216,
+     "2": 13,
+     "3": 1
+    },
+    "arm M's quantifier": {
+     "all": 67,
+     "any": 144,
+     "at": 113,
+     "count": 149,
+     "n": 246,
+     "none": 203
+    }
+   },
+   "replies reach": {
+    "numbered parts": 449,
+    "values reached": 1242,
+    "values reached, alone": 1022,
+    "all three values": 371,
+    "all three values, alone": 284,
+    "tied pairs": 160,
+    "combinations reached": 603,
+    "combinations reached, alone": 576,
+    "all four combinations": 126,
+    "all four combinations, alone": 113,
+    "replies": 3300,
+    "replies added": 907,
+    "replies built to fail": 1625
+   },
+   "mutants": {
+    "parts": 2305,
+    "parts told": 2051,
+    "parts told alone": 2219,
+    "groups": 620,
+    "groups told": 599,
+    "groups told alone": 617
+   }
+  },
+  "test": {
+   "rows": 300,
+   "by_lang": {
+    "fr": 121,
+    "en": 179
+   },
+   "by_parts": {
+    "2": 95,
+    "3": 107,
+    "4": 98
+   },
+   "segments_by_kind": {
+    "none": 301,
+    "asked": 304,
+    "check": 903,
+    "task": 238,
+    "process": 128
+   },
+   "groups": {
+    "unless": 30,
+    "one": 589,
+    "either": 79,
+    "if": 48
+   },
+   "tied pairs by place": {
+    "2": {
+     "pair at 1-2": 29,
+     "rows": 95
+    },
+    "3": {
+     "pair at 1-2": 28,
+     "pair at 2-3": 27,
+     "rows": 107
+    },
+    "4": {
+     "pair at 1-2": 25,
+     "pair at 2-3": 24,
+     "pair at 3-4": 24,
+     "rows": 98
+    }
+   },
+   "connectives": {
+    "en either first": 41,
+    "en if after": 22,
+    "en if first": 13,
+    "en unless after": 11,
+    "en unless first": 8,
+    "fr either first": 38,
+    "fr if after": 4,
+    "fr if first": 9,
+    "fr unless after": 3,
+    "fr unless first": 8
+   },
+   "bounds": {
+    "all": {
+     "lower": 318,
+     "upper": 319,
+     "exactly": 22,
+     "other": 121,
+     "lower share": 0.4992
+    },
+    "size": {
+     "lower": 91,
+     "upper": 91,
+     "exactly": 0,
+     "other": 26,
+     "lower share": 0.5
+    },
+    "count": {
+     "lower": 67,
+     "upper": 66,
+     "exactly": 3,
+     "other": 49,
+     "lower share": 0.5038
+    },
+    "position": {
+     "lower": 23,
+     "upper": 24,
+     "exactly": 0,
+     "other": 6,
+     "lower share": 0.4894
+    },
+    "filter": {
+     "lower": 137,
+     "upper": 138,
+     "exactly": 19,
+     "other": 40,
+     "lower share": 0.4982
+    }
+   },
+   "wording": {
+    "how": {
+     "cond": 78,
+     "imp": 825
+    },
+    "not in arm W's form": {
+     "0": 681,
+     "1": 209,
+     "2": 13
+    },
+    "arm M's quantifier": {
+     "all": 70,
+     "any": 136,
+     "at": 110,
+     "count": 185,
+     "n": 219,
+     "none": 183
+    }
+   },
+   "replies reach": {
+    "numbered parts": 457,
+    "values reached": 1243,
+    "values reached, alone": 1017,
+    "all three values": 365,
+    "all three values, alone": 266,
+    "tied pairs": 157,
+    "combinations reached": 583,
+    "combinations reached, alone": 563,
+    "all four combinations": 116,
+    "all four combinations, alone": 105,
+    "replies": 3291,
+    "replies added": 899,
+    "replies built to fail": 1639
+   },
+   "mutants": {
+    "parts": 2270,
+    "parts told": 1993,
+    "parts told alone": 2155,
+    "groups": 605,
+    "groups told": 579,
+    "groups told alone": 595
+   }
+  },
+  "test_long": {
+   "rows": 300,
+   "by_lang": {
+    "fr": 116,
+    "en": 184
+   },
+   "by_parts": {
+    "5": 72,
+    "6": 78,
+    "7": 74,
+    "8": 76
+   },
+   "segments_by_kind": {
+    "none": 302,
+    "check": 1954,
+    "process": 120,
+    "asked": 293,
+    "task": 231
+   },
+   "groups": {
+    "one": 1166,
+    "either": 179,
+    "unless": 112,
+    "if": 103
+   },
+   "tied pairs by place": {
+    "5": {
+     "pair at 1-2": 16,
+     "pair at 2-3": 18,
+     "pair at 3-4": 19,
+     "pair at 4-5": 16,
+     "rows": 72
+    },
+    "6": {
+     "pair at 1-2": 21,
+     "pair at 2-3": 18,
+     "pair at 3-4": 20,
+     "pair at 4-5": 18,
+     "pair at 5-6": 21,
+     "rows": 78
+    },
+    "7": {
+     "pair at 1-2": 13,
+     "pair at 2-3": 14,
+     "pair at 3-4": 20,
+     "pair at 4-5": 14,
+     "pair at 5-6": 15,
+     "pair at 6-7": 21,
+     "rows": 74
+    },
+    "8": {
+     "pair at 1-2": 18,
+     "pair at 2-3": 16,
+     "pair at 3-4": 18,
+     "pair at 4-5": 17,
+     "pair at 5-6": 19,
+     "pair at 6-7": 16,
+     "pair at 7-8": 26,
+     "rows": 76
+    }
+   },
+   "connectives": {
+    "en either first": 102,
+    "en if after": 36,
+    "en if first": 34,
+    "en unless after": 38,
+    "en unless first": 30,
+    "fr either first": 77,
+    "fr if after": 19,
+    "fr if first": 14,
+    "fr unless after": 23,
+    "fr unless first": 21
+   },
+   "bounds": {
+    "all": {
+     "lower": 745,
+     "upper": 745,
+     "exactly": 64,
+     "other": 263,
+     "lower share": 0.5
+    },
+    "size": {
+     "lower": 215,
+     "upper": 215,
+     "exactly": 4,
+     "other": 59,
+     "lower share": 0.5
+    },
+    "count": {
+     "lower": 146,
+     "upper": 146,
+     "exactly": 9,
+     "other": 106,
+     "lower share": 0.5
+    },
+    "position": {
+     "lower": 52,
+     "upper": 53,
+     "exactly": 5,
+     "other": 13,
+     "lower share": 0.4952
+    },
+    "filter": {
+     "lower": 332,
+     "upper": 331,
+     "exactly": 46,
+     "other": 85,
+     "lower share": 0.5008
+    }
+   },
+   "wording": {
+    "how": {
+     "cond": 215,
+     "imp": 1739
+    },
+    "not in arm W's form": {
+     "0": 1488,
+     "1": 448,
+     "2": 18
+    },
+    "arm M's quantifier": {
+     "all": 120,
+     "any": 292,
+     "at": 228,
+     "count": 407,
+     "n": 503,
+     "none": 404
+    }
+   },
+   "replies reach": {
+    "numbered parts": 1033,
+    "values reached": 2865,
+    "values reached, alone": 1916,
+    "all three values": 866,
+    "all three values, alone": 466,
+    "tied pairs": 394,
+    "combinations reached": 1464,
+    "combinations reached, alone": 1261,
+    "all four combinations": 296,
+    "all four combinations, alone": 199,
+    "replies": 4621,
+    "replies added": 2221,
+    "replies built to fail": 2618
+   },
+   "mutants": {
+    "parts": 5009,
+    "parts told": 4167,
+    "parts told alone": 4817,
+    "groups": 1662,
+    "groups told": 1461,
+    "groups told alone": 1636
+   }
+  },
+  "train with its pairs": {
+   "rows": 6000,
+   "by_lang": {
+    "en": 3609,
+    "fr": 2391
+   },
+   "by_parts": {
+    "2": 1942,
+    "3": 2146,
+    "4": 1912
+   },
+   "segments_by_kind": {
+    "check": 17970,
+    "none": 6011,
+    "process": 2347,
+    "asked": 5974,
+    "task": 4812
+   },
+   "groups": {
+    "if": 682,
+    "one": 12566,
+    "either": 1342,
+    "unless": 678
+   },
+   "tied pairs by place": {
+    "2": {
+     "pair at 1-2": 267,
+     "rows": 1942
+    },
+    "3": {
+     "pair at 1-2": 547,
+     "pair at 2-3": 547,
+     "rows": 2146
+    },
+    "4": {
+     "pair at 1-2": 446,
+     "pair at 2-3": 447,
+     "pair at 3-4": 448,
+     "rows": 1912
+    }
+   },
+   "connectives": {
+    "en either first": 818,
+    "en if after": 191,
+    "en if first": 182,
+    "en unless after": 199,
+    "en unless first": 216,
+    "fr either first": 524,
+    "fr if after": 149,
+    "fr if first": 160,
+    "fr unless after": 132,
+    "fr unless first": 131
+   },
+   "bounds": {
+    "all": {
+     "lower": 6478,
+     "upper": 6476,
+     "exactly": 776,
+     "other": 2227,
+     "lower share": 0.5001
+    },
+    "size": {
+     "lower": 1642,
+     "upper": 1642,
+     "exactly": 67,
+     "other": 501,
+     "lower share": 0.5
+    },
+    "count": {
+     "lower": 1323,
+     "upper": 1321,
+     "exactly": 155,
+     "other": 888,
+     "lower share": 0.5004
+    },
+    "position": {
+     "lower": 615,
+     "upper": 614,
+     "exactly": 67,
+     "other": 147,
+     "lower share": 0.5004
+    },
+    "filter": {
+     "lower": 2898,
+     "upper": 2899,
+     "exactly": 487,
+     "other": 691,
+     "lower share": 0.4999
+    }
+   },
+   "wording": {
+    "how": {
+     "cond": 1360,
+     "imp": 14883,
+     "inverted": 1727
+    },
+    "not in arm W's form": {
+     "0": 13938,
+     "1": 3848,
+     "2": 183,
+     "3": 1
+    },
+    "arm M's quantifier": {
+     "all": 1253,
+     "any": 2827,
+     "at": 2539,
+     "count": 3687,
+     "n": 3967,
+     "none": 3697
+    }
+   },
+   "replies reach": {
+    "numbered parts": 9103,
+    "values reached": 11293,
+    "values reached, alone": 7176,
+    "all three values": 931,
+    "all three values, alone": 367,
+    "tied pairs": 2702,
+    "combinations reached": 7322,
+    "combinations reached, alone": 5875,
+    "all four combinations": 348,
+    "all four combinations, alone": 132,
+    "replies": 47940,
+    "replies added": 0,
+    "replies built to fail": 24165
+   },
+   "mutants": {
+    "parts": 45747,
+    "parts told": 35004,
+    "parts told alone": 42709,
+    "groups": 10796,
+    "groups told": 7586,
+    "groups told alone": 9243
+   }
+  }
+ },
+ "held-out rows whose composition without its values is a train row's": {
+  "dev 2 parts": {
+   "rows": 90,
+   "shape in train": 5
+  },
+  "dev 3 parts": {
+   "rows": 98,
+   "shape in train": 0
+  },
+  "dev 4 parts": {
+   "rows": 112,
+   "shape in train": 0
+  },
+  "test 2 parts": {
+   "rows": 95,
+   "shape in train": 2
+  },
+  "test 3 parts": {
+   "rows": 107,
+   "shape in train": 0
+  },
+  "test 4 parts": {
+   "rows": 98,
+   "shape in train": 0
+  },
+  "test_long 5 parts": {
+   "rows": 72,
+   "shape in train": 0
+  },
+  "test_long 6 parts": {
+   "rows": 78,
+   "shape in train": 0
+  },
+  "test_long 7 parts": {
+   "rows": 74,
+   "shape in train": 0
+  },
+  "test_long 8 parts": {
+   "rows": 76,
+   "shape in train": 0
+  }
+ },
+ "instructions of 0067 kept out": 6900,
+ "drop_reasons": {
+  "dev: shares 5 words with a benchmark": 1,
+  "dev: too few usable replies on one side": 13,
+  "pairs: shares 5 words with a benchmark": 12,
+  "pairs: the twin has no description or is of a kind kept for the test": 25,
+  "pairs: too few usable replies on one side": 63,
+  "pairs: twin: shares 5 words with a benchmark": 3,
+  "pairs: twin: too few usable replies on one side": 209,
+  "test: a train row's parts and groups": 1,
+  "test: too few usable replies on one side": 29,
+  "test_long: too few usable replies on one side": 31,
+  "train: shares 5 words with a benchmark": 35,
+  "train: too few usable replies on one side": 215
+ },
+ "seconds": {
+  "train": 491.5,
+  "pairs": 281.0,
+  "dev": 70.0,
+  "test": 78.7,
+  "test_long": 183.6
+ },
+ "vm_runs_agreeing": 59152,
+ "vm_disagreements": 0,
+ "benchmarks_checked": [
+  "IFBench",
+  "IFEval"
+ ],
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-13 16:06",
+  "sha256": "a2dfaa016536ccbeb2f2c29b2c095b0ef3a5d9480065440089e04e90b244e42f",
+  "commit": "b3b3360",
+  "older_than_sources": false
+ },
+ "sha256": {
+  "rows.jsonl": "2c5ea63f1300353ff2364eafa559407b5828a5c95b1465e6f3960d1e12440689",
+  "pair_rows.jsonl": "02d3b80194ae58f363a5558e9c614262a0d3d3f2b28245839be97f02be0bd307",
+  "the lines of rows.jsonl by split": {
+   "train": "89be15a650367a5071927908127bc38eb0c25134e5b33e949788d725c2c83b58",
+   "dev": "b94d50c91a564f74cf3f57a026e4283717490fa6eb3add1736c50dc85179e8e4",
+   "test": "a0aae1f4da2f3b47e888113c6ea88b7fa2d4877154dcc87e8b3f4c744324660b",
+   "test_long": "cdb78a584b46da0d8bb8b71d5603a3c35048e766be4ed3d821b117c09960582c"
+  }
+ }
+}

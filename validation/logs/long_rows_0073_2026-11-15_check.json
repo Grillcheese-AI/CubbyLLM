@@ -1,0 +1,41 @@
+{
+ "order": "0073",
+ "what": "long_rows_0073 read back and checked with the evaluator (no VM)",
+ "instructions of 0067 looked up": 6900,
+ "counted": {
+  "rows": 6900,
+  "checks": 21749,
+  "replies": 59152,
+  "pairs": 1500
+ },
+ "must be 0": {
+  "a SHA-256 that is not the manifest's": 0,
+  "a held-out row with a train row's folded parts and groups": 0,
+  "a join tag not on a tied pair's check beside its partner": 0,
+  "a part of a kind kept for the test": 0,
+  "a program that is not the join of the folded forms": 0,
+  "a said form that is not the wording's": 0,
+  "a train or dev instruction sharing 5 words with a benchmark": 0,
+  "a train row with replies added": 0,
+  "a verdict that is not the evaluator's on the folded forms": 0,
+  "a verdict that is not the evaluator's on the parts as drawn": 0,
+  "an arm M form that is not the fold of arm W's": 0,
+  "an arm W form whose nots are not the words'": 0,
+  "an id twice": 0,
+  "an instruction of 0067's rows": 0,
+  "an instruction twice": 0,
+  "parts not numbered in the text's order": 0,
+  "segments that do not tile the instruction": 0,
+  "twins that differ in more than the flipped part's sentence": 0
+ },
+ "sha256": {
+  "rows.jsonl": "2c5ea63f1300353ff2364eafa559407b5828a5c95b1465e6f3960d1e12440689",
+  "pair_rows.jsonl": "02d3b80194ae58f363a5558e9c614262a0d3d3f2b28245839be97f02be0bd307",
+  "the lines of rows.jsonl by split": {
+   "train": "89be15a650367a5071927908127bc38eb0c25134e5b33e949788d725c2c83b58",
+   "dev": "b94d50c91a564f74cf3f57a026e4283717490fa6eb3add1736c50dc85179e8e4",
+   "test": "a0aae1f4da2f3b47e888113c6ea88b7fa2d4877154dcc87e8b3f4c744324660b",
+   "test_long": "cdb78a584b46da0d8bb8b71d5603a3c35048e766be4ed3d821b117c09960582c"
+  }
+ }
+}

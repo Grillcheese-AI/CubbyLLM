@@ -1,5 +1,5 @@
 # 0073 - The instruction reader writes descriptions and the host compiles them (round 3: two spellings of a negation, read side by side)
-status: open (0067's round 2 was closed on 2026-11-14, a negative result on its line 3, so the build can start; builder: Code A, or Cowork on a branch while Code A is signed out, Nick 2026-11-14: "we will continue here then")
+status: open (0067's round 2 was closed on 2026-11-14, a negative result on its line 3, so the build can start; builder: Code A, or Cowork on a branch while Code A is signed out, Nick 2026-11-14: "we will continue here then"; steps 1 to 3 built on branch `cowork/0073` by 2026-11-15: the rows exist and the hashes of test and test_long are committed; steps 4 to 7 open)
 written: 2026-11-14 by Cowork, on Nick's "yes" to writing round 3 as one order on the panel's synthesis - approved: 2026-11-14 by Nick ("I approve 0073", with the arms as defined here, narrower than in the synthesis) - hypothesis: none (0067's second reader)
 
 ## Why
@@ -126,6 +126,8 @@ of a negation that is in the words differs.
 - Abstaining when the operator's score is close to its complement's; a second reading of the complement; an
   isolated-part task; reading each part in its own pass; a margin loss; training on 5 or more parts (line 4).
 - 0067's lines 5 and 6 (unseen kinds, the plan reader side by side): after an arm is kept.
+- A dev-only record of the reader's confidence in each slot (the R-U-SURE idea Cowork raised on 2026-11-14): Nick,
+  2026-11-15: "r-u-sure might be too heavy so no".
 
 ## Settled before the build (Cowork, 2026-11-14, on Code A's reading of the order)
 Code A read the order against the code and raised six points (inbox, 2026-11-14). Each is settled here; where this
@@ -327,3 +329,96 @@ Where the order leaves a choice, this is the one taken. Nothing below is built y
   shares are low; then it is raised within 2.5 times today's build time and the report says so.
 - **1,500 minimal pairs** as in round 2 (one lone part flipped, the twin drawing its wording as the first did, 0.3
   goal first), under the same draw.
+
+### Step 3, built: the rows (`long_rows_0073`) (Cowork, 2026-11-15, branch `cowork/0073`)
+Built off-repo with `validation/builders/build_rows_0073.py` (seed 73): `rows.jsonl` (train 3,000, dev 300, test
+300, test_long 300) and `pair_rows.jsonl` (1,500 pairs, 3,000 train rows). Counts and SHA-256 in
+`validation/logs/long_rows_0073_2026-11-15_manifest.json`; the set read back from its files and checked in
+`validation/logs/long_rows_0073_2026-11-15_check.json`. No adapter of this order exists yet, so the hashes of test
+and test_long are committed before any training. Test and test_long rows were not opened by eye: only counts.
+- **Run before kept:** 59,152 VM runs, 0 disagreements with the evaluator. A row's program is the join of its
+  folded said forms; on every usable reply of each pool the evaluator's verdict on the folded forms was its verdict
+  on the parts as drawn (a difference stops the build).
+- **Read back** (`validation/exp_rows_0073_check.py`, the evaluator only): 6,900 rows, 21,749 checks, 59,152
+  replies, 1,500 pairs. Each of its 18 counts that must be 0 is 0: an instruction of 0067's rows (6,900 looked
+  up), an instruction or id twice, a train or dev instruction sharing 5 words with a benchmark, a part of a kind
+  kept for the test, a held-out row with a train row's folded parts and groups, segments that do not tile, parts
+  not numbered in the text's order, a join tag off its pair, a said form that is not the wording's, an arm M form
+  that is not the fold of arm W's, an arm W form whose `not`s are not the negation words of the check's text, a
+  program that is not the join of the folded forms, a stored verdict that is not the evaluator's (on the folded
+  forms; on the parts as drawn), a train row with replies added, twins that differ in more than the flipped
+  part's sentence, a SHA-256 that is not the manifest's.
+- **Bounds** (lower bounds' share of the bounds said with a number other than 0; 0067's train rows: 0.367): train
+  with its pairs 6,478 lower and 6,476 upper (0.5001), with 776 "exactly" and 2,227 "other than"; dev 335 and 335
+  (0.5); test 318 and 319 (0.4992); test_long 745 and 745 (0.5). By place in train with its pairs: a view's size
+  1,642 and 1,642; a count 1,323 and 1,321 (0067: 0.106); a position's value 615 and 614; a filter 2,898 and 2,899.
+- **Tied pairs by place** (train's 3,000 rows): two parts, tied in 267 of 888 (0.301); three parts, 269 at 1-2 and
+  269 at 2-3 of 1,054; four parts, 262, 261 and 262 of 1,058 (0067: 772 at part 1, 457 at part 2, 241 at part 3).
+  Pair rows: three parts 278 and 278 of 1,092; four parts 184, 186 and 186 of 854; two parts never tied (below).
+  Dev: 27 of 90; 25 and 25 of 98; 28, 27 and 28 of 112. Test: 29 of 95; 28 and 27 of 107; 25, 24 and 24 of 98.
+- **Connectives** (train with its pairs): "if" said first 342 and after 340; "unless" first 347 and after 331;
+  "either" 1,342. Dev: if 18 and 22, unless 22 and 11. Test: if 22 and 26, unless 16 and 14. Test_long: if 48 and
+  55, unless 51 and 61.
+- **Where the arms differ:** arm W's form carries a `not` in 4,032 of train's 17,970 checks (one 3,848, two 183,
+  three 1), 230 of dev's 922, 222 of test's 903, 466 of test_long's 1,954. Goal-first wording is in the pairs only
+  (1,727 checks), as in round 2.
+- **Replies that can tell** (dev, test, test_long; the 8 as before, then those found):
+  | set | replies a row | built to fail | numbered parts with N - 1, N and N + 1 | on deciding replies | tied pairs with their four combinations | on deciding replies |
+  |---|---|---|---|---|---|---|
+  | dev | 11.0 (3,300; 907 added) | 1,625 (0.492) | 371 of 449 (0.826) | 284 (0.633) | 126 of 160 (0.788) | 113 (0.706) |
+  | test | 11.0 (3,291; 899 added) | 1,639 (0.498) | 365 of 457 (0.799) | 266 (0.582) | 116 of 157 (0.739) | 105 (0.669) |
+  | test_long | 15.4 (4,621; 2,221 added) | 2,618 (0.567) | 866 of 1,033 (0.838) | 466 (0.451) | 296 of 394 (0.751) | 199 (0.505) |
+  | train, 8 replies | 8.0 | 0.504 | 931 of 9,103 (0.102) | 367 (0.040) | 348 of 2,702 (0.129) | 132 (0.049) |
+
+  A deciding reply is one where the row's verdict turns on that part or pair alone (see 2 below).
+- **One-reversal mutants the replies tell apart from the gold:**
+  | set | part mutants | told by the row's verdict | told by the part run alone | group mutants | told by the row's verdict | told by the changed groups alone |
+  |---|---|---|---|---|---|---|
+  | dev | 2,305 | 2,051 (0.890) | 2,219 (0.963) | 620 | 599 (0.966) | 617 (0.995) |
+  | test | 2,270 | 1,993 (0.878) | 2,155 (0.949) | 605 | 579 (0.957) | 595 (0.983) |
+  | test_long | 5,009 | 4,167 (0.832) | 4,817 (0.962) | 1,662 | 1,461 (0.879) | 1,636 (0.984) |
+  | train, 8 replies | 45,747 | 35,004 (0.765) | 42,709 (0.934) | 10,796 | 7,586 (0.703) | 9,243 (0.856) |
+
+  So on test about 12% of the wrong readings of one part pass every reply of their row, and 4% of the wrong joins:
+  a false pass counted on these rows is a floor, not the whole rate.
+- **Held out:** 1 test candidate had a train row's parts and groups and was dropped; none is left (read back). A
+  held-out row's composition without its values is a train row's for 5 of dev's 90 two-part rows and 2 of test's
+  95, and for no row of three parts or more.
+- **Dropped while building:** too few usable replies on one side 215 (train), 272 (pairs, 209 of them the twin),
+  13, 29 and 31 (dev, test, test_long); 5 words shared with a benchmark 35 (train), 15 (pairs), 1 (dev); a twin
+  with no description or of a kind kept for the test 25.
+- **Time:** 1,105 s (train 492, pairs 281, dev 70, test 79, test_long 184), so 0.16 s a train row, 0.23 s a dev
+  row and 0.61 s a test_long row. 0067's builder, timed the same day on 220 rows while this build ran: 0.17, 0.2
+  and 0.53 s. About the same on train and 1.2 times on the held-out sets, inside the 2.5 times point 6 allows.
+- **What a row carries beyond 0067's fields:** `said` (for each part `how`, `w` arm W's form, `m` arm M's);
+  `how` on each check segment and `join` (`[kind, "prev" | "next"]`) on the check that carries a connective;
+  `join` (the program) is the join of the `m` forms; `replies[].extra` on a reply added; `reach` (`numbers`: part
+  and 0, 1 or 2 for N - 1, N, N + 1; `groups`: group and the four combinations; 2 is a deciding reply); `mutants`
+  (the six counts above). Ids: `d` and six digits (the first is the set), `dp` five digits and `a` or `b` for twins.
+- **Tests:** `tests/validation/test_view_draw.py` (7), `test_view_compose.py` (8), `test_view_tell.py` (5),
+  `test_rows_0073.py` (8: a small build run, read back with the checker, and a spoiled copy caught).
+
+**Where the build differs from the design above** (each decided before any row is trained on):
+1. **640 more replies are searched for the replies that can tell.** The parts are still drawn on a pool of 80 (160
+   for five to eight parts), so the draw is the same in every set; the search alone also sees 640 replies drawn
+   beside it. Measured on 40 dev rows a setting (not the same rows): all three values for 0.56, 0.66, 0.82, 0.85
+   and 0.89 of numbered parts with 0, 160, 320, 640 and 1,280 more.
+2. **A deciding reply is taken first.** A reply at N - 1 that another part fails changes nothing in the row's
+   verdict. So the search first takes a reply on which the row's other groups hold and, for a tied part, its
+   partner leaves the pair's verdict to it; then any reply. `reach` says which was found (2 or 1).
+3. **Mutants:** a tied pair tied to its other neighbour is counted too (the design listed untied, `or` for `if`
+   and back, the `if` turned round). Each mutant is counted two ways: told by the row's verdict (what line 3 can
+   see) and told by what was changed run alone (what lines 5 and 6 can see).
+4. **The placement is taken from the count of rows kept.** Drawn at random, the first build came out at 0.202 tied
+   for two parts (0.3 intended) and 0.243, 0.260, 0.208 for four, because a row with a pair is dropped more often
+   for too few replies on one side. That build was overwritten; only its counts were read. Now the placement furthest behind
+   its share is taken. A minimal pair flips a lone part, so pair rows of two parts are never tied and of four have
+   one pair at most (each place 0.217).
+5. **A kind kept for the test is judged on the folded said form.** 0067's draw looked only at the atom a part
+   equals, so "every word is other than X" (a word absent, said another way) went through: 41 parts in 0067's rows
+   (37 train rows, 4 test_long rows). None here.
+6. **Twins differ in one sentence.** The connective's order is now drawn, so a twin drawing "its wording as the
+   first did" from one stream could drift after the flipped part. The layout and each part's wording draw from
+   their own streams; read back, every pair differs in the flipped part's sentence only.
+7. **The pool** is redrawn every five rows kept, or after ten misses running (0067 redrew it on every miss at a
+   multiple of five).
