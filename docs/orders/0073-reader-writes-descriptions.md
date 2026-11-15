@@ -422,3 +422,70 @@ and test_long are committed before any training. Test and test_long rows were no
    their own streams; read back, every pair differs in the flipped part's sentence only.
 7. **The pool** is redrawn every five rows kept, or after ten misses running (0067 redrew it on every miss at a
    multiple of five).
+
+### Step 4, the design before the build (Cowork, 2026-11-15, branch `cowork/0073`)
+Where the order leaves a choice, this is the one taken. Nothing below is built yet. Counted on the rows of step 3
+(both spellings of all 21,749 checks): a filter has one or two conditions, never none; a position is 1, 2, 3 or the
+last; the largest number is 905 and the longest string 9 characters; arm W writes a `not` on `any`, on a condition
+and on a position's comparison, and nowhere else.
+- **The answer:** a newline, then one line a segment, in the text's order; nothing after the last line.
+  `<kind>[ <join>][ <description>] | <text>`, as "The target" has it.
+- **The description, one line, every slot from a closed set:**
+  - `n <view> <op> <number>`
+  - `count <view> <op> <number> where <condition>[ and <condition>]`
+  - `any | none | all <view> where <condition>[ and <condition>]`
+  - `at <view> <position> <column> <op> <value>[ absent pass]`
+  - a condition is `<column> <op> <value>`; a position is `1`, `2`, ... or `last`; a number is digits; a string is
+    in double quotes, written as JSON writes it; `<op>` is one of the six for a number and `==` or `!=` for a
+    string; a column is one of the view's (`view_spec.FILTERS`).
+  - **Arm W** may write `not ` before the quantifier, before a condition and before a position's column
+    (`not any word where lower == "so"`; `any sentence where not first_word == "so"`; `at sentence 1 not first_word
+    == "so" absent pass`). **Arm M** has no `not`. That is the only difference between the two grammars.
+- **The join tag,** after `check`: `either next`, `if next`, `if prev`, `unless next`, `unless prev`. The tagged
+  check is the condition ("if", "unless") or the first of the two ("either"). The grammar allows a tag on any check
+  line and does not look for its partner: a tag the host cannot resolve makes the part "asked", which is the safe
+  outcome; forbidding it would turn the pair into two plain checks without a word.
+- **The text is copied with no gap.** A line's text starts at the first character after the last line's text that
+  is not white space, runs forward character by character, never crosses a line break of the instruction, and
+  does not end on white space. The answer can end only when the instruction is used up. Two things follow by
+  construction: no sentence can be left out (line 1's silent drops), and the reader cannot stop early (round 2
+  left 189 of 224 long answers unfinished). The reader still chooses where each line ends and what kind it is.
+  This is stricter than "copied in order"; it is the one choice here that goes past the order's words.
+- **Targets carry the text without its outer white space** (a segment such as "If C, " is written "If C,"); spans
+  are compared the same way in the scoring.
+- **Point 7's variant ("numbers and strings only from the line's own text"), made exact.** The description comes
+  before its text, so the rule is held in two moves: a value must be in the instruction between the line's start
+  and the next line break (a number as digits or as a number word, 0 and 1 always; a position 1, an ordinal or a
+  number of the text, `last` always; a string one of its column's own values or quoted in the text; a view named
+  in the text, any view when none is named: round 2's rule 9, `view_words`), and the line's text must then run on
+  until it holds every value its description used. The other variant leaves numbers (up to 4 digits) and strings
+  (up to 40 characters) free. Both are built; dev decides (point 7).
+- **The machine** (characters; plain Python): a state is where the line is (which slot, what was chosen that the
+  next slots depend on: the view, the column's type, how far the text must run) or a place in the instruction.
+  Every slot's choices are written with the delimiter that follows them, so none is the start of another. From
+  every state a line can be finished and the instruction used up, so there is no dead end in characters; in ids
+  it is pinned on the real vocabulary. Allowed ids come from walking a prefix tree of the vocabulary's pieces
+  along the machine's moves, kept per state; inside a free string, the pieces with no quote or backslash are kept
+  by length once for the vocabulary. A piece that prints nothing is never allowed; the end token only in the
+  accepting state.
+- **`parse(answer, instruction, arm)`** is written apart from the machine (a line pattern, then the description
+  read slot by slot against the same closed sets, then the copy rule), so the two can be compared: on the gold
+  targets and their one-slot mutants, the machine accepts if and only if `parse` does. With `strict=False` it
+  finds each text going forward and allows gaps (for answers that did not come through the machine, arm P's
+  split among them).
+- **The host's accounting** (`account`): checks are numbered in line order; each description is folded (arm W)
+  and compiled; a description that does not compile makes its part "asked"; a tag whose neighbour on that side is
+  not a check, or is already in a pair, makes its part "asked"; **a pair with an "asked" member is "asked"
+  whole** (one half of "A unless B" checked alone would fail replies the instruction allows). Every stretch of
+  the instruction that is not in a line is flagged (none can be, through the machine). It returns the lines, the
+  parts and groups it could check, what is asked or flagged and why, and the program (the join of the parts it
+  could check). How a row with an "asked" part counts in lines 3 and 7 is step 6's to state before any read.
+- **Files** (each under 300 lines, in `cubbyllm/speech/`): `view_desc.py` (the notation: write, read),
+  `view_split.py` (`prompt`, `target(row, arm)`, `parse`), `view_own.py` (what a line's text allows, with where
+  each value is), `view_machine.py` (the machine), `view_tokens.py` (the prefix tree, allowed ids, a decoder's
+  step with `end` recorded), `view_account.py`. 0067's `view_reader.py`, `view_grammar.py`, `view_types.py` and
+  `view_words.py` stay as they are: arm P reads with them.
+- **Tests,** the order's and the machine section's: every gold target of both arms accepted and each of its
+  prefixes allowed (all 6,900 rows, characters; ids on a sample); 50 dev machines walked; one refusal each; the
+  two implementations agree; the accounting on a missing sentence, a tag with no partner, a description that
+  does not compile.
