@@ -23,6 +23,7 @@ Wiring: STANDALONE (the reader's SFT sets and its read call it; nothing in the s
 from __future__ import annotations
 
 from cubbyllm.speech import view_desc as D
+from cubbyllm.speech import view_own as O
 
 __wiring__ = "STANDALONE"
 
@@ -73,7 +74,8 @@ def _line(line: str, arm: str) -> dict:
     return {"kind": kind, "join": join.split() if join else None, "form": form, "text": line[i + len(BAR):]}
 
 
-def parse(answer: str, instruction: str, arm: str = "m", strict: bool = True) -> dict:
+def parse(answer: str, instruction: str, arm: str = "m", strict: bool = True, own_text: bool = False) -> dict:
+    """``own_text`` (point 7's variant): a description says only what its line's text says (`view_own.allows`)."""
     if not answer.startswith("\n"):
         return {"error": "the answer does not start on a new line"}
     out, at = [], 0
@@ -91,6 +93,8 @@ def parse(answer: str, instruction: str, arm: str = "m", strict: bool = True) ->
             ok = k >= 0
         if not ok:
             return {"error": f"a text that is not the instruction's next: {text[:80]!r}"}
+        if own_text and got["form"] is not None and not O.allows(got["form"], text):
+            return {"error": f"a description that says what its text does not: {line[:80]!r}"}
         at = k + len(text)
         out.append(dict(got, start=k, end=at))
     if strict and instruction[at:].strip():
