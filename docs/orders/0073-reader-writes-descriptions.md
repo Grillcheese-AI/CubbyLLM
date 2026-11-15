@@ -581,3 +581,58 @@ Nothing is trained: the Colab runs are Nick's.
   read), the rows the read needs on Drive (ids and instructions only), `exp_view_reader.py --score` on
   descriptions with what "Acceptance" lists, the second chance on dev. Step 7 is arm P's read, with the same
   decoder.
+
+### Step 6, the scoring stated before any read (Cowork, 2026-11-15, branch `cowork/0073`)
+No adapter of this order exists and no row has been read. This is how each line of "Acceptance" is counted; it is
+written now so that no count is chosen after seeing answers. Nothing below is built yet.
+- **An answer** comes through the machine, so it is read strictly. One that did not end `finished` (the limit, or an
+  error) is read loosely on its whole lines; what they do not hold is flagged. Such a row is **not whole**.
+- **A row is checked** when its answer is whole and the host's accounting has nothing asked and nothing flagged.
+  Its program is then run on each of its replies; a reply whose views are too long for the VM is not checked.
+  **Every reply of a row that is not checked counts as not checked** (line 7): a program that leaves a part out
+  gives no verdict on the instruction, and the host says so.
+- **Line 1 (accounted):** the characters of the instruction that are in no line and are not flagged. The
+  accounting flags every stretch outside the lines, so this is 0 by construction and is reported as counted; with
+  it, the rows that are not whole and the rows with something flagged.
+- **Line 2 (the split):** a gold check counts when the answer has a check line with its span (outer white space
+  aside). Over all gold checks. Reported with it: every gold segment's span and kind.
+- **Line 3 (the join):** over the replies of checked rows: agreement (the VM's verdict is the generator's) and
+  false passes (the VM passes a reply the generator fails); false passes also over the replies built to fail. A
+  gold check the reader wrote as `none`, `task` or `process` leaves its row checked, so a reply that fails only
+  that check is a false pass here: the reader's silence is counted where it costs.
+- **Line 4 (longer than seen):** line 3's two rates on test_long; and line 5's rate for the gold checks at
+  positions 5 to 8 against positions 1 to 4, both on test_long.
+- **Line 5 (parts):** a gold check is right when the answer has its check line (line 2), the description compiles,
+  and run alone it gives the generator's verdict for that check on every reply of the row. A description equal to
+  the gold folded form is right without a run (the same program); any other is run in the VM. Over all gold
+  checks. **Fixed by one reversal:** a check that is not right, whose line and description are there, and for which
+  one reversal of one slot of its folded form (`view_tell.part_mutants`: a comparison negated or mirrored, `any`
+  and `none` exchanged, `absent` toggled) gives the generator's verdict on every reply (the evaluator); over all
+  gold checks.
+- **Line 6 (groups):** a gold pair is right when the answer ties the same two checks (their spans) with the same
+  connective in the same roles (which one is the condition). Over all gold pairs. Reported with it: pairs right
+  when "unless" and "either" are taken as the same (they compile the same), and the pairs the reader made that
+  are not gold pairs.
+- **Line 7 (coverage):** checked replies over all replies; and, over all gold checks, the ones asked: written as
+  `asked` by the reader, or asked by the host (a description that does not compile, a tag it cannot resolve, the
+  other half of such a pair).
+- **Line 8 (time)** is measured at home on grilly2, one instruction at a time, on dev rows, after an adapter
+  exists; it needs a local read of the new form and is the last piece built.
+- **Line 9 (which arm):** as written. The 95% interval is over rows: 2,000 resamples of the test rows with
+  replacement, the same resamples for both arms, on the difference of the two rates.
+- **Line 10** is counted on line 5's "right" for each gold check by: the direction of its bound (from its gold
+  folded form, at its own comparison: lower, upper, exactly, other than; no number: apart), with the unweighted
+  mean of the four; the `not`s in arm W's gold form (none, one, two or more); the place of its number (size, count,
+  position; a filter's number is counted by whether the check has one); the row's number of parts; the check's
+  position; the language. Groups by connective and by place in the row (line 6). Rows by number of parts and
+  language (line 3). "Both twins of a pair right" cannot be read on held-out rows: the pairs are train rows. It is
+  reported as not measured. The share of mutants the replies could tell is step 3's, per split.
+- **Arm P** is scored with round 2's scorer on the same rows (`exp_view_reader.py --score`, lines 1 to 4 as round
+  2 counted them) and set beside M and W on lines 2, 3 and 4. Its answers that end by error or at the limit are
+  reported as such.
+- **Point 7 (the own-text rule), on dev only:** each arm's dev is read with and without it. Kept for an arm: the
+  variant with fewer false passes over checked replies; on a tie, the higher agreement; on a tie again, the rule
+  on. The choice is committed (`validation/logs/view_split_point7.json`, with dev's counts) before the notebook
+  will read test or test_long.
+- **What Colab gets:** a file of ids, splits and instructions only (`rules/long_rows_0073/read_rows.jsonl`). No
+  target and no reply leaves the PC.
