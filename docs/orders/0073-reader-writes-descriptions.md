@@ -1,5 +1,5 @@
 # 0073 - The instruction reader writes descriptions and the host compiles them (round 3: two spellings of a negation, read side by side)
-status: open (0067's round 2 was closed on 2026-11-14, a negative result on its line 3, so the build can start; builder: Code A, or Cowork on a branch while Code A is signed out, Nick 2026-11-14: "we will continue here then"; steps 1 to 5 built on branch `cowork/0073` by 2026-11-15: the rows exist and the hashes of test and test_long are committed, the grammar is checked on every row, the two SFT sets are on Drive and the notebooks are written; nothing is trained (the Colab runs are Nick's, and the branch must be on GitHub first); of step 6 the decoder is written, its scoring and step 7 are open)
+status: open (0067's round 2 was closed on 2026-11-14, a negative result on its line 3, so the build can start; builder: Code A, or Cowork on a branch while Code A is signed out, Nick 2026-11-14: "we will continue here then"; steps 1 to 5 built on branch `cowork/0073` by 2026-11-15: the rows exist and the hashes of test and test_long are committed, the grammar is checked on every row, the two SFT sets are on Drive and the notebooks are written; nothing is trained (the Colab runs are Nick's; the branch is on GitHub since 2026-11-16, on Nick's yes); of step 6 the decoder and the scorer are written, the read notebook, line 9's comparison and step 7 are open)
 written: 2026-11-14 by Cowork, on Nick's "yes" to writing round 3 as one order on the panel's synthesis - approved: 2026-11-14 by Nick ("I approve 0073", with the arms as defined here, narrower than in the synthesis) - hypothesis: none (0067's second reader)
 
 ## Why
@@ -636,3 +636,28 @@ written now so that no count is chosen after seeing answers. Nothing below is bu
   will read test or test_long.
 - **What Colab gets:** a file of ids, splits and instructions only (`rules/long_rows_0073/read_rows.jsonl`). No
   target and no reply leaves the PC.
+
+### Step 6, the scorer built (Cowork, 2026-11-16, branch `cowork/0073`)
+No adapter exists yet and no answer has been read. The scorer is checked on a small build: its gold answers, and
+answers changed by hand.
+- `validation/view_split_rowscore.py` scores one row as stated above (`score`).
+  `validation/exp_view_split_score.py` adds the rows up into each line's counts (`tally`, `rates`); every rate is
+  given with its two counts. `--keep` writes one line a row with its id and its counts (no text), which line 9's
+  resamples read.
+- **One thing the statement above left open, settled now, before any answer exists.** A line the reader writes
+  `asked` is a sentence the host asks about, and the gold rows have about one each (dev: 310 in 300 rows). So an
+  `asked` line cannot make a row "not checked". Where the gold has a check there, the row stays checked, as for
+  `none`, `task` and `process`, and a reply that fails only that check is a false pass at line 3. Those false
+  passes are also counted apart ("on rows where the reader wrote a gold check as asked"), and the check counts at
+  line 7 as asked by the reader.
+- A row that was not read counts in every denominator: all of it is flagged and none of its replies is checked.
+- Tests (`tests/validation/test_view_split_score.py`, 7): the gold answer of every row scores whole, checked and
+  right on every count, in both arms (arm W under the own-text rule); a reversed comparison is not right and is
+  fixed by one reversal (6 cases; the row's verdict changes on some reply); a gold check written `none` or `asked`
+  leaves the row checked, and its false passes are exactly the replies the rest of the row passes and the
+  generator fails; an answer cut at the limit is not whole, its rest is flagged and no reply is checked; "unless"
+  written as "either" is right only where the two are taken as one, a dropped tag and an "if" turned round are
+  not right; a description that does not compile is asked by the host and its row is not checked; the script
+  scores a file of answers and keeps the rows' counts.
+- Still open in step 6: the rows file for Colab (ids and instructions only), the read notebook, the point 7
+  file, line 9's comparison, line 8's timing at home.
