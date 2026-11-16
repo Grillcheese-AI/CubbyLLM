@@ -661,3 +661,19 @@ answers changed by hand.
   scores a file of answers and keeps the rows' counts.
 - Still open in step 6: the rows file for Colab (ids and instructions only), the read notebook, the point 7
   file, line 9's comparison, line 8's timing at home.
+
+### Step 6, where each line is judged, and point 7's rule in numbers (Cowork, 2026-11-16, before any answer exists)
+No adapter of this order is trained yet. Two things "Acceptance" leaves unsaid are fixed here, so that neither is
+chosen after seeing counts.
+- **Which set a line is judged on.** Lines 2, 3, 5 and 6 name no set. They are judged on **test** (2 to 4 parts,
+  the lengths the reader was trained on), and their kills are test's, as round 2's line 3 was (its kill was hit on
+  test). The same counts on test_long are reported beside them and decide nothing there. **Line 4 judges
+  test_long:** its agreement against test's, its own false passes with their own kill, and parts right at
+  positions 5 to 8 against 1 to 4. Line 7 names both sets. Line 1's kill holds on both: a silent drop anywhere.
+- **Point 7's rule in numbers** (`validation/exp_view_split_point7.py`, 4 tests). The two variants of an arm do
+  not check the same number of replies, so "fewer false passes over checked replies" compares false passes /
+  checked replies as exact fractions, and "the higher agreement" compares agree / checked replies the same way. A
+  variant that checked no reply loses to one that checked some. A report is taken only if it is that arm's dev
+  alone, read whole, in that variant, and all four were scored on the same rows. The file it writes
+  (`validation/logs/view_split_point7.json`) holds each arm's choice with dev's counts; the test notebook reads
+  the choice from it.
