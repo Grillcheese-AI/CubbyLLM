@@ -677,3 +677,19 @@ chosen after seeing counts.
   alone, read whole, in that variant, and all four were scored on the same rows. The file it writes
   (`validation/logs/view_split_point7.json`) holds each arm's choice with dev's counts; the test notebook reads
   the choice from it.
+
+### Step 6, the lines and line 9 as a script (Cowork, 2026-11-16, before any answer exists)
+`validation/exp_view_split_compare.py` (6 tests) takes each arm's report on test and test_long, in the variant
+point 7 kept, and judges every line from its two counts as an exact fraction: a rate at its bound passes, and a
+kill is a rate past its kill bound. What it fixes beyond the words above, written now:
+- **Line 7's "parts asked at most 10%"** is judged on each of the two sets, like its replies.
+- **A rate with nothing to count over** (no reply checked, say) does not pass and is not a kill: a kill is a rate
+  past its bound, as written.
+- **Line 4's agreement** is counted only if both of line 3's rates pass on test, and is test_long's rate against
+  0.90 of test's.
+- **Line 9's interval:** the rows are test's, the same rows in the same order for both arms; 2,000 resamples drawn
+  with one fixed seed (73); the difference is arm M's rate less arm W's; the interval runs from the 51st to the
+  1,950th of the 2,000 differences in order; "within" is an interval that holds 0. A resample in which an arm has
+  no reply built to fail among its checked ones has no rate and is left out (their number is reported, and the
+  interval keeps the same shares of what is left). The same is done for parts right when false passes are within.
+- **Arm P** is set beside the two arms on lines 2 to 4 with round 2's own counts; it is not in line 9.
