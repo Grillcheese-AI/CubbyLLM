@@ -12,7 +12,8 @@ read):
 - ``parts``: one entry a gold check: its line found (``line``), what the reader wrote at its span (``as``), asked by
   the reader or by the host, ``right`` (its description compiled and, run alone, the generator's verdict on every
   reply; a description equal to the gold folded form is right without a run: ``same``), ``fixed`` (not right, and
-  one reversal of one slot gives the generator's verdicts), and what line 10 counts it by;
+  one reversal of one slot gives the generator's verdicts; ``fix`` names that reversal), ``differs`` (the slots in
+  which the description is not the gold's), and what line 10 counts it by;
 - ``pairs``: one entry a gold pair: ``right`` (the same two checks, the same connective, the same roles),
   ``right_or`` ("unless" and "either" taken as the same); ``pairs_not_gold``: pairs the reader made that are not;
 - ``replies``: one entry a reply: ``held`` (the generator's verdict) and ``verdict`` (the VM's on the reader's
@@ -81,17 +82,42 @@ def attributes(row: dict, i: int) -> dict:
             "parts": row["n_parts"], "lang": row["lang"]}
 
 
+SITE = {"n": "a view's size", "count": "a count compared", "at": "a position's value"}
+
+
+def change(m: dict, x: dict) -> str:
+    """The one slot in which `x`, a one-reversal mutant of `m`, is not `m`: its name, before -> after."""
+    if m["q"] != x["q"]:
+        return f"the quantifier: {m['q']} -> {x['q']}"
+    if m.get("op") != x.get("op"):
+        return f"{SITE[m['q']]}: {m['op']} -> {x['op']}"
+    if m.get("absent") != x.get("absent"):
+        return f"absent: {m.get('absent') or 'fail'} -> {x.get('absent') or 'fail'}"
+    return next(f"a filter: {a['op']} -> {b['op']}" for a, b in zip(m["where"], x["where"]) if a != b)
+
+
+def differs(m: dict, gold: dict) -> list[str]:
+    """The slots in which a description (folded) is not the gold's."""
+    out = [k for k in ("q", "view", "op", "v", "pos", "col", "val", "absent") if m.get(k) != gold.get(k)]
+    a, b = m.get("where", []), gold.get("where", [])
+    if len(a) != len(b):
+        return out + ["the number of conditions"]
+    return out + sorted({f"a condition's {k}" for x, y in zip(a, b) for k in ("col", "op", "v") if x.get(k) != y.get(k)})
+
+
 def _part(row: dict, i: int, line: dict | None, check: dict | None, views: list, vm) -> dict:
     gold = row["said"][i]["m"]
     p = dict(attributes(row, i), part=i, line=bool(line and line["kind"] == "check"), **{"as": line["kind"] if line else None},
-             asked_by_reader=bool(line and line["kind"] == "asked"), asked_by_host=False, right=False, same=False, fixed=False)
+             asked_by_reader=bool(line and line["kind"] == "asked"), asked_by_host=False, right=False, same=False, fixed=False,
+             fix=None, differs=None)
     if p["line"]:
         p["asked_by_host"], m = check["asked"] is not None, check["form"]
         if m is not None:
             want = [VS.evaluate(gold, v) for v in views]
-            p["same"] = m == gold
+            p["same"], p["differs"] = m == gold, differs(m, gold)
             p["right"] = p["same"] or [run(vm, lambda x=x: VC.program(m, x["text"])) for x in row["replies"]] == want
-            p["fixed"] = not p["right"] and any([VS.evaluate(x, v) for v in views] == want for x in T.part_mutants(m))
+            fix = None if p["right"] else next((x for x in T.part_mutants(m) if [VS.evaluate(x, v) for v in views] == want), None)
+            p["fixed"], p["fix"] = fix is not None, change(m, fix) if fix else None
     return p
 
 
@@ -146,4 +172,4 @@ def score(row: dict, rec: dict | None, arm: str, own_text: bool, vm) -> dict:
                                   if (k := by_span.get(V.span(text, s["start"], s["end"]))) is not None and lines[k]["kind"] == s["kind"])}
 
 
-__all__ = ["attributes", "lines_of", "run", "score"]
+__all__ = ["attributes", "change", "differs", "lines_of", "run", "score"]

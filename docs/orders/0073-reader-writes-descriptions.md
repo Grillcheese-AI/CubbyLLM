@@ -708,3 +708,18 @@ space off, and an exact comparison would count those parts against arm P for a c
 - Arm P is read on dev as well (the dev notebook), where answers may be looked at; step 7's counted read is test
   and test_long, once.
 - Test: `tests/validation/test_view_reader_spans.py` (2).
+
+### Step 6, the second chance on descriptions (Cowork, 2026-11-16, before any answer exists)
+`validation/exp_view_split_second_chance.py` (4 tests), on dev answers only: it refuses an answer of any other set.
+Round 2's script reversed a comparison inside the reader's program; it stays as it was. Here the reversal is of one
+slot of a description, tried with the evaluator (the same reversals as line 5's "fixed by one reversal").
+- For each gold check of a dev row whose description is not right: **fixed by one reversal** goes into the
+  pattern table under the cue words of the check's own text (whole words: "at most", "au moins", "unless"...), how
+  it was said (imperative, as a condition, inverted), the `not`s of arm W's gold form and the language, with the
+  reversal named by its slot ("a count compared: >= -> <", "the quantifier: any -> none", "absent: fail ->
+  pass"); **not fixed** is counted under the slots in which the description is not the gold's (the view, the
+  number, a condition's column...).
+- Also counted: descriptions that are right without being the gold's form, by the slots that differ; checks with
+  no check line, by what was written there; descriptions that do not compile.
+- No corrected rows are written: dev rows do not go into a training set.
+- `view_split_rowscore.py` now names the reversal (`fix`) and the slots that differ (`differs`) for each check.
