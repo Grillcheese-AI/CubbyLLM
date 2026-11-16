@@ -739,3 +739,15 @@ over all the rows; it scores nothing and keeps no answer. The pass is the order'
   that is about 7.3 s for the median answer, under the 8 s bound and near it. The counted timing is made with this
   order's adapters once they are trained.
 - 5 to 8 parts are not timed: dev has none, and test_long is read once, on Colab.
+
+### Line 8, arm M at home (Cowork, 2026-11-16)
+Arm M is trained (Colab, 938 steps in 2.9 min; held answer loss 2.6877 at step 0, 0.0026 at the end). Timed at home
+with `validation/exp_view_split_time.py`: a seeded sample of 60 dev rows (seed 0: 21 of 2 parts, 14 of 3, 25 of 4),
+one instruction at a time on grilly2, held to the machine, after one untimed read. Dev rows only; nothing scored.
+- **Free:** median 3.86 s and 95th percentile 5.25 s over 2 to 4 parts; by parts, 2.96 / 4.02 s (2), 3.78 / 5.01 s
+  (3), 4.54 / 5.93 s (4). Median 110 ids an answer. All 60 ended `finished` and read back whole. The grammar took
+  5.52% of the time.
+- **Own-text rule:** median 3.75 s, 95th percentile 5.20 s; by parts 2.94 / 3.91, 3.69 / 4.92, 4.35 / 5.71 s.
+  All 60 `finished` and whole; the grammar took 5.66%.
+- Both pass line 8's bound (a median of at most 8 s for 2 to 4 parts), against round 2's 25 s. The counted line is
+  the arm and variant line 9 keeps. Logs: `validation/logs/view_split_time_m_free.json`, `..._m_own.json`.
