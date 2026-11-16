@@ -74,6 +74,26 @@ def covered(instruction: str, segs: list) -> int:
     return sum(1 for k, c in enumerate(instruction) if not mask[k] and not c.isspace())
 
 
+def spans_right(row: dict, segs: list, trim: bool = False) -> tuple[int, int]:
+    """(the row's checks read with their span, kind and number; the read's segments with a gold segment's span and
+    kind). ``trim``: spans compared without their outer white space (order 0073's rows put the space between two
+    clauses at the start of the second, 0067's at the end of the first: a reader trained on one copies the other's
+    text a space off)."""
+    text = row["instruction"]
+
+    def sp(s) -> tuple[int, int]:
+        a, b = s["start"], s["end"]
+        while trim and a < b and text[a].isspace():
+            a += 1
+        while trim and b > a and text[b - 1].isspace():
+            b -= 1
+        return a, b
+    gold = [(s["kind"], s.get("part"), *sp(s)) for s in row["segments"] if s["kind"] == "check"]
+    mine = {(s["kind"], s["part"], *sp(s)) for s in segs}
+    kinds = sum(1 for s in segs for g in row["segments"] if sp(s) == sp(g) and s["kind"] == g["kind"])
+    return sum(1 for g in gold if g in mine), kinds
+
+
 def summarize(t: Counter) -> dict:
     n = max(1, t["checked"])
     return {"counts": dict(t), "span_and_kind": round(t["parts with span and kind"] / max(1, t["parts"]), 4),
@@ -123,6 +143,8 @@ def main() -> None:
     ap.add_argument("--keep", default=None)
     ap.add_argument("--score", default=None, help="answers decoded elsewhere (exp_view_reader_torch.py on Colab): "
                                                   "scored here in the VM, nothing decoded")
+    ap.add_argument("--trim", action="store_true", help="spans compared without their outer white space (order 0073's "
+                                                        "rows; off, round 2's count as it was)")
     a = ap.parse_args()
     if a.merge:
         return merge(a.merge, a.out)
@@ -147,7 +169,7 @@ def main() -> None:
         return pieces[t]
     report, kept = {"order": "0067", "what": "the second reader read on held-out instructions", "adapter": Path(a.adapter).name if a.adapter else None,
                     "answers": Path(a.score).name if a.score else None,
-                    "vm": vm_identity.identity(), "chunk": a.chunk, "grammar": a.grammar, "splits": {}}, []
+                    "vm": vm_identity.identity(), "chunk": a.chunk, "grammar": a.grammar, "trim": a.trim, "splits": {}}, []
     for split in a.splits.split(","):
         pool = [r for r in rows if r["split"] == split]
         sample = random.Random(0).sample(pool, min(a.n, len(pool)))
@@ -170,18 +192,16 @@ def main() -> None:
                 t["seconds"] += time.time() - t0
             got = VR.parse(answer, r["instruction"])
             t["rows"] += 1
-            gold = [(s["kind"], s.get("part"), s["start"], s["end"]) for s in r["segments"] if s["kind"] == "check"]
-            t["parts"] += len(gold)
+            t["parts"] += sum(1 for s in r["segments"] if s["kind"] == "check")
             if "error" in got:
                 t["answers not parsed (all asked)"] += 1
                 kept.append({"id": r["id"], "split": split, "answer": answer, "error": got["error"]})
                 continue
-            mine = {(s["kind"], s["part"], s["start"], s["end"]) for s in got["segments"]}
-            t["parts with span and kind"] += sum(1 for g in gold if g in mine)
+            parts_right, kinds_right = spans_right(r, got["segments"], a.trim)
+            t["parts with span and kind"] += parts_right
             t["characters left uncovered (flagged asked)"] += covered(r["instruction"], got["segments"])
             t["segments"] += len(got["segments"])
-            t["segment kinds right"] += sum(1 for s in got["segments"] for g in r["segments"]
-                                            if (s["start"], s["end"]) == (g["start"], g["end"]) and s["kind"] == g["kind"])
+            t["segment kinds right"] += kinds_right
             for rep in r["replies"]:
                 v, why = verdict(vm, got["program"], rep["text"])
                 t["replies"] += 1

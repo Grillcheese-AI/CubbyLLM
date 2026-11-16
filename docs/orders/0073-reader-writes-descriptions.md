@@ -693,3 +693,18 @@ kill is a rate past its kill bound. What it fixes beyond the words above, writte
   no reply built to fail among its checked ones has no rate and is left out (their number is reported, and the
   interval keeps the same shares of what is left). The same is done for parts right when false passes are within.
 - **Arm P** is set beside the two arms on lines 2 to 4 with round 2's own counts; it is not in line 9.
+
+### Step 7, how arm P's spans are compared on these rows (Cowork, 2026-11-16, before any answer exists)
+Round 2's scorer compares a part's span exactly. The two row sets put the space between two clauses on different
+sides. In 0067's train and dev rows no segment starts on white space (0 of 20,642) and 396 end on it; in 0073's,
+244 of 20,667 start on it and 457 end on it. A reader trained on 0067's rows will copy some clauses of 0073's a
+space off, and an exact comparison would count those parts against arm P for a convention, not for a reading.
+- So on 0073's rows arm P's spans are compared without their outer white space
+  (`exp_view_reader.py --score --trim`), as arm M's and arm W's are. With the flag off the scorer counts as round 2
+  did. The part's kind and number must still be right.
+- Round 2's own form reads back all 3,300 train and dev rows of 0073 to their own segments
+  (`view_reader.target`, then `parse`), so its scorer can score these rows.
+- Lines 3 and 4 do not depend on spans.
+- Arm P is read on dev as well (the dev notebook), where answers may be looked at; step 7's counted read is test
+  and test_long, once.
+- Test: `tests/validation/test_view_reader_spans.py` (2).
