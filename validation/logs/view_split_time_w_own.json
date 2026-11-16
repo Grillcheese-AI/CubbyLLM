@@ -1,0 +1,60 @@
+{
+ "order": "0073",
+ "what": "line 8: seconds per instruction at home, one at a time on grilly2, dev rows",
+ "arm": "w",
+ "own_text": true,
+ "adapter": "cubby450m_view_split_w",
+ "export": "base450m_cont",
+ "rows": 60,
+ "seed": 0,
+ "first": "one untimed read before the timed ones",
+ "by number of parts": {
+  "2": {
+   "rows": 21,
+   "median seconds": 2.93,
+   "95th percentile seconds": 3.9,
+   "median ids": 85,
+   "ended": {
+    "finished": 21
+   },
+   "answers whole": 21
+  },
+  "3": {
+   "rows": 14,
+   "median seconds": 3.71,
+   "95th percentile seconds": 4.92,
+   "median ids": 108,
+   "ended": {
+    "finished": 14
+   },
+   "answers whole": 14
+  },
+  "4": {
+   "rows": 25,
+   "median seconds": 4.39,
+   "95th percentile seconds": 5.85,
+   "median ids": 130,
+   "ended": {
+    "finished": 25
+   },
+   "answers whole": 25
+  }
+ },
+ "2 to 4 parts": {
+  "rows": 60,
+  "median seconds": 3.82,
+  "95th percentile seconds": 5.23,
+  "median ids": 112,
+  "ended": {
+   "finished": 60
+  },
+  "answers whole": 60
+ },
+ "share of the time in the grammar": 0.0592,
+ "line 8": {
+  "needs": "a median of at most 8 s for 2 to 4 parts",
+  "median seconds": 3.82,
+  "passes": true,
+  "served": true
+ }
+}

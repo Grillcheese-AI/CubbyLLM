@@ -751,3 +751,14 @@ one instruction at a time on grilly2, held to the machine, after one untimed rea
   All 60 `finished` and whole; the grammar took 5.66%.
 - Both pass line 8's bound (a median of at most 8 s for 2 to 4 parts), against round 2's 25 s. The counted line is
   the arm and variant line 9 keeps. Logs: `validation/logs/view_split_time_m_free.json`, `..._m_own.json`.
+
+### Line 8, arm W at home (Cowork, 2026-11-16)
+Arm W is trained (Colab, 938 steps in 5.4 min; held answer loss 0.0025 at the end). Timed as arm M was: the same
+60 dev rows (seed 0), one instruction at a time on grilly2, held to the machine, after one untimed read.
+- **Free:** median 3.94 s and 95th percentile 5.28 s over 2 to 4 parts; by parts, 2.98 / 4.03 s (2), 3.87 / 5.05 s
+  (3), 4.52 / 6.03 s (4). Median 112 ids an answer. All 60 ended `finished` and read back whole. The grammar took
+  5.76% of the time.
+- **Own-text rule:** median 3.82 s, 95th percentile 5.23 s; by parts 2.93 / 3.90, 3.71 / 4.92, 4.39 / 5.85 s.
+  All 60 `finished` and whole; the grammar took 5.92%.
+- Both pass line 8's bound. Arm W's answers are 2 ids longer at the median than arm M's (its `not`s). Logs:
+  `validation/logs/view_split_time_w_free.json`, `..._w_own.json`.
