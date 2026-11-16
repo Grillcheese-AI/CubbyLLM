@@ -1,5 +1,5 @@
 # 0073 - The instruction reader writes descriptions and the host compiles them (round 3: two spellings of a negation, read side by side)
-status: open (0067's round 2 was closed on 2026-11-14, a negative result on its line 3, so the build can start; builder: Code A, or Cowork on a branch while Code A is signed out, Nick 2026-11-14: "we will continue here then"; steps 1 to 5 built on branch `cowork/0073` by 2026-11-15: the rows exist and the hashes of test and test_long are committed, the grammar is checked on every row, the two SFT sets are on Drive and the notebooks are written; nothing is trained (the Colab runs are Nick's; the branch is on GitHub since 2026-11-16, on Nick's yes); of step 6 the decoder and the scorer are written, the read notebook, line 9's comparison and step 7 are open)
+status: open (0067's round 2 was closed on 2026-11-14, a negative result on its line 3, so the build can start; builder: Code A, or Cowork on a branch while Code A is signed out, Nick 2026-11-14: "we will continue here then"; steps 1 to 5 built on branch `cowork/0073` by 2026-11-15: the rows exist and the hashes of test and test_long are committed, the grammar is checked on every row, the two SFT sets are on Drive and the notebooks are written; nothing is trained (the Colab runs are Nick's; the branch is on GitHub since 2026-11-16, on Nick's yes); steps 6 and 7 are built as far as they go without an adapter: the decoder, the scorer, the read's rows file and its two notebooks, point 7's and line 9's scripts, the second chance, arm P's count, line 8's timing script; what is left needs the adapters: Nick's two training runs, then dev's read, point 7, the counted read of test and test_long, and the timing at home)
 written: 2026-11-14 by Cowork, on Nick's "yes" to writing round 3 as one order on the panel's synthesis - approved: 2026-11-14 by Nick ("I approve 0073", with the arms as defined here, narrower than in the synthesis) - hypothesis: none (0067's second reader)
 
 ## Why
@@ -723,3 +723,19 @@ slot of a description, tried with the evaluator (the same reversals as line 5's 
   no check line, by what was written there; descriptions that do not compile.
 - No corrected rows are written: dev rows do not go into a training set.
 - `view_split_rowscore.py` now names the reversal (`fix`) and the slots that differ (`differs`) for each check.
+
+### Line 8, the timing at home as a script, and a first look at the cost (Cowork, 2026-11-16)
+`validation/exp_view_split_time.py` (4 tests) reads dev rows at home as the host would: one instruction at a time
+on grilly2, the answer held to the machine of its instruction through grilly2's own hook
+(`prefix_allowed_tokens_fn`: the ids the machine allows next), greedy. A read's time is all of it (the prompt
+encoded, the machine built, every step). One untimed read comes first. It takes a seeded sample of dev (60 rows by
+default: dev's own mix of 2 to 4 parts) and reports the median and the 95th percentile by number of parts and
+over all the rows; it scores nothing and keeps no answer. The pass is the order's: a median of at most 8 s.
+- **Not counted, a smoke run only:** no adapter of this order exists, so the script was run with round 2's
+  adapter on 8 dev rows to see that the hook holds on the real stack. Every answer came through the machine (7
+  ended `finished`, 1 at the 500-id limit set for the run). 1,800 ids took about 61 s, 0.034 s an id, with little
+  cost that does not grow with the ids; the grammar was 6.45% of the time.
+- **What it says about line 8:** the two SFT sets' answers have a median of 216 and 217 tokens. At 0.034 s an id
+  that is about 7.3 s for the median answer, under the 8 s bound and near it. The counted timing is made with this
+  order's adapters once they are trained.
+- 5 to 8 parts are not timed: dev has none, and test_long is read once, on Colab.
