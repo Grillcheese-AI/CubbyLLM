@@ -1,5 +1,5 @@
 # 0074 - The description reader learns long instructions (round 4: trained on 2 to 8 parts, read on fresh rows)
-status: open (approved by Nick on 2026-11-16: "approve"; builder: Code A, or Cowork on branch `cowork/0074` from `cowork/0073` while Code A is signed out)
+status: in progress (approved by Nick on 2026-11-16: "approve"; built by Cowork on branch `cowork/0074` from `cowork/0073` while Code A is signed out; steps 1 and 2 built on 2026-11-16: the rows exist, the hashes of test, test_long and test_longer are committed, the SFT set and the notebooks are written; nothing is trained: arm L's run on Colab is Nick's, after the branch is pushed on his yes)
 written: 2026-11-16 by Cowork, on Nick's "yes" to the next step 0073's line 4 points to · approved: 2026-11-16 by Nick ("approve") · hypothesis: none (0073's line 4)
 
 ## Why
@@ -116,11 +116,55 @@ beside it.
   say; 0067's lines 5 and 6.
 
 ## Report
-<!-- Claude Code (or Cowork on a branch) fills this in, then sets status: review -->
-- **Commits:**
-- **Files:**
-- **Tests:**
-- **Measured:**
-- **Not verified here:**
-- **Found on the way:**
-- **Questions:**
+
+### Steps 1 and 2, built: the rows and the SFT set (Cowork, 2026-11-16, branch `cowork/0074`)
+Built off-repo with `validation/builders/build_rows_0074.py` (seed 74): `rows.jsonl` (train 5,000, dev 300, test
+300, test_long 300, test_longer 300) and `pair_rows.jsonl` (1,500 pairs, 3,000 train rows). Counts and SHA-256 are in
+`validation/logs/long_rows_0074_2026-11-16_manifest.json`. The set was read back from its files and checked in
+`validation/logs/long_rows_0074_2026-11-16_check.json`. No adapter of this order exists, so the hashes of test,
+test_long and test_longer are committed before any training. The held-out rows were not opened by eye: only counts.
+- **Run before kept:** 81,575 VM runs, 0 disagreements with the evaluator.
+- **Read back** (`validation/exp_rows_0074_check.py`, the evaluator only): 9,200 rows, 38,216 checks, 81,575
+  replies, 1,500 pairs. Each of its 19 counts that must be 0 is 0, among them: an instruction of 0067's or 0073's
+  rows (13,800 looked up), a held-out row with a train row's folded parts and groups, a train or dev instruction
+  sharing 5 words with a benchmark, a row whose number of parts is not its set's.
+- **Parts:** train 2,054, 2,031 and 1,915 rows of 2, 3 and 4 parts (with the pairs), and 500 of each of 5 to 8;
+  dev 51, 49, 50, 47, 36, 34 and 33 of 2 to 8; test 97, 104 and 99 of 2 to 4; test_long 87, 73, 83 and 57 of 5 to
+  8; test_longer 69, 85, 82 and 64 of 9 to 12. **Rows of 9 to 12 parts could be drawn, joined and run:** test_longer
+  is built.
+- **Bounds** (lower bounds' share of the bounds said with a number other than 0, band 0.45 to 0.55): train with its
+  pairs 0.5; dev 0.5019 (0.5013 for its half of 5 to 8); test 0.5016; test_long 0.5003; test_longer 0.4995.
+- **Held out:** a held-out row's composition without its values is a train row's for 3 of dev's 51 two-part rows and
+  4 of test's 97, and for no row of three parts or more.
+- **Replies that can tell** (the 8 as before, then those found; train rows keep 8):
+  | set | replies a row | built to fail | numbered parts with N - 1, N and N + 1 | tied pairs with their four combinations | part mutants told by the row's verdict | group mutants told by the row's verdict |
+  |---|---|---|---|---|---|---|
+  | dev | 13.26 (3,979; 1,583 added) | 2,100 (0.5278) | 636 of 764 (0.8325) | 199 of 276 (0.721) | 2,996 of 3,569 (0.8395) | 1,016 of 1,131 (0.8983) |
+  | test | 10.96 (3,287; 895 added) | 1,639 (0.4986) | 371 of 431 (0.8608) | 117 of 156 (0.75) | 1,995 of 2,293 (0.87) | 570 of 601 (0.9484) |
+  | test_long | 15.16 (4,548; 2,148 added) | 2,522 (0.5545) | 803 of 994 (0.8078) | 290 of 364 (0.7967) | 4,118 of 4,877 (0.8444) | 1,380 of 1,567 (0.8807) |
+  | test_longer | 19.52 (5,855; 3,455 added) | 3,606 (0.6159) | 1,335 of 1,648 (0.8101) | 505 of 680 (0.7426) | 6,123 of 7,761 (0.7889) | 2,377 of 2,952 (0.8052) |
+
+  On test_longer about 21% of the wrong readings of one part pass every reply of their row: a false pass counted
+  there is a floor, more so than on the shorter sets.
+- **Dropped while building:** too few usable replies on one side 207 (train), 259 (train_long), 280 (pairs, 225 of
+  them the twin), 23 (dev), 25, 33 and 91 (test, test_long, test_longer); 5 words shared with a benchmark 35, 45, 13
+  and 9 (train, train_long, pairs, dev); a twin with no description or of a kind kept for the test 30.
+- **Time:** 2,530 s (train 496, train_long 975, pairs 296, dev 126, test 78, test_long 185, test_longer 374), so 0.49
+  s a train row of 5 to 8 parts and 1.25 s a row of 9 to 12.
+- **The SFT set** (`validation/sft/build_view_split_sft.py --arms m --name view_long_sft_l.jsonl --order 0074`; on
+  Drive under `rules/`; manifest `validation/logs/view_long_sft_l.manifest.json`): 8,300 records, 8,000 train (long_2
+  1,011, long_3 1,072, long_4 1,067, long_5 547, long_6 536, long_7 534, long_8 533; pair_2 1,094, pair_3 1,008,
+  pair_4 898) and 300 held (dev). Every answer reads back strictly, also with the own-text rule (8,300 of 8,300).
+  Tokens a record as the trainer counts them: 236 at the median, 529 at most; none is over 1,280. Key tokens 279,256 of
+  1,101,392 answer tokens (0.2535; 0073's arm M: 0.236). No record shares 5 words with IFEval or IFBench.
+- **The read's file** (`validation/builders/read_rows_0073.py --splits dev,test,test_long,test_longer --order 0074`):
+  `rules/long_rows_0074/read_rows.jsonl`, 1,200 rows, ids, splits and instructions only; its manifest is
+  `validation/logs/long_rows_0074_read_rows.manifest.json`.
+- **The notebooks** (`notebooks/_build_view_long.py`): `view_long_l.ipynb` refuses to train unless its set is
+  order 0074's in arm M's target, 8,000 train and 300 held, built from the rows whose SHA-256 is committed;
+  `view_long_read_dev.ipynb` reads arm L and arm K on dev; `view_long_read_test.ipynb` refuses to run until dev's
+  two reports are committed. They clone `cowork/0074`.
+- **Tests:** `tests/validation/test_rows_0074.py` (4: a small build with rows of 9 to 12 parts, run in the VM, read
+  back with the checker, and a spoiled copy caught), `test_view_long_compare.py` (4). 0073's tests pass unchanged.
+- **Left:** the push of `cowork/0074` (Nick's yes), arm L's training (Nick, Colab), then the dev read, the timing at
+  home, the counted read and line 9.
