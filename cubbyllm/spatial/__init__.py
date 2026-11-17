@@ -8,3 +8,5 @@ from .scene import DIRECTIONS, Scene
 from .ssp import SSP
 
 __all__ = ["SSP", "Scene", "DIRECTIONS", "curve", "order", "route"]
+
+__wiring__ = "WIRED"   # imported on the way to scene_ask, which is wired

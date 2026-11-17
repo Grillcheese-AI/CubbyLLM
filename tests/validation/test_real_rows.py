@@ -42,6 +42,8 @@ def test_ifbench_joins_the_overlap_check_only_when_asked():
     assert BO.WITH_IFBENCH is False                      # rounds 1-5 rebuild to their recorded hashes
     if not (Path(BO.local_paths.value("CUBBY_DATASETS") or ".") / "ifbench" / "ifbench_test.parquet").exists():
         return
+    import pytest
+    pytest.importorskip("pyarrow")                     # the parquet reader
     assert "IFBench" not in BO.benchmark_grams()
     assert "IFBench" in BO.benchmark_grams(ifbench=True)
 

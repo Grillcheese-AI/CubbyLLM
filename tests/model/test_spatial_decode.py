@@ -102,7 +102,7 @@ def test_the_export_writes_the_link_beside_the_trunk_and_refuses_what_is_not_por
     for bad in ({"key": "text"}, {"copy_refuse": {"theta": 1}}, {"query": "pointer"}, {"copy": "table"}):
         with pytest.raises(SystemExit):
             spatial_export({"spatial": {"copy": "ring", **bad}}, m)
-    from safetensors.numpy import save_file
+    save_file = pytest.importorskip("safetensors.numpy").save_file
     import json
     json.dump(cfg, open(tmp_path / "spatial.json", "w"))
     save_file({k: v.numpy() for k, v in t.items()}, str(tmp_path / "spatial.safetensors"))

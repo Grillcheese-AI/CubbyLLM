@@ -66,6 +66,8 @@ PROGRAM_HEAD = """program {name} implements ISolver {{
     public function solve(input: Input): Output {{
 """
 
+__wiring__ = "STANDALONE"   # as the docstring says: the re-cut feeds train_emitter_torch.py
+
 
 # ---- the program's blocks -----------------------------------------------------------------------------------
 @dataclass

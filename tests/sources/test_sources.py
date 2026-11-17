@@ -20,6 +20,13 @@ for p in (str(ROOT), str(ROOT / "standin")):
 from sources import WikidataSource  # noqa: E402
 
 
+import pytest  # noqa: E402
+from cubbyllm.sources.wikidata_aliases import PROPERTY_TABLE  # noqa: E402
+
+# built data, not in git (standin/data/out/, by build_property_aliases.py): a checkout without it skips these
+needs_property_table = pytest.mark.skipif(not PROPERTY_TABLE.exists(), reason="needs the built Wikidata property table")
+
+
 class FakeWikidata(WikidataSource):
     def __init__(self, search, entities):
         super().__init__(cache_dir=None, sleep_s=0.0, offline=False)
@@ -92,6 +99,7 @@ def test_the_object_of_a_served_claim_is_linked_to_its_item_so_the_next_hop_neve
     assert src.last["how"] == "exact + label over alias"
 
 
+@needs_property_table
 def test_among_items_sharing_a_name_the_question_s_next_hop_decides_and_a_pick_is_not_remembered():
     """Marie Curie: the physicist, a book edition and a ferry share the label; one has a date of birth."""
     hits = [_hit("Q7186", "Marie Curie", "physicist"), _hit("Q114", "Marie Curie", "book edition"), _hit("Q134", "Marie Curie", "ferry")]
@@ -135,6 +143,7 @@ def test_a_wikimedia_meta_page_is_dropped_before_the_ambiguity_is_counted():
     assert src2.facts("Mercury") == [] and len(src2.last["ambiguous"]) == 2
 
 
+@needs_property_table
 def test_the_asker_chooses_the_item_and_the_ledger_guesses_only_when_no_context_does(tmp_path):
     """Nick, 2026-09-14: "when ambiguous it should either select A based on context or B ask the user";
     and "an algorithm that allows the vm to still be neutral while scoring most requested answers... to
@@ -210,6 +219,7 @@ def test_a_new_namesake_is_a_new_ambiguity_and_inherits_no_history(tmp_path):
     assert src._key("Mercury", ["Q1", "Q2"]) != src._key("Mercury", ["Q1", "Q2", "Q3"])
 
 
+@needs_property_table
 def test_the_question_s_relations_narrow_in_order_but_only_across_different_kinds_of_thing():
     """Live, 2026-09-14: 'where is quebec city' stayed ambiguous between the city (Q2145) and an 1841
     electoral district -- BOTH carry `country`, so the union of the where-relations eliminated neither;

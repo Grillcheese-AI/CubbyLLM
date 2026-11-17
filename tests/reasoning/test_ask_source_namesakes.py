@@ -26,12 +26,20 @@ from test_search_learn import LookupStore  # noqa: E402
 from test_wikidata_namesakes import LABELS, Fake, georgia, hit, item  # noqa: E402
 
 
+import pytest  # noqa: E402
+from cubbyllm.sources.wikidata_aliases import PROPERTY_TABLE  # noqa: E402
+
+# built data, not in git (standin/data/out/, by build_property_aliases.py): a checkout without it skips these
+needs_property_table = pytest.mark.skipif(not PROPERTY_TABLE.exists(), reason="needs the built Wikidata property table")
+
+
 def loop_with(src, plans):
     from cubbyllm.reasoning.ask import AskLoop
     # the time rule off: a canned claim carries no date, and "at one point" is that rule's, not this order's
     return AskLoop(FakeEmitter(plans), world=LookupStore(STORE), source=src, lexicon=False, run_fn=exact_vm(), time_rule=False)
 
 
+@needs_property_table
 def test_two_kinds_are_each_answered_labelled_and_nothing_lands_under_the_others_name(monkeypatch):
     monkeypatch.setenv("CB_SOURCE_NAMESAKES", "1")
     src = Fake(*georgia())
@@ -43,6 +51,7 @@ def test_two_kinds_are_each_answered_labelled_and_nothing_lands_under_the_others
     assert src.choices == {}                                              # the ledger untouched
 
 
+@needs_property_table
 def test_namesakes_that_agree_are_said_once_with_no_offer(monkeypatch):
     monkeypatch.setenv("CB_SOURCE_NAMESAKES", "1")
     search = {"petershausen": [hit("Q21", "Petershausen", "municipality"), hit("Q22", "Petershausen", "quarter")]}
@@ -54,6 +63,7 @@ def test_namesakes_that_agree_are_said_once_with_no_offer(monkeypatch):
     assert rec["namesakes"]["rule"] == "agree (source)" and {a["value"] for a in rec["answers"]} == {"Qde"}
 
 
+@needs_property_table
 def test_one_fits_its_value_then_the_other_named_by_its_kind(monkeypatch):
     monkeypatch.setenv("CB_SOURCE_NAMESAKES", "1")
     search = {"olmo": [hit("Q5", "Olmo", "city in Italy"), hit("Q6", "Olmo", "singer")]}

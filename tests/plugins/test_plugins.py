@@ -118,7 +118,7 @@ class _Mod:
 
 
 def _adapter(d: Path, kind: str, seed: int, rank=4):
-    from safetensors.numpy import save_file
+    save_file = pytest.importorskip("safetensors.numpy").save_file
     d.mkdir(parents=True, exist_ok=True)
     g = np.random.default_rng(seed)
     (d / f"{kind}_lora.json").write_text(json.dumps({"rank": rank, "alpha": 8.0, "targets": ["q", "v"]}), encoding="utf-8")
@@ -128,7 +128,7 @@ def _adapter(d: Path, kind: str, seed: int, rank=4):
 
 def _trunk(tmp_path):
     from contextlib import nullcontext
-    from safetensors.numpy import load_file
+    load_file = pytest.importorskip("safetensors.numpy").load_file
     from emitter import Cubby450mTrunk
     export = tmp_path / "export"
     export.mkdir()

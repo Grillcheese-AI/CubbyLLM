@@ -113,15 +113,28 @@ def test_a_failing_kernel_test_turns_its_flag_off_and_another_card_refuses_to_re
     assert p.returncode != 0 and "torch >= 2.7" in out
 
 
+def _runs(bash: str) -> bool:
+    try:
+        return subprocess.run([bash, "-c", "exit 0"], capture_output=True, timeout=30).returncode == 0
+    except (OSError, subprocess.SubprocessError):
+        return False
+
+
 def test_setup_sh_parses_and_never_puts_the_token_on_a_command_line():
     import re
     import shutil
     text = (ROOT / "validation" / "pod" / "setup.sh").read_text(encoding="utf-8")
     assert not re.search(r"HF_TOKEN=\$", text), "the token must reach run_pod.py through the environment"
     assert "github.com/" not in text                                       # no account name in a committed file
-    bash = shutil.which("bash")
+    # a bash that runs: on Windows `bash` on the PATH is often WSL's launcher, which fails with no distribution
+    # installed, so Git's own bash is tried too; with none, the parse is left to the pod
+    git = shutil.which("git")
+    candidates = [shutil.which("bash")] + ([str(pathlib.Path(git).parents[1] / "bin" / "bash.exe")] if git else [])
+    bash = next((b for b in candidates if b and _runs(b)), None)
     if bash:
-        assert subprocess.run([bash, "-n", str(ROOT / "validation" / "pod" / "setup.sh")]).returncode == 0
+        # the text as committed (LF), whatever line ends this checkout gave the file
+        r = subprocess.run([bash, "-n"], input=text.replace("\r\n", "\n").encode("utf-8"), capture_output=True)
+        assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
 
 
 def test_a_token_never_reaches_a_log_line(monkeypatch):

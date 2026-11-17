@@ -312,7 +312,8 @@ def test_script_ban_ids_come_from_the_vocab_and_zero_the_logits(tmp_path, monkey
 
 
 def test_llama_emitter_passes_the_script_ban_to_every_decode(tmp_path, monkeypatch):
-    import llama_cpp
+    import pytest
+    llama_cpp = pytest.importorskip("llama_cpp")
     import numpy as np
     from standin import emitter as em
     monkeypatch.setattr(llama_cpp, "Llama", _FakeLlama)
@@ -334,7 +335,8 @@ def test_llama_emitter_passes_the_script_ban_to_every_decode(tmp_path, monkeypat
 def test_llama_emitter_renders_control_tokens_and_stops_at_eos(tmp_path, monkeypatch):
     """The v10 tool probe (2026-09-04): create_completion dropped LFM's <|tool_call_start|> (a control token) and
     the host saw a bare call body. The token-level decode renders it; EOS and the family's stop token end it."""
-    import llama_cpp
+    import pytest
+    llama_cpp = pytest.importorskip("llama_cpp")
     from standin import emitter as em
 
     class _Tool(_FakeLlama):

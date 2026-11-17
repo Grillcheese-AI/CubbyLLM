@@ -6,3 +6,6 @@ validation/retrieval_sets/fame_set.jsonl -text
 validation/retrieval_sets/fame_set_seed1.jsonl -text
 validation/retrieval_sets/fame_set_seed2.jsonl -text
 validation/retrieval_sets/r2_fresh_el_seed2.json -text
+
+# shell scripts run on Linux pods: LF on every checkout, or bash reads a stray \r on each line
+*.sh text eol=lf

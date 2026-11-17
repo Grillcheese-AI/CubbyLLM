@@ -29,6 +29,13 @@ from test_search_learn import DictSource, LookupStore  # noqa: E402
 from web_source import Hit, WebSource, frame_facts, jsonld_facts, site_of  # noqa: E402
 
 
+import pytest  # noqa: E402
+from cubbyllm.sources.wikidata_aliases import PROPERTY_TABLE  # noqa: E402
+
+# built data, not in git (standin/data/out/, by build_property_aliases.py): a checkout without it skips these
+needs_property_table = pytest.mark.skipif(not PROPERTY_TABLE.exists(), reason="needs the built Wikidata property table")
+
+
 class FakeBackend:
     name = "fake"
 
@@ -66,6 +73,7 @@ def test_a_site_is_a_registrable_domain_and_the_wikipedia_family_is_one_witness(
     assert site_of("https://web.archive.org/web/2020/https://x.com") is None      # an archive repeats another site
 
 
+@needs_property_table
 def test_one_site_is_held_two_independent_sites_attest(tmp_path):
     a = "https://a.example.com/marie"; b = "https://b.example.org/marie"; a2 = "https://a.example.com/other"
     by = {u: person_page("Marie", nationality="Canada") for u in (a, b, a2)}
@@ -80,6 +88,7 @@ def test_one_site_is_held_two_independent_sites_attest(tmp_path):
     assert "1 attested" in two.last["how"]
 
 
+@needs_property_table
 def test_the_tally_carries_a_first_site_to_the_second_on_a_later_day(tmp_path):
     a = "https://a.one.com/m"; b = "https://b.two.com/m"
     by = {a: person_page("Marie", nationality="Canada"), b: person_page("Marie", nationality="Canada")}
@@ -115,6 +124,7 @@ class NoAliases:
     def relations(self, text): return []
 
 
+@needs_property_table
 def test_the_local_reader_may_only_write_what_the_passage_says(tmp_path):
     url = "https://c.site.net/ada"
     page = "<html><body><p>Ada Lovelace, the mathematician, came into the world in London in 1815.</p></body></html>"   # no frame reads this
@@ -127,6 +137,7 @@ def test_the_local_reader_may_only_write_what_the_passage_says(tmp_path):
     assert w2.facts("Ada Lovelace", relations=["place of birth"]) == [] and bad.last["ungrounded"] == 1
 
 
+@needs_property_table
 def test_robots_are_honoured_and_the_snippet_still_counts(tmp_path):
     url = "https://d.closed.com/p"
     w = web([Hit(url, "Ada", "Ada Lovelace (10 December 1815 – 27 November 1852) was a mathematician.")],
@@ -185,6 +196,7 @@ def loop(web_source, primary=None):
     return r, store
 
 
+@needs_property_table
 def test_one_site_never_carries_an_answer_two_do(tmp_path):
     a = "https://a.one.com/m"; b = "https://b.two.com/m"
     by = {a: person_page("Marie", nationality="Canada"), b: person_page("Marie", nationality="Canada")}
@@ -197,6 +209,7 @@ def test_one_site_never_carries_an_answer_two_do(tmp_path):
     assert s2.provenance["Canada is the country of citizenship of Marie"] == "web:one.com+web:two.com"
 
 
+@needs_property_table
 def test_the_web_is_asked_only_after_the_primary_source_has_nothing(tmp_path):
     a = "https://a.one.com/m"
     w = web([Hit(a, "Marie", "")], {a: person_page("Marie", nationality="Canada")}, tmp_path)
@@ -213,6 +226,7 @@ def test_sleep_keeps_a_web_fact_only_at_two_sites():
     assert not trusted_source("web:a.com+web:b.org", {"wikidata"})
 
 
+@needs_property_table
 def test_the_ask_loop_hands_the_web_to_the_walk_and_the_record_names_the_sites(tmp_path):
     from ask import AskLoop
     from test_ask import FakeEmitter
@@ -287,6 +301,7 @@ def test_the_key_is_read_from_the_environment_or_a_gitignored_env_file(tmp_path,
     assert web_source.env_key("BRAVE_SEARCH_API_KEY") == "from-env"
 
 
+@needs_property_table
 def test_a_licensed_backend_s_searches_are_archived_and_each_site_keeps_its_evidence(tmp_path):
     a = "https://a.one.com/m"
     by = {a: person_page("Marie", nationality="Canada")}
@@ -324,6 +339,7 @@ def _place_page(value):
     return person_page("Ada Lovelace", birthPlace=value)
 
 
+@needs_property_table
 def test_one_place_in_two_spellings_is_one_claim_and_two_places_are_two(tmp_path):
     """Live, 2026-09-24: 'London, England, UK' (one site) and 'London, England' (another) never agreed."""
     u1, u2, u3 = "https://a.one.com/x", "https://b.two.com/x", "https://c.three.com/x"
@@ -354,6 +370,7 @@ def _dated(value, key="deathDate"):
     return person_page("Dorothy Malone", **{key: value})
 
 
+@needs_property_table
 def test_a_finer_value_vouches_for_a_coarser_one_and_never_the_reverse(tmp_path):
     u1, u2 = "https://a.one.com/x", "https://b.two.com/x"
     w = web([Hit(u1, "", ""), Hit(u2, "", "")], {u1: _dated("2018"), u2: _dated("2018-01-19")}, tmp_path)
@@ -368,6 +385,7 @@ def test_a_place_in_its_own_commas_vouches_for_the_region():
     assert not w._finer("name", "London, Ontario", "England")
 
 
+@needs_property_table
 def test_one_site_s_different_value_is_not_a_claim_unless_dissent_is_a_veto(tmp_path):
     us = [f"https://s{i}.site{i}.com/x" for i in range(3)]
     by = {us[0]: _dated("1935-04-28"), us[1]: _dated("1935-04-28"), us[2]: _dated("1935-04-01")}
@@ -385,6 +403,7 @@ def test_a_cut_off_snippet_is_read_only_where_it_is_whole():
     assert untruncate("A whole sentence.") == "A whole sentence."
 
 
+@needs_property_table
 def test_sites_that_copied_one_text_are_one_witness(tmp_path):
     """Live, 2026-09-24: four sites gave one death date in the same words -- an old Wikipedia lead."""
     same = "Agha Hashar Kashmiri (3 April 1879 – 28 April 1935) was an eminent Urdu poet, playwright and dramatist of his age."
@@ -399,6 +418,7 @@ def test_sites_that_copied_one_text_are_one_witness(tmp_path):
     assert k not in w3.held and w3.last["facts"][k]["witnesses"] == 2
 
 
+@needs_property_table
 def test_the_live_wikipedia_article_speaks_for_its_family_not_its_mirrors(tmp_path):
     lead = {"type": "standard", "extract": "Agha Hashar Kashmiri (3 April 1879 – 1 April 1935) was an Urdu poet.",
             "content_urls": {"desktop": {"page": "https://en.wikipedia.org/wiki/Agha_Hashar_Kashmiri"}}}
@@ -416,6 +436,7 @@ def test_the_live_wikipedia_article_speaks_for_its_family_not_its_mirrors(tmp_pa
     assert facts[list(facts)[0]]["sites"] == ["wikipedia.org"]
 
 
+@needs_property_table
 def test_one_place_with_two_true_qualifiers_is_one_claim(tmp_path):
     u1, u2 = "https://a.one.com/x", "https://b.two.com/x"
     w = WebSource(FakeBackend([Hit(u1, "", ""), Hit(u2, "", "")]), cache_dir=tmp_path, containment=object(),

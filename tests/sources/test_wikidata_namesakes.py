@@ -26,6 +26,13 @@ import pytest  # noqa: E402
 from cubbyllm.sources.wikidata import WikidataSource  # noqa: E402
 
 
+import pytest  # noqa: E402
+from cubbyllm.sources.wikidata_aliases import PROPERTY_TABLE  # noqa: E402
+
+# built data, not in git (standin/data/out/, by build_property_aliases.py): a checkout without it skips these
+needs_property_table = pytest.mark.skipif(not PROPERTY_TABLE.exists(), reason="needs the built Wikidata property table")
+
+
 class Fake(WikidataSource):
     def __init__(self, search, entities):
         super().__init__(cache_dir=None, sleep_s=0.0, offline=False)
@@ -75,6 +82,7 @@ def georgia():
     return search, ents
 
 
+@needs_property_table
 def test_two_kinds_that_both_carry_the_relation_are_both_to_be_answered_and_off_it_is_ambiguous(monkeypatch):
     src = Fake(*georgia())
     assert src.facts("georgia", relations=["capital"]) == [] and len(src.last["ambiguous"]) == 2 and src.namesake_decision("georgia") is None
@@ -86,6 +94,7 @@ def test_two_kinds_that_both_carry_the_relation_are_both_to_be_answered_and_off_
     assert d["others"] == [("Q2", "Georgia", "female given name")]
 
 
+@needs_property_table
 def test_a_cue_word_that_names_a_kind_rules_the_other_kinds_out(monkeypatch):
     monkeypatch.setenv("CB_SOURCE_NAMESAKES", "1")
     src = Fake(*georgia())
@@ -95,6 +104,7 @@ def test_a_cue_word_that_names_a_kind_rules_the_other_kinds_out(monkeypatch):
     assert src.namesake_decision("georgia")["ruled_out"] == {"Q3": "state"}
 
 
+@needs_property_table
 def test_one_fits_and_the_other_is_named_by_its_kind(monkeypatch):
     monkeypatch.setenv("CB_SOURCE_NAMESAKES", "1")
     search = {"olmo": [hit("Q5", "Olmo", "city in Italy"), hit("Q6", "Olmo", "singer")]}
@@ -107,6 +117,7 @@ def test_one_fits_and_the_other_is_named_by_its_kind(monkeypatch):
     assert d["fit"] == ["Q6"] and d["others"] == [("Q5", "Olmo", "city")]
 
 
+@needs_property_table
 def test_two_of_a_kind_are_never_separated_by_how_fully_one_is_described(monkeypatch):
     monkeypatch.setenv("CB_SOURCE_NAMESAKES", "1")
     search = {"ben franklin": [hit("Q7", "Benjamin Franklin", "polymath", match="Ben Franklin"), hit("Q8", "Ben Franklin", "politician")]}
@@ -120,6 +131,7 @@ def test_two_of_a_kind_are_never_separated_by_how_fully_one_is_described(monkeyp
     assert src.choices == {}
 
 
+@needs_property_table
 def test_the_kind_carries_the_relation_through_the_propertys_constraint_one_subclass_step_up(monkeypatch):
     monkeypatch.setenv("CB_SOURCE_NAMESAKES", "1")
     search = {"rivertown": [hit("Q9", "Rivertown", "city"), hit("Q10", "Rivertown", "band")]}
@@ -134,6 +146,7 @@ def test_the_kind_carries_the_relation_through_the_propertys_constraint_one_subc
     assert d["fit"] == ["Q9"] and d["how"] == {"Q9": "may"} and src.last["qid"] == "Q9"
 
 
+@needs_property_table
 def test_a_candidate_of_no_kind_that_is_placed_competes_for_a_place_relation(monkeypatch):
     monkeypatch.setenv("CB_SOURCE_NAMESAKES", "1")
     search = {"kata": [hit("Q11", "Kata", "village"), hit("Q12", "Kata", None)]}
@@ -153,6 +166,7 @@ def test_the_items_own_rows_tell_namesakes_apart(monkeypatch):
     assert [(t.rel, t.obj) for _f, t in rows] == [("instance of", "U.S. state"), ("country", "United States of America")]
 
 
+@needs_property_table
 def test_a_kind_that_may_carry_the_relation_yields_to_another_kind_that_holds_it_but_not_within_a_kind(monkeypatch):
     """Live, 2026-10-27: the novel Pride and Prejudice holds an author; three editions (another kind) only may, by the
     property's constraint, and the question was refused as four that fit. Two people named Harry Truman, one holding a
@@ -176,6 +190,7 @@ def test_a_kind_that_may_carry_the_relation_yields_to_another_kind_that_holds_it
     assert src.namesake_decision("harry truman")["how"] == {"Q34": "holds", "Q35": "may"}
 
 
+@needs_property_table
 def test_the_label_decides_among_different_kinds_that_fit_never_among_two_of_a_kind(monkeypatch):
     """Live, 2026-10-27: "Spain", "Second Spanish Republic" and "New Spain" all carry a currency; the item LABELLED
     Spain is the one meant (the source's own tier since 2026-09-14). Two people named alike, one by label and one by

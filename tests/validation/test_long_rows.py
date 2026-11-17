@@ -61,6 +61,7 @@ def built(tmp_path_factory):
         cc.find_cubelang_exe()
     except Exception as e:                               # noqa: BLE001
         pytest.skip(f"cubelang.exe not found ({e})")
+    pytest.importorskip("pyarrow")                     # the overlap check reads the benchmarks' parquet
     out = tmp_path_factory.mktemp("long")
     sys.argv = ["build_long_rows.py", "--train", "12", "--held", "4", "--out", str(out)]
     B.main()                                             # stops on any VM / evaluator disagreement
