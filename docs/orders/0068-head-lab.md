@@ -355,3 +355,17 @@ on held-out, the card already computes the pass as it stands, and step 2 (the ti
 - **Found on the way:** the system Python here lacks `safetensors`, so the first start stopped while loading the
   head's rows, before any position was read and before any log was written; the read ran with grilly2's
   environment, as the earlier 0068 reads did.
+
+### Step 2, the time on a card, pre-registered before its run (Cowork, 2026-11-17, on Nick's "yes you can run it home")
+- **What runs:** `validation/head_lab_time.py` on grilly2, on the home card, batch 1, the head in fp32 (as 0050's
+  line), p50 of 50 tokens after 3 warm-ups, each token a different state of `heldout_b.npz` (its first 50, already
+  read). Route 5 by distance alone as read above, end to end per token, with today's grilly2 ops and nothing new:
+  the state read back (4 KB), its signs packed on the host, grilly2's packed top-k (2,048 of 128,000 codes) on the
+  card, the context pass (4,096 centroids) on the card, the list and the union on the host, the union's rows gathered
+  on the card (`index_select`) and scored, the best token read back.
+- **Against,** on the same card and states: the full 128k head and a full 32k head (the head's first 32,000 rows),
+  each a linear and an argmax read back, as 0050 timed them.
+- **The line (0050's):** route 5's time per token at most a full 32k head's. Missed is reported with each part's
+  time, which says where a kernel is needed; it kills nothing (the route's rows and agreement stand).
+- **Also checked, not a line:** on these 50 states, route 5's token equals the full head's wherever the union holds it.
+- The A100 is not run here; it waits for a Colab session.
