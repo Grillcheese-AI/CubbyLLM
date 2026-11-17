@@ -369,3 +369,29 @@ on held-out, the card already computes the pass as it stands, and step 2 (the ti
   time, which says where a kernel is needed; it kills nothing (the route's rows and agreement stand).
 - **Also checked, not a line:** on these 50 states, route 5's token equals the full head's wherever the union holds it.
 - The A100 is not run here; it waits for a Colab session.
+
+### Step 2, read: the line missed; the packed top-k and the host list are where the time goes (Cowork, 2026-11-17)
+- **Log:** `validation/logs/head_lab_time_grilly_2026-11-17.json` (`validation/head_lab_time.py` as pre-registered,
+  grilly2 on the home card, batch 1, fp32, the first 50 states of `heldout_b.npz` after 3 warm-ups, run once).
+- **Against:** the full 128k head **1.700 ms** a token (p50; p90 1.753), a full 32k head **0.556 ms** (p90 0.619).
+- **Route 5 end to end: 43.085 ms** (p50; mean 37.829, p90 59.799). The line is the 32k head's 0.556 ms:
+  **missed.** Route 5 is also slower than the full head it would replace.
+- **Each part (p50):** the state read back and packed 0.150; grilly2's packed top-k (2,048 of 128,000) **2.160**;
+  the context pass on the card and the clusters ranked 0.419; the list and the union on the host **39.530**; the
+  union's rows gathered, scored and the best token read back 0.789.
+- **The host list** is a Python loop over the ranked clusters that drops repeats as it goes (the same list as
+  `ScreenIndex.shortlist`, checked by `tests/validation/test_head_lab_time.py`). It is most of the time, and it is
+  the easiest part to move: on the card, or a list built once per cluster order.
+- **Without it the line is still missed.** The four card parts sum to 3.518 ms at their p50s, more than the full
+  head's 1.700. The packed top-k alone (2.160) is slower than the full head: it reads 16.4 MB of codes (128 bytes a
+  row), one eighth of the 32k head's 131 MB, and takes almost four times as long, so its cost is the kernel (the
+  selection of 2,048, or its dispatches), not the bytes.
+- **Check:** on all 50 states the union held the full head's token, and route 5 chose it (50 of 50).
+- **What is established:** with today's grilly2 ops, route 5 costs more time than the full 128k head at batch 1 on
+  this card. Its rows (18,175 by bytes, 57% of a 32k head) and its agreement (0.99772) stand; the "128k for the price
+  of 32k" holds in rows read, not in time.
+- **What would change it, in order of size:** the host list moved to the card or built once per cluster order; a
+  fused packed top-k that selects in one pass (a grilly2 kernel, on a branch for Nick's review). The prize is bounded:
+  the full head is 1.700 ms here and, per 0050, 7.3 to 9.6% of a home decode step, so a route at the 32k line saves
+  at most 1.144 ms a token of it.
+- **Not run:** the A100 (a Colab session, Nick's to open). Nothing under `cubbyllm/` was touched.

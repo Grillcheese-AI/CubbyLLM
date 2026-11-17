@@ -1,0 +1,72 @@
+{
+ "what": "order 0068 step 2: route 5 (distance alone) per token on grilly2, against full 32k and 128k heads",
+ "date": "2026-11-17",
+ "machine": "Windows-11-10.0.26340-SP0",
+ "batch": 1,
+ "precision": "fp32",
+ "vocab": 128000,
+ "hidden": 1024,
+ "k": 8192,
+ "n": 2048,
+ "reps": 50,
+ "times": {
+  "head128k": {
+   "p50_ms": 1.7,
+   "mean_ms": 1.709,
+   "p90_ms": 1.753,
+   "n": 50
+  },
+  "head32k": {
+   "p50_ms": 0.556,
+   "mean_ms": 0.564,
+   "p90_ms": 0.619,
+   "n": 50
+  },
+  "readback": {
+   "p50_ms": 0.15,
+   "mean_ms": 0.156,
+   "p90_ms": 0.189,
+   "n": 50
+  },
+  "hamming": {
+   "p50_ms": 2.16,
+   "mean_ms": 2.18,
+   "p90_ms": 2.317,
+   "n": 50
+  },
+  "context": {
+   "p50_ms": 0.419,
+   "mean_ms": 0.434,
+   "p90_ms": 0.499,
+   "n": 50
+  },
+  "union": {
+   "p50_ms": 39.53,
+   "mean_ms": 34.252,
+   "p90_ms": 56.03,
+   "n": 50
+  },
+  "score": {
+   "p50_ms": 0.789,
+   "mean_ms": 0.807,
+   "p90_ms": 0.926,
+   "n": 50
+  },
+  "route5": {
+   "p50_ms": 43.085,
+   "mean_ms": 37.829,
+   "p90_ms": 59.799,
+   "n": 50
+  }
+ },
+ "check": {
+  "states": 50,
+  "full_heads_token_in_the_union": 50,
+  "route5_token_is_the_full_heads_where_held": 50
+ },
+ "line": {
+  "route5_p50_ms": 43.085,
+  "head32k_p50_ms": 0.556,
+  "at_most_a_32k_heads_time": false
+ }
+}
