@@ -1,5 +1,5 @@
 # 0073 - The instruction reader writes descriptions and the host compiles them (round 3: two spellings of a negation, read side by side)
-status: open (0067's round 2 was closed on 2026-11-14, a negative result on its line 3, so the build can start; builder: Code A, or Cowork on a branch while Code A is signed out, Nick 2026-11-14: "we will continue here then"; steps 1 to 5 built on branch `cowork/0073` by 2026-11-15: the rows exist and the hashes of test and test_long are committed, the grammar is checked on every row, the two SFT sets are on Drive and the notebooks are written; nothing is trained (the Colab runs are Nick's; the branch is on GitHub since 2026-11-16, on Nick's yes); steps 6 and 7 are built as far as they go without an adapter: the decoder, the scorer, the read's rows file and its two notebooks, point 7's and line 9's scripts, the second chance, arm P's count, line 8's timing script; both arms are trained and timed at home (line 8 passes in both variants), dev is read and point 7 is decided (arm M free, arm W with the own-text rule); test and test_long are read once and judged on 2026-11-16: arm M is kept by line 9, no arm hits a kill, arm M passes every line on 2 to 4 parts and does not pass line 4 (5 to 8 parts); left: Code A's review of the branch and Nick's ruling on the order)
+status: done (2026-11-16, on Nick's yes: arm M, folded and free, is kept by line 9 and no arm hits a kill; on 2 to 4 parts every line passes; line 4, on 5 to 8 parts, is not passed and goes to order 0074. Built by Cowork on branch `cowork/0073` while Code A was signed out (Nick 2026-11-14: "we will continue here then"), on GitHub since 2026-11-16 on Nick's yes; merged to master after Code A's review. Nothing is wired into serving.)
 written: 2026-11-14 by Cowork, on Nick's "yes" to writing round 3 as one order on the panel's synthesis - approved: 2026-11-14 by Nick ("I approve 0073", with the arms as defined here, narrower than in the synthesis) - hypothesis: none (0067's second reader)
 
 ## Why
@@ -911,3 +911,14 @@ does not: line 4 is not passed on two of its three counts.** Arm W hits no kill 
 the same rows, 129 in 1,000 did. Past four checks it is not yet reliable: from the sixth check on, 155 of 454 are wrong
 (arm M). Nothing is wired into serving (`CB_RULES` stays off). Training on 5 or more parts is out of scope here
 (listed under "Out of scope"); it is the next step line 4 points to, as its own order, on rows no one has seen.
+
+### Closed (Cowork, 2026-11-16)
+Nick said yes to closing the order on the read above, and to the next order line 4 points to.
+- **Kept:** arm M (folded descriptions, free values), 0073's adapter `rules/cubby450m_view_split_m`. It is the
+  baseline (arm K) of order 0074.
+- **Carried to 0074:** line 4. 0074 trains on 2 to 8 parts, on rows built again from a new seed, and reads arm K
+  beside the new adapter on the same rows.
+- **Left for their own orders** (listed in 0074's "Out of scope"): plain checks written `asked`, which carry most of
+  dev's false passes; the own-text rule for arm M; arm W's lost lines on long rows.
+- **The code** is on branch `cowork/0073`, on GitHub. Code A reviews it before it is merged to master; the notebooks'
+  `BRANCH` goes to `master` then.
