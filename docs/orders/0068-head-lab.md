@@ -423,3 +423,18 @@ its own row. A dispatch costs about 0.011 ms in a batch here.
 - **The line (0050's):** route 5 at most a full 32k head's time. Missed is reported with the time each dispatch adds;
   it kills nothing.
 - **Not claimed:** the A100, the serving batteries, sampled talk. Nothing under `cubbyllm/` is touched.
+
+### Step 2b, timed: 0.674 ms against the 32k head's 0.557, the line missed by 0.117 (Cowork, 2026-11-17)
+- **Log:** `validation/logs/head_lab_time_grilly_card_2026-11-17.json` (grilly2 `cowork/shortlist-head` at 248a738,
+  the same 50 states, run once).
+- **Route 5 on the card: 0.674 ms** a token (p50; p90 0.727), from 43.085 in step 2. The full head **1.679**, a full
+  32k head **0.557**. The line is **missed** by 0.117 ms; route 5 is now 2.5 times faster than the full head.
+- **Check:** the union held the full head's token on all 50 states and the card chose it on all 50; no list was
+  short; the union averaged 10,010.3 rows (most 10,221).
+- **Each dispatch (p50 of the step stopped after it, less the one before):** context 0.091 (with the batch's
+  submit), Hamming 0.029, **plan 0.232**, mark 0.020, count 0.011, cut 0.010, score 0.100, best 0.003; all eight and
+  a wait 0.497, and reading the token back takes the rest.
+- **Where it goes:** the plan dispatch, one workgroup doing three serial jobs: an ordered count over all 128,000
+  distances for the tied rows, a bitonic sort of 4,096 cluster scores (78 barrier stages), and two prefix sums. The
+  Hamming pass (16 MB) and the scoring (about 41 MB) already run near the card's bandwidth.
+- **The held-in union check** is running; its result goes below when it ends.
