@@ -454,3 +454,37 @@ numbers are found, not what the union is, so the route and its read stand as the
   every position of `heldin_val.npz`.
 - **Timed:** the same command, the same 50 states, the same line. Timing these states again spends nothing (it reads
   time, not agreement), and step 2b's number stays reported beside it.
+
+### Step 2b, the held-in union check (Cowork, 2026-11-17)
+- **Log:** `validation/logs/head_lab_card_union_2026-11-17_heldin_val_248a738.json` (the 2b build, every one of
+  `heldin_val.npz`'s 53,248 held-in positions, against `ScreenIndex.shortlist` with the 2,048 nearest as the read).
+- **52,746 positions have the same union, 502 differ, and on none of the 502 does the chosen token differ.**
+- 497 of the 502 are short lists: their first 256 ranked clusters hold fewer than 8,192 distinct tokens, so the card
+  takes all of them and numpy goes further (303,643 rows only numpy has, at most 1,828 at one position). None of the
+  50 timed states is short. The other 5 hold 107 rows only the card has (at most 32): clusters ranked the other way
+  round near the cut (below).
+- What would close the short ones: a larger rank bound, which costs the marking and counting dispatches one
+  workgroup per extra rank. Not changed here.
+
+### Step 2c, timed: 0.640 ms against the 32k head's 0.544, still missed (Cowork, 2026-11-17)
+- **Log:** `validation/logs/head_lab_time_grilly_card_2026-11-17.json` (grilly2 52028cd, the same 50 states; the
+  2b timing's log is kept beside it as `..._248a738.json`).
+- **Route 5: 0.640 ms** (p50; p90 0.675), the full head 1.679, a full 32k head **0.544**. **Missed** by 0.096 ms.
+  The check: 50 of 50 held, 50 of 50 the full head's token, none short.
+- **The ranking dispatch still takes 0.207 ms** (2b's plan: 0.232); everything else moved little (context 0.094,
+  Hamming 0.026, mark 0.014, count 0.011, cut 0.017, score 0.108). Counting, one thread a cluster over 4,096 scores
+  one at a time, is bound by the latency of each shared-memory read, not by the work, on 16 workgroups.
+- **The held-in union check, out of order:** the 2c pre-registration put it before the timing; it ran after. Log
+  `validation/logs/head_lab_card_union_2026-11-17_heldin_val_52028cd.json`; its `grilly2` field reads 3cba3e3
+  because the script reads the checkout's commit, which moved on to 2d's while the check ran on 2c's build. The
+  result is 2b's to the position: 52,746 the same, 502 differ, 497 of them short, the token the same on all 502.
+  Of the 5 that are not short, the log lists 3 (it keeps the first 200 differences); on each, two clusters at the
+  cut score within about 1e-7 of each other relative to their score (8.6e-8, 1.3e-7 and 7.9e-8 at ranks 108, 61 and
+  33, with the cut at 108, 62 and 33), which is float32 rounding: the near tie the pre-registration expected.
+
+### Step 2d, the ranking split four ways, pre-registered before its run (Cowork, 2026-11-17)
+- **The one change** (grilly2 3cba3e3): each cluster's rank is counted by four threads, each over a quarter of the
+  scores, four scores a read, 64 clusters a workgroup (64 workgroups). Everything else as 2c; the same union.
+- **Checked before the timing:** grilly2's Rust and Python tests. The held-in union check runs after it, on every
+  position of `heldin_val.npz` again, now keeping every difference that is not short.
+- **Timed:** the same command, the same 50 states, the same line.

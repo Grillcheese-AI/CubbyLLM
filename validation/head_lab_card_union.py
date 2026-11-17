@@ -4,7 +4,9 @@ grilly2's ``ShortlistHead`` computes route 5 (distance alone) on the card. Its c
 scores, so a near tie may rank differently from numpy's and change the context list. This compares, on held-in states
 (never held-out), every position's card union with numpy's as ``head_lab_distance.py`` read it: ``ScreenIndex.shortlist``
 (screen plus successors, K) joined with the N rows nearest by Hamming distance, ties to the lower id. Where they differ,
-it also asks whether the chosen token differs (numpy's best over its union against the card's).
+it also asks whether the chosen token differs (numpy's best over its union against the card's). The log keeps every
+difference that is not a short list, and the first 200 that are. Its ``grilly2`` field is the grilly checkout's commit
+when the check ends: do not move that checkout during a run.
 
     python validation/head_lab_card_union.py --export <base export> --dumps <head_shortlist folder> [--limit n]
 -> validation/logs/head_lab_card_union_<date>_<dump>.json
@@ -17,6 +19,7 @@ import argparse
 import datetime as _dt
 import json
 import os
+import subprocess
 import sys
 import time
 
@@ -26,6 +29,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path[:0] = [os.path.dirname(HERE), HERE]
 
 __wiring__ = "STANDALONE"
+
+
+def grilly_commit(g) -> str:
+    try:
+        return subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=os.path.dirname(g.__file__),
+                              capture_output=True, text=True, timeout=10).stdout.strip() or "unknown"
+    except (OSError, subprocess.SubprocessError):
+        return "unknown"
 
 
 def compare(ref: np.ndarray, got: np.ndarray) -> tuple[int, int]:
@@ -64,7 +75,7 @@ def main() -> None:
     m = len(hid) if not a.limit else min(a.limit, len(hid))
     bits = pack(w)
     same = short = 0
-    only_ref, only_card, token_differs, sizes, differ_at = [], [], 0, [], []
+    only_ref, only_card, token_differs, sizes, differ_at, details = [], [], 0, [], [], []
     t_start = time.time()
     with g.no_grad():
         for s in range(0, m, a.chunk):
@@ -85,20 +96,24 @@ def main() -> None:
                 only_ref.append(a_ref)
                 only_card.append(a_card)
                 want = int(ref[np.argmax(w[ref] @ h[i])])
-                token_differs += head.argmax(x, int(prev[s + i])) != want
+                differs = head.argmax(x, int(prev[s + i])) != want
+                token_differs += differs
+                details.append({"position": s + i, "short": bool(was_short), "rows_only_numpy_has": a_ref,
+                                "rows_only_the_card_has": a_card, "token_differs": bool(differs)})
             log(f"{s + len(h)}/{m}: same {same}, differ {len(differ_at)}, token differs {token_differs}, "
                 f"short {short}, {time.time() - t_start:.0f} s")
     rep = {"what": "order 0068 step 2b: the card build's union against numpy's, held-in, every position",
-           "date": _dt.date.today().isoformat(), "dump": a.dump, "positions": m, "k": a.k, "n": a.n, "ranks": a.ranks,
+           "date": _dt.date.today().isoformat(), "grilly2": grilly_commit(g), "dump": a.dump, "positions": m, "k": a.k, "n": a.n, "ranks": a.ranks,
            "same_union": same, "union_differs": len(differ_at), "token_differs_where_the_union_does": token_differs,
            "short_lists": short,
            "rows_only_numpy_has": {"total": int(np.sum(only_ref)), "max": int(np.max(only_ref)) if only_ref else 0},
            "rows_only_the_card_has": {"total": int(np.sum(only_card)), "max": int(np.max(only_card)) if only_card else 0},
-           "differ_at": differ_at[:50],
+           "union_differs_where_not_short": sum(1 for x in details if not x["short"]),
+           "differences": [x for x in details if not x["short"]] + [x for x in details if x["short"]][:200],
            "card_union_rows": {"mean": round(float(np.mean(sizes)), 1), "max": int(np.max(sizes))},
            "seconds": round(time.time() - t_start)}
     tag = f"_first{m}" if a.limit else ""
-    out = os.path.join(HERE, "logs", f"head_lab_card_union_{rep['date']}_{a.dump}{tag}.json")
+    out = os.path.join(HERE, "logs", f"head_lab_card_union_{rep['date']}_{a.dump}_{rep['grilly2']}{tag}.json")
     json.dump(rep, open(out, "w", encoding="utf-8"), indent=1)
     log(json.dumps(rep, indent=1))
     log("->", os.path.relpath(out, os.path.dirname(HERE)))
