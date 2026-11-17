@@ -1,5 +1,5 @@
 # 0068 - The head lab: four ways to stop scoring 128,000 words at every token, tried on the frozen trunk's saved states
-status: in progress (Cowork builds this one, on Nick's word of 2026-11-12)
+status: in progress (Cowork builds this one, on Nick's word of 2026-11-12; steps through 2d merged to master on 2026-11-17 on Nick's "merge all changes", with grilly2's `ShortlistHead` merged to grilly2's main; the A100 timing and the wiring are still to do)
 written: 2026-11-12 by Cowork - approved: 2026-11-12 by Nick ("can you do it yourself?") - hypothesis: H-C3 (with H-C2, H-C6)
 
 ## Why

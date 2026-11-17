@@ -1,5 +1,5 @@
 # 0073 - The instruction reader writes descriptions and the host compiles them (round 3: two spellings of a negation, read side by side)
-status: done (2026-11-16, on Nick's yes: arm M, folded and free, is kept by line 9 and no arm hits a kill; on 2 to 4 parts every line passes; line 4, on 5 to 8 parts, is not passed and goes to order 0074. Built by Cowork on branch `cowork/0073` while Code A was signed out (Nick 2026-11-14: "we will continue here then"), on GitHub since 2026-11-16 on Nick's yes; merged to master after Code A's review. Nothing is wired into serving.)
+status: done (2026-11-16, on Nick's yes: arm M, folded and free, is kept by line 9 and no arm hits a kill; on 2 to 4 parts every line passes; line 4, on 5 to 8 parts, is not passed and goes to order 0074. Built by Cowork on branch `cowork/0073` while Code A was signed out (Nick 2026-11-14: "we will continue here then"), on GitHub since 2026-11-16 on Nick's yes; merged to master on 2026-11-17 on Nick's "merge all changes", without Code A's review. Nothing is wired into serving.)
 written: 2026-11-14 by Cowork, on Nick's "yes" to writing round 3 as one order on the panel's synthesis - approved: 2026-11-14 by Nick ("I approve 0073", with the arms as defined here, narrower than in the synthesis) - hypothesis: none (0067's second reader)
 
 ## Why

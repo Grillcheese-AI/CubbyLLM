@@ -1,5 +1,5 @@
 # 0074 - The description reader learns long instructions (round 4: trained on 2 to 8 parts, read on fresh rows)
-status: review (approved by Nick on 2026-11-16: "approve"; built by Cowork on branch `cowork/0074`; held-out read 2026-11-17: arm L kept by line 9, with no kill and every line passed; for Code A's review before the merge)
+status: done (2026-11-17; approved by Nick on 2026-11-16: "approve"; built by Cowork on branch `cowork/0074`; held-out read 2026-11-17: arm L kept by line 9, with no kill and every line passed; merged to master the same day on Nick's "merge all changes", without Code A's review. Nothing is wired into serving.)
 written: 2026-11-16 by Cowork, on Nick's "yes" to the next step 0073's line 4 points to · approved: 2026-11-16 by Nick ("approve") · hypothesis: none (0073's line 4)
 
 ## Why
