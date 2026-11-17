@@ -168,3 +168,44 @@ test_long and test_longer are committed before any training. The held-out rows w
   back with the checker, and a spoiled copy caught), `test_view_long_compare.py` (4). 0073's tests pass unchanged.
 - **Left:** the push of `cowork/0074` (Nick's yes), arm L's training (Nick, Colab), then the dev read, the timing at
   home, the counted read and line 9.
+
+### Arm L trained, and the dev read (Cowork, 2026-11-16, branch `cowork/0074`)
+Nick trained arm L on Colab (`notebooks/view_long_l.ipynb`): 1,250 steps at 0.63 s a step, 0073's recipe unchanged;
+held answer loss 2.5692 at step 0 and 0.0021 at the end. Then he read dev on Colab (`view_long_read_dev.ipynb`):
+arm L and arm K, free values, 300 rows each, every answer `finished`. Scored at home on the shared VM
+(`cubelang-cowork` at b3b3360) with `exp_view_split_score.py --splits dev`. Dev is for looking: nothing is decided on
+it, and no held-out set has been read. Logs: `validation/logs/view_long_dev_{l,k}.json`,
+`view_long_second_chance_dev_{l,k}.json`. The answers stay off-repo.
+
+| dev (150 rows of 2 to 4 parts, 150 of 5 to 8) | Arm L | Arm K (0073's adapter) |
+|---|---|---|
+| Silent drops | 0 | 0 |
+| Gold checks with their line | 1,400 / 1,402 = 0.9986 | 1,368 / 1,402 = 0.9757 |
+| Agreement | 3,976 / 3,979 = 0.9992 | 3,659 / 3,836 = 0.9539 |
+| False passes | 3 / 3,979 = 0.0008 | 47 / 3,836 = 0.0123 |
+| False passes over replies built to fail | 3 / 2,100 = 0.0014 | 47 / 2,022 = 0.0232 |
+| Parts right | 1,397 / 1,402 = 0.9964 | 1,286 / 1,402 = 0.9173 |
+| Parts right at positions 1 to 4 / 5 to 8 | 1,047 / 1,049 = 0.9981; 350 / 353 = 0.9915 | 1,019 / 1,049 = 0.9714; 267 / 353 = 0.7564 |
+| Parts fixed by one reversal | 1 / 1,402 = 0.0007 | 11 / 1,402 = 0.0078 |
+| Groups right | 276 / 276 = 1.0 | 254 / 276 = 0.9203 |
+| Replies checked | 3,979 / 3,979 = 1.0 | 3,836 / 3,979 = 0.9641 |
+| Gold checks asked (by the reader + by the host) | 2 + 0 of 1,402 = 0.0014 | 10 + 15 of 1,402 = 0.0178 |
+| Seconds per instruction, decoded on Colab | 0.9309 | 0.9819 |
+
+- **By number of parts, parts right**, L / K: 101 / 101 of 102 (2), 147 / 143 of 147 (3), 200 / 196 of 200 (4),
+  235 / 231 of 235 (5), 215 / 203 of 216 (6), 236 / 203 of 238 (7), 263 / 209 of 264 (8). False passes by number of
+  parts: arm L 2 (2 parts) and 1 (7 parts); arm K 2, 4, 1, 4, 5, 10 and 21 (2 to 8).
+- **By position**, L / K: 299 / 294 and 299 / 294 of 300 (1, 2), 249 / 243 of 249 (3), 200 / 188 of 200 (4),
+  148 / 130 of 150 (5), 103 / 79 of 103 (6), 67 / 42 of 67 (7), 32 / 16 of 33 (8). Arm K on these new rows falls as it
+  did on 0073's test_long (0.7564 at 5 to 8 here, 0.7414 there).
+- **By language**, L / K: English 812 / 759 of 815, French 585 / 527 of 587.
+- **Arm L's five parts not right** (looked at by eye, dev only): two plain checks written `asked` (d400015, a French
+  "every sentence ... and does not end with" of two conditions; d400034, "write at most one line"); one negation in a
+  French filter under "sauf si" written `==` for `!=`, the only part fixed by one reversal (d400094); a condition's
+  column (sentences counted as words, d400149); and a condition's value taken from the next sentence's quote
+  (d300040, "lines that are part of a list" written `item == "!"`): the free-value slip 0073's dev showed, and the
+  source of 2 of arm L's 3 false passes. The third is on d400034, the row with the `asked` check.
+- **The second chance** (arm L): 1 part fixed by one reversal, 2 wrong that no one reversal fixes, 5 right in another
+  form than the gold's. Arm K: 11, 71 and 16.
+- Nothing here changes the read: the decoder, the grammar and the scoring stay as they are for the held-out sets.
+  `view_long_read_test.ipynb` can run: it needs these two reports in the branch it clones.

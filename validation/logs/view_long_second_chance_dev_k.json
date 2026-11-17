@@ -1,0 +1,106 @@
+{
+ "order": "0073",
+ "what": "the second chance on descriptions, dev only: one slot reversed at a time, the pattern table",
+ "arm": "m",
+ "own_text": false,
+ "answers": "view_long_k_dev.jsonl",
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-13 16:06",
+  "sha256": "a2dfaa016536ccbeb2f2c29b2c095b0ef3a5d9480065440089e04e90b244e42f",
+  "commit": "b3b3360",
+  "older_than_sources": false
+ },
+ "counts": {
+  "fixed by one reversal": 11,
+  "gold checks": 1402,
+  "no check line: no line with its span": 23,
+  "no check line: written as `asked`": 10,
+  "no check line: written as `process`": 1,
+  "right as written": 1286,
+  "right as written, not the gold's form": 16,
+  "rows": 300,
+  "wrong, and no one reversal fixes it": 71
+ },
+ "right in another form, by the slots that differ": {
+  "pos": 3,
+  "q + the number of conditions": 3,
+  "a condition's v": 2,
+  "absent": 2,
+  "the number of conditions": 2,
+  "a condition's op": 1,
+  "view": 1,
+  "view + a condition's col": 1,
+  "view + the number of conditions": 1
+ },
+ "patterns": {
+  "au moins + autre que | said: imp | not: 0 | fr": {
+   "a filter: != -> ==": 1
+  },
+  "au moins + chaque | said: imp | not: 0 | fr": {
+   "a filter: <= -> >=": 1
+  },
+  "au moins | said: cond | not: 0 | fr": {
+   "a filter: < -> >=": 1
+  },
+  "au plus + moins de | said: imp | not: 0 | fr": {
+   "a count compared: >= -> <": 1
+  },
+  "aucune + ne | said: imp | not: 0 | fr": {
+   "a filter: == -> !=": 1
+  },
+  "aucune + sauf si | said: cond | not: 0 | fr": {
+   "a filter: == -> !=": 1
+  },
+  "moins de + plus de + autre que | said: imp | not: 0 | fr": {
+   "a filter: == -> !=": 1
+  },
+  "not | said: imp | not: 1 | en": {
+   "a filter: == -> !=": 1
+  },
+  "not | said: imp | not: 2 | en": {
+   "the quantifier: any -> none": 1
+  },
+  "other than + not | said: imp | not: 1 | en": {
+   "a filter: == -> !=": 1
+  },
+  "plus de + pas + ne | said: imp | not: 1 | fr": {
+   "a filter: != -> ==": 1
+  }
+ },
+ "not fixed, by the slots that differ": {
+  "q + view + op + v + the number of conditions": 10,
+  "a condition's v": 6,
+  "v": 6,
+  "q + the number of conditions": 5,
+  "op": 4,
+  "q + op + v": 4,
+  "the number of conditions": 4,
+  "q + view + op + v + a condition's col + a condition's op + a condition's v": 3,
+  "a condition's col + a condition's op + a condition's v": 2,
+  "op + col + val": 2,
+  "q + op + v + the number of conditions": 2,
+  "q + view + op + v": 2,
+  "a condition's col": 1,
+  "a condition's col + a condition's v": 1,
+  "a condition's op": 1,
+  "op + v": 1,
+  "q + op + the number of conditions": 1,
+  "q + op + v + a condition's op": 1,
+  "q + view + a condition's col + a condition's op + a condition's v": 1,
+  "q + view + op + pos + col + val + absent + the number of conditions": 1,
+  "q + view + op + pos + col + val + the number of conditions": 1,
+  "q + view + op + v + a condition's op": 1,
+  "q + view + op + v + pos + col + val + absent + the number of conditions": 1,
+  "q + view + op + v + pos + col + val + the number of conditions": 1,
+  "q + view + the number of conditions": 1,
+  "view": 1,
+  "view + a condition's col + a condition's v": 1,
+  "view + a condition's op + a condition's v": 1,
+  "view + col + val": 1,
+  "view + op + a condition's v": 1,
+  "view + op + col + val + absent": 1,
+  "view + op + v": 1,
+  "view + pos + absent": 1
+ }
+}
