@@ -1,6 +1,6 @@
 # 0075 - The graders checked before their rates are trusted (0054's right, wrong and refused)
-status: proposed
-written: 2026-11-17 by Cowork, on Nick's "yes" to writing it after the field watch's find · approved: — · hypothesis: none (0054's system evaluation)
+status: open (approved by Nick on 2026-11-17: "I approve both"; builder: Code A, or Cowork on a branch while Code A is signed out)
+written: 2026-11-17 by Cowork, on Nick's "yes" to writing it after the field watch's find · approved: 2026-11-17 by Nick ("I approve both") · hypothesis: none (0054's system evaluation)
 
 ## Why
 On 2026-11-01 an issue was opened on NVIDIA's NeMo Gym, [#5430](https://github.com/NVIDIA-NeMo/Gym/issues/5430)

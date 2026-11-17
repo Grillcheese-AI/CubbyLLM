@@ -236,3 +236,16 @@ order's acceptance is.
   and from the facts its steps rest on; the name step as a decision in this vocabulary's terms. If a term is
   missing for it, it is added in the cheezml repository, through its checks.
 - **The queue place is unchanged:** after 0055, with 0054's writers.
+
+## Cowork's note (2026-11-17): the certificate and refusal writer and the envelope go first, as order 0076
+Nick approved 0076 ("I approve both") and asked the same day not to forget CheezML. 0076 builds, ahead of this order's
+queue place:
+- step 0, the vocabulary at a pinned commit;
+- step 3's first two record kinds, the certificate (Comté) and the refusal (Maasdam);
+- the addendum of 2026-11-10: the signed envelope, the encrypted body in two parts, the commitments and the tests;
+- a verifier that anyone can run on the signature, and a reader on its own part.
+
+Its acceptance lines are this order's record lines, met for those two kinds. The other kinds (routing and split,
+helper rejection, field review, conversation turn) and steps 1, 2, 4 and 5 stay here, in this order's queue place.
+0076 also measures how often the store's best-rank facts disagree, and proposes a `cubby:Conflict` refusal of kind
+`cubby:ValueConflict` for them, for Nick's yes.
