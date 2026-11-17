@@ -29,4 +29,6 @@ cubby_serve = ["LICENSE"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 xfail_strict = false
-addopts = "-q"
+# -p no:hypothesispytest: standin/hypothesis.py (our module) shadows the PyPI `hypothesis` package once
+# standin/ is on the path, and that package's pytest plugin then fails the run at its summary
+addopts = "-q -p no:hypothesispytest"
