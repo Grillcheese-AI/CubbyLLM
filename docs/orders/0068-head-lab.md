@@ -425,7 +425,7 @@ its own row. A dispatch costs about 0.011 ms in a batch here.
 - **Not claimed:** the A100, the serving batteries, sampled talk. Nothing under `cubbyllm/` is touched.
 
 ### Step 2b, timed: 0.674 ms against the 32k head's 0.557, the line missed by 0.117 (Cowork, 2026-11-17)
-- **Log:** `validation/logs/head_lab_time_grilly_card_2026-11-17.json` (grilly2 `cowork/shortlist-head` at 248a738,
+- **Log:** `validation/logs/head_lab_time_grilly_card_2026-11-17_248a738.json` (grilly2 `cowork/shortlist-head` at 248a738,
   the same 50 states, run once).
 - **Route 5 on the card: 0.674 ms** a token (p50; p90 0.727), from 43.085 in step 2. The full head **1.679**, a full
   32k head **0.557**. The line is **missed** by 0.117 ms; route 5 is now well under the full head it would replace.
@@ -467,8 +467,8 @@ numbers are found, not what the union is, so the route and its read stand as the
   workgroup per extra rank. Not changed here.
 
 ### Step 2c, timed: 0.640 ms against the 32k head's 0.544, still missed (Cowork, 2026-11-17)
-- **Log:** `validation/logs/head_lab_time_grilly_card_2026-11-17.json` (grilly2 52028cd, the same 50 states; the
-  2b timing's log is kept beside it as `..._248a738.json`).
+- **Log:** `validation/logs/head_lab_time_grilly_card_2026-11-17_52028cd.json` (grilly2 52028cd, the same 50
+  states; each card timing's log is named by its build).
 - **Route 5: 0.640 ms** (p50; p90 0.675), the full head 1.679, a full 32k head **0.544**. **Missed** by 0.096 ms.
   The check: 50 of 50 held, 50 of 50 the full head's token, none short.
 - **The ranking dispatch still takes 0.207 ms** (2b's plan: 0.232); everything else moved little (context 0.094,
@@ -488,3 +488,28 @@ numbers are found, not what the union is, so the route and its read stand as the
 - **Checked before the timing:** grilly2's Rust and Python tests. The held-in union check runs after it, on every
   position of `heldin_val.npz` again, now keeping every difference that is not short.
 - **Timed:** the same command, the same 50 states, the same line.
+
+### Step 2d, timed: route 5 0.495 ms against the 32k head's 0.560, the line met (Cowork, 2026-11-17)
+- **Log:** `validation/logs/head_lab_time_grilly_card_2026-11-17_3cba3e3.json` (grilly2 3cba3e3, the same 50
+  states, batch 1, fp32, p50 of 50 after 3 warm-ups, run once).
+- **Route 5 on the card: 0.495 ms** a token (p50; mean 0.504, p90 0.562). A full 32k head **0.560** (p90 0.645),
+  the full head **1.692**. The line, route 5 at most a full 32k head's time: **met**, by 0.065 ms at the p50 (at
+  the p90 it is 0.562 against 0.645).
+- **Check:** the union held the full head's token on all 50 states and the card chose it on all 50; none short;
+  the union averaged 10,010.3 rows (most 10,221).
+- **Each dispatch:** context 0.094 (with the batch's submit), Hamming 0.028, ranking 0.041 (the log's stage list
+  still calls it "plan"), mark 0.026, count 0.004, cut 0.013, score 0.101, best 0.002; all eight and a wait 0.310,
+  and reading the token back takes the rest, through the same path as both heads'.
+- **The held-in union check** (`..._heldin_val_3cba3e3.json`): 52,746 of 53,248 the same, 502 differ, 497 of them
+  short, and the chosen token the same on all 502: 2b's and 2c's result to the position. All 5 that are not short
+  have two clusters next to the cut (ranks 108, 61, 33, 157 and 51, the cut at 108, 62, 33, 158 and 52) scoring
+  within 8.6e-8 to 1.33e-7 of each other relative to their score: float32 rounding, numpy's order against the
+  card's.
+- **What is established:** on this card, at batch 1 with the trained head in fp32, route 5 picks the next token
+  from a 128,000-token head in less time than a full 32,000-token head takes, with nothing trained, choosing the
+  full head's token on every timed state. The steps to get here, all kept in the logs: 43.085 ms with
+  today's ops and the list on the host (step 2), 0.674 with the step on the card (2b), 0.640 and then 0.495 once
+  the ranking stopped being one workgroup's serial work (2c, 2d).
+- **What is not:** the A100 (a Colab session, Nick's to open); batches larger than 1 (not timed); wiring into
+  grilly2's decode loop and Cubby's serving path, then the serving batteries and sampled talk. Nothing under
+  `cubbyllm/` is touched. The grilly2 branch is local, for Nick's review.

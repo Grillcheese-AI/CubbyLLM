@@ -18,7 +18,8 @@ The line (0050's): route 5 at most a full 32k head's time. Also checked: route 5
 the union holds it.
 
     uv run --project <grilly2> python validation/head_lab_time.py --export <base export> --dumps <head_shortlist folder>
--> validation/logs/head_lab_time_grilly_<date>.json (host), head_lab_time_grilly_card_<date>.json (card)
+-> validation/logs/head_lab_time_grilly_<date>.json (host), head_lab_time_grilly_card_<date>_<grilly2 commit>.json
+   (card; the commit is the grilly checkout's when the run ends: do not move it during a run)
 
 Wired: STANDALONE (a timing; order 0068's report reads it). Imports grilly (grilly2), never torch.
 """
@@ -41,7 +42,8 @@ sys.path[:0] = [os.path.dirname(HERE), HERE]
 
 __wiring__ = "STANDALONE"
 
-STAGES = ("context", "hamming", "plan", "mark", "count", "cut", "score", "best")
+# the card build's dispatches in order (the 2026-11-17 logs, through grilly2 3cba3e3's, call the third "plan": it ranks)
+STAGES = ("context", "hamming", "rank", "mark", "count", "cut", "score", "best")
 
 
 def context_ids(screen, order: np.ndarray, k: int, succ_row: np.ndarray | None) -> np.ndarray:
@@ -196,8 +198,8 @@ def main() -> None:
     t = res["times"]
     res["line"] = {"route5_p50_ms": t["route5"]["p50_ms"], "head32k_p50_ms": t["head32k"]["p50_ms"],
                    "at_most_a_32k_heads_time": t["route5"]["p50_ms"] <= t["head32k"]["p50_ms"]}
-    tag = "grilly_card" if card is not None else "grilly"
-    path = os.path.join(HERE, "logs", f"head_lab_time_{tag}_{res['date']}.json")
+    tag = f"grilly_card_{res['date']}_{res['grilly2']}" if card is not None else f"grilly_{res['date']}"
+    path = os.path.join(HERE, "logs", f"head_lab_time_{tag}.json")
     json.dump(res, open(path, "w", encoding="utf-8"), indent=1)
     print(json.dumps(res, indent=1))
     print("->", os.path.relpath(path, os.path.dirname(HERE)))
