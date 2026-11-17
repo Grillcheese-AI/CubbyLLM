@@ -559,8 +559,8 @@ trunk's weights pass through the card between two tokens.
 - **256k (synthetic, time only): the line is missed** by 0.070 ms (21.756 against 21.686). The route takes 0.599 ms
   inside the step against 3.090 for the full 256k head, so it saves 2.491 ms a step there; doubling the vocabulary
   added 0.153 ms to the route and 1.488 ms to the full head.
-- **The full head's share of a real step:** 1.602 of 22.759 ms at 128k, inside 0050's 7.3 to 9.6% at home; 3.090 of
-  24.247 at 256k.
+- **The full head's share of a real step:** 1.602 of 22.759 ms at 128k, a little under 0050's 7.3 to 9.6% at home
+  (0050 timed the head alone; this is a difference of medians inside the step); 3.090 of 24.247 at 256k.
 - **Agreement while decoding on its own choices (128k, untimed):** route 5 picked the full head's token on 510 of
   512 steps. 7 prompts never differed in 64 steps; on fineweb_edu the first difference came at step 20, and that run
   matched on 62 of 64.
