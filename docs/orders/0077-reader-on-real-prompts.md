@@ -1,6 +1,6 @@
 # 0077 - The description reader on real prompts (round 5: checks inside people's own prompts)
-status: proposed (written on Nick's choice of 2026-11-17, "yea use the stronger option"; it runs after 0074's held-out read, and assumes arm L is kept: if 0074 keeps arm K, this order is revised before it is built)
-written: 2026-11-17 by Cowork · approved: — · hypothesis: none (the preprint's first limitation)
+status: open (approved by Nick 2026-11-17, "i approve 77"; its prompt source revised with him the same day, since round 6 used every screened prompt of 200 characters or more: 0077 reuses round 6's split, Build 1; arm R's rows, SFT set and training wait for 0074's held-out read, and if 0074 keeps arm K this order is revised before they are built)
+written: 2026-11-17 by Cowork · approved: Nick 2026-11-17 · hypothesis: none (the preprint's first limitation)
 
 ## Why
 Every row behind 0073 and 0074 is the generator's. The checks are worded from templates, and the other sentences come
@@ -40,7 +40,11 @@ the replies and verdicts are built as before. So the paper can report a held-out
      prompts used and no answer from either set;
    - **screens:** round 6's screens (`exp_if_follow.rules_of`, `alpaca_rows`' constraint words and counts, and the
      French counterpart), so a kept prompt carries no rule on the reply;
-   - **not reused:** no prompt that 0067's rows used, in any set, and no prompt twice;
+   - **round 6's split, kept** (Nick, 2026-11-17): round 6 used every screened prompt of 200 characters or more, and
+     every French one, so fresh prompts would only be short English ones. train_real and dev_real come from round 6's
+     train and dev prompts, which no description reader has seen. test_real and test_dolly come from round 6's 900
+     held-out English prompts: no adapter was trained on them and none was opened by eye; 0067's v6 reader read them
+     once, with other rules in them, and only its counts were looked at. No prompt is used twice;
    - **length:** at most 600 characters a prompt, so an answer, which copies it, stays inside 900 ids. Prompts under
      200 characters are thinned as in round 6;
    - **benchmarks:** no train or dev prompt shares 5 words with IFEval or IFBench.
@@ -54,11 +58,14 @@ the replies and verdicts are built as before. So the paper can report a held-out
      - **train_real:** 2,000 rows, OASST1 only, English and French. **Dolly text is never trained on:** an adapter
        trained on CC BY-SA text is research only and is not served;
      - **dev_real:** 300 rows, OASST1, for looking;
-     - **test_real:** 300 rows, OASST1 prompts no other set uses;
-     - **test_dolly:** 300 rows, Dolly-15k, English, a source the reader never saw.
+     - **test_real:** 300 rows, English OASST1 prompts drawn with seed 77 from round 6's 524 held-out ones of at most
+       600 characters;
+     - **test_dolly:** 300 rows, Dolly-15k, English: round 6's 300 held-out Dolly prompts of at most 600 characters,
+       all of them, a source the reader never saw.
 
-   French is used where French prompts are left after the screens, and the counts go in the report. The held-out
-   hashes are committed before arm R is trained. The test rows are never opened by eye.
+   French is in train_real and dev_real only. Round 6's French held-out prompts can't be told apart without
+   rebuilding its rows, so there is no French test set and some of them may be trained on. The counts go in the
+   report. The held-out hashes are committed before arm R is trained. The test rows are never opened by eye.
 3. **The SFT set:** 0074's 8,000 train records and the 2,000 real-prompt records, plus 300 held (dev_real). Every
    answer reads back strictly, and every record fits the trainer's 1,280 tokens. A record over it stops the build.
 4. **The notebooks** (from `_build_view_long.py`):
@@ -102,7 +109,7 @@ Counted as in 0074, with its interval (2,000 resamples over the set's rows, here
 - **Tests:**
   - a small build that reads back with the checker, with every prompt line a `task` segment and the spans tiling the
     instruction;
-  - no prompt from 0067's rows or twice;
+  - no held-out prompt of round 6 in train_real or dev_real, and no prompt twice;
   - no Dolly text in any train record;
   - the 600-character bound.
 
