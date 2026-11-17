@@ -35,16 +35,33 @@ SHARDS = ("arxiv", "books", "fineweb_edu", "kbtxt", "nemotron_code", "nemotron_l
           "unified", "verified_facts", "wiki_full", "wikibooks", "wikipedia")
 
 
-def windows(cache: str, name: str, split: str, n: int, length: int, phase: float = 0.0) -> np.ndarray:
-    """(n, length + 1) token windows: evenly spaced over the held-out tail, or over the training region (held-in);
-    `phase` shifts the starts by that share of their spacing (a held-in tuning split apart from the build's)."""
-    arr = np.memmap(os.path.join(cache, f"{name}.u32"), dtype=np.uint32, mode="r")
-    hold = int(json.load(open(os.path.join(cache, "_holdout.json"), encoding="utf-8"))[name])
-    lo, hi = (len(arr) - hold, len(arr)) if split == "heldout" else (0, len(arr) - hold)
+def starts(total: int, hold: int, split: str, n: int, length: int, phase: float = 0.0,
+           avoid_phase: float | None = None) -> list:
+    """The windows' first tokens: evenly spaced over the held-out tail, or over the training region (held-in); `phase`
+    shifts them by that share of their spacing. With `avoid_phase`, a start within `length` + 1 tokens of a start at
+    that phase is dropped, so the windows share no token with the ones read before (order 0068's fresh held-out)."""
+    lo, hi = (total - hold, total) if split == "heldout" else (0, total - hold)
     span = hi - lo - length - 1
     step = span // max(n - 1, 1) if span > 0 else 0
-    starts = [min(lo + span, lo + step * i + int(phase * step)) for i in range(n)] if span > 0 else [lo] * n
-    return np.stack([np.array(arr[s:s + length + 1], dtype=np.int64) for s in starts])
+
+    def at(p: float) -> list:
+        return [min(lo + span, lo + step * i + int(p * step)) for i in range(n)] if span > 0 else [lo] * n
+    out = at(phase)
+    if avoid_phase is not None:
+        old = at(avoid_phase)
+        out = sorted(set(s for s in out if all(abs(s - o) > length for o in old)))
+    return out
+
+
+def windows(cache: str, name: str, split: str, n: int, length: int, phase: float = 0.0,
+            avoid_phase: float | None = None) -> np.ndarray:
+    """(windows, length + 1) tokens at ``starts`` (above); (0, length + 1) when every window is dropped."""
+    arr = np.memmap(os.path.join(cache, f"{name}.u32"), dtype=np.uint32, mode="r")
+    hold = int(json.load(open(os.path.join(cache, "_holdout.json"), encoding="utf-8"))[name])
+    ss = starts(len(arr), hold, split, n, length, phase, avoid_phase)
+    if not ss:
+        return np.zeros((0, length + 1), dtype=np.int64)
+    return np.stack([np.array(arr[s:s + length + 1], dtype=np.int64) for s in ss])
 
 
 class Capture:

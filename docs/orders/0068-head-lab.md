@@ -298,3 +298,28 @@ positions). The rows count the index's pass, K, the coarse pass and N in full, w
      dump needs a card: Nick's call.
   2. The pass on the card through `cubbyllm/ops/packed.py`, timed against a full 32k head (0050's line).
   3. The serving path in grilly2, then the serving batteries and sampled talk.
+
+### Route 5 by distance alone, pre-registered before its dump (Cowork, 2026-11-17, on Nick's "lets do 0068")
+The first of the three next steps above. grilly2's packed top-k ranks by Hamming distance alone, and on held-in the
+norm bought nothing (0.99820 with ties counted against, 0.99812 with the norm, at N = 2,048). If distance alone holds
+on held-out, the card already computes the pass as it stands, and step 2 (the time) needs no new ranking kernel.
+- **The arm:** 0050's frozen context list (screen plus successors, K = 8,192, `index_router_succ.npz`) joined with the
+  N rows nearest the state by Hamming distance, no norm. **N = 2,048,** chosen on held-in by route 5's rule (the
+  fewest rows at or above 0.998 there, ties counted against): 0.99820. Nothing else changes.
+- **Fresh held-out positions** (all four offsets of `heldout.npz` are spent): a new dump, `heldout_b.npz`, from the
+  13 shards' held-out tails, 4 windows of 1,024 at half the earlier spacing (`head_share_torch.py dump --split heldout
+  --windows 4 --phase 0.5 --avoid-phase 0`). A window that would share a token with an earlier held-out window is
+  dropped (the last of each shard), so 39 windows and 39,936 positions; each window's first token is kept in the file
+  and checked against the earlier ones before the read. The dump runs on Nick's Colab card with torch
+  (`notebooks/head_lab_dump.ipynb`), where `heldout.npz` came from grilly2 at home: the full head's best token is
+  recomputed from each saved state at the read, so the comparison is with itself. Its SHA-256 is written here
+  before the read.
+- **Read once, at home on the CPU with six threads** (`validation/head_lab_distance.py`; it refuses a dump it has
+  already read, and a dump whose windows touch the earlier ones). Every position, no skip.
+- **Lines:** overall greedy agreement at least **0.995**, a tie at the Nth distance counted **against** the pass;
+  rows by bytes read per token (the index's pass 4,096, the Hamming pass 4,000, the union's rows scored exactly) at
+  most **32,000**. **Kill:** the agreement missed.
+- **Reported:** the agreement with ties counted for; the interval over the 39 windows (2,000 resamples, seed 68,
+  the 51st to the 1,950th); the context list alone and what the pass catches where it misses; the rows (mean, p99,
+  max); the agreement by shard.
+- **Not claimed, even if it passes:** any time (step 2), the serving batteries and sampled talk (step 3).
