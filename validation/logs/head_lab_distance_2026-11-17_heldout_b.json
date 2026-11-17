@@ -1,0 +1,55 @@
+{
+ "what": "order 0068: route 5 with the Hamming pass by distance alone, fresh held-out, read once",
+ "date": "2026-11-17",
+ "dump": "heldout_b",
+ "sha256": "eef2d754ba806991707ec4deff9edeeced277b72a51e3bcfbc42ca3df76de448",
+ "fresh": {
+  "windows": 39,
+  "closest_gap_to_an_earlier_window": 7251,
+  "shares_no_token": true
+ },
+ "k": 8192,
+ "n": 2048,
+ "threads": "6",
+ "read": {
+  "positions": 39936,
+  "agree": 0.99772,
+  "misses": 91,
+  "agree_ties_for": 0.9979,
+  "interval_95": [
+   0.99674,
+   0.99852
+  ],
+  "context_list_alone": 0.97947,
+  "caught_where_the_list_misses": 0.88902,
+  "rows_exact": {
+   "mean": 10079.2,
+   "p99": 10240,
+   "max": 10261
+  },
+  "rows_by_bytes": {
+   "index_pass": 4096,
+   "hamming_pass": 4000.0,
+   "mean_total": 18175.2
+  },
+  "by_shard": {
+   "arxiv": 0.99935,
+   "books": 0.9974,
+   "fineweb_edu": 0.9987,
+   "kbtxt": 0.99674,
+   "nemotron_code": 0.99967,
+   "nemotron_legal": 0.99772,
+   "nemotron_qa": 0.99805,
+   "pretrain_ext": 0.99902,
+   "unified": 1.0,
+   "verified_facts": 0.99805,
+   "wiki_full": 0.99512,
+   "wikibooks": 0.99219,
+   "wikipedia": 0.99837
+  },
+  "lines": {
+   "agree_at_least_0.995": true,
+   "rows_at_most_32000": true
+  }
+ }
+}

@@ -330,3 +330,28 @@ on held-out, the card already computes the pass as it stands, and step 2 (the ti
 - Found on the way: the notebook copied the dump's log under one name with a glob that also matched 0050's committed
   log of 2026-11-05, so the copy kept on Drive is 0050's; the card of this dump is not recorded. The notebook now
   copies only the log of the day it runs. It changes nothing in the file read.
+
+### Route 5 by distance alone, read: both lines met on fresh held-out (Cowork, 2026-11-17)
+- **Log:** `validation/logs/head_lab_distance_2026-11-17_heldout_b.json` (`heldout_b.npz`, SHA-256 `eef2d754...`
+  as recorded above; 39 windows, closest to an earlier held-out window by 7,251 tokens, so none shares a token; read
+  once, every position, on this machine's CPU with six threads).
+- **Overall greedy agreement with the full head: 0.99772** with a tie at the 2,048th distance counted against the
+  pass (91 misses in 39,936 positions); 0.99790 with ties counted for. Interval over the windows: **0.99674 to
+  0.99852**. The line is 0.995: **met**, the whole interval above it.
+- **Rows by bytes: 18,175** a token on average (the index's pass 4,096, the Hamming pass 4,000, the union's rows
+  10,079; p99 10,240, most 10,261). The line is 32,000: **met.** It is 57% of a 32k head and 14% of the full head.
+- The context list alone agrees on 0.97947 here (0.98445 on `heldout.npz`'s offset 3); the pass catches 88.9% of
+  what it misses (route 5 with the norm: 84% on offset 3).
+- **By shard,** with ties against: arxiv 0.99935, books 0.99740, fineweb_edu 0.99870, kbtxt 0.99674, nemotron_code
+  0.99967, nemotron_legal 0.99772, nemotron_qa 0.99805, pretrain_ext 0.99902, unified 1.0, verified_facts 0.99805,
+  wiki_full 0.99512, wikibooks 0.99219, wikipedia 0.99837. Wikibooks is the one shard under 0.995 (3 windows, 3,072
+  positions); the line is the overall rate.
+- **What is established:** the pass needs no norm. Ranked by Hamming distance alone, which is what grilly2's packed
+  top-k computes on the card today, the union of the context list and the 2,048 nearest rows holds the full head's
+  choice on 99.77% of fresh held-out positions, from 18,175 rows of 128,000, with nothing trained.
+- **What is not, unchanged from route 5:** any time; the serving batteries; sampled talk. Next is step 2 above: the
+  pass on a card through `cubbyllm/ops/packed.py`, timed against a full 32k head on grilly2 and on an A100. The
+  constraint of this order stands: no GPU job at home without Nick's word, so the home card waits for it.
+- **Found on the way:** the system Python here lacks `safetensors`, so the first start stopped while loading the
+  head's rows, before any position was read and before any log was written; the read ran with grilly2's
+  environment, as the earlier 0068 reads did.
