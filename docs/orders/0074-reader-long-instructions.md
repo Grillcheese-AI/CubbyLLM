@@ -1,5 +1,5 @@
 # 0074 - The description reader learns long instructions (round 4: trained on 2 to 8 parts, read on fresh rows)
-status: in progress (approved by Nick on 2026-11-16: "approve"; built by Cowork on branch `cowork/0074` from `cowork/0073` while Code A is signed out; steps 1 and 2 built on 2026-11-16: the rows exist, the hashes of test, test_long and test_longer are committed, the SFT set and the notebooks are written; nothing is trained: arm L's run on Colab is Nick's, after the branch is pushed on his yes)
+status: review (approved by Nick on 2026-11-16: "approve"; built by Cowork on branch `cowork/0074`; held-out read 2026-11-17: arm L kept by line 9, with no kill and every line passed; for Code A's review before the merge)
 written: 2026-11-16 by Cowork, on Nick's "yes" to the next step 0073's line 4 points to · approved: 2026-11-16 by Nick ("approve") · hypothesis: none (0073's line 4)
 
 ## Why
@@ -209,3 +209,75 @@ it, and no held-out set has been read. Logs: `validation/logs/view_long_dev_{l,k
   form than the gold's. Arm K: 11, 71 and 16.
 - Nothing here changes the read: the decoder, the grammar and the scoring stay as they are for the held-out sets.
   `view_long_read_test.ipynb` can run: it needs these two reports in the branch it clones.
+
+### Held-out read, the lines judged (Cowork, 2026-11-17, branch `cowork/0074`)
+Nick read test, test_long and test_longer on Colab (`view_long_read_test.ipynb`), arm L and arm K, free values, 900
+rows each, once. Arm L's 900 answers all ended `finished`; arm K's ended `finished` 862 times and at the 900-id limit
+38 times, all on test_longer. Scored at home on the shared VM with `exp_view_split_score.py`, compared with
+`exp_view_long_compare.py` (seed 74). Logs: `validation/logs/view_long_test_{l,k}.json`,
+`view_long_compare_0074.json`, `view_long_time_l.json`. The answers stay off-repo and no held-out row was opened.
+
+| | test (2 to 4 parts), L | test, K | test_long (5 to 8), L | test_long, K |
+|---|---|---|---|---|
+| Silent drops | 0 | 0 | 0 | 0 |
+| Gold checks with their line | 901 / 902 = 0.9989 | 900 / 902 = 0.9978 | 1,908 / 1,910 = 0.999 | 1,860 / 1,910 = 0.9738 |
+| Agreement | 3,269 / 3,287 = 0.9945 | 3,252 / 3,271 = 0.9942 | 4,514 / 4,548 = 0.9925 | 3,975 / 4,349 = 0.914 |
+| False passes | 4 / 3,287 = 0.0012 | 4 / 3,271 = 0.0012 | 3 / 4,548 = 0.0007 | 79 / 4,349 = 0.0182 |
+| False passes over replies built to fail | 4 / 1,639 = 0.0024 | 4 / 1,631 = 0.0025 | 3 / 2,522 = 0.0012 | 79 / 2,410 = 0.0328 |
+| Parts right | 900 / 902 = 0.9978 | 897 / 902 = 0.9945 | 1,901 / 1,910 = 0.9953 | 1,711 / 1,910 = 0.8958 |
+| Parts right at positions 1 to 4 / 5 to 8 | | | 1,197 / 1,200 = 0.9975; 704 / 710 = 0.9915 | 1,169 / 1,200 = 0.9742; 542 / 710 = 0.7634 |
+| Parts fixed by one reversal | 0 / 902 | 0 / 902 | 2 / 1,910 = 0.001 | 22 / 1,910 = 0.0115 |
+| Groups right | 156 / 156 = 1.0 | 154 / 156 = 0.9872 | 363 / 364 = 0.9973 | 341 / 364 = 0.9368 |
+| Replies checked | 3,287 / 3,287 = 1.0 | 3,271 / 3,287 = 0.9951 | 4,548 / 4,548 = 1.0 | 4,349 / 4,548 = 0.9562 |
+| Gold checks asked (reader + host) | 1 + 0 = 0.0011 | 1 + 2 = 0.0033 | 2 + 0 = 0.001 | 18 + 19 = 0.0194 |
+| False passes on rows where a gold check was written `asked` | 4 | 4 | 2 | 14 |
+
+- **Line 1** (silent drops 0): passed on every set, both arms.
+- **Line 2** (test): arm L passes every bound, and so does arm K.
+- **Line 3** (no loss on test): false passes over replies built to fail 4 / 1,639 (L) and 4 / 1,631 (K); interval of
+  L - K -0.0001 to 0.0, not above 0: **passed**. All 4 of each arm's false passes are on one row of 2 parts where the
+  reader wrote a plain check `asked`.
+- **Line 4** (test_long, now trained on): arm L passes every bound. Agreement on test_long is 0.998 of test, and parts
+  right at 5 to 8 are 0.994 of the rate at 1 to 4. Arm K does not pass agreement (0.914), parts right (0.8958),
+  groups right (0.9368) or parts right at 5 to 8 over 1 to 4 (0.7836), and hits no kill.
+- **Line 5** (the order's claim, test_long): false passes over replies built to fail 3 / 2,522 (L) against
+  79 / 2,410 (K), interval of L - K -0.0419 to -0.0219, whole below 0; parts right 1,901 / 1,910 against
+  1,711 / 1,910, interval 0.0829 to 0.1157, whole above 0: **passed**.
+- **Line 6** (asked at most 10%): arm L 0.0011 on test and 0.001 on test_long: passed.
+- **Line 7** (time at home, one at a time on grilly2, 60 dev rows): medians 3.9 s (2 to 4 parts) and 6.53 s (5 to 8),
+  95th percentiles 5.06 s and 9.07 s, 5.79% of the time in the grammar: passed, served.
+- **Line 8** (test_longer, 9 to 12 parts, decides nothing):
+
+  | test_longer | Arm L | Arm K |
+  |---|---|---|
+  | Gold checks with their line | 3,093 / 3,141 = 0.9847 | 2,699 / 3,141 = 0.8593 |
+  | Agreement | 5,280 / 5,717 = 0.9236 | 2,910 / 4,106 = 0.7087 |
+  | False passes | 110 / 5,717 = 0.0192 | 176 / 4,106 = 0.0429 |
+  | False passes over replies built to fail | 110 / 3,526 = 0.0312 | 176 / 2,530 = 0.0696 |
+  | Parts right | 2,895 / 3,141 = 0.9217 | 1,717 / 3,141 = 0.5466 |
+  | Parts right at positions 1 to 4 / 9 to 12 | 1,185 / 1,200 = 0.9875; 599 / 741 = 0.8084 | 1,040 / 1,200 = 0.8667; 156 / 741 = 0.2105 |
+  | Parts fixed by one reversal | 21 / 3,141 = 0.0067 | 99 / 3,141 = 0.0315 |
+  | Groups right | 659 / 680 = 0.9691 | 472 / 680 = 0.6941 |
+  | Replies checked | 5,717 / 5,855 = 0.9764 | 4,106 / 5,855 = 0.7013 |
+  | Gold checks asked (reader + host) | 15 + 7 = 0.007 | 49 + 75 = 0.0395 |
+
+  By position, arm L: 299, 298, 297, 291, 291, 281, 272, 267 and 260 of 300 at 1 to 9, then 189 / 231, 106 / 146 and
+  44 / 64 at 10, 11 and 12. Arm K: 295, 289, 255, 201, 167, 140, 118, 96 and 78 of 300, then 51 / 231, 20 / 146 and
+  7 / 64. Arm L, trained on up to 8, holds well past 8 and slips from the tenth check on; it does not fall the way arm
+  K fell after the fifth.
+- **Line 9:** arm L hits no kill and lines 3 and 5 hold, so **arm L replaces arm K**. No line of 2, 4, 6 or 7 is
+  missed by arm L.
+- **Line 10,** parts right, L / K:
+  - by direction of the bound, test_long: lower 394 / 356 of 397, upper 394 / 345 of 395, exactly 29 / 23 of 29,
+    other 170 / 138 of 173, no number 914 / 849 of 916; unweighted mean of the four 0.9931 / 0.8402 (test
+    0.9886 / 0.9871, test_longer 0.9032 / 0.4565);
+  - by negation in the words, test_long: none 1,475 / 1,326 of 1,480, one 402 / 362 of 406, two 24 / 23 of 24;
+  - by place, test_long: size 481 / 406 of 484, count 364 / 324 of 368, position 142 / 132 of 142;
+  - by number of parts: 193 / 193 of 194 (2), 312 / 312 (3), 395 / 392 of 396 (4), 435 / 429 of 435 (5),
+    437 / 415 of 438 (6), 580 / 509 of 581 (7), 449 / 358 of 456 (8), 607 / 434 of 621 (9), 796 / 499 of 850 (10),
+    826 / 457 of 902 (11), 666 / 327 of 768 (12);
+  - by connective, test_long: if 93 / 85 of 93, either 193 / 185 of 193, unless 77 / 71 of 78;
+  - by language, test_long: English 1,188 / 1,088 of 1,192, French 713 / 623 of 718;
+  - false passes on rows where a gold check was written `asked`: test 4 / 4, test_long 2 / 14, test_longer 25 / 34.
+- **Not verified here:** time on a served host (CB_RULES stays off); arm L on real prompts (order 0077, now built on
+  arm L as it assumed).

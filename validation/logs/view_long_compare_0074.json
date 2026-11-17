@@ -1,0 +1,785 @@
+{
+ "order": "0074",
+ "what": "arm L against Acceptance, arm K beside it, and line 9",
+ "reports": {
+  "l": "view_long_l_test.jsonl",
+  "k": "view_long_k_test.jsonl"
+ },
+ "arms": {
+  "l": {
+   "line 1: characters dropped silently, every set": {
+    "counts": [
+     0
+    ],
+    "needs": "0 (kill above)",
+    "passes": true,
+    "kill": false
+   },
+   "line 2: gold checks with their line, test": {
+    "counts": [
+     901,
+     902
+    ],
+    "rate": 0.9989,
+    "needs": "at least 0.90",
+    "passes": true,
+    "kill": false
+   },
+   "line 2: agreement, test": {
+    "counts": [
+     3269,
+     3287
+    ],
+    "rate": 0.9945,
+    "needs": "at least 0.95",
+    "passes": true,
+    "kill": false
+   },
+   "line 2: false passes, test": {
+    "counts": [
+     4,
+     3287
+    ],
+    "rate": 0.0012,
+    "needs": "at most 0.02 (kill above 0.05)",
+    "passes": true,
+    "kill": false
+   },
+   "line 2: false passes over replies built to fail, test (reported)": {
+    "counts": [
+     4,
+     1639
+    ],
+    "rate": 0.0024,
+    "needs": "reported: the rate that counts for a user",
+    "passes": true,
+    "kill": false
+   },
+   "line 2: parts right, test": {
+    "counts": [
+     900,
+     902
+    ],
+    "rate": 0.9978,
+    "needs": "at least 0.95",
+    "passes": true,
+    "kill": false
+   },
+   "line 2: parts fixed by one reversal, test": {
+    "counts": [
+     0,
+     902
+    ],
+    "rate": 0.0,
+    "needs": "at most 0.03 (kill above 0.08)",
+    "passes": true,
+    "kill": false
+   },
+   "line 2: groups right, test": {
+    "counts": [
+     156,
+     156
+    ],
+    "rate": 1.0,
+    "needs": "at least 0.97 (kill below 0.90)",
+    "passes": true,
+    "kill": false
+   },
+   "line 2: replies checked, test": {
+    "counts": [
+     3287,
+     3287
+    ],
+    "rate": 1.0,
+    "needs": "at least 0.98",
+    "passes": true,
+    "kill": false
+   },
+   "line 4: gold checks with their line, test_long": {
+    "counts": [
+     1908,
+     1910
+    ],
+    "rate": 0.999,
+    "needs": "at least 0.90",
+    "passes": true,
+    "kill": false
+   },
+   "line 4: agreement, test_long": {
+    "counts": [
+     4514,
+     4548
+    ],
+    "rate": 0.9925,
+    "needs": "at least 0.95",
+    "passes": true,
+    "kill": false
+   },
+   "line 4: false passes, test_long": {
+    "counts": [
+     3,
+     4548
+    ],
+    "rate": 0.0007,
+    "needs": "at most 0.02 (kill above 0.05)",
+    "passes": true,
+    "kill": false
+   },
+   "line 4: false passes over replies built to fail, test_long (reported)": {
+    "counts": [
+     3,
+     2522
+    ],
+    "rate": 0.0012,
+    "needs": "reported: the rate that counts for a user",
+    "passes": true,
+    "kill": false
+   },
+   "line 4: parts right, test_long": {
+    "counts": [
+     1901,
+     1910
+    ],
+    "rate": 0.9953,
+    "needs": "at least 0.95",
+    "passes": true,
+    "kill": false
+   },
+   "line 4: parts fixed by one reversal, test_long": {
+    "counts": [
+     2,
+     1910
+    ],
+    "rate": 0.001,
+    "needs": "at most 0.03 (kill above 0.08)",
+    "passes": true,
+    "kill": false
+   },
+   "line 4: groups right, test_long": {
+    "counts": [
+     363,
+     364
+    ],
+    "rate": 0.9973,
+    "needs": "at least 0.97 (kill below 0.90)",
+    "passes": true,
+    "kill": false
+   },
+   "line 4: replies checked, test_long": {
+    "counts": [
+     4548,
+     4548
+    ],
+    "rate": 1.0,
+    "needs": "at least 0.95",
+    "passes": true,
+    "kill": false
+   },
+   "line 4: parts right at positions 5 to 8 over 1 to 4, test_long": {
+    "counts": [
+     [
+      704,
+      710
+     ],
+     [
+      1197,
+      1200
+     ]
+    ],
+    "rate": 0.994,
+    "needs": "at least 0.90",
+    "passes": true,
+    "kill": false
+   },
+   "line 6: gold checks asked, test": {
+    "counts": [
+     1,
+     902
+    ],
+    "rate": 0.0011,
+    "needs": "at most 0.10",
+    "passes": true,
+    "kill": false
+   },
+   "line 6: gold checks asked, test_long": {
+    "counts": [
+     2,
+     1910
+    ],
+    "rate": 0.001,
+    "needs": "at most 0.10",
+    "passes": true,
+    "kill": false
+   },
+   "line 8: gold checks with their line, test_longer (reported)": {
+    "counts": [
+     3093,
+     3141
+    ],
+    "rate": 0.9847,
+    "needs": "at least 0.90",
+    "passes": null,
+    "kill": false
+   },
+   "line 8: agreement, test_longer (reported)": {
+    "counts": [
+     5280,
+     5717
+    ],
+    "rate": 0.9236,
+    "needs": "at least 0.95",
+    "passes": null,
+    "kill": false
+   },
+   "line 8: false passes, test_longer (reported)": {
+    "counts": [
+     110,
+     5717
+    ],
+    "rate": 0.0192,
+    "needs": "at most 0.02 (kill above 0.05)",
+    "passes": null,
+    "kill": false
+   },
+   "line 8: false passes over replies built to fail, test_longer (reported) (reported)": {
+    "counts": [
+     110,
+     3526
+    ],
+    "rate": 0.0312,
+    "needs": "reported: the rate that counts for a user",
+    "passes": null,
+    "kill": false
+   },
+   "line 8: parts right, test_longer (reported)": {
+    "counts": [
+     2895,
+     3141
+    ],
+    "rate": 0.9217,
+    "needs": "at least 0.95",
+    "passes": null,
+    "kill": false
+   },
+   "line 8: parts fixed by one reversal, test_longer (reported)": {
+    "counts": [
+     21,
+     3141
+    ],
+    "rate": 0.0067,
+    "needs": "at most 0.03 (kill above 0.08)",
+    "passes": null,
+    "kill": false
+   },
+   "line 8: groups right, test_longer (reported)": {
+    "counts": [
+     659,
+     680
+    ],
+    "rate": 0.9691,
+    "needs": "at least 0.97 (kill below 0.90)",
+    "passes": null,
+    "kill": false
+   },
+   "line 8: replies checked, test_longer (reported)": {
+    "counts": [
+     5717,
+     5855
+    ],
+    "rate": 0.9764,
+    "needs": "at least 0.95",
+    "passes": null,
+    "kill": false
+   },
+   "line 8: parts right by position, test_longer (reported)": {
+    "1": [
+     299,
+     300
+    ],
+    "2": [
+     298,
+     300
+    ],
+    "3": [
+     297,
+     300
+    ],
+    "4": [
+     291,
+     300
+    ],
+    "5": [
+     291,
+     300
+    ],
+    "6": [
+     281,
+     300
+    ],
+    "7": [
+     272,
+     300
+    ],
+    "8": [
+     267,
+     300
+    ],
+    "9": [
+     260,
+     300
+    ],
+    "10": [
+     189,
+     231
+    ],
+    "11": [
+     106,
+     146
+    ],
+    "12": [
+     44,
+     64
+    ]
+   }
+  },
+  "k": {
+   "line 1: characters dropped silently, every set": {
+    "counts": [
+     0
+    ],
+    "needs": "0 (kill above)",
+    "passes": true,
+    "kill": false
+   },
+   "line 2: gold checks with their line, test": {
+    "counts": [
+     900,
+     902
+    ],
+    "rate": 0.9978,
+    "needs": "at least 0.90",
+    "passes": true,
+    "kill": false
+   },
+   "line 2: agreement, test": {
+    "counts": [
+     3252,
+     3271
+    ],
+    "rate": 0.9942,
+    "needs": "at least 0.95",
+    "passes": true,
+    "kill": false
+   },
+   "line 2: false passes, test": {
+    "counts": [
+     4,
+     3271
+    ],
+    "rate": 0.0012,
+    "needs": "at most 0.02 (kill above 0.05)",
+    "passes": true,
+    "kill": false
+   },
+   "line 2: false passes over replies built to fail, test (reported)": {
+    "counts": [
+     4,
+     1631
+    ],
+    "rate": 0.0025,
+    "needs": "reported: the rate that counts for a user",
+    "passes": true,
+    "kill": false
+   },
+   "line 2: parts right, test": {
+    "counts": [
+     897,
+     902
+    ],
+    "rate": 0.9945,
+    "needs": "at least 0.95",
+    "passes": true,
+    "kill": false
+   },
+   "line 2: parts fixed by one reversal, test": {
+    "counts": [
+     0,
+     902
+    ],
+    "rate": 0.0,
+    "needs": "at most 0.03 (kill above 0.08)",
+    "passes": true,
+    "kill": false
+   },
+   "line 2: groups right, test": {
+    "counts": [
+     154,
+     156
+    ],
+    "rate": 0.9872,
+    "needs": "at least 0.97 (kill below 0.90)",
+    "passes": true,
+    "kill": false
+   },
+   "line 2: replies checked, test": {
+    "counts": [
+     3271,
+     3287
+    ],
+    "rate": 0.9951,
+    "needs": "at least 0.98",
+    "passes": true,
+    "kill": false
+   },
+   "line 4: gold checks with their line, test_long": {
+    "counts": [
+     1860,
+     1910
+    ],
+    "rate": 0.9738,
+    "needs": "at least 0.90",
+    "passes": true,
+    "kill": false
+   },
+   "line 4: agreement, test_long": {
+    "counts": [
+     3975,
+     4349
+    ],
+    "rate": 0.914,
+    "needs": "at least 0.95",
+    "passes": false,
+    "kill": false
+   },
+   "line 4: false passes, test_long": {
+    "counts": [
+     79,
+     4349
+    ],
+    "rate": 0.0182,
+    "needs": "at most 0.02 (kill above 0.05)",
+    "passes": true,
+    "kill": false
+   },
+   "line 4: false passes over replies built to fail, test_long (reported)": {
+    "counts": [
+     79,
+     2410
+    ],
+    "rate": 0.0328,
+    "needs": "reported: the rate that counts for a user",
+    "passes": true,
+    "kill": false
+   },
+   "line 4: parts right, test_long": {
+    "counts": [
+     1711,
+     1910
+    ],
+    "rate": 0.8958,
+    "needs": "at least 0.95",
+    "passes": false,
+    "kill": false
+   },
+   "line 4: parts fixed by one reversal, test_long": {
+    "counts": [
+     22,
+     1910
+    ],
+    "rate": 0.0115,
+    "needs": "at most 0.03 (kill above 0.08)",
+    "passes": true,
+    "kill": false
+   },
+   "line 4: groups right, test_long": {
+    "counts": [
+     341,
+     364
+    ],
+    "rate": 0.9368,
+    "needs": "at least 0.97 (kill below 0.90)",
+    "passes": false,
+    "kill": false
+   },
+   "line 4: replies checked, test_long": {
+    "counts": [
+     4349,
+     4548
+    ],
+    "rate": 0.9562,
+    "needs": "at least 0.95",
+    "passes": true,
+    "kill": false
+   },
+   "line 4: parts right at positions 5 to 8 over 1 to 4, test_long": {
+    "counts": [
+     [
+      542,
+      710
+     ],
+     [
+      1169,
+      1200
+     ]
+    ],
+    "rate": 0.7836,
+    "needs": "at least 0.90",
+    "passes": false,
+    "kill": false
+   },
+   "line 6: gold checks asked, test": {
+    "counts": [
+     3,
+     902
+    ],
+    "rate": 0.0033,
+    "needs": "at most 0.10",
+    "passes": true,
+    "kill": false
+   },
+   "line 6: gold checks asked, test_long": {
+    "counts": [
+     37,
+     1910
+    ],
+    "rate": 0.0194,
+    "needs": "at most 0.10",
+    "passes": true,
+    "kill": false
+   },
+   "line 8: gold checks with their line, test_longer (reported)": {
+    "counts": [
+     2699,
+     3141
+    ],
+    "rate": 0.8593,
+    "needs": "at least 0.90",
+    "passes": null,
+    "kill": false
+   },
+   "line 8: agreement, test_longer (reported)": {
+    "counts": [
+     2910,
+     4106
+    ],
+    "rate": 0.7087,
+    "needs": "at least 0.95",
+    "passes": null,
+    "kill": false
+   },
+   "line 8: false passes, test_longer (reported)": {
+    "counts": [
+     176,
+     4106
+    ],
+    "rate": 0.0429,
+    "needs": "at most 0.02 (kill above 0.05)",
+    "passes": null,
+    "kill": false
+   },
+   "line 8: false passes over replies built to fail, test_longer (reported) (reported)": {
+    "counts": [
+     176,
+     2530
+    ],
+    "rate": 0.0696,
+    "needs": "reported: the rate that counts for a user",
+    "passes": null,
+    "kill": false
+   },
+   "line 8: parts right, test_longer (reported)": {
+    "counts": [
+     1717,
+     3141
+    ],
+    "rate": 0.5466,
+    "needs": "at least 0.95",
+    "passes": null,
+    "kill": false
+   },
+   "line 8: parts fixed by one reversal, test_longer (reported)": {
+    "counts": [
+     99,
+     3141
+    ],
+    "rate": 0.0315,
+    "needs": "at most 0.03 (kill above 0.08)",
+    "passes": null,
+    "kill": false
+   },
+   "line 8: groups right, test_longer (reported)": {
+    "counts": [
+     472,
+     680
+    ],
+    "rate": 0.6941,
+    "needs": "at least 0.97 (kill below 0.90)",
+    "passes": null,
+    "kill": false
+   },
+   "line 8: replies checked, test_longer (reported)": {
+    "counts": [
+     4106,
+     5855
+    ],
+    "rate": 0.7013,
+    "needs": "at least 0.95",
+    "passes": null,
+    "kill": false
+   },
+   "line 8: parts right by position, test_longer (reported)": {
+    "1": [
+     295,
+     300
+    ],
+    "2": [
+     289,
+     300
+    ],
+    "3": [
+     255,
+     300
+    ],
+    "4": [
+     201,
+     300
+    ],
+    "5": [
+     167,
+     300
+    ],
+    "6": [
+     140,
+     300
+    ],
+    "7": [
+     118,
+     300
+    ],
+    "8": [
+     96,
+     300
+    ],
+    "9": [
+     78,
+     300
+    ],
+    "10": [
+     51,
+     231
+    ],
+    "11": [
+     20,
+     146
+    ],
+    "12": [
+     7,
+     64
+    ]
+   }
+  }
+ },
+ "lines not passed": {
+  "l": [],
+  "k": [
+   "line 4: agreement, test_long",
+   "line 4: parts right, test_long",
+   "line 4: groups right, test_long",
+   "line 4: parts right at positions 5 to 8 over 1 to 4, test_long"
+  ]
+ },
+ "line 3": {
+  "what": "no loss on test: not passed if the whole interval of L - K is above 0",
+  "false passes over replies built to fail": {
+   "l": [
+    4,
+    1639
+   ],
+   "k": [
+    4,
+    1631
+   ],
+   "rates": [
+    0.0024,
+    0.0025
+   ],
+   "interval": [
+    -0.0001,
+    0.0
+   ],
+   "resamples": 2000,
+   "resamples with no rate": 0,
+   "within": true,
+   "whole interval below 0": false,
+   "whole interval above 0": false
+  },
+  "passes": true
+ },
+ "line 5": {
+  "what": "on test_long, L - K below 0 for false passes over replies built to fail and above 0 for parts right, the whole interval",
+  "false passes over replies built to fail": {
+   "l": [
+    3,
+    2522
+   ],
+   "k": [
+    79,
+    2410
+   ],
+   "rates": [
+    0.0012,
+    0.0328
+   ],
+   "interval": [
+    -0.0419,
+    -0.0219
+   ],
+   "resamples": 2000,
+   "resamples with no rate": 0,
+   "within": false,
+   "whole interval below 0": true,
+   "whole interval above 0": false
+  },
+  "parts right": {
+   "l": [
+    1901,
+    1910
+   ],
+   "k": [
+    1711,
+    1910
+   ],
+   "rates": [
+    0.9953,
+    0.8958
+   ],
+   "interval": [
+    0.0829,
+    0.1157
+   ],
+   "resamples": 2000,
+   "resamples with no rate": 0,
+   "within": false,
+   "whole interval below 0": false,
+   "whole interval above 0": true
+  },
+  "passes": true
+ },
+ "line 7": {
+  "needs": "medians of at most 8 s (2 to 4 parts) and 12 s (5 to 8); above 25 s not served",
+  "median seconds": [
+   3.9,
+   6.53
+  ],
+  "passes": true,
+  "served": true
+ },
+ "line 9": {
+  "kept": "l",
+  "why": "arm L hits no kill and lines 3 and 5 hold",
+  "kills": {
+   "l": [],
+   "k": []
+  }
+ }
+}

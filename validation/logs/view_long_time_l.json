@@ -1,0 +1,110 @@
+{
+ "order": "0073",
+ "what": "line 8: seconds per instruction at home, one at a time on grilly2, dev rows",
+ "arm": "m",
+ "own_text": false,
+ "adapter": "cubby450m_view_long_l",
+ "export": "base450m_cont",
+ "rows": 60,
+ "seed": 0,
+ "first": "one untimed read before the timed ones",
+ "by number of parts": {
+  "2": {
+   "rows": 8,
+   "median seconds": 2.66,
+   "95th percentile seconds": 3.51,
+   "median ids": 76,
+   "ended": {
+    "finished": 8
+   },
+   "answers whole": 8
+  },
+  "3": {
+   "rows": 9,
+   "median seconds": 3.9,
+   "95th percentile seconds": 4.8,
+   "median ids": 108,
+   "ended": {
+    "finished": 9
+   },
+   "answers whole": 9
+  },
+  "4": {
+   "rows": 10,
+   "median seconds": 4.51,
+   "95th percentile seconds": 5.08,
+   "median ids": 123,
+   "ended": {
+    "finished": 10
+   },
+   "answers whole": 10
+  },
+  "5": {
+   "rows": 11,
+   "median seconds": 5.27,
+   "95th percentile seconds": 6.04,
+   "median ids": 150,
+   "ended": {
+    "finished": 11
+   },
+   "answers whole": 11
+  },
+  "6": {
+   "rows": 7,
+   "median seconds": 5.96,
+   "95th percentile seconds": 6.69,
+   "median ids": 169,
+   "ended": {
+    "finished": 7
+   },
+   "answers whole": 7
+  },
+  "7": {
+   "rows": 6,
+   "median seconds": 7.31,
+   "95th percentile seconds": 8.82,
+   "median ids": 203,
+   "ended": {
+    "finished": 6
+   },
+   "answers whole": 6
+  },
+  "8": {
+   "rows": 9,
+   "median seconds": 7.82,
+   "95th percentile seconds": 9.51,
+   "median ids": 219,
+   "ended": {
+    "finished": 9
+   },
+   "answers whole": 9
+  }
+ },
+ "2 to 4 parts": {
+  "rows": 27,
+  "median seconds": 3.9,
+  "95th percentile seconds": 5.06,
+  "median ids": 108,
+  "ended": {
+   "finished": 27
+  },
+  "answers whole": 27
+ },
+ "5 to 8 parts": {
+  "rows": 33,
+  "median seconds": 6.53,
+  "95th percentile seconds": 9.07,
+  "median ids": 189,
+  "ended": {
+   "finished": 33
+  },
+  "answers whole": 33
+ },
+ "share of the time in the grammar": 0.0579,
+ "line 8": {
+  "needs": "a median of at most 8 s for 2 to 4 parts",
+  "median seconds": 3.9,
+  "passes": true,
+  "served": true
+ }
+}
