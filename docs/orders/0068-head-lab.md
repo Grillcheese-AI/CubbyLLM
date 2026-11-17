@@ -535,3 +535,36 @@ trunk's weights pass through the card between two tokens.
   5 picks the full head's token while the model decodes on route 5's own choices (a separate, untimed pass), and the
   steps to the first difference.
 - **Not claimed:** the A100, batches above 1, sampled talk.
+
+### Step 2e, read: inside a real decode step, route 5 is under the 32k line at 128k and 0.070 ms over it at 256k (Cowork, 2026-11-17)
+- **Log:** `validation/logs/head_lab_decode_2026-11-17_3cba3e3.json` (grilly2 3cba3e3; 8 prompts of 256 held-in
+  tokens, one from each of arxiv, books, fineweb_edu, kbtxt, nemotron_code, nemotron_legal, nemotron_qa and
+  pretrain_ext; 496 timed steps per head; run once).
+
+| head | decode step, p50 ms | p90 ms | the head inside the step, ms |
+| --- | --- | --- | --- |
+| none (the trunk alone) | 21.157 | 22.637 | 0 |
+| full 128k | 22.759 | 24.193 | 1.602 |
+| full 32k | 21.686 | 23.309 | 0.529 |
+| **route 5, 128k** | **21.603** | 23.054 | **0.446** |
+| full 256k (synthetic) | 24.247 | 25.645 | 3.090 |
+| **route 5, 256k (synthetic)** | **21.756** | 23.483 | **0.599** |
+
+  The head's time inside the step is its p50 less the trunk's p50 (a difference of medians, not a median of
+  differences).
+- **128k: the line is met.** Route 5's step is 21.603 ms against the 32k head's 21.686. Inside the step the route
+  takes 0.446 ms, less than it took alone in step 2d (0.495), since it now shares the step's submit and readback.
+  The cache concern of 2d does not show here: the trunk's weights pass between tokens and the route still beats a
+  full 32k head.
+- **256k (synthetic, time only): the line is missed** by 0.070 ms (21.756 against 21.686). The route takes 0.599 ms
+  inside the step against 3.090 for the full 256k head, so it saves 2.491 ms a step there; doubling the vocabulary
+  added 0.153 ms to the route and 1.488 ms to the full head.
+- **The full head's share of a real step:** 1.602 of 22.759 ms at 128k, inside 0050's 7.3 to 9.6% at home; 3.090 of
+  24.247 at 256k.
+- **Agreement while decoding on its own choices (128k, untimed):** route 5 picked the full head's token on 510 of
+  512 steps. 7 prompts never differed in 64 steps; on fineweb_edu the first difference came at step 20, and that run
+  matched on 62 of 64.
+- **Short lists:** 3 of the 496 timed steps at 128k, none at 256k.
+- **What is established:** on this card at batch 1, inside the model's own decode step, the trained 128k head costs
+  less with route 5 than a full 32k head would, and a 256k head would cost 0.070 ms more than a 32k one instead of
+  2.561 ms more. **Not:** the A100, batches above 1, sampled talk, and any agreement at 256k (its head is synthetic).
