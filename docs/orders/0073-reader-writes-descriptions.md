@@ -1,5 +1,5 @@
 # 0073 - The instruction reader writes descriptions and the host compiles them (round 3: two spellings of a negation, read side by side)
-status: open (0067's round 2 was closed on 2026-11-14, a negative result on its line 3, so the build can start; builder: Code A, or Cowork on a branch while Code A is signed out, Nick 2026-11-14: "we will continue here then"; steps 1 to 5 built on branch `cowork/0073` by 2026-11-15: the rows exist and the hashes of test and test_long are committed, the grammar is checked on every row, the two SFT sets are on Drive and the notebooks are written; nothing is trained (the Colab runs are Nick's; the branch is on GitHub since 2026-11-16, on Nick's yes); steps 6 and 7 are built as far as they go without an adapter: the decoder, the scorer, the read's rows file and its two notebooks, point 7's and line 9's scripts, the second chance, arm P's count, line 8's timing script; both arms are trained and timed at home (line 8 passes in both variants), dev is read and point 7 is decided (arm M free, arm W with the own-text rule); what is left is the counted read of test and test_long, Nick's run on Colab, and its scoring at home)
+status: open (0067's round 2 was closed on 2026-11-14, a negative result on its line 3, so the build can start; builder: Code A, or Cowork on a branch while Code A is signed out, Nick 2026-11-14: "we will continue here then"; steps 1 to 5 built on branch `cowork/0073` by 2026-11-15: the rows exist and the hashes of test and test_long are committed, the grammar is checked on every row, the two SFT sets are on Drive and the notebooks are written; nothing is trained (the Colab runs are Nick's; the branch is on GitHub since 2026-11-16, on Nick's yes); steps 6 and 7 are built as far as they go without an adapter: the decoder, the scorer, the read's rows file and its two notebooks, point 7's and line 9's scripts, the second chance, arm P's count, line 8's timing script; both arms are trained and timed at home (line 8 passes in both variants), dev is read and point 7 is decided (arm M free, arm W with the own-text rule); test and test_long are read once and judged on 2026-11-16: arm M is kept by line 9, no arm hits a kill, arm M passes every line on 2 to 4 parts and does not pass line 4 (5 to 8 parts); left: Code A's review of the branch and Nick's ruling on the order)
 written: 2026-11-14 by Cowork, on Nick's "yes" to writing round 3 as one order on the panel's synthesis - approved: 2026-11-14 by Nick ("I approve 0073", with the arms as defined here, narrower than in the synthesis) - hypothesis: none (0067's second reader)
 
 ## Why
@@ -839,3 +839,75 @@ replies, as exact fractions):
 Next: Nick runs `notebooks/view_split_read_test.ipynb` (arm M free, arm W with the own-text rule and arm P, on test
 and test_long, once). The answers are then scored at home (`exp_view_split_score.py --splits test,test_long`,
 `exp_view_reader.py --score --trim`) and judged by `exp_view_split_compare.py`, lines 1 to 9.
+
+### Test and test_long read once, the lines judged (Cowork, 2026-11-16)
+Nick read test and test_long on Colab (`notebooks/view_split_read_test.ipynb`), once: arm M free and arm W with the
+own-text rule (point 7's choices, taken from the branch) and arm P, 300 + 300 rows each, every row read. Scored at
+home on the shared VM (`cubelang-cowork` at b3b3360): `exp_view_split_score.py --splits test,test_long` for M and
+W, `exp_view_reader.py --score --trim` for P, then `exp_view_split_compare.py`. No row and no answer of test or
+test_long was opened; only the counts were read. Logs: `validation/logs/view_split_test_m.json`,
+`view_split_test_w.json`, `view_reader_v2_test_0073.json`, `view_split_compare_0073.json`.
+
+**The result: arm M is kept (line 9) and hits no kill. On 2 to 4 parts it passes every line. Longer than seen it
+does not: line 4 is not passed on two of its three counts.** Arm W hits no kill either.
+
+| | Arm M free (kept) | Arm W own text | Arm P |
+|---|---|---|---|
+| Line 1, silent drops (kill above 0) | 0 | 0 | |
+| Line 2, gold checks with their line, test (at least 90%) | 893 / 903 = 0.9889 | 896 / 903 = 0.9922 | 724 / 903 = 0.8018 (span and kind) |
+| Line 3, agreement, test (at least 95%) | 3,252 / 3,279 = 0.9918 | 3,245 / 3,277 = 0.9902 | 1,823 / 3,168 = 0.5754 |
+| Line 3, false passes, test (at most 2%, kill above 5%) | 10 / 3,279 = 0.0030 | 6 / 3,277 = 0.0018 | 410 / 3,168 = 0.1294 |
+| Line 3, false passes over replies built to fail, test | 10 / 1,633 = 0.0061 | 6 / 1,632 = 0.0037 | |
+| Line 4, agreement on test_long against test's (at least 0.90) | 4,050 / 4,470 = 0.9060; 0.9135 of test's | 3,919 / 4,354 = 0.9001; 0.909 of test's | 489 / 894 = 0.547; 0.9506 of test's |
+| Line 4, false passes, test_long (at most 2%, kill above 5%) | **96 / 4,470 = 0.0215, not passed** | 63 / 4,354 = 0.0145 | 148 / 894 = 0.1655 |
+| Line 4, parts right at positions 5 to 8 against 1 to 4 (at least 0.90) | **559 / 754 = 0.7414 against 1,160 / 1,200 = 0.9667: 0.7669, not passed** | **537 / 754 = 0.7122 against 1,154 / 1,200 = 0.9617: 0.7406, not passed** | |
+| Line 5, parts right, test (at least 95%) | 889 / 903 = 0.9845 | 894 / 903 = 0.9900 | |
+| Line 5, parts fixed by one reversal, test (at most 3%, kill above 8%) | 2 / 903 = 0.0022 | 2 / 903 = 0.0022 | |
+| Line 6, groups right, test (at least 97%, kill below 90%) | 154 / 157 = 0.9809 | 156 / 157 = 0.9936 | |
+| Line 7, replies checked, test (at least 98%) | 3,279 / 3,291 = 0.9964 | 3,277 / 3,291 = 0.9957 | 3,168 / 3,291 = 0.9626 |
+| Line 7, replies checked, test_long (at least 95%) | 4,470 / 4,621 = 0.9673 | **4,354 / 4,621 = 0.9422, not passed** | 894 / 4,621 = 0.1935 |
+| Line 7, gold checks asked, test / test_long (at most 10%) | 3 / 903 = 0.0033; 23 / 1,954 = 0.0118 | 2 / 903 = 0.0022; 25 / 1,954 = 0.0128 | |
+| Line 8, time at home, median for 2 to 4 parts (at most 8 s) | 3.86 s | 3.82 s | |
+
+- **Line 9** (`view_split_compare_0073.json`): no arm is killed. False passes over replies built to fail on test,
+  arm M 10 / 1,633 = 0.0061 and arm W 6 / 1,632 = 0.0037; the difference M - W has the interval -0.0043 to 0.0108
+  (2,000 resamples of test's rows, seed 73, none without a rate), which holds 0: within. Parts right, arm M 889 / 903
+  = 0.9845 and arm W 894 / 903 = 0.9900; interval -0.0163 to 0.0034, within. So the rule written before the build
+  keeps **arm M**. Arm W's counts are lower on false passes and higher on parts right, but not by more than the
+  interval; the rule does not read that as a difference.
+- **Against the baseline on the same rows:** arm P (round 2's program target) on test, false passes 410 / 3,168 =
+  0.1294 against arm M's 10 / 3,279 = 0.0030, and agreement 0.5754 against 0.9918. On test_long arm P's VM could
+  check 894 of 4,621 replies (3,714 asked by the VM). Round 2's own test read was 46 / 492 = 0.0935 false passes on
+  its own rows.
+- **Line 1:** one answer of each arm stopped at the id limit, arm M's on test and arm W's on test_long. Arm M's
+  left 214 characters flagged (not dropped), arm W's 2, and each row is not checked.
+- **Where the length breaks** (arm M, test_long, parts right by position): 300 / 300, 296 / 300, 289 / 300,
+  275 / 300, 260 / 300 at positions 1 to 5; 173 / 228, 86 / 150, 40 / 76 at 6, 7 and 8. By number of parts:
+  341 / 360 (5), 435 / 468 (6), 468 / 518 (7), 475 / 608 (8). Arm W: 299, 292, 287, 276, 264 of 300 at 1 to 5;
+  167 / 228, 76 / 150, 30 / 76 at 6 to 8. On long rows the reader slips a little from the third part on and
+  falls after the fifth. Arm M's false passes on test_long by number of parts: 16 (5), 15 (6), 23 (7), 42 (8).
+- **Arm W on long rows** loses more lines than arm M: gold checks with their line on test_long 1,778 / 1,954 =
+  0.9099 against 1,906 / 1,954 = 0.9754, and 14 rows with a part asked by the host against 9. On dev the own-text
+  rule was seen cutting a line before its quote once (d200194); whether that is the cause on test_long is not
+  known, and test_long is not opened to look.
+- **Line 10, parts right, arm M / arm W, test.** By direction: at least or more than 178 / 181 both; at most or
+  fewer than 180 / 181 and 179 / 181; exactly 13 / 14 both; other than 79 / 81 and 80 / 81; mean of the four 0.9705
+  and 0.9722. By negation in the words: none 669 and 674 of 681; one 207 / 209 both; two 13 / 13 both. By place:
+  size 215 / 219 both; count 183 and 182 of 185; position value 52 and 53 of 53. By number of parts: 188 / 190 both
+  (2); 316 and 318 of 321 (3); 385 and 388 of 392 (4). By position: 297 and 298 of 300 (1); 296 and 298 of 300 (2);
+  200 and 201 of 205 (3); 96 and 97 of 98 (4). By connective, groups right: if 48 / 48 both; either 76 and 79 of 79;
+  unless 30 and 29 of 30. By language: English 538 and 535 of 540; French 351 and 359 of 363.
+- **Line 10, test_long.** By direction, M / W: 359 and 356 of 413; 358 and 360 of 414; 24 and 25 of 28; 143 and
+  141 of 178; means 0.8486 and 0.8541. By negation: none 1,304 and 1,292 of 1,488; one 402 and 385 of 448; two 13
+  and 14 of 18. By place: size 430 and 423 of 503; count 343 and 346 of 407; position value 111 and 113 of 123. By
+  connective: if 91 and 84 of 103; either 169 and 161 of 179; unless 105 and 101 of 112. By language: English 1,071
+  and 1,045 of 1,203; French 648 and 646 of 751. "Both twins of a pair right" is not measured (the pairs are train
+  rows); the share of mutants the replies tell apart is step 3's, by split.
+- **Decoded on Colab,** seconds per instruction: arm M 0.6867 (test) and 1.4525 (test_long); arm W 0.7069 and
+  1.3665; arm P 1.9 and 3.5. 5 to 8 parts were not timed at home.
+
+**What this means for Cubby.** On instructions of 2 to 4 checks, the reader that writes descriptions gets 889 of
+903 checks right, and of the replies it checks, 3 in 1,000 pass when they should fail; with round 2's reader on
+the same rows, 129 in 1,000 did. Past four checks it is not yet reliable: from the sixth check on, 155 of 454 are wrong
+(arm M). Nothing is wired into serving (`CB_RULES` stays off). Training on 5 or more parts is out of scope here
+(listed under "Out of scope"); it is the next step line 4 points to, as its own order, on rows no one has seen.
