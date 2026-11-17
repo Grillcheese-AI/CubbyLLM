@@ -513,3 +513,25 @@ numbers are found, not what the union is, so the route and its read stand as the
 - **What is not:** the A100 (a Colab session, Nick's to open); batches larger than 1 (not timed); wiring into
   grilly2's decode loop and Cubby's serving path, then the serving batteries and sampled talk. Nothing under
   `cubbyllm/` is touched. The grilly2 branch is local, for Nick's review.
+
+### Step 2e, route 5 inside a real decode step, at 128k and at 256k, pre-registered before its run (Cowork, 2026-11-17, on Nick's "we need to test the real decode" and "lets also test 256k")
+Step 2d timed the head alone, token after token, where the route's 16 MB of codes and its centroids can stay in the
+card's 96 MB last-level cache between tokens. Here the head runs inside the model's own decode step, where the
+trunk's weights pass through the card between two tokens.
+- **What runs:** `validation/head_lab_decode.py` on grilly2 (3cba3e3) at home, batch 1, the heads in fp32, greedy.
+  8 prompts of 256 tokens from the middle of the held-in text of the first 8 shards (no held-out token), 64 decode
+  steps each, the first 2 of each run left out; each head on its own fresh state, the order of the heads rotated
+  from one prompt to the next, after one warm-up pass. A step is timed from the token going in to the next token on
+  the host.
+- **Heads:** the trunk with no head (one value read back, the text's next token fed in: the trunk alone); the full
+  128k head; a full 32k head (the head's first 32,000 rows); route 5 over the 128k head (K 8,192, N 2,048, rank
+  bound 256, as 2d); a 256k head, and route 5 over it.
+- **The 256k head is synthetic:** the trained 128,000 rows and a copy of them with Gaussian noise at a tenth of each
+  row's spread (seed 68); the cluster lists hold each token and its copy; the successors are repeated. It has no
+  trained meaning. It measures time only, a chosen copy is fed back as its original, and no agreement is claimed at
+  256k.
+- **The lines:** route 5's decode step at most the 32k head's decode step (p50), at 128k and at 256k.
+- **Also reported, not lines:** each head's time inside the step (its p50 less the trunk's); at 128k, how often route
+  5 picks the full head's token while the model decodes on route 5's own choices (a separate, untimed pass), and the
+  steps to the first difference.
+- **Not claimed:** the A100, batches above 1, sampled talk.
