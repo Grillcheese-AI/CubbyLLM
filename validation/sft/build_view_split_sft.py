@@ -66,7 +66,9 @@ def lengths(recs: list[dict], tk, max_len: int, key_weight: float = 4.0) -> dict
             "answer tokens that are key": key, "share of answer tokens that are key": round(key / answer, 4)}
 
 
-def build(ds: Path, out_dir: Path, tokenizer: str | None, max_len: int) -> dict:
+def build(ds: Path, out_dir: Path, tokenizer: str | None, max_len: int, arms: tuple = V.ARMS, name: str = NAME,
+          order: str = "0073") -> dict:
+    """``arms``, ``name`` and ``order``: order 0074 writes arm M's set alone, under its own name."""
     rows, bench = rows_of(ds), BO.benchmark_grams(ifbench=True)
     leaks = {r["id"] for r in rows if BO.overlaps(r["instruction"], bench)}
     rows = [r for r in rows if r["id"] not in leaks]
@@ -74,9 +76,9 @@ def build(ds: Path, out_dir: Path, tokenizer: str | None, max_len: int) -> dict:
     if tokenizer:
         from tokenizers import Tokenizer
         tk = Tokenizer.from_file(tokenizer)
-    sets = {arm: [record(r, arm) for r in rows] for arm in V.ARMS}
+    sets = {arm: [record(r, arm) for r in rows] for arm in arms}
     same = all(a["id"] == b["id"] and a["prompt"] == b["prompt"] and a["split"] == b["split"]
-               for a, b in zip(sets["m"], sets["w"]))
+               for a, b in zip(sets["m"], sets["w"])) if {"m", "w"} <= set(sets) else True
     source = json.loads((ds / "manifest.json").read_text(encoding="utf-8"))["sha256"]
     out_dir.mkdir(parents=True, exist_ok=True)
     mans = {}
@@ -85,15 +87,16 @@ def build(ds: Path, out_dir: Path, tokenizer: str | None, max_len: int) -> dict:
                    for rec, r in zip(recs, rows) for own in (False, True))
         if read != 2 * len(recs) or not same:
             raise SystemExit(f"arm {arm}: {2 * len(recs) - read} answers do not read back, or the two sets' records differ")
-        out = out_dir / NAME.format(arm=arm)
+        out = out_dir / name.format(arm=arm)
         with open(out, "w", encoding="utf-8", newline="\n") as f:
             f.writelines(json.dumps(rec, ensure_ascii=False) + "\n" for rec in recs)
-        mans[arm] = {"order": "0073", "what": "the reader's SFT set (step 5): the split with each check's description",
+        other = [b for a in V.ARMS if a != arm and a in sets for b in [sets[a]]]
+        mans[arm] = {"order": order, "what": "the reader's SFT set (step 5): the split with each check's description",
                      "arm": arm, "records": len(recs), "by_split": dict(Counter(x["split"] for x in recs)),
                      "by_family": dict(sorted(Counter(x["family"] for x in recs).items())),
                      "by_lang": dict(Counter(x["lang"] for x in recs)),
                      "answers that read back strictly, also with own_text": read // 2,
-                     "answers that differ from the other arm's": sum(a["answer"] != b["answer"] for a, b in zip(sets["m"], sets["w"])),
+                     "answers that differ from the other arm's": sum(a["answer"] != b["answer"] for a, b in zip(recs, other[0])) if other else None,
                      "the two sets have the same ids, prompts and splits in the same order": same,
                      "rows of test or test_long": 0, "benchmarks_checked": sorted(bench),
                      "records_sharing_5_words_with_a_benchmark_dropped": len(leaks), "max_len": max_len,
@@ -110,9 +113,13 @@ def main() -> None:
     ap.add_argument("--set", default=None)
     ap.add_argument("--tokenizer", default=None)
     ap.add_argument("--max-len", type=int, default=1280)
+    ap.add_argument("--arms", default=",".join(V.ARMS))
+    ap.add_argument("--name", default=NAME, help="the file name, with {arm}")
+    ap.add_argument("--order", default="0073")
     a = ap.parse_args()
     ds = Path(a.set or Path(local_paths.value("CUBBY_DATASETS") or ".") / "long_rows_0073")
-    print(json.dumps(build(ds, Path(a.out_dir), a.tokenizer, a.max_len), indent=1, ensure_ascii=False))
+    print(json.dumps(build(ds, Path(a.out_dir), a.tokenizer, a.max_len, tuple(a.arms.split(",")), a.name, a.order),
+                     indent=1, ensure_ascii=False))
 
 
 if __name__ == "__main__":

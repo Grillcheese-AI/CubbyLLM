@@ -88,18 +88,20 @@ def _twins(a: dict, b: dict) -> bool:
             and len(said[0]) == len(said[1]) and [x == y for x, y in zip(*said)].count(False) == 1)
 
 
-def check(ds: Path, old: Path | None = None) -> dict:
-    """{what: how many}; everything but `COUNTED` must be 0."""
+def check(ds: Path, old: Path | list | None = None, old_name: str = "0067") -> dict:
+    """{what: how many}; everything but `COUNTED` must be 0. ``old``: the earlier set (or sets, 0074) whose
+    instructions may not come back, named ``old_name`` in the counts."""
     rows, pairs = _read(ds / "rows.jsonl"), _read(ds / "pair_rows.jsonl")
     man, every = json.loads((ds / "manifest.json").read_text(encoding="utf-8")), rows + pairs
     out = Counter({"rows": len(every), "pairs": len(pairs) // 2})
     for r in every:
         _row(r, out)
-    texts = {json.loads(ln)["instruction"] for name in ("rows.jsonl", "pair_rows.jsonl")
-             if old and (old / name).exists() for ln in open(old / name, encoding="utf-8")}
+    olds = [old] if isinstance(old, Path) else list(old or [])
+    texts = {json.loads(ln)["instruction"] for d in olds for name in ("rows.jsonl", "pair_rows.jsonl")
+             if (d / name).exists() for ln in open(d / name, encoding="utf-8")}
     bench = BO.benchmark_grams(ifbench=True)
     train = {B.key(r) for r in every if r["split"] == "train"}
-    out["an instruction of 0067's rows"] = sum(r["instruction"] in texts for r in every)
+    out[f"an instruction of {old_name}'s rows"] = sum(r["instruction"] in texts for r in every)
     out["an instruction twice"] = len(every) - len({r["instruction"] for r in every})
     out["an id twice"] = len(every) - len({r["id"] for r in every})
     out["a train or dev instruction sharing 5 words with a benchmark"] = sum(
@@ -111,7 +113,7 @@ def check(ds: Path, old: Path | None = None) -> dict:
     out["a SHA-256 that is not the manifest's"] = sum(
         man["sha256"][name] != hashlib.sha256((ds / name).read_bytes()).hexdigest() for name in ("rows.jsonl", "pair_rows.jsonl")
     ) + sum(h != ST.digest([r for r in rows if r["split"] == s]) for s, h in man["sha256"][BY_SPLIT].items())
-    return {"instructions of 0067 looked up": len(texts), "counted": {k: out[k] for k in COUNTED},
+    return {f"instructions of {old_name} looked up": len(texts), "counted": {k: out[k] for k in COUNTED},
             "must be 0": {k: int(v) for k, v in sorted(out.items()) if k not in COUNTED}, "sha256": man["sha256"]}
 
 

@@ -52,6 +52,7 @@ from cubbyllm.speech import view_spec as VS  # noqa: E402
 __wiring__ = "STANDALONE"
 
 HELD = ("dev", "test", "test_long")
+EXTRAS = HELD + ("test_longer",)       # the sets whose rows get the replies that can tell (0074 adds test_longer)
 
 
 def key(row: dict) -> str:
@@ -88,7 +89,7 @@ def finish(rng, vm, views, replies, parts, groups, lang, phrases, bench, split, 
     if len(yes) < 2 or len(no) < 2:
         return None, "too few usable replies on one side"
     chosen = rng.sample(yes, min(4, len(yes))) + rng.sample(no, min(len(no), 8 - min(4, len(yes))))
-    pool = cand + spare if split in HELD else []
+    pool = cand + spare if split in EXTRAS else []
     add, reach = T.extras(rng, m, groups, [c[1] for c in chosen], [c[1] for c in pool])
     kept = [(c, False) for c in chosen] + [(pool[j], True) for j in add]
     for (t, _, want), _ in kept:

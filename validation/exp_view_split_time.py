@@ -80,8 +80,9 @@ def summary(timed: list) -> dict:
                 "median ids": int(statistics.median(x["ids"] for x in xs)),
                 "ended": dict(Counter(x["end"] for x in xs)), "answers whole": sum(1 for x in xs if x["whole"])}
     by = {str(k): stats([x for x in timed if x["n_parts"] == k]) for k in sorted({x["n_parts"] for x in timed})}
-    short = [x for x in timed if 2 <= x["n_parts"] <= 4]
+    short, long = ([x for x in timed if lo <= x["n_parts"] <= hi] for lo, hi in ((2, 4), (5, 8)))
     out = {"by number of parts": by, "2 to 4 parts": stats(short) if short else None,
+           "5 to 8 parts": stats(long) if long else None,                    # order 0074's line 7
            "share of the time in the grammar": round(sum(x["grammar"] for x in timed) / max(1e-9, sum(x["seconds"] for x in timed)), 4)}
     med = out["2 to 4 parts"]["median seconds"] if short else None
     out["line 8"] = {"needs": f"a median of at most {PASS_SECONDS:g} s for 2 to 4 parts", "median seconds": med,
