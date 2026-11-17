@@ -298,3 +298,218 @@ positions). The rows count the index's pass, K, the coarse pass and N in full, w
      dump needs a card: Nick's call.
   2. The pass on the card through `cubbyllm/ops/packed.py`, timed against a full 32k head (0050's line).
   3. The serving path in grilly2, then the serving batteries and sampled talk.
+
+### Route 5 by distance alone, pre-registered before its dump (Cowork, 2026-11-17, on Nick's "lets do 0068")
+The first of the three next steps above. grilly2's packed top-k ranks by Hamming distance alone, and on held-in the
+norm bought nothing (0.99820 with ties counted against, 0.99812 with the norm, at N = 2,048). If distance alone holds
+on held-out, the card already computes the pass as it stands, and step 2 (the time) needs no new ranking kernel.
+- **The arm:** 0050's frozen context list (screen plus successors, K = 8,192, `index_router_succ.npz`) joined with the
+  N rows nearest the state by Hamming distance, no norm. **N = 2,048,** chosen on held-in by route 5's rule (the
+  fewest rows at or above 0.998 there, ties counted against): 0.99820. Nothing else changes.
+- **Fresh held-out positions** (all four offsets of `heldout.npz` are spent): a new dump, `heldout_b.npz`, from the
+  13 shards' held-out tails, 4 windows of 1,024 at half the earlier spacing (`head_share_torch.py dump --split heldout
+  --windows 4 --phase 0.5 --avoid-phase 0`). A window that would share a token with an earlier held-out window is
+  dropped (the last of each shard), so 39 windows and 39,936 positions; each window's first token is kept in the file
+  and checked against the earlier ones before the read. The dump runs on Nick's Colab card with torch
+  (`notebooks/head_lab_dump.ipynb`), where `heldout.npz` came from grilly2 at home: the full head's best token is
+  recomputed from each saved state at the read, so the comparison is with itself. Its SHA-256 is written here
+  before the read.
+- **Read once, at home on the CPU with six threads** (`validation/head_lab_distance.py`; it refuses a dump it has
+  already read, and a dump whose windows touch the earlier ones). Every position, no skip.
+- **Lines:** overall greedy agreement at least **0.995**, a tie at the Nth distance counted **against** the pass;
+  rows by bytes read per token (the index's pass 4,096, the Hamming pass 4,000, the union's rows scored exactly) at
+  most **32,000**. **Kill:** the agreement missed.
+- **Reported:** the agreement with ties counted for; the interval over the 39 windows (2,000 resamples, seed 68,
+  the 51st to the 1,950th); the context list alone and what the pass catches where it misses; the rows (mean, p99,
+  max); the agreement by shard.
+- **Not claimed, even if it passes:** any time (step 2), the serving batteries and sampled talk (step 3).
+
+### The fresh dump, before its read (Cowork, 2026-11-17)
+- Nick ran `head_lab_dump.ipynb` on Colab (2026-11-17). `heldout_b.npz`: 39 windows, 39,936 positions, SHA-256
+  `eef2d754ba806991707ec4deff9edeeced277b72a51e3bcfbc42ca3df76de448`. Recorded here before the read.
+- Found on the way: the notebook copied the dump's log under one name with a glob that also matched 0050's committed
+  log of 2026-11-05, so the copy kept on Drive is 0050's; the card of this dump is not recorded. The notebook now
+  copies only the log of the day it runs. It changes nothing in the file read.
+
+### Route 5 by distance alone, read: both lines met on fresh held-out (Cowork, 2026-11-17)
+- **Log:** `validation/logs/head_lab_distance_2026-11-17_heldout_b.json` (`heldout_b.npz`, SHA-256 `eef2d754...`
+  as recorded above; 39 windows, closest to an earlier held-out window by 7,251 tokens, so none shares a token; read
+  once, every position, on this machine's CPU with six threads).
+- **Overall greedy agreement with the full head: 0.99772** with a tie at the 2,048th distance counted against the
+  pass (91 misses in 39,936 positions); 0.99790 with ties counted for. Interval over the windows: **0.99674 to
+  0.99852**. The line is 0.995: **met**, the whole interval above it.
+- **Rows by bytes: 18,175** a token on average (the index's pass 4,096, the Hamming pass 4,000, the union's rows
+  10,079; p99 10,240, most 10,261). The line is 32,000: **met.** It is 57% of a 32k head and 14% of the full head.
+- The context list alone agrees on 0.97947 here (0.98445 on `heldout.npz`'s offset 3); the pass catches 88.9% of
+  what it misses (route 5 with the norm: 84% on offset 3).
+- **By shard,** with ties against: arxiv 0.99935, books 0.99740, fineweb_edu 0.99870, kbtxt 0.99674, nemotron_code
+  0.99967, nemotron_legal 0.99772, nemotron_qa 0.99805, pretrain_ext 0.99902, unified 1.0, verified_facts 0.99805,
+  wiki_full 0.99512, wikibooks 0.99219, wikipedia 0.99837. Wikibooks is the one shard under 0.995 (3 windows, 3,072
+  positions); the line is the overall rate.
+- **What is established:** the pass needs no norm. Ranked by Hamming distance alone, which is what grilly2's packed
+  top-k computes on the card today, the union of the context list and the 2,048 nearest rows holds the full head's
+  choice on 99.77% of fresh held-out positions, from 18,175 rows of 128,000, with nothing trained.
+- **What is not, unchanged from route 5:** any time; the serving batteries; sampled talk. Next is step 2 above: the
+  pass on a card through `cubbyllm/ops/packed.py`, timed against a full 32k head on grilly2 and on an A100. The
+  constraint of this order stands: no GPU job at home without Nick's word, so the home card waits for it.
+- **Found on the way:** the system Python here lacks `safetensors`, so the first start stopped while loading the
+  head's rows, before any position was read and before any log was written; the read ran with grilly2's
+  environment, as the earlier 0068 reads did.
+
+### Step 2, the time on a card, pre-registered before its run (Cowork, 2026-11-17, on Nick's "yes you can run it home")
+- **What runs:** `validation/head_lab_time.py` on grilly2, on the home card, batch 1, the head in fp32 (as 0050's
+  line), p50 of 50 tokens after 3 warm-ups, each token a different state of `heldout_b.npz` (its first 50, already
+  read). Route 5 by distance alone as read above, end to end per token, with today's grilly2 ops and nothing new:
+  the state read back (4 KB), its signs packed on the host, grilly2's packed top-k (2,048 of 128,000 codes) on the
+  card, the context pass (4,096 centroids) on the card, the list and the union on the host, the union's rows gathered
+  on the card (`index_select`) and scored, the best token read back.
+- **Against,** on the same card and states: the full 128k head and a full 32k head (the head's first 32,000 rows),
+  each a linear and an argmax read back, as 0050 timed them.
+- **The line (0050's):** route 5's time per token at most a full 32k head's. Missed is reported with each part's
+  time, which says where a kernel is needed; it kills nothing (the route's rows and agreement stand).
+- **Also checked, not a line:** on these 50 states, route 5's token equals the full head's wherever the union holds it.
+- The A100 is not run here; it waits for a Colab session.
+
+### Step 2, read: the line missed; the packed top-k and the host list are where the time goes (Cowork, 2026-11-17)
+- **Log:** `validation/logs/head_lab_time_grilly_2026-11-17.json` (`validation/head_lab_time.py` as pre-registered,
+  grilly2 on the home card, batch 1, fp32, the first 50 states of `heldout_b.npz` after 3 warm-ups, run once).
+- **Against:** the full 128k head **1.700 ms** a token (p50; p90 1.753), a full 32k head **0.556 ms** (p90 0.619).
+- **Route 5 end to end: 43.085 ms** (p50; mean 37.829, p90 59.799). The line is the 32k head's 0.556 ms:
+  **missed.** Route 5 is also slower than the full head it would replace.
+- **Each part (p50):** the state read back and packed 0.150; grilly2's packed top-k (2,048 of 128,000) **2.160**;
+  the context pass on the card and the clusters ranked 0.419; the list and the union on the host **39.530**; the
+  union's rows gathered, scored and the best token read back 0.789.
+- **The host list** is a Python loop over the ranked clusters that drops repeats as it goes (the same list as
+  `ScreenIndex.shortlist`, checked by `tests/validation/test_head_lab_time.py`). It is most of the time, and it is
+  the easiest part to move: on the card, or a list built once per cluster order.
+- **Without it the line is still missed.** The four card parts sum to 3.518 ms at their p50s, more than the full
+  head's 1.700. The packed top-k alone (2.160) is slower than the full head: it reads 16.4 MB of codes (128 bytes a
+  row), one eighth of the 32k head's 131 MB, and takes almost four times as long, so its cost is the kernel (the
+  selection of 2,048, or its dispatches), not the bytes.
+- **Check:** on all 50 states the union held the full head's token, and route 5 chose it (50 of 50).
+- **What is established:** with today's grilly2 ops, route 5 costs more time than the full 128k head at batch 1 on
+  this card. Its rows (18,175 by bytes, 57% of a 32k head) and its agreement (0.99772) stand; the "128k for the price
+  of 32k" holds in rows read, not in time.
+- **What would change it, in order of size:** the host list moved to the card or built once per cluster order; a
+  fused packed top-k that selects in one pass (a grilly2 kernel, on a branch for Nick's review). The prize is bounded:
+  the full head is 1.700 ms here and, per 0050, 7.3 to 9.6% of a home decode step, so a route at the 32k line saves
+  at most 1.144 ms a token of it.
+- **Not run:** the A100 (a Colab session, Nick's to open). Nothing under `cubbyllm/` was touched.
+
+### Step 2b, route 5 on the card, pre-registered before its run (Cowork, 2026-11-17, on Nick's "1")
+Nick chose the first way forward above: the list on the card and a top-k that does not sort. What the step-2 run
+showed about the parts, measured on the same card before any of this was written: the packed top-k is grilly2's
+general sort (a bitonic sort of all 131,072 padded distances, over 150 dispatches, since k = 2,048 is above the
+small-k path's 64),
+and the Hamming kernel alone is 0.49 ms with a one-value readback against a 0.12 ms floor, because each thread walks
+its own row. A dispatch costs about 0.011 ms in a batch here.
+- **What is built:** in grilly2, on a branch for Nick's review (`cowork/shortlist-head`, off main; main untouched),
+  `grilly_infer::ShortlistHead`: route 5 by distance alone as read, from the state on the card to the chosen token,
+  with one readback of the token and no host list or gather. Eight dispatches: (1) the context pass (4,096
+  centroids) and the state's sign bits packed; (2) every row's Hamming distance and their histogram; (3) one
+  workgroup: the 2,048th distance and its ties to the lower id, the clusters ranked (score, then index), their list
+  starts; (4) each ranked cluster's tokens marked with their first position; (5) each cluster's new tokens counted;
+  (6) one workgroup: the cut at K = 8,192 distinct tokens, the previous token's successors added; (7) the union's
+  rows scored in fp32, the best of each workgroup; (8) the best overall, the first index on a tie.
+- **Bound:** clusters are scanned to rank 256 at most (the 50 timed states need 12 to 149). A position that would
+  need more is flagged and counted, not hidden.
+- **Checked, not a line:** the clusters are ranked from the card's scores, which can order a near tie differently
+  from numpy's, so the card's union can differ from the read one. On `heldin_val.npz`'s 53,248 held-in positions
+  (not held-out), every position: the card's union against numpy's (`ScreenIndex.shortlist` with the 2,048 nearest,
+  ties to the lower id); how many differ, and on those whether the token differs. On the 50 timed states, the card's
+  token against the full head's.
+- **Timed:** `validation/head_lab_time.py --route card`, the same 50 states of `heldout_b.npz`, batch 1, fp32, p50 of
+  50 after 3 warm-ups, with the full 128k and full 32k heads in the same run.
+- **The line (0050's):** route 5 at most a full 32k head's time. Missed is reported with the time each dispatch adds;
+  it kills nothing.
+- **Not claimed:** the A100, the serving batteries, sampled talk. Nothing under `cubbyllm/` is touched.
+
+### Step 2b, timed: 0.674 ms against the 32k head's 0.557, the line missed by 0.117 (Cowork, 2026-11-17)
+- **Log:** `validation/logs/head_lab_time_grilly_card_2026-11-17_248a738.json` (grilly2 `cowork/shortlist-head` at 248a738,
+  the same 50 states, run once).
+- **Route 5 on the card: 0.674 ms** a token (p50; p90 0.727), from 43.085 in step 2. The full head **1.679**, a full
+  32k head **0.557**. The line is **missed** by 0.117 ms; route 5 is now well under the full head it would replace.
+- **Check:** the union held the full head's token on all 50 states and the card chose it on all 50; no list was
+  short; the union averaged 10,010.3 rows (most 10,221).
+- **Each dispatch (p50 of the step stopped after it, less the one before):** context 0.091 (with the batch's
+  submit), Hamming 0.029, **plan 0.232**, mark 0.020, count 0.011, cut 0.010, score 0.100, best 0.003; all eight and
+  a wait 0.497, and reading the token back takes the rest.
+- **Where it goes:** the plan dispatch, one workgroup doing three serial jobs: an ordered count over all 128,000
+  distances for the tied rows, a bitonic sort of 4,096 cluster scores (78 barrier stages), and two prefix sums. The
+  Hamming pass (16 MB) and the scoring (about 41 MB) already run near the card's bandwidth.
+- **The held-in union check** is running; its result goes below when it ends.
+
+### Step 2c, the plan spread over the card, pre-registered before its run (Cowork, 2026-11-17)
+Step 2b's plan is one workgroup doing serial work, and it is a third of the step. The rebuild changes how three
+numbers are found, not what the union is, so the route and its read stand as they are:
+- **the clusters ranked by counting:** a cluster's rank is how many clusters go before it (a higher score, or an
+  equal one and a lower index), found for all 4,096 at once on 16 workgroups; only ranks below 256 are kept. The
+  2,048th distance comes from the histogram in one more workgroup of the same dispatch;
+- **the tied rows counted per block** of 512 rows beside the marking dispatch, and the cut dispatch finds the last
+  tied row taken from those counts;
+- **each ranked list's start** summed where it is used, so no dispatch waits on a prefix sum of all of them.
+- Still eight dispatches and one readback of the token through the same path as both heads' (a device buffer read
+  back by grilly2; no host-visible shortcut the heads do not get).
+- **Checked before the timing, not a line:** grilly2's Rust and Python tests, and the held-in union check again on
+  every position of `heldin_val.npz`.
+- **Timed:** the same command, the same 50 states, the same line. Timing these states again spends nothing (it reads
+  time, not agreement), and step 2b's number stays reported beside it.
+
+### Step 2b, the held-in union check (Cowork, 2026-11-17)
+- **Log:** `validation/logs/head_lab_card_union_2026-11-17_heldin_val_248a738.json` (the 2b build, every one of
+  `heldin_val.npz`'s 53,248 held-in positions, against `ScreenIndex.shortlist` with the 2,048 nearest as the read).
+- **52,746 positions have the same union, 502 differ, and on none of the 502 does the chosen token differ.**
+- 497 of the 502 are short lists: their first 256 ranked clusters hold fewer than 8,192 distinct tokens, so the card
+  takes all of them and numpy goes further (303,643 rows only numpy has, at most 1,828 at one position). None of the
+  50 timed states is short. The other 5 hold 107 rows only the card has (at most 32): clusters ranked the other way
+  round near the cut (below).
+- What would close the short ones: a larger rank bound, which costs the marking and counting dispatches one
+  workgroup per extra rank. Not changed here.
+
+### Step 2c, timed: 0.640 ms against the 32k head's 0.544, still missed (Cowork, 2026-11-17)
+- **Log:** `validation/logs/head_lab_time_grilly_card_2026-11-17_52028cd.json` (grilly2 52028cd, the same 50
+  states; each card timing's log is named by its build).
+- **Route 5: 0.640 ms** (p50; p90 0.675), the full head 1.679, a full 32k head **0.544**. **Missed** by 0.096 ms.
+  The check: 50 of 50 held, 50 of 50 the full head's token, none short.
+- **The ranking dispatch still takes 0.207 ms** (2b's plan: 0.232); everything else moved little (context 0.094,
+  Hamming 0.026, mark 0.014, count 0.011, cut 0.017, score 0.108). Counting, one thread a cluster over 4,096 scores
+  one at a time, is bound by the latency of each shared-memory read, not by the work, on 16 workgroups.
+- **The held-in union check, out of order:** the 2c pre-registration put it before the timing; it ran after. Log
+  `validation/logs/head_lab_card_union_2026-11-17_heldin_val_52028cd.json`; its `grilly2` field reads 3cba3e3
+  because the script reads the checkout's commit, which moved on to 2d's while the check ran on 2c's build. The
+  result is 2b's to the position: 52,746 the same, 502 differ, 497 of them short, the token the same on all 502.
+  Of the 5 that are not short, the log lists 3 (it keeps the first 200 differences); on each, two clusters at the
+  cut score within about 1e-7 of each other relative to their score (8.6e-8, 1.3e-7 and 7.9e-8 at ranks 108, 61 and
+  33, with the cut at 108, 62 and 33), which is float32 rounding: the near tie the pre-registration expected.
+
+### Step 2d, the ranking split four ways, pre-registered before its run (Cowork, 2026-11-17)
+- **The one change** (grilly2 3cba3e3): each cluster's rank is counted by four threads, each over a quarter of the
+  scores, four scores a read, 64 clusters a workgroup (64 workgroups). Everything else as 2c; the same union.
+- **Checked before the timing:** grilly2's Rust and Python tests. The held-in union check runs after it, on every
+  position of `heldin_val.npz` again, now keeping every difference that is not short.
+- **Timed:** the same command, the same 50 states, the same line.
+
+### Step 2d, timed: route 5 0.495 ms against the 32k head's 0.560, the line met (Cowork, 2026-11-17)
+- **Log:** `validation/logs/head_lab_time_grilly_card_2026-11-17_3cba3e3.json` (grilly2 3cba3e3, the same 50
+  states, batch 1, fp32, p50 of 50 after 3 warm-ups, run once).
+- **Route 5 on the card: 0.495 ms** a token (p50; mean 0.504, p90 0.562). A full 32k head **0.560** (p90 0.645),
+  the full head **1.692**. The line, route 5 at most a full 32k head's time: **met**, by 0.065 ms at the p50 (at
+  the p90 it is 0.562 against 0.645).
+- **Check:** the union held the full head's token on all 50 states and the card chose it on all 50; none short;
+  the union averaged 10,010.3 rows (most 10,221).
+- **Each dispatch:** context 0.094 (with the batch's submit), Hamming 0.028, ranking 0.041 (the log's stage list
+  still calls it "plan"), mark 0.026, count 0.004, cut 0.013, score 0.101, best 0.002; all eight and a wait 0.310,
+  and reading the token back takes the rest, through the same path as both heads'.
+- **The held-in union check** (`..._heldin_val_3cba3e3.json`): 52,746 of 53,248 the same, 502 differ, 497 of them
+  short, and the chosen token the same on all 502: 2b's and 2c's result to the position. All 5 that are not short
+  have two clusters next to the cut (ranks 108, 61, 33, 157 and 51, the cut at 108, 62, 33, 158 and 52) scoring
+  within 8.6e-8 to 1.33e-7 of each other relative to their score: float32 rounding, numpy's order against the
+  card's.
+- **What is established:** on this card, at batch 1 with the trained head in fp32, route 5 picks the next token
+  from a 128,000-token head in less time than a full 32,000-token head takes, with nothing trained, choosing the
+  full head's token on every timed state. The steps to get here, all kept in the logs: 43.085 ms with
+  today's ops and the list on the host (step 2), 0.674 with the step on the card (2b), 0.640 and then 0.495 once
+  the ranking stopped being one workgroup's serial work (2c, 2d).
+- **What is not:** the A100 (a Colab session, Nick's to open); batches larger than 1 (not timed); wiring into
+  grilly2's decode loop and Cubby's serving path, then the serving batteries and sampled talk. Nothing under
+  `cubbyllm/` is touched. The grilly2 branch is local, for Nick's review.

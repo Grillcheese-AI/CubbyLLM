@@ -1,0 +1,1465 @@
+{
+ "what": "order 0068 step 2b: the card build's union against numpy's, held-in, every position",
+ "date": "2026-11-17",
+ "grilly2": "3cba3e3",
+ "dump": "heldin_val",
+ "positions": 53248,
+ "k": 8192,
+ "n": 2048,
+ "ranks": 256,
+ "same_union": 52746,
+ "union_differs": 502,
+ "token_differs_where_the_union_does": 0,
+ "short_lists": 497,
+ "rows_only_numpy_has": {
+  "total": 303643,
+  "max": 1828
+ },
+ "rows_only_the_card_has": {
+  "total": 107,
+  "max": 32
+ },
+ "union_differs_where_not_short": 5,
+ "differences": [
+  {
+   "position": 8577,
+   "short": false,
+   "rows_only_numpy_has": 31,
+   "rows_only_the_card_has": 32,
+   "token_differs": false
+  },
+  {
+   "position": 17178,
+   "short": false,
+   "rows_only_numpy_has": 1,
+   "rows_only_the_card_has": 1,
+   "token_differs": false
+  },
+  {
+   "position": 23282,
+   "short": false,
+   "rows_only_numpy_has": 34,
+   "rows_only_the_card_has": 31,
+   "token_differs": false
+  },
+  {
+   "position": 27859,
+   "short": false,
+   "rows_only_numpy_has": 13,
+   "rows_only_the_card_has": 13,
+   "token_differs": false
+  },
+  {
+   "position": 49198,
+   "short": false,
+   "rows_only_numpy_has": 30,
+   "rows_only_the_card_has": 30,
+   "token_differs": false
+  },
+  {
+   "position": 13,
+   "short": true,
+   "rows_only_numpy_has": 164,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 4105,
+   "short": true,
+   "rows_only_numpy_has": 610,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 4609,
+   "short": true,
+   "rows_only_numpy_has": 799,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 5132,
+   "short": true,
+   "rows_only_numpy_has": 1076,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 6449,
+   "short": true,
+   "rows_only_numpy_has": 602,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 6589,
+   "short": true,
+   "rows_only_numpy_has": 607,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 6600,
+   "short": true,
+   "rows_only_numpy_has": 550,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 7029,
+   "short": true,
+   "rows_only_numpy_has": 523,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 7107,
+   "short": true,
+   "rows_only_numpy_has": 50,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 7152,
+   "short": true,
+   "rows_only_numpy_has": 1144,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 7347,
+   "short": true,
+   "rows_only_numpy_has": 819,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 7360,
+   "short": true,
+   "rows_only_numpy_has": 514,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 7395,
+   "short": true,
+   "rows_only_numpy_has": 997,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 7448,
+   "short": true,
+   "rows_only_numpy_has": 248,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 7835,
+   "short": true,
+   "rows_only_numpy_has": 623,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 7923,
+   "short": true,
+   "rows_only_numpy_has": 50,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 7969,
+   "short": true,
+   "rows_only_numpy_has": 422,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 8165,
+   "short": true,
+   "rows_only_numpy_has": 1280,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 8174,
+   "short": true,
+   "rows_only_numpy_has": 961,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 8287,
+   "short": true,
+   "rows_only_numpy_has": 1189,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 8398,
+   "short": true,
+   "rows_only_numpy_has": 33,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 8410,
+   "short": true,
+   "rows_only_numpy_has": 1019,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 8448,
+   "short": true,
+   "rows_only_numpy_has": 1312,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 8460,
+   "short": true,
+   "rows_only_numpy_has": 243,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 8461,
+   "short": true,
+   "rows_only_numpy_has": 691,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 8494,
+   "short": true,
+   "rows_only_numpy_has": 553,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 8517,
+   "short": true,
+   "rows_only_numpy_has": 115,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 8525,
+   "short": true,
+   "rows_only_numpy_has": 183,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 8553,
+   "short": true,
+   "rows_only_numpy_has": 570,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 8576,
+   "short": true,
+   "rows_only_numpy_has": 165,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 8579,
+   "short": true,
+   "rows_only_numpy_has": 675,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 8654,
+   "short": true,
+   "rows_only_numpy_has": 1596,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 8689,
+   "short": true,
+   "rows_only_numpy_has": 525,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 8701,
+   "short": true,
+   "rows_only_numpy_has": 720,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 8826,
+   "short": true,
+   "rows_only_numpy_has": 1475,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 8909,
+   "short": true,
+   "rows_only_numpy_has": 455,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 8985,
+   "short": true,
+   "rows_only_numpy_has": 72,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 9033,
+   "short": true,
+   "rows_only_numpy_has": 474,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 9097,
+   "short": true,
+   "rows_only_numpy_has": 1125,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 9182,
+   "short": true,
+   "rows_only_numpy_has": 725,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 9426,
+   "short": true,
+   "rows_only_numpy_has": 118,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 9494,
+   "short": true,
+   "rows_only_numpy_has": 615,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 9546,
+   "short": true,
+   "rows_only_numpy_has": 9,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 9566,
+   "short": true,
+   "rows_only_numpy_has": 427,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 9575,
+   "short": true,
+   "rows_only_numpy_has": 126,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 9760,
+   "short": true,
+   "rows_only_numpy_has": 648,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 9782,
+   "short": true,
+   "rows_only_numpy_has": 503,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 9788,
+   "short": true,
+   "rows_only_numpy_has": 621,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 9794,
+   "short": true,
+   "rows_only_numpy_has": 975,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 9974,
+   "short": true,
+   "rows_only_numpy_has": 317,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 9978,
+   "short": true,
+   "rows_only_numpy_has": 1061,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 9990,
+   "short": true,
+   "rows_only_numpy_has": 1366,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 10506,
+   "short": true,
+   "rows_only_numpy_has": 119,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 10546,
+   "short": true,
+   "rows_only_numpy_has": 808,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 11022,
+   "short": true,
+   "rows_only_numpy_has": 798,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 11024,
+   "short": true,
+   "rows_only_numpy_has": 324,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 11158,
+   "short": true,
+   "rows_only_numpy_has": 433,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 11274,
+   "short": true,
+   "rows_only_numpy_has": 348,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 11992,
+   "short": true,
+   "rows_only_numpy_has": 796,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 12308,
+   "short": true,
+   "rows_only_numpy_has": 913,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 12459,
+   "short": true,
+   "rows_only_numpy_has": 556,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 12466,
+   "short": true,
+   "rows_only_numpy_has": 1222,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 12483,
+   "short": true,
+   "rows_only_numpy_has": 667,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 13088,
+   "short": true,
+   "rows_only_numpy_has": 747,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 13400,
+   "short": true,
+   "rows_only_numpy_has": 579,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 13486,
+   "short": true,
+   "rows_only_numpy_has": 495,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 13542,
+   "short": true,
+   "rows_only_numpy_has": 709,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 13793,
+   "short": true,
+   "rows_only_numpy_has": 46,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 13915,
+   "short": true,
+   "rows_only_numpy_has": 1166,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 14084,
+   "short": true,
+   "rows_only_numpy_has": 110,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 14110,
+   "short": true,
+   "rows_only_numpy_has": 65,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 14149,
+   "short": true,
+   "rows_only_numpy_has": 451,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 14801,
+   "short": true,
+   "rows_only_numpy_has": 549,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 14831,
+   "short": true,
+   "rows_only_numpy_has": 17,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 14896,
+   "short": true,
+   "rows_only_numpy_has": 1321,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 15005,
+   "short": true,
+   "rows_only_numpy_has": 417,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 15075,
+   "short": true,
+   "rows_only_numpy_has": 283,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 15420,
+   "short": true,
+   "rows_only_numpy_has": 118,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 15482,
+   "short": true,
+   "rows_only_numpy_has": 353,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 15507,
+   "short": true,
+   "rows_only_numpy_has": 263,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 15532,
+   "short": true,
+   "rows_only_numpy_has": 152,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 15571,
+   "short": true,
+   "rows_only_numpy_has": 209,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 15583,
+   "short": true,
+   "rows_only_numpy_has": 374,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 15598,
+   "short": true,
+   "rows_only_numpy_has": 633,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 15670,
+   "short": true,
+   "rows_only_numpy_has": 634,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 15687,
+   "short": true,
+   "rows_only_numpy_has": 1104,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 15707,
+   "short": true,
+   "rows_only_numpy_has": 106,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 15804,
+   "short": true,
+   "rows_only_numpy_has": 918,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 15872,
+   "short": true,
+   "rows_only_numpy_has": 186,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 15916,
+   "short": true,
+   "rows_only_numpy_has": 243,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 15966,
+   "short": true,
+   "rows_only_numpy_has": 963,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 15971,
+   "short": true,
+   "rows_only_numpy_has": 803,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 16115,
+   "short": true,
+   "rows_only_numpy_has": 414,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 16151,
+   "short": true,
+   "rows_only_numpy_has": 277,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 16159,
+   "short": true,
+   "rows_only_numpy_has": 8,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 16211,
+   "short": true,
+   "rows_only_numpy_has": 194,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 16417,
+   "short": true,
+   "rows_only_numpy_has": 520,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 16436,
+   "short": true,
+   "rows_only_numpy_has": 358,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 16508,
+   "short": true,
+   "rows_only_numpy_has": 45,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 16665,
+   "short": true,
+   "rows_only_numpy_has": 985,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 16688,
+   "short": true,
+   "rows_only_numpy_has": 1360,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 16725,
+   "short": true,
+   "rows_only_numpy_has": 338,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 16772,
+   "short": true,
+   "rows_only_numpy_has": 305,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 16846,
+   "short": true,
+   "rows_only_numpy_has": 986,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 16949,
+   "short": true,
+   "rows_only_numpy_has": 1177,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 17070,
+   "short": true,
+   "rows_only_numpy_has": 450,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 17176,
+   "short": true,
+   "rows_only_numpy_has": 583,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 17234,
+   "short": true,
+   "rows_only_numpy_has": 90,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 17296,
+   "short": true,
+   "rows_only_numpy_has": 696,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 17314,
+   "short": true,
+   "rows_only_numpy_has": 467,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 17325,
+   "short": true,
+   "rows_only_numpy_has": 313,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 17445,
+   "short": true,
+   "rows_only_numpy_has": 1288,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 17553,
+   "short": true,
+   "rows_only_numpy_has": 444,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 17756,
+   "short": true,
+   "rows_only_numpy_has": 183,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 17762,
+   "short": true,
+   "rows_only_numpy_has": 973,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 17868,
+   "short": true,
+   "rows_only_numpy_has": 802,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 18033,
+   "short": true,
+   "rows_only_numpy_has": 51,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 18042,
+   "short": true,
+   "rows_only_numpy_has": 454,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 18222,
+   "short": true,
+   "rows_only_numpy_has": 754,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 18461,
+   "short": true,
+   "rows_only_numpy_has": 493,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 18545,
+   "short": true,
+   "rows_only_numpy_has": 788,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 18548,
+   "short": true,
+   "rows_only_numpy_has": 245,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 18612,
+   "short": true,
+   "rows_only_numpy_has": 56,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 18723,
+   "short": true,
+   "rows_only_numpy_has": 367,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 19000,
+   "short": true,
+   "rows_only_numpy_has": 243,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 19093,
+   "short": true,
+   "rows_only_numpy_has": 194,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 19381,
+   "short": true,
+   "rows_only_numpy_has": 58,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 19400,
+   "short": true,
+   "rows_only_numpy_has": 185,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 19425,
+   "short": true,
+   "rows_only_numpy_has": 515,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 19448,
+   "short": true,
+   "rows_only_numpy_has": 1055,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 19484,
+   "short": true,
+   "rows_only_numpy_has": 364,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 19704,
+   "short": true,
+   "rows_only_numpy_has": 764,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 19753,
+   "short": true,
+   "rows_only_numpy_has": 48,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 19771,
+   "short": true,
+   "rows_only_numpy_has": 166,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 19856,
+   "short": true,
+   "rows_only_numpy_has": 408,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 19877,
+   "short": true,
+   "rows_only_numpy_has": 15,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 19910,
+   "short": true,
+   "rows_only_numpy_has": 282,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 19918,
+   "short": true,
+   "rows_only_numpy_has": 739,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 21206,
+   "short": true,
+   "rows_only_numpy_has": 577,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 21417,
+   "short": true,
+   "rows_only_numpy_has": 74,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 21555,
+   "short": true,
+   "rows_only_numpy_has": 45,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 21658,
+   "short": true,
+   "rows_only_numpy_has": 325,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 21689,
+   "short": true,
+   "rows_only_numpy_has": 1828,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 22190,
+   "short": true,
+   "rows_only_numpy_has": 236,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 22264,
+   "short": true,
+   "rows_only_numpy_has": 249,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 22335,
+   "short": true,
+   "rows_only_numpy_has": 481,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 22343,
+   "short": true,
+   "rows_only_numpy_has": 941,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 22362,
+   "short": true,
+   "rows_only_numpy_has": 680,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 22373,
+   "short": true,
+   "rows_only_numpy_has": 1528,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 22475,
+   "short": true,
+   "rows_only_numpy_has": 644,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 22487,
+   "short": true,
+   "rows_only_numpy_has": 491,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 22544,
+   "short": true,
+   "rows_only_numpy_has": 247,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 22551,
+   "short": true,
+   "rows_only_numpy_has": 600,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 22561,
+   "short": true,
+   "rows_only_numpy_has": 215,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 22563,
+   "short": true,
+   "rows_only_numpy_has": 202,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 22567,
+   "short": true,
+   "rows_only_numpy_has": 362,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 22569,
+   "short": true,
+   "rows_only_numpy_has": 167,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 22585,
+   "short": true,
+   "rows_only_numpy_has": 200,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 22957,
+   "short": true,
+   "rows_only_numpy_has": 149,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 22960,
+   "short": true,
+   "rows_only_numpy_has": 1331,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 23094,
+   "short": true,
+   "rows_only_numpy_has": 882,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 23101,
+   "short": true,
+   "rows_only_numpy_has": 384,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 23107,
+   "short": true,
+   "rows_only_numpy_has": 867,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 23653,
+   "short": true,
+   "rows_only_numpy_has": 482,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 23725,
+   "short": true,
+   "rows_only_numpy_has": 230,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 23750,
+   "short": true,
+   "rows_only_numpy_has": 411,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 23831,
+   "short": true,
+   "rows_only_numpy_has": 511,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 23995,
+   "short": true,
+   "rows_only_numpy_has": 162,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 24021,
+   "short": true,
+   "rows_only_numpy_has": 1224,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 24058,
+   "short": true,
+   "rows_only_numpy_has": 713,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 24498,
+   "short": true,
+   "rows_only_numpy_has": 205,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 24615,
+   "short": true,
+   "rows_only_numpy_has": 853,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 24621,
+   "short": true,
+   "rows_only_numpy_has": 606,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 24641,
+   "short": true,
+   "rows_only_numpy_has": 198,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 24643,
+   "short": true,
+   "rows_only_numpy_has": 983,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 24684,
+   "short": true,
+   "rows_only_numpy_has": 44,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 24701,
+   "short": true,
+   "rows_only_numpy_has": 608,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 24715,
+   "short": true,
+   "rows_only_numpy_has": 842,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 24890,
+   "short": true,
+   "rows_only_numpy_has": 714,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 25259,
+   "short": true,
+   "rows_only_numpy_has": 1132,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 25301,
+   "short": true,
+   "rows_only_numpy_has": 873,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 25317,
+   "short": true,
+   "rows_only_numpy_has": 18,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 25341,
+   "short": true,
+   "rows_only_numpy_has": 462,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 25351,
+   "short": true,
+   "rows_only_numpy_has": 613,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 25365,
+   "short": true,
+   "rows_only_numpy_has": 507,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 25395,
+   "short": true,
+   "rows_only_numpy_has": 525,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 25470,
+   "short": true,
+   "rows_only_numpy_has": 777,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 25530,
+   "short": true,
+   "rows_only_numpy_has": 195,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 25635,
+   "short": true,
+   "rows_only_numpy_has": 502,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 25639,
+   "short": true,
+   "rows_only_numpy_has": 249,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 25699,
+   "short": true,
+   "rows_only_numpy_has": 780,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 25751,
+   "short": true,
+   "rows_only_numpy_has": 293,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 25817,
+   "short": true,
+   "rows_only_numpy_has": 22,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 25839,
+   "short": true,
+   "rows_only_numpy_has": 764,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 26205,
+   "short": true,
+   "rows_only_numpy_has": 1164,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 26274,
+   "short": true,
+   "rows_only_numpy_has": 186,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 26385,
+   "short": true,
+   "rows_only_numpy_has": 167,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 26549,
+   "short": true,
+   "rows_only_numpy_has": 370,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 26639,
+   "short": true,
+   "rows_only_numpy_has": 510,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  },
+  {
+   "position": 26834,
+   "short": true,
+   "rows_only_numpy_has": 1074,
+   "rows_only_the_card_has": 0,
+   "token_differs": false
+  }
+ ],
+ "card_union_rows": {
+  "mean": 10076.0,
+  "max": 10265
+ },
+ "seconds": 910
+}

@@ -1,0 +1,62 @@
+{
+ "what": "order 0068 step 2b: route 5 (distance alone, card build) per token on grilly2, against full 32k and 128k heads",
+ "date": "2026-11-17",
+ "machine": "Windows-11-10.0.26340-SP0",
+ "grilly2": "52028cd",
+ "route": "card",
+ "batch": 1,
+ "precision": "fp32",
+ "vocab": 128000,
+ "hidden": 1024,
+ "k": 8192,
+ "n": 2048,
+ "reps": 50,
+ "times": {
+  "head128k": {
+   "p50_ms": 1.679,
+   "mean_ms": 1.684,
+   "p90_ms": 1.74,
+   "n": 50
+  },
+  "head32k": {
+   "p50_ms": 0.544,
+   "mean_ms": 0.555,
+   "p90_ms": 0.604,
+   "n": 50
+  },
+  "route5": {
+   "p50_ms": 0.64,
+   "mean_ms": 0.647,
+   "p90_ms": 0.675,
+   "n": 50
+  }
+ },
+ "check": {
+  "states": 50,
+  "full_heads_token_in_the_union": 50,
+  "route5_token_is_the_full_heads_where_held": 50,
+  "short_lists": 0,
+  "union_rows_mean": 10010.3,
+  "union_rows_max": 10221
+ },
+ "ranks": 256,
+ "stages": {
+  "wait_alone_ms": 0.001,
+  "added_ms": {
+   "context": 0.094,
+   "hamming": 0.026,
+   "plan": 0.207,
+   "mark": 0.014,
+   "count": 0.011,
+   "cut": 0.017,
+   "score": 0.108,
+   "best": -0.002
+  },
+  "all_eight_then_wait_ms": 0.476
+ },
+ "line": {
+  "route5_p50_ms": 0.64,
+  "head32k_p50_ms": 0.544,
+  "at_most_a_32k_heads_time": false
+ }
+}

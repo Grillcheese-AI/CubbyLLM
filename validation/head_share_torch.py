@@ -220,12 +220,15 @@ def _largest(fn, a, meta, dev) -> dict:
 
 def dump(a, dev) -> dict:
     import torch
-    from head_dump import SHARDS, windows
+    from head_dump import SHARDS, starts, windows
     torch.backends.cuda.matmul.allow_tf32 = False
     model, _ = load(a.ckpt[0], dev)
     keep = {k: [] for k in ("hidden", "target", "prev", "top", "toplogit", "lse", "tlogit", "shard")}
-    for si, name in enumerate(SHARDS):
-        for w in windows(a.cache, name, a.split, a.windows, a.seq, a.phase):
+    hold, win = json.load(open(os.path.join(a.cache, "_holdout.json"), encoding="utf-8")), []
+    for si, name in enumerate(SHARDS):                   # each window's first token, kept so a read can check them
+        total = os.path.getsize(os.path.join(a.cache, f"{name}.u32")) // 4
+        win += [(si, s) for s in starts(total, int(hold[name]), a.split, a.windows, a.seq, a.phase, a.avoid_phase)]
+        for w in windows(a.cache, name, a.split, a.windows, a.seq, a.phase, a.avoid_phase):
             x = torch.as_tensor(w[:-1], device=dev).unsqueeze(0)
             y = torch.as_tensor(w[1:], device=dev)
             with torch.no_grad():
@@ -244,10 +247,13 @@ def dump(a, dev) -> dict:
         print(name, "done", flush=True)
     os.makedirs(a.out, exist_ok=True)
     path = os.path.join(a.out, f"{a.name or a.split}.npz")
-    np.savez(path, **{k: np.concatenate(v) for k, v in keep.items()}, shards=np.array(SHARDS))
+    np.savez(path, **{k: np.concatenate(v) for k, v in keep.items()}, shards=np.array(SHARDS),
+             win_shard=np.array([s for s, _ in win], dtype=np.int8),
+             win_start=np.array([t for _, t in win], dtype=np.int64))
     n = sum(len(t) for t in keep["target"])
-    print("->", path, n, "positions")
-    return {"positions": n, "path": os.path.basename(path)}
+    print("->", path, n, "positions,", len(win), "windows")
+    return {"positions": n, "windows": len(win), "path": os.path.basename(path), "split": a.split, "phase": a.phase,
+            "avoid_phase": a.avoid_phase}
 
 
 def main() -> None:
@@ -266,6 +272,8 @@ def main() -> None:
     ap.add_argument("--split", default="heldin")
     ap.add_argument("--windows", type=int, default=32)
     ap.add_argument("--phase", type=float, default=0.0)
+    ap.add_argument("--avoid-phase", type=float, default=None, help="dump: drop windows that share a token with "
+                    "the ones at this phase (order 0068's fresh held-out: --phase 0.5 --avoid-phase 0)")
     ap.add_argument("--name", default="")
     ap.add_argument("--out", default="/content/head_shortlist")
     ap.add_argument("--device", default="cuda", help="cpu: a smoke of dump only (the timings need a CUDA card)")
