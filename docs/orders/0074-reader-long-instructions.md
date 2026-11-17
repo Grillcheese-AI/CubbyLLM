@@ -1,6 +1,6 @@
 # 0074 - The description reader learns long instructions (round 4: trained on 2 to 8 parts, read on fresh rows)
-status: proposed
-written: 2026-11-16 by Cowork, on Nick's "yes" to the next step 0073's line 4 points to · approved: — · hypothesis: none (0073's line 4)
+status: open (approved by Nick on 2026-11-16: "approve"; builder: Code A, or Cowork on branch `cowork/0074` from `cowork/0073` while Code A is signed out)
+written: 2026-11-16 by Cowork, on Nick's "yes" to the next step 0073's line 4 points to · approved: 2026-11-16 by Nick ("approve") · hypothesis: none (0073's line 4)
 
 ## Why
 0073's reader writes one short description for each check of an instruction, and the host compiles and runs them.
