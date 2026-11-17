@@ -600,3 +600,29 @@ trunk's weights pass through the card between two tokens.
   route's text first differs from the full head's.
 - **Not claimed:** the A100 (a Colab notebook follows, the session Nick's to open); batches above 1; sampled talk;
   the serving batteries (0050's list), which come before the switch is turned on in any serve.
+
+### Step 2f, read: through the wired `generate`, route 5 is at the 32k line and writes the hand loop's tokens (Cowork, 2026-11-17)
+- **Log:** `validation/logs/head_lab_generate_2026-11-17_7cb24f8.json` (grilly2 `cowork/shortlist-generate` at
+  7cb24f8; 2e's 8 prompts; 488 timed steps per head; run once).
+
+| head, in grilly2's `generate` | step, p50 ms | mean ms | p90 ms |
+| --- | --- | --- | --- |
+| full 128k | 22.062 | 22.333 | 23.723 |
+| full 32k | 20.902 | 21.225 | 22.586 |
+| **route 5, 128k** | **20.875** | 21.123 | 22.160 |
+
+- **Line 1, met, by 0.027 ms** at the p50 (at the p90 the route is 0.426 ms under). The margin is thin: route 5 and
+  a full 32k head cost the same step here, and the route saves 1.187 ms a step against the full head it replaces.
+  These steps are shorter than 2e's for all three heads (2e timed its own loop; here the streamer's stamps time the
+  seats' call), so the two runs are not compared step for step.
+- **Line 2, met.** On all 8 prompts the wired `generate` wrote exactly the 64 tokens the hand loop wrote with route 5.
+- **Agreement while decoding on its own choices** (the hand loop): 510 of 512 steps chose the full head's token, as
+  in 2e. The wired route's text is the full head's on 7 of 8 prompts for all 64 tokens; on fineweb_edu it first
+  differs at its 22nd token, 2e's step 20.
+- **Short lists:** 3 of the 512 timed picks.
+- **What is established:** route 5 is wired into grilly2's own decode loop, and through it into the seats' trunk
+  behind `CB_HEAD_SHORTLIST`, off by default. Greedy one-row decoding with the trained 128k head then costs what a
+  full 32k head's would on this card, and writes the tokens the route chooses.
+- **What is not:** the A100 (a Colab session, Nick's to open); batches above 1, which run the full head; sampled
+  talk; the serving batteries (0050's list), which come before the switch is turned on in any serve. The grilly2
+  branch is local, for Nick's review.
