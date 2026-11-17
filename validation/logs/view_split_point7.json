@@ -1,0 +1,84 @@
+{
+ "order": "0073",
+ "what": "point 7: the variant each arm keeps, decided on dev before test is read",
+ "rule": "fewer false passes over checked replies (exact fractions); on a tie, the higher agreement; on a tie again, the own-text rule on; a variant with no checked reply loses to one that has some",
+ "rows_sha256": "2c5ea63f1300353ff2364eafa559407b5828a5c95b1465e6f3960d1e12440689",
+ "kept": {
+  "m": {
+   "own_text": false,
+   "why": "fewer false passes over checked replies",
+   "dev": {
+    "free": {
+     "report": "view_split_dev_m_free.json",
+     "answers_sha256": "e2ddbb18ea3ff0a7eb3bb23d4054a394baa4f6c9e420803e85d506c5922eb2b9",
+     "counts": {
+      "rows": 300,
+      "rows whole": 300,
+      "rows checked": 299,
+      "replies": 3300,
+      "replies checked": 3294,
+      "agree": 3275,
+      "false passes": 14,
+      "checked replies built to fail": 1623,
+      "gold checks": 922,
+      "parts right": 910
+     }
+    },
+    "own": {
+     "report": "view_split_dev_m_own.json",
+     "answers_sha256": "258569f83d5b4e80b0609af332d7d097499ff296efe2285323cf9fbfed90a30b",
+     "counts": {
+      "rows": 300,
+      "rows whole": 300,
+      "rows checked": 299,
+      "replies": 3300,
+      "replies checked": 3294,
+      "agree": 3272,
+      "false passes": 15,
+      "checked replies built to fail": 1623,
+      "gold checks": 922,
+      "parts right": 910
+     }
+    }
+   }
+  },
+  "w": {
+   "own_text": true,
+   "why": "fewer false passes over checked replies",
+   "dev": {
+    "free": {
+     "report": "view_split_dev_w_free.json",
+     "answers_sha256": "8d67f3d53ff2aaf543a8261beaf19d1a701543b38c601458636e50eca90f1efd",
+     "counts": {
+      "rows": 300,
+      "rows whole": 300,
+      "rows checked": 299,
+      "replies": 3300,
+      "replies checked": 3294,
+      "agree": 3277,
+      "false passes": 13,
+      "checked replies built to fail": 1623,
+      "gold checks": 922,
+      "parts right": 911
+     }
+    },
+    "own": {
+     "report": "view_split_dev_w_own.json",
+     "answers_sha256": "1bf73c5793b91cb98fcd5299c8a33850f487fe7e51b231a6a019298290156c8e",
+     "counts": {
+      "rows": 300,
+      "rows whole": 300,
+      "rows checked": 299,
+      "replies": 3300,
+      "replies checked": 3294,
+      "agree": 3269,
+      "false passes": 12,
+      "checked replies built to fail": 1623,
+      "gold checks": 922,
+      "parts right": 910
+     }
+    }
+   }
+  }
+ }
+}

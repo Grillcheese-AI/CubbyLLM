@@ -1,5 +1,5 @@
 # 0073 - The instruction reader writes descriptions and the host compiles them (round 3: two spellings of a negation, read side by side)
-status: open (0067's round 2 was closed on 2026-11-14, a negative result on its line 3, so the build can start; builder: Code A, or Cowork on a branch while Code A is signed out, Nick 2026-11-14: "we will continue here then"; steps 1 to 5 built on branch `cowork/0073` by 2026-11-15: the rows exist and the hashes of test and test_long are committed, the grammar is checked on every row, the two SFT sets are on Drive and the notebooks are written; nothing is trained (the Colab runs are Nick's; the branch is on GitHub since 2026-11-16, on Nick's yes); steps 6 and 7 are built as far as they go without an adapter: the decoder, the scorer, the read's rows file and its two notebooks, point 7's and line 9's scripts, the second chance, arm P's count, line 8's timing script; what is left needs the adapters: Nick's two training runs, then dev's read, point 7, the counted read of test and test_long, and the timing at home)
+status: open (0067's round 2 was closed on 2026-11-14, a negative result on its line 3, so the build can start; builder: Code A, or Cowork on a branch while Code A is signed out, Nick 2026-11-14: "we will continue here then"; steps 1 to 5 built on branch `cowork/0073` by 2026-11-15: the rows exist and the hashes of test and test_long are committed, the grammar is checked on every row, the two SFT sets are on Drive and the notebooks are written; nothing is trained (the Colab runs are Nick's; the branch is on GitHub since 2026-11-16, on Nick's yes); steps 6 and 7 are built as far as they go without an adapter: the decoder, the scorer, the read's rows file and its two notebooks, point 7's and line 9's scripts, the second chance, arm P's count, line 8's timing script; both arms are trained and timed at home (line 8 passes in both variants), dev is read and point 7 is decided (arm M free, arm W with the own-text rule); what is left is the counted read of test and test_long, Nick's run on Colab, and its scoring at home)
 written: 2026-11-14 by Cowork, on Nick's "yes" to writing round 3 as one order on the panel's synthesis - approved: 2026-11-14 by Nick ("I approve 0073", with the arms as defined here, narrower than in the synthesis) - hypothesis: none (0067's second reader)
 
 ## Why
@@ -762,3 +762,80 @@ Arm W is trained (Colab, 938 steps in 5.4 min; held answer loss 0.0025 at the en
   All 60 `finished` and whole; the grammar took 5.92%.
 - Both pass line 8's bound. Arm W's answers are 2 ids longer at the median than arm M's (its `not`s). Logs:
   `validation/logs/view_split_time_w_free.json`, `..._w_own.json`.
+
+### Dev read and point 7 (Cowork, 2026-11-16)
+Nick read dev on Colab (`notebooks/view_split_read_dev.ipynb`): arm M and arm W in both variants, and arm P, 300
+rows each, every row read. The answers were scored at home on the shared VM (`cubelang-cowork` at b3b3360) with the
+scripts above. Dev is for looking: nothing on dev is judged, and test has not been read. Logs:
+`validation/logs/view_split_dev_{m,w}_{free,own}.json`, `view_reader_v2_dev_0073.json`,
+`view_split_second_chance_dev_{m,w}_{free,own}.json`, `view_split_point7.json`. The answers stay off-repo.
+
+All 1,200 answers of arms M and W ended `finished` and read back whole. Line 1, in all four: no character in no
+line, none flagged. The lines on dev (the bound in brackets; they are judged on test):
+
+| | M free | M own | W free | W own |
+|---|---|---|---|---|
+| Line 2, gold checks with their line (at least 90%) | 914 / 922 = 0.9913 | 912 / 922 = 0.9892 | 914 / 922 = 0.9913 | 911 / 922 = 0.9881 |
+| Line 2, segments with span and kind | 1,854 / 1,871 = 0.9909 | 1,852 / 1,871 = 0.9898 | 1,856 / 1,871 = 0.9920 | 1,853 / 1,871 = 0.9904 |
+| Line 3, agreement (at least 95%) | 3,275 / 3,294 = 0.9942 | 3,272 / 3,294 = 0.9933 | 3,277 / 3,294 = 0.9948 | 3,269 / 3,294 = 0.9924 |
+| Line 3, false passes (at most 2%, kill above 5%) | 14 / 3,294 = 0.0043 | 15 / 3,294 = 0.0046 | 13 / 3,294 = 0.0039 | 12 / 3,294 = 0.0036 |
+| Line 3, false passes over replies built to fail | 14 / 1,623 = 0.0086 | 15 / 1,623 = 0.0092 | 13 / 1,623 = 0.0080 | 12 / 1,623 = 0.0074 |
+| Line 5, parts right (at least 95%) | 910 / 922 = 0.9870 | 910 / 922 = 0.9870 | 911 / 922 = 0.9881 | 910 / 922 = 0.9870 |
+| Line 5, parts fixed by one reversal (at most 3%, kill above 8%) | 0 / 922 | 0 / 922 | 0 / 922 | 0 / 922 |
+| Line 6, groups right (at least 97%, kill below 90%) | 159 / 160 = 0.9938 | 158 / 160 = 0.9875 | 159 / 160 = 0.9938 | 158 / 160 = 0.9875 |
+| Line 7, replies checked (at least 98% on test) | 3,294 / 3,300 = 0.9982 | 3,294 / 3,300 = 0.9982 | 3,294 / 3,300 = 0.9982 | 3,294 / 3,300 = 0.9982 |
+| Line 7, gold checks asked (at most 10%) | 4 / 922 = 0.0043 | 4 / 922 = 0.0043 | 4 / 922 = 0.0043 | 4 / 922 = 0.0043 |
+| Line 10, unweighted mean of the four directions | 0.9878 | 0.9891 | 0.9878 | 0.9864 |
+| Seconds per instruction, decoded on Colab | 0.7067 | 0.698 | 0.7311 | 0.7537 |
+
+- **Line 10, parts right**, M free / M own / W free / W own. By direction: at least or more than 179 / 182 in the
+  first three and 177 / 182 in W own; at most or fewer than 181, 182, 181, 182 of 182; exactly 11 / 11 in all
+  four; other than 72 / 74 in all four. By negation in the words: none 685, 685, 686, 687 of 692; one 211, 211,
+  211, 209 of 216; two 14 / 14 in all four. By language: English 534, 534, 535, 535 of 540; French 376, 376, 376,
+  375 of 382. By number of parts: 180 / 180 (2) and 294 / 294 (3) in all four; 436 / 448 (4), and 437 / 448 in
+  W free. M own made 1 group that is not gold.
+- Every false pass is on a row of 4 parts, in all four. By language, M free 5 of 954 English replies built to fail
+  and 9 of 669 French; W own 3 of 954 and 9 of 669.
+- **Arm P** (round 2's adapter, the program target; counted by round 2's scorer with `--trim`, whose report keeps
+  its own `"order": "0067"` label): parts with span and kind 743 / 922 = 0.8059; segment kinds right 1,689 of its
+  1,838 segments; replies the VM could check 3,118 / 3,300 = 0.9448 (178 asked by the VM, 4 a view too long for
+  it); agreement 1,865 / 3,118 = 0.5981; false passes 383 / 3,118 = 0.1228; 724 characters left uncovered
+  (flagged, asked); 1.9 s per instruction decoded on Colab. On dev it is past line 3's kill and under line 2's
+  bound. Its counted read is test and test_long, beside the two kept arms.
+
+**Point 7, decided** (`validation/exp_view_split_point7.py`, the rule as written: fewer false passes over checked
+replies, as exact fractions):
+- **Arm M keeps free:** 14 / 3,294 against 15 / 3,294 with the own-text rule.
+- **Arm W keeps the own-text rule:** 12 / 3,294 against 13 / 3,294 free.
+- Each choice is decided by one reply. The rule was written before any answer existed, and this is what it
+  decides on; it is not read as a difference between the variants. The test notebook takes these two choices from
+  `validation/logs/view_split_point7.json`.
+
+**What dev shows** (looked at by eye, dev only):
+- **The reversal is gone.** No part on dev is fixed by one reversal, in any of the four (0 / 922), and the second
+  chance's pattern table is empty in all four. In round 2, 29 of 30 reversals were a negation said the wrong way.
+  The parts wrong as written that no one reversal fixes: M free 4, M own 2, W free 3, W own 1 (the slots that
+  differ, across the four: a condition's value, the position, the quantifier with the number of conditions, the
+  value, the value at a position); 1 to 3 more are right in another form than the gold's.
+- **Most false passes are on rows where a gold check was written `asked`.** An `asked` line leaves its row checked
+  (the rule stated before the read), so a gold check written `asked` is not run and its replies built to fail
+  pass. 11 of M free's 14 false passes are on such rows, 9 of W own's 12. All four variants wrote 4 gold checks
+  `asked`. In the two kept ones they are on rows d200006, d200083 and d200227 in both, d200186 in M free and
+  d200261 in W own: a number of paragraphs with "at least" (both; a second one in W own), a number of lines with a
+  filter and "other than" (both), every list item numbered (both), at least one JSON field (M free). These are
+  plain checks of the set. In M free 2 of its 4 come right after an `asked` line (a sentence of style), in W own 3
+  of its 4; four is too few to say more. Two more gold checks have no check line in all four, one written `none`
+  and one `process` (in the kept variants, on d200261 and d200239).
+- **The one row not checked** (d200193, in all four): its first check is the value at the last line, under "if".
+  In the kept variants the reader wrote the "if" clause and the clause it governs as one line; the host asked it,
+  and a part asked by the host leaves its row not checked: the row's 6 replies count against coverage.
+- **Values in the free variant.** Arm M free wrote, once, a number its line does not have (59, for a line that
+  says 763: d200194) and, once, a string quoted only in the next sentence (d200159). Arm W own, on the same two
+  sentences, wrote the text's own values. The own-text rule still allows a column's own fixed values without the
+  text: on d200194 arm W own wrote the English word where the French line names its French one, and cut the line
+  before the quote, which then became a check line of its own.
+- Nothing here changes the read: the decoder, the grammar and the scoring stay as they were for test.
+
+Next: Nick runs `notebooks/view_split_read_test.ipynb` (arm M free, arm W with the own-text rule and arm P, on test
+and test_long, once). The answers are then scored at home (`exp_view_split_score.py --splits test,test_long`,
+`exp_view_reader.py --score --trim`) and judged by `exp_view_split_compare.py`, lines 1 to 9.

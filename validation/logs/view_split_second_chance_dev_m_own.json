@@ -1,0 +1,33 @@
+{
+ "order": "0073",
+ "what": "the second chance on descriptions, dev only: one slot reversed at a time, the pattern table",
+ "arm": "m",
+ "own_text": true,
+ "answers": "view_split_m_own_dev.jsonl",
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-13 16:06",
+  "sha256": "a2dfaa016536ccbeb2f2c29b2c095b0ef3a5d9480065440089e04e90b244e42f",
+  "commit": "b3b3360",
+  "older_than_sources": false
+ },
+ "counts": {
+  "gold checks": 922,
+  "no check line: no line with its span": 4,
+  "no check line: written as `asked`": 4,
+  "no check line: written as `none`": 1,
+  "no check line: written as `process`": 1,
+  "right as written": 910,
+  "right as written, not the gold's form": 1,
+  "rows": 300,
+  "wrong, and no one reversal fixes it": 2
+ },
+ "right in another form, by the slots that differ": {
+  "q + op + v": 1
+ },
+ "patterns": {},
+ "not fixed, by the slots that differ": {
+  "pos": 1,
+  "q + the number of conditions": 1
+ }
+}
