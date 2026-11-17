@@ -1,5 +1,6 @@
 """cubbyllm/ops/grilly_seats.py -- the 450M's seats on grilly2 behind the ops seam (order 0031): load a base export, wrap
-its projections with LoRA, copy a role's A/B pair in, decode a batch.
+its projections with LoRA, copy a role's A/B pair in, decode a batch; and (order 0068) attach route 5, the vocabulary
+shortlist greedy one-row decodes pick their tokens with.
 
 Only ``cubbyllm/ops/`` names grilly (``test_ops_is_sole_grilly_importer``); the seats' trunk (``Cubby450mTrunk``, bound
 for ``cubbyllm/emit/seats_450m.py``) calls these. Each function is the code the trunk (and
@@ -37,6 +38,35 @@ def load_export(export_dir: str):
     if missing or unexpected:
         raise SystemExit(f"export does not match the model: missing {missing}, unexpected {unexpected}")
     return model, cfg
+
+
+def attach_route(model, index_path: str, near: int = 2048, context: int = 8192, ranks: int = 256):
+    """Order 0068's route 5 on ``model`` (grilly2's ``CubbyForCausalLM``): a ``ShortlistIndex`` (``.npz`` with arm
+    (d)'s screen lists and the successors) as grilly2's ``ShortlistHead`` over the model's own head rows, set as
+    ``model.shortlist`` -> the head. grilly2's ``generate`` then picks each token of a greedy one-row decode with no
+    repetition penalty and no processors with it; every other decode runs the full head. None, and nothing set, when
+    this grilly2 has no shortlist decode. Refused (ValueError) when the index is not over this head's rows."""
+    try:
+        from grilly.infer.shortlist import ShortlistHead
+    except ImportError:
+        return None
+    if not callable(getattr(model, "hidden", None)) or not hasattr(model, "shortlist"):
+        return None
+    from ..model.vocab.shortlist import ShortlistIndex
+    idx = ShortlistIndex.load(index_path)
+    rows = int(model.lm_head.weight.shape[0])
+    name = os.path.basename(index_path)
+    if idx.screen is None:
+        raise ValueError(f"{name}: no screen lists (route 5's context list is arm (d)'s)")
+    if len(idx.assign) != rows:
+        raise ValueError(f"{name} is over {len(idx.assign)} head rows; this head has {rows}")
+    if idx.succ is not None and idx.succ.shape[0] != rows:
+        raise ValueError(f"{name}'s successors cover {idx.succ.shape[0]} tokens; this head has {rows}")
+    s = idx.screen
+    head = ShortlistHead(model.lm_head.weight, s.centroids, s.ids, s.offsets, idx.succ, near=near, context=context,
+                         ranks=ranks)
+    model.shortlist = head
+    return head
 
 
 def wrap_lora(model, rank, alpha, targets) -> dict:

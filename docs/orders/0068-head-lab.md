@@ -1,5 +1,5 @@
 # 0068 - The head lab: four ways to stop scoring 128,000 words at every token, tried on the frozen trunk's saved states
-status: in progress (Cowork builds this one, on Nick's word of 2026-11-12; steps through 2d merged to master on 2026-11-17 on Nick's "merge all changes", with grilly2's `ShortlistHead` merged to grilly2's main; the A100 timing and the wiring are still to do)
+status: in progress (Cowork builds this one, on Nick's word of 2026-11-12; steps through 2d merged to master on 2026-11-17 on Nick's "merge all changes", with grilly2's `ShortlistHead` merged to grilly2's main; the A100 timing is still to do; the wiring (step 2f) is on grilly2's branch `cowork/shortlist-generate`, for Nick's review, and on `cowork/0068` behind `CB_HEAD_SHORTLIST`, off by default)
 written: 2026-11-12 by Cowork - approved: 2026-11-12 by Nick ("can you do it yourself?") - hypothesis: H-C3 (with H-C2, H-C6)
 
 ## Why
@@ -568,3 +568,35 @@ trunk's weights pass through the card between two tokens.
 - **What is established:** on this card at batch 1, inside the model's own decode step, the trained 128k head costs
   less with route 5 than a full 32k head would, and a 256k head would cost 0.070 ms more than a 32k one instead of
   2.561 ms more. **Not:** the A100, batches above 1, sampled talk, and any agreement at 256k (its head is synthetic).
+
+### Step 2f, route 5 wired into the decode loop and the seats, pre-registered before its run (Cowork, 2026-11-17, on Nick's "can we wire it ?")
+- **What is wired.**
+  - grilly2, on a branch for Nick's review (`cowork/shortlist-generate` at 7cb24f8, off main; main untouched): a
+    model with `hidden()` (its forward without the head; `CubbyForCausalLM` now has one) can carry a `ShortlistHead`
+    as `model.shortlist`. `generate()` then picks each token of a greedy one-row decode with no repetition penalty
+    and no processors with it, the route's successors being those of the token just fed in. Sampling, a penalty, a
+    processor, a batch or padding run the full head as before, and so does `use_shortlist=False`. With no shortlist
+    set, nothing changes. Tests: 9 new (`tests/python/test_generate_shortlist.py`); `tests/python` 1,196 passed,
+    13 skipped.
+  - CubbyLLM: `grilly_seats.attach_route` builds the route from a `ShortlistIndex` (`.npz`, screen lists and
+    successors) over the model's own head rows, and refuses an index over another head. `seats_450m.route_index`
+    gives the trunk an index only with 0050's switch `CB_HEAD_SHORTLIST=1`, **off by default**:
+    `CB_HEAD_ROUTE_INDEX` when set, else `head_route.npz` beside the export. Off, the trunk is the one before. Tests:
+    5 new (`tests/ops/test_grilly_seats_route.py`).
+  - **Which decodes it reaches when on:** the trunk's greedy one-row calls with no hook, so talk at temperature 0
+    without 0067's steering. A steered, hooked or sampled call, or a batch, runs the full head.
+- **What runs:** `validation/head_lab_generate.py`, grilly2's `model.generate` at home, greedy, batch 1, fp32, on
+  2e's 8 prompts (256 held-in tokens each), 64 new tokens, no EOS. Three heads: the full 128k head; a full 32k head
+  (`lm_head` replaced by its first 32,000 rows); route 5 over the 128k head through `attach_route`
+  (`index_router_succ.npz`, K 8,192, N 2,048, rank bound 256, as 2d and 2e). A streamer stamps each token on the
+  host; a step is the time between two stamps after the first token, the first 2 of each run left out. The order
+  of the heads rotates from prompt to prompt, after one warm-up pass.
+- **The lines:**
+  1. route 5's `generate` step at most the 32k head's `generate` step (p50);
+  2. the wired `generate` writes, on all 8 prompts, the tokens a hand loop writes with route 5 (`hidden()` and
+     `ShortlistHead.argmax`, as 2e decoded). A miss is a wiring fault to fix, not a result about route 5.
+- **Also reported, not lines:** the full 128k head's step; the route's picks on a short list; in the hand loop, how
+  often route 5 picks the full head's token while decoding on its own choices (2e: 510 of 512); where the wired
+  route's text first differs from the full head's.
+- **Not claimed:** the A100 (a Colab notebook follows, the session Nick's to open); batches above 1; sampled talk;
+  the serving batteries (0050's list), which come before the switch is turned on in any serve.
