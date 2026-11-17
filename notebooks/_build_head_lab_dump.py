@@ -84,9 +84,9 @@ print('windows', len(d['win_start']), 'positions', len(d['target']), 'closest ga
 assert min(gaps) > 1024 and len(d['target']) == 1024 * len(d['win_start'])
 sha = hashlib.sha256(open(src, 'rb').read()).hexdigest()
 shutil.copy(src, f'{OUTD}/heldout_b.npz')
-import glob
-for f in glob.glob('/content/CubbyLLM/validation/logs/head_share_dump_cuda_*.json'):
-    shutil.copy(f, f'{OUTD}/heldout_b_dump_log.json')
+import datetime
+today = datetime.date.today().isoformat()                # only this run's log, not 0050's committed one
+shutil.copy(f'/content/CubbyLLM/validation/logs/head_share_dump_cuda_{today}.json', f'{OUTD}/heldout_b_dump_log.json')
 print('kept on Drive: heldout_b.npz, sha256', sha)
 print('Done: disconnect the runtime.')
 """),

@@ -323,3 +323,10 @@ on held-out, the card already computes the pass as it stands, and step 2 (the ti
   the 51st to the 1,950th); the context list alone and what the pass catches where it misses; the rows (mean, p99,
   max); the agreement by shard.
 - **Not claimed, even if it passes:** any time (step 2), the serving batteries and sampled talk (step 3).
+
+### The fresh dump, before its read (Cowork, 2026-11-17)
+- Nick ran `head_lab_dump.ipynb` on Colab (2026-11-17). `heldout_b.npz`: 39 windows, 39,936 positions, SHA-256
+  `eef2d754ba806991707ec4deff9edeeced277b72a51e3bcfbc42ca3df76de448`. Recorded here before the read.
+- Found on the way: the notebook copied the dump's log under one name with a glob that also matched 0050's committed
+  log of 2026-11-05, so the copy kept on Drive is 0050's; the card of this dump is not recorded. The notebook now
+  copies only the log of the day it runs. It changes nothing in the file read.
