@@ -428,7 +428,7 @@ its own row. A dispatch costs about 0.011 ms in a batch here.
 - **Log:** `validation/logs/head_lab_time_grilly_card_2026-11-17.json` (grilly2 `cowork/shortlist-head` at 248a738,
   the same 50 states, run once).
 - **Route 5 on the card: 0.674 ms** a token (p50; p90 0.727), from 43.085 in step 2. The full head **1.679**, a full
-  32k head **0.557**. The line is **missed** by 0.117 ms; route 5 is now 2.5 times faster than the full head.
+  32k head **0.557**. The line is **missed** by 0.117 ms; route 5 is now well under the full head it would replace.
 - **Check:** the union held the full head's token on all 50 states and the card chose it on all 50; no list was
   short; the union averaged 10,010.3 rows (most 10,221).
 - **Each dispatch (p50 of the step stopped after it, less the one before):** context 0.091 (with the batch's
@@ -438,3 +438,19 @@ its own row. A dispatch costs about 0.011 ms in a batch here.
   distances for the tied rows, a bitonic sort of 4,096 cluster scores (78 barrier stages), and two prefix sums. The
   Hamming pass (16 MB) and the scoring (about 41 MB) already run near the card's bandwidth.
 - **The held-in union check** is running; its result goes below when it ends.
+
+### Step 2c, the plan spread over the card, pre-registered before its run (Cowork, 2026-11-17)
+Step 2b's plan is one workgroup doing serial work, and it is a third of the step. The rebuild changes how three
+numbers are found, not what the union is, so the route and its read stand as they are:
+- **the clusters ranked by counting:** a cluster's rank is how many clusters go before it (a higher score, or an
+  equal one and a lower index), found for all 4,096 at once on 16 workgroups; only ranks below 256 are kept. The
+  2,048th distance comes from the histogram in one more workgroup of the same dispatch;
+- **the tied rows counted per block** of 512 rows beside the marking dispatch, and the cut dispatch finds the last
+  tied row taken from those counts;
+- **each ranked list's start** summed where it is used, so no dispatch waits on a prefix sum of all of them.
+- Still eight dispatches and one readback of the token through the same path as both heads' (a device buffer read
+  back by grilly2; no host-visible shortcut the heads do not get).
+- **Checked before the timing, not a line:** grilly2's Rust and Python tests, and the held-in union check again on
+  every position of `heldin_val.npz`.
+- **Timed:** the same command, the same 50 states, the same line. Timing these states again spends nothing (it reads
+  time, not agreement), and step 2b's number stays reported beside it.
