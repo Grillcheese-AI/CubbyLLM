@@ -395,3 +395,31 @@ on held-out, the card already computes the pass as it stands, and step 2 (the ti
   the full head is 1.700 ms here and, per 0050, 7.3 to 9.6% of a home decode step, so a route at the 32k line saves
   at most 1.144 ms a token of it.
 - **Not run:** the A100 (a Colab session, Nick's to open). Nothing under `cubbyllm/` was touched.
+
+### Step 2b, route 5 on the card, pre-registered before its run (Cowork, 2026-11-17, on Nick's "1")
+Nick chose the first way forward above: the list on the card and a top-k that does not sort. What the step-2 run
+showed about the parts, measured on the same card before any of this was written: the packed top-k is grilly2's
+general sort (a bitonic sort of all 131,072 padded distances, over 150 dispatches, since k = 2,048 is above the
+small-k path's 64),
+and the Hamming kernel alone is 0.49 ms with a one-value readback against a 0.12 ms floor, because each thread walks
+its own row. A dispatch costs about 0.011 ms in a batch here.
+- **What is built:** in grilly2, on a branch for Nick's review (`cowork/shortlist-head`, off main; main untouched),
+  `grilly_infer::ShortlistHead`: route 5 by distance alone as read, from the state on the card to the chosen token,
+  with one readback of the token and no host list or gather. Eight dispatches: (1) the context pass (4,096
+  centroids) and the state's sign bits packed; (2) every row's Hamming distance and their histogram; (3) one
+  workgroup: the 2,048th distance and its ties to the lower id, the clusters ranked (score, then index), their list
+  starts; (4) each ranked cluster's tokens marked with their first position; (5) each cluster's new tokens counted;
+  (6) one workgroup: the cut at K = 8,192 distinct tokens, the previous token's successors added; (7) the union's
+  rows scored in fp32, the best of each workgroup; (8) the best overall, the first index on a tie.
+- **Bound:** clusters are scanned to rank 256 at most (the 50 timed states need 12 to 149). A position that would
+  need more is flagged and counted, not hidden.
+- **Checked, not a line:** the clusters are ranked from the card's scores, which can order a near tie differently
+  from numpy's, so the card's union can differ from the read one. On `heldin_val.npz`'s 53,248 held-in positions
+  (not held-out), every position: the card's union against numpy's (`ScreenIndex.shortlist` with the 2,048 nearest,
+  ties to the lower id); how many differ, and on those whether the token differs. On the 50 timed states, the card's
+  token against the full head's.
+- **Timed:** `validation/head_lab_time.py --route card`, the same 50 states of `heldout_b.npz`, batch 1, fp32, p50 of
+  50 after 3 warm-ups, with the full 128k and full 32k heads in the same run.
+- **The line (0050's):** route 5 at most a full 32k head's time. Missed is reported with the time each dispatch adds;
+  it kills nothing.
+- **Not claimed:** the A100, the serving batteries, sampled talk. Nothing under `cubbyllm/` is touched.
