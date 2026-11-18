@@ -692,6 +692,7 @@ trunk's weights pass through the card between two tokens.
   `generate`; the 256k case sits at the line (0.010 ms over).
 - **What is not:** the A100, which needs a session that gets one; batches above 1; sampled talk; the serving
   batteries.
-- **Setup found at the run:** grilly2 first built but did not see the card; Nick made the NVIDIA Vulkan driver
-  visible on the runtime (grilly2's doctor reports `VK_ICD_FILENAMES` set to `/etc/vulkan/icd.d/nvidia_icd.json`)
-  and the runs followed. It changes the setup, not what was timed.
+- **Setup found at the run:** grilly2 first built but did not see the card; Nick set Vulkan up in the runtime's
+  terminal by LunarG's Linux (Ubuntu) getting-started instructions, after which grilly2's doctor reports `VK_ICD_FILENAMES` set to
+  `/etc/vulkan/icd.d/nvidia_icd.json` and the NVIDIA L4 as its device, and the runs followed. The notebook's cell 3
+  now names that ICD file to the loader the same way before anything else. It changes the setup, not what was timed.
