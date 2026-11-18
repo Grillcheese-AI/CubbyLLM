@@ -1,0 +1,17 @@
+{
+ "order": "0077",
+ "what": "the held-out rows' ids, splits and instructions, for the read on Colab",
+ "keys": [
+  "id",
+  "split",
+  "instruction"
+ ],
+ "rows": 900,
+ "by_split": {
+  "dev_real": 300,
+  "test_real": 300,
+  "test_dolly": 300
+ },
+ "sha256": "2188557bb349b93557bf2bd8412cb6af33cde0bc13bbf11cda787a71914e27d3",
+ "rows_sha256": "a98fffec166e99193e8071e08e2925939eef769fc4eb14b94395bf38939a06c8"
+}

@@ -64,9 +64,11 @@ def _group(lay, word: list, g: tuple, parts: list, lang: str, share: float) -> t
             (words[lang][1] + cond + ".", check(c, "cond", role="condition", join=[g[0], "prev"]))], [a, c]
 
 
-def compose(rng, parts: list, groups: list, lang: str, phrases: dict, share: float = 0.0) -> tuple[str, list, list]:
+def compose(rng, parts: list, groups: list, lang: str, phrases: dict, share: float = 0.0,
+            task: bool = True) -> tuple[str, list, list]:
     """`rng` gives one number; the layout draws from its own stream and each part's wording from its own, so two
-    rows composed from the same state that differ in one part (a minimal pair) differ in that part's words only."""
+    rows composed from the same state that differ in one part (a minimal pair) differ in that part's words only.
+    ``task=False`` (order 0077: a real prompt is the task): no task sentence is drawn from the lists."""
     base = rng.getrandbits(48)
     rng, word = random.Random(base), [random.Random(base * 131 + i + 1) for i in range(len(parts))]
     pieces, order = [], []
@@ -75,7 +77,7 @@ def compose(rng, parts: list, groups: list, lang: str, phrases: dict, share: flo
         pieces.append(p)
         order += o
     others = []
-    if rng.random() < 0.8:
+    if task and rng.random() < 0.8:
         s, key = P.task_sentence(rng, lang)
         others.append(("task", [(s, {"kind": "task", "task": key})]))
     for _ in range(rng.choice([0, 1, 1, 2])):

@@ -1,0 +1,926 @@
+{
+ "order": "0077",
+ "what": "build 2: the description reader's rows with a real prompt as the task (2 to 8 checks inside it), on 0074's builder; each prompt line one task segment",
+ "seed": 77,
+ "train and dev records within the trainer's tokens": 1280,
+ "prompts": {
+  "over 600 characters: train dolly en": 697,
+  "over 600 characters: held dolly en": 67,
+  "over 600 characters: dev dolly en": 85,
+  "over 600 characters: train oasst1 en": 72,
+  "French held-out prompts of round 6 kept out": 180,
+  "over 600 characters: train oasst1 fr": 9,
+  "over 600 characters: held oasst1 en": 9,
+  "over 600 characters: dev oasst1 en": 8,
+  "shares 5 words with a benchmark: train": 1,
+  "candidates: train_real": 5165,
+  "candidates: dev_real": 563,
+  "candidates: test_real": 524,
+  "candidates: test_dolly": 300,
+  "wanted: test_real": 300,
+  "wanted: train_real": 2000,
+  "wanted: dev_real": 300,
+  "wanted: test_dolly": 300
+ },
+ "rows": 2900,
+ "by_set": {
+  "train_real": 2000,
+  "dev_real": 300,
+  "test_real": 300,
+  "test_dolly": 300
+ },
+ "by_source_and_lang": {
+  "train_real": {
+   "oasst1 en": 1692,
+   "oasst1 fr": 308
+  },
+  "dev_real": {
+   "oasst1 en": 253,
+   "oasst1 fr": 47
+  },
+  "test_real": {
+   "oasst1 en": 300
+  },
+  "test_dolly": {
+   "dolly en": 300
+  }
+ },
+ "by_parts": {
+  "train_real": {
+   "2": 286,
+   "3": 286,
+   "4": 286,
+   "5": 286,
+   "6": 286,
+   "7": 285,
+   "8": 285
+  },
+  "dev_real": {
+   "2": 43,
+   "3": 43,
+   "4": 43,
+   "5": 43,
+   "6": 43,
+   "7": 43,
+   "8": 42
+  },
+  "test_real": {
+   "2": 43,
+   "3": 43,
+   "4": 43,
+   "5": 43,
+   "6": 43,
+   "7": 43,
+   "8": 42
+  },
+  "test_dolly": {
+   "2": 43,
+   "3": 43,
+   "4": 43,
+   "5": 43,
+   "6": 43,
+   "7": 43,
+   "8": 42
+  }
+ },
+ "by_prompt_place": {
+  "train_real": {
+   "after": 836,
+   "around": 290,
+   "before": 874
+  },
+  "dev_real": {
+   "after": 128,
+   "around": 39,
+   "before": 133
+  },
+  "test_real": {
+   "after": 124,
+   "around": 51,
+   "before": 125
+  },
+  "test_dolly": {
+   "after": 140,
+   "around": 20,
+   "before": 140
+  }
+ },
+ "by_prompt_length_100": {
+  "train_real": {
+   "0": 933,
+   "100": 406,
+   "200": 449,
+   "300": 128,
+   "400": 62,
+   "500": 22
+  },
+  "dev_real": {
+   "0": 154,
+   "100": 52,
+   "200": 67,
+   "300": 18,
+   "400": 5,
+   "500": 4
+  },
+  "test_real": {
+   "0": 132,
+   "100": 60,
+   "200": 67,
+   "300": 26,
+   "400": 10,
+   "500": 5
+  },
+  "test_dolly": {
+   "0": 193,
+   "100": 24,
+   "200": 34,
+   "300": 16,
+   "400": 21,
+   "500": 12
+  }
+ },
+ "prompt_lines": {
+  "train_real": {
+   "1": 1818,
+   "2": 67,
+   "3": 28,
+   "4": 25,
+   "5": 15,
+   "6": 8,
+   "7": 8,
+   "8": 3,
+   "9": 7,
+   "10": 4,
+   "11": 3,
+   "12": 3,
+   "13": 3,
+   "15": 1,
+   "16": 3,
+   "23": 1,
+   "26": 1,
+   "38": 2
+  },
+  "dev_real": {
+   "1": 278,
+   "2": 7,
+   "3": 5,
+   "4": 1,
+   "5": 1,
+   "6": 1,
+   "7": 1,
+   "8": 1,
+   "12": 1,
+   "20": 2,
+   "21": 1,
+   "28": 1
+  },
+  "test_real": {
+   "1": 272,
+   "2": 9,
+   "3": 6,
+   "4": 4,
+   "5": 2,
+   "7": 2,
+   "8": 1,
+   "9": 1,
+   "11": 1,
+   "14": 1,
+   "21": 1
+  },
+  "test_dolly": {
+   "1": 244,
+   "2": 49,
+   "3": 4,
+   "4": 2,
+   "15": 1
+  }
+ },
+ "lower bounds' share of the bounds": {
+  "train_real": 0.4997,
+  "dev_real": 0.5009,
+  "test_real": 0.5004,
+  "test_dolly": 0.5018
+ },
+ "band": [
+  0.45,
+  0.55
+ ],
+ "sets": {
+  "train_real": {
+   "rows": 2000,
+   "by_lang": {
+    "fr": 308,
+    "en": 1692
+   },
+   "by_parts": {
+    "2": 286,
+    "3": 286,
+    "4": 286,
+    "5": 286,
+    "6": 286,
+    "7": 285,
+    "8": 285
+   },
+   "segments_by_kind": {
+    "check": 9995,
+    "asked": 1974,
+    "none": 1992,
+    "task": 3002,
+    "process": 785
+   },
+   "groups": {
+    "one": 6099,
+    "either": 994,
+    "if": 486,
+    "unless": 468
+   },
+   "tied pairs by place": {
+    "2": {
+     "pair at 1-2": 86,
+     "rows": 286
+    },
+    "3": {
+     "pair at 1-2": 73,
+     "pair at 2-3": 73,
+     "rows": 286
+    },
+    "4": {
+     "pair at 1-2": 71,
+     "pair at 2-3": 70,
+     "pair at 3-4": 71,
+     "rows": 286
+    },
+    "5": {
+     "pair at 1-2": 75,
+     "pair at 2-3": 62,
+     "pair at 3-4": 68,
+     "pair at 4-5": 80,
+     "rows": 286
+    },
+    "6": {
+     "pair at 1-2": 84,
+     "pair at 2-3": 59,
+     "pair at 3-4": 59,
+     "pair at 4-5": 65,
+     "pair at 5-6": 75,
+     "rows": 286
+    },
+    "7": {
+     "pair at 1-2": 81,
+     "pair at 2-3": 78,
+     "pair at 3-4": 65,
+     "pair at 4-5": 64,
+     "pair at 5-6": 67,
+     "pair at 6-7": 68,
+     "rows": 285
+    },
+    "8": {
+     "pair at 1-2": 70,
+     "pair at 2-3": 60,
+     "pair at 3-4": 62,
+     "pair at 4-5": 67,
+     "pair at 5-6": 67,
+     "pair at 6-7": 68,
+     "pair at 7-8": 60,
+     "rows": 285
+    }
+   },
+   "connectives": {
+    "en either first": 831,
+    "en if after": 211,
+    "en if first": 217,
+    "en unless after": 203,
+    "en unless first": 197,
+    "fr either first": 163,
+    "fr if after": 34,
+    "fr if first": 24,
+    "fr unless after": 33,
+    "fr unless first": 35
+   },
+   "bounds": {
+    "all": {
+     "lower": 3782,
+     "upper": 3786,
+     "exactly": 375,
+     "other": 1336,
+     "lower share": 0.4997
+    },
+    "size": {
+     "lower": 1135,
+     "upper": 1136,
+     "exactly": 20,
+     "other": 306,
+     "lower share": 0.4998
+    },
+    "count": {
+     "lower": 739,
+     "upper": 739,
+     "exactly": 60,
+     "other": 534,
+     "lower share": 0.5
+    },
+    "position": {
+     "lower": 210,
+     "upper": 210,
+     "exactly": 31,
+     "other": 61,
+     "lower share": 0.5
+    },
+    "filter": {
+     "lower": 1698,
+     "upper": 1701,
+     "exactly": 264,
+     "other": 435,
+     "lower share": 0.4996
+    }
+   },
+   "wording": {
+    "how": {
+     "cond": 954,
+     "imp": 9041
+    },
+    "not in arm W's form": {
+     "0": 7262,
+     "1": 2575,
+     "2": 156,
+     "3": 2
+    },
+    "arm M's quantifier": {
+     "all": 602,
+     "any": 1510,
+     "at": 1047,
+     "count": 2072,
+     "n": 2649,
+     "none": 2115
+    }
+   },
+   "replies reach": {
+    "numbered parts": 5239,
+    "values reached": 5930,
+    "values reached, alone": 3096,
+    "all three values": 452,
+    "all three values, alone": 100,
+    "tied pairs": 1948,
+    "combinations reached": 5184,
+    "combinations reached, alone": 3895,
+    "all four combinations": 254,
+    "all four combinations, alone": 83,
+    "replies": 15972,
+    "replies added": 0,
+    "replies built to fail": 8020
+   },
+   "mutants": {
+    "parts": 25508,
+    "parts told": 17411,
+    "parts told alone": 23642,
+    "groups": 8087,
+    "groups told": 4716,
+    "groups told alone": 6617
+   }
+  },
+  "dev_real": {
+   "rows": 300,
+   "by_lang": {
+    "en": 253,
+    "fr": 47
+   },
+   "by_parts": {
+    "2": 43,
+    "3": 43,
+    "4": 43,
+    "5": 43,
+    "6": 43,
+    "7": 43,
+    "8": 42
+   },
+   "segments_by_kind": {
+    "task": 476,
+    "none": 309,
+    "check": 1497,
+    "asked": 289,
+    "process": 128
+   },
+   "groups": {
+    "unless": 73,
+    "one": 879,
+    "either": 156,
+    "if": 80
+   },
+   "tied pairs by place": {
+    "2": {
+     "pair at 1-2": 13,
+     "rows": 43
+    },
+    "3": {
+     "pair at 1-2": 11,
+     "pair at 2-3": 11,
+     "rows": 43
+    },
+    "4": {
+     "pair at 1-2": 11,
+     "pair at 2-3": 10,
+     "pair at 3-4": 11,
+     "rows": 43
+    },
+    "5": {
+     "pair at 1-2": 12,
+     "pair at 2-3": 12,
+     "pair at 3-4": 13,
+     "pair at 4-5": 18,
+     "rows": 43
+    },
+    "6": {
+     "pair at 1-2": 16,
+     "pair at 2-3": 7,
+     "pair at 3-4": 9,
+     "pair at 4-5": 13,
+     "pair at 5-6": 10,
+     "rows": 43
+    },
+    "7": {
+     "pair at 1-2": 3,
+     "pair at 2-3": 13,
+     "pair at 3-4": 7,
+     "pair at 4-5": 16,
+     "pair at 5-6": 10,
+     "pair at 6-7": 11,
+     "rows": 43
+    },
+    "8": {
+     "pair at 1-2": 11,
+     "pair at 2-3": 14,
+     "pair at 3-4": 7,
+     "pair at 4-5": 13,
+     "pair at 5-6": 12,
+     "pair at 6-7": 6,
+     "pair at 7-8": 9,
+     "rows": 42
+    }
+   },
+   "connectives": {
+    "en either first": 137,
+    "en if after": 33,
+    "en if first": 32,
+    "en unless after": 27,
+    "en unless first": 32,
+    "fr either first": 19,
+    "fr if after": 8,
+    "fr if first": 7,
+    "fr unless after": 6,
+    "fr unless first": 8
+   },
+   "bounds": {
+    "all": {
+     "lower": 585,
+     "upper": 583,
+     "exactly": 51,
+     "other": 189,
+     "lower share": 0.5009
+    },
+    "size": {
+     "lower": 173,
+     "upper": 171,
+     "exactly": 4,
+     "other": 46,
+     "lower share": 0.5029
+    },
+    "count": {
+     "lower": 124,
+     "upper": 123,
+     "exactly": 6,
+     "other": 68,
+     "lower share": 0.502
+    },
+    "position": {
+     "lower": 37,
+     "upper": 38,
+     "exactly": 1,
+     "other": 12,
+     "lower share": 0.4933
+    },
+    "filter": {
+     "lower": 251,
+     "upper": 251,
+     "exactly": 40,
+     "other": 63,
+     "lower share": 0.5
+    }
+   },
+   "wording": {
+    "how": {
+     "cond": 153,
+     "imp": 1344
+    },
+    "not in arm W's form": {
+     "0": 1100,
+     "1": 380,
+     "2": 17
+    },
+    "arm M's quantifier": {
+     "all": 90,
+     "any": 209,
+     "at": 163,
+     "count": 321,
+     "n": 401,
+     "none": 313
+    }
+   },
+   "replies reach": {
+    "numbered parts": 810,
+    "values reached": 2224,
+    "values reached, alone": 1549,
+    "all three values": 661,
+    "all three values, alone": 396,
+    "tied pairs": 309,
+    "combinations reached": 1136,
+    "combinations reached, alone": 1010,
+    "all four combinations": 222,
+    "all four combinations, alone": 157,
+    "replies": 4134,
+    "replies added": 1734,
+    "replies built to fail": 2261
+   },
+   "mutants": {
+    "parts": 3825,
+    "parts told": 3255,
+    "parts told alone": 3690,
+    "groups": 1275,
+    "groups told": 1154,
+    "groups told alone": 1254
+   }
+  },
+  "test_real": {
+   "rows": 300,
+   "by_lang": {
+    "en": 300
+   },
+   "by_parts": {
+    "2": 43,
+    "3": 43,
+    "4": 43,
+    "5": 43,
+    "6": 43,
+    "7": 43,
+    "8": 42
+   },
+   "segments_by_kind": {
+    "check": 1497,
+    "asked": 292,
+    "process": 102,
+    "none": 294,
+    "task": 454
+   },
+   "groups": {
+    "one": 955,
+    "if": 77,
+    "either": 129,
+    "unless": 65
+   },
+   "tied pairs by place": {
+    "2": {
+     "pair at 1-2": 13,
+     "rows": 43
+    },
+    "3": {
+     "pair at 1-2": 11,
+     "pair at 2-3": 11,
+     "rows": 43
+    },
+    "4": {
+     "pair at 1-2": 11,
+     "pair at 2-3": 10,
+     "pair at 3-4": 11,
+     "rows": 43
+    },
+    "5": {
+     "pair at 1-2": 11,
+     "pair at 2-3": 8,
+     "pair at 3-4": 8,
+     "pair at 4-5": 6,
+     "rows": 43
+    },
+    "6": {
+     "pair at 1-2": 12,
+     "pair at 2-3": 16,
+     "pair at 3-4": 5,
+     "pair at 4-5": 9,
+     "pair at 5-6": 11,
+     "rows": 43
+    },
+    "7": {
+     "pair at 1-2": 13,
+     "pair at 2-3": 7,
+     "pair at 3-4": 7,
+     "pair at 4-5": 13,
+     "pair at 5-6": 5,
+     "pair at 6-7": 7,
+     "rows": 43
+    },
+    "8": {
+     "pair at 1-2": 10,
+     "pair at 2-3": 9,
+     "pair at 3-4": 9,
+     "pair at 4-5": 10,
+     "pair at 5-6": 13,
+     "pair at 6-7": 7,
+     "pair at 7-8": 8,
+     "rows": 42
+    }
+   },
+   "connectives": {
+    "en either first": 129,
+    "en if after": 34,
+    "en if first": 43,
+    "en unless after": 29,
+    "en unless first": 36
+   },
+   "bounds": {
+    "all": {
+     "lower": 562,
+     "upper": 561,
+     "exactly": 48,
+     "other": 193,
+     "lower share": 0.5004
+    },
+    "size": {
+     "lower": 169,
+     "upper": 167,
+     "exactly": 6,
+     "other": 61,
+     "lower share": 0.503
+    },
+    "count": {
+     "lower": 119,
+     "upper": 120,
+     "exactly": 2,
+     "other": 67,
+     "lower share": 0.4979
+    },
+    "position": {
+     "lower": 31,
+     "upper": 31,
+     "exactly": 3,
+     "other": 14,
+     "lower share": 0.5
+    },
+    "filter": {
+     "lower": 243,
+     "upper": 243,
+     "exactly": 37,
+     "other": 51,
+     "lower share": 0.5
+    }
+   },
+   "wording": {
+    "how": {
+     "cond": 142,
+     "imp": 1355
+    },
+    "not in arm W's form": {
+     "0": 1043,
+     "1": 430,
+     "2": 24
+    },
+    "arm M's quantifier": {
+     "all": 89,
+     "any": 219,
+     "at": 173,
+     "count": 308,
+     "n": 406,
+     "none": 302
+    }
+   },
+   "replies reach": {
+    "numbered parts": 794,
+    "values reached": 2207,
+    "values reached, alone": 1502,
+    "all three values": 672,
+    "all three values, alone": 392,
+    "tied pairs": 271,
+    "combinations reached": 998,
+    "combinations reached, alone": 867,
+    "all four combinations": 195,
+    "all four combinations, alone": 133,
+    "replies": 4089,
+    "replies added": 1691,
+    "replies built to fail": 2236
+   },
+   "mutants": {
+    "parts": 3791,
+    "parts told": 3144,
+    "parts told alone": 3621,
+    "groups": 1127,
+    "groups told": 993,
+    "groups told alone": 1111
+   }
+  },
+  "test_dolly": {
+   "rows": 300,
+   "by_lang": {
+    "en": 300
+   },
+   "by_parts": {
+    "2": 43,
+    "3": 43,
+    "4": 43,
+    "5": 43,
+    "6": 43,
+    "7": 43,
+    "8": 42
+   },
+   "segments_by_kind": {
+    "task": 393,
+    "check": 1497,
+    "process": 122,
+    "asked": 300,
+    "none": 301
+   },
+   "groups": {
+    "if": 63,
+    "one": 905,
+    "either": 150,
+    "unless": 83
+   },
+   "tied pairs by place": {
+    "2": {
+     "pair at 1-2": 13,
+     "rows": 43
+    },
+    "3": {
+     "pair at 1-2": 11,
+     "pair at 2-3": 11,
+     "rows": 43
+    },
+    "4": {
+     "pair at 1-2": 11,
+     "pair at 2-3": 10,
+     "pair at 3-4": 11,
+     "rows": 43
+    },
+    "5": {
+     "pair at 1-2": 8,
+     "pair at 2-3": 12,
+     "pair at 3-4": 9,
+     "pair at 4-5": 15,
+     "rows": 43
+    },
+    "6": {
+     "pair at 1-2": 9,
+     "pair at 2-3": 7,
+     "pair at 3-4": 10,
+     "pair at 4-5": 9,
+     "pair at 5-6": 11,
+     "rows": 43
+    },
+    "7": {
+     "pair at 1-2": 13,
+     "pair at 2-3": 8,
+     "pair at 3-4": 12,
+     "pair at 4-5": 12,
+     "pair at 5-6": 9,
+     "pair at 6-7": 14,
+     "rows": 43
+    },
+    "8": {
+     "pair at 1-2": 13,
+     "pair at 2-3": 9,
+     "pair at 3-4": 11,
+     "pair at 4-5": 9,
+     "pair at 5-6": 9,
+     "pair at 6-7": 8,
+     "pair at 7-8": 12,
+     "rows": 42
+    }
+   },
+   "connectives": {
+    "en either first": 150,
+    "en if after": 26,
+    "en if first": 37,
+    "en unless after": 49,
+    "en unless first": 34
+   },
+   "bounds": {
+    "all": {
+     "lower": 560,
+     "upper": 556,
+     "exactly": 44,
+     "other": 191,
+     "lower share": 0.5018
+    },
+    "size": {
+     "lower": 161,
+     "upper": 157,
+     "exactly": 5,
+     "other": 39,
+     "lower share": 0.5063
+    },
+    "count": {
+     "lower": 122,
+     "upper": 121,
+     "exactly": 3,
+     "other": 74,
+     "lower share": 0.5021
+    },
+    "position": {
+     "lower": 31,
+     "upper": 31,
+     "exactly": 7,
+     "other": 22,
+     "lower share": 0.5
+    },
+    "filter": {
+     "lower": 246,
+     "upper": 247,
+     "exactly": 29,
+     "other": 56,
+     "lower share": 0.499
+    }
+   },
+   "wording": {
+    "how": {
+     "cond": 146,
+     "imp": 1351
+    },
+    "not in arm W's form": {
+     "0": 1020,
+     "1": 453,
+     "2": 24
+    },
+    "arm M's quantifier": {
+     "all": 97,
+     "any": 192,
+     "at": 176,
+     "count": 320,
+     "n": 373,
+     "none": 339
+    }
+   },
+   "replies reach": {
+    "numbered parts": 785,
+    "values reached": 2167,
+    "values reached, alone": 1481,
+    "all three values": 651,
+    "all three values, alone": 369,
+    "tied pairs": 296,
+    "combinations reached": 1088,
+    "combinations reached, alone": 962,
+    "all four combinations": 211,
+    "all four combinations, alone": 153,
+    "replies": 4050,
+    "replies added": 1651,
+    "replies built to fail": 2176
+   },
+   "mutants": {
+    "parts": 3808,
+    "parts told": 3173,
+    "parts told alone": 3634,
+    "groups": 1223,
+    "groups told": 1088,
+    "groups told alone": 1199
+   }
+  }
+ },
+ "drop_reasons": {
+  "dev_real: shares 5 words with a benchmark": 9,
+  "dev_real: too few usable replies on one side": 31,
+  "test_dolly: too few usable replies on one side": 28,
+  "test_real: too few usable replies on one side": 23,
+  "train_real: a record over the trainer's 1280 tokens, its prompt replaced": 1,
+  "train_real: shares 5 words with a benchmark": 70,
+  "train_real: too few usable replies on one side": 180
+ },
+ "seconds": {
+  "train_real": 768.9,
+  "dev_real": 163.8,
+  "test_real": 163.3,
+  "test_dolly": 163.3
+ },
+ "vm_runs_agreeing": 28245,
+ "vm_disagreements": 0,
+ "benchmarks_checked": [
+  "IFBench",
+  "IFEval"
+ ],
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-13 16:06",
+  "sha256": "a2dfaa016536ccbeb2f2c29b2c095b0ef3a5d9480065440089e04e90b244e42f",
+  "commit": "b3b3360",
+  "older_than_sources": false
+ },
+ "sha256": {
+  "rows.jsonl": "a98fffec166e99193e8071e08e2925939eef769fc4eb14b94395bf38939a06c8",
+  "the lines of rows.jsonl by set": {
+   "train_real": "e39fe107e542e486c36f3afa5271b6a01197225c946c01253e28682e46de99c9",
+   "dev_real": "d04d00098327e550bb10673ffb21f1b2ea65f4a258dd4fefe52d9d8b51b0ff31",
+   "test_real": "2623d211fbb93fefd526268f1a36dc0e86a2c4bab2ad40a7c2b1419ff1eff029",
+   "test_dolly": "8f91e5a717e04fe349b6d365a6baa95e4a8e0ec18e61628ac9b687941f5fbe58"
+  },
+  "the source ids by set": {
+   "train_real": "37e5a0295f50ffa54c776e577e0fd309a2eefb41a60a302c857b2f6cfb9c18f0",
+   "dev_real": "fb51cc874a8aaf9877dda7307f9a80a0c266c1f613fbf513b74f704601e71957",
+   "test_real": "2aea843d66f5aceb9ac92654b16e8f2e44a0d2202a03f90efd2f9637d01c78d8",
+   "test_dolly": "b6c940a5e14e2259fc2fe018815baf0ffdbdf745354b8ed7523fd549bca5cc83"
+  }
+ }
+}

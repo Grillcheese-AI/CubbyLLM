@@ -132,10 +132,55 @@ Counted as in 0074, with its interval (2,000 resamples over the set's rows, here
 
 ## Report
 <!-- Claude Code (or Cowork on a branch) fills this in, then sets status: review -->
-- **Commits:**
-- **Files:**
-- **Tests:**
-- **Measured:**
-- **Not verified here:**
-- **Found on the way:**
-- **Questions:**
+### Builds 1 to 5 (Claude Code, Code A, 2026-11-18): the rows, the set and the notebooks; nothing trained or read
+- **Build 1, the prompts** (`validation/builders/real_prompts_0077.py`). Round 6's split is read from its own rows
+  (`rule_rows_0067_v4_asked_real`, by `source_id`), and each prompt is taken again from `real_rows.pool()` (round 6's
+  screens and thinning; 11,083 prompts, all 10,426 of round 6's found). At most 600 characters: candidates train_real
+  5,165, dev_real 563, test_real 524, test_dolly 300 (the order's 524 and 300). One train prompt shares 5 words with a
+  benchmark and is out. Each set is in a seeded order (test_real on seed 77 alone) and the builder takes from its front.
+  **French:** round 6's French held-out prompts are known by their split (`real_*_test`), so all 180 are kept out of
+  train_real and dev_real: no French held-out prompt is trained on (the order allowed that some might be).
+- **Build 2, the rows** (`validation/builders/build_rows_0077.py`, seed 77; `long_rows_0077`, off-repo; manifest
+  `validation/logs/long_rows_0077_2026-11-18_manifest.json`): train_real 2,000 (OASST1 en 1,692, fr 308), dev_real
+  300 (en 253, fr 47), test_real 300 (OASST1 en), test_dolly 300 (all of round 6's held-out Dolly prompts of 600
+  characters or less). 2 to 8 checks, each length as often (286 or 285 a length in train, 43 or 42 in the others);
+  the prompt after / before / around the checks: train 843 / 875 / 282, dev 128 / 133 / 39, test_real 124 / 125 / 51,
+  test_dolly 140 / 140 / 20 (around needs a first sentence followed by more). 28,245 VM runs agree with the
+  evaluator, 0 disagree; the lower bounds' share 0.500 to 0.502 in every set. Every row's answer reads back strictly
+  in both spellings, every prompt line is its own `task` segment, and no prompt is used twice. 0074's builder is used
+  through two hooks that are off by default (`view_compose.compose(task=False)`, `build_rows_0073.finish(wrap=...)`):
+  0073's and 0074's row tests pass unchanged.
+- **The held-out hashes are in that manifest, committed here before arm R is trained** (by set: dev_real `d04d0009...`,
+  test_real `2623d211...`, test_dolly `8f91e5a7...`; the source ids hashed too). The read's file
+  (`rules/long_rows_0077/read_rows.jsonl`: ids, splits, instructions; `validation/logs/long_rows_0077_read_rows.manifest.json`,
+  sha `2188557b...`).
+- **Build 3, the SFT set** (`validation/sft/build_view_real_sft.py`; `rules/view_real_sft_r.jsonl`, sha `9010ae3f...`;
+  `validation/logs/view_real_sft_r.manifest.json`): 10,300 records, train 10,000 (0074's 8,000, made again and equal
+  record for record to 0074's own set, and the 2,000 real ones), held 300 (dev_real); no Dolly record, no test row;
+  every answer reads back strictly, also with `own_text`; 0 records share 5 words with IFEval or IFBench; median 251
+  tokens, most 1,255 (the trainer's 1,280); the longest 0077 gold answer 665 ids (dev), 384 (test_real), 396
+  (test_dolly), none over the read's 900.
+- **Build 4, the notebooks** (`notebooks/_build_view_real.py` -> `view_real_r.ipynb`, `view_real_read_dev.ipynb`,
+  `view_real_read_test.ipynb`; they clone `master`). Training: 0074's recipe unchanged, 5 epochs of 10,000 records at
+  batch 32 (about 1,560 steps); it refuses a set whose rows are not the committed ones. The read: arms R and L on
+  dev_real; then once, after dev's reports are committed: both arms on test_real and test_dolly, and arm R on 0074's
+  test and test_long (arm L's answers there are 0074's own read, `rules/reads/0074/view_long_l_test.jsonl`, not read
+  again). Each cell prints `read: <phase> (all passes read)` after its last pass.
+- **Build 5, dev's screen read** (`validation/logs/view_real_dev_screen_2026-11-18.json`, ids only): 17 of 300 dev_real
+  prompts carry a rule on the reply that the screens missed: 5 a count or a length (ten things, five of something,
+  two examples each, "detailed"), 9 a form (ASCII art, an outline, a chart, emoji, a script twice, a drawing of nodes,
+  a 0/1 grid, a list ordered by price), 3 a style or reading level only. In those rows the gold writes the rule as
+  task text, so a reader that writes it as a check is counted wrong; the 5 count rules are the kind a drawn check
+  measures and could contradict one. On the test sets the same share would be about 6%.
+- **Found on the way:** the first build's train_real held one record of 1,411 tokens (a 432-character prompt that
+  tokenizes densely), over the trainer's 1,280: the order says that stops the build, and it did. Rebuilt with
+  `--tokenizer`, so a train or dev prompt whose record would pass 1,280 tokens is replaced by the next prompt in its
+  order (1 replaced). dev_real, test_real and test_dolly came out byte for byte the same as the first build; the first
+  build is moved aside off-repo, never read.
+- **Tests:** `tests/validation/test_rows_0077.py` (5): round 6's split kept, no prompt twice, no Dolly in train or dev,
+  no French held-out prompt anywhere, the 600-character bound, seeded; a prompt put after, before or around the checks
+  gives one task segment a line and the spans tile the instruction; a small build in the VM reads back on both arms
+  with its sources apart. With 0073's and 0074's row tests, the guards and the path rules: 43 passed.
+- **Next (Nick's):** `view_real_r.ipynb` on Colab (A100 or G4), then `view_real_read_dev.ipynb`. Dev is scored at home
+  with `exp_view_split_score.py` and its two reports committed before the test notebook runs.
+- **Not verified here:** the training and the reads (Colab).

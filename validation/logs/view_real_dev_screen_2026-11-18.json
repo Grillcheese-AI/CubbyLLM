@@ -1,0 +1,43 @@
+{
+ "order": "0077",
+ "what": "step 5: dev_real's 300 prompts read by eye (Claude Code, 2026-11-18) for a rule on the reply that round 6's screens missed; row ids only, no prompt text",
+ "rows_read": 300,
+ "rows with a missed rule": 17,
+ "by kind": {
+  "a count or a length on the reply": {
+   "rows": 5,
+   "ids": [
+    "r100047",
+    "r100059",
+    "r100147",
+    "r100181",
+    "r100249"
+   ]
+  },
+  "a form of the reply": {
+   "rows": 9,
+   "ids": [
+    "r100032",
+    "r100044",
+    "r100046",
+    "r100086",
+    "r100112",
+    "r100226",
+    "r100236",
+    "r100248",
+    "r100252"
+   ]
+  },
+  "a style, register or reading level only": {
+   "rows": 3,
+   "ids": [
+    "r100054",
+    "r100071",
+    "r100093"
+   ]
+  }
+ },
+ "not counted as a rule": "what the reply should be about (examples, resources, steps, a role to play, an explanation of the code); a task's own requirements on code it asks for",
+ "what it bounds": "in these rows the gold writes the missed rule as task text; a reader that writes it as a check is counted wrong. The count kind is what the generator's checks measure (items, sentences), so those 5 can also contradict a drawn check",
+ "rows_sha256": "d04d00098327e550bb10673ffb21f1b2ea65f4a258dd4fefe52d9d8b51b0ff31"
+}

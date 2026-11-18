@@ -66,10 +66,15 @@ def _stop(stop_dir: Path, what: str, **kept) -> None:
     raise SystemExit(f"{what}; kept in _disagreement.json beside the rows")
 
 
-def finish(rng, vm, views, replies, parts, groups, lang, phrases, bench, split, stop_dir, share=0.0, reserve=()):
+def finish(rng, vm, views, replies, parts, groups, lang, phrases, bench, split, stop_dir, share=0.0, reserve=(),
+           wrap=None):
     """A row from drawn parts and groups: worded, numbered in text order, its said forms' join run on its replies.
-    ``reserve``: (reply, its views) beyond the pool the parts were drawn on, searched only for replies that can tell."""
-    text, segs, order = VCo.compose(rng, parts, groups, lang, phrases, share)
+    ``reserve``: (reply, its views) beyond the pool the parts were drawn on, searched only for replies that can tell.
+    ``wrap`` (order 0077): (rng, text, segments) -> (text, segments), the composed checks put inside a real prompt,
+    which is then the task (no task sentence drawn); None: as before."""
+    text, segs, order = VCo.compose(rng, parts, groups, lang, phrases, share, task=wrap is None)
+    if wrap is not None:
+        text, segs = wrap(rng, text, segs)
     parts, groups, segs = VCo.renumber(parts, groups, segs, order)
     if split in ("train", "dev") and BO.overlaps(text, bench):
         return None, "shares 5 words with a benchmark"

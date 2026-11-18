@@ -1,0 +1,95 @@
+{
+ "order": "0077",
+ "what": "arm R's SFT set: 0074's train records and the real-prompt rows (OASST1), arm M's target",
+ "arm": "m",
+ "records": 10300,
+ "by_split": {
+  "train": 10000,
+  "held": 300
+ },
+ "by_family": {
+  "long_2": 960,
+  "long_3": 1023,
+  "long_4": 1017,
+  "long_5": 500,
+  "long_6": 500,
+  "long_7": 500,
+  "long_8": 500,
+  "pair_2": 1094,
+  "pair_3": 1008,
+  "pair_4": 898,
+  "real_2": 329,
+  "real_3": 329,
+  "real_4": 329,
+  "real_5": 329,
+  "real_6": 329,
+  "real_7": 328,
+  "real_8": 327
+ },
+ "by_lang": {
+  "fr": 3631,
+  "en": 6669
+ },
+ "answers that read back strictly, also with own_text": 10300,
+ "0074's train records, the same as 0074's set": true,
+ "rows of test or test_long": 0,
+ "rows of test_real or test_dolly": 0,
+ "dolly records": 0,
+ "benchmarks_checked": [
+  "IFBench",
+  "IFEval"
+ ],
+ "records_sharing_5_words_with_a_benchmark_dropped": 0,
+ "max_len": 1280,
+ "tokens a record, median": 251.0,
+ "tokens a record, most": 1255,
+ "records_over_max_len": {},
+ "answer tokens": 1483539,
+ "answer tokens that are key": 367212,
+ "share of answer tokens that are key": 0.2475,
+ "0077 answers in ids (counts only), most by set": {
+  "train_real": 516,
+  "dev_real": 665,
+  "test_real": 384,
+  "test_dolly": 396
+ },
+ "0077 answers over the read's 900 ids, by set": {
+  "train_real": 0,
+  "dev_real": 0,
+  "test_real": 0,
+  "test_dolly": 0
+ },
+ "rows_sha256": {
+  "long_rows_0074": {
+   "rows.jsonl": "da34de10d5bc736191816ff41f11d0db5f1a946369f8a87a715b2c3be8a9a09b",
+   "pair_rows.jsonl": "75d5be987df2ca8d648854f0fb28e330be50ece5dbacc906739ed32ff8d20b91",
+   "the lines of rows.jsonl by split": {
+    "train": "41ff9c25897e2da0ab8614082ef3d9cbea653cf7e235b5631be1d10d97d290d7",
+    "dev": "9ce00c0595f793aa706347eba5b8d98439fac3d80e9127f64c5fb01382282338",
+    "test": "a5bfc5e457437bb1830652219b573e480e67fbadb860f8d03450a5c992687d7d",
+    "test_long": "4517de09f5d48cd423ce7240e0542dae76c9629a3900aacbce2017a3f9c2bb0b",
+    "test_longer": "5768620a1b11afbfadd3418a71a3638f8fa29d8864f71dde9b1f1b10622a98a5"
+   }
+  },
+  "long_rows_0077": {
+   "rows.jsonl": "a98fffec166e99193e8071e08e2925939eef769fc4eb14b94395bf38939a06c8",
+   "the lines of rows.jsonl by set": {
+    "train_real": "e39fe107e542e486c36f3afa5271b6a01197225c946c01253e28682e46de99c9",
+    "dev_real": "d04d00098327e550bb10673ffb21f1b2ea65f4a258dd4fefe52d9d8b51b0ff31",
+    "test_real": "2623d211fbb93fefd526268f1a36dc0e86a2c4bab2ad40a7c2b1419ff1eff029",
+    "test_dolly": "8f91e5a717e04fe349b6d365a6baa95e4a8e0ec18e61628ac9b687941f5fbe58"
+   },
+   "the source ids by set": {
+    "train_real": "37e5a0295f50ffa54c776e577e0fd309a2eefb41a60a302c857b2f6cfb9c18f0",
+    "dev_real": "fb51cc874a8aaf9877dda7307f9a80a0c266c1f613fbf513b74f704601e71957",
+    "test_real": "2aea843d66f5aceb9ac92654b16e8f2e44a0d2202a03f90efd2f9637d01c78d8",
+    "test_dolly": "b6c940a5e14e2259fc2fe018815baf0ffdbdf745354b8ed7523fd549bca5cc83"
+   }
+  }
+ },
+ "row_licences": {
+  "templates": "this repo's own (Apache-2.0)",
+  "prompts": "OASST1 (Apache-2.0)"
+ },
+ "sha256": "9010ae3f678c0f54d150d5bf595dfbb419c0c4c9d7bdc10e2c91f679357f3994"
+}
