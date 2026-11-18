@@ -626,3 +626,23 @@ trunk's weights pass through the card between two tokens.
 - **What is not:** the A100 (a Colab session, Nick's to open); batches above 1, which run the full head; sampled
   talk; the serving batteries (0050's list), which come before the switch is turned on in any serve. The grilly2
   branch is local, for Nick's review.
+
+### Step 2g, the three timings on an A100, pre-registered before its run (Cowork, 2026-11-18, on Nick's "we could have a test run on it")
+- **What runs:** `notebooks/head_lab_a100.ipynb`, on a Colab A100 session Nick opens. It builds grilly2 from source
+  there (`cowork/shortlist-generate` at 7cb24f8; the LunarG SDK 1.4.335.0 that grilly2's CI pins; Rust; maturin),
+  checks that grilly2 sees the A100 through Vulkan and stops if not, exports the base from the checkpoint 0068 read
+  (`base450m_cont_final.pt`), and checks the export's head rows and the two input files against their SHA-256
+  (the head rows `63fcdfe2...`, `index_router_succ.npz` `814c8e03...`, `heldout_b.npz` `eef2d754...`). grilly2 has
+  not run on Colab before; grilly v1 has.
+- **Then the home card's three runs, unchanged:** `head_lab_time.py --route card` (2d: the head alone, the same 50
+  states), `head_lab_decode.py` (2e: inside a decode step, 128k and the synthetic 256k), `head_lab_generate.py` (2f:
+  through the wired `generate`), with their defaults. Each runs once. The logs are kept on Drive with `_a100` in
+  their names and committed from there, with the card and driver `nvidia-smi` names.
+- **The lines are 2d's, 2e's and 2f's:** route 5 at most a full 32k head's time (p50) alone, inside the decode step at
+  128k and at 256k, and through `generate`; and `generate` writing the hand loop's tokens on all 8 prompts.
+- **What could differ from home, said before the run:** the A100 reads memory several times faster than the home
+  card, so both full heads cost less there, while the route's fixed costs (eight dispatches and one readback a token)
+  may not shrink with it. A missed line on the A100 is reported with each dispatch's time, as at home; it kills
+  nothing, and the home card's reads stand. The token checks (the union, 2e's agreement, 2f's hand loop) are run on
+  this card too, and any difference from home is reported as it comes.
+- **Not claimed:** batches above 1; sampled talk; the serving batteries.
