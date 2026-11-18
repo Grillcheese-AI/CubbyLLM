@@ -653,3 +653,45 @@ trunk's weights pass through the card between two tokens.
   code is 7cb24f8 as pre-registered, and the lines are unchanged. The notebook now sets the SDK up that way (newer
   SDKs keep the loader in `lib/VulkanLoader/lib`, which grilly2's build does not search, so the cell adds it), and
   takes the tarball from Drive when the download fails.
+
+### Step 2g, read: the session got an NVIDIA L4, not an A100; there every home line holds but 256k's, missed by 0.010 ms (Cowork, 2026-11-18)
+- **The card was an NVIDIA L4** (23,034 MiB, driver 580.82.07; `nvidia-smi`), not the A100 the pre-registration
+  names: Colab gave the session an L4. NVIDIA lists the L4 at 300 GB/s of memory bandwidth, against the home card's
+  432. The notebook named the logs `_a100` regardless; they are committed under the card that ran them:
+  `validation/logs/head_lab_time_grilly_card_2026-11-18_7cb24f8_l4.json`, `..._decode_..._l4.json`,
+  `..._generate_..._l4.json` (grilly2 7cb24f8 built with SDK 1.4.363.1, Python 3.13; each run once). The notebook now
+  names its logs by the card. **The A100 is still unrun.**
+- **The head alone** (2d's 50 states): route 5 **0.699 ms**, a full 32k head **0.983**, the full head 3.359. The line
+  is **met**, by 0.284 ms; the route saves 2.660 ms against the full head. The check: the union held the full head's
+  token on 50 of 50, the card chose it on 50 of 50, none short. By dispatch: context 0.124, Hamming 0.022, ranking
+  -0.003 (a difference of medians, below the noise), mark 0.020, count 0.012, cut 0.021, score 0.201, best 0.110; all
+  eight and a wait 0.511. Against home (2d), the scoring took 0.201 against 0.101 and the last reduction 0.110 against
+  0.002.
+- **Inside a real decode step** (2e's 8 prompts, 496 steps a head):
+
+| head | step, p50 ms | p90 ms | the head inside the step, ms |
+| --- | --- | --- | --- |
+| none (the trunk alone) | 26.445 | 26.941 | 0 |
+| full 128k | 28.735 | 29.213 | 2.290 |
+| full 32k | 26.978 | 27.390 | 0.533 |
+| **route 5, 128k** | **26.836** | 27.438 | **0.391** |
+| full 256k (synthetic) | 31.160 | 31.670 | 4.715 |
+| **route 5, 256k (synthetic)** | **26.988** | 27.458 | **0.543** |
+
+  128k: **met**, by 0.142 ms. 256k: **missed by 0.010 ms** (home: 0.070); the route saves 4.172 ms a step against the
+  full 256k head there. The full head is 2.290 of 28.735 ms of a step at 128k (8.0%) and 4.715 of 31.160 at 256k
+  (15.1%).
+- **Through the wired `generate`** (488 steps a head): route 5 **26.703 ms**, a full 32k head **26.867**, the full
+  head 28.599. Line 1 **met**, by 0.164 ms; the route saves 1.896 ms a step. Line 2 **met**: `generate` wrote the
+  hand loop's tokens on all 8 prompts.
+- **The tokens, against home:** route 5 decoding on its own choices picked the full head's token on 510 of 512 steps,
+  the first difference on fineweb_edu at step 20 (the wired text's 22nd token), 3 short lists of the timed picks at
+  128k and none at 256k: the same counts and the same positions as on the home card, on another vendor's GPU.
+- **What is established:** on a second card, an NVIDIA L4 through Vulkan, route 5 again picks the next token of the
+  trained 128k head in less time than a full 32k head, alone, inside the model's decode step and through the seats'
+  `generate`; the 256k case sits at the line (0.010 ms over).
+- **What is not:** the A100, which needs a session that gets one; batches above 1; sampled talk; the serving
+  batteries.
+- **Setup found at the run:** grilly2 first built but did not see the card; Nick made the NVIDIA Vulkan driver
+  visible on the runtime (grilly2's doctor reports `VK_ICD_FILENAMES` set to `/etc/vulkan/icd.d/nvidia_icd.json`)
+  and the runs followed. It changes the setup, not what was timed.
