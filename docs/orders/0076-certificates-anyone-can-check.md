@@ -1,5 +1,5 @@
 # 0076 - Comté certificates anyone can check, and Maasdam refusals that show disagreeing facts (CheezML on 0055's store)
-status: open (approved by Nick on 2026-11-17: "I approve both"; revised the same day on his "lets not forget cheezeml" to be built on CheezML and order 0064, not beside them; builder: Code A, or Cowork on a branch while Code A is signed out)
+status: open (Code A, after 0077; Nick 2026-11-18; approved by Nick on 2026-11-17: "I approve both"; revised the same day on his "lets not forget cheezeml" to be built on CheezML and order 0064, not beside them)
 written: 2026-11-17 by Cowork, on Nick's "yes" after the field watch's finds · approved: 2026-11-17 by Nick · hypothesis: none (0054's certificate, 0055's store, 0064's records)
 
 ## Why

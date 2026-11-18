@@ -1,5 +1,5 @@
 # 0077 - The description reader on real prompts (round 5: checks inside people's own prompts)
-status: open (approved by Nick 2026-11-17, "i approve 77"; its prompt source revised with him the same day, since round 6 used every screened prompt of 200 characters or more: 0077 reuses round 6's split, Build 1; arm R's rows, SFT set and training wait for 0074's held-out read, and if 0074 keeps arm K this order is revised before they are built)
+status: in progress (Code A, Nick 2026-11-18: 0077 first, then 0076; approved by Nick 2026-11-17, "i approve 77"; reuses round 6's split, Build 1; 0074 kept arm L, so the order holds as written)
 written: 2026-11-17 by Cowork · approved: Nick 2026-11-17 · hypothesis: none (the preprint's first limitation)
 
 ## Why

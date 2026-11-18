@@ -1,5 +1,5 @@
 # 0075 - The graders checked before their rates are trusted (0054's right, wrong and refused)
-status: open (approved by Nick on 2026-11-17: "I approve both"; builder: Code A, or Cowork on a branch while Code A is signed out)
+status: open (assigned to Code B, after cubelang P6-3 to P6-7; Nick 2026-11-18; approved by Nick on 2026-11-17: "I approve both")
 written: 2026-11-17 by Cowork, on Nick's "yes" to writing it after the field watch's find · approved: 2026-11-17 by Nick ("I approve both") · hypothesis: none (0054's system evaluation)
 
 ## Why
