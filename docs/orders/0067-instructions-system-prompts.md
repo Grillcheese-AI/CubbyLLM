@@ -1293,6 +1293,17 @@ answers sha256 v1 `458ae7c6...`, v2 `7143b4fb...`):
 Rule 9 does not lower the false-pass rate on either adapter; it leaves more answers unfinished (17 and 4 more). This
 is the read order 0073's point 7 reports beside its own.
 
+**Round 1's five dev stops with no printable next character** (Cowork's 01:53 ask; Code A, 2026-11-18; the typed
+read of all 300 dev rows, 19 unfinished): four (`l003035`, `l003096`, `l003134`, `l003209`) stop in a part function's
+parameter list at `n_: numbe`. The grammar took `n_` as a parameter name because it is a prefix of column names
+(`n_word`, `n_item`, ...), then let the colon and the type through, and no character completes it: `n_: numbe` is
+judged viable and has no viable continuation, so rules 1 to 9 are not prefix-closed at a parameter's name once the
+colon follows. The fifth (`l003139`) is the rule-9 dead end in `solve` shown above (`if (p1 == 1) { assign `, five
+check lines and four parts). Of the other 14, 13 stop in `solve` after the lets where only `i` (10) or `f` after it
+(3) is allowed, the same dead end a step earlier, and one (`l003286`) at `n_: numb`, the parameter state one
+character earlier. 0073's grammar is a state machine walked in ids and
+does not have either state.
+
 **Verdict: a negative result, as measured.** Round 2 hits line 3's kill on the counted test rows (false passes
 0.0995 against 0.05) and misses lines 2, 3 and 4; line 1 holds. Against round 1 on the same rows it is better on
 every line (span and kind 0.799 to 0.851, agreement 0.542 to 0.705, rows wholly right 23 to 82, refused replies that

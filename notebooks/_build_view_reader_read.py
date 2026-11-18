@@ -38,7 +38,8 @@ rule 9 off (`typed8`, Cowork 2026-11-14: rules 1-8 against 1-9, on dev only; abo
 
 **Set `ADAPTER` below** (`cubby450m_view_reader_v1` or `_v2`). It reads, from Drive, the base, the tokenizer, the
 adapter and `rules/long_rows_0067/rows.jsonl`; it writes `rules/reads/<adapter>_<grammar>_answers.jsonl` (resumable:
-a rerun keeps the rows already answered). **Disconnect when it prints `read:`.**
+a rerun keeps the rows already answered). Each pass prints `read:` when it ends; **disconnect only when the cell
+prints `all passes read`** (Cowork 2026-11-14).
 """),
     code(r"""
 import os, subprocess, sys
@@ -76,6 +77,7 @@ for GRAMMAR, SPLITS in PASSES:
         print(line, end='')
     assert p.wait() == 0, f'the read failed ({p.returncode})'
     !wc -l "{OUT}"
+print('all passes read:', ', '.join(g for g, _ in PASSES))
 """),
     md(r"""
 ## Done
