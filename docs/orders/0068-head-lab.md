@@ -646,3 +646,10 @@ trunk's weights pass through the card between two tokens.
   nothing, and the home card's reads stand. The token checks (the union, 2e's agreement, 2f's hand loop) are run on
   this card too, and any difference from home is reported as it comes.
 - **Not claimed:** batches above 1; sampled talk; the serving batteries.
+
+- **Found at the run, before its read (2026-11-18):** the notebook's SDK step did not work on Colab. Nick took the
+  Linux tarball of SDK 1.4.363.1 and set it up by LunarG's getting-started page, and grilly2 then built and ran
+  there. So the A100's kernels are compiled by 1.4.363.1's `glslc`, not 1.4.335.0's as written above; grilly2's
+  code is 7cb24f8 as pre-registered, and the lines are unchanged. The notebook now sets the SDK up that way (newer
+  SDKs keep the loader in `lib/VulkanLoader/lib`, which grilly2's build does not search, so the cell adds it), and
+  takes the tarball from Drive when the download fails.
