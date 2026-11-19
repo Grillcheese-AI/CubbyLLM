@@ -8,6 +8,7 @@ For each question:
 - ``programs``: the SHA-256 of each program source the VM ran for the question, in order;
 - ``checks``: the host's checks that ran on the answer and their outcome (`ask_memory.ran`);
 - ``at``: the time the record was made (UTC), the certificate's generated time;
+- ``hop``: for a refusal on an ambiguous hop, the hop, the values the walk found and their facts and statements;
 - ``as_of``: the year the question asks about (`ask_words.strip_as_of`), or None when it names none: then the
   question was evaluated at the store's own date (the dump's, in the run's meta).
 
@@ -59,11 +60,19 @@ def facts(loop, rec: dict) -> list:
     return out
 
 
+def hop(loop, refused: dict) -> dict:
+    """An ambiguous hop's refusal (`pipeline`: the walk found several values and would not pick): the hop, the
+    values, and each value's fact with its statements, as for the trace."""
+    return {"hop": refused.get("hop"), "objects": list(refused.get("objects") or []),
+            "facts": facts(loop, {"trace": [f for f in refused.get("facts") or [] if isinstance(f, str)]})}
+
+
 def record(loop, rec: dict, question: str, programs: list) -> dict:
     from cubbyllm.reasoning.ask_words import strip_as_of
     try:
         return {"facts": facts(loop, rec), "programs": list(programs), "as_of": strip_as_of(question)[1],
-                "checks": rec.get("checks_ran") or [], "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+                "checks": rec.get("checks_ran") or [], "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                **({"hop": hop(loop, rec["refused"])} if (rec.get("refused") or {}).get("facts") else {})}
     except Exception as e:                               # noqa: BLE001 -- a record never breaks the run
         return {"error": str(e)[:160], "programs": list(programs)}
 
