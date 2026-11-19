@@ -184,3 +184,34 @@ Counted as in 0074, with its interval (2,000 resamples over the set's rows, here
 - **Next (Nick's):** `view_real_r.ipynb` on Colab (A100 or G4), then `view_real_read_dev.ipynb`. Dev is scored at home
   with `exp_view_split_score.py` and its two reports committed before the test notebook runs.
 - **Not verified here:** the training and the reads (Colab).
+
+### Arm R trained, and dev_real read (Claude Code, 2026-11-19; for looking, nothing is decided on dev)
+- **Training** (Nick, Colab, `rules/cubby450m_view_real_r`): 1,563 steps in 12.2 min, held answer loss 0.0398 on
+  dev_real (arm L's 0.0021 was on 0074's dev, another held set: not comparable).
+- **The read** (`view_real_read_dev.ipynb`; `rules/reads/0077/view_real_{r,l}_dev.jsonl`, 300 answers each, sha
+  `a0c5af1f...` and `8b001268...`), scored at home on the shared VM (`exp_view_split_score.py --splits dev_real`;
+  `validation/logs/view_real_dev_r.json`, `view_real_dev_l.json`):
+
+| dev_real (300 rows) | arm R | arm L |
+|---|---|---|
+| 1. characters in no line and not flagged | 0 | 0 |
+| answers ended at the limit | 2 | 5 |
+| 2. gold checks with their line | 1,481 / 1,497 = 0.989 | 1,466 / 1,497 = 0.979 |
+| segments with span and kind | 2,566 / 2,699 = 0.951 | 2,198 / 2,699 = 0.814 |
+| agreement | 4,015 / 4,034 = 0.995 | 3,531 / 3,734 = 0.946 |
+| false passes | 5 / 4,034 = 0.0012 | 9 / 3,734 = 0.0024 |
+| false passes over replies built to fail | 5 / 2,208 = 0.0023 | 9 / 2,030 = 0.0044 |
+| parts right | 1,473 / 1,497 = 0.984 | 1,440 / 1,497 = 0.962 |
+| groups (pairs) right | 304 / 309 = 0.984 | 299 / 309 = 0.968 |
+| replies checked | 4,034 / 4,134 = 0.976 | 3,734 / 4,134 = 0.903 |
+| 3. prompt lines written, in part or whole, as `check` | 10 / 476 | 105 / 476 |
+| prompt lines copied whole as one `task` line | 384 / 476 | 13 / 476 |
+| seconds an instruction (Colab) | 1.33 | 1.53 |
+
+- **Read:** arm L, which never saw a real prompt, cuts people's lines into pieces and writes a fifth of them in part as
+  checks; its span-and-kind falls to 0.814 and a tenth of the replies go unchecked. Arm R copies most prompt lines
+  whole and its line-3 counts are 1/4 of L's. Both stay under 0.5% false passes on dev. The line-3 count is computed
+  from the answers (a prompt line overlapped by an answer line of kind `check`), not by the scorer; it goes into the
+  test read's script the same way.
+- **Next:** `view_real_read_test.ipynb` (Nick's), allowed now that both dev reports are committed: test_real and
+  test_dolly for both arms, 0074's test and test_long for arm R, once.
