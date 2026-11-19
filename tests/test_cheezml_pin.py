@@ -11,7 +11,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 CZ = ROOT / "vendor" / "cheezml"
-PIN = "a99a774"
+PIN = "bc85026"
 
 
 def _have():
