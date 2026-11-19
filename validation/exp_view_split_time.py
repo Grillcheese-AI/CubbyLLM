@@ -30,7 +30,7 @@ from cubbyllm.speech.view_machine import Machine  # noqa: E402
 
 __wiring__ = "STANDALONE"
 
-PASS_SECONDS, ROUND_2_SECONDS = 8.0, 25.0
+PASS_SECONDS, ROUND_2_SECONDS, REAL_SECONDS = 8.0, 25.0, 12.0
 
 
 def holder(reader: T.Reader, prompt_len: int, clock: dict):
@@ -65,6 +65,15 @@ def time_one(trunk, role: str, vocab: T.Vocab, instruction: str, arm: str, own_t
             "end": end, "whole": whole}
 
 
+def sha(path: Path) -> str:
+    import hashlib
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for b in iter(lambda: f.read(1 << 20), b""):
+            h.update(b)
+    return h.hexdigest()
+
+
 def pick(rows: list, n: int, seed: int, split: str = "dev") -> list:
     """`n` rows of a dev split, a seeded sample (its own mix of parts). ``split``: order 0077 times dev_real."""
     dev = [r for r in rows if r["split"] == split]
@@ -85,6 +94,11 @@ def summary(timed: list) -> dict:
            "5 to 8 parts": stats(long) if long else None,                    # order 0074's line 7
            "share of the time in the grammar": round(sum(x["grammar"] for x in timed) / max(1e-9, sum(x["seconds"] for x in timed)), 4)}
     med = out["2 to 4 parts"]["median seconds"] if short else None
+    meds = {k: v["median seconds"] for k, v in by.items()}                # order 0077's line 6: by number of checks
+    out["line 6 (0077)"] = {"needs": f"a median of at most {REAL_SECONDS:g} s for a real-prompt row, by number of checks; "
+                            f"above {ROUND_2_SECONDS:g} s not served", "median seconds by number of checks": meds,
+                            "passes": bool(meds) and max(meds.values()) <= REAL_SECONDS,
+                            "served": max(x["seconds"] for x in timed) <= ROUND_2_SECONDS}
     out["line 8"] = {"needs": f"a median of at most {PASS_SECONDS:g} s for 2 to 4 parts", "median seconds": med,
                      "passes": med is not None and med <= PASS_SECONDS, "served": med is not None and med <= ROUND_2_SECONDS}
     return out
@@ -102,6 +116,8 @@ def main() -> None:
     ap.add_argument("--split", default="dev", choices=("dev", "dev_real"), help="dev_real: order 0077's real prompts")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--max-new", type=int, default=900)
+    ap.add_argument("--order", default="0073", choices=("0073", "0074", "0077"), help="the order the log is for")
+    ap.add_argument("--arm-name", default=None, help="the arm's name in the order (0077: r); the target is --arm")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     from cubbyllm import local_paths
@@ -116,11 +132,14 @@ def main() -> None:
         got = time_one(trunk, "split", vocab, r["instruction"], a.arm, a.own_text, a.max_new)
         timed.append(dict(got, n_parts=r["n_parts"]))
         print(f"  {k}/{len(sample)}: {r['n_parts']} parts, {got['ids']} ids, {got['seconds']:.1f} s ({got['end']})", flush=True)
-    report = dict({"order": "0073", "what": "line 8: seconds per instruction at home, one at a time on grilly2, dev rows",
-                   "arm": a.arm, "own_text": a.own_text, "adapter": Path(a.adapter).name, "export": Path(a.export).parent.name,
+    line = "line 6" if a.order == "0077" else "line 8"
+    report = dict({"order": a.order, "what": f"{line}: seconds per instruction at home, one at a time on grilly2, {a.split} rows",
+                   "arm": a.arm_name or a.arm, "target": a.arm,
+                   "sha256": {"adapter": {f.name: sha(f) for f in sorted(Path(a.adapter).glob("talk_lora.*"))},
+                              "export": {f.name: sha(f) for f in sorted(Path(a.export).glob("model.safetensors"))}}, "own_text": a.own_text, "adapter": Path(a.adapter).name, "export": Path(a.export).parent.name,
                    "rows": len(timed), "split": a.split, "seed": a.seed, "first": "one untimed read before the timed ones"}, **summary(timed))
     Path(a.out).write_text(json.dumps(report, indent=1) + "\n", encoding="utf-8")
-    print(json.dumps(report["line 8"]), flush=True)
+    print(json.dumps(report["line 6 (0077)" if a.order == "0077" else "line 8"]), flush=True)
     print("timed:", a.out, flush=True)
 
 

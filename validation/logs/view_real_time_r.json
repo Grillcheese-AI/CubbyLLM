@@ -1,9 +1,9 @@
 {
- "order": "0073",
- "what": "line 8: seconds per instruction at home, one at a time on grilly2, dev rows",
- "arm": "m",
+ "order": "0077",
+ "what": "line 6: seconds per instruction at home, one at a time on grilly2, dev_real rows",
+ "arm": "r",
  "own_text": false,
- "adapter": "arm_r",
+ "adapter": "cubby450m_view_real_r (a copy, the same SHA-256)",
  "export": "base450m_cont",
  "rows": 60,
  "split": "dev_real",
@@ -117,5 +117,31 @@
   "median seconds": 5.02,
   "passes": true,
   "served": true
- }
+ },
+ "target": "m",
+ "sha256": {
+  "adapter": {
+   "talk_lora.json": "0d4be31ac4f149dc0703fd4963c4784633b0c0e2f40111dc300d457a14eaa4ba",
+   "talk_lora.safetensors": "be15b60265617d85e59e061ec145c945eeb595964d6b181117b4026c18a6fb07"
+  },
+  "export": {
+   "model.safetensors": "81a45418edb5772abf69e0aea78889da3a2e16d49f036b2086a81f98d1911a42"
+  }
+ },
+ "line 6 (0077)": {
+  "needs": "a median of at most 12 s for a real-prompt row, by number of checks; above 25 s not served",
+  "median seconds by number of checks": {
+   "2": 4.35,
+   "3": 4.8,
+   "4": 6.09,
+   "5": 9.28,
+   "6": 7.36,
+   "7": 8.86,
+   "8": 8.78
+  },
+  "passes": true,
+  "served": true,
+  "slowest seconds": 14.53
+ },
+ "relabelled": "2026-11-19, Cowork's review: order, line and arm were 0073's labels; no number changed"
 }

@@ -330,5 +330,17 @@
     "ids per answer": 186.4933
    }
   }
+ },
+ "read with": {
+  "adapter": "cubby450m_view_real_r",
+  "adapter sha256": {
+   "talk_lora.json": "0d4be31ac4f149dc0703fd4963c4784633b0c0e2f40111dc300d457a14eaa4ba",
+   "talk_lora.safetensors": "be15b60265617d85e59e061ec145c945eeb595964d6b181117b4026c18a6fb07"
+  },
+  "base": {
+   "base450m_cont_final.pt": "7d4bf9d6e35c6a4a889fd9a675378ca4ea8fe4bec1df8d9bde41c886e38f1e4b"
+  },
+  "decoder": "exp_view_split_torch.py --arm m, on Colab",
+  "added": "2026-11-19, Cowork's review, computed from the files on Drive"
  }
 }

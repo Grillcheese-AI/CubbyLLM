@@ -252,6 +252,10 @@ Read on Colab (Nick, `view_real_read_test.ipynb`; `rules/reads/0077/view_real_{r
   11.93 (13). Every median is under 12 s and every time under 25 s; all 60 `finished` and read back whole; median 190
   ids an answer; the grammar 5.6% of the time (`validation/logs/view_real_time_r.json`). The adapter was copied from
   Drive as it is (it records no base hash; it loads on `base450m_cont`, as 0074's did).
+- **Cowork's review fixes (2026-11-19, no number changed):** the timing log now says order 0077, line 6, arm R (the
+  script takes `--order` and `--arm-name`, and writes line 6 by number of checks); it and every read log carry the
+  SHA-256 of the files used: arm R's adapter `talk_lora.safetensors` `be15b602...` (the timed copy is the same file),
+  arm L's `e9f81a3f...`, the grilly2 export `81a45418...`, the base checkpoint Colab read `7d4bf9d6...`.
 - **Line 7:** by source (OASST1, Dolly; English only in the test sets), by where the prompt sits and by length band,
   both arms, in the comparison log. Arm R by place, false passes over replies built to fail: test_real before
   0 / 984, after 3 / 868, around 4 / 359; test_dolly before 1 / 965, after 12 / 1,026, around 1 / 134.
