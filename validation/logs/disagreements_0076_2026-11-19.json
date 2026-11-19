@@ -1,0 +1,60 @@
+{
+ "order": "0076",
+ "what": "step 5: answers and refusals touching disagreeing best-rank values, by benchmark",
+ "run": "run_0076_cert",
+ "snapshot": "8a2041cff56d6f44cbb04856605831f3b39a76f8f9be45bce73b935c4024e80f",
+ "by benchmark": {
+  "aa": {
+   "questions": 600
+  },
+  "nq": {
+   "host: refused: ambiguous_hop": 1,
+   "questions": 3610,
+   "questions touching a property with two or more differing best-rank values": 1,
+   "questions touching a stored statement": 15,
+   "record names: every value": 1,
+   "values with references the record does not carry": 2
+  },
+  "simpleqa": {
+   "host: refused: time_mismatch": 2,
+   "questions": 4326,
+   "questions touching a property with two or more differing best-rank values": 2,
+   "questions touching a stored statement": 9,
+   "record names: one value": 2,
+   "values with references the record does not carry": 7
+  },
+  "webq": {
+   "host: answered with one": 2,
+   "host: refused: ambiguous_hop": 24,
+   "host: refused: profile": 12,
+   "questions": 2032,
+   "questions touching a property with two or more differing best-rank values": 38,
+   "questions touching a stored statement": 110,
+   "record names: 2 of 4 values": 1,
+   "record names: 297 of 414 values": 1,
+   "record names: 3 of 10 values": 1,
+   "record names: 3 of 5 values": 4,
+   "record names: 3 of 8 values": 1,
+   "record names: every value": 31,
+   "record names: one value": 5,
+   "values with references the record does not carry": 136
+  }
+ },
+ "all": {
+  "host: answered with one": 2,
+  "host: refused: ambiguous_hop": 25,
+  "host: refused: profile": 12,
+  "host: refused: time_mismatch": 2,
+  "questions": 10568,
+  "questions touching a property with two or more differing best-rank values": 41,
+  "questions touching a stored statement": 134,
+  "record names: 2 of 4 values": 1,
+  "record names: 297 of 414 values": 1,
+  "record names: 3 of 10 values": 1,
+  "record names: 3 of 5 values": 4,
+  "record names: 3 of 8 values": 1,
+  "record names: every value": 32,
+  "record names: one value": 7,
+  "values with references the record does not carry": 145
+ }
+}

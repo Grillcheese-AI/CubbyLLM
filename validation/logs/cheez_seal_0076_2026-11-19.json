@@ -1,0 +1,25 @@
+{
+ "order": "0076",
+ "what": "lines 3 and 7: every record sealed, then checked by the verifier at home",
+ "records": 9926,
+ "store snapshot": "8a2041cff56d6f44cbb04856605831f3b39a76f8f9be45bce73b935c4024e80f",
+ "said": {
+  "refusal: signed, same": 9860,
+  "certificate: signed, same": 66
+ },
+ "verifier time per record": {
+  "anyone (signature)": {
+   "median ms": 0.131,
+   "95th percentile ms": 0.196
+  },
+  "reader (decrypt, recompute, store)": {
+   "median ms": 0.977,
+   "95th percentile ms": 1.525
+  }
+ },
+ "sealing time per record": {
+  "median ms": 0.949,
+  "95th percentile ms": 1.455
+ },
+ "keys": "made in memory for this check, never written"
+}

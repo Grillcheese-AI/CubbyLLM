@@ -171,6 +171,68 @@ both sides shown.
 - **Still to come in cheezml:** the envelope's terms (step 3). The name statement uses v0.2's `cheez:Decision` over
   `cheez:Option`s with the rule as `dcterms:type` (Cowork, 2026-11-19); new terms only if a check shows that cannot
   say it.
+
+### Steps 2 to 5 and the acceptance read (Claude Code, Code A, 2026-11-19)
+- **What the run records** (`CB_CERT_FACTS=1`, off by default; records only, nothing reads them to decide):
+  `cubbyllm/worlds/wd_store_statements.py` (the statement behind each fact the store hands out: item, property,
+  guid, rank, the item's revision and modified time, its time qualifiers); `ask_memory.ran` (the host's five checks
+  on a walked answer, with their outcome); `validation/system_eval/cert_facts.py` (per question: the trace's facts and
+  their statements, an ambiguous hop's values and theirs, each program's SHA-256, the as-of year, the time).
+- **The writer** (`cubbyllm/records/`: `cheez_writer.py`, `cheez_facts.py`, `refusals.py`): from the run's record
+  only. A certificate when every trace fact was handed by the store with one statement, the program is one hash and
+  the question names no year; a refusal when its reason word has a code. Ids are UUIDv5 of run, question and role.
+  The store snapshot by its BLAKE3 hash (wdstore's own); a valid-time beginning only from a start qualifier at day
+  precision, derived from it. CheezML: a99a774 (stored statements, Nick's yes on the optional beginning) and bc85026
+  (the host's check kinds, confirmed against `ask_memory._checked`; Nick's yes), both merged and pushed; pinned.
+- **The envelope** (`cubby_serve/records/envelope.py`) and **the verifier** (`validation/verify_cheez.py`), as step 3
+  and 4 say; tests in `tests/records/test_envelope.py`, keys made in memory.
+- **The run:** `run_0076_cert` = `run_0054_names3`'s flags and programs with `CB_CERT_FACTS=1` (master 425c2bb).
+  10,561 of 10,568 records identical in spoken, answer, reason and trace; the 7 others are refusals in both runs (6
+  "self" questions whose text is the loop's counters; nq:83 refused "no plan" for "plan does not cover", one code).
+
+**Acceptance:**
+1. **Records from real runs** (`validation/logs/cheez_records_0076_2026-11-19.json`): 9,926 records for 10,568
+   questions, **9,926 conform** (66 certificates, 9,860 refusals). No record for 642, each counted with its reason
+   (v0.2's rule): 622 refusals whose reason word has no code yet (`entity_unresolved` 572, `profile` 27, `self` 8,
+   `no_events_for_date` 7, `time_mismatch` 5, `class_mismatch` 2, `no_path` 1) and 20 of the 86 spoken answers (11
+   rest on the live source, which keeps no revision; 4 ran more than one program; 2 rest on Wikidata5M; 2 sentences
+   held by two or three statements; 1 names a year). Records off-repo.
+2. **Records agree with what ran:** read back field by field against the run's record: **0 differences**; no kill.
+3. **"signed" and "same"** (`validation/logs/cheez_seal_0076_2026-11-19.json`): **9,926 of 9,926**, against the store
+   at the run's snapshot (keys made in memory for the check).
+4. **Spoiled copies:** caught, never "signed" and "same": a fact's value changed, a fact dropped, a fact added, the
+   snapshot changed, the answer changed, one byte of the envelope, of either part; a wrong fact or snapshot signed by
+   the host itself is "missing" / "other snapshot". **Not yet:** the name statement's item, because the name
+   statement is not in the record yet (below).
+5. **Privacy:** tenant B's key opens nothing of tenant A's; a member's key opens the conversation part only; a reveal
+   matches its commitment and another value does not; planted strings are not in the envelope; no key body in a
+   tracked file.
+6. **No answer changes:** `replay_cert.py --names` on the new run gives the same outcomes as on `run_0054_names3`,
+   bench for bench (86 of 86 spoken "same"; `validation/logs/cert_replay_2026-11-19-0076.json`).
+7. **Offline and cheap:** the verifier opens no connection (a test). Per record at home: the signature 0.131 ms
+   median, 0.196 ms 95th percentile; a reader's full check (decrypt, recompute, the store) 0.977 / 1.525 ms.
+8. **Disagreement** (`validation/logs/disagreements_0076_2026-11-19.json`): of 10,568 questions, 134 touch a stored
+   statement and 41 of them (31%) touch an item and property holding two or more differing best-rank values (webq
+   38, simpleqa 2, nq 1). The host: answered with one value 2 (webq; e.g. Utah's time zone, three best-rank values);
+   refused 39: an ambiguous hop 25, `profile` 12, a time mismatch 2. What the record names, per pair touched: every
+   value 32, one value 7, some of them 9 (an ambiguous hop the walk narrowed). 145 of those values carry references,
+   and no record carries references yet.
+
+### Step 6: the design for disagreement, for Nick's yes (nothing of it is built)
+- **Where the question asks for one value** and the store holds two or more differing best-rank values for the
+  property the answer rests on: a Maasdam refusal, `cubby:refusalReason cubby:Conflict`, `cubby:conflictKind
+  cubby:ValueConflict`, with each value as a `cheez:FactVersion` (rank, revision, statement id, and its references,
+  which needs a reference term in CheezML: `prov:wasQuotedFrom` or `dcterms:source` on the fact version, checked
+  there first). On this run that changes **2 spoken answers** (webq) into refusals, and recodes the **25 ambiguous
+  hops** whose values are on one item and property from `cubby:Ambiguous` to `cubby:Conflict`.
+- **Where the question asks for all of them** (a plural question word, "which languages"), the answer stays as it
+  is: unchanged, listing every value, its certificate naming every fact version.
+- Two calls for Nick: (1) is a preferred-rank value alone among normal ones still a disagreement? (Wikidata's own
+  "best rank" says no; this design follows it); (2) the 12 `profile` refusals touch such properties too: leave them.
+
+**Still open in this order:** the name statement in the certificate (a `cheez:Decision` over the kept items as
+`cheez:Option`s, Cowork's ruling), then acceptance 4's spoil on it; codes for the refusal words above (asked of
+Cowork); Nick's keys from the OS key store (the code takes keys handed in; nothing reads a file).
 - **Commits:**
 - **Files:**
 - **Tests:**
