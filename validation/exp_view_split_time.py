@@ -65,9 +65,9 @@ def time_one(trunk, role: str, vocab: T.Vocab, instruction: str, arm: str, own_t
             "end": end, "whole": whole}
 
 
-def pick(rows: list, n: int, seed: int) -> list:
-    """`n` dev rows, a seeded sample (dev's own mix of 2 to 4 parts)."""
-    dev = [r for r in rows if r["split"] == "dev"]
+def pick(rows: list, n: int, seed: int, split: str = "dev") -> list:
+    """`n` rows of a dev split, a seeded sample (its own mix of parts). ``split``: order 0077 times dev_real."""
+    dev = [r for r in rows if r["split"] == split]
     return random.Random(seed).sample(dev, min(n, len(dev)))
 
 
@@ -81,7 +81,7 @@ def summary(timed: list) -> dict:
                 "ended": dict(Counter(x["end"] for x in xs)), "answers whole": sum(1 for x in xs if x["whole"])}
     by = {str(k): stats([x for x in timed if x["n_parts"] == k]) for k in sorted({x["n_parts"] for x in timed})}
     short, long = ([x for x in timed if lo <= x["n_parts"] <= hi] for lo, hi in ((2, 4), (5, 8)))
-    out = {"by number of parts": by, "2 to 4 parts": stats(short) if short else None,
+    out = {"all rows": stats(timed), "by number of parts": by, "2 to 4 parts": stats(short) if short else None,
            "5 to 8 parts": stats(long) if long else None,                    # order 0074's line 7
            "share of the time in the grammar": round(sum(x["grammar"] for x in timed) / max(1e-9, sum(x["seconds"] for x in timed)), 4)}
     med = out["2 to 4 parts"]["median seconds"] if short else None
@@ -99,6 +99,7 @@ def main() -> None:
     ap.add_argument("--adapter", required=True)
     ap.add_argument("--rows", default=None)
     ap.add_argument("--n", type=int, default=60)
+    ap.add_argument("--split", default="dev", choices=("dev", "dev_real"), help="dev_real: order 0077's real prompts")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--max-new", type=int, default=900)
     ap.add_argument("--out", required=True)
@@ -106,7 +107,7 @@ def main() -> None:
     from cubbyllm import local_paths
     from cubbyllm.emit.seats_450m import Cubby450mTrunk
     rows_p = Path(a.rows or Path(local_paths.value("CUBBY_DATASETS") or ".") / "long_rows_0073" / "rows.jsonl")
-    sample = pick([json.loads(ln) for ln in open(rows_p, encoding="utf-8")], a.n, a.seed)
+    sample = pick([json.loads(ln) for ln in open(rows_p, encoding="utf-8")], a.n, a.seed, a.split)
     trunk = Cubby450mTrunk(a.export, a.tokenizer, {"split": a.adapter})
     vocab = T.Vocab.of(trunk.tokenizer)
     time_one(trunk, "split", vocab, sample[0]["instruction"], a.arm, a.own_text, a.max_new)       # untimed: the first call
@@ -117,7 +118,7 @@ def main() -> None:
         print(f"  {k}/{len(sample)}: {r['n_parts']} parts, {got['ids']} ids, {got['seconds']:.1f} s ({got['end']})", flush=True)
     report = dict({"order": "0073", "what": "line 8: seconds per instruction at home, one at a time on grilly2, dev rows",
                    "arm": a.arm, "own_text": a.own_text, "adapter": Path(a.adapter).name, "export": Path(a.export).parent.name,
-                   "rows": len(timed), "seed": a.seed, "first": "one untimed read before the timed ones"}, **summary(timed))
+                   "rows": len(timed), "split": a.split, "seed": a.seed, "first": "one untimed read before the timed ones"}, **summary(timed))
     Path(a.out).write_text(json.dumps(report, indent=1) + "\n", encoding="utf-8")
     print(json.dumps(report["line 8"]), flush=True)
     print("timed:", a.out, flush=True)

@@ -1,5 +1,5 @@
 # 0077 - The description reader on real prompts (round 5: checks inside people's own prompts)
-status: in progress (Code A, Nick 2026-11-18: 0077 first, then 0076; approved by Nick 2026-11-17, "i approve 77"; reuses round 6's split, Build 1; 0074 kept arm L, so the order holds as written)
+status: review (Code A, 2026-11-19: every line read; arm R kept by line 5, line 6 passed at home; approved by Nick 2026-11-17, "i approve 77")
 written: 2026-11-17 by Cowork · approved: Nick 2026-11-17 · hypothesis: none (the preprint's first limitation)
 
 ## Why
@@ -244,10 +244,17 @@ Read on Colab (Nick, `view_real_read_test.ipynb`; `rules/reads/0077/view_real_{r
 - **Line 5: arm R replaces arm L.** No kill, line 4 holds, and arm L misses line 2 on both real sets where arm R
   passes it. (The other condition does not hold: on test_real R - L false passes over replies built to fail is
   -0.0042 to 0.0044.)
-- **Line 6 (time at home):** not measured yet; it needs the home card (asked in the inbox first, as Cowork asked).
+- **Line 6 (time at home): passes.** `exp_view_split_time.py --split dev_real` (the flag added here; off, dev as
+  before), arm R on grilly2, one instruction at a time, held to the machine, 60 dev_real rows (seed 0) after one
+  untimed read, in Cowork's slot of 2026-11-19 15:22-15:30 (no other timing or CPU job; the local site server idle):
+  median 7.28 s, 95th percentile 10.32 s over all 60; by number of checks, median / 95th: 2: 4.35 / 6.70 (8 rows),
+  3: 4.80 / 5.61 (9), 4: 6.09 / 8.28 (10), 5: 9.28 / 14.53 (5), 6: 7.36 / 8.69 (6), 7: 8.86 / 10.66 (9), 8: 8.78 /
+  11.93 (13). Every median is under 12 s and every time under 25 s; all 60 `finished` and read back whole; median 190
+  ids an answer; the grammar 5.6% of the time (`validation/logs/view_real_time_r.json`). The adapter was copied from
+  Drive as it is (it records no base hash; it loads on `base450m_cont`, as 0074's did).
 - **Line 7:** by source (OASST1, Dolly; English only in the test sets), by where the prompt sits and by length band,
   both arms, in the comparison log. Arm R by place, false passes over replies built to fail: test_real before
   0 / 984, after 3 / 868, around 4 / 359; test_dolly before 1 / 965, after 12 / 1,026, around 1 / 134.
 - **What the dev screen read bounds:** about 6% of the prompts carry a rule the screens missed (dev: 17 of 300);
   the counts above treat those lines as task text, as the gold does.
-- **Not verified here:** line 6. Nothing is wired into serving (`CB_RULES` stays off).
+- Nothing is wired into serving (`CB_RULES` stays off).

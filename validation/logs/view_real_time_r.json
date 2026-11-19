@@ -1,0 +1,121 @@
+{
+ "order": "0073",
+ "what": "line 8: seconds per instruction at home, one at a time on grilly2, dev rows",
+ "arm": "m",
+ "own_text": false,
+ "adapter": "arm_r",
+ "export": "base450m_cont",
+ "rows": 60,
+ "split": "dev_real",
+ "seed": 0,
+ "first": "one untimed read before the timed ones",
+ "all rows": {
+  "rows": 60,
+  "median seconds": 7.28,
+  "95th percentile seconds": 10.32,
+  "median ids": 190,
+  "ended": {
+   "finished": 60
+  },
+  "answers whole": 60
+ },
+ "by number of parts": {
+  "2": {
+   "rows": 8,
+   "median seconds": 4.35,
+   "95th percentile seconds": 6.7,
+   "median ids": 108,
+   "ended": {
+    "finished": 8
+   },
+   "answers whole": 8
+  },
+  "3": {
+   "rows": 9,
+   "median seconds": 4.8,
+   "95th percentile seconds": 5.61,
+   "median ids": 129,
+   "ended": {
+    "finished": 9
+   },
+   "answers whole": 9
+  },
+  "4": {
+   "rows": 10,
+   "median seconds": 6.09,
+   "95th percentile seconds": 8.28,
+   "median ids": 163,
+   "ended": {
+    "finished": 10
+   },
+   "answers whole": 10
+  },
+  "5": {
+   "rows": 5,
+   "median seconds": 9.28,
+   "95th percentile seconds": 14.53,
+   "median ids": 253,
+   "ended": {
+    "finished": 5
+   },
+   "answers whole": 5
+  },
+  "6": {
+   "rows": 6,
+   "median seconds": 7.36,
+   "95th percentile seconds": 8.69,
+   "median ids": 193,
+   "ended": {
+    "finished": 6
+   },
+   "answers whole": 6
+  },
+  "7": {
+   "rows": 9,
+   "median seconds": 8.86,
+   "95th percentile seconds": 10.66,
+   "median ids": 233,
+   "ended": {
+    "finished": 9
+   },
+   "answers whole": 9
+  },
+  "8": {
+   "rows": 13,
+   "median seconds": 8.78,
+   "95th percentile seconds": 11.93,
+   "median ids": 233,
+   "ended": {
+    "finished": 13
+   },
+   "answers whole": 13
+  }
+ },
+ "2 to 4 parts": {
+  "rows": 27,
+  "median seconds": 5.02,
+  "95th percentile seconds": 7.21,
+  "median ids": 135,
+  "ended": {
+   "finished": 27
+  },
+  "answers whole": 27
+ },
+ "5 to 8 parts": {
+  "rows": 33,
+  "median seconds": 8.59,
+  "95th percentile seconds": 11.93,
+  "median ids": 232,
+  "ended": {
+   "finished": 33
+  },
+  "answers whole": 33
+ },
+ "share of the time in the grammar": 0.0563,
+ "line 8": {
+  "needs": "a median of at most 8 s for 2 to 4 parts",
+  "median seconds": 5.02,
+  "passes": true,
+  "served": true
+ }
+}
