@@ -37,6 +37,7 @@ for _p in (VAL, os.path.dirname(VAL), os.path.join(os.path.dirname(VAL), "standi
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
+from system_eval import cert_facts  # noqa: E402  (order 0076: CB_CERT_FACTS=1)
 __wiring__ = "STANDALONE"
 
 KINDS = {"no_plan": "no_plan", "emit_error": "no_plan", "unparseable": "no_plan",
@@ -90,6 +91,7 @@ def timed(run_fn, timing: dict, permissive: bool = False):
     is raised to 1 (the C-VM check: the first proposal that yields a value is spoken)."""
     def run(source, fn):
         t = time.perf_counter()
+        cert_facts.note_program(timing, source)          # 0076: the program's hash (CB_CERT_FACTS=1)
         try:
             r = run_fn(source, fn)
         finally:
@@ -140,6 +142,7 @@ def build(seat, online: bool, vm: str):
 def one(loop, seat, timing, row: dict, run_learned: set) -> dict:
     from system_eval.grade import verdict
     c0, v0, s0 = seat.calls, timing["vm_calls"], timing["vm_s"]
+    timing["programs"] = []
     t = time.perf_counter()
     try:
         rec = loop.ask(row["question"])
@@ -168,7 +171,8 @@ def one(loop, seat, timing, row: dict, run_learned: set) -> dict:
             # order 0066's checks, as the record keeps them: the question word whose kind was unknown, the word a
             # refusal answered, the value's own date beside the dump's (None: no check said anything)
             "checks": {k: rec[k] for k in ("kind_unknown", "qword", "dates") if rec.get(k)} or None,
-            "name": name}                                # the certificate's name statement (a record: no answer changes)
+            "name": name,                                # the certificate's name statement (a record: no answer changes)
+            **({"cert": cert_facts.record(loop, rec, row["question"], timing["programs"])} if cert_facts.on() else {})}
 
 
 def main(argv=None) -> None:

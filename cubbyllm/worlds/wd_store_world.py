@@ -54,6 +54,7 @@ from .hdc_world import TIME_SENSITIVE
 from .wd_store_crowd import Crowded
 from .wd_store_names import Named
 from .wd_store_refine import Refined
+from .wd_store_statements import Statements
 
 __wiring__ = "WIRED"
 
@@ -65,7 +66,7 @@ META = {"Q4167410", "Q22808320", "Q4167836", "Q11266439", "Q13406463", "Q1420424
 _QID = re.compile(r"^q[1-9][0-9]*$")
 
 
-class WdStoreWorld(Named, Refined, Crowded, HdcWorld):
+class WdStoreWorld(Statements, Named, Refined, Crowded, HdcWorld):
     name = "wdstore"
     NAMESAKE_CAP = NAMESAKE_CAP
 
@@ -161,6 +162,7 @@ class WdStoreWorld(Named, Refined, Crowded, HdcWorld):
             if o:
                 rows.append((subj, self._pid_label[s["pid"]], o))
                 self._note_row(subj, self._pid_label[s["pid"]], o, s, nodes)
+                self._note_statement(qid.upper(), e, subj, self._pid_label[s["pid"]], o, s, nodes)   # a record (0076)
         return subj, rows, keys
 
     def _tiers(self, key: str) -> tuple[list, list]:
