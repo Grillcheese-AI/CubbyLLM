@@ -13,6 +13,15 @@ from .ask_words import hedged, say, strip_as_of
 __wiring__ = "WIRED"
 
 
+
+def ran(rec: dict, check: str, satisfied) -> None:
+    """With ``CB_CERT_FACTS=1`` (order 0076): a check that ran on this answer and its outcome, kept on the record for
+    its certificate (``checks_ran``). A record only: nothing reads it to decide; off, the record is as before."""
+    import os
+    if os.environ.get("CB_CERT_FACTS") == "1":
+        rec.setdefault("checks_ran", []).append({"check": check, "satisfied": bool(satisfied)})
+
+
 class AskMemory:
     """AskLoop's memory between questions (a mixin; order 0031)."""
 
@@ -124,17 +133,26 @@ class AskMemory:
         if not lr.result.verified or not rec.get("verified"):
             return
         from .ask_class import check as class_check       # an answer of the class asked (order 0047; CB_HELDOUT_FIXES=0 off)
-        if not class_check(self, question, lr, rec):
+        ok = class_check(self, question, lr, rec)
+        ran(rec, "answer class", ok)
+        if not ok:
             return
         why = self._time_check(question, lr) if self.tense else None
+        if self.tense:
+            ran(rec, "tense", not why)
         snap = self._snapshot(question, lr) if not why else None
+        if snap:
+            ran(rec, "snapshot time", snap[0] == "as_of")
         if snap and snap[0] == "as_of":
             self._dates(lr, rec)                         # the value's own date and the dump's, apart (0066, check 4)
         if snap and snap[0] != "as_of":                   # a snapshot's value asked about another time (order 0014)
             why = snap[1]
         undated = self._undated(question, lr) if not why and not snap else None
+        if not why and not snap:
+            ran(rec, "time rule", not (undated and undated[0] == "refuse"))
         h = lr.result.trace[-1] if lr.result.trace else None
         contested = h is not None and h.triple is not None and (normalize(h.triple.subj), normalize(h.triple.rel)) in self.contested
+        ran(rec, "conflict", not contested)
         as_of = snap[1] if snap else undated[1] if undated and undated[0] == "as_of" else None
         if as_of and not why and not contested and source_wins(self, question, lr, rec, again, str(as_of)):
             return                                       # the source's value, checked in its turn

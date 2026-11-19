@@ -6,6 +6,8 @@ For each question:
   read from and, from a statement store (`wd_store_statements`), every statement that said it (item, property,
   statement id, rank, the item's revision and modified time, its start / end / point-in-time qualifiers);
 - ``programs``: the SHA-256 of each program source the VM ran for the question, in order;
+- ``checks``: the host's checks that ran on the answer and their outcome (`ask_memory.ran`);
+- ``at``: the time the record was made (UTC), the certificate's generated time;
 - ``as_of``: the year the question asks about (`ask_words.strip_as_of`), or None when it names none: then the
   question was evaluated at the store's own date (the dump's, in the run's meta).
 
@@ -15,6 +17,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+import time
 
 __wiring__ = "STANDALONE"
 
@@ -59,7 +62,8 @@ def facts(loop, rec: dict) -> list:
 def record(loop, rec: dict, question: str, programs: list) -> dict:
     from cubbyllm.reasoning.ask_words import strip_as_of
     try:
-        return {"facts": facts(loop, rec), "programs": list(programs), "as_of": strip_as_of(question)[1]}
+        return {"facts": facts(loop, rec), "programs": list(programs), "as_of": strip_as_of(question)[1],
+                "checks": rec.get("checks_ran") or [], "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
     except Exception as e:                               # noqa: BLE001 -- a record never breaks the run
         return {"error": str(e)[:160], "programs": list(programs)}
 
