@@ -98,3 +98,19 @@ def test_the_records_conform_to_cheezml_at_the_pin():
         data = rdflib.Graph().parse(data=json.dumps({"@context": ctx, **g}), format="json-ld")
         ok, _, text = pyshacl.validate(data, shacl_graph=shapes, inference="none", advanced=True)
         assert ok, text[:1500]
+
+
+def test_the_read_back_finds_a_record_that_differs_from_the_run():
+    import sys
+    sys.path.insert(0, str(ROOT / "validation" / "system_eval"))
+    import write_cheez as X
+    g, _ = W.write(REC, RUN)
+    assert X.differences(g, REC, RUN) == []
+    for spoil, field in ((lambda n: n.update({"prov:value": "Euro"}) if "cubby:Answer" in n["@type"] else None, "answer"),
+                         (lambda n: n.update({"wikibase:rank": "wikibase:PreferredRank"}) if "cheez:FactVersion" in n["@type"] else None,
+                          "fact versions"),
+                         (lambda n: n.update({"cheez:hash": "c" * 64}) if "cube:Program" in n["@type"] else None, "program")):
+        bad = copy.deepcopy(g)
+        for n in bad["@graph"]:
+            spoil(n)
+        assert field in X.differences(bad, REC, RUN)
