@@ -33,7 +33,11 @@ SEED = 54
 READ_ALL = ("C",)                          # arms whose unmatched answers are all read
 
 
-def matches(answer: str, golds: list[str], bench: str) -> bool:
+def matches(answer: str, golds: list[str], bench: str, strict: bool = False) -> bool:
+    """0054's matcher (lenient). ``strict`` (order 0075, ``--strict``): `match_rules.rule(..., strict=True)`."""
+    if strict:
+        from system_eval.match_rules import rule
+        return rule(answer, golds, bench, strict=True) is not None
     if bench == "clutrr":                   # the relation word: the answer, or a whole word of a sentence (M writes text)
         from cubbyllm.reasoning.planner import normalize
         a = normalize(answer or "")
@@ -52,13 +56,19 @@ def declined(answer: str | None) -> bool:
     return a.startswith(DECLINES)
 
 
-def verdict(spoken: bool, answer: str | None, golds: list[str], bench: str, declines: bool = False) -> str:
-    """right | unmatched | refused (| declined: M's text decline, when ``declines``; counted with the refusals)."""
+def verdict(spoken: bool, answer: str | None, golds: list[str], bench: str, declines: bool = False,
+            strict: bool = False) -> str:
+    """right | unmatched | refused (| declined: M's text decline, when ``declines``; counted with the refusals).
+    ``strict`` (order 0075): the strict matcher, and a non-answer (`match_rules.non_answer`) is declined for every arm."""
     if not spoken or not (answer or "").strip():
         return "refused"
     if declines and declined(answer):
         return "declined"
-    return "right" if matches(answer, golds, bench) else "unmatched"
+    if strict:
+        from system_eval.match_rules import non_answer
+        if non_answer(answer):
+            return "declined"
+    return "right" if matches(answer, golds, bench, strict) else "unmatched"
 
 
 def to_read(rows: list[dict], arm: str, n: int = READ_SAMPLE, seed: int = SEED) -> list[str]:

@@ -157,7 +157,7 @@ def one(loop, seat, timing, row: dict, run_learned: set) -> dict:
     cvm = rec.get("answer") if spoken else rec.get("uncertified")
     from cubbyllm.reasoning.name_statement import build as name_statement   # 0054: how the name reached the item
     name = name_statement(loop, rec, live=bool(spoken and facts_source(rec, run_learned) == "wikidata"))
-    return {"id": row["id"], "bench": row["bench"], "question": row["question"], "golds": row["golds"][:8],
+    return {"id": row["id"], "bench": row["bench"], "question": row["question"], "golds": list(row["golds"]),   # every gold (0075, Nick 2026-11-19)
             "seen": row["seen"], "spoken": spoken, "answer": rec.get("answer"),
             "said": rec.get("reply") or rec.get("answer"), "tier": rec.get("tier"),
             "verdict": verdict(spoken, rec.get("answer"), row["golds"], row["bench"]),

@@ -87,8 +87,14 @@ def run_programs(a, trunk) -> dict:
     return {"programs": n, "seconds": round(time.time() - t0, 1), "s_per": round((time.time() - t0) / max(1, n), 3)}
 
 
-def run_m(a, trunk) -> dict:
+def m_record(r: dict, bench: str, ans: str) -> dict:
+    """One record of arm M. Every gold is kept (order 0075, Nick 2026-11-19; records before it kept the first 8)."""
     from system_eval.grade import verdict
+    return {"id": r["id"], "bench": bench, "question": r["question"], "golds": list(r["golds"]), "seen": r["seen"],
+            "answer": ans, "spoken": bool(ans.strip()), "verdict": verdict(bool(ans.strip()), ans, r["golds"], bench, declines=True)}
+
+
+def run_m(a, trunk) -> dict:
     rows = [r for r in map(json.loads, open(a.questions, encoding="utf-8")) if r]
     by = collections.defaultdict(list)
     for r in rows:
@@ -103,10 +109,7 @@ def run_m(a, trunk) -> dict:
             for s in range(0, len(todo), CHUNK):
                 part = todo[s:s + CHUNK]
                 for r, ans in zip(part, m_answers(trunk, part)):
-                    f.write(json.dumps({"id": r["id"], "bench": bench, "question": r["question"], "golds": r["golds"][:8],
-                                        "seen": r["seen"], "answer": ans, "spoken": bool(ans.strip()),
-                                        "verdict": verdict(bool(ans.strip()), ans, r["golds"], bench, declines=True)},
-                                       ensure_ascii=False) + "\n")
+                    f.write(json.dumps(m_record(r, bench, ans), ensure_ascii=False) + "\n")
                 print(f"  m {bench} {s + len(part)}/{len(todo)} ({time.time() - t0:.0f}s)", flush=True)
         dt = time.time() - t0
         out[bench] = {"answered": len(todo), "rows": len(rs), "s_per": round(dt / max(1, len(todo)), 3),

@@ -1,0 +1,262 @@
+{
+ "golds": "from run_0054/questions.jsonl: a record keeps the first 8; 585 rows (over all arms) have more",
+ "what": "order 0075 steps 1, 3, 4: the rule behind every 'right' of 0054's stored records (C, C-VM, M; five benchmarks), the lenient matches to read, the strict matcher's counts",
+ "date": "2026-11-19",
+ "records": {
+  "simpleqa": "run_0055_after/c_simpleqa.jsonl",
+  "nq": "run_0055_after/nq_final2/c_gather_nq.jsonl",
+  "webq": "run_0055_after/c_webq.jsonl",
+  "clutrr": "run_0054/c_clutrr.jsonl",
+  "aa": "run_0055_after/c_aa.jsonl"
+ },
+ "m_records": "run_0054/m/m_<bench>.jsonl",
+ "c_vm": "from C's records (cvm_answer, cvm_verdict)",
+ "rules": {
+  "C-VM/clutrr": {
+   "relation": 1035
+  },
+  "C-VM/nq": {
+   "year": 3,
+   "equal": 6
+  },
+  "C-VM/simpleqa": {
+   "equal": 6,
+   "answer in gold": 2
+  },
+  "C-VM/webq": {
+   "equal": 64,
+   "gold in answer": 4,
+   "answer in gold": 8
+  },
+  "C/clutrr": {
+   "relation": 827
+  },
+  "C/nq": {
+   "year": 3,
+   "equal": 6
+  },
+  "C/simpleqa": {
+   "equal": 5,
+   "answer in gold": 1
+  },
+  "C/webq": {
+   "equal": 40,
+   "answer in gold": 6,
+   "gold in answer": 3
+  },
+  "M/aa": {
+   "gold in answer": 6,
+   "year": 1
+  },
+  "M/nq": {
+   "gold in answer": 45,
+   "year": 3
+  },
+  "M/simpleqa": {
+   "gold in answer": 3,
+   "year": 8
+  },
+  "M/webq": {
+   "gold in answer": 50,
+   "year": 1
+  }
+ },
+ "right_without_a_rule": [],
+ "kill_right_without_a_rule": false,
+ "verdicts_recomputed_differ": {},
+ "lenient_vs_strict": {
+  "C/simpleqa": {
+   "lenient": {
+    "refused": 4320,
+    "right": 6
+   },
+   "strict": {
+    "refused": 4320,
+    "right": 5,
+    "unmatched": 1
+   },
+   "right_dropped_by_strict": 1
+  },
+  "C-VM/simpleqa": {
+   "lenient": {
+    "refused": 4315,
+    "unmatched": 3,
+    "right": 8
+   },
+   "strict": {
+    "refused": 4315,
+    "unmatched": 5,
+    "right": 6
+   },
+   "right_dropped_by_strict": 2
+  },
+  "M/simpleqa": {
+   "lenient": {
+    "declined": 3196,
+    "unmatched": 1119,
+    "right": 11
+   },
+   "strict": {
+    "declined": 3196,
+    "unmatched": 1128,
+    "right": 2
+   },
+   "right_dropped_by_strict": 9
+  },
+  "C/nq": {
+   "lenient": {
+    "refused": 3595,
+    "right": 9,
+    "unmatched": 6
+   },
+   "strict": {
+    "refused": 3595,
+    "right": 9,
+    "unmatched": 6
+   },
+   "right_dropped_by_strict": 0
+  },
+  "C-VM/nq": {
+   "lenient": {
+    "refused": 3594,
+    "unmatched": 7,
+    "right": 9
+   },
+   "strict": {
+    "refused": 3594,
+    "unmatched": 7,
+    "right": 9
+   },
+   "right_dropped_by_strict": 0
+  },
+  "M/nq": {
+   "lenient": {
+    "declined": 1762,
+    "unmatched": 1800,
+    "right": 48
+   },
+   "strict": {
+    "declined": 1762,
+    "unmatched": 1828,
+    "right": 20
+   },
+   "right_dropped_by_strict": 28
+  },
+  "C/webq": {
+   "lenient": {
+    "refused": 1967,
+    "unmatched": 16,
+    "right": 49
+   },
+   "strict": {
+    "refused": 1967,
+    "unmatched": 23,
+    "right": 42
+   },
+   "right_dropped_by_strict": 7
+  },
+  "C-VM/webq": {
+   "lenient": {
+    "refused": 1927,
+    "right": 76,
+    "unmatched": 29
+   },
+   "strict": {
+    "refused": 1927,
+    "right": 67,
+    "unmatched": 38
+   },
+   "right_dropped_by_strict": 9
+  },
+  "M/webq": {
+   "lenient": {
+    "unmatched": 660,
+    "declined": 1321,
+    "right": 51
+   },
+   "strict": {
+    "unmatched": 686,
+    "declined": 1321,
+    "right": 25
+   },
+   "right_dropped_by_strict": 26
+  },
+  "C/clutrr": {
+   "lenient": {
+    "right": 827,
+    "refused": 319
+   },
+   "strict": {
+    "right": 827,
+    "refused": 319
+   },
+   "right_dropped_by_strict": 0
+  },
+  "C-VM/clutrr": {
+   "lenient": {
+    "right": 1035,
+    "refused": 111
+   },
+   "strict": {
+    "right": 1035,
+    "refused": 111
+   },
+   "right_dropped_by_strict": 0
+  },
+  "M/clutrr": {
+   "lenient": {
+    "declined": 1145,
+    "unmatched": 1
+   },
+   "strict": {
+    "declined": 1145,
+    "unmatched": 1
+   },
+   "right_dropped_by_strict": 0
+  },
+  "C/aa": {
+   "lenient": {
+    "refused": 600
+   },
+   "strict": {
+    "refused": 600
+   },
+   "right_dropped_by_strict": 0
+  },
+  "C-VM/aa": {
+   "lenient": {
+    "refused": 600
+   },
+   "strict": {
+    "refused": 600
+   },
+   "right_dropped_by_strict": 0
+  },
+  "M/aa": {
+   "lenient": {
+    "unmatched": 445,
+    "declined": 148,
+    "right": 7
+   },
+   "strict": {
+    "unmatched": 451,
+    "declined": 148,
+    "right": 1
+   },
+   "right_dropped_by_strict": 6
+  }
+ },
+ "to_read": {
+  "C/nq": 3,
+  "C/simpleqa": 1,
+  "C/webq": 9,
+  "C-VM/nq": 3,
+  "C-VM/simpleqa": 2,
+  "C-VM/webq": 12,
+  "M/aa": 7,
+  "M/nq": 48,
+  "M/simpleqa": 11,
+  "M/webq": 51
+ },
+ "read_seed": 75
+}

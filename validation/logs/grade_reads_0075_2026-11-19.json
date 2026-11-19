@@ -1,0 +1,608 @@
+{
+ "what": "order 0075 step 3: the lenient matches read (every 'right' whose rule is not 'equal' nor CLUTRR's 'relation'), as 0054's reads were: right, wrong or debatable, and why; a wrong carries its reason (step 7)",
+ "reader": "Claude Code (B), 2026-11-19, from to_read_0075.jsonl (exp_grade_rules.py); for Cowork to check row by row",
+ "reasons": [
+  "wrong",
+  "gold stale",
+  "gold wrong",
+  "question ambiguous"
+ ],
+ "reads": {
+  "C": {
+   "nq:3075": [
+    "debatable",
+    "gold stale"
+   ],
+   "nq:3427": [
+    "right",
+    null
+   ],
+   "nq:577": [
+    "right",
+    null
+   ],
+   "simpleqa:4155": [
+    "right",
+    null
+   ],
+   "webq:1113": [
+    "right",
+    null
+   ],
+   "webq:1317": [
+    "right",
+    null
+   ],
+   "webq:1364": [
+    "right",
+    null
+   ],
+   "webq:296": [
+    "right",
+    null
+   ],
+   "webq:445": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:592": [
+    "debatable",
+    "wrong"
+   ],
+   "webq:910": [
+    "right",
+    null
+   ],
+   "webq:925": [
+    "right",
+    null
+   ],
+   "webq:952": [
+    "right",
+    null
+   ]
+  },
+  "C-VM": {
+   "nq:3075": [
+    "debatable",
+    "gold stale"
+   ],
+   "nq:3427": [
+    "right",
+    null
+   ],
+   "nq:577": [
+    "right",
+    null
+   ],
+   "simpleqa:4024": [
+    "right",
+    null
+   ],
+   "simpleqa:4155": [
+    "right",
+    null
+   ],
+   "webq:1113": [
+    "right",
+    null
+   ],
+   "webq:1317": [
+    "right",
+    null
+   ],
+   "webq:1364": [
+    "right",
+    null
+   ],
+   "webq:1879": [
+    "right",
+    null
+   ],
+   "webq:1902": [
+    "right",
+    null
+   ],
+   "webq:295": [
+    "right",
+    null
+   ],
+   "webq:296": [
+    "right",
+    null
+   ],
+   "webq:445": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:592": [
+    "debatable",
+    "wrong"
+   ],
+   "webq:910": [
+    "right",
+    null
+   ],
+   "webq:925": [
+    "right",
+    null
+   ],
+   "webq:952": [
+    "right",
+    null
+   ]
+  },
+  "M": {
+   "aa:142": [
+    "wrong",
+    "wrong"
+   ],
+   "aa:195": [
+    "wrong",
+    "wrong"
+   ],
+   "aa:281": [
+    "wrong",
+    "wrong"
+   ],
+   "aa:524": [
+    "wrong",
+    "wrong"
+   ],
+   "aa:539": [
+    "wrong",
+    "wrong"
+   ],
+   "aa:564": [
+    "wrong",
+    "wrong"
+   ],
+   "aa:75": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:1030": [
+    "right",
+    null
+   ],
+   "nq:1048": [
+    "right",
+    null
+   ],
+   "nq:1054": [
+    "right",
+    null
+   ],
+   "nq:1075": [
+    "debatable",
+    "wrong"
+   ],
+   "nq:116": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:1178": [
+    "right",
+    null
+   ],
+   "nq:1193": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:1273": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:161": [
+    "right",
+    null
+   ],
+   "nq:1622": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:1824": [
+    "debatable",
+    "gold wrong"
+   ],
+   "nq:1865": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:1867": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:1888": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:198": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:2009": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:2140": [
+    "right",
+    null
+   ],
+   "nq:2262": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:230": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:2422": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:2486": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:254": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:2593": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:2615": [
+    "right",
+    null
+   ],
+   "nq:265": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:267": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:2751": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:2804": [
+    "right",
+    null
+   ],
+   "nq:2865": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:2899": [
+    "right",
+    null
+   ],
+   "nq:2982": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:3079": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:3125": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:3191": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:3262": [
+    "right",
+    null
+   ],
+   "nq:3316": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:3401": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:3513": [
+    "right",
+    null
+   ],
+   "nq:3526": [
+    "wrong",
+    "gold wrong"
+   ],
+   "nq:560": [
+    "right",
+    null
+   ],
+   "nq:601": [
+    "right",
+    null
+   ],
+   "nq:659": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:701": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:702": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:723": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:894": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:972": [
+    "wrong",
+    "wrong"
+   ],
+   "nq:999": [
+    "wrong",
+    "wrong"
+   ],
+   "simpleqa:1236": [
+    "wrong",
+    "wrong"
+   ],
+   "simpleqa:1440": [
+    "wrong",
+    "wrong"
+   ],
+   "simpleqa:1851": [
+    "wrong",
+    "wrong"
+   ],
+   "simpleqa:2097": [
+    "wrong",
+    "wrong"
+   ],
+   "simpleqa:231": [
+    "wrong",
+    "wrong"
+   ],
+   "simpleqa:2778": [
+    "wrong",
+    "wrong"
+   ],
+   "simpleqa:2828": [
+    "right",
+    null
+   ],
+   "simpleqa:328": [
+    "wrong",
+    "wrong"
+   ],
+   "simpleqa:3384": [
+    "wrong",
+    "wrong"
+   ],
+   "simpleqa:4111": [
+    "wrong",
+    "wrong"
+   ],
+   "simpleqa:4324": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:1005": [
+    "right",
+    null
+   ],
+   "webq:1023": [
+    "debatable",
+    "gold wrong"
+   ],
+   "webq:1051": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:1137": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:1233": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:1367": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:1409": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:1429": [
+    "right",
+    null
+   ],
+   "webq:1483": [
+    "debatable",
+    "wrong"
+   ],
+   "webq:1527": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:1590": [
+    "debatable",
+    "wrong"
+   ],
+   "webq:1621": [
+    "right",
+    null
+   ],
+   "webq:1672": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:1718": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:172": [
+    "right",
+    null
+   ],
+   "webq:1778": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:1792": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:1818": [
+    "debatable",
+    "wrong"
+   ],
+   "webq:1842": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:1866": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:1909": [
+    "debatable",
+    "wrong"
+   ],
+   "webq:1918": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:1973": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:1992": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:2": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:200": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:212": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:229": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:248": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:264": [
+    "right",
+    null
+   ],
+   "webq:302": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:32": [
+    "right",
+    null
+   ],
+   "webq:386": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:393": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:429": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:442": [
+    "right",
+    null
+   ],
+   "webq:460": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:494": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:513": [
+    "right",
+    null
+   ],
+   "webq:552": [
+    "right",
+    null
+   ],
+   "webq:591": [
+    "right",
+    null
+   ],
+   "webq:630": [
+    "right",
+    null
+   ],
+   "webq:716": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:73": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:748": [
+    "debatable",
+    "wrong"
+   ],
+   "webq:834": [
+    "right",
+    null
+   ],
+   "webq:859": [
+    "right",
+    null
+   ],
+   "webq:916": [
+    "right",
+    null
+   ],
+   "webq:950": [
+    "wrong",
+    "wrong"
+   ],
+   "webq:957": [
+    "right",
+    null
+   ],
+   "webq:99": [
+    "debatable",
+    "question ambiguous"
+   ]
+  }
+ },
+ "glosses": "off-repo, beside to_read_0075.jsonl ($CUBBY_DATA/system_eval/grade_reads_0075_glosses.json): benchmark text stays off the repo",
+ "cowork_check": "2026-11-19: agreed row by row; webq:1023 wrong -> debatable (gold wrong); nq:254's reason gold wrong -> wrong"
+}

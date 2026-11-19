@@ -1,0 +1,22 @@
+{
+ "what": "cubelang P6-3..7 cross-check: 0067's stored rows, each join on its stored replies, against the verdict stored when the row was kept",
+ "date": "2026-11-18",
+ "vm": {
+  "path": "cubelang-b/target/release/cubelang.exe",
+  "modified": "2026-11-18 12:46",
+  "sha256": "1b002772df7d8ce3008399b71db7ad176966c69be2734cb3182e78b2f619cf95",
+  "commit": "bbc02e4",
+  "older_than_sources": false
+ },
+ "set": {
+  "rows": 3900,
+  "rows_sha256": "ca2e6a0ecfa78f24da5fa3044daf850cfd285e47b9becaf382e1876bd61933a1",
+  "stored_with_vm": "3f37515",
+  "stored_runs_agreeing": 31087
+ },
+ "runs": 31087,
+ "agree": 31087,
+ "differ": 0,
+ "differ_by_split": {},
+ "differences": []
+}

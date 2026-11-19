@@ -1,0 +1,674 @@
+{
+ "what": "order 0075: right, wrong, refused by arm and benchmark, lenient (0054's) and strict matchers, the reads applied",
+ "date": "2026-11-19",
+ "reads": [
+  "grade_reads_0075_2026-11-19.json",
+  "system_eval_after_2026-11-10.json (C, C-VM unmatched)"
+ ],
+ "table": {
+  "C/aa": {
+   "lenient": {
+    "n": 600,
+    "refused": 600,
+    "right": 0,
+    "wrong": 0,
+    "debatable": 0,
+    "unread": 0,
+    "right_pct": 0.0,
+    "wrong_pct": 0.0,
+    "refused_pct": 100.0
+   },
+   "strict": {
+    "n": 600,
+    "refused": 600,
+    "right": 0,
+    "wrong": 0,
+    "debatable": 0,
+    "unread": 0,
+    "right_pct": 0.0,
+    "wrong_pct": 0.0,
+    "refused_pct": 100.0
+   }
+  },
+  "C/clutrr": {
+   "lenient": {
+    "n": 1146,
+    "spoken": 827,
+    "matched": 827,
+    "matched_not read": 827,
+    "refused": 319,
+    "right": 827,
+    "wrong": 0,
+    "debatable": 0,
+    "unread": 0,
+    "right_pct": 72.16,
+    "wrong_pct": 0.0,
+    "refused_pct": 27.84,
+    "wrong_of_spoken": {
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.0046
+     ],
+     "with_debatable": 0.0
+    }
+   },
+   "strict": {
+    "n": 1146,
+    "spoken": 827,
+    "matched": 827,
+    "matched_not read": 827,
+    "refused": 319,
+    "right": 827,
+    "wrong": 0,
+    "debatable": 0,
+    "unread": 0,
+    "right_pct": 72.16,
+    "wrong_pct": 0.0,
+    "refused_pct": 27.84,
+    "wrong_of_spoken": {
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.0046
+     ],
+     "with_debatable": 0.0
+    }
+   }
+  },
+  "C/nq": {
+   "lenient": {
+    "n": 3610,
+    "refused": 3595,
+    "spoken": 15,
+    "matched": 9,
+    "matched_right": 2,
+    "unmatched": 6,
+    "unmatched_wrong": 4,
+    "unmatched_right": 2,
+    "matched_not read": 6,
+    "matched_debatable": 1,
+    "right": 10,
+    "wrong": 4,
+    "debatable": 1,
+    "unread": 0,
+    "right_pct": 0.28,
+    "wrong_pct": 0.11,
+    "refused_pct": 99.58,
+    "wrong_of_spoken": {
+     "rate": 0.2667,
+     "ci95": [
+      0.109,
+      0.5195
+     ],
+     "with_debatable": 0.3333
+    }
+   },
+   "strict": {
+    "n": 3610,
+    "refused": 3595,
+    "spoken": 15,
+    "matched": 9,
+    "matched_right": 2,
+    "unmatched": 6,
+    "unmatched_wrong": 4,
+    "unmatched_right": 2,
+    "matched_not read": 6,
+    "matched_debatable": 1,
+    "right": 10,
+    "wrong": 4,
+    "debatable": 1,
+    "unread": 0,
+    "right_pct": 0.28,
+    "wrong_pct": 0.11,
+    "refused_pct": 99.58,
+    "wrong_of_spoken": {
+     "rate": 0.2667,
+     "ci95": [
+      0.109,
+      0.5195
+     ],
+     "with_debatable": 0.3333
+    }
+   }
+  },
+  "C/simpleqa": {
+   "lenient": {
+    "n": 4326,
+    "refused": 4320,
+    "spoken": 6,
+    "matched": 6,
+    "matched_not read": 5,
+    "matched_right": 1,
+    "right": 6,
+    "wrong": 0,
+    "debatable": 0,
+    "unread": 0,
+    "right_pct": 0.14,
+    "wrong_pct": 0.0,
+    "refused_pct": 99.86,
+    "wrong_of_spoken": {
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.3903
+     ],
+     "with_debatable": 0.0
+    }
+   },
+   "strict": {
+    "n": 4326,
+    "refused": 4320,
+    "spoken": 6,
+    "matched": 5,
+    "matched_not read": 5,
+    "unmatched": 1,
+    "unmatched_right": 1,
+    "right": 6,
+    "wrong": 0,
+    "debatable": 0,
+    "unread": 0,
+    "right_pct": 0.14,
+    "wrong_pct": 0.0,
+    "refused_pct": 99.86,
+    "wrong_of_spoken": {
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.3903
+     ],
+     "with_debatable": 0.0
+    }
+   }
+  },
+  "C/webq": {
+   "lenient": {
+    "n": 2032,
+    "refused": 1967,
+    "spoken": 65,
+    "unmatched": 16,
+    "unmatched_right": 10,
+    "matched": 49,
+    "matched_not read": 40,
+    "unmatched_wrong": 4,
+    "matched_right": 7,
+    "matched_wrong": 1,
+    "unmatched_debatable": 2,
+    "matched_debatable": 1,
+    "right": 57,
+    "wrong": 5,
+    "debatable": 3,
+    "unread": 0,
+    "right_pct": 2.81,
+    "wrong_pct": 0.25,
+    "refused_pct": 96.8,
+    "wrong_of_spoken": {
+     "rate": 0.0769,
+     "ci95": [
+      0.0333,
+      0.1678
+     ],
+     "with_debatable": 0.1231
+    }
+   },
+   "strict": {
+    "n": 2032,
+    "refused": 1967,
+    "spoken": 65,
+    "unmatched": 23,
+    "unmatched_right": 16,
+    "matched": 42,
+    "matched_not read": 40,
+    "unmatched_wrong": 5,
+    "unmatched_debatable": 2,
+    "matched_debatable": 1,
+    "matched_right": 1,
+    "right": 57,
+    "wrong": 5,
+    "debatable": 3,
+    "unread": 0,
+    "right_pct": 2.81,
+    "wrong_pct": 0.25,
+    "refused_pct": 96.8,
+    "wrong_of_spoken": {
+     "rate": 0.0769,
+     "ci95": [
+      0.0333,
+      0.1678
+     ],
+     "with_debatable": 0.1231
+    }
+   }
+  },
+  "C-VM/aa": {
+   "lenient": {
+    "n": 600,
+    "refused": 600,
+    "right": 0,
+    "wrong": 0,
+    "debatable": 0,
+    "unread": 0,
+    "right_pct": 0.0,
+    "wrong_pct": 0.0,
+    "refused_pct": 100.0
+   },
+   "strict": {
+    "n": 600,
+    "refused": 600,
+    "right": 0,
+    "wrong": 0,
+    "debatable": 0,
+    "unread": 0,
+    "right_pct": 0.0,
+    "wrong_pct": 0.0,
+    "refused_pct": 100.0
+   }
+  },
+  "C-VM/clutrr": {
+   "lenient": {
+    "n": 1146,
+    "spoken": 1035,
+    "matched": 1035,
+    "matched_not read": 1035,
+    "refused": 111,
+    "right": 1035,
+    "wrong": 0,
+    "debatable": 0,
+    "unread": 0,
+    "right_pct": 90.31,
+    "wrong_pct": 0.0,
+    "refused_pct": 9.69,
+    "wrong_of_spoken": {
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.0037
+     ],
+     "with_debatable": 0.0
+    }
+   },
+   "strict": {
+    "n": 1146,
+    "spoken": 1035,
+    "matched": 1035,
+    "matched_not read": 1035,
+    "refused": 111,
+    "right": 1035,
+    "wrong": 0,
+    "debatable": 0,
+    "unread": 0,
+    "right_pct": 90.31,
+    "wrong_pct": 0.0,
+    "refused_pct": 9.69,
+    "wrong_of_spoken": {
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.0037
+     ],
+     "with_debatable": 0.0
+    }
+   }
+  },
+  "C-VM/nq": {
+   "lenient": {
+    "n": 3610,
+    "refused": 3594,
+    "spoken": 16,
+    "unmatched": 7,
+    "unmatched_right": 3,
+    "matched": 9,
+    "matched_right": 2,
+    "unmatched_wrong": 4,
+    "matched_not read": 6,
+    "matched_debatable": 1,
+    "right": 11,
+    "wrong": 4,
+    "debatable": 1,
+    "unread": 0,
+    "right_pct": 0.3,
+    "wrong_pct": 0.11,
+    "refused_pct": 99.56,
+    "wrong_of_spoken": {
+     "rate": 0.25,
+     "ci95": [
+      0.1018,
+      0.495
+     ],
+     "with_debatable": 0.3125
+    }
+   },
+   "strict": {
+    "n": 3610,
+    "refused": 3594,
+    "spoken": 16,
+    "unmatched": 7,
+    "unmatched_right": 3,
+    "matched": 9,
+    "matched_right": 2,
+    "unmatched_wrong": 4,
+    "matched_not read": 6,
+    "matched_debatable": 1,
+    "right": 11,
+    "wrong": 4,
+    "debatable": 1,
+    "unread": 0,
+    "right_pct": 0.3,
+    "wrong_pct": 0.11,
+    "refused_pct": 99.56,
+    "wrong_of_spoken": {
+     "rate": 0.25,
+     "ci95": [
+      0.1018,
+      0.495
+     ],
+     "with_debatable": 0.3125
+    }
+   }
+  },
+  "C-VM/simpleqa": {
+   "lenient": {
+    "n": 4326,
+    "refused": 4315,
+    "spoken": 11,
+    "unmatched": 3,
+    "unmatched_wrong": 3,
+    "matched": 8,
+    "matched_not read": 6,
+    "matched_right": 2,
+    "right": 8,
+    "wrong": 3,
+    "debatable": 0,
+    "unread": 0,
+    "right_pct": 0.18,
+    "wrong_pct": 0.07,
+    "refused_pct": 99.75,
+    "wrong_of_spoken": {
+     "rate": 0.2727,
+     "ci95": [
+      0.0975,
+      0.5657
+     ],
+     "with_debatable": 0.2727
+    }
+   },
+   "strict": {
+    "n": 4326,
+    "refused": 4315,
+    "spoken": 11,
+    "unmatched": 5,
+    "unmatched_wrong": 3,
+    "matched": 6,
+    "matched_not read": 6,
+    "unmatched_right": 2,
+    "right": 8,
+    "wrong": 3,
+    "debatable": 0,
+    "unread": 0,
+    "right_pct": 0.18,
+    "wrong_pct": 0.07,
+    "refused_pct": 99.75,
+    "wrong_of_spoken": {
+     "rate": 0.2727,
+     "ci95": [
+      0.0975,
+      0.5657
+     ],
+     "with_debatable": 0.2727
+    }
+   }
+  },
+  "C-VM/webq": {
+   "lenient": {
+    "n": 2032,
+    "refused": 1927,
+    "spoken": 105,
+    "matched": 76,
+    "matched_not read": 64,
+    "unmatched": 29,
+    "unmatched_right": 16,
+    "unmatched_wrong": 10,
+    "matched_right": 10,
+    "matched_wrong": 1,
+    "unmatched_debatable": 3,
+    "matched_debatable": 1,
+    "right": 90,
+    "wrong": 11,
+    "debatable": 4,
+    "unread": 0,
+    "right_pct": 4.43,
+    "wrong_pct": 0.54,
+    "refused_pct": 94.83,
+    "wrong_of_spoken": {
+     "rate": 0.1048,
+     "ci95": [
+      0.0595,
+      0.1779
+     ],
+     "with_debatable": 0.1429
+    }
+   },
+   "strict": {
+    "n": 2032,
+    "refused": 1927,
+    "spoken": 105,
+    "matched": 67,
+    "matched_not read": 64,
+    "unmatched": 38,
+    "unmatched_right": 24,
+    "unmatched_wrong": 11,
+    "matched_right": 2,
+    "unmatched_debatable": 3,
+    "matched_debatable": 1,
+    "right": 90,
+    "wrong": 11,
+    "debatable": 4,
+    "unread": 0,
+    "right_pct": 4.43,
+    "wrong_pct": 0.54,
+    "refused_pct": 94.83,
+    "wrong_of_spoken": {
+     "rate": 0.1048,
+     "ci95": [
+      0.0595,
+      0.1779
+     ],
+     "with_debatable": 0.1429
+    }
+   }
+  },
+  "M/aa": {
+   "lenient": {
+    "n": 600,
+    "spoken": 452,
+    "unmatched": 445,
+    "unmatched_unread": 445,
+    "refused": 148,
+    "matched": 7,
+    "matched_wrong": 7,
+    "right": 0,
+    "wrong": 7,
+    "debatable": 0,
+    "unread": 445,
+    "right_pct": 0.0,
+    "wrong_pct": 1.17,
+    "refused_pct": 24.67
+   },
+   "strict": {
+    "n": 600,
+    "spoken": 452,
+    "unmatched": 451,
+    "unmatched_unread": 445,
+    "refused": 148,
+    "unmatched_wrong": 6,
+    "matched": 1,
+    "matched_wrong": 1,
+    "right": 0,
+    "wrong": 7,
+    "debatable": 0,
+    "unread": 445,
+    "right_pct": 0.0,
+    "wrong_pct": 1.17,
+    "refused_pct": 24.67
+   }
+  },
+  "M/clutrr": {
+   "lenient": {
+    "n": 1146,
+    "refused": 1145,
+    "spoken": 1,
+    "unmatched": 1,
+    "unmatched_unread": 1,
+    "right": 0,
+    "wrong": 0,
+    "debatable": 0,
+    "unread": 1,
+    "right_pct": 0.0,
+    "wrong_pct": 0.0,
+    "refused_pct": 99.91
+   },
+   "strict": {
+    "n": 1146,
+    "refused": 1145,
+    "spoken": 1,
+    "unmatched": 1,
+    "unmatched_unread": 1,
+    "right": 0,
+    "wrong": 0,
+    "debatable": 0,
+    "unread": 1,
+    "right_pct": 0.0,
+    "wrong_pct": 0.0,
+    "refused_pct": 99.91
+   }
+  },
+  "M/nq": {
+   "lenient": {
+    "n": 3610,
+    "refused": 1762,
+    "spoken": 1848,
+    "unmatched": 1800,
+    "unmatched_unread": 1800,
+    "matched": 48,
+    "matched_wrong": 33,
+    "matched_right": 13,
+    "matched_debatable": 2,
+    "right": 13,
+    "wrong": 33,
+    "debatable": 2,
+    "unread": 1800,
+    "right_pct": 0.36,
+    "wrong_pct": 0.91,
+    "refused_pct": 48.81
+   },
+   "strict": {
+    "n": 3610,
+    "refused": 1762,
+    "spoken": 1848,
+    "unmatched": 1828,
+    "unmatched_unread": 1800,
+    "unmatched_wrong": 21,
+    "unmatched_right": 6,
+    "matched": 20,
+    "matched_wrong": 12,
+    "matched_right": 7,
+    "matched_debatable": 1,
+    "unmatched_debatable": 1,
+    "right": 13,
+    "wrong": 33,
+    "debatable": 2,
+    "unread": 1800,
+    "right_pct": 0.36,
+    "wrong_pct": 0.91,
+    "refused_pct": 48.81
+   }
+  },
+  "M/simpleqa": {
+   "lenient": {
+    "n": 4326,
+    "refused": 3196,
+    "spoken": 1130,
+    "unmatched": 1119,
+    "unmatched_unread": 1119,
+    "matched": 11,
+    "matched_wrong": 10,
+    "matched_right": 1,
+    "right": 1,
+    "wrong": 10,
+    "debatable": 0,
+    "unread": 1119,
+    "right_pct": 0.02,
+    "wrong_pct": 0.23,
+    "refused_pct": 73.88
+   },
+   "strict": {
+    "n": 4326,
+    "refused": 3196,
+    "spoken": 1130,
+    "unmatched": 1128,
+    "unmatched_unread": 1119,
+    "unmatched_wrong": 9,
+    "matched": 2,
+    "matched_wrong": 1,
+    "matched_right": 1,
+    "right": 1,
+    "wrong": 10,
+    "debatable": 0,
+    "unread": 1119,
+    "right_pct": 0.02,
+    "wrong_pct": 0.23,
+    "refused_pct": 73.88
+   }
+  },
+  "M/webq": {
+   "lenient": {
+    "n": 2032,
+    "spoken": 711,
+    "unmatched": 660,
+    "unmatched_unread": 660,
+    "refused": 1321,
+    "matched": 51,
+    "matched_wrong": 29,
+    "matched_right": 15,
+    "matched_debatable": 7,
+    "right": 15,
+    "wrong": 29,
+    "debatable": 7,
+    "unread": 660,
+    "right_pct": 0.74,
+    "wrong_pct": 1.43,
+    "refused_pct": 65.01
+   },
+   "strict": {
+    "n": 2032,
+    "spoken": 711,
+    "unmatched": 686,
+    "unmatched_unread": 660,
+    "refused": 1321,
+    "matched": 25,
+    "matched_wrong": 9,
+    "matched_right": 12,
+    "unmatched_debatable": 3,
+    "unmatched_right": 3,
+    "unmatched_wrong": 20,
+    "matched_debatable": 4,
+    "right": 15,
+    "wrong": 29,
+    "debatable": 7,
+    "unread": 660,
+    "right_pct": 0.74,
+    "wrong_pct": 1.43,
+    "refused_pct": 65.01
+   }
+  }
+ },
+ "wrong_and_debatable_by_reason": {
+  "C/gold stale": 1,
+  "C/wrong": 12,
+  "C-VM/gold stale": 1,
+  "C-VM/wrong": 22,
+  "M/gold wrong": 3,
+  "M/question ambiguous": 1,
+  "M/wrong": 84
+ }
+}
