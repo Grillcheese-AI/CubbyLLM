@@ -1,0 +1,3 @@
+[submodule "vendor/cheezml"]
+	path = vendor/cheezml
+	url = https://github.com/Grillcheese-AI/cheezml.git

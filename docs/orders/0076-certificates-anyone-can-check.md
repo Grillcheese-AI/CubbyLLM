@@ -1,5 +1,5 @@
 # 0076 - Comté certificates anyone can check, and Maasdam refusals that show disagreeing facts (CheezML on 0055's store)
-status: open (Code A, after 0077; Nick 2026-11-18; approved by Nick on 2026-11-17: "I approve both"; revised the same day on his "lets not forget cheezeml" to be built on CheezML and order 0064, not beside them)
+status: in progress (Code A, 2026-11-19, while 0077's test read waits on Colab; approved by Nick on 2026-11-17: "I approve both"; built on CheezML and order 0064)
 written: 2026-11-17 by Cowork, on Nick's "yes" after the field watch's finds · approved: 2026-11-17 by Nick · hypothesis: none (0054's certificate, 0055's store, 0064's records)
 
 ## Why
@@ -155,6 +155,22 @@ both sides shown.
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
+### Step 1 (Claude Code, Code A, 2026-11-19): the vocabulary at a pinned commit
+- **CheezML** (Grillcheese-AI/cheezml `a99a774`, on main, pushed on Nick's "yes merge" of 2026-11-19): a fact version
+  read from a statement store states its statement with published terms only, nothing minted (Cowork's ruling,
+  the README's reuse rule): `rdf:subject` / `rdf:predicate` / `rdf:object` (Wikidata IRIs), `wikibase:rank`,
+  `schema:identifier` for the statement id, and the entity's revision as `schema:version` on its source
+  (`shapes:StoredStatementShape`). A valid-time beginning is optional where the source states none (Nick's yes,
+  2026-11-19); on a stored statement a beginning that names no part of the source (`prov:wasDerivedFrom`) fails.
+  Example 08 conforms; n08 (no rank) and n08b (a beginning written by hand) fail with their messages. Its
+  `validate.py`: 8 conform, 15 fail, all checks pass; `check_site.py`: all pass.
+- **The pin:** `vendor/cheezml`, a git submodule at `a99a774`; `tests/test_cheezml_pin.py` checks the pin and runs its
+  `validate.py` (skips when the submodule or rdflib / pyshacl are missing).
+- **What the store gives** (one read-only `wdstore serve` `get`): the entity's revision and modified time, and per
+  statement its guid, rank, best flag, references and qualifiers: every field a fact version needs.
+- **Still to come in cheezml:** the envelope's terms (step 3). The name statement uses v0.2's `cheez:Decision` over
+  `cheez:Option`s with the rule as `dcterms:type` (Cowork, 2026-11-19); new terms only if a check shows that cannot
+  say it.
 - **Commits:**
 - **Files:**
 - **Tests:**
