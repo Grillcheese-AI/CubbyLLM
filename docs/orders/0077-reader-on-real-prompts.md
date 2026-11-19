@@ -215,3 +215,39 @@ Counted as in 0074, with its interval (2,000 resamples over the set's rows, here
   test read's script the same way.
 - **Next:** `view_real_read_test.ipynb` (Nick's), allowed now that both dev reports are committed: test_real and
   test_dolly for both arms, 0074's test and test_long for arm R, once.
+
+### The held-out read, once (Claude Code, 2026-11-19): arm R is kept by line 5
+Read on Colab (Nick, `view_real_read_test.ipynb`; `rules/reads/0077/view_real_{r,l}_test.jsonl`, 600 answers each;
+`view_real_r_test0074.jsonl`, 600), scored at home on the shared VM (`validation/logs/view_real_test_{r,l}.json`,
+`view_real_test0074_r.json`; arm L on 0074's sets is 0074's own read, scored again with the same counts as
+`view_long_test_l.json`), set against the lines by `validation/exp_view_real_compare.py`
+(`validation/logs/view_real_compare_2026-11-19.json`; interval: 2,000 resamples, seed 77).
+
+| line 2, arm R (arm L beside it) | test_real | test_dolly |
+|---|---|---|
+| gold checks with their line (>= 0.90) | 1,481 / 1,497 = 0.989 (L 0.977) | 1,466 / 1,497 = 0.979 (L 0.961) |
+| agreement (>= 0.95) | 3,984 / 4,039 = 0.986 (L **0.918**) | 3,910 / 3,968 = 0.985 (L **0.923**) |
+| false passes (<= 0.02, kill > 0.05) | 7 / 4,039 = 0.0017 (L 0.0017) | 14 / 3,968 = 0.0035 (L 0.0040) |
+| false passes over replies built to fail | 7 / 2,211 = 0.0032 (L 6 / 1,977) | 14 / 2,125 = 0.0066 (L 15 / 1,999) |
+| parts right (>= 0.95) | 1,477 / 1,497 = 0.987 (L 0.962) | 1,453 / 1,497 = 0.971 (L **0.943**) |
+| groups right (>= 0.97, kill < 0.90) | 266 / 271 = 0.982 (L **0.959**) | 288 / 296 = 0.973 (L **0.949**) |
+| replies checked (>= 0.95) | 4,039 / 4,089 = 0.988 (L **0.880**) | 3,968 / 4,050 = 0.980 (L **0.916**) |
+
+- **Line 1:** 0 characters dropped silently on every set, both arms.
+- **Line 2:** arm R passes every bound on both real sets; arm L misses agreement, groups and replies checked on both,
+  and parts right on test_dolly (bold). No kill on either arm.
+- **Line 3:** the prompt's lines written, in part or whole, as `check`: arm R 8 of 454 (test_real) and 5 of 393
+  (test_dolly); arm L 157 and 115. Copied whole as one task line: R 390 and 333, L 13 and 13. Arm L cuts people's
+  lines into pieces and reads a third of them as checks; that is where its unchecked replies come from.
+- **Line 4 (no loss on 0074's sets)** holds: false passes over replies built to fail, R against L, test 0 / 1,629
+  against 4 / 1,639 (R - L interval -0.0075 to 0), test_long 2 / 2,522 against 3 / 2,522 (-0.0028 to 0.0016).
+- **Line 5: arm R replaces arm L.** No kill, line 4 holds, and arm L misses line 2 on both real sets where arm R
+  passes it. (The other condition does not hold: on test_real R - L false passes over replies built to fail is
+  -0.0042 to 0.0044.)
+- **Line 6 (time at home):** not measured yet; it needs the home card (asked in the inbox first, as Cowork asked).
+- **Line 7:** by source (OASST1, Dolly; English only in the test sets), by where the prompt sits and by length band,
+  both arms, in the comparison log. Arm R by place, false passes over replies built to fail: test_real before
+  0 / 984, after 3 / 868, around 4 / 359; test_dolly before 1 / 965, after 12 / 1,026, around 1 / 134.
+- **What the dev screen read bounds:** about 6% of the prompts carry a rule the screens missed (dev: 17 of 300);
+  the counts above treat those lines as task text, as the gold does.
+- **Not verified here:** line 6. Nothing is wired into serving (`CB_RULES` stays off).

@@ -1,0 +1,855 @@
+{
+ "order": "0077",
+ "what": "arms R and L against Acceptance, and line 5",
+ "answers": {
+  "r": "view_real_r_test.jsonl",
+  "l": "view_real_l_test.jsonl",
+  "r74": "view_real_r_test0074.jsonl",
+  "l74": "view_long_l_test.jsonl"
+ },
+ "line 1": {
+  "r": {
+   "characters dropped silently, every set": 0,
+   "kill": false
+  },
+  "l": {
+   "characters dropped silently, every set": 0,
+   "kill": false
+  }
+ },
+ "line 2": {
+  "r": {
+   "test_real": {
+    "gold checks with their line, test_real": {
+     "counts": [
+      1481,
+      1497
+     ],
+     "rate": 0.9893,
+     "needs": "at least 0.90",
+     "passes": true,
+     "kill": false
+    },
+    "agreement, test_real": {
+     "counts": [
+      3984,
+      4039
+     ],
+     "rate": 0.9864,
+     "needs": "at least 0.95",
+     "passes": true,
+     "kill": false
+    },
+    "false passes, test_real": {
+     "counts": [
+      7,
+      4039
+     ],
+     "rate": 0.0017,
+     "needs": "at most 0.02 (kill above 0.05)",
+     "passes": true,
+     "kill": false
+    },
+    "parts right, test_real": {
+     "counts": [
+      1477,
+      1497
+     ],
+     "rate": 0.9866,
+     "needs": "at least 0.95",
+     "passes": true,
+     "kill": false
+    },
+    "groups right, test_real": {
+     "counts": [
+      266,
+      271
+     ],
+     "rate": 0.9815,
+     "needs": "at least 0.97 (kill below 0.90)",
+     "passes": true,
+     "kill": false
+    },
+    "replies checked, test_real": {
+     "counts": [
+      4039,
+      4089
+     ],
+     "rate": 0.9878,
+     "needs": "at least 0.95",
+     "passes": true,
+     "kill": false
+    }
+   },
+   "test_dolly": {
+    "gold checks with their line, test_dolly": {
+     "counts": [
+      1466,
+      1497
+     ],
+     "rate": 0.9793,
+     "needs": "at least 0.90",
+     "passes": true,
+     "kill": false
+    },
+    "agreement, test_dolly": {
+     "counts": [
+      3910,
+      3968
+     ],
+     "rate": 0.9854,
+     "needs": "at least 0.95",
+     "passes": true,
+     "kill": false
+    },
+    "false passes, test_dolly": {
+     "counts": [
+      14,
+      3968
+     ],
+     "rate": 0.0035,
+     "needs": "at most 0.02 (kill above 0.05)",
+     "passes": true,
+     "kill": false
+    },
+    "parts right, test_dolly": {
+     "counts": [
+      1453,
+      1497
+     ],
+     "rate": 0.9706,
+     "needs": "at least 0.95",
+     "passes": true,
+     "kill": false
+    },
+    "groups right, test_dolly": {
+     "counts": [
+      288,
+      296
+     ],
+     "rate": 0.973,
+     "needs": "at least 0.97 (kill below 0.90)",
+     "passes": true,
+     "kill": false
+    },
+    "replies checked, test_dolly": {
+     "counts": [
+      3968,
+      4050
+     ],
+     "rate": 0.9798,
+     "needs": "at least 0.95",
+     "passes": true,
+     "kill": false
+    }
+   }
+  },
+  "l": {
+   "test_real": {
+    "gold checks with their line, test_real": {
+     "counts": [
+      1463,
+      1497
+     ],
+     "rate": 0.9773,
+     "needs": "at least 0.90",
+     "passes": true,
+     "kill": false
+    },
+    "agreement, test_real": {
+     "counts": [
+      3303,
+      3599
+     ],
+     "rate": 0.9178,
+     "needs": "at least 0.95",
+     "passes": false,
+     "kill": false
+    },
+    "false passes, test_real": {
+     "counts": [
+      6,
+      3599
+     ],
+     "rate": 0.0017,
+     "needs": "at most 0.02 (kill above 0.05)",
+     "passes": true,
+     "kill": false
+    },
+    "parts right, test_real": {
+     "counts": [
+      1440,
+      1497
+     ],
+     "rate": 0.9619,
+     "needs": "at least 0.95",
+     "passes": true,
+     "kill": false
+    },
+    "groups right, test_real": {
+     "counts": [
+      260,
+      271
+     ],
+     "rate": 0.9594,
+     "needs": "at least 0.97 (kill below 0.90)",
+     "passes": false,
+     "kill": false
+    },
+    "replies checked, test_real": {
+     "counts": [
+      3599,
+      4089
+     ],
+     "rate": 0.8802,
+     "needs": "at least 0.95",
+     "passes": false,
+     "kill": false
+    }
+   },
+   "test_dolly": {
+    "gold checks with their line, test_dolly": {
+     "counts": [
+      1439,
+      1497
+     ],
+     "rate": 0.9613,
+     "needs": "at least 0.90",
+     "passes": true,
+     "kill": false
+    },
+    "agreement, test_dolly": {
+     "counts": [
+      3424,
+      3710
+     ],
+     "rate": 0.9229,
+     "needs": "at least 0.95",
+     "passes": false,
+     "kill": false
+    },
+    "false passes, test_dolly": {
+     "counts": [
+      15,
+      3710
+     ],
+     "rate": 0.004,
+     "needs": "at most 0.02 (kill above 0.05)",
+     "passes": true,
+     "kill": false
+    },
+    "parts right, test_dolly": {
+     "counts": [
+      1412,
+      1497
+     ],
+     "rate": 0.9432,
+     "needs": "at least 0.95",
+     "passes": false,
+     "kill": false
+    },
+    "groups right, test_dolly": {
+     "counts": [
+      281,
+      296
+     ],
+     "rate": 0.9493,
+     "needs": "at least 0.97 (kill below 0.90)",
+     "passes": false,
+     "kill": false
+    },
+    "replies checked, test_dolly": {
+     "counts": [
+      3710,
+      4050
+     ],
+     "rate": 0.916,
+     "needs": "at least 0.95",
+     "passes": false,
+     "kill": false
+    }
+   }
+  }
+ },
+ "line 2 passed, by set": {
+  "r": {
+   "test_real": true,
+   "test_dolly": true
+  },
+  "l": {
+   "test_real": false,
+   "test_dolly": false
+  }
+ },
+ "line 3": {
+  "r": {
+   "test_dolly": {
+    "prompt lines": 393,
+    "written, in part or whole, as check": 5,
+    "copied whole as one task line": 333
+   },
+   "test_real": {
+    "prompt lines": 454,
+    "written, in part or whole, as check": 8,
+    "copied whole as one task line": 390
+   }
+  },
+  "l": {
+   "test_dolly": {
+    "prompt lines": 393,
+    "written, in part or whole, as check": 115,
+    "copied whole as one task line": 13
+   },
+   "test_real": {
+    "prompt lines": 454,
+    "written, in part or whole, as check": 157,
+    "copied whole as one task line": 13
+   }
+  }
+ },
+ "line 4": {
+  "what": "on 0074's test and test_long, R - L false passes over replies built to fail; not passed if the whole interval is above 0",
+  "by set": {
+   "test": {
+    "m": [
+     0,
+     1629
+    ],
+    "w": [
+     4,
+     1639
+    ],
+    "rates": [
+     0.0,
+     0.0024
+    ],
+    "interval": [
+     -0.0075,
+     0.0
+    ],
+    "resamples": 2000,
+    "resamples with no rate": 0,
+    "within": true,
+    "whole interval below 0": false,
+    "whole interval above 0": false
+   },
+   "test_long": {
+    "m": [
+     2,
+     2522
+    ],
+    "w": [
+     3,
+     2522
+    ],
+    "rates": [
+     0.0008,
+     0.0012
+    ],
+    "interval": [
+     -0.0028,
+     0.0016
+    ],
+    "resamples": 2000,
+    "resamples with no rate": 0,
+    "within": true,
+    "whole interval below 0": false,
+    "whole interval above 0": false
+   }
+  },
+  "passes": true
+ },
+ "line 5": {
+  "kept": "r",
+  "why": "arm R hits no kill, line 4 holds, and arm L misses line 2 on a real set where arm R passes it",
+  "kills": {
+   "r": [],
+   "l": []
+  },
+  "test_real: R - L false passes over replies built to fail": {
+   "m": [
+    7,
+    2211
+   ],
+   "w": [
+    6,
+    1977
+   ],
+   "rates": [
+    0.0032,
+    0.003
+   ],
+   "interval": [
+    -0.0042,
+    0.0044
+   ],
+   "resamples": 2000,
+   "resamples with no rate": 0,
+   "within": true,
+   "whole interval below 0": false,
+   "whole interval above 0": false
+  },
+  "arm L misses line 2 on a real set where arm R passes it": true
+ },
+ "line 6": {
+  "measured": "not given (exp_view_split_time.py at home)"
+ },
+ "line 7": {
+  "r": {
+   "by source and language": {
+    "test_dolly dolly en": {
+     "rows": 300,
+     "agreement": [
+      3910,
+      3968
+     ],
+     "false passes over replies built to fail": [
+      14,
+      2125
+     ]
+    },
+    "test_real oasst1 en": {
+     "rows": 300,
+     "agreement": [
+      3984,
+      4039
+     ],
+     "false passes over replies built to fail": [
+      7,
+      2211
+     ]
+    }
+   },
+   "by where the prompt sits": {
+    "test_dolly after": {
+     "rows": 140,
+     "agreement": [
+      1849,
+      1892
+     ],
+     "false passes over replies built to fail": [
+      12,
+      1026
+     ]
+    },
+    "test_dolly around": {
+     "rows": 20,
+     "agreement": [
+      261,
+      262
+     ],
+     "false passes over replies built to fail": [
+      1,
+      134
+     ]
+    },
+    "test_dolly before": {
+     "rows": 140,
+     "agreement": [
+      1800,
+      1814
+     ],
+     "false passes over replies built to fail": [
+      1,
+      965
+     ]
+    },
+    "test_real after": {
+     "rows": 124,
+     "agreement": [
+      1579,
+      1599
+     ],
+     "false passes over replies built to fail": [
+      3,
+      868
+     ]
+    },
+    "test_real around": {
+     "rows": 51,
+     "agreement": [
+      641,
+      672
+     ],
+     "false passes over replies built to fail": [
+      4,
+      359
+     ]
+    },
+    "test_real before": {
+     "rows": 125,
+     "agreement": [
+      1764,
+      1768
+     ],
+     "false passes over replies built to fail": [
+      0,
+      984
+     ]
+    }
+   },
+   "by prompt length (100 characters)": {
+    "test_dolly 0": {
+     "rows": 193,
+     "agreement": [
+      2573,
+      2589
+     ],
+     "false passes over replies built to fail": [
+      3,
+      1392
+     ]
+    },
+    "test_dolly 100": {
+     "rows": 24,
+     "agreement": [
+      310,
+      310
+     ],
+     "false passes over replies built to fail": [
+      0,
+      160
+     ]
+    },
+    "test_dolly 200": {
+     "rows": 34,
+     "agreement": [
+      420,
+      444
+     ],
+     "false passes over replies built to fail": [
+      8,
+      240
+     ]
+    },
+    "test_dolly 300": {
+     "rows": 16,
+     "agreement": [
+      194,
+      197
+     ],
+     "false passes over replies built to fail": [
+      0,
+      96
+     ]
+    },
+    "test_dolly 400": {
+     "rows": 21,
+     "agreement": [
+      265,
+      277
+     ],
+     "false passes over replies built to fail": [
+      3,
+      150
+     ]
+    },
+    "test_dolly 500": {
+     "rows": 12,
+     "agreement": [
+      148,
+      151
+     ],
+     "false passes over replies built to fail": [
+      0,
+      87
+     ]
+    },
+    "test_real 0": {
+     "rows": 132,
+     "agreement": [
+      1789,
+      1800
+     ],
+     "false passes over replies built to fail": [
+      0,
+      996
+     ]
+    },
+    "test_real 100": {
+     "rows": 60,
+     "agreement": [
+      790,
+      799
+     ],
+     "false passes over replies built to fail": [
+      0,
+      427
+     ]
+    },
+    "test_real 200": {
+     "rows": 67,
+     "agreement": [
+      854,
+      884
+     ],
+     "false passes over replies built to fail": [
+      2,
+      481
+     ]
+    },
+    "test_real 300": {
+     "rows": 26,
+     "agreement": [
+      350,
+      354
+     ],
+     "false passes over replies built to fail": [
+      4,
+      200
+     ]
+    },
+    "test_real 400": {
+     "rows": 10,
+     "agreement": [
+      145,
+      145
+     ],
+     "false passes over replies built to fail": [
+      0,
+      74
+     ]
+    },
+    "test_real 500": {
+     "rows": 5,
+     "agreement": [
+      56,
+      57
+     ],
+     "false passes over replies built to fail": [
+      1,
+      33
+     ]
+    }
+   }
+  },
+  "l": {
+   "by source and language": {
+    "test_dolly dolly en": {
+     "rows": 300,
+     "agreement": [
+      3424,
+      3710
+     ],
+     "false passes over replies built to fail": [
+      15,
+      1999
+     ]
+    },
+    "test_real oasst1 en": {
+     "rows": 300,
+     "agreement": [
+      3303,
+      3599
+     ],
+     "false passes over replies built to fail": [
+      6,
+      1977
+     ]
+    }
+   },
+   "by where the prompt sits": {
+    "test_dolly after": {
+     "rows": 140,
+     "agreement": [
+      1583,
+      1712
+     ],
+     "false passes over replies built to fail": [
+      13,
+      940
+     ]
+    },
+    "test_dolly around": {
+     "rows": 20,
+     "agreement": [
+      231,
+      262
+     ],
+     "false passes over replies built to fail": [
+      0,
+      134
+     ]
+    },
+    "test_dolly before": {
+     "rows": 140,
+     "agreement": [
+      1610,
+      1736
+     ],
+     "false passes over replies built to fail": [
+      2,
+      925
+     ]
+    },
+    "test_real after": {
+     "rows": 124,
+     "agreement": [
+      1389,
+      1476
+     ],
+     "false passes over replies built to fail": [
+      5,
+      811
+     ]
+    },
+    "test_real around": {
+     "rows": 51,
+     "agreement": [
+      477,
+      573
+     ],
+     "false passes over replies built to fail": [
+      1,
+      301
+     ]
+    },
+    "test_real before": {
+     "rows": 125,
+     "agreement": [
+      1437,
+      1550
+     ],
+     "false passes over replies built to fail": [
+      0,
+      865
+     ]
+    }
+   },
+   "by prompt length (100 characters)": {
+    "test_dolly 0": {
+     "rows": 193,
+     "agreement": [
+      2436,
+      2523
+     ],
+     "false passes over replies built to fail": [
+      7,
+      1363
+     ]
+    },
+    "test_dolly 100": {
+     "rows": 24,
+     "agreement": [
+      223,
+      264
+     ],
+     "false passes over replies built to fail": [
+      0,
+      135
+     ]
+    },
+    "test_dolly 200": {
+     "rows": 34,
+     "agreement": [
+      379,
+      419
+     ],
+     "false passes over replies built to fail": [
+      6,
+      226
+     ]
+    },
+    "test_dolly 300": {
+     "rows": 16,
+     "agreement": [
+      109,
+      129
+     ],
+     "false passes over replies built to fail": [
+      0,
+      65
+     ]
+    },
+    "test_dolly 400": {
+     "rows": 21,
+     "agreement": [
+      194,
+      262
+     ],
+     "false passes over replies built to fail": [
+      2,
+      144
+     ]
+    },
+    "test_dolly 500": {
+     "rows": 12,
+     "agreement": [
+      83,
+      113
+     ],
+     "false passes over replies built to fail": [
+      0,
+      66
+     ]
+    },
+    "test_real 0": {
+     "rows": 132,
+     "agreement": [
+      1691,
+      1742
+     ],
+     "false passes over replies built to fail": [
+      1,
+      963
+     ]
+    },
+    "test_real 100": {
+     "rows": 60,
+     "agreement": [
+      630,
+      697
+     ],
+     "false passes over replies built to fail": [
+      1,
+      370
+     ]
+    },
+    "test_real 200": {
+     "rows": 67,
+     "agreement": [
+      633,
+      706
+     ],
+     "false passes over replies built to fail": [
+      0,
+      393
+     ]
+    },
+    "test_real 300": {
+     "rows": 26,
+     "agreement": [
+      250,
+      321
+     ],
+     "false passes over replies built to fail": [
+      4,
+      183
+     ]
+    },
+    "test_real 400": {
+     "rows": 10,
+     "agreement": [
+      70,
+      90
+     ],
+     "false passes over replies built to fail": [
+      0,
+      42
+     ]
+    },
+    "test_real 500": {
+     "rows": 5,
+     "agreement": [
+      29,
+      43
+     ],
+     "false passes over replies built to fail": [
+      0,
+      26
+     ]
+    }
+   }
+  }
+ }
+}

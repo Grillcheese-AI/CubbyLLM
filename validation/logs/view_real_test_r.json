@@ -1,0 +1,627 @@
+{
+ "order": "0073",
+ "what": "the reader's descriptions, compiled by the host and run on each row's replies",
+ "arm": "m",
+ "own_text": false,
+ "answers": "view_real_r_test.jsonl",
+ "answers_sha256": "1d4c366b54a63910392b5afa5427aa545c7b9d0f42bf8e82c130b267c34da4b2",
+ "rows_sha256": "a98fffec166e99193e8071e08e2925939eef769fc4eb14b94395bf38939a06c8",
+ "vm": {
+  "path": "cubelang-cowork/target/release/cubelang.exe",
+  "modified": "2026-11-13 16:06",
+  "sha256": "a2dfaa016536ccbeb2f2c29b2c095b0ef3a5d9480065440089e04e90b244e42f",
+  "commit": "b3b3360",
+  "older_than_sources": false
+ },
+ "splits": {
+  "test_real": {
+   "counts": {
+    "agree": 3984,
+    "characters flagged": 370,
+    "characters in no line and not flagged": 0,
+    "checked replies built to fail": 2211,
+    "false passes": 7,
+    "false passes on rows where the reader wrote a gold check as asked": 1,
+    "gold checks": 1497,
+    "gold checks asked by the host": 2,
+    "gold checks asked by the reader": 1,
+    "gold checks with no line of their span": 12,
+    "gold checks with their line": 1481,
+    "gold checks written as `asked`": 1,
+    "gold checks written as `check`": 1481,
+    "gold checks written as `task`": 3,
+    "gold pairs": 271,
+    "gold pairs right": 266,
+    "gold pairs right, unless and either as one": 266,
+    "gold segments": 2639,
+    "gold segments with span and kind": 2485,
+    "ids": 55115,
+    "pairs made that are not gold": 1,
+    "parts fixed by one reversal": 1,
+    "parts right": 1477,
+    "parts right without a run (the gold form)": 1477,
+    "replies": 4089,
+    "replies checked": 4039,
+    "replies not checked: the VM gave no verdict": 0,
+    "replies not checked: their row is not checked": 50,
+    "rows": 300,
+    "rows checked": 296,
+    "rows that ended `error`": 1,
+    "rows that ended `finished`": 299,
+    "rows whole": 299,
+    "rows with a part asked by the host": 3,
+    "rows with something flagged": 1,
+    "seconds": 348.7900000000004
+   },
+   "by": {
+    "direction": {
+     "lower": [
+      316,
+      319
+     ],
+     "other": [
+      140,
+      142
+     ],
+     "upper": [
+      313,
+      318
+     ],
+     "exactly": [
+      15,
+      15
+     ],
+     "no number": [
+      693,
+      703
+     ]
+    },
+    "nots": {
+     "0": [
+      1027,
+      1043
+     ],
+     "1": [
+      426,
+      430
+     ],
+     "2": [
+      24,
+      24
+     ]
+    },
+    "place": {
+     "size": [
+      400,
+      406
+     ],
+     "count": [
+      306,
+      308
+     ],
+     "position": [
+      78,
+      80
+     ],
+     "no number": [
+      693,
+      703
+     ]
+    },
+    "filter number": {
+     "True": [
+      542,
+      544
+     ],
+     "False": [
+      935,
+      953
+     ]
+    },
+    "parts": {
+     "2": [
+      86,
+      86
+     ],
+     "3": [
+      127,
+      129
+     ],
+     "4": [
+      171,
+      172
+     ],
+     "5": [
+      215,
+      215
+     ],
+     "6": [
+      251,
+      258
+     ],
+     "7": [
+      296,
+      301
+     ],
+     "8": [
+      331,
+      336
+     ]
+    },
+    "position": {
+     "1": [
+      292,
+      300
+     ],
+     "2": [
+      298,
+      300
+     ],
+     "3": [
+      256,
+      257
+     ],
+     "4": [
+      213,
+      214
+     ],
+     "5": [
+      169,
+      171
+     ],
+     "6": [
+      124,
+      128
+     ],
+     "7": [
+      85,
+      85
+     ],
+     "8": [
+      40,
+      42
+     ]
+    },
+    "lang": {
+     "en": [
+      1477,
+      1497
+     ]
+    },
+    "connective": {
+     "if": [
+      76,
+      77
+     ],
+     "either": [
+      126,
+      129
+     ],
+     "unless": [
+      64,
+      65
+     ]
+    },
+    "pair's place": {
+     "1": [
+      78,
+      81
+     ],
+     "2": [
+      60,
+      61
+     ],
+     "3": [
+      40,
+      40
+     ],
+     "4": [
+      38,
+      38
+     ],
+     "5": [
+      28,
+      29
+     ],
+     "6": [
+      14,
+      14
+     ],
+     "7": [
+      8,
+      8
+     ]
+    },
+    "rows by parts": {
+     "2": {
+      "replies": 435,
+      "checked": 435,
+      "agree": 428,
+      "false passes": 0,
+      "built to fail": 214
+     },
+     "3": {
+      "replies": 500,
+      "checked": 485,
+      "agree": 478,
+      "false passes": 0,
+      "built to fail": 247
+     },
+     "4": {
+      "replies": 498,
+      "checked": 498,
+      "agree": 498,
+      "false passes": 0,
+      "built to fail": 250
+     },
+     "5": {
+      "replies": 570,
+      "checked": 570,
+      "agree": 563,
+      "false passes": 0,
+      "built to fail": 311
+     },
+     "6": {
+      "replies": 656,
+      "checked": 621,
+      "agree": 614,
+      "false passes": 3,
+      "built to fail": 340
+     },
+     "7": {
+      "replies": 721,
+      "checked": 721,
+      "agree": 708,
+      "false passes": 3,
+      "built to fail": 435
+     },
+     "8": {
+      "replies": 709,
+      "checked": 709,
+      "agree": 695,
+      "false passes": 1,
+      "built to fail": 414
+     }
+    },
+    "rows by lang": {
+     "en": {
+      "replies": 4089,
+      "checked": 4039,
+      "agree": 3984,
+      "false passes": 7,
+      "built to fail": 2211
+     }
+    }
+   },
+   "rates": {
+    "line 1: characters in no line and not flagged": 0,
+    "line 2: gold checks with their line": 0.9893,
+    "line 2: segments with span and kind": 0.9416,
+    "line 3: agreement": 0.9864,
+    "line 3: false passes": 0.0017,
+    "line 3: false passes over replies built to fail": 0.0032,
+    "line 4: parts right at positions 1 to 4": 0.9888,
+    "line 4: parts right at positions 5 to 8": 0.9812,
+    "line 5: parts right": 0.9866,
+    "line 5: parts fixed by one reversal": 0.0007,
+    "line 6: pairs right": 0.9815,
+    "line 6: pairs right, unless and either as one": 0.9815,
+    "line 7: replies checked": 0.9878,
+    "line 7: gold checks asked": 0.002,
+    "line 10: parts right by direction": {
+     "lower": 0.9906,
+     "upper": 0.9843,
+     "exactly": 1.0,
+     "other": 0.9859
+    },
+    "line 10: unweighted mean of the directions": 0.9902,
+    "seconds per instruction (where it was decoded)": 1.1626,
+    "ids per answer": 183.7167
+   }
+  },
+  "test_dolly": {
+   "counts": {
+    "agree": 3910,
+    "characters flagged": 986,
+    "characters in no line and not flagged": 0,
+    "checked replies built to fail": 2125,
+    "false passes": 14,
+    "gold checks": 1497,
+    "gold checks asked by the host": 2,
+    "gold checks asked by the reader": 0,
+    "gold checks with no line of their span": 27,
+    "gold checks with their line": 1466,
+    "gold checks written as `check`": 1466,
+    "gold checks written as `task`": 4,
+    "gold pairs": 296,
+    "gold pairs right": 288,
+    "gold pairs right, unless and either as one": 288,
+    "gold segments": 2613,
+    "gold segments with span and kind": 2446,
+    "ids": 55600,
+    "pairs made that are not gold": 2,
+    "parts fixed by one reversal": 3,
+    "parts right": 1453,
+    "parts right without a run (the gold form)": 1452,
+    "replies": 4050,
+    "replies checked": 3968,
+    "replies not checked: the VM gave no verdict": 5,
+    "replies not checked: their row is not checked": 77,
+    "rows": 300,
+    "rows checked": 295,
+    "rows that ended `error`": 1,
+    "rows that ended `finished`": 297,
+    "rows that ended `limit`": 2,
+    "rows whole": 297,
+    "rows with a part asked by the host": 4,
+    "rows with something flagged": 3,
+    "seconds": 335.9299999999999
+   },
+   "by": {
+    "direction": {
+     "lower": [
+      305,
+      314
+     ],
+     "other": [
+      129,
+      135
+     ],
+     "upper": [
+      298,
+      309
+     ],
+     "exactly": [
+      26,
+      27
+     ],
+     "no number": [
+      695,
+      712
+     ]
+    },
+    "nots": {
+     "0": [
+      990,
+      1020
+     ],
+     "1": [
+      440,
+      453
+     ],
+     "2": [
+      23,
+      24
+     ]
+    },
+    "place": {
+     "size": [
+      362,
+      373
+     ],
+     "count": [
+      309,
+      320
+     ],
+     "position": [
+      87,
+      92
+     ],
+     "no number": [
+      695,
+      712
+     ]
+    },
+    "filter number": {
+     "True": [
+      538,
+      552
+     ],
+     "False": [
+      915,
+      945
+     ]
+    },
+    "parts": {
+     "2": [
+      84,
+      86
+     ],
+     "3": [
+      128,
+      129
+     ],
+     "4": [
+      172,
+      172
+     ],
+     "5": [
+      211,
+      215
+     ],
+     "6": [
+      239,
+      258
+     ],
+     "7": [
+      291,
+      301
+     ],
+     "8": [
+      328,
+      336
+     ]
+    },
+    "position": {
+     "1": [
+      286,
+      300
+     ],
+     "2": [
+      295,
+      300
+     ],
+     "3": [
+      252,
+      257
+     ],
+     "4": [
+      211,
+      214
+     ],
+     "5": [
+      166,
+      171
+     ],
+     "6": [
+      120,
+      128
+     ],
+     "7": [
+      83,
+      85
+     ],
+     "8": [
+      40,
+      42
+     ]
+    },
+    "lang": {
+     "en": [
+      1453,
+      1497
+     ]
+    },
+    "connective": {
+     "if": [
+      60,
+      63
+     ],
+     "either": [
+      147,
+      150
+     ],
+     "unless": [
+      81,
+      83
+     ]
+    },
+    "pair's place": {
+     "1": [
+      77,
+      78
+     ],
+     "2": [
+      56,
+      57
+     ],
+     "3": [
+      53,
+      53
+     ],
+     "4": [
+      42,
+      45
+     ],
+     "5": [
+      28,
+      29
+     ],
+     "6": [
+      20,
+      22
+     ],
+     "7": [
+      12,
+      12
+     ]
+    },
+    "rows by parts": {
+     "2": {
+      "replies": 428,
+      "checked": 423,
+      "agree": 412,
+      "false passes": 4,
+      "built to fail": 200
+     },
+     "3": {
+      "replies": 476,
+      "checked": 476,
+      "agree": 476,
+      "false passes": 0,
+      "built to fail": 230
+     },
+     "4": {
+      "replies": 539,
+      "checked": 526,
+      "agree": 526,
+      "false passes": 0,
+      "built to fail": 265
+     },
+     "5": {
+      "replies": 586,
+      "checked": 586,
+      "agree": 581,
+      "false passes": 2,
+      "built to fail": 320
+     },
+     "6": {
+      "replies": 633,
+      "checked": 600,
+      "agree": 594,
+      "false passes": 2,
+      "built to fail": 330
+     },
+     "7": {
+      "replies": 691,
+      "checked": 660,
+      "agree": 641,
+      "false passes": 0,
+      "built to fail": 381
+     },
+     "8": {
+      "replies": 697,
+      "checked": 697,
+      "agree": 680,
+      "false passes": 6,
+      "built to fail": 399
+     }
+    },
+    "rows by lang": {
+     "en": {
+      "replies": 4050,
+      "checked": 3968,
+      "agree": 3910,
+      "false passes": 14,
+      "built to fail": 2125
+     }
+    }
+   },
+   "rates": {
+    "line 1: characters in no line and not flagged": 0,
+    "line 2: gold checks with their line": 0.9793,
+    "line 2: segments with span and kind": 0.9361,
+    "line 3: agreement": 0.9854,
+    "line 3: false passes": 0.0035,
+    "line 3: false passes over replies built to fail": 0.0066,
+    "line 4: parts right at positions 1 to 4": 0.9748,
+    "line 4: parts right at positions 5 to 8": 0.9601,
+    "line 5: parts right": 0.9706,
+    "line 5: parts fixed by one reversal": 0.002,
+    "line 6: pairs right": 0.973,
+    "line 6: pairs right, unless and either as one": 0.973,
+    "line 7: replies checked": 0.9798,
+    "line 7: gold checks asked": 0.0013,
+    "line 10: parts right by direction": {
+     "lower": 0.9713,
+     "upper": 0.9644,
+     "exactly": 0.963,
+     "other": 0.9556
+    },
+    "line 10: unweighted mean of the directions": 0.9636,
+    "seconds per instruction (where it was decoded)": 1.1198,
+    "ids per answer": 185.3333
+   }
+  }
+ }
+}
