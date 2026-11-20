@@ -50,21 +50,21 @@ def _read(target: str) -> bytes | None:
         adv.CredFree(p)
 
 
-def current() -> dict:
-    """The key ids in use (not secret)."""
-    blob = _read(f"{PREFIX}/current")
+def current(prefix: str = PREFIX) -> dict:
+    """The key ids in use (not secret). ``prefix``: the test's own, never a real target."""
+    blob = _read(f"{prefix}/current")
     if blob is None:
         raise LookupError("no CheezML keys in the key store: Nick makes them")
     return json.loads(blob)
 
 
-def keys(kids: dict | None = None) -> Keys:
+def keys(kids: dict | None = None, prefix: str = PREFIX) -> Keys:
     """The keys in use (or those named by ``kids``, for an older record), as `envelope.Keys`."""
     from joserfc.jwk import OctKey, OKPKey
-    kids = kids or current()
+    kids = kids or current(prefix)
     got = {}
     for role in ROLES:
-        blob = _read(f"{PREFIX}/{role}/{kids[role]}")
+        blob = _read(f"{prefix}/{role}/{kids[role]}")
         if blob is None:
             raise LookupError(f"the {role} key {kids[role]} is not in the key store")
         got[role] = (OKPKey if role == "sign" else OctKey).import_key(json.loads(blob))
