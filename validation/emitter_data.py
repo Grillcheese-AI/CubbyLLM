@@ -159,7 +159,7 @@ def slot_record(rec: dict, words: bool = True, step_values: bool = True, world=N
 def _base(rec: dict) -> dict:
     return {"id": rec["id"], "task": rec["task"], "subtype": rec.get("subtype", ""), "split": rec["split"],
             "gold": rec.get("gold"), "repeat": int(rec.get("repeat", 1) or 1), "reference": rec["program"],
-            "question": rec["prompt"]}
+            "question": rec["prompt"], **({"gsm8k_id": rec["gsm8k_id"]} if rec.get("gsm8k_id") else {})}
 
 
 def table_of(spans: list[dict], question: str = "") -> SlotTable:

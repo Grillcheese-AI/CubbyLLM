@@ -200,6 +200,7 @@ def recut(rec: dict) -> list[dict]:
             values[s["id"]] = Fraction(str(v))
     reg_slot: dict = {}
     rows, state = [], []
+    keep = {"gsm8k_id": rec["gsm8k_id"]} if rec.get("gsm8k_id") else {}   # 0078: S2 finds the gold's text by it
     span_dicts = list(rec.get("spans", []))
     K = len(blocks)
     for k, b in enumerate(blocks):
@@ -213,7 +214,7 @@ def recut(rec: dict) -> list[dict]:
                      "reference": render_step(k, ops), "question": rec.get("question", ""),
                      "prompt": with_state(rec["prompt"], state), "program": render_step(k, ops),
                      "spans": span_dicts + [{"id": s.id, "text": s.text, "start": -1, "end": -1, "kind": "S", "value": s.value}
-                                            for s in state], "stats": {"k": k, "K": K}})
+                                            for s in state], "stats": {"k": k, "K": K}, **keep})
         values[sid] = v
         values[b.reg] = v
         reg_slot[b.reg] = sid
@@ -226,7 +227,7 @@ def recut(rec: dict) -> list[dict]:
                  "reference": render_stop(f"$S{K}"), "question": rec.get("question", ""),
                  "prompt": with_state(rec["prompt"], state), "program": render_stop(f"$S{K}"),
                  "spans": span_dicts + [{"id": s.id, "text": s.text, "start": -1, "end": -1, "kind": "S", "value": s.value}
-                                        for s in state], "stats": {"k": K, "K": K}})
+                                        for s in state], "stats": {"k": K, "K": K}, **keep})
     return rows
 
 
