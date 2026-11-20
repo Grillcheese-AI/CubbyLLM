@@ -46,7 +46,8 @@ for _p in (ROOT, HERE, os.path.join(ROOT, "validation")):
 
 from cubbyllm.reasoning.slots import canon, extract, num_value  # noqa: E402
 
-OPS = {ast.Add: ("+", "add"), ast.Sub: ("-", "sub"), ast.Mult: ("*", "mul"), ast.Div: ("/", "div")}
+OPS = {ast.Add: ("+", "add"), ast.Sub: ("-", "sub"), ast.Mult: ("*", "mul"), ast.Div: ("/", "div"),
+       ast.FloorDiv: ("//", None), ast.Mod: ("%", None)}    # 0078: cubelang P6-5's forms, written as one expression
 # the few conversion factors a question implies without stating them; each is a fact of the arithmetic world
 UNIT_CONSTANTS = {1.0, 100.0, 60.0, 24.0, 7.0, 12.0, 52.0, 365.0, 30.0, 1000.0, 10.0, 16.0, 3600.0}
 MAX_STEPS = 10
@@ -106,9 +107,13 @@ def compile_steps(code: str) -> tuple[list[Step], list[float]]:
             a, b = emit(node.left), emit(node.right)
             sym = OPS[type(node.op)][0]
             x, y = value(a), value(b)
-            if sym == "/" and y == 0:
+            if sym in ("//", "%") and (x != int(x) or y != int(y)):
+                raise Reject("floor or remainder of a decimal")      # Python's 5 // 0.1 is 49.0; the VM's (and the
+                                                                     # arithmetic's) 50: kept only on whole numbers
+            if sym in ("/", "//", "%") and y == 0:
                 raise Reject("zero division")
-            v = x + y if sym == "+" else x - y if sym == "-" else x * y if sym == "*" else x / y
+            v = (x + y if sym == "+" else x - y if sym == "-" else x * y if sym == "*" else x / y if sym == "/"
+                 else x // y if sym == "//" else x % y)                       # Python's floor and remainder: the VM's
             if not math.isfinite(v) or abs(v) > 1e9:
                 raise Reject("value out of range")
             steps.append(Step(a, sym, b)); vals.append(v)
@@ -170,6 +175,10 @@ def render(steps: list[Step], vals: list[float], question: str = "", name: str |
         a = fmt(st.a.v) if st.a.kind == "lit" else fmt(vals[st.a.v])
         b = fmt(st.b.v) if st.b.kind == "lit" else fmt(vals[st.b.v])
         lines.append(f"        create s{k} : quantity;   # step {k}: {a} {st.op} {b} = {fmt(vals[k])}")
+        if st.op in ("//", "%"):                     # 0078: one P6 expression (the VM lowers it; .cubebin v6)
+            ops = [fmt(o.v) if o.kind == "lit" else f"s{o.v}" for o in (st.a, st.b)]
+            lines.append(f"        assign s{k} = {ops[0]} {st.op} {ops[1]};")
+            continue
         if st.a.kind == "lit":
             lines.append(f"        assign s{k} = {fmt(st.a.v)};")
         else:
@@ -261,7 +270,8 @@ def vm_check(records: list[dict]) -> Counter:
 
 
 def convert(parquet: str, out: str, limit: int = 0, exclude: list[str] | None = None, vm_sample: int = 0,
-            seed: int = 0, log=print) -> dict:
+            seed: int = 0, log=print, banned: set | None = None) -> dict:
+    """``banned``: the eval shingles, precomputed (0078's runner builds them once for 17 shards)."""
     t0 = time.time()
     if parquet.endswith(".jsonl"):                   # rows saved from the datasets-server rows API
         rows = [json.loads(line) for line in open(parquet, encoding="utf-8")]
@@ -271,7 +281,7 @@ def convert(parquet: str, out: str, limit: int = 0, exclude: list[str] | None = 
         table = pq.read_table(parquet, columns=["question", "code"])
         qs, codes = table.column("question").to_pylist(), table.column("code").to_pylist()
     n = min(len(qs), limit) if limit else len(qs)
-    banned = eval_shingles(exclude or [])
+    banned = banned if banned is not None else eval_shingles(exclude or [])
     why, kept, seen = Counter(), [], set()
     by_steps = Counter()
     base = int(hashlib.sha1(os.path.basename(parquet).encode()).hexdigest()[:6], 16) * 10_000_000
