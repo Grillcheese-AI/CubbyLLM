@@ -1,0 +1,4945 @@
+{
+ "what": "order 0078 S1's set: v12e_w re-cut (GSM8K rows tagged), GSM8K's other golds, TinyGSM step rows",
+ "date": "2026-11-20",
+ "mode": "mix",
+ "rows_wanted": 1500000,
+ "base": {
+  "arithmetic_step_rows/train": 27595,
+  "arithmetic_step_rows/val": 1595,
+  "chain/train": 1150,
+  "chain/val": 63,
+  "gsm8k_tagged/train": 5819,
+  "gsm8k_tagged/val": 329,
+  "kernel/train": 1674,
+  "kernel/val": 95,
+  "plan/train": 1138,
+  "plan/val": 63,
+  "role_binding/train": 1436,
+  "role_binding/val": 64
+ },
+ "base_rows": 34873,
+ "gsm8k_extra": {
+  "kinds": {
+   "rejected: node UnaryOp": 10,
+   "rejected: invented number": 677,
+   "value is not the gold's": 271,
+   "no annotation": 95,
+   "programs": 112,
+   "rejected: no computation": 144,
+   "not_recut": 2,
+   "rejected: negative literal": 7,
+   "rejected: too many steps": 6,
+   "rejected: value out of range": 1
+  },
+  "step_rows": 479,
+  "misses": [
+   {
+    "id": "gsm8k-train-8",
+    "kind": "rejected: node UnaryOp"
+   },
+   {
+    "id": "gsm8k-train-9",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-23",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-26",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-29",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-30",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-32",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-44",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-48",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-53",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-64",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-71",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-85",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-86",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-95",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-109",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-113",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-123",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-130",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-135",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-140",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-143",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-150",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-153",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-159",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-167",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-171",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-177",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-178",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-184",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-193",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-198",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-201",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-210",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-211",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-215",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-216",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-228",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-232",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-250",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-256",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-261",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-263",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-264",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-265",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-270",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-284",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-289",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-293",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-300",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-302",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-303",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-310",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-322",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-323",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-325",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-335",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-339",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-340",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-343",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-344",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-348",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-349",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-356",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-359",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-365",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-373",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-375",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-379",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-393",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-402",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-415",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-417",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-445",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-455",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-456",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-464",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-469",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-473",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-482",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-492",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-497",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-499",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-505",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-508",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-515",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-529",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-535",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-547",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-552",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-554",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-556",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-565",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-566",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-578",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-581",
+    "kind": "rejected: node UnaryOp"
+   },
+   {
+    "id": "gsm8k-train-593",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-596",
+    "kind": "rejected: node UnaryOp"
+   },
+   {
+    "id": "gsm8k-train-601",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-609",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-612",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-613",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-618",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-623",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-636",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-638",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-657",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-666",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-673",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-675",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-676",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-688",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-691",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-714",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-717",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-734",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-735",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-736",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-744",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-750",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-753",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-759",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-762",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-764",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-765",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-778",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-786",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-788",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-792",
+    "kind": "rejected: node UnaryOp"
+   },
+   {
+    "id": "gsm8k-train-795",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-801",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-802",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-804",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-807",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-813",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-820",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-821",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-825",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-837",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-861",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-867",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-872",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-874",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-880",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-885",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-890",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-894",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-904",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-908",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-913",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-926",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-929",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-937",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-943",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-953",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-959",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-966",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-975",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-979",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-983",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-991",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-996",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1001",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-1009",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1010",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1017",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-1024",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1027",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1028",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1043",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1051",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-1054",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1065",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1072",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1078",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1084",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1087",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-1090",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1091",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1094",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1106",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-1111",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1116",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1124",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1127",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1135",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1137",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-1142",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-1146",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1147",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1153",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1154",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1155",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-1194",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1209",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1210",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1218",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1234",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-1242",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1253",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1258",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1259",
+    "kind": "rejected: node UnaryOp"
+   },
+   {
+    "id": "gsm8k-train-1270",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1279",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1287",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1293",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1297",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1303",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1307",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1309",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1310",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-1311",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1322",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1323",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1329",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1337",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1342",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1350",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1359",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-1369",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-1372",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1376",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1382",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1383",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-1394",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1400",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1403",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1409",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1414",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1416",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1420",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-1421",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1427",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1433",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-1435",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1451",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1454",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1455",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1459",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1460",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1475",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1479",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1486",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1493",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1501",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1504",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1510",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1534",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1537",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1548",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1552",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-1567",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1575",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1577",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1586",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1590",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1599",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1600",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1607",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-1608",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1613",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1617",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1624",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1628",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-1653",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1654",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-1661",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1668",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-1673",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1680",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-1696",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1706",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1707",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-1711",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1722",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1725",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1756",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1757",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1762",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1776",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1786",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-1793",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1798",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1799",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1814",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1817",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1818",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1825",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1828",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1839",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1841",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1842",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1852",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1854",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1855",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1870",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-1884",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1885",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1899",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1901",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1909",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1936",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1938",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1941",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-1942",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1945",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1949",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1955",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1957",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1958",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-1969",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-1971",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1973",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-1975",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1976",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1983",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-1988",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1990",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-1994",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1997",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1999",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2009",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2011",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2020",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2025",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2026",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2028",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2032",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2033",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2050",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2059",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-2060",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2069",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2076",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-2078",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2084",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2085",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2089",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2102",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2106",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2133",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-2146",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2154",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2156",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2160",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2167",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2168",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2181",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2182",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2188",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2189",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2190",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2196",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2204",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2213",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2218",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2222",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2230",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2241",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-2244",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2246",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2250",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2265",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2270",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2277",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2279",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2287",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-2291",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2293",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2299",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2304",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2317",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2320",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2323",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2327",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2344",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2346",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2353",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2364",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2369",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2372",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2373",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2387",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2394",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-2401",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2405",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2411",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2416",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2419",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2421",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2429",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-2431",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2439",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2444",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2445",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2452",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-2453",
+    "kind": "rejected: negative literal"
+   },
+   {
+    "id": "gsm8k-train-2456",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-2472",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-2473",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2474",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2477",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2482",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2492",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2494",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2497",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2502",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2504",
+    "kind": "rejected: negative literal"
+   },
+   {
+    "id": "gsm8k-train-2508",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2512",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2516",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2517",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-2525",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2534",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2537",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2541",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2555",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2556",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2562",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2564",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2569",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2570",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2581",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2582",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-2584",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2600",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2603",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2605",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2612",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2625",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2626",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2656",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2659",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2671",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2680",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2685",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2686",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2687",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2689",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2693",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2701",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2702",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2707",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2720",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2721",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2725",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2743",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2769",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2770",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2781",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2785",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2794",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2796",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2798",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2802",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2807",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2809",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2822",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-2824",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2844",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2849",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2850",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2853",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2872",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2876",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2877",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2885",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2888",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2889",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2894",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2897",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2899",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-2904",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2906",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2912",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2916",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2917",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2918",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2920",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2921",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-2933",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-2935",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2936",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2937",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2938",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2943",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2955",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2963",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2967",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2969",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-2972",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2978",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-2993",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3006",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3007",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-3014",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3022",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3026",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3030",
+    "kind": "rejected: negative literal"
+   },
+   {
+    "id": "gsm8k-train-3036",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3045",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-3048",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3050",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3054",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3055",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-3057",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3062",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3065",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3073",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3083",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3089",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-3098",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-3104",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3116",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3117",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3118",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3119",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3141",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3148",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-3151",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-3153",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3157",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-3162",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-3169",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3210",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-3220",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3221",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3232",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3233",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3234",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3239",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3245",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3250",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3255",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3260",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3263",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3265",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3272",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3273",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3279",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3287",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3298",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3317",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3321",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3322",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3327",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3329",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3331",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3332",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-3334",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3335",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3339",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-3344",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3346",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-3349",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-3350",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3353",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3355",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3359",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3361",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-3362",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3364",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3365",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3371",
+    "kind": "rejected: node UnaryOp"
+   },
+   {
+    "id": "gsm8k-train-3376",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3383",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-3390",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3392",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-3395",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-3396",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3400",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-3404",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3408",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3409",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3417",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3419",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-3423",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-3433",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3442",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-3444",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3450",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3454",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3467",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3471",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3484",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-3491",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-3505",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3506",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3513",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3517",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3520",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3523",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3533",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3534",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-3544",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3547",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3552",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3554",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-3557",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3558",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-3562",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-3565",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-3574",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3576",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3577",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3582",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3591",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3607",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3640",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3647",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3675",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3687",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3693",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3699",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-3712",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-3717",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3718",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3722",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3742",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3746",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-3753",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3754",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3755",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3762",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3775",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3780",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3785",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-3787",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3788",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3790",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3803",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3807",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3808",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3817",
+    "kind": "rejected: too many steps"
+   },
+   {
+    "id": "gsm8k-train-3819",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-3821",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-3826",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-3842",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-3852",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3866",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3870",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3873",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3881",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3886",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-3893",
+    "kind": "rejected: too many steps"
+   },
+   {
+    "id": "gsm8k-train-3895",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3897",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-3899",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3908",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-3911",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3918",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3928",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-3935",
+    "kind": "rejected: too many steps"
+   },
+   {
+    "id": "gsm8k-train-3944",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-3948",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3951",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3970",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3981",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3989",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-3993",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4011",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4013",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4017",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4029",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4043",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4045",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4047",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4062",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4073",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4076",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4079",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4086",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4094",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-4102",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-4120",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-4121",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-4126",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-4131",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4142",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4145",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4156",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4159",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-4170",
+    "kind": "rejected: node UnaryOp"
+   },
+   {
+    "id": "gsm8k-train-4173",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4174",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4176",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4177",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-4178",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4183",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4194",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4203",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4204",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4206",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4209",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4215",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4218",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4231",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4236",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4243",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4261",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4264",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4267",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4274",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4306",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4309",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4310",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4330",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4339",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4349",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-4358",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-4362",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4375",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-4377",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-4378",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4394",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4399",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4400",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4403",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4419",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4428",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4430",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4435",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4442",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4450",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4453",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4462",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4485",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4495",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4504",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4508",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4509",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-4516",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4521",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4523",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-4526",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4534",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4550",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-4555",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4556",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4557",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4568",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-4572",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4580",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-4593",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4596",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-4602",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4603",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4622",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4631",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4633",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4644",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-4653",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-4654",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-4660",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4669",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4676",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4677",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4683",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-4684",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-4710",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4713",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4714",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4715",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4724",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4738",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4739",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-4746",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4752",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4756",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4758",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4759",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4771",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4775",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-4796",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4803",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4809",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4810",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4814",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-4817",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4820",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4822",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4840",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4841",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4846",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4848",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4850",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4852",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4857",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4866",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4873",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4876",
+    "kind": "rejected: value out of range"
+   },
+   {
+    "id": "gsm8k-train-4880",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4881",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-4883",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4884",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4910",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4920",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-4921",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4922",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4930",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4937",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4940",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-4963",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4983",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4984",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-4986",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4987",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4991",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-4994",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-4995",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5000",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5002",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-5003",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-5011",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5016",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5024",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5041",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5044",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5059",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5061",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5064",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5066",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5067",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5074",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5086",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5090",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5091",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5107",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5127",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5128",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5139",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5142",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5145",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5152",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5157",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5172",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5179",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5191",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5192",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5199",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5204",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5205",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5206",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5208",
+    "kind": "rejected: node UnaryOp"
+   },
+   {
+    "id": "gsm8k-train-5209",
+    "kind": "rejected: node UnaryOp"
+   },
+   {
+    "id": "gsm8k-train-5236",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5237",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5253",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5260",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5262",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5267",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5270",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5276",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5280",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5282",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5283",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5288",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5291",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5299",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5300",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5307",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5310",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-5315",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5317",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-5321",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5327",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5330",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5337",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5350",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5352",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-5357",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5363",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5364",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5373",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5379",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5391",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5397",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5398",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5399",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5400",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-5406",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-5412",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5418",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5421",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-5422",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-5425",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5430",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5431",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-5434",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-5435",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5441",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5443",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5461",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5468",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5474",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5475",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5479",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5484",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-5486",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5497",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5500",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5507",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5513",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5528",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5543",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5565",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5578",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5580",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5581",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5588",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5597",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5601",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-5607",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-5609",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5618",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5619",
+    "kind": "rejected: too many steps"
+   },
+   {
+    "id": "gsm8k-train-5620",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5626",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5629",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-5641",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-5650",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-5660",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5666",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-5678",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5682",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5683",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5688",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5691",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5694",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5699",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-5708",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-5715",
+    "kind": "rejected: negative literal"
+   },
+   {
+    "id": "gsm8k-train-5724",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5728",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5729",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5730",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5741",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5743",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5765",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5793",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5794",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5810",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5815",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-5816",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5821",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5824",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5829",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5835",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-5838",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-5844",
+    "kind": "rejected: negative literal"
+   },
+   {
+    "id": "gsm8k-train-5846",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5853",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5861",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5863",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5866",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5871",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5872",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5873",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5878",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5882",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5883",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5886",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-5891",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5907",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5913",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-5914",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5917",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5931",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5935",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5936",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5946",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5950",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-5966",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5974",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-5977",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5983",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5991",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6009",
+    "kind": "rejected: too many steps"
+   },
+   {
+    "id": "gsm8k-train-6010",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6013",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6031",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6033",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6043",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6049",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6067",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6079",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6083",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6089",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6094",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6096",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6097",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6112",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6116",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6117",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-6123",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6130",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-6152",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-6157",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6169",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6177",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6189",
+    "kind": "rejected: negative literal"
+   },
+   {
+    "id": "gsm8k-train-6197",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-6205",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6216",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6234",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-6237",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6246",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6251",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6252",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6256",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-6261",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6268",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-6272",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6276",
+    "kind": "rejected: node UnaryOp"
+   },
+   {
+    "id": "gsm8k-train-6280",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6281",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-6283",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6293",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6295",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6299",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6302",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6305",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6308",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6309",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6319",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6325",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6338",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6344",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6351",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6354",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6362",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-6364",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6368",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6373",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6388",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-6392",
+    "kind": "rejected: too many steps"
+   },
+   {
+    "id": "gsm8k-train-6398",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6399",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6402",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6403",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6404",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6407",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6411",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-6430",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6431",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6448",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-6460",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6468",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6473",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6482",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6484",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-6492",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6493",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-6498",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6500",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6509",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6512",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6514",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-6523",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6526",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6537",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6539",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-6546",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6555",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6556",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6557",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6564",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6579",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6580",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6582",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-6587",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6589",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6592",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-6605",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6609",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6617",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6625",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6627",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6631",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6638",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-6641",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6644",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-6655",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-6656",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6665",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6675",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6683",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6692",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-6693",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6703",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6718",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-6726",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-6732",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6743",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6744",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6748",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6760",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6780",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6790",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-6792",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6819",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6827",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6828",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6830",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6831",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6838",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6840",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6844",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-6845",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6852",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6889",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6894",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6897",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6898",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6899",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-6901",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-6904",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6905",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-6906",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6907",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6908",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6913",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6918",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6920",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6925",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-6932",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6937",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6939",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6948",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6950",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6951",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6953",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-6958",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-6994",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-7002",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-7009",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7017",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-7025",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-7027",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7028",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7032",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7037",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7051",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7060",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7063",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-7067",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7076",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-7077",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7084",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-7090",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7096",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7102",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-7112",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-7115",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-7123",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7124",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-7128",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7133",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-7134",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7135",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7139",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-7146",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-7147",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-7148",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-7149",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7168",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-7178",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7182",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-7184",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7187",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-7189",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-7193",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7206",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7219",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7222",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-7235",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-7238",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7241",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7247",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7251",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7274",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-7291",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-7293",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-7301",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7327",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7330",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-7332",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7340",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-7341",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7342",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7347",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7361",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7364",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-7372",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7373",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7377",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7380",
+    "kind": "no annotation"
+   },
+   {
+    "id": "gsm8k-train-7390",
+    "kind": "rejected: negative literal"
+   },
+   {
+    "id": "gsm8k-train-7401",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7406",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-7408",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7415",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7419",
+    "kind": "rejected: no computation"
+   },
+   {
+    "id": "gsm8k-train-7420",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7430",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-7437",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7444",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-7450",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7465",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-7467",
+    "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-7470",
+    "kind": "value is not the gold's"
+   }
+  ]
+ },
+ "gsm8k_mix": {
+  "1": 399,
+  "2": 2082,
+  "3": 2039,
+  "4": 1348,
+  "5": 747,
+  "6": 272,
+  "7": 120,
+  "8": 39,
+  "9": 3
+ },
+ "tinygsm_drawn": {
+  "1": 19698,
+  "2": 102788,
+  "3": 100665,
+  "4": 66550,
+  "5": 36879,
+  "6": 13429,
+  "7": 5924,
+  "8": 1925,
+  "9": 148
+ },
+ "tinygsm": {
+  "programs": 348006,
+  "steps=1": 19698,
+  "steps=2": 102788,
+  "steps=3": 100665,
+  "steps=4": 66550,
+  "steps=5": 36879,
+  "steps=6": 13429,
+  "steps=7": 5924,
+  "steps=8": 1925,
+  "steps=9": 148
+ },
+ "tinygsm_step_rows": 1464644,
+ "rows_total": 1499996,
+ "by_shard": {
+  "s0": 76603,
+  "s1": 76102,
+  "s2": 76596,
+  "s3": 76326,
+  "s4": 88101,
+  "s5": 89258,
+  "s6": 89943,
+  "s7": 88647,
+  "s8": 83774,
+  "s9": 76359,
+  "s10": 82699,
+  "s11": 88377,
+  "s12": 87374,
+  "s13": 89891,
+  "s14": 90295,
+  "s15": 102325,
+  "s16": 101974
+ },
+ "seed": 78,
+ "file": {
+  "name": "s1_0078_step.jsonl",
+  "rows": 1499996,
+  "sha256": "d75250fb91b3c60bcaca6db29d18b71e96ba4f7ed715f8f47e37a3320c11d18a",
+  "parts": "base_step + gsm8k_extra_step + tinygsm_step_s0..s16, in that order",
+  "drive": "cubbyllm/emitter/s1_0078_step.jsonl"
+ }
+}

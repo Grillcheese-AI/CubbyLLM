@@ -1605,6 +1605,10 @@ In Cowork's quiet slot (opened 23:35; Code A held; run 23:33:19-23:34:18 by this
 | similarity | 5,154 / 2,120 | 19,512 / 5,664 | **3.8x / 2.7x** | 5,535 / 865 (packed: 51 / 10) |
 
 Bytes: a key 512 / 80 in both arms; a frame 512 / 80 (MAP) against 262,144 / 40,960 (block codes, float32).
+- **Where the gap comes from:** a block-code key is one index a block, but once codes are bundled the frame is dense,
+  k x l float32 (262,144 B at 512 B stored, 40,960 B at 80 B), and bind on it is a blockwise circular convolution (an
+  FFT a block), not a sum of indices; MAP's bind is an element product on 512 or 80 B either way. The 2x line is read
+  on that pair, as registered.
 - **The cost half fails:** block codes are over 2x slower on every operation at both sizes (bind 155-518x: a per-block
   FFT against an element product). **By the pre-registered rule, the VM keeps MAP-bipolar for its own memory;** block
   codes enter it only as retrieval vectors that come from the store's index, labelled as such (cubelang P5-9 already

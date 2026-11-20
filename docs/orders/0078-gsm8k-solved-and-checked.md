@@ -160,6 +160,29 @@ teacher, never a test-time solver (it needs the gold steps). Today it does not c
   stopped the first run, the kill). A P6 step is `assign sK = A // B;`, which three readers of the step dialect do not
   read yet (`emitter_data.slot_record`, `school.arith_step_values`, the step loop's proposals): asked of Cowork.
 
+### Code B: S1's set and notebook (2026-11-20)
+- **The first cut** (Nick's amendment above; `validation/sft/build_s1.py --mode mix`, seed 78;
+  `validation/logs/s1_0078_2026-11-20.json`): **1,499,996 step rows**, one file `s1_0078_step.jsonl` (SHA-256
+  `d75250fb...`, on Drive `cubbyllm/emitter/`):
+  - S0's base, v12e_w re-cut: 34,873 rows; its GSM8K rows carry `gsm8k_id` (5,819 train; its val split is the 329 dev);
+  - GSM8K train's other golds as programs (`validation/sft/gsm8k_programs.py`): 112 programs, 479 rows, tagged
+    `gsm8k_id`. Of the 1,325 v12e lacks, 1,213 are not kept: 1,211 listed by id and kind in the log (a number the
+    question does not state 677, the answer stated after the last step 271, no computation 144, no annotation 95, other
+    24), and 2 that convert but do not re-cut into steps.
+    **GSM8K train outside dev in S1: 5,931 of 7,144.**
+  - TinyGSM: 348,006 whole programs, 1,464,644 rows, drawn to GSM8K train's mix of step counts:
+
+    | steps | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+    |---|---|---|---|---|---|---|---|---|---|
+    | GSM8K train golds (outside dev) | 399 | 2,082 | 2,039 | 1,348 | 747 | 272 | 120 | 39 | 3 |
+    | TinyGSM programs drawn | 19,698 | 102,788 | 100,665 | 66,550 | 36,879 | 13,429 | 5,924 | 1,925 | 148 |
+
+- **For S2 (Code A):** every GSM8K row (and each of its step rows) carries `gsm8k_id`; the gold's `<<...>>` text is in
+  `$CUBBY_DATASETS/gsm8k/train.jsonl` by that id. `emitter_data._base` and `step_loop.recut` pass it through.
+- **The notebook:** `notebooks/emitter_s1.ipynb` (`_build_emitter_s1.py`): S0's recipe (from the Gate A adapter, one
+  epoch, batch 16, lr 2e-4, rank 16 / alpha 32, 1,024 tokens, `--no-gen`), ~93,700 steps, about 3.5-5 h on an A100 in
+  one session (the trainer does not resume at a step). Nick's to run; then the dev read here.
+
 ### Code A: S2, the school (not built yet)
 - `validation/train_school_torch.py` already keeps a round only if its held-out gate does not drop. Wiring its
   error kinds to `gsm8k.cube` needs the pool's rows to carry their gold's `<<...>>` text: that is S1's set (Code B's
