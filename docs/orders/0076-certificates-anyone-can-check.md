@@ -191,14 +191,15 @@ both sides shown.
   "self" questions whose text is the loop's counters; nq:83 refused "no plan" for "plan does not cover", one code).
 
 **Acceptance:**
-1. **Records from real runs** (`validation/logs/cheez_records_0076_2026-11-19.json`): 9,926 records for 10,568
-   questions, **9,926 conform** (66 certificates, 9,860 refusals). No record for 642, each counted with its reason
-   (v0.2's rule): 622 refusals whose reason word has no code yet (`entity_unresolved` 572, `profile` 27, `self` 8,
-   `no_events_for_date` 7, `time_mismatch` 5, `class_mismatch` 2, `no_path` 1) and 20 of the 86 spoken answers (11
+1. **Records from real runs** (`validation/logs/cheez_records_0076_2026-11-19.json`): 9,941 records for 10,568
+   questions, **9,941 conform** (66 certificates, 9,875 refusals; with Cowork's codes of 2026-11-19 for `no_path`,
+   `no_events_for_date`, and `time_mismatch` / `class_mismatch` as `cubby:NotCertified` with the failed check violated).
+   No record for 627, each counted with its reason (v0.2's rule): 607 refusals whose word has no code yet
+   (`entity_unresolved` 572, `profile` 27, `self` 8) and 20 of the 86 spoken answers (11
    rest on the live source, which keeps no revision; 4 ran more than one program; 2 rest on Wikidata5M; 2 sentences
    held by two or three statements; 1 names a year). Records off-repo.
 2. **Records agree with what ran:** read back field by field against the run's record: **0 differences**; no kill.
-3. **"signed" and "same"** (`validation/logs/cheez_seal_0076_2026-11-19.json`): **9,926 of 9,926**, against the store
+3. **"signed" and "same"** (`validation/logs/cheez_seal_0076_2026-11-19.json`): **9,941 of 9,941**, against the store
    at the run's snapshot (keys made in memory for the check).
 4. **Spoiled copies:** caught, never "signed" and "same": a fact's value changed, a fact dropped, a fact added, the
    snapshot changed, the answer changed, one byte of the envelope, of either part; a wrong fact or snapshot signed by
@@ -209,8 +210,8 @@ both sides shown.
    tracked file.
 6. **No answer changes:** `replay_cert.py --names` on the new run gives the same outcomes as on `run_0054_names3`,
    bench for bench (86 of 86 spoken "same"; `validation/logs/cert_replay_2026-11-19-0076.json`).
-7. **Offline and cheap:** the verifier opens no connection (a test). Per record at home: the signature 0.131 ms
-   median, 0.196 ms 95th percentile; a reader's full check (decrypt, recompute, the store) 0.977 / 1.525 ms.
+7. **Offline and cheap:** the verifier opens no connection (a test). Per record at home: the signature 0.142 ms
+   median, 0.250 ms 95th percentile; a reader's full check (decrypt, recompute, the store) 1.074 / 1.869 ms.
 8. **Disagreement** (`validation/logs/disagreements_0076_2026-11-19.json`): of 10,568 questions, 134 touch a stored
    statement and 41 of them (31%) touch an item and property holding two or more differing best-rank values (webq
    38, simpleqa 2, nq 1). The host: answered with one value 2 (webq; e.g. Utah's time zone, three best-rank values);
@@ -218,17 +219,31 @@ both sides shown.
    value 32, one value 7, some of them 9 (an ambiguous hop the walk narrowed). 145 of those values carry references,
    and no record carries references yet.
 
-### Step 6: the design for disagreement, for Nick's yes (nothing of it is built)
-- **Where the question asks for one value** and the store holds two or more differing best-rank values for the
-  property the answer rests on: a Maasdam refusal, `cubby:refusalReason cubby:Conflict`, `cubby:conflictKind
-  cubby:ValueConflict`, with each value as a `cheez:FactVersion` (rank, revision, statement id, and its references,
-  which needs a reference term in CheezML: `prov:wasQuotedFrom` or `dcterms:source` on the fact version, checked
-  there first). On this run that changes **2 spoken answers** (webq) into refusals, and recodes the **25 ambiguous
-  hops** whose values are on one item and property from `cubby:Ambiguous` to `cubby:Conflict`.
-- **Where the question asks for all of them** (a plural question word, "which languages"), the answer stays as it
-  is: unchanged, listing every value, its certificate naming every fact version.
-- Two calls for Nick: (1) is a preferred-rank value alone among normal ones still a disagreement? (Wikidata's own
-  "best rank" says no; this design follows it); (2) the 12 `profile` refusals touch such properties too: leave them.
+### Step 6: the design for disagreement (Nick's answer, 2026-11-19; nothing of it is built in this order)
+**A disagreement is two or more differing best-rank values on a property meant to hold one.** Which properties are
+meant to hold one is the store's own fact: Wikidata's single-value or single-best-value constraint on the property
+(P2302 = Q19474404 / Q52060874), read from the store at the run's snapshot. Of the 41 questions above, most touch a
+property meant to hold several (official languages, time zones, instruments, notable works, citizenship): several
+best-rank values there are several true values, not a disagreement.
+- **Several values on a property meant to hold several:** the answer gives every value, its certificate naming
+  each fact version. This is also Nick's case of one thing written two ways ("if its written 2 way I would return
+  both"; Utah's "Mountain Time Zone", "UTC−07:00", "America/Denver"). Where the store links the values (P460 "said to
+  be the same as"), the certificate shows that statement; "part of" / "has part" links are shown as such, never as
+  sameness. No string compared, no model.
+- **Differing best-rank values on a property meant to hold one**, the question asking for one value: a Maasdam
+  refusal, `cubby:Conflict` / `cubby:ValueConflict`, each value as a `cheez:FactVersion` with its rank, revision and
+  statement id (its references once CheezML has a term for them). A value whose qualifiers date it apart from the
+  others (a population at different points in time) is a time question first, read by the host's existing time
+  rules, before it is a conflict.
+- **Plural questions** list every value; **a preferred value alone** among normal ones is not a disagreement
+  (Wikidata's best rank); the 12 `profile` refusals are left as they are.
+
+**The count on this run** (`validation/logs/disagreements_0076_2026-11-19.json`): of the 41 questions touching
+differing best-rank values, **26 would answer with every value** (2 spoken today with one value, e.g. webq:37, Utah;
+24 refused today on an ambiguous hop: Haiti's official languages, Louis Armstrong's instruments, ...; 2 of them the
+store also links as one thing), **1 would be a conflict refusal** (nq:472, Prince Edward Island's population: two
+values on a single-value property, refused today on an ambiguous hop) and **14 keep their reason** (12 `profile`, 2
+a time mismatch). The build is a later order.
 
 **Still open in this order:** the name statement in the certificate (a `cheez:Decision` over the kept items as
 `cheez:Option`s, Cowork's ruling), then acceptance 4's spoil on it; codes for the refusal words above (asked of

@@ -12,7 +12,9 @@
    "questions": 3610,
    "questions touching a property with two or more differing best-rank values": 1,
    "questions touching a stored statement": 15,
+   "questions where such a property is meant to hold one value": 1,
    "record names: every value": 1,
+   "step 6: a conflict refusal (cubby:Conflict, cubby:ValueConflict)": 1,
    "values with references the record does not carry": 2
   },
   "simpleqa": {
@@ -20,7 +22,9 @@
    "questions": 4326,
    "questions touching a property with two or more differing best-rank values": 2,
    "questions touching a stored statement": 9,
+   "questions where such a property is meant to hold one value": 0,
    "record names: one value": 2,
+   "step 6: keeps its reason (time_mismatch)": 2,
    "values with references the record does not carry": 7
   },
   "webq": {
@@ -30,6 +34,7 @@
    "questions": 2032,
    "questions touching a property with two or more differing best-rank values": 38,
    "questions touching a stored statement": 110,
+   "questions where such a property is meant to hold one value": 0,
    "record names: 2 of 4 values": 1,
    "record names: 297 of 414 values": 1,
    "record names: 3 of 10 values": 1,
@@ -37,6 +42,8 @@
    "record names: 3 of 8 values": 1,
    "record names: every value": 31,
    "record names: one value": 5,
+   "step 6: answers with every value (a property meant to hold several)": 26,
+   "step 6: keeps its reason (profile)": 12,
    "values with references the record does not carry": 136
   }
  },
@@ -48,6 +55,7 @@
   "questions": 10568,
   "questions touching a property with two or more differing best-rank values": 41,
   "questions touching a stored statement": 134,
+  "questions where such a property is meant to hold one value": 1,
   "record names: 2 of 4 values": 1,
   "record names: 297 of 414 values": 1,
   "record names: 3 of 10 values": 1,
@@ -55,6 +63,10 @@
   "record names: 3 of 8 values": 1,
   "record names: every value": 32,
   "record names: one value": 7,
+  "step 6: a conflict refusal (cubby:Conflict, cubby:ValueConflict)": 1,
+  "step 6: answers with every value (a property meant to hold several)": 26,
+  "step 6: keeps its reason (profile)": 12,
+  "step 6: keeps its reason (time_mismatch)": 2,
   "values with references the record does not carry": 145
  }
 }

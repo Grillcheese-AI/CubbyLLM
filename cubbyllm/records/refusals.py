@@ -2,7 +2,8 @@
 writer maps the host's words to (order 0076, step 2).
 
 A refusal's reason is coded from the host's own reason word (the record's ``reason``, before its first colon). A
-word with no code here gets no record, and the report counts it: no reason is guessed. Checks that ran on the
+word with no code here gets no record, and the report counts it: no reason is guessed. A word that means a check
+failed (Cowork's ruling, 2026-11-19) is `cubby:NotCertified`, and its record must carry that check as violated. Checks that ran on the
 answer before it was refused are kept on the refusal, each with its outcome.
 
 Wiring: STANDALONE (`cheez_writer` calls it).
@@ -19,7 +20,10 @@ CODE = {"no_plan": "cubby:NoPlan", "plan_does_not_cover_question": "cubby:NoPlan
         "unknown_relation": "cubby:RelationMissing", "relation_missing": "cubby:RelationMissing",
         "ambiguous_relation": "cubby:Ambiguous", "ambiguous_entity": "cubby:Ambiguous", "ambiguous_hop": "cubby:Ambiguous",
         "retrieval_exhausted": "cubby:FactMissing", "walk_failed": "cubby:WalkFailed",
-        "vm_verify_failed": "cubby:NotCertified", "contested": "cubby:Conflict"}
+        "vm_verify_failed": "cubby:NotCertified", "contested": "cubby:Conflict",
+        "no_path": "cubby:WalkFailed", "no_events_for_date": "cubby:FactMissing",            # Cowork, 2026-11-19
+        "time_mismatch": "cubby:NotCertified", "class_mismatch": "cubby:NotCertified"}
+FAILED_CHECK = {"time_mismatch": ("tense", "time rule", "snapshot time"), "class_mismatch": ("answer class",)}
 CONFLICT = {"contested": "cubby:ValueConflict"}
 
 
@@ -36,6 +40,8 @@ def refusal(rec: dict, run: dict, u) -> tuple[dict | None, str | None]:
     if code is None:
         return None, f"a refusal reason with no code ({word or 'none'})"
     checks = [c for c in cert.get("checks") or [] if c["check"] in CHECK]
+    if word in FAILED_CHECK and not any(c["check"] in FAILED_CHECK[word] and not c["satisfied"] for c in checks):
+        return None, f"a failed check ({word}) the record does not carry as violated"
     ref = {"@id": u("refusal"), "@type": ["cubby:Refusal", "cheez:Decision", "prov:Entity"], "cubby:refusalReason": code,
            "prov:generatedAtTime": cert["at"]}
     if word in CONFLICT:
@@ -56,4 +62,4 @@ def refusal(rec: dict, run: dict, u) -> tuple[dict | None, str | None]:
     return {"@graph": graph}, None
 
 
-__all__ = ["CHECK", "CODE", "CONFLICT", "PROPOSER", "head", "refusal"]
+__all__ = ["CHECK", "CODE", "CONFLICT", "FAILED_CHECK", "PROPOSER", "head", "refusal"]
