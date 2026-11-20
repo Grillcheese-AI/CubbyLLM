@@ -92,6 +92,8 @@ SPOILS = {
     "a fact added": lambda c, p: p.append(dict(_fv(p), **{"@id": "urn:uuid:00000000-0000-4000-8000-0000000000aa"})),
     "the snapshot changed": lambda c, p: next(n for n in p if n.get("dcterms:type") == "cheez:StoreSnapshot").update({"cheez:hash": "f" * 64}),
     "the answer changed": lambda c, p: next(n for n in c if "cubby:Answer" in V._types(n)).update({"prov:value": "Euro"}),
+    "the name statement's item changed": lambda c, p: next(n for n in p if n.get("schema:about") == "wd:Q79").update(
+        {"schema:about": "wd:Q2334225"}),
 }
 
 

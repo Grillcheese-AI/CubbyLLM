@@ -1,5 +1,5 @@
 # 0077 - The description reader on real prompts (round 5: checks inside people's own prompts)
-status: review (Code A, 2026-11-19: every line read; arm R kept by line 5, line 6 passed at home; approved by Nick 2026-11-17, "i approve 77")
+status: done (Code A, 2026-11-19: every line read; arm R kept by line 5, line 6 passed at home; reviewed by Cowork, and done on Nick's yes, 2026-11-19; approved by Nick 2026-11-17, "i approve 77")
 written: 2026-11-17 by Cowork · approved: Nick 2026-11-17 · hypothesis: none (the preprint's first limitation)
 
 ## Why

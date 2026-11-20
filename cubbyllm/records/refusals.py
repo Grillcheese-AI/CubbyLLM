@@ -22,7 +22,9 @@ CODE = {"no_plan": "cubby:NoPlan", "plan_does_not_cover_question": "cubby:NoPlan
         "retrieval_exhausted": "cubby:FactMissing", "walk_failed": "cubby:WalkFailed",
         "vm_verify_failed": "cubby:NotCertified", "contested": "cubby:Conflict",
         "no_path": "cubby:WalkFailed", "no_events_for_date": "cubby:FactMissing",            # Cowork, 2026-11-19
-        "time_mismatch": "cubby:NotCertified", "class_mismatch": "cubby:NotCertified"}
+        "time_mismatch": "cubby:NotCertified", "class_mismatch": "cubby:NotCertified",
+        "entity_unresolved": "cubby:NameNotFound"}                                        # Nick's yes, 2026-11-19
+REPLIES = ("profile", "self")      # not refusals: replies of their own kind, counted apart until 0064's turn record
 FAILED_CHECK = {"time_mismatch": ("tense", "time rule", "snapshot time"), "class_mismatch": ("answer class",)}
 CONFLICT = {"contested": "cubby:ValueConflict"}
 
@@ -36,6 +38,8 @@ def refusal(rec: dict, run: dict, u) -> tuple[dict | None, str | None]:
     if not cert or "error" in cert:
         return None, "no cert record"
     word = head(rec.get("reason"))
+    if word in REPLIES:
+        return None, f"a reply of its own kind, not a refusal ({word})"
     code = CODE.get(word)
     if code is None:
         return None, f"a refusal reason with no code ({word or 'none'})"
@@ -62,4 +66,4 @@ def refusal(rec: dict, run: dict, u) -> tuple[dict | None, str | None]:
     return {"@graph": graph}, None
 
 
-__all__ = ["CHECK", "CODE", "CONFLICT", "FAILED_CHECK", "PROPOSER", "head", "refusal"]
+__all__ = ["CHECK", "CODE", "CONFLICT", "FAILED_CHECK", "PROPOSER", "REPLIES", "head", "refusal"]

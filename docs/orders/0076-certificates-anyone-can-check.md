@@ -1,5 +1,5 @@
 # 0076 - Comté certificates anyone can check, and Maasdam refusals that show disagreeing facts (CheezML on 0055's store)
-status: in progress (Code A, 2026-11-19, while 0077's test read waits on Colab; approved by Nick on 2026-11-17: "I approve both"; built on CheezML and order 0064)
+status: done (2026-11-19: reviewed by Cowork; Nick's yes, 2026-11-19. Every acceptance line read on run_0076_cert, with Nick's keys; step 6 designed with Nick's answer, built in a later order; approved by Nick on 2026-11-17: "I approve both")
 written: 2026-11-17 by Cowork, on Nick's "yes" after the field watch's finds · approved: 2026-11-17 by Nick · hypothesis: none (0054's certificate, 0055's store, 0064's records)
 
 ## Why
@@ -186,32 +186,41 @@ both sides shown.
   (the host's check kinds, confirmed against `ask_memory._checked`; Nick's yes), both merged and pushed; pinned.
 - **The envelope** (`cubby_serve/records/envelope.py`) and **the verifier** (`validation/verify_cheez.py`), as step 3
   and 4 say; tests in `tests/records/test_envelope.py`, keys made in memory.
+  **Not done: the envelope's terms in cheezml** (step 1, from 0064's addendum: envelope, key id, commitment,
+  signature, and a shape for the envelope). The envelope is a JWS, a JSON object signed whole, not a JSON-LD record,
+  so nothing here reads it as RDF; its fields are named in `envelope.py`. Adding them to CheezML (with its shape) is
+  proposed for a later cheezml change, if envelopes are to be read as records.
 - **The run:** `run_0076_cert` = `run_0054_names3`'s flags and programs with `CB_CERT_FACTS=1` (master 425c2bb).
   10,561 of 10,568 records identical in spoken, answer, reason and trace; the 7 others are refusals in both runs (6
   "self" questions whose text is the loop's counters; nq:83 refused "no plan" for "plan does not cover", one code).
 
 **Acceptance:**
-1. **Records from real runs** (`validation/logs/cheez_records_0076_2026-11-19.json`): 9,941 records for 10,568
-   questions, **9,941 conform** (66 certificates, 9,875 refusals; with Cowork's codes of 2026-11-19 for `no_path`,
-   `no_events_for_date`, and `time_mismatch` / `class_mismatch` as `cubby:NotCertified` with the failed check violated).
-   No record for 627, each counted with its reason (v0.2's rule): 607 refusals whose word has no code yet
-   (`entity_unresolved` 572, `profile` 27, `self` 8) and 20 of the 86 spoken answers (11
-   rest on the live source, which keeps no revision; 4 ran more than one program; 2 rest on Wikidata5M; 2 sentences
-   held by two or three statements; 1 names a year). Records off-repo.
+1. **Records from real runs** (`validation/logs/cheez_records_0076_2026-11-19.json`, CheezML `22e0fed`): 10,503
+   records for 10,568 questions, **10,503 conform**: 56 certificates, each with its name statement, and 10,447
+   refusals (`cubby:NameNotFound` for `entity_unresolved` 572, Nick's yes; Cowork's codes of 2026-11-19 for `no_path`,
+   `no_events_for_date`, and `time_mismatch` / `class_mismatch` as `cubby:NotCertified` with the failed check
+   violated). No record for 65, each counted: 35 replies of their own kind, not refusals (`profile` 27, `self` 8;
+   Cowork's ruling: counted apart until 0064's conversation-turn record), and 30 of the 86 spoken answers (11 rest on
+   the live source, which keeps no revision; 10 have a name statement naming the wiki world, which keeps no item,
+   while the fact came from the store; 4 ran more than one program; 2 rest on Wikidata5M; 2 sentences held by two
+   or three statements; 1 names a year). Records off-repo.
+   **The 10 (a name from the wiki world, the fact from the store):** the fix is in the name statement, not here: it
+   names the world that holds the first fact (`name_statement.build`, order 0054), which can be the wiki world even
+   when the store handed the same fact with its item. Naming the world that handed the fact the certificate cites is
+   a change to 0054's record, read by its own tests and `replay_cert.py`: proposed for a later order, not done here.
 2. **Records agree with what ran:** read back field by field against the run's record: **0 differences**; no kill.
-3. **"signed" and "same"** (`validation/logs/cheez_seal_0076_2026-11-19.json`): **9,941 of 9,941**, against the store
+3. **"signed" and "same"** (`validation/logs/cheez_seal_0076_2026-11-19.json`): **10,503 of 10,503**, against the store
    at the run's snapshot (keys made in memory for the check).
 4. **Spoiled copies:** caught, never "signed" and "same": a fact's value changed, a fact dropped, a fact added, the
-   snapshot changed, the answer changed, one byte of the envelope, of either part; a wrong fact or snapshot signed by
-   the host itself is "missing" / "other snapshot". **Not yet:** the name statement's item, because the name
-   statement is not in the record yet (below).
+   snapshot changed, the answer changed, the name statement's item changed, one byte of the envelope, of either part;
+   a wrong fact or snapshot signed by the host itself is "missing" / "other snapshot".
 5. **Privacy:** tenant B's key opens nothing of tenant A's; a member's key opens the conversation part only; a reveal
    matches its commitment and another value does not; planted strings are not in the envelope; no key body in a
    tracked file.
 6. **No answer changes:** `replay_cert.py --names` on the new run gives the same outcomes as on `run_0054_names3`,
    bench for bench (86 of 86 spoken "same"; `validation/logs/cert_replay_2026-11-19-0076.json`).
 7. **Offline and cheap:** the verifier opens no connection (a test). Per record at home: the signature 0.142 ms
-   median, 0.250 ms 95th percentile; a reader's full check (decrypt, recompute, the store) 1.074 / 1.869 ms.
+   median, 0.242 ms 95th percentile; a reader's full check (decrypt, recompute, the store) 1.057 / 1.856 ms.
 8. **Disagreement** (`validation/logs/disagreements_0076_2026-11-19.json`): of 10,568 questions, 134 touch a stored
    statement and 41 of them (31%) touch an item and property holding two or more differing best-rank values (webq
    38, simpleqa 2, nq 1). The host: answered with one value 2 (webq; e.g. Utah's time zone, three best-rank values);
@@ -245,13 +254,19 @@ store also links as one thing), **1 would be a conflict refusal** (nq:472, Princ
 values on a single-value property, refused today on an ambiguous hop) and **14 keep their reason** (12 `profile`, 2
 a time mismatch). The build is a later order.
 
-**Still open in this order:** the name statement in the certificate (a `cheez:Decision` over the kept items as
-`cheez:Option`s, Cowork's ruling), then acceptance 4's spoil on it; codes for the refusal words above (asked of
-Cowork); Nick's keys from the OS key store (the code takes keys handed in; nothing reads a file).
-- **Commits:**
-- **Files:**
-- **Tests:**
-- **Measured:**
-- **Not verified here:**
-- **Found on the way:**
-- **Questions:**
+**The name statement** (`cubbyllm/records/cheez_name.py`, Cowork's ruling): each step from the asked name to the
+item is a `cheez:Question` over the items it kept (`cheez:Option`, `schema:about` the item) and its `cheez:Decision`,
+the rule as `dcterms:type` (`cubby:NameSteps`: fold, label, alias, namesake, first by id, place qualifier; cheezml
+`name-steps`, merged with `cubby:NameNotFound` on Nick's yes as `22e0fed`); the steps chained,
+the certifying run using the last one. The read-back checks its item and its number of steps.
+
+**CheezML:** `name-steps` and `cubby:NameNotFound` merged and pushed on Nick's yes of 2026-11-19 (`22e0fed`); pinned.
+
+**Nick's keys** (made by him at 19:38 with his own script, into Windows Credential Manager): read by
+`cubby_serve/records/keystore.py` (read only, `CredReadW`; no key printed, logged or taken from a file). Line 3 again
+with them (`validation/logs/cheez_seal_0076_nickkeys_2026-11-19.json`, `seal_check.py --keys os`): **10,503 of
+10,503 "signed" and "same"**, beside the in-memory keys' 10,503 of 10,503; the signature 0.144 ms median, a reader's
+full check 1.079 ms (in memory: 0.142 / 1.057). The public key file in Nick's key folder matches the signing key.
+
+**Nothing is open in this order.** Step 6 (disagreement) is designed above with Nick's answer and built in a later
+order; the 10 wiki-world name statements are proposed for a later order (0054's record).

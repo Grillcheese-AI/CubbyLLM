@@ -20,7 +20,10 @@ RUN = {"run": "t", "snapshot": "a" * 64, "as_of": "2025-12-29T23:00:38Z", "store
 ST = {"item": "Q79", "pid": "P38", "guid": "Q79-g1", "rank": 1, "best": True, "value": {"entity": "Q199462"},
       "revision": 2440000000, "modified": "2025-12-01T10:00:00Z", "references": 1, "times": {}}
 CHECKS = [{"check": c, "satisfied": True} for c in ("answer class", "tense", "time rule", "conflict")]
-REC = {"id": "webq:275", "spoken": True, "answer": "Egyptian pound", "proposer": "everyday", "reason": None,
+NAME = {"asked": "egypt", "item": {"id": "Q79", "label": "Egypt", "how": "first_by_id"},
+        "steps": [{"rule": "fold", "equal": ["egypt", "Egypt"]}, {"rule": "namesake", "kept": ["Q79", "Q2334225"]},
+                  {"rule": "first_by_id", "kept": ["Q79", "Q2334225"], "chose": "Q79"}]}
+REC = {"id": "webq:275", "spoken": True, "answer": "Egyptian pound", "proposer": "everyday", "reason": None, "name": NAME,
        "cert": {"facts": [{"fact": "Egyptian pound is the currency of Egypt", "triple": ["Egypt", "currency", "Egyptian pound"],
                            "worlds": [{"world": "wdstore", "items": ["Q79"], "statements": [ST]}]}],
                 "programs": ["b" * 64, "b" * 64], "as_of": None, "checks": CHECKS, "at": "2026-11-19T20:50:33Z"}}
@@ -54,13 +57,28 @@ def test_a_spoken_answer_gets_a_certificate_with_the_records_own_fields():
     (lambda r: r["cert"]["facts"][0].update(worlds=[]), "no world says it handed"),
     (lambda r: r["cert"]["facts"][0]["worlds"][0].update(statements=[ST, dict(ST, guid="g2")]), "2 statements"),
     (lambda r: r["cert"].update(checks=[dict(CHECKS[0], satisfied=False)]), "not satisfied"),
-    (lambda r: r.update(spoken=False, reason="entity_unresolved"), "no code"),
+    (lambda r: r.update(spoken=False, reason="no_such_word"), "no code"),
+    (lambda r: r.update(spoken=False, reason="profile"), "a reply of its own kind"),
+    (lambda r: r.update(name=None), "no item id"),
+    (lambda r: r["name"]["steps"].append({"rule": "guess"}), "no code"),
 ])
 def test_what_the_record_cannot_state_gets_no_record_and_its_reason(change, why):
     r = copy.deepcopy(REC)
     change(r)
     g, got = W.write(r, RUN)
     assert g is None and why in got
+
+
+def test_the_name_statement_is_a_chain_of_decisions_ending_on_the_item():
+    g, _ = W.write(REC, RUN)
+    steps = [n for n in _node(g, "cheez:Decision") if str(n.get("dcterms:type")).endswith("NameStep")]
+    assert [s["dcterms:type"] for s in steps] == ["cubby:FoldNameStep", "cubby:NamesakeNameStep", "cubby:FirstByIdNameStep"]
+    opts = {n["@id"]: n["schema:about"] for n in _node(g, "cheez:Option") if "schema:about" in n}
+    assert opts[steps[-1]["cheez:chosenOption"]] == "wd:Q79" and steps[-1]["prov:wasDerivedFrom"] == steps[1]["@id"]
+    run, = _node(g, "cube:ProgramRun")
+    assert steps[-1]["@id"] in run["prov:used"]
+    q1 = next(n for n in _node(g, "cheez:Question") if n.get("cheez:hasResult") == steps[1]["@id"])
+    assert sorted(opts[o] for o in q1["cheez:option"]) == ["wd:Q2334225", "wd:Q79"]
 
 
 @pytest.mark.parametrize("precision, written", [(11, True), (9, False)])
@@ -109,7 +127,9 @@ def test_the_read_back_finds_a_record_that_differs_from_the_run():
     for spoil, field in ((lambda n: n.update({"prov:value": "Euro"}) if "cubby:Answer" in n["@type"] else None, "answer"),
                          (lambda n: n.update({"wikibase:rank": "wikibase:PreferredRank"}) if "cheez:FactVersion" in n["@type"] else None,
                           "fact versions"),
-                         (lambda n: n.update({"cheez:hash": "c" * 64}) if "cube:Program" in n["@type"] else None, "program")):
+                         (lambda n: n.update({"cheez:hash": "c" * 64}) if "cube:Program" in n["@type"] else None, "program"),
+                         (lambda n: n.update({"schema:about": "wd:Q2334225"}) if n.get("schema:about") == "wd:Q79" else None,
+                          "name statement")):
         bad = copy.deepcopy(g)
         for n in bad["@graph"]:
             spoil(n)
