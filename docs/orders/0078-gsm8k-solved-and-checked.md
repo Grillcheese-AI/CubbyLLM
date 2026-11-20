@@ -29,7 +29,7 @@ teacher, never a test-time solver (it needs the gold steps). Today it does not c
 
 ## Build
 1. **TinyGSM, all of it** (MIT, arXiv 2312.09241; 17 parquet files, 11.8M rows, 3.8 GB): downloaded off-repo to
-   `E:\datasets\tinygsm` on Nick's yes (Cowork, 2026-11-19, with a SHA-256 manifest). Converted with
+   `$CUBBY_DATASETS\tinygsm` on Nick's yes (Cowork, 2026-11-19, with a SHA-256 manifest). Converted with
    `validation/sft/import_tinygsm.py`, shard by shard, resumable, CPU only:
    - the converter takes the P6 forms the VM now runs (expressions as operands, `//`, `%`); each new form pinned by a
      test, and shard 0 converted again, reported beside its September counts;
