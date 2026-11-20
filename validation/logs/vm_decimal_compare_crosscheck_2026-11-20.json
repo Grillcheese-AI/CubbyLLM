@@ -1,0 +1,59 @@
+{
+ "what": "cubelang 8ba4498 (a decimal in a register compares as a decimal): the three P6 cross-checks, before (bbc02e4) and after (efa2559)",
+ "date": "2026-11-20",
+ "builds": {
+  "before": {
+   "path": "cubelang-a-before/target/release/cubelang.exe",
+   "modified": "2026-11-20 00:55",
+   "sha256": "32f3b23e0139cb8117b19604c8cf59969ba0b529ec001e119bf690df1d281c68",
+   "commit": "bbc02e4",
+   "older_than_sources": false
+  },
+  "after": {
+   "path": "cubelang-a/target/release/cubelang.exe",
+   "modified": "2026-11-19 20:21",
+   "sha256": "55cb14752a70d7d26bb231b59d9034bdda13af8b4c62f7fa8bf9240024dc0409",
+   "commit": "efa2559",
+   "older_than_sources": false
+  }
+ },
+ "0072 verb cases (exp_verb_programs.py, seed 0)": {
+  "before": {
+   "agree": 2100,
+   "of": 2100,
+   "disagreements": 0
+  },
+  "after": {
+   "agree": 2100,
+   "of": 2100,
+   "disagreements": 0
+  },
+  "gate identical": true,
+  "per-pair verdicts identical": true,
+  "verdicts changed": 0
+ },
+ "0067 stored joins (exp_p6_crosscheck_0067.py)": {
+  "before": {
+   "runs": 31087,
+   "agree": 31087,
+   "differ": 0
+  },
+  "after": {
+   "runs": 31087,
+   "agree": 31087,
+   "differ": 0
+  },
+  "verdicts changed": 0
+ },
+ "B1q frozen on R2 dev (r2_choosing.py --split dev --no-qfhrr --no-bm25 --b1q-walk walk)": {
+  "rows": 2965,
+  "rows differing in b1, b1q or tiers, before vs after": 0,
+  "before vs 0046's p6final (676df1d)": 0,
+  "summary identical": true,
+  "logs": [
+   "retrieval_R2_dev_2026-11-20_dec_before.json",
+   "retrieval_R2_dev_2026-11-20_dec_after.json"
+  ]
+ },
+ "result": "no verdict changes on any of the three: no published number moves"
+}
