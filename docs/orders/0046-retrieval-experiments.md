@@ -1527,7 +1527,7 @@ From the Freiburg group's repositories (Nick: "yes"). Licences are checked and r
   method of `ad-freiburg/natural-entity-types` ("Paris, the city" or "Paris, the person"). Reported on the namesake
   rows: the share of candidate sets whose types tell every candidate apart. Candidates are never ordered by fame.
 ## Cowork's addendum (2026-11-10): R9, which kind of vector the VM should use
-**R9: in progress (Code B, Nick 2026-11-19).** The plan below was checked by Cowork (2026-11-19) and written here
+**R9: done (Code B, 2026-11-19): the VM keeps MAP-bipolar (block codes fail the 2x cost line; accuracy held).** The plan below was checked by Cowork (2026-11-19) and written here
 before any run.
 
 ### R9's plan (pre-registered, 2026-11-19)
@@ -1593,6 +1593,23 @@ k = 80, from rounding the re-drawn blocks to whole ones: 65 of 80).
   bundle is float32, k x l (40,960 B at k = 80), against MAP's frame of the same 512 or 80 B as its keys. Equal storage
   holds for keys, not for frames.
 - **The cost half** (no more than 2x slower) waits for its timing slot. The verdict follows it.
+
+### R9's cost and verdict (Code B, 2026-11-19; `retrieval_R9_cost_2026-11-19.json`)
+In Cowork's quiet slot (opened 23:35; Code A held; run 23:33:19-23:34:18 by this machine's clock; load seen 29% before,
+22% after); the median over 200 samples of 100 calls.
+
+| ns per call | MAP numpy, 512 B / 80 B | block numpy, 512 B / 80 B | block / MAP (the 2x line) | MAP Rust (native), 512 B / 80 B |
+|---|---|---|---|---|
+| bind | 2,089 / 1,108 | 1,081,795 / 171,845 | **517.9x / 155.2x** | 364 / 58 |
+| bundle of 16 | 49,376 / 11,088 | 1,434,604 / 63,538 | **29.1x / 5.7x** | 4,618 / 792 |
+| similarity | 5,154 / 2,120 | 19,512 / 5,664 | **3.8x / 2.7x** | 5,535 / 865 (packed: 51 / 10) |
+
+Bytes: a key 512 / 80 in both arms; a frame 512 / 80 (MAP) against 262,144 / 40,960 (block codes, float32).
+- **The cost half fails:** block codes are over 2x slower on every operation at both sizes (bind 155-518x: a per-block
+  FFT against an element product). **By the pre-registered rule, the VM keeps MAP-bipolar for its own memory;** block
+  codes enter it only as retrieval vectors that come from the store's index, labelled as such (cubelang P5-9 already
+  makes the two kinds fail to mix). The accuracy half held (block codes at least as accurate at equal storage, better
+  at 80 B), so the choice is cost, not accuracy. No opcode byte changes; nothing to switch.
 Nick: "yes", to measuring before choosing. The Rust VM's vectors are MAP-bipolar (D = 4096), while MoWM, cubemind
 and the qFHRR work use block codes (k = 80, l = 128). For now each vector carries its kind, and mixing the two fails
 (cubelang P5-9). This experiment decides the long-term choice, and it runs **before any arm puts the store's

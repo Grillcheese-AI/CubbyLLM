@@ -1,0 +1,126 @@
+{
+ "what": "order 0046 R9's cost: block codes against MAP-bipolar, the numpy pair (the 2x line) and each native",
+ "date": "2026-11-19",
+ "run": [
+  "23:33:19",
+  "23:34:18"
+ ],
+ "machine": {
+  "system": "Windows",
+  "processor": "Intel64 Family 6 Model 151 Stepping 5, GenuineIntel",
+  "cpus": 12,
+  "python": "3.12.10",
+  "numpy": "2.4.6"
+ },
+ "numpy_pair": {
+  "map": [
+   {
+    "arm": "map",
+    "impl": "numpy",
+    "dim": 4096,
+    "bytes": 512,
+    "bind_ns": 2089.0,
+    "bundle16_ns": 49376.5,
+    "similarity_ns": 5154.0
+   },
+   {
+    "arm": "map",
+    "impl": "numpy",
+    "dim": 640,
+    "bytes": 80,
+    "bind_ns": 1107.5,
+    "bundle16_ns": 11088.5,
+    "similarity_ns": 2120.5
+   }
+  ],
+  "block": [
+   {
+    "arm": "block",
+    "impl": "numpy",
+    "k": 512,
+    "l": 128,
+    "bytes": 512,
+    "frame_bytes": 262144,
+    "bind_ns": 1081795.0,
+    "bundle16_ns": 1434603.5,
+    "similarity_ns": 19511.5
+   },
+   {
+    "arm": "block",
+    "impl": "numpy",
+    "k": 80,
+    "l": 128,
+    "bytes": 80,
+    "frame_bytes": 40960,
+    "bind_ns": 171845.0,
+    "bundle16_ns": 63538.0,
+    "similarity_ns": 5663.5
+   }
+  ]
+ },
+ "block_over_map_numpy": {
+  "4096 vs 512": {
+   "bind_ns": 517.85,
+   "bundle16_ns": 29.05,
+   "similarity_ns": 3.79
+  },
+  "640 vs 80": {
+   "bind_ns": 155.16,
+   "bundle16_ns": 5.73,
+   "similarity_ns": 2.67
+  }
+ },
+ "native": {
+  "map_rust": [
+   {
+    "arm": "map",
+    "impl": "rust",
+    "task": "cost",
+    "dim": 4096,
+    "reps": 200,
+    "bind_ns": 364,
+    "bundle16_ns": 4618,
+    "similarity_ns": 5535,
+    "similarity_packed_ns": 51,
+    "bytes": 512
+   },
+   {
+    "arm": "map",
+    "impl": "rust",
+    "task": "cost",
+    "dim": 640,
+    "reps": 200,
+    "bind_ns": 58,
+    "bundle16_ns": 792,
+    "similarity_ns": 865,
+    "similarity_packed_ns": 10,
+    "bytes": 80
+   }
+  ],
+  "block_numpy": [
+   {
+    "arm": "block",
+    "impl": "numpy",
+    "k": 512,
+    "l": 128,
+    "bytes": 512,
+    "frame_bytes": 262144,
+    "bind_ns": 1081795.0,
+    "bundle16_ns": 1434603.5,
+    "similarity_ns": 19511.5
+   },
+   {
+    "arm": "block",
+    "impl": "numpy",
+    "k": 80,
+    "l": 128,
+    "bytes": 80,
+    "frame_bytes": 40960,
+    "bind_ns": 171845.0,
+    "bundle16_ns": 63538.0,
+    "similarity_ns": 5663.5
+   }
+  ]
+ },
+ "line": "block codes no more than 2x slower than MAP-bipolar (the numpy pair, at equal storage)"
+}
