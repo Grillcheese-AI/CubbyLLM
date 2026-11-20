@@ -1559,6 +1559,40 @@ before any run.
   on a like-for-like pair, both in numpy (a numpy MAP-bipolar beside `BlockCodes`); each arm's native time (Rust,
   numpy) is reported beside it, labelled.
 - **The decision rule** is the addendum's, unchanged.
+
+### R9's accuracy (Code B, 2026-11-19; `retrieval_R9_2026-11-19.json`)
+Run as planned: cubelang `agent-b/r9` `b59be0e` (the MAP arm), cubemind `f21d805` (`BlockCodes`, numpy); seeds 0, 1, 2;
+CPU, six threads. Mean over the seeds (the spread is 0 wherever not given).
+
+**Recall by key, recall@1 (margin)**, the hardest noise (s = 0.2; at s = 1.0, 0.8 and 0.5 every arm recalls 1.0):
+
+| bytes a key | arm | N = 1k | N = 10k | N = 100k |
+|---|---|---|---|---|
+| 512 | MAP D = 4096 | 1.0 (0.149) | 1.0 (0.140) | 1.0 (0.132) |
+| 512 | block k = 512 | 1.0 (0.177) | 1.0 (0.173) | 1.0 (0.170) |
+| 80 | MAP D = 640 | 1.0 (0.072) | 0.9957, spread 0.005 (0.048) | 0.9797, spread 0.004 (0.028) |
+| 80 | block k = 80 | 1.0 (0.140) | 1.0 (0.127) | 1.0 (0.115) |
+
+The measured query-key similarity matches s in every row (MAP 0.200 / 0.500 / 0.800; block 0.194-0.200 at s = 0.2,
+k = 80, from rounding the re-drawn blocks to whole ones: 65 of 80).
+
+**Role recovery, the right filler's share (margin):**
+
+| bytes a vector | arm | 2 pairs | 4 | 8 | 16 |
+|---|---|---|---|---|---|
+| 512 | MAP D = 4096 | 1.0 (0.449) | 1.0 (0.324) | 1.0 (0.223) | 1.0 (0.146) |
+| 512 | block k = 512 | 1.0 (0.486) | 1.0 (0.241) | 1.0 (0.119) | 1.0 (0.059) |
+| 80 | MAP D = 640 | 1.0 (0.371) | 1.0 (0.247) | 0.9997 (0.146) | 0.9493, spread 0.002 (0.070) |
+| 80 | block k = 80 | 1.0 (0.465) | 1.0 (0.228) | 1.0 (0.111) | 1.0 (0.053) |
+
+- **The accuracy half of the rule is met:** block codes are at least as accurate as MAP-bipolar on both tasks at both
+  equal-storage points (equal at 512 B; better at 80 B, where MAP loses 2% of recalls at 100k and 5% of fillers at 16
+  pairs). The margins differ by task: block codes' are wider on recall, narrower on roles from 4 pairs up (0.059
+  against 0.146 at 16 pairs, 512 B).
+- **One caveat on "equal storage":** a key is one-hot (80 or 512 B as indices), but a block-code frame is not: the
+  bundle is float32, k x l (40,960 B at k = 80), against MAP's frame of the same 512 or 80 B as its keys. Equal storage
+  holds for keys, not for frames.
+- **The cost half** (no more than 2x slower) waits for its timing slot. The verdict follows it.
 Nick: "yes", to measuring before choosing. The Rust VM's vectors are MAP-bipolar (D = 4096), while MoWM, cubemind
 and the qFHRR work use block codes (k = 80, l = 128). For now each vector carries its kind, and mixing the two fails
 (cubelang P5-9). This experiment decides the long-term choice, and it runs **before any arm puts the store's
