@@ -57,7 +57,8 @@ def test_a_spoken_answer_gets_a_certificate_with_the_records_own_fields():
     (lambda r: r["cert"]["facts"][0].update(worlds=[]), "no world says it handed"),
     (lambda r: r["cert"]["facts"][0]["worlds"][0].update(statements=[ST, dict(ST, guid="g2")]), "2 statements"),
     (lambda r: r["cert"].update(checks=[dict(CHECKS[0], satisfied=False)]), "not satisfied"),
-    (lambda r: r.update(spoken=False, reason="entity_unresolved"), "no code"),
+    (lambda r: r.update(spoken=False, reason="no_such_word"), "no code"),
+    (lambda r: r.update(spoken=False, reason="profile"), "a reply of its own kind"),
     (lambda r: r.update(name=None), "no item id"),
     (lambda r: r["name"]["steps"].append({"rule": "guess"}), "no code"),
 ])
