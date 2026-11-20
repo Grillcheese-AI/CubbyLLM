@@ -103,6 +103,41 @@ teacher, never a test-time solver (it needs the gold steps). Today it does not c
 - **Dev:** the 329 problems the emitter holds out of GSM8K train (its val split, read by `exp_he19_beam.py`), matched
   by question text: all 329 exactly. Checks: dev questions that are test questions 0; the emitter's arithmetic
   training rows whose question is a GSM8K test question 0, a dev question 0.
+
+### Code A: step 3, `gsm8k.cube` compiles and runs (2026-11-19)
+- **Where:** cubelang branch `agent-a/gsm8k` (pushed; the PR is Nick's), its own worktree and target dir, on `main`
+  with P6-3 to P6-7 (merged on Nick's yes). Three commits: a VM fix, the example, two reading fixes.
+- **Its intended shape, in CubeLang, no native module:** the gold's `<<expr=result>>` steps read from the answer's
+  text one character at a time (P6-2's string index, P6-3..7's forms); `parse` counts them; `solve` replays each
+  step in registers (precedence, parentheses, decimals, `.5`, thousands commas, `//`); `steps_agree` checks each
+  step's stated result; `verify` checks a value against `#### n` within 0.01; `classify_error` names a wrong answer
+  as `school.py` does (stopped early, reversed, unit conversion, one number off, other); `learn` counts the kind in
+  `patterns`. A CLI argument is text, so a list of values is "v1;v2". Compiles strict.
+- **Found on the way, a VM bug, fixed on the branch:** a decimal held in a register compared as a whole number
+  (`as_i64` on both sides): `0.678 <= 0.5` held, a register of 0.5 was falsy; literal-to-literal comparisons are
+  folded at compile time, which hid it. Now f64 when either side is a decimal, i64 exactly otherwise
+  (`tests/float_compare.rs`). Every CubeLang program comparing decimals in registers was affected: worth a look in
+  CubbyLLM's other generated programs once it is on `main`.
+- **The gold replay** (`validation/exp_gsm8k_cube.py`, `validation/logs/gsm8k_cube_2026-11-19.json`): 7,001 of
+  7,473 GSM8K train golds replay to their `####` answer (0.937); 376 state the answer in prose after their last
+  step; 95 have no annotation; 1 annotation's stated result is not its expression's (the dataset's slip, counted).
+- **Against `school.py`'s checker:** 1,000 sampled problems, each with the gold as a program and five mutants
+  (stopped early, reversed, x60, off by a stated number, other): **5,867 of 5,867 pairs judged the same** (school's
+  codes 0 to 5: 1,012 / 964 / 1,025 / 976 / 912 / 978). The first full read had 3 disagreements (a question's ".5"
+  read as 5) and 2 VM stops (`//`): the kill held the line until both were fixed and pinned; the read was run again.
+- **Tests:** cubelang `cargo test` 551 passed (the old pin of the broken example replaced by two tests on a made-up
+  problem; no GSM8K text in cubelang).
+
+### Code A: step 5, the speak rule (2026-11-19)
+- `cubbyllm/reasoning/speak_vote.py` (`7ab8b28`): k tries' VM values; the leading value is said when it has at least
+  m votes and no other value ties it; a try that did not run never votes. `choose_m` picks the smallest m keeping
+  dev's wrong answers within 1% and reports right / wrong / refused for every m. Tests:
+  `tests/reasoning/test_speak_vote.py` (5). m and k are chosen on dev once S1 exists, frozen here before test.
+
+### Code A: S2, the school (not built yet)
+- `validation/train_school_torch.py` already keeps a round only if its held-out gate does not drop. Wiring its
+  error kinds to `gsm8k.cube` needs the pool's rows to carry their gold's `<<...>>` text: that is S1's set (Code B's
+  conversion of GSM8K train). Built when S1's format is fixed.
 - **Commits:**
 - **Files:**
 - **Tests:**

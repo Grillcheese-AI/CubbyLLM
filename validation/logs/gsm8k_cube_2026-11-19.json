@@ -1,0 +1,32 @@
+{
+ "order": "0078",
+ "what": "step 3: gsm8k.cube's gold replay on GSM8K train, and its checker against school.py's",
+ "replay": {
+  "golds": 7473,
+  "replay equals the gold": 7001,
+  "the last annotation is not the answer (the gold states it in prose after its steps)": 376,
+  "no annotation": 95,
+  "an annotation's result is not its expression's (the dataset's slip)": 1,
+  "share equal to the gold": 0.9368
+ },
+ "checker": {
+  "pairs": 5867,
+  "school: 0": 1012,
+  "school: 1": 964,
+  "school: 2": 1025,
+  "school: 3": 976,
+  "school: 4": 912,
+  "school: 5": 978,
+  "agreement": 1.0,
+  "kill (below 100%)": false,
+  "disagreements (ids)": []
+ },
+ "codes": {
+  "0": "right",
+  "1": "stopped early",
+  "2": "reversed",
+  "3": "unit conversion",
+  "4": "one number off",
+  "5": "other"
+ }
+}
