@@ -52,6 +52,12 @@ teacher, never a test-time solver (it needs the gold steps). Today it does not c
    - **S0:** today's adapter (v12e with TinyGSM shard 0), read as it is;
    - **S1:** trained on the full converted TinyGSM plus GSM8K train's own programs (outside dev), the same recipe and
      budget per row as S0's, more rows;
+     **Amendment (Nick, 2026-11-20): S1's first cut is about 1.5M step rows** (10x S0), the same recipe and budget
+     per row: every GSM8K train program outside dev (v12e's, plus the other golds that convert), tagged `gsm8k_id`;
+     TinyGSM programs sampled to GSM8K train's mix of step counts (its golds' `<<...>>` steps), whole programs only,
+     a fixed seed, until the cut is reached; the counts by step count reported beside GSM8K's. **Scale-up, fixed now:**
+     if S1's dev right is short of S0's dev right + 10 points, the next cut is 1M programs (~6.6M rows, the long plans
+     first). Dev alone decides; the arm read on test is the last cut trained, once; a smaller cut's test is never read.
    - **S2:** S1, then the school (`validation/train_school_torch.py`, built in H-E19, smoke only until now) on GSM8K
      train: levels, tries until the VM says right, dopamine-weighted rows, each wrong try located at its first wrong
      step and named by `gsm8k.cube`'s `classify_error`; a round is kept only if dev does not drop.

@@ -30,3 +30,21 @@ def test_the_cap_keeps_every_long_plan_and_samples_the_short_ones():
     assert B.keep_share(by, 300, 5) == 0.0                # the long plans alone pass the cap: no short one kept
     ids = [f"t{i}" for i in range(20000)]
     assert 0.47 < sum(B.sampled(i, 0.5) for i in ids) / len(ids) < 0.53
+
+
+def test_the_mix_draws_gsm8k_shares_to_the_rows_wanted():
+    from collections import Counter
+    mix, avail = Counter({1: 10, 2: 30, 3: 60}), Counter({1: 10**6, 2: 10**6, 3: 50})
+    got = B.mix_counts(mix, 3000, Counter({1: 10**6, 2: 10**6, 3: 10**6}))
+    assert got == {1: 86, 2: 257, 3: 514} and abs(sum((s + 1) * n for s, n in got.items()) - 3000) < 5
+    assert B.mix_counts(mix, 3000, avail)[3] == 50          # never more than there is
+
+
+def test_a_gold_s_annotations_become_a_program_reusing_its_results():
+    from validation.sft import gsm8k_programs as GP
+    row = {"id": "gsm8k-train-0", "question": "Natalia sold clips to 48 of her friends in April, and then she sold half "
+           "as many clips in May. How many clips did Natalia sell altogether in April and May?",
+           "answer": "Natalia sold 48/2 = <<48/2=24>>24 clips in May.\nIn all 48+24 = <<48+24=72>>72.\n#### 72"}
+    assert "v1 = 48 + v0" in GP.to_code(row["answer"])
+    rec, kind = GP.program(row, 0)
+    assert kind == "kept" and rec["gold"] == "72" and rec["gsm8k_id"] == "gsm8k-train-0"
