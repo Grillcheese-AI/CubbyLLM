@@ -1527,7 +1527,38 @@ From the Freiburg group's repositories (Nick: "yes"). Licences are checked and r
   method of `ad-freiburg/natural-entity-types` ("Paris, the city" or "Paris, the person"). Reported on the namesake
   rows: the share of candidate sets whose types tell every candidate apart. Candidates are never ordered by fame.
 ## Cowork's addendum (2026-11-10): R9, which kind of vector the VM should use
-**R9: in progress (Code B, Nick 2026-11-19).** The plan goes to Cowork's inbox for a check before any run.
+**R9: in progress (Code B, Nick 2026-11-19).** The plan below was checked by Cowork (2026-11-19) and written here
+before any run.
+
+### R9's plan (pre-registered, 2026-11-19)
+- **The arms, from their own code:**
+  - **MAP-bipolar, D = 4096:** cubelang's `src/vm/hypervec.rs` (bind = Hadamard product, bundle = sum then sign,
+    cosine by popcount), `codebook.rs` (a key's vector from its FNV-1a seed) and `index.rs` (`HammingIndex`, the
+    cleanup), as `memory.rs` uses them; cubelang `main` `d8a4bae` (the vector code unchanged since `c30774b`), run by a
+    small bench binary on a cubelang branch of its own (`agent-b/r9`, `examples/r9_bench.rs`; not merged).
+  - **Block codes, k = 80, l = 128:** cubemind's `cubemind/ops/block_codes.py` (`BlockCodes`, as MoWM imports it),
+    cubemind `f21d805`: one-hot per block, bind = per-block circular convolution, unbind = circular correlation,
+    bundle = sum normalized per block, similarity = (1/k) sum(a * b); its numpy path on CPU. **No Rust block-code path
+    exists:** a switch would also mean writing one.
+- **Recall by key** at N = 1k, 10k, 100k: N keys stored, a query cleaned up against all N; recall@1 and the margin
+  (top-1 minus top-2 similarity). The queries: every key at N = 1k, a seeded sample of 1,000 keys at 10k and 100k
+  (recalling all 100k against 100k is N^2 comparisons). **The noise is matched by what the query keeps** (Cowork): the
+  expected similarity s of the query to its own key is 1.0, 0.8, 0.5, 0.2; MAP flips (1 - s) / 2 of the signs, block
+  codes re-draw (1 - s) / (1 - 1/l) of the blocks. Each row reports s, its p per arm and the measured mean query-key
+  similarity; s = 1.0 is the check. For one-hot keys, (1/k) sum(a * b) is the share of equal blocks: the cleanup over N
+  keys is computed in that form, and it is pinned equal to `BlockCodes.similarity_batch` on a sample.
+- **Role recovery:** a frame is the bundle of 2, 4, 8, 16 role-filler bindings (roles and fillers from codebooks of
+  1,000 each); unbound with each role and cleaned up against the filler codebook: the right filler's share and the
+  margin; 1,000 frames a size.
+- **Seeds:** 3 an arm (0, 1, 2); mean and spread.
+- **Equal storage** (bytes per stored vector): native, MAP D = 4096 packed = 512 B, block k = 80 as one u8 index a block
+  = 80 B (40,960 B as float32; frames are not one-hot, kept as float32 in the block arm and as i32 sums before the sign
+  in the MAP arm). Equal storage at **512 B**: MAP D = 4096 against block codes k = 512, l = 128. At **80 B**: block
+  k = 80 against MAP D = 640.
+- **Cost** (bind, bundle of 16, similarity, bytes per vector): timed only in a slot Cowork opens. The 2x line is read
+  on a like-for-like pair, both in numpy (a numpy MAP-bipolar beside `BlockCodes`); each arm's native time (Rust,
+  numpy) is reported beside it, labelled.
+- **The decision rule** is the addendum's, unchanged.
 Nick: "yes", to measuring before choosing. The Rust VM's vectors are MAP-bipolar (D = 4096), while MoWM, cubemind
 and the qFHRR work use block codes (k = 80, l = 128). For now each vector carries its kind, and mixing the two fails
 (cubelang P5-9). This experiment decides the long-term choice, and it runs **before any arm puts the store's
