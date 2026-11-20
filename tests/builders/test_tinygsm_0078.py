@@ -50,3 +50,13 @@ def test_floor_or_remainder_of_a_decimal_is_a_reject():
     # Python's 5 // 0.1 is 49.0 (0.1 has no exact binary form); the VM's, and the arithmetic's, is 50
     with pytest.raises(tg.Reject, match="floor or remainder of a decimal"):
         tg.compile_steps("def f():\n    a = 5\n    return a // 0.1\n")
+
+
+def test_a_marker_print_gives_the_answer_as_a_return_does():
+    printed = 'def f():\n    a = 12 + 9\n    result = a * 3\n    print(f"<<<{result}>>>")\n'
+    returned = 'def f():\n    a = 12 + 9\n    result = a * 3\n    return result\n'
+    assert tg.compile_steps(printed) == tg.compile_steps(returned)
+    for other in ('def f():\n    a = 1 + 2\n    print(a)\n', 'def f():\n    a = 1 + 2\n    print(f"<<<{a:.2f}>>>")\n',
+                  'def f():\n    a = 1 + 2\n    print(f"{a}")\n'):
+        with pytest.raises(tg.Reject):
+            tg.compile_steps(other)

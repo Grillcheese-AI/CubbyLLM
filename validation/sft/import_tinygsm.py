@@ -84,6 +84,20 @@ def _function(code: str) -> ast.FunctionDef:
     return fns[0]
 
 
+def _marker(st):
+    """The expression of a ``print(f"<<<{x}>>>")`` statement (some shards' way to give the answer), else None."""
+    if not (isinstance(st, ast.Expr) and isinstance(st.value, ast.Call) and isinstance(st.value.func, ast.Name)
+            and st.value.func.id == "print" and len(st.value.args) == 1 and not st.value.keywords):
+        return None
+    j = st.value.args[0]
+    if not (isinstance(j, ast.JoinedStr) and len(j.values) == 3 and isinstance(j.values[1], ast.FormattedValue)):
+        return None
+    head, tail = j.values[0], j.values[2]
+    ok = (isinstance(head, ast.Constant) and head.value == "<<<" and isinstance(tail, ast.Constant)
+          and tail.value == ">>>" and j.values[1].conversion == -1 and j.values[1].format_spec is None)
+    return j.values[1].value if ok else None
+
+
 def compile_steps(code: str) -> tuple[list[Step], list[float]]:
     """The function's arithmetic as steps (pruned to what the result uses) and each step's value."""
     fn = _function(code)
@@ -130,6 +144,9 @@ def compile_steps(code: str) -> tuple[list[Step], list[float]]:
             env[st.target.id] = emit(ast.BinOp(ast.Name(st.target.id), st.op, st.value))
         elif isinstance(st, ast.Return) and st.value is not None:
             result = emit(st.value)
+            break
+        elif _marker(st) is not None:                 # 0078: shards 8-10, 15, 16 print f"<<<{x}>>>" for the answer
+            result = emit(_marker(st))
             break
         else:
             raise Reject(f"statement {type(st).__name__}")

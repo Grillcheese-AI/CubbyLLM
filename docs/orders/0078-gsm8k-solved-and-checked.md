@@ -134,6 +134,26 @@ teacher, never a test-time solver (it needs the gold steps). Today it does not c
   dev's wrong answers within 1% and reports right / wrong / refused for every m. Tests:
   `tests/reasoning/test_speak_vote.py` (5). m and k are chosen on dev once S1 exists, frozen here before test.
 
+### Code B: step 1, TinyGSM, all of it (2026-11-19)
+- **Where:** `validation/sft/import_tinygsm.py` (the converter), `validation/sft/tinygsm_all.py` (17 shards, resumable,
+  every kept program in one VM session), `tests/builders/test_tinygsm_0078.py` (7). VM: cubelang `main`'s P6 build
+  (`bbc02e4`, in `cubelang-b`'s target dir; the shared VM, `b3b3360`, cannot run `//`). Rows off-repo,
+  `$CUBBY_DATA/tinygsm_0078_nop6/`; the log, ids and counts only: `validation/logs/tinygsm_0078_nop6_2026-11-19.json`.
+- **The overlap filter** is built once from v12e's val split (614), the program-first file (815 rows: the 236 and the
+  rest of that file), GSM8K test (1,319) and GSM8K dev (329, Code A's ids): 29,980 rows dropped over the 17 shards.
+- **All 17 shards, September's dialect: 6,350,518 kept of 11,846,109 (0.536); the VM runs every one and agrees on
+  6,350,518 of 6,350,518.** By steps: 1: 1,298,594; 2: 1,930,412; 3: 1,493,373; 4: 681,590; 5: 492,286; 6: 228,496;
+  7: 131,282; 8: 57,083; 9: 25,814; 10: 11,588. Per shard and by reject reason in the log.
+- **Shard 0 beside September:** 340,876 kept (September 341,150: the filter now also drops GSM8K test and dev, 1,360
+  against 793); every kept program run in the VM (September: a 2,000 sample).
+- **Found on the way:** shards 8-10, 15 and 16 give the answer by `print(f"<<<{x}>>>")`, not `return x`; read as a
+  return (that exact form only, pinned), they keep 316k-390k a shard instead of 38k-201k (+1,271,704 rows; the first
+  run is kept aside, `tinygsm_0078_nop6_before_marker`).
+- **The P6 forms (`//`, `%`), behind `--p6`, not yet in these rows:** on shard 0, 368,523 kept (+27,647), the VM
+  agreeing on all, once `//` and `%` are kept on whole numbers only (Python's `5 // 0.1` is 49.0, the VM's 50: 44 rows
+  stopped the first run, the kill). A P6 step is `assign sK = A // B;`, which three readers of the step dialect do not
+  read yet (`emitter_data.slot_record`, `school.arith_step_values`, the step loop's proposals): asked of Cowork.
+
 ### Code A: S2, the school (not built yet)
 - `validation/train_school_torch.py` already keeps a round only if its held-out gate does not drop. Wiring its
   error kinds to `gsm8k.cube` needs the pool's rows to carry their gold's `<<...>>` text: that is S1's set (Code B's
