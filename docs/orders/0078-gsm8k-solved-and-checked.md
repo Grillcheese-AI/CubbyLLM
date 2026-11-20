@@ -1,5 +1,5 @@
 # 0078 - GSM8K, solved and checked (right, wrong and refused on its test set)
-status: open (Code B, after 0046's R9 accuracy runs; Nick 2026-11-19)
+status: open (two builders, Nick 2026-11-19: Code A steps 2, 3, the school (S2) and the speak rule, starting now; Code B step 1 and S1, after 0046's R9 accuracy runs; each writes its own section of the Report)
 written: 2026-11-19 by Cowork · approved: 2026-11-19 by Nick ("we also need to finish solving gsm8k"; "yes" to writing it and to the TinyGSM download) · hypothesis: H-E19 (arithmetic is a world and a school), H-E18 (program first)
 
 ## Why
