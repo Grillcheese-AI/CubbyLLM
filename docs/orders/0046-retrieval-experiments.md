@@ -1527,7 +1527,7 @@ From the Freiburg group's repositories (Nick: "yes"). Licences are checked and r
   method of `ad-freiburg/natural-entity-types` ("Paris, the city" or "Paris, the person"). Reported on the namesake
   rows: the share of candidate sets whose types tell every candidate apart. Candidates are never ordered by fame.
 ## Cowork's addendum (2026-11-10): R9, which kind of vector the VM should use
-**R9: done (Code B, 2026-11-19): the VM keeps MAP-bipolar (block codes fail the 2x cost line; accuracy held).** The plan below was checked by Cowork (2026-11-19) and written here
+**R9: review (Code B, 2026-11-19): the VM keeps MAP-bipolar (block codes fail the 2x cost line; accuracy held).** The plan below was checked by Cowork (2026-11-19) and written here
 before any run.
 
 ### R9's plan (pre-registered, 2026-11-19)
