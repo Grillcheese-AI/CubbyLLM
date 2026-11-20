@@ -191,6 +191,100 @@ both sides shown.
   "self" questions whose text is the loop's counters; nq:83 refused "no plan" for "plan does not cover", one code).
 
 **Acceptance:**
+1. **Records from real runs** (`validation/logs/cheez_records_0076_2026-11-19.json`): 9,931 records for 10,568
+   questions, **9,931 conform** (56 certificates, each with its name statement; 9,875 refusals, with Cowork's codes of
+   2026-11-19 for `no_path`, `no_events_for_date`, and `time_mismatch` / `class_mismatch` as `cubby:NotCertified` with
+   the failed check violated). No record for 637, each counted with its reason (v0.2's rule): 607 refusals whose word
+   has no code yet (`entity_unresolved` 572, `profile` 27, `self` 8) and 30 of the 86 spoken answers (11 rest on the
+   live source, which keeps no revision; 10 have a name statement that names no item, because it names the wiki
+   world while the fact came from the store; 4 ran more than one program; 2 rest on Wikidata5M; 2 sentences held by
+   two or three statements; 1 names a year). Records off-repo.
+2. **Records agree with what ran:** each record is re-derived from the run record and compared field by field, with
+   0 differences. **Kill:** a record that conforms but disagrees with what ran; the writer stops until the cause is
+   fixed.
+3. **The verifier says `signed` and `same`** on every untouched record, against the snapshot the run used.
+4. **Spoiled copies are caught:** the verifier must not say `signed` or `same` on any of them (**kill**). They are:
+   - a value changed in one fact version;
+   - one fact version dropped;
+   - one fact version added;
+   - the snapshot hash changed;
+   - the name statement's item changed;
+   - one byte of the envelope changed;
+   - one byte of the body changed.
+5. **Privacy holds, as 0064's tests say:**
+   - a body encrypted for tenant A does not open with tenant B's key;
+   - a member's key does not open the provenance part;
+   - a revealed value with its salt matches its commitment, and any other value fails;
+   - after a run over planted secret strings, none of them appears in any log or in the envelope;
+   - no key material is in any tracked file.
+6. **No answer changes:** `replay_cert.py` gives the same outcomes as before on the same records.
+7. **Offline and cheap:** the verifier opens no connection (pinned by a test). Its time per record is reported,
+   median and 95th percentile, at home.
+8. **Disagreement counted:** step 5's counts, by benchmark and by what the host did, raw counts with each share.
+   The design of step 6 is written in the Report, and nothing of it is built in this order.
+- **Tests:**
+  - canonicalisation: the same graph in another key order gives the same signature input;
+  - the writer on an answer and on a refusal;
+  - each spoiled copy;
+  - the privacy tests above;
+  - no network.
+
+## Constraints
+- Rules in `CLAUDE.md` hold (< 300 lines a file, `__wiring__`, tests pin the claim). The core opens no connection
+  and imports nothing from `validation/`.
+- CheezML changes are made in the cheezml repository, through its checks. A record says only what ran: no truth
+  score, no status declared by hand, no prose rationale (0064's hard line).
+- No secret in a file, log, argument or commit. Keys are made and kept by Nick. Never print a key. Destroying a key
+  is never done without Nick's yes.
+- Real records are never published: only the vocabulary, the shapes and made-up examples are public.
+- The Rust store is read, not changed. If a statement's id is not stored, the fact version uses entity, property,
+  value, rank and revision, and says so.
+- Nothing is served differently until step 6's design is approved. Nothing paid starts here.
+
+## Out of scope
+- 0064's other record kinds: routing and split, helper rejection, field review, conversation turn.
+- Publishing records anywhere (a public log, a transparency server).
+- Changing which statements are truthy, or how ranks are read.
+- 0075's grader audit.
+
+## Report
+<!-- Claude Code fills this in, then sets status: review -->
+### Step 1 (Claude Code, Code A, 2026-11-19): the vocabulary at a pinned commit
+- **CheezML** (Grillcheese-AI/cheezml `a99a774`, on main, pushed on Nick's "yes merge" of 2026-11-19): a fact version
+  read from a statement store states its statement with published terms only, nothing minted (Cowork's ruling,
+  the README's reuse rule): `rdf:subject` / `rdf:predicate` / `rdf:object` (Wikidata IRIs), `wikibase:rank`,
+  `schema:identifier` for the statement id, and the entity's revision as `schema:version` on its source
+  (`shapes:StoredStatementShape`). A valid-time beginning is optional where the source states none (Nick's yes,
+  2026-11-19); on a stored statement a beginning that names no part of the source (`prov:wasDerivedFrom`) fails.
+  Example 08 conforms; n08 (no rank) and n08b (a beginning written by hand) fail with their messages. Its
+  `validate.py`: 8 conform, 15 fail, all checks pass; `check_site.py`: all pass.
+- **The pin:** `vendor/cheezml`, a git submodule at `a99a774`; `tests/test_cheezml_pin.py` checks the pin and runs its
+  `validate.py` (skips when the submodule or rdflib / pyshacl are missing).
+- **What the store gives** (one read-only `wdstore serve` `get`): the entity's revision and modified time, and per
+  statement its guid, rank, best flag, references and qualifiers: every field a fact version needs.
+- **Still to come in cheezml:** the envelope's terms (step 3). The name statement uses v0.2's `cheez:Decision` over
+  `cheez:Option`s with the rule as `dcterms:type` (Cowork, 2026-11-19); new terms only if a check shows that cannot
+  say it.
+
+### Steps 2 to 5 and the acceptance read (Claude Code, Code A, 2026-11-19)
+- **What the run records** (`CB_CERT_FACTS=1`, off by default; records only, nothing reads them to decide):
+  `cubbyllm/worlds/wd_store_statements.py` (the statement behind each fact the store hands out: item, property,
+  guid, rank, the item's revision and modified time, its time qualifiers); `ask_memory.ran` (the host's five checks
+  on a walked answer, with their outcome); `validation/system_eval/cert_facts.py` (per question: the trace's facts and
+  their statements, an ambiguous hop's values and theirs, each program's SHA-256, the as-of year, the time).
+- **The writer** (`cubbyllm/records/`: `cheez_writer.py`, `cheez_facts.py`, `refusals.py`): from the run's record
+  only. A certificate when every trace fact was handed by the store with one statement, the program is one hash and
+  the question names no year; a refusal when its reason word has a code. Ids are UUIDv5 of run, question and role.
+  The store snapshot by its BLAKE3 hash (wdstore's own); a valid-time beginning only from a start qualifier at day
+  precision, derived from it. CheezML: a99a774 (stored statements, Nick's yes on the optional beginning) and bc85026
+  (the host's check kinds, confirmed against `ask_memory._checked`; Nick's yes), both merged and pushed; pinned.
+- **The envelope** (`cubby_serve/records/envelope.py`) and **the verifier** (`validation/verify_cheez.py`), as step 3
+  and 4 say; tests in `tests/records/test_envelope.py`, keys made in memory.
+- **The run:** `run_0076_cert` = `run_0054_names3`'s flags and programs with `CB_CERT_FACTS=1` (master 425c2bb).
+  10,561 of 10,568 records identical in spoken, answer, reason and trace; the 7 others are refusals in both runs (6
+  "self" questions whose text is the loop's counters; nq:83 refused "no plan" for "plan does not cover", one code).
+
+**Acceptance:**
 1. **Records from real runs** (`validation/logs/cheez_records_0076_2026-11-19.json`): 9,941 records for 10,568
    questions, **9,941 conform** (66 certificates, 9,875 refusals; with Cowork's codes of 2026-11-19 for `no_path`,
    `no_events_for_date`, and `time_mismatch` / `class_mismatch` as `cubby:NotCertified` with the failed check violated).
@@ -199,19 +293,18 @@ both sides shown.
    rest on the live source, which keeps no revision; 4 ran more than one program; 2 rest on Wikidata5M; 2 sentences
    held by two or three statements; 1 names a year). Records off-repo.
 2. **Records agree with what ran:** read back field by field against the run's record: **0 differences**; no kill.
-3. **"signed" and "same"** (`validation/logs/cheez_seal_0076_2026-11-19.json`): **9,941 of 9,941**, against the store
+3. **"signed" and "same"** (`validation/logs/cheez_seal_0076_2026-11-19.json`): **9,931 of 9,931**, against the store
    at the run's snapshot (keys made in memory for the check).
 4. **Spoiled copies:** caught, never "signed" and "same": a fact's value changed, a fact dropped, a fact added, the
-   snapshot changed, the answer changed, one byte of the envelope, of either part; a wrong fact or snapshot signed by
-   the host itself is "missing" / "other snapshot". **Not yet:** the name statement's item, because the name
-   statement is not in the record yet (below).
+   snapshot changed, the answer changed, the name statement's item changed, one byte of the envelope, of either part;
+   a wrong fact or snapshot signed by the host itself is "missing" / "other snapshot".
 5. **Privacy:** tenant B's key opens nothing of tenant A's; a member's key opens the conversation part only; a reveal
    matches its commitment and another value does not; planted strings are not in the envelope; no key body in a
    tracked file.
 6. **No answer changes:** `replay_cert.py --names` on the new run gives the same outcomes as on `run_0054_names3`,
    bench for bench (86 of 86 spoken "same"; `validation/logs/cert_replay_2026-11-19-0076.json`).
-7. **Offline and cheap:** the verifier opens no connection (a test). Per record at home: the signature 0.142 ms
-   median, 0.250 ms 95th percentile; a reader's full check (decrypt, recompute, the store) 1.074 / 1.869 ms.
+7. **Offline and cheap:** the verifier opens no connection (a test). Per record at home: the signature 0.133 ms
+   median, 0.206 ms 95th percentile; a reader's full check (decrypt, recompute, the store) 0.983 / 1.492 ms.
 8. **Disagreement** (`validation/logs/disagreements_0076_2026-11-19.json`): of 10,568 questions, 134 touch a stored
    statement and 41 of them (31%) touch an item and property holding two or more differing best-rank values (webq
    38, simpleqa 2, nq 1). The host: answered with one value 2 (webq; e.g. Utah's time zone, three best-rank values);
@@ -245,9 +338,15 @@ store also links as one thing), **1 would be a conflict refusal** (nq:472, Princ
 values on a single-value property, refused today on an ambiguous hop) and **14 keep their reason** (12 `profile`, 2
 a time mismatch). The build is a later order.
 
-**Still open in this order:** the name statement in the certificate (a `cheez:Decision` over the kept items as
-`cheez:Option`s, Cowork's ruling), then acceptance 4's spoil on it; codes for the refusal words above (asked of
-Cowork); Nick's keys from the OS key store (the code takes keys handed in; nothing reads a file).
+**The name statement** (`cubbyllm/records/cheez_name.py`, Cowork's ruling): each step from the asked name to the
+item is a `cheez:Question` over the items it kept (`cheez:Option`, `schema:about` the item) and its `cheez:Decision`,
+the rule as `dcterms:type` (`cubby:NameSteps`: fold, label, alias, namesake, first by id, place qualifier; cheezml
+branch `name-steps`, `d4a2911`, all its checks pass, not yet merged: a push needs Nick's yes); the steps chained,
+the certifying run using the last one. The read-back checks its item and its number of steps.
+
+**Still open in this order:** the `name-steps` merge (Nick); `cubby:NameNotFound` for `entity_unresolved` (Cowork's
+go, then Nick's); `profile` and `self` (Cowork rules: proposed as replies of their own kind, no refusal record);
+Nick's keys from the OS key store (the code takes keys handed in; nothing reads a file).
 - **Commits:**
 - **Files:**
 - **Tests:**

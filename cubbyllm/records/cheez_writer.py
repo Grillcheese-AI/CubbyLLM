@@ -7,7 +7,8 @@ program or a model: every field is copied from the record or its run's facts, no
 - ``run``: {"run": its name, "snapshot": the store snapshot's hash, "as_of": the store's own date (an
   xsd:dateTimeStamp), "store": the world name of the statement store, "host": host id, "vm": vm id}.
 
-A spoken answer gets a certificate only when every fact of its trace was handed by the statement store with exactly
+A certificate carries the name statement (`cheez_name`: how the asked name reached the item, step by step). A
+spoken answer gets a certificate only when its name statement names its item by id, every fact of its trace was handed by the statement store with exactly
 one statement each, its program is one hash, and the question names no year (an as-of year has no instant of its own
 to write: counted, never filled in). A refusal gets a record when its reason has a code (`refusals.CODE`). Every
 other case is returned with its reason, for the report to count (v0.2's rule: no record rather than a wrong one).
@@ -20,6 +21,7 @@ from __future__ import annotations
 import uuid
 
 from .cheez_facts import RANK, fact_version, program_node, snapshot_node
+from .cheez_name import name_nodes
 from .refusals import CHECK, PROPOSER, refusal
 
 __wiring__ = "STANDALONE"
@@ -66,11 +68,15 @@ def certificate(rec: dict, run: dict) -> tuple[dict | None, str | None]:
     if facts is None:
         return None, why
     u = lambda role: uid(run, rec, role)                  # noqa: E731
+    named, last_step, why = name_nodes(rec.get("name"), u)
+    if named is None:
+        return None, why
     at, prog, run_id, ans = cert["at"], u("program"), u("run"), u("answer")
     graph = [program_node(prog, progs[0], PROPOSER[rec["proposer"]]), snapshot_node(u("snapshot"), run["snapshot"]),
              {"@id": run["host"], "@type": ["cheez:Host", "prov:SoftwareAgent"]},
              {"@id": run["vm"], "@type": ["cube:VM", "prov:SoftwareAgent"]}]
-    used = [prog]
+    graph += named
+    used = [prog, last_step]
     for i, (f, st) in enumerate(facts):
         nodes = fact_version(lambda role, i=i: u(f"fact{i}:{role}"), st)
         graph += nodes
@@ -82,7 +88,7 @@ def certificate(rec: dict, run: dict) -> tuple[dict | None, str | None]:
     for i, c in enumerate(checks):
         check_ids.append(u(f"check{i}"))
         graph.append({"@id": check_ids[-1], "@type": ["cheez:CheckRun", "prov:Activity"], "dcterms:type": CHECK[c["check"]],
-                      "cheez:outcome": "cheez:Satisfied", "cheez:isSatisfiedBy": prog, "prov:used": used[1:],
+                      "cheez:outcome": "cheez:Satisfied", "cheez:isSatisfiedBy": prog, "prov:used": used[2:],
                       "prov:endedAtTime": at})
     graph += [{"@id": u("question"), "@type": ["cheez:Question", "prov:Entity"], "cheez:option": prog, "cheez:hasResult": ans},
               {"@id": ans, "@type": ["cubby:Answer", "cheez:Decision", "prov:Entity"], "prov:value": rec["answer"],

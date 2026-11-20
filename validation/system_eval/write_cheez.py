@@ -69,6 +69,11 @@ def differences(g: dict, rec: dict, run: dict) -> list:
                       for s in w["statements"])
         if got != want:
             bad.append("fact versions")
+        steps = {n["@id"]: n for n in t.get("cheez:Decision", []) if str(n.get("dcterms:type", "")).endswith("NameStep")}
+        last = next((s for s in steps.values() if not any(x.get("prov:wasDerivedFrom") == s["@id"] for x in steps.values())), None)
+        opts = {n["@id"]: n for n in t.get("cheez:Option", []) if "schema:about" in n}
+        if last is None or opts.get(last["cheez:chosenOption"], {}).get("schema:about") != f"wd:{(rec.get('name') or {}).get('item', {}).get('id')}"                 or len(steps) != len((rec.get("name") or {}).get("steps") or []):
+            bad.append("name statement")
     else:
         ref, = t["cubby:Refusal"]
         if ref["cubby:refusalReason"] != CODE.get(head(rec.get("reason"))) or ref["prov:generatedAtTime"] != cert["at"]:
