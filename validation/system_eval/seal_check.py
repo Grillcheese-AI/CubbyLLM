@@ -2,7 +2,8 @@
 back by the verifier (`validation/verify_cheez.py`): "signed" and "same" against the store at the run's snapshot, and
 the verifier's time per record (median and 95th percentile, at home).
 
-The keys are made in memory for this check and dropped when it ends: they are test keys, not Nick's, and nothing
+``--keys memory`` (the default): keys made in memory for this check and dropped when it ends. ``--keys os``: Nick's
+keys, read from the OS key store (`cubby_serve/records/keystore.py`; never printed, ids only in the report). Nothing
 sealed here is kept. Counts and times only in the report.
 
   python validation/system_eval/seal_check.py --records <records.jsonl> --out <report.json>
@@ -28,13 +29,19 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--records", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--keys", default="memory", choices=("memory", "os"),
+                    help="memory: made for this check and dropped; os: Nick's, read from the key store (never printed)")
     a = ap.parse_args()
     from joserfc.jwk import OctKey, OKPKey
     import verify_cheez as V
     from cubby_serve.board.store_client import from_env
     from cubby_serve.records import envelope as E
-    keys = E.Keys(OKPKey.generate_key("Ed25519"), "check-sign", OctKey.generate_key(256), "check-conv",
-                  OctKey.generate_key(256), "check-prov")
+    if a.keys == "os":
+        from cubby_serve.records import keystore
+        keys = keystore.keys()
+    else:
+        keys = E.Keys(OKPKey.generate_key("Ed25519"), "check-sign", OctKey.generate_key(256), "check-conv",
+                      OctKey.generate_key(256), "check-prov")
     pub = OKPKey.import_key(keys.sign.as_dict(private=False))
     client = from_env()
     snap = (client.ask({"op": "snapshot"}) or {}).get("snapshot")
@@ -62,7 +69,9 @@ def main() -> None:
               "records": sum(said.values()), "store snapshot": snap, "said": dict(said),
               "verifier time per record": {"anyone (signature)": stats(times["signature"]),
                                            "reader (decrypt, recompute, store)": stats(times["read"])},
-              "sealing time per record": stats(t_seal), "keys": "made in memory for this check, never written"}
+              "sealing time per record": stats(t_seal),
+              "keys": ("Nick's, read from the OS key store; ids " + ", ".join(sorted({keys.sign_id, keys.conversation_id, keys.provenance_id}))
+                       if a.keys == "os" else "made in memory for this check, never written")}
     open(a.out, "w", encoding="utf-8").write(json.dumps(report, indent=1) + "\n")
     print(json.dumps(report, indent=1))
 

@@ -1,5 +1,5 @@
 # 0076 - Comté certificates anyone can check, and Maasdam refusals that show disagreeing facts (CheezML on 0055's store)
-status: in progress (Code A, 2026-11-19, while 0077's test read waits on Colab; approved by Nick on 2026-11-17: "I approve both"; built on CheezML and order 0064)
+status: review (Code A, 2026-11-19: every acceptance line read on run_0076_cert, with Nick's keys; step 6 designed with Nick's answer, built later; approved by Nick on 2026-11-17: "I approve both")
 written: 2026-11-17 by Cowork, on Nick's "yes" after the field watch's finds · approved: 2026-11-17 by Nick · hypothesis: none (0054's certificate, 0055's store, 0064's records)
 
 ## Why
@@ -445,5 +445,11 @@ the certifying run using the last one. The read-back checks its item and its num
 
 **CheezML:** `name-steps` and `cubby:NameNotFound` merged and pushed on Nick's yes of 2026-11-19 (`22e0fed`); pinned.
 
-**Still open in this order:** Nick's keys from the OS key store (the code takes keys handed in; nothing reads a file);
-everything else is read above. Step 6 is built in a later order.
+**Nick's keys** (made by him at 19:38 with his own script, into Windows Credential Manager): read by
+`cubby_serve/records/keystore.py` (read only, `CredReadW`; no key printed, logged or taken from a file). Line 3 again
+with them (`validation/logs/cheez_seal_0076_nickkeys_2026-11-19.json`, `seal_check.py --keys os`): **10,503 of
+10,503 "signed" and "same"**, beside the in-memory keys' 10,503 of 10,503; the signature 0.144 ms median, a reader's
+full check 1.079 ms (in memory: 0.142 / 1.057). The public key file in Nick's key folder matches the signing key.
+
+**Nothing is open in this order.** Step 6 (disagreement) is designed above with Nick's answer and built in a later
+order; the 10 wiki-world name statements are proposed for a later order (0054's record).
