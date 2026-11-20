@@ -53,6 +53,67 @@ def best_values(ask, item: str, pid: str, cache: dict) -> list:
             for s in e.get("statements", []) if f"P{s.get('pid')}" == pid and s.get("best") and s.get("rank") != 0]
 
 
+SAME = (460,)                                             # "said to be the same as": the store's own sameness link
+PART = (361, 527)                                         # "part of" / "has part": reported apart, not sameness
+
+
+def linked(ask, vals: list, cache: dict) -> dict:
+    """Step 6 (Nick, 2026-11-19: "if its written 2 way I would return both"): whether the store links the differing
+    values as one thing. {"same": every value joined by "said to be the same as" (either way), "part": joined only
+    once "part of" / "has part" also count, "links": the statements that join them}. Values that are not items are
+    never the same here (no string compared)."""
+    ids = {json.loads(v).get("entity") if v.startswith("{") else None for _, v, _ in vals}
+    if None in ids or len(ids) < 2:
+        return {"same": False, "part": False, "links": []}
+    links = []
+    for q in sorted(ids):
+        if q not in cache:
+            cache[q] = ask({"op": "get", "id": q}) or {}
+        for s in cache[q].get("statements", []):
+            o = (s.get("value") or {}).get("entity") if isinstance(s.get("value"), dict) else None
+            if o in ids and o != q and s.get("rank") != 0 and s.get("pid") in SAME + PART:
+                links.append((q, s["pid"], o, s.get("guid")))
+
+    def joined(pids):
+        comp = {q: q for q in ids}
+
+        def root(x):
+            while comp[x] != x:
+                x = comp[x]
+            return x
+        for a, p, b, _ in links:
+            if p in pids:
+                comp[root(a)] = root(b)
+        return len({root(q) for q in ids}) == 1
+    return {"same": joined(SAME), "part": joined(SAME + PART), "links": links}
+
+
+SINGLE = ("Q19474404", "Q52060874")                     # Wikidata's single-value and single-best-value constraints
+
+
+def single(ask, pid: str, cache: dict) -> bool:
+    """The property carries a single-value or single-best-value constraint in the store (P2302): one value is meant."""
+    if pid not in cache:
+        cache[pid] = ask({"op": "get", "id": pid}) or {}
+    return any(s.get("pid") == 2302 and isinstance(s.get("value"), dict) and s["value"].get("entity") in SINGLE
+               for s in cache[pid].get("statements", []))
+
+
+def step6(rec: dict, links: list, singles: list | None = None) -> str:
+    """What step 6's design would do with this question (nothing of it is built). ``singles``: per pair, whether its
+    property is meant to hold one value; a property that holds several is not a disagreement."""
+    word = str(rec.get("reason") or "").split(":")[0]
+    if not rec.get("spoken") and word != "ambiguous_hop":
+        return f"keeps its reason ({word})"
+    if singles is not None and not any(singles):
+        return "answers with every value (a property meant to hold several)"
+    if all(x["same"] for x in links):
+        return "answers with every value (the store says they are the same)"
+    if all(x["part"] for x in links):
+        return "a conflict refusal (joined only by part of / has part)"
+    return "a conflict refusal (cubby:Conflict, cubby:ValueConflict)"
+
+
 def classify(rec: dict, touched: dict, disagree: dict) -> dict:
     """What the host did and what the record names, for a question touching a disagreeing pair."""
     hop = (rec.get("cert") or {}).get("hop")
@@ -100,6 +161,9 @@ def main() -> None:
             c["questions touching a property with two or more differing best-rank values"] += 1
             got = classify(rec, touched, dis)
             c[f"host: {got['did']}"] += 1
+            singles = [single(client.ask, pid, cache) for (_, pid) in dis]
+            c["questions where such a property is meant to hold one value"] += any(singles)
+            c[f"step 6: {step6(rec, [linked(client.ask, v, cache) for v in dis.values()], singles)}"] += 1
             for n in got["named"]:
                 c[f"record names: {n}"] += 1
             c["values with references the record does not carry"] += sum(1 for v in dis.values() for _, _, r in v if r)

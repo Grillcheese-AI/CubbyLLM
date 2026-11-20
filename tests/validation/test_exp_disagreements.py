@@ -41,3 +41,25 @@ def test_an_answer_names_one_value_and_a_hop_names_every_value():
     hop = _rec(hop=[_st("a"), _st("b")], spoken=False, reason="ambiguous_hop")
     got = X.classify(hop, X.pairs(hop), dis)
     assert got["did"] == "refused: ambiguous_hop" and got["named"] == ["every value"] and got["hop listed"]
+
+
+def test_a_property_meant_to_hold_several_values_is_not_a_disagreement():
+    props = {"P1082": {"statements": [{"pid": 2302, "value": {"entity": "Q19474404"}}]},
+             "P37": {"statements": [{"pid": 2302, "value": {"entity": "Q21502404"}}]}}
+    ask = lambda req: props.get(req["id"], {})                                            # noqa: E731
+    assert X.single(ask, "P1082", {}) and not X.single(ask, "P37", {})
+    hop = {"spoken": False, "reason": "ambiguous_hop"}
+    no = {"same": False, "part": False, "links": []}
+    assert X.step6(hop, [no], [False]).startswith("answers with every value")
+    assert X.step6(hop, [no], [True]).startswith("a conflict refusal")
+    assert X.step6({"spoken": False, "reason": "profile"}, [no], [True]).startswith("keeps its reason")
+
+
+def test_values_the_store_says_are_the_same_are_linked_and_part_of_is_apart():
+    ents = {"Q1": {"statements": [{"pid": 460, "rank": 1, "value": {"entity": "Q2"}, "guid": "x"}]},
+            "Q2": {"statements": []}, "Q3": {"statements": [{"pid": 361, "rank": 1, "value": {"entity": "Q2"}, "guid": "y"}]}}
+    ask = lambda req: ents[req["id"]]                                                       # noqa: E731
+    v = lambda q: (q, '{"entity": "%s"}' % q, 0)                                           # noqa: E731
+    assert X.linked(ask, [v("Q1"), v("Q2")], {})["same"]
+    got = X.linked(ask, [v("Q1"), v("Q2"), v("Q3")], {})
+    assert not got["same"] and got["part"]
