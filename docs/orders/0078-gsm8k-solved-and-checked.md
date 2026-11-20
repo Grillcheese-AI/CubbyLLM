@@ -162,14 +162,17 @@ teacher, never a test-time solver (it needs the gold steps). Today it does not c
 
 ### Code B: S1's set and notebook (2026-11-20)
 - **The first cut** (Nick's amendment above; `validation/sft/build_s1.py --mode mix`, seed 78;
-  `validation/logs/s1_0078_2026-11-20.json`): **1,499,996 step rows**, one file `s1_0078_step.jsonl` (SHA-256
-  `d75250fb...`, on Drive `cubbyllm/emitter/`):
-  - S0's base, v12e_w re-cut: 34,873 rows; its GSM8K rows carry `gsm8k_id` (5,819 train; its val split is the 329 dev);
+  `validation/logs/s1_0078_2026-11-20.json`): **1,499,937 step rows**, one file `s1_0078_step.jsonl` (SHA-256
+  `dc0dd167...`, on Drive `cubbyllm/emitter/`). **Acceptance 2 checked on the whole file: 0 training rows share a
+  10-word run with a GSM8K test or dev question** (the 1,595 val rows that do are dev's own; not trained). A first
+  build had 14 v12e programs that did (9 test, 6 dev, one both): dropped whole, listed by id in the log; that file
+  (`d75250fb...`) is kept aside on Drive `emitter/_aside/`.
+  - S0's base, v12e_w re-cut: 34,814 rows; its GSM8K rows carry `gsm8k_id` (5,805 train; its val split is the 329 dev);
   - GSM8K train's other golds as programs (`validation/sft/gsm8k_programs.py`): 112 programs, 479 rows, tagged
     `gsm8k_id`. Of the 1,325 v12e lacks, 1,213 are not kept: 1,211 listed by id and kind in the log (a number the
     question does not state 677, the answer stated after the last step 271, no computation 144, no annotation 95, other
-    24), and 2 that convert but do not re-cut into steps.
-    **GSM8K train outside dev in S1: 5,931 of 7,144.**
+    24; with the 14 dropped above, 13 more share a run with test or dev and 1 more states no number), and 2 that
+    convert but do not re-cut into steps. **GSM8K train outside dev in S1: 5,917 of 7,144.**
   - TinyGSM: 348,006 whole programs, 1,464,644 rows, drawn to GSM8K train's mix of step counts:
 
     | steps | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |

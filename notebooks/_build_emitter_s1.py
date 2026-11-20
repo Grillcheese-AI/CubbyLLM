@@ -30,11 +30,11 @@ CELLS = [
 **What this trains.** S0 is today's step adapter (`cubby450m_v12e_w_step_cont`): the Gate A adapter continued one epoch
 on `emitter_sft_v12e_w_tg30_step.jsonl` (148,437 step rows: v12e_w re-cut + 30K TinyGSM step rows), batch 16, lr 2e-4,
 rank 16 / alpha 32, up to 1,024 tokens. **S1 is the same recipe and the same budget per row on more rows**
-(`s1_0078_step.jsonl`, 1,499,996 step rows; `validation/logs/s1_0078_2026-11-20.json`):
+(`s1_0078_step.jsonl`, 1,499,937 step rows, SHA-256 `dc0dd167...`; `validation/logs/s1_0078_2026-11-20.json`):
 
 | part | step rows |
 |---|---|
-| v12e_w re-cut (S0's base; its 5,819 GSM8K train problems tagged `gsm8k_id`; its val split = GSM8K's 329 dev) | 34,873 |
+| v12e_w re-cut (S0's base; its 5,805 GSM8K train problems tagged `gsm8k_id`; its val split = GSM8K's 329 dev) | 34,814 |
 | GSM8K train's other golds as programs (`gsm8k_programs.py`, 112) | 479 |
 | TinyGSM, 348,006 whole programs drawn (seed 78) to GSM8K train's mix of step counts | 1,464,644 |
 
@@ -65,7 +65,7 @@ REPO = '/content/CubbyLLM'
 DRIVE     = '/content/drive/MyDrive/cubbyllm'
 CKPT      = f'{DRIVE}/runs/base450m_cont/base450m_cont_final.pt'
 TOKENIZER = f'{DRIVE}/token_cache_base/tokenizer/grillcheese_bbpe128k.json'
-S1_DATA   = f'{DRIVE}/emitter/s1_0078_step.jsonl'                  # 1,499,996 step rows (1.9 GB)
+S1_DATA   = f'{DRIVE}/emitter/s1_0078_step.jsonl'                  # 1,499,937 step rows (1.9 GB)
 S1_FROM   = f'{DRIVE}/emitter/cubby450m_v12e_w_tg_cont'             # the Gate A adapter, as S0 started from
 OUT       = f'{DRIVE}/emitter/cubby450m_s1_0078'
 EPOCHS, BATCH, LR, RANK, ALPHA, SEED, MAX_LEN = 1, 16, 2e-4, 16, 32, 0, 1024

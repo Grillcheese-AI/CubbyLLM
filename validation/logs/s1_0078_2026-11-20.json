@@ -4,11 +4,11 @@
  "mode": "mix",
  "rows_wanted": 1500000,
  "base": {
-  "arithmetic_step_rows/train": 27595,
+  "arithmetic_step_rows/train": 27536,
   "arithmetic_step_rows/val": 1595,
   "chain/train": 1150,
   "chain/val": 63,
-  "gsm8k_tagged/train": 5819,
+  "gsm8k_tagged/train": 5805,
   "gsm8k_tagged/val": 329,
   "kernel/train": 1674,
   "kernel/val": 95,
@@ -17,11 +17,28 @@
   "role_binding/train": 1436,
   "role_binding/val": 64
  },
- "base_rows": 34873,
+ "base_rows": 34814,
+ "base_dropped_overlap": [
+  "arithmetic-c1bc072bf2ec",
+  "arithmetic-7f51481fd314",
+  "arithmetic-0c8ecc5caed9",
+  "arithmetic-d460998b3ba3",
+  "arithmetic-8dcdd61fe344",
+  "arithmetic-e305195f4870",
+  "arithmetic-33ee5be8a557",
+  "arithmetic-ace303421193",
+  "arithmetic-07bd036c77e2",
+  "arithmetic-2f246fd5afa1",
+  "arithmetic-d4b8318d2847",
+  "arithmetic-0bea2399b8b4",
+  "arithmetic-4cd4cf8c8846",
+  "arithmetic-61bea7f13701"
+ ],
  "gsm8k_extra": {
   "kinds": {
    "rejected: node UnaryOp": 10,
-   "rejected: invented number": 677,
+   "rejected: invented number": 678,
+   "shares a run with GSM8K test or dev": 13,
    "value is not the gold's": 271,
    "no annotation": 95,
    "programs": 112,
@@ -40,6 +57,10 @@
    {
     "id": "gsm8k-train-9",
     "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-20",
+    "kind": "shares a run with GSM8K test or dev"
    },
    {
     "id": "gsm8k-train-23",
@@ -316,6 +337,10 @@
    {
     "id": "gsm8k-train-402",
     "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-406",
+    "kind": "shares a run with GSM8K test or dev"
    },
    {
     "id": "gsm8k-train-415",
@@ -806,6 +831,10 @@
     "kind": "rejected: no computation"
    },
    {
+    "id": "gsm8k-train-1181",
+    "kind": "shares a run with GSM8K test or dev"
+   },
+   {
     "id": "gsm8k-train-1194",
     "kind": "rejected: invented number"
    },
@@ -880,6 +909,10 @@
    {
     "id": "gsm8k-train-1311",
     "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1314",
+    "kind": "shares a run with GSM8K test or dev"
    },
    {
     "id": "gsm8k-train-1322",
@@ -963,6 +996,10 @@
    },
    {
     "id": "gsm8k-train-1427",
+    "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-1432",
     "kind": "rejected: invented number"
    },
    {
@@ -1822,6 +1859,10 @@
     "kind": "rejected: invented number"
    },
    {
+    "id": "gsm8k-train-2763",
+    "kind": "shares a run with GSM8K test or dev"
+   },
+   {
     "id": "gsm8k-train-2769",
     "kind": "rejected: no computation"
    },
@@ -2506,6 +2547,10 @@
     "kind": "value is not the gold's"
    },
    {
+    "id": "gsm8k-train-3726",
+    "kind": "shares a run with GSM8K test or dev"
+   },
+   {
     "id": "gsm8k-train-3742",
     "kind": "rejected: invented number"
    },
@@ -2694,6 +2739,10 @@
     "kind": "rejected: invented number"
    },
    {
+    "id": "gsm8k-train-4044",
+    "kind": "shares a run with GSM8K test or dev"
+   },
+   {
     "id": "gsm8k-train-4045",
     "kind": "rejected: invented number"
    },
@@ -2744,6 +2793,10 @@
    {
     "id": "gsm8k-train-4131",
     "kind": "value is not the gold's"
+   },
+   {
+    "id": "gsm8k-train-4138",
+    "kind": "shares a run with GSM8K test or dev"
    },
    {
     "id": "gsm8k-train-4142",
@@ -3374,6 +3427,14 @@
     "kind": "rejected: invented number"
    },
    {
+    "id": "gsm8k-train-5162",
+    "kind": "shares a run with GSM8K test or dev"
+   },
+   {
+    "id": "gsm8k-train-5168",
+    "kind": "shares a run with GSM8K test or dev"
+   },
+   {
     "id": "gsm8k-train-5172",
     "kind": "value is not the gold's"
    },
@@ -3836,6 +3897,10 @@
    {
     "id": "gsm8k-train-5846",
     "kind": "rejected: invented number"
+   },
+   {
+    "id": "gsm8k-train-5850",
+    "kind": "shares a run with GSM8K test or dev"
    },
    {
     "id": "gsm8k-train-5853",
@@ -4534,6 +4599,10 @@
     "kind": "value is not the gold's"
    },
    {
+    "id": "gsm8k-train-6930",
+    "kind": "shares a run with GSM8K test or dev"
+   },
+   {
     "id": "gsm8k-train-6932",
     "kind": "rejected: invented number"
    },
@@ -4758,6 +4827,10 @@
     "kind": "no annotation"
    },
    {
+    "id": "gsm8k-train-7285",
+    "kind": "shares a run with GSM8K test or dev"
+   },
+   {
     "id": "gsm8k-train-7291",
     "kind": "value is not the gold's"
    },
@@ -4914,7 +4987,7 @@
   "steps=9": 148
  },
  "tinygsm_step_rows": 1464644,
- "rows_total": 1499996,
+ "rows_total": 1499937,
  "by_shard": {
   "s0": 76603,
   "s1": 76102,
@@ -4937,9 +5010,15 @@
  "seed": 78,
  "file": {
   "name": "s1_0078_step.jsonl",
-  "rows": 1499996,
-  "sha256": "d75250fb91b3c60bcaca6db29d18b71e96ba4f7ed715f8f47e37a3320c11d18a",
+  "rows": 1499937,
+  "sha256": "dc0dd16710544e9a028add677e90197e131a5268a962840f4813ba2a4cbbafce",
   "parts": "base_step + gsm8k_extra_step + tinygsm_step_s0..s16, in that order",
-  "drive": "cubbyllm/emitter/s1_0078_step.jsonl"
+  "drive": "cubbyllm/emitter/s1_0078_step.jsonl",
+  "replaces": "d75250fb... (1,499,996 rows: 14 base programs shared a 10-word run with GSM8K test or dev), kept aside on Drive emitter/_aside/"
+ },
+ "overlap_check": {
+  "train_rows_sharing_a_run_with_gsm8k_test_or_dev": 0,
+  "val_rows_matching": 1595,
+  "note": "the val rows are GSM8K dev's own step rows (v12e's val split), not trained on"
  }
 }

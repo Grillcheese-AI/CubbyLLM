@@ -60,6 +60,17 @@ def sampled(rid: str, share: float) -> bool:
     return share >= 1.0 or int(hashlib.sha1(rid.encode()).hexdigest()[:8], 16) / 0xFFFFFFFF < share
 
 
+def eval_ban(datasets: str) -> set:
+    """The 10-word runs of GSM8K test and dev: no training row may share one (0078's acceptance 2)."""
+    from validation.sft.import_tinygsm import shingles
+    out: set = set()
+    for name in ("test.jsonl", "train.jsonl"):
+        for r in map(json.loads, open(os.path.join(datasets, "gsm8k", name), encoding="utf-8")):
+            if name == "test.jsonl" or r.get("dev"):
+                out |= shingles(r["question"])
+    return out
+
+
 def gsm8k_mix(datasets: str) -> Counter:
     """GSM8K train's golds (outside dev) by their number of ``<<...>>`` steps, 10 and more as 10."""
     from validation.sft.gsm8k_programs import ANNOT
@@ -104,7 +115,10 @@ def main() -> None:
     ap.add_argument("--shards", type=int, nargs="*", default=list(range(17)))
     ap.add_argument("--out-dir", default=None)
     ap.add_argument("--log", default=None)
+    ap.add_argument("--base-only", action="store_true", help="rewrite the base and GSM8K parts; TinyGSM's files kept")
     a = ap.parse_args()
+    from validation.sft.import_tinygsm import shingles
+    ban, overlap = eval_ban(local_paths.value("CUBBY_DATASETS") or "."), []
     data, datasets = local_paths.value("CUBBY_DATA") or ".", local_paths.value("CUBBY_DATASETS") or "."
     out_dir = a.out_dir or os.path.join(data, "s1_0078")
     os.makedirs(out_dir, exist_ok=True)
@@ -114,6 +128,9 @@ def main() -> None:
             if r.get("task") != "arithmetic":
                 f.write(json.dumps(r, ensure_ascii=False) + "\n")
                 base[f"{r['task']}/{r['split']}"] += 1
+                continue
+            if r["split"] == "train" and shingles(r.get("question") or "") & ban:
+                overlap.append(r["id"])                          # dropped whole: a GSM8K test or dev question's run
                 continue
             gid = ids.get(_norm(r.get("question")))
             if gid:
@@ -130,6 +147,8 @@ def main() -> None:
             if r.get("dev") or r["id"] in seen:
                 continue
             rec, kind = GP.program(r, i)
+            if rec is not None and shingles(r["question"]) & ban:
+                rec, kind = None, "shares a run with GSM8K test or dev"
             if rec is None:
                 misses.append({"id": r["id"], "kind": kind})
                 extra[kind] += 1
@@ -143,7 +162,11 @@ def main() -> None:
     for m in step1["shards"].values():
         avail.update({int(k): v for k, v in m["kept_by_steps"].items()})
     mix, want, share = gsm8k_mix(datasets), {}, 1.0
-    if a.mode == "mix":
+    if a.base_only:                                       # the draw already made: its counts from the earlier log
+        prev = json.load(open(a.log or os.path.join(ROOT, "validation", "logs", f"s1_0078_{_dt.date.today().isoformat()}.json"),
+                              encoding="utf-8"))
+        want, tg = {int(s): n for s, n in prev["tinygsm_drawn"].items()}, Counter(prev["tinygsm"])
+    elif a.mode == "mix":
         want = mix_counts(mix, a.rows - base_rows - extra_rows, avail)
         pools: dict[int, list] = {s: [] for s in want}
         for k in a.shards:
@@ -159,6 +182,9 @@ def main() -> None:
         share = keep_share(avail, a.cap_rows, a.keep_steps)
     for k in a.shards:
         n = 0
+        if a.base_only:
+            shard_rows[f"s{k}"] = sum(1 for _ in open(os.path.join(out_dir, f"tinygsm_step_s{k}.jsonl"), encoding="utf-8"))
+            continue
         with open(os.path.join(out_dir, f"tinygsm_step_s{k}.jsonl"), "w", encoding="utf-8") as f:
             for ln, line in enumerate(open(os.path.join(data, "tinygsm_0078_nop6", f"tinygsm_s{k}.jsonl"), encoding="utf-8")):
                 if a.mode == "mix" and ln not in per_shard.get(k, ()):
@@ -172,7 +198,7 @@ def main() -> None:
         print(f"s{k}: {n:,} step rows", flush=True)
     rep = {"what": "order 0078 S1's set: v12e_w re-cut (GSM8K rows tagged), GSM8K's other golds, TinyGSM step rows",
            "date": _dt.date.today().isoformat(), "mode": a.mode, "rows_wanted": a.rows if a.mode == "mix" else a.cap_rows,
-           "base": dict(sorted(base.items())), "base_rows": base_rows,
+           "base": dict(sorted(base.items())), "base_rows": base_rows, "base_dropped_overlap": overlap,
            "gsm8k_extra": {"kinds": dict(extra), "step_rows": extra_rows, "misses": misses},
            "gsm8k_mix": dict(sorted(mix.items())), "tinygsm_drawn": {str(s): n for s, n in want.items()},
            "tinygsm": dict(sorted(tg.items())), "tinygsm_step_rows": sum(shard_rows.values()),
