@@ -95,6 +95,14 @@ teacher, never a test-time solver (it needs the gold steps). Today it does not c
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
+### Code A: step 2, GSM8K with ids (2026-11-19)
+- **GSM8K** (MIT, `openai/gsm8k` "main", its card beside the files) downloaded to `$CUBBY_DATASETS\gsm8k` and written
+  with ids by `validation/builders/gsm8k_sets.py`: `train.jsonl` (7,473, `gsm8k-train-<index>`, a `dev` flag),
+  `test.jsonl` (1,319, `gsm8k-test-<index>`), `dev_ids.json`, `manifest.json` (SHA-256 of every file); the manifest,
+  ids and counts only, is `validation/logs/gsm8k_2026-11-19_manifest.json`.
+- **Dev:** the 329 problems the emitter holds out of GSM8K train (its val split, read by `exp_he19_beam.py`), matched
+  by question text: all 329 exactly. Checks: dev questions that are test questions 0; the emitter's arithmetic
+  training rows whose question is a GSM8K test question 0, a dev question 0.
 - **Commits:**
 - **Files:**
 - **Tests:**
