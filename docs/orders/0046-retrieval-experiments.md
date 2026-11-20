@@ -1527,7 +1527,7 @@ From the Freiburg group's repositories (Nick: "yes"). Licences are checked and r
   method of `ad-freiburg/natural-entity-types` ("Paris, the city" or "Paris, the person"). Reported on the namesake
   rows: the share of candidate sets whose types tell every candidate apart. Candidates are never ordered by fame.
 ## Cowork's addendum (2026-11-10): R9, which kind of vector the VM should use
-**R9: review (Code B, 2026-11-19): the VM keeps MAP-bipolar (block codes fail the 2x cost line; accuracy held).** The plan below was checked by Cowork (2026-11-19) and written here
+**R9: done (Nick, 2026-11-20; Code B's verdict of 2026-11-19): the VM keeps MAP-bipolar (block codes fail the 2x cost line; accuracy held). R9b, at the end, times the job R9 leaves block codes.** The plan below was checked by Cowork (2026-11-19) and written here
 before any run.
 
 ### R9's plan (pre-registered, 2026-11-19)
@@ -1637,3 +1637,49 @@ costs nothing, rather than by habit.
   - Otherwise the VM keeps MAP-bipolar for its own memory, and block codes enter it only as retrieval vectors that
     come from the store's index, labelled as such.
 - **Either way:** the opcode bytes don't change, and a switch is a cubelang job with Nick's yes.
+
+## Cowork's addition (2026-11-20): R9b, block codes on the job R9 left them
+**R9b: open (Nick, 2026-11-20: "yes"; after 0078's S1 set is handed over).** Nick asked whether numba, scipy or the
+Vulkan path change R9's cost. R9 stays done: its 2x line was registered on the numpy pair, single calls, and that
+reading stands for the VM's own memory. R9b times the job R9's verdict gives block codes, retrieval vectors in the
+store's index searched in batches, with the faster ways to compute them.
+
+**What it brings, in plain words:** whether the store can search with the compact vectors that recalled better at
+80 B (R9: 1.0 against MAP's 0.9493 on 16 roles) without paying for it in speed.
+- **Over a conventional model:** retrieval there is a learned embedding with a fixed cost; here the vector kind and its
+  implementation are chosen by measurement on the system's own tasks.
+
+### R9b's plan (pre-registered, 2026-11-20)
+- **The block-code arms** (k = 80 and k = 512, l = 128, R9's two equal-storage points):
+  1. **numpy**, R9's path (`BlockCodes`, cubemind `f21d805`), re-timed in this run as the reference;
+  2. **scipy.fft:** the same per-block convolution with a real FFT, kept in float32;
+  3. **spectral frames:** each frame stored as its per-block real FFT; bind = element product, bundle = sum,
+     similarity through Parseval; an FFT only when a vector enters and when a frame is cleaned up to one-hot;
+  4. **index form (numba):** a key is one u8 index a block; bind of two keys = index sum mod l; a frame against a key =
+     the k values gathered; a frame bound with a key = a per-block shift; bundle to a key = the per-block vote (the most
+     frequent index), which loses information, so its accuracy is read again (below);
+  5. **grilly2 (Vulkan):** `grilly.vsa.bind`, `unbind`, `similarity_batch` (`g2-blockcode-bind.glsl`, a direct
+     per-block convolution, exact for one-hot), at batches of 1, 1,000 and 100,000, timed twice: with upload and
+     read-back, and resident (the data already on the card). grilly2 only, never grilly v1; its commit recorded.
+- **The MAP-bipolar arms beside them:** numpy (R9's), cubelang's Rust (R9's `r9_bench`, packed popcount for
+  similarity), and grilly2's if it has MAP ops (if it has none, say so; none is written for this).
+- **Equal results:** arms 2, 3 and 5 compute R9's arithmetic, so each is pinned equal to `BlockCodes` on a seeded
+  sample (one-hot exact; float within 1e-5) instead of re-reading accuracy. Arm 4 changes the bundle, so R9's two
+  accuracy tasks are re-run for it as R9 ran them (recall by key, role recovery, 80 B and 512 B, seeds 0, 1, 2).
+- **The cost tasks:**
+  - R9's single calls (bind, bundle of 16, similarity) for every arm, R9's medians;
+  - **the index job:** one query scored against N = 10k, 100k and 1M stored keys, top-1 and top-10, with query
+    batches of 1 and 1,000; time per query and bytes held, for every arm that can run it.
+- **The decision rule (pre-registered):**
+  - **The index's block-code implementation:** the fastest arm on the index job, among those pinned equal to
+    `BlockCodes` (or, for arm 4, whose accuracy is at least R9's MAP arm at both storage points), at each batch size;
+    named in the report, and adopted by a later order with Nick's yes.
+  - **The VM's own memory reopens only** if a compiled block arm (4 or 5) is within 2x of MAP's Rust on every single
+    call and its accuracy holds, compiled against compiled; then a new order, with Nick's yes. Otherwise R9's verdict
+    stands unchanged.
+- **Constraints:** timed only in a slot Cowork opens (CPU and GPU quiet); arms 3 and 4 are bench code under
+  `validation/retrieval_bench/` and nothing in cubemind, cubelang or grilly2 changes in this order; numpy, scipy,
+  numba, grilly2 and the driver versions recorded with the machine.
+- **Cowork's look beforehand (an indication, not evidence: a 2-core cloud CPU, ratios only, k = 512 / 80):**
+  scipy's bind about 2x faster than numpy's (192 / 41 us against 458 / 72 us); spectral bind 8.9 / 1.8 us, about
+  15x / 5x a numpy MAP bind; the index form's bind 1-2 us and a frame against a key 0.5-0.7 us, near MAP's 0.4-0.6 us.
