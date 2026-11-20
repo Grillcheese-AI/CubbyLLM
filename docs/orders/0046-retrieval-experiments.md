@@ -1527,6 +1527,7 @@ From the Freiburg group's repositories (Nick: "yes"). Licences are checked and r
   method of `ad-freiburg/natural-entity-types` ("Paris, the city" or "Paris, the person"). Reported on the namesake
   rows: the share of candidate sets whose types tell every candidate apart. Candidates are never ordered by fame.
 ## Cowork's addendum (2026-11-10): R9, which kind of vector the VM should use
+**R9: in progress (Code B, Nick 2026-11-19).** The plan goes to Cowork's inbox for a check before any run.
 Nick: "yes", to measuring before choosing. The Rust VM's vectors are MAP-bipolar (D = 4096), while MoWM, cubemind
 and the qFHRR work use block codes (k = 80, l = 128). For now each vector carries its kind, and mixing the two fails
 (cubelang P5-9). This experiment decides the long-term choice, and it runs **before any arm puts the store's
