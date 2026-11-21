@@ -1,6 +1,6 @@
 # 0080 - Cubby stays with someone in distress and points them to help: a host check
-status: proposed
-written: 2026-11-21 by Cowork, on Nick's "yes" · approved: - · hypothesis: H-E22
+status: open
+written: 2026-11-21 by Cowork, on Nick's "yes" · approved: 2026-11-21 by Nick ("yes") · hypothesis: H-E22
 
 ## Why
 Cubby's character sheet (0079) says that when someone seems in real distress, Cubby stays with them and suggests
