@@ -1687,3 +1687,42 @@ store's index searched in batches, with the faster ways to compute them.
 - **Cowork's look beforehand (an indication, not evidence: a 2-core cloud CPU, ratios only, k = 512 / 80):**
   scipy's bind about 2x faster than numpy's (192 / 41 us against 458 / 72 us); spectral bind 8.9 / 1.8 us, about
   15x / 5x a numpy MAP bind; the index form's bind 1-2 us and a frame against a key 0.5-0.7 us, near MAP's 0.4-0.6 us.
+
+### R9b's results (Code B, 2026-11-20; timed on Nick's word, "cpu and gpu are free")
+Logs: `retrieval_R9b_cost_2026-11-20.json` (CPU, 19:28:48-19:38:57, load 21-66% with the run's own six threads),
+`retrieval_R9b_grilly2_2026-11-20.json` (grilly2 `03279a0`, the home card, short calls), `retrieval_R9b_accuracy_2026-11-20.json`.
+Machine: Intel family 6 model 151, 12 threads; numpy 2.4.6, scipy 1.17.1, numba 0.64.0 (six threads).
+- **Equal results:** arms 2 (scipy) and 3 (spectral) equal `BlockCodes` within 1e-5 on bind, unbind, bundle and
+  similarity; arm 4 exact for one-hot (bind, unbind, similarity, a frame against a key, a frame shifted, batch scores);
+  arm 5 (grilly2) equal on every check at k = 80 and 512 (`tests/validation/test_r9b_arms.py`, the grilly2 log's `checks`).
+- **Single calls, ns** (k = 80 / k = 512; MAP Rust at 80 B / 512 B: bind 55 / 222, bundle of 16 727 / 3,926,
+  similarity 990 / 5,371, packed 8 / 42):
+
+| arm | bind | bundle of 16 | similarity |
+|---|---|---|---|
+| 1 numpy | 163,770 / 1,033,436 | 65,074 / 359,664 | 5,935 / 20,112 |
+| 2 scipy | 53,482 / 241,552 | 28,876 / 157,844 | 6,074 / 19,208 |
+| 3 spectral (an FFT in or out: 39,278 / 219,301) | 2,262 / 6,722 | 34,811 / 194,838 | 12,164 / 45,004 |
+| 4 index form | 997 / 1,589 | 3,104 / 17,575 | 456 / 444 |
+| 5 grilly2, one call (launch) | ~200,400 / ~152,200 | ~222,400 / ~186,700 | ~536,500 / ~2,428,700 |
+
+- **The index job, one query scored + top-10, ms** (batch 1 / batch 1,000, per query):
+
+| N keys | 4 index, k = 80 (80 B) | 4 index, k = 512 | MAP Rust D = 640 (80 B) | MAP Rust D = 4096 | dense numpy k = 80 | grilly2 k = 80 |
+|---|---|---|---|---|---|---|
+| 10k | 0.09 / 0.10 | 0.23 / 0.22 | 0.12 / 0.14 | 0.64 / 0.51 | 15.9 / 0.58 | 1.19 / 0.17 |
+| 100k | 0.51 / 0.82 | 2.17 / 2.29 | 1.80 / 2.01 | 6.74 / 6.98 | not held (4 GB) | not held |
+| 1M | 7.1 / 9.2 | 23.7 / 26.1 | 23.7 / 24.1 | 71.9 / 73.1 | not held | not held |
+
+  (The HammingIndex scans and sorts every key per query; numpy's packed MAP is slower still: 217 ms at 1M, D = 4096.)
+- **Arm 4's accuracy** (its bundle is a vote; seeds 0, 1, 2): recall by key 1.0 in every row (MAP at 80 B: 0.9957 /
+  0.9797 at 10k / 100k, s = 0.2). Role recovery at 80 B: 1.0, 1.0, **0.9935, 0.9163** at 2, 4, 8, 16 pairs, against
+  MAP's 1.0, 1.0, 0.9997, 0.9493; at 512 B 1.0 everywhere, as MAP.
+- **By the rule:**
+  - **The VM's own memory:** no compiled arm is within 2x of MAP's Rust on every single call (arm 4's bind 18x at 80 B;
+    arm 5's calls are launch-bound, ~0.2 ms). **R9's verdict stands unchanged.**
+  - **The index's implementation:** turns on reading the rule for arm 4, which is Cowork's to rule. (a) The index job
+    scores one-hot keys only, and arm 4's key scoring is pinned exactly equal to `BlockCodes.similarity_batch`: by the
+    "pinned equal" clause, arm 4 is the fastest at every N and batch. (b) By the accuracy clause over arm 4 as a whole
+    (its vote bundle), it falls short of MAP at 80 B on 8 and 16 pairs; then the fastest pinned arm is grilly2 at 10k
+    (1.19 / 0.17 ms), and no pinned arm holds 100k or 1M keys (a dense float32 codebook over 2 GB).

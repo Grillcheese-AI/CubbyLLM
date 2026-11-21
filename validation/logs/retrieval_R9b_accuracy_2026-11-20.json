@@ -1,0 +1,1738 @@
+{
+ "what": "order 0046 R9b: arm 4 (the index form, the vote bundle) on R9's two tasks",
+ "date": "2026-11-20",
+ "recall": [
+  {
+   "arm": "index",
+   "k": 512,
+   "n": 1000,
+   "s": 0.2,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.1766,
+    "spread": 0.0001,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 512,
+   "n": 1000,
+   "s": 0.5,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.4769,
+    "spread": 0.0001,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 512,
+   "n": 1000,
+   "s": 0.8,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.7773,
+    "spread": 0.0002,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 512,
+   "n": 1000,
+   "s": 1.0,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.9768,
+    "spread": 0.0002,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 512,
+   "n": 10000,
+   "s": 0.2,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.173,
+    "spread": 0.0003,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 512,
+   "n": 10000,
+   "s": 0.5,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.4733,
+    "spread": 0.0001,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 512,
+   "n": 10000,
+   "s": 0.8,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.7738,
+    "spread": 0.0001,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 512,
+   "n": 10000,
+   "s": 1.0,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.9734,
+    "spread": 0.0001,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 512,
+   "n": 100000,
+   "s": 0.2,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.1699,
+    "spread": 0.0002,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 512,
+   "n": 100000,
+   "s": 0.5,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.4702,
+    "spread": 0.0001,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 512,
+   "n": 100000,
+   "s": 0.8,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.7705,
+    "spread": 0.0002,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 512,
+   "n": 100000,
+   "s": 1.0,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.9701,
+    "spread": 0.0001,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 80,
+   "n": 1000,
+   "s": 0.2,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.1395,
+    "spread": 0.0003,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 80,
+   "n": 1000,
+   "s": 0.5,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.4488,
+    "spread": 0.0003,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 80,
+   "n": 1000,
+   "s": 0.8,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.7469,
+    "spread": 0.0002,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 80,
+   "n": 1000,
+   "s": 1.0,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.9453,
+    "spread": 0.0002,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 80,
+   "n": 10000,
+   "s": 0.2,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.1269,
+    "spread": 0.0007,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 80,
+   "n": 10000,
+   "s": 0.5,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.4371,
+    "spread": 0.0005,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 80,
+   "n": 10000,
+   "s": 0.8,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.7343,
+    "spread": 0.0002,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 80,
+   "n": 10000,
+   "s": 1.0,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.9328,
+    "spread": 0.0005,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 80,
+   "n": 100000,
+   "s": 0.2,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.115,
+    "spread": 0.0006,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 80,
+   "n": 100000,
+   "s": 0.5,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.4252,
+    "spread": 0.0001,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 80,
+   "n": 100000,
+   "s": 0.8,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.7227,
+    "spread": 0.0008,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 80,
+   "n": 100000,
+   "s": 1.0,
+   "recall_at_1": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.9213,
+    "spread": 0.0003,
+    "seeds": 3
+   }
+  }
+ ],
+ "roles": [
+  {
+   "arm": "index",
+   "k": 512,
+   "pairs": 16,
+   "right_share": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.0805,
+    "spread": 0.0001,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 512,
+   "pairs": 2,
+   "right_share": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.4808,
+    "spread": 0.0001,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 512,
+   "pairs": 4,
+   "right_share": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.2385,
+    "spread": 0.0002,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 512,
+   "pairs": 8,
+   "right_share": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.1273,
+    "spread": 0.0001,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 80,
+   "pairs": 16,
+   "right_share": {
+    "mean": 0.9163,
+    "spread": 0.0022,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.0501,
+    "spread": 0.0004,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 80,
+   "pairs": 2,
+   "right_share": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.4492,
+    "spread": 0.0004,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 80,
+   "pairs": 4,
+   "right_share": {
+    "mean": 1.0,
+    "spread": 0.0,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.207,
+    "spread": 0.0002,
+    "seeds": 3
+   }
+  },
+  {
+   "arm": "index",
+   "k": 80,
+   "pairs": 8,
+   "right_share": {
+    "mean": 0.9935,
+    "spread": 0.0012,
+    "seeds": 3
+   },
+   "margin": {
+    "mean": 0.0958,
+    "spread": 0.0001,
+    "seeds": 3
+   }
+  }
+ ],
+ "rows": [
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 1000,
+   "s": 1.0,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.0,
+   "recall_at_1": 1.0,
+   "margin": 0.9451750000000085,
+   "query_key_sim": 1.0
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 1000,
+   "s": 0.8,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.2,
+   "recall_at_1": 1.0,
+   "margin": 0.7469374999999987,
+   "query_key_sim": 0.8016124999999903
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 1000,
+   "s": 0.5,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.5,
+   "recall_at_1": 1.0,
+   "margin": 0.4488874999999948,
+   "query_key_sim": 0.5031499999999982
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 1000,
+   "s": 0.2,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.8125,
+   "recall_at_1": 1.0,
+   "margin": 0.1394250000000006,
+   "query_key_sim": 0.19354999999999956
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 10000,
+   "s": 1.0,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.0,
+   "recall_at_1": 1.0,
+   "margin": 0.9326374999999956,
+   "query_key_sim": 1.0
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 10000,
+   "s": 0.8,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.2,
+   "recall_at_1": 1.0,
+   "margin": 0.7342249999999979,
+   "query_key_sim": 0.8015874999999897
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 10000,
+   "s": 0.5,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.5,
+   "recall_at_1": 1.0,
+   "margin": 0.4369750000000005,
+   "query_key_sim": 0.5039749999999978
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 10000,
+   "s": 0.2,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.8125,
+   "recall_at_1": 1.0,
+   "margin": 0.1268250000000001,
+   "query_key_sim": 0.1938499999999993
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 100000,
+   "s": 1.0,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.0,
+   "recall_at_1": 1.0,
+   "margin": 0.921299999999993,
+   "query_key_sim": 1.0
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 100000,
+   "s": 0.8,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.2,
+   "recall_at_1": 1.0,
+   "margin": 0.7224750000000048,
+   "query_key_sim": 0.80137499999999
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 100000,
+   "s": 0.5,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.5,
+   "recall_at_1": 1.0,
+   "margin": 0.42511250000000517,
+   "query_key_sim": 0.5038249999999981
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 100000,
+   "s": 0.2,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.8125,
+   "recall_at_1": 1.0,
+   "margin": 0.11467499999999889,
+   "query_key_sim": 0.1935249999999992
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 80,
+   "pairs": 2,
+   "seed": 0,
+   "right_share": 1.0,
+   "margin": 0.44934374187886716
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 80,
+   "pairs": 4,
+   "seed": 0,
+   "right_share": 1.0,
+   "margin": 0.20709062340762466
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 80,
+   "pairs": 8,
+   "seed": 0,
+   "right_share": 0.993,
+   "margin": 0.09582656387519091
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 80,
+   "pairs": 16,
+   "seed": 0,
+   "right_share": 0.9148125,
+   "margin": 0.0499359378842637
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 1000,
+   "s": 1.0,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.0,
+   "recall_at_1": 1.0,
+   "margin": 0.976923828125,
+   "query_key_sim": 1.0
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 1000,
+   "s": 0.8,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.201171875,
+   "recall_at_1": 1.0,
+   "margin": 0.77734375,
+   "query_key_sim": 0.80043359375
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 1000,
+   "s": 0.5,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.50390625,
+   "recall_at_1": 1.0,
+   "margin": 0.47696875,
+   "query_key_sim": 0.500099609375
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 1000,
+   "s": 0.2,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.806640625,
+   "recall_at_1": 1.0,
+   "margin": 0.17662890625,
+   "query_key_sim": 0.1996796875
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 10000,
+   "s": 1.0,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.0,
+   "recall_at_1": 1.0,
+   "margin": 0.97344140625,
+   "query_key_sim": 1.0
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 10000,
+   "s": 0.8,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.201171875,
+   "recall_at_1": 1.0,
+   "margin": 0.77375,
+   "query_key_sim": 0.800400390625
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 10000,
+   "s": 0.5,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.50390625,
+   "recall_at_1": 1.0,
+   "margin": 0.473416015625,
+   "query_key_sim": 0.5000625
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 10000,
+   "s": 0.2,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.806640625,
+   "recall_at_1": 1.0,
+   "margin": 0.17315234375,
+   "query_key_sim": 0.199724609375
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 100000,
+   "s": 1.0,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.0,
+   "recall_at_1": 1.0,
+   "margin": 0.970111328125,
+   "query_key_sim": 1.0
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 100000,
+   "s": 0.8,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.201171875,
+   "recall_at_1": 1.0,
+   "margin": 0.77051953125,
+   "query_key_sim": 0.8004609375
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 100000,
+   "s": 0.5,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.50390625,
+   "recall_at_1": 1.0,
+   "margin": 0.47024609375,
+   "query_key_sim": 0.500087890625
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 100000,
+   "s": 0.2,
+   "seed": 0,
+   "queries": 1000,
+   "p": 0.806640625,
+   "recall_at_1": 1.0,
+   "margin": 0.1699140625,
+   "query_key_sim": 0.199791015625
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 512,
+   "pairs": 2,
+   "seed": 0,
+   "right_share": 1.0,
+   "margin": 0.480708984375
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 512,
+   "pairs": 4,
+   "seed": 0,
+   "right_share": 1.0,
+   "margin": 0.23848388671875
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 512,
+   "pairs": 8,
+   "seed": 0,
+   "right_share": 1.0,
+   "margin": 0.127246337890625
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 512,
+   "pairs": 16,
+   "seed": 0,
+   "right_share": 1.0,
+   "margin": 0.0804678955078125
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 1000,
+   "s": 1.0,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.0,
+   "recall_at_1": 1.0,
+   "margin": 0.9453375000000085,
+   "query_key_sim": 1.0
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 1000,
+   "s": 0.8,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.2,
+   "recall_at_1": 1.0,
+   "margin": 0.7468249999999984,
+   "query_key_sim": 0.8014874999999898
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 1000,
+   "s": 0.5,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.5,
+   "recall_at_1": 1.0,
+   "margin": 0.4487874999999952,
+   "query_key_sim": 0.5037374999999982
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 1000,
+   "s": 0.2,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.8125,
+   "recall_at_1": 1.0,
+   "margin": 0.13967500000000083,
+   "query_key_sim": 0.19409999999999944
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 10000,
+   "s": 1.0,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.0,
+   "recall_at_1": 1.0,
+   "margin": 0.9327249999999956,
+   "query_key_sim": 1.0
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 10000,
+   "s": 0.8,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.2,
+   "recall_at_1": 1.0,
+   "margin": 0.7343999999999984,
+   "query_key_sim": 0.8015374999999899
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 10000,
+   "s": 0.5,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.5,
+   "recall_at_1": 1.0,
+   "margin": 0.4368500000000003,
+   "query_key_sim": 0.5037249999999978
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 10000,
+   "s": 0.2,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.8125,
+   "recall_at_1": 1.0,
+   "margin": 0.1265875000000001,
+   "query_key_sim": 0.19397499999999937
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 100000,
+   "s": 1.0,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.0,
+   "recall_at_1": 1.0,
+   "margin": 0.9214999999999928,
+   "query_key_sim": 1.0
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 100000,
+   "s": 0.8,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.2,
+   "recall_at_1": 1.0,
+   "margin": 0.7223750000000043,
+   "query_key_sim": 0.8015999999999902
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 100000,
+   "s": 0.5,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.5,
+   "recall_at_1": 1.0,
+   "margin": 0.42512500000000547,
+   "query_key_sim": 0.503787499999998
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 100000,
+   "s": 0.2,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.8125,
+   "recall_at_1": 1.0,
+   "margin": 0.11529999999999892,
+   "query_key_sim": 0.19409999999999944
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 80,
+   "pairs": 2,
+   "seed": 1,
+   "right_share": 1.0,
+   "margin": 0.44889374208450317
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 80,
+   "pairs": 4,
+   "seed": 1,
+   "right_share": 1.0,
+   "margin": 0.20691874862648546
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 80,
+   "pairs": 8,
+   "seed": 1,
+   "right_share": 0.99425,
+   "margin": 0.09577656393451617
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 80,
+   "pairs": 16,
+   "seed": 1,
+   "right_share": 0.9170625,
+   "margin": 0.049953906687209386
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 1000,
+   "s": 1.0,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.0,
+   "recall_at_1": 1.0,
+   "margin": 0.9767734375,
+   "query_key_sim": 1.0
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 1000,
+   "s": 0.8,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.201171875,
+   "recall_at_1": 1.0,
+   "margin": 0.77718359375,
+   "query_key_sim": 0.8002734375
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 1000,
+   "s": 0.5,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.50390625,
+   "recall_at_1": 1.0,
+   "margin": 0.476880859375,
+   "query_key_sim": 0.500029296875
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 1000,
+   "s": 0.2,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.806640625,
+   "recall_at_1": 1.0,
+   "margin": 0.176541015625,
+   "query_key_sim": 0.1996953125
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 10000,
+   "s": 1.0,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.0,
+   "recall_at_1": 1.0,
+   "margin": 0.973388671875,
+   "query_key_sim": 1.0
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 10000,
+   "s": 0.8,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.201171875,
+   "recall_at_1": 1.0,
+   "margin": 0.773845703125,
+   "query_key_sim": 0.800427734375
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 10000,
+   "s": 0.5,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.50390625,
+   "recall_at_1": 1.0,
+   "margin": 0.473283203125,
+   "query_key_sim": 0.49994140625
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 10000,
+   "s": 0.2,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.806640625,
+   "recall_at_1": 1.0,
+   "margin": 0.17298828125,
+   "query_key_sim": 0.199708984375
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 100000,
+   "s": 1.0,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.0,
+   "recall_at_1": 1.0,
+   "margin": 0.970115234375,
+   "query_key_sim": 1.0
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 100000,
+   "s": 0.8,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.201171875,
+   "recall_at_1": 1.0,
+   "margin": 0.770630859375,
+   "query_key_sim": 0.80047265625
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 100000,
+   "s": 0.5,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.50390625,
+   "recall_at_1": 1.0,
+   "margin": 0.470146484375,
+   "query_key_sim": 0.5
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 100000,
+   "s": 0.2,
+   "seed": 1,
+   "queries": 1000,
+   "p": 0.806640625,
+   "recall_at_1": 1.0,
+   "margin": 0.16973046875,
+   "query_key_sim": 0.1996015625
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 512,
+   "pairs": 2,
+   "seed": 1,
+   "right_share": 1.0,
+   "margin": 0.4808173828125
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 512,
+   "pairs": 4,
+   "seed": 1,
+   "right_share": 1.0,
+   "margin": 0.23863525390625
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 512,
+   "pairs": 8,
+   "seed": 1,
+   "right_share": 1.0,
+   "margin": 0.127239501953125
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 512,
+   "pairs": 16,
+   "seed": 1,
+   "right_share": 1.0,
+   "margin": 0.080452392578125
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 1000,
+   "s": 1.0,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.0,
+   "recall_at_1": 1.0,
+   "margin": 0.9453000000000082,
+   "query_key_sim": 1.0
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 1000,
+   "s": 0.8,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.2,
+   "recall_at_1": 1.0,
+   "margin": 0.7469874999999984,
+   "query_key_sim": 0.8017374999999907
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 1000,
+   "s": 0.5,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.5,
+   "recall_at_1": 1.0,
+   "margin": 0.44861249999999525,
+   "query_key_sim": 0.5036624999999979
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 1000,
+   "s": 0.2,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.8125,
+   "recall_at_1": 1.0,
+   "margin": 0.1393750000000008,
+   "query_key_sim": 0.1939874999999994
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 10000,
+   "s": 1.0,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.0,
+   "recall_at_1": 1.0,
+   "margin": 0.9331749999999966,
+   "query_key_sim": 1.0
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 10000,
+   "s": 0.8,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.2,
+   "recall_at_1": 1.0,
+   "margin": 0.7343499999999987,
+   "query_key_sim": 0.80152499999999
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 10000,
+   "s": 0.5,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.5,
+   "recall_at_1": 1.0,
+   "margin": 0.4373750000000001,
+   "query_key_sim": 0.5045499999999976
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 10000,
+   "s": 0.2,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.8125,
+   "recall_at_1": 1.0,
+   "margin": 0.12728750000000022,
+   "query_key_sim": 0.19436249999999938
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 100000,
+   "s": 1.0,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.0,
+   "recall_at_1": 1.0,
+   "margin": 0.9211999999999928,
+   "query_key_sim": 1.0
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 100000,
+   "s": 0.8,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.2,
+   "recall_at_1": 1.0,
+   "margin": 0.7231375000000047,
+   "query_key_sim": 0.8017999999999902
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 100000,
+   "s": 0.5,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.5,
+   "recall_at_1": 1.0,
+   "margin": 0.425225000000005,
+   "query_key_sim": 0.5041124999999976
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 80,
+   "l": 128,
+   "n": 100000,
+   "s": 0.2,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.8125,
+   "recall_at_1": 1.0,
+   "margin": 0.11503749999999889,
+   "query_key_sim": 0.19361249999999952
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 80,
+   "pairs": 2,
+   "seed": 2,
+   "right_share": 1.0,
+   "margin": 0.4492624918371439
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 80,
+   "pairs": 4,
+   "seed": 2,
+   "right_share": 1.0,
+   "margin": 0.20685312354099006
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 80,
+   "pairs": 8,
+   "seed": 2,
+   "right_share": 0.99325,
+   "margin": 0.09569218881335109
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 80,
+   "pairs": 16,
+   "seed": 2,
+   "right_share": 0.917,
+   "margin": 0.050325000488897785
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 1000,
+   "s": 1.0,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.0,
+   "recall_at_1": 1.0,
+   "margin": 0.976798828125,
+   "query_key_sim": 1.0
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 1000,
+   "s": 0.8,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.201171875,
+   "recall_at_1": 1.0,
+   "margin": 0.7773046875,
+   "query_key_sim": 0.80048046875
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 1000,
+   "s": 0.5,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.50390625,
+   "recall_at_1": 1.0,
+   "margin": 0.4768828125,
+   "query_key_sim": 0.500033203125
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 1000,
+   "s": 0.2,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.806640625,
+   "recall_at_1": 1.0,
+   "margin": 0.176560546875,
+   "query_key_sim": 0.199630859375
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 10000,
+   "s": 1.0,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.0,
+   "recall_at_1": 1.0,
+   "margin": 0.973412109375,
+   "query_key_sim": 1.0
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 10000,
+   "s": 0.8,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.201171875,
+   "recall_at_1": 1.0,
+   "margin": 0.773712890625,
+   "query_key_sim": 0.800376953125
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 10000,
+   "s": 0.5,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.50390625,
+   "recall_at_1": 1.0,
+   "margin": 0.47330078125,
+   "query_key_sim": 0.49994140625
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 10000,
+   "s": 0.2,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.806640625,
+   "recall_at_1": 1.0,
+   "margin": 0.17280859375,
+   "query_key_sim": 0.1994140625
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 100000,
+   "s": 1.0,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.0,
+   "recall_at_1": 1.0,
+   "margin": 0.97021484375,
+   "query_key_sim": 1.0
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 100000,
+   "s": 0.8,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.201171875,
+   "recall_at_1": 1.0,
+   "margin": 0.770462890625,
+   "query_key_sim": 0.800361328125
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 100000,
+   "s": 0.5,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.50390625,
+   "recall_at_1": 1.0,
+   "margin": 0.470185546875,
+   "query_key_sim": 0.500048828125
+  },
+  {
+   "arm": "index",
+   "task": "recall",
+   "k": 512,
+   "l": 128,
+   "n": 100000,
+   "s": 0.2,
+   "seed": 2,
+   "queries": 1000,
+   "p": 0.806640625,
+   "recall_at_1": 1.0,
+   "margin": 0.16994140625,
+   "query_key_sim": 0.199798828125
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 512,
+   "pairs": 2,
+   "seed": 2,
+   "right_share": 1.0,
+   "margin": 0.480765625
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 512,
+   "pairs": 4,
+   "seed": 2,
+   "right_share": 1.0,
+   "margin": 0.23849169921875
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 512,
+   "pairs": 8,
+   "seed": 2,
+   "right_share": 1.0,
+   "margin": 0.127305419921875
+  },
+  {
+   "arm": "index",
+   "task": "roles",
+   "k": 512,
+   "pairs": 16,
+   "seed": 2,
+   "right_share": 1.0,
+   "margin": 0.0805308837890625
+  }
+ ]
+}
