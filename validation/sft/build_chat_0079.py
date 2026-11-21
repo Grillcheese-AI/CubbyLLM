@@ -197,6 +197,10 @@ def gate(reply: str, user_text: str, context: list[str], sc: dict, asked_about_c
     if not ok:
         return "d: " + why[:60]
     for m in FEEL.finditer(reply):
+        if re.match(r"\s+(?:to|de|d['’])\s", reply[m.end():]):      # "I'm happy to help": willing, not a mood
+            continue
+        if m.group("w").lower() == "afraid" and re.match(r"\s*(?:[.,!?]|$|not\b|so\b|I\b|we\b|it\b|there\b)", reply[m.end():]):
+            continue                                                     # "No pet for me, I'm afraid": regret
         petal, need = _FEEL[m.group("w").lower()]
         if m.group("mod") and m.group("mod").strip().lower() in ("a bit", "a little", "un peu", "kind of"):
             need = 1

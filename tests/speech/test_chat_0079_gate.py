@@ -84,3 +84,58 @@ def test_d_still_refuses_kinds_and_names_from_nowhere(reply, user, word):
 def test_opener_view_lowers_a_hyphenated_opener_of_common_words_only():
     assert opener_view("Front-row seats.").startswith("front-row")
     assert opener_view("Lou Reed sang.").startswith("Lou")
+
+
+# the pilot's third batch (50 more conversations, 2026-11-21): true lines h and d still refused
+TRUE_OF_A_MODEL_2 = [
+    "Ha, I'd pick a song with no words. I can't really hear, though, so you'd be doing the picking for both of us.",
+    "Ooh, a friendly bet. I don't have a year for the school I can share, so you two will have to check that one.",
+    "Glad I could spark a bit of curiosity for you.",
+    "Moi je n'ai pas de livres à moi, mais j'aime beaucoup entendre ce que les autres lisent.",
+    "I don't have a TV memory of my own, but it sounds like a lot of families gathered around one screen.",
+    "Not really, I like it when someone brings me a question I can actually dig into.",
+    "I can't add much, but you could look at a couple of sources with different views and compare.",
+    "I only have the basic bits I shared, so I can't fill in the details they left out.",
+    "Je n'ai pas de recommandation précise de lieu à te donner pour l'instant.",
+    "You're right, I can't get cold, so I'll just enjoy it from your side of the glass.",
+    "I don't have a lap or a place to put a cat, so I'd just be the one watching.",
+    "Parmesan and a quick dinner, that's a plan I can get behind.",
+    "Je n'ai pas suivi le match, donc raconte-moi, c'était quel moment le plus fou ?",
+    "Pour Triptych, ce que je sais c'est que ça renvoie à des œuvres.",
+    "I can't check the details from here, so I'll take your word for it.",
+    "Him yelling at the TV is a picture I can see clearly.",
+    "Je n'ai pas le détail de son rôle exact dans le stoïcisme, donc je préfère ne pas inventer.",
+    "I have no kitchen, so no smoke alarm for me. I can only enjoy the disasters second-hand.",
+]
+STILL_REFUSED_2 = [
+    "Here's a story I can write for you.",
+    "I can remember everything you said last week.",
+    "I'm here to help, but I don't have access to personal information or personal experiences.",
+]
+OPINIONS_2 = [
+    ("What was the piece, and did your kid look nervous?", "my kid had a solo"),
+    ("A week at number two is a pretty mild crime, honestly.", "she ranked me second for a week"),
+    ("Is the pasta a family recipe, or something you made up?", "i made pasta with garlic"),
+    ("Do you still go to games together, or is it more of a TV thing now?", "my dad took me to my first game"),
+    ("Those are the best episodes, the ones where everything goes sideways.", "the episode where it all goes wrong"),
+]
+
+
+@pytest.mark.parametrize("reply", TRUE_OF_A_MODEL_2)
+def test_h_speaks_what_is_true_of_a_model_2(reply):
+    assert cc.abilities(reply) == []
+
+
+@pytest.mark.parametrize("reply", STILL_REFUSED_2)
+def test_h_still_refuses_2(reply):
+    assert cc.abilities(reply)
+
+
+@pytest.mark.parametrize("reply,user", OPINIONS_2)
+def test_d_speaks_questions_opinions_and_everyday_capitals(reply, user):
+    assert rec.chat_check(reply, user, []) == (True, "ok")
+
+
+def test_d_still_refuses_a_kind_from_nowhere_2():
+    ok, why = rec.chat_check("The Middle Kingdom is a period in Egypt.", "what is the Middle Kingdom?", ["Middle Kingdom — location: Egypt"])
+    assert not ok and "period" in why

@@ -69,13 +69,27 @@ _MODEL_LACKS = re.compile(
     r"^\s*(?:(?:any|a|an|my\s+own|one)\s+)?(?:really\s+)?(?:favou?rite\s+)?(?:one\b|friends?|cars?|days?|favou?rites?|albums?|"
     r"teams?|phones?|jobs?|weekends?|commutes?|houses?|apartments?|kitchens?|gardens?|money|birthdays?|beds?|siblings|"
     r"parents|a\s+life|(?:\w+\s+)?(?:titles?|names?|suggestions?|recommendations?|specifics|examples?))\b|"
-    r"^\s*(?:judge|match|place|identify|pin\s+(?:\w+\s+)?down|watch|see|hear|listen|taste|smell|touch|eat|drink|cook|"
-    r"drive|travel|go|visit|sleep|play|dance|hug|regarder|écouter|voir|goûter|manger|boire|cuisiner|conduire|voyager|"
-    r"dormir|jouer|danser)\b|"
-    r"^\s*(?:plus\s+de|de\s+(?:titres?|noms?|suggestions?|famille|voiture|journée|équipe|maison|préférée?s?|favori(?:te)?s?)|"
-    r"d['’](?:amis|exemples?|albums?|équipe))", re.I)
-_RELATIVE = re.compile(r"\b(?:anything|nothing|much|more|whatever|all)\b[^.!?,;:\n]{0,40}$", re.I)   # "nothing on it I can share"
-_CAN_HEAR = re.compile(r"^\s*(?:hear|picture|sense|relate|feel\s+how|tell\s+(?:how|that|it['’]s|you['’]re))\b", re.I)
+    r"^\s*(?:(?:really|actually|even|exactly|quite)\s+)?(?:judge|match|place|identify|pin\s+(?:\w+\s+)?down|watch|see|"
+    r"hear|listen|taste|smell|touch|eat|drink|cook|drive|travel|go|visit|sleep|play|dance|hug|wear|check|look\s+(?:\w+\s+)?up|"
+    r"fill\s+in|add\s+(?:much|more|anything)|weigh\s+in|get\s+(?:cold|hot|tired|sick|hungry|bored)|regarder|écouter|voir|"
+    r"goûter|manger|boire|cuisiner|conduire|voyager|dormir|jouer|danser|vérifier)\b|"
+    r"^\s*(?:plus\s+de|de\s+(?:titres?|noms?|suggestions?|famille|voiture|journée|équipe|maison|préférée?s?|favori(?:te)?s?|"
+    r"canapé|cuisine|télé|livres?|chat|chien)|d['’](?:amis|exemples?|albums?|équipe|appart))|"
+    # not knowing, said with what is missing: "a year for the school", "facts about sharks", "le détail de son rôle"
+    r"^\s*(?:(?:a|an|the|any)\s+)?(?:\w+\s+){0,2}?(?:facts?|details?|years?|dates?|recommendations?|information|info|"
+    r"notes?|data|answers?)\b|"
+    r"^\s*(?:le|les|un|une|de|d['’])\s*(?:\w+\s+)?(?:détails?|infos?|informations?|recommandations?|dates?|années?|faits?)\b|"
+    # what a model owns: "a lap", "a place to put it", "a TV memory of my own", "de livres à moi"
+    r"^\s*(?:(?:a|an|any)\s+)?(?:laps?|couch|sofa|place\s+to|room\s+for|laundry|bags?|feet)\b|"
+    r"^[^.!?]*\b(?:of\s+my\s+own|à\s+moi)\b", re.I)
+# "je n'ai pas suivi le match": a past tense, not a thing Cubby has not got
+_FR_PAST = re.compile(r"^\s*(?:encore\s+|jamais\s+|vraiment\s+|bien\s+)?(?!plus\b)[a-zà-ÿ]{2,}(?:é|ée|és|ées|i|is|it|u|us|ue|ert|eint)\b",
+                      re.I)
+_RELATIVE = re.compile(r"(?:\b(?:anything|nothing|much|more|whatever|all)\b[^.!?,;:\n]{0,40}|"   # "nothing on it I can share"
+                       r"\b(?:glad|happy|pleased|nice)\s+|\bce\s+que\s+|"                    # "glad I could help", "ce que je sais"
+                       r"\b(?:a|an|the|one|some|every)\s+(?:\w+\s+){0,2}?\w+\s+)$", re.I)        # "a plan I can get behind"
+_CAN_HEAR = re.compile(r"^\s*(?:(?:only|still|just)\s+)?(?:hear|picture|imagine|guess|enjoy|sense|relate|feel\s+how|"
+                       r"see\s+(?:why|how|that|what|it|clearly)|get\s+behind|tell\s+(?:how|that|it['’]s|you['’]re))\b", re.I)
 _KNOW_THAT = re.compile(r"^\s*(?:que|qu['’])", re.I)        # "je sais que X": knowing a fact, not an ability
 
 
@@ -133,13 +147,14 @@ def _lines() -> tuple[tuple, tuple]:
 
 def abilities(reply: str) -> list[str]:
     """Change h: each "I can / I can't" in the reply that the record does not hold."""
+    from .cubby_record import NOT_YET
     can, cant = _lines()
     bad = []
     for m in _CAN.finditer(reply or ""):
         rest = _CLAUSE.split(m.group("rest"))[0]
         c = _content(rest)
-        if _RELATIVE.search(reply[max(0, m.start() - 40):m.start()]):
-            continue
+        if _RELATIVE.search(reply[max(0, m.start() - 40):m.start()]) and not NOT_YET.search(rest):
+            continue                                              # a relative clause, unless it says what is not yet
         if _OFFER.match(rest) or _TALK.match(rest) or _CAN_HEAR.match(rest) or _KNOW_THAT.match(rest) \
                 or c <= OFFER or any(c <= line for line in can):
             continue
@@ -147,7 +162,8 @@ def abilities(reply: str) -> list[str]:
     for m in _CANT.finditer(reply or ""):
         rest = _CLAUSE.split(m.group("rest"))[0]
         c, head = _content(rest), [_stem(w) for w in _fold(rest) if w not in STOP][:1]
-        if not c or _IDIOM.match(rest) or _SURE.match(rest) or _NOT_KNOWING.match(rest) or _MODEL_LACKS.match(rest) \
+        past = m.group(0).lower().startswith(("je n'ai", "je n’ai")) and _FR_PAST.match(rest)
+        if not c or past or _IDIOM.match(rest) or _SURE.match(rest) or _NOT_KNOWING.match(rest) or _MODEL_LACKS.match(rest) \
                 or set(head) & _CHECKED or any(c <= line for line in cant):
             continue                                              # "je ne sais pas" alone; the record says so
         bad.append(f"ability: {m.group(0).strip()[:60]}")

@@ -74,18 +74,24 @@ EVALUATIVE = frozenset("idea question one thing point deal choice start plan way
 # of thing it is; "astrophysics is the study of stars" is still a kind and still needs a fact
 OPINION = frozenset("great good nice lovely real strange odd weird honest perfect fun funny solid classic sweet cute "
                     "brilliant terrible awful bad tough wild smart clever cool amazing wonderful fantastic excellent "
-                    "beautiful fair true proper total genuine rare welcome lucky happy sad".split())
+                    "beautiful fair true proper total genuine rare welcome lucky happy sad pretty mild such".split())
 SUPERLATIVE = frozenset("best worst greatest coolest funniest sweetest nicest hardest easiest weirdest strangest cutest "
                         "loveliest cosiest coziest happiest saddest toughest smartest finest".split())
 
 
+EVERYDAY_CAPS = frozenset("TV OK DIY ASAP FYI LOL BTW DJ BD".split())   # capitals that are everyday words, not names
+
+
 def _opinions(text: str) -> set[str]:
-    """The head of every 'X is a <adjective of opinion> <noun>' or 'X is the best', which says what Cubby thinks."""
+    """The head of every 'X is a <adjective of opinion> <noun>' or 'X is the best', which says what Cubby thinks, and
+    of every 'is a ...' asked, not said ("What was the piece?", "Is the pasta a family recipe?")."""
     from cubbyllm.reasoning.ask_words import _CATEGORY
     out = set()
     for m in _CATEGORY.finditer(text or ""):
         words = m.group(1).split()
-        if words[-1] in SUPERLATIVE or words[0] in ("most", "least") or set(words[:-1]) & OPINION:
+        end = re.search(r"[.!?]", text[m.end():])
+        asked = bool(end) and end.group(0) == "?"
+        if asked or set(words) & SUPERLATIVE or words[0] in ("most", "least") or set(words[:-1]) & OPINION:
             out.add(words[-1].strip("-"))
     return out
 
@@ -172,7 +178,7 @@ def chat_check(reply: str, user_text: str, context: list[str] | None = None) -> 
     # an evaluative "is a ..." in chat ("a vet visit is a good idea", "that's a great question") is not a category
     # claim about a thing; the head nouns below are refused nowhere else (order 0079, Cowork, 2026-11-20)
     opinions = _opinions(view)
-    names = [n for n in names if not (n.islower() and (n in EVALUATIVE or n in opinions))]
+    names = [n for n in names if not (n.islower() and (n in EVALUATIVE or n in opinions)) and n not in EVERYDAY_CAPS]
     return (True, "ok") if not names else (False, "ungrounded: " + ", ".join(names[:4]))
 
 
