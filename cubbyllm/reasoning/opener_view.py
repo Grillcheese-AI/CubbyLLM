@@ -24,7 +24,15 @@ __wiring__ = "WIRED"
 
 WORDS = pathlib.Path(__file__).with_name("opener_words.txt")
 # 0010 addendum 2, point 3: openers the chat corpus's list lacks (the voice rows' manifest counts them)
-INTERJECTIONS = frozenset("hmm ooh aha oups hello hey bonjour coucou j'espère j’espère qu'est-ce qu’est-ce".split())
+INTERJECTIONS = frozenset("hmm ooh aha oups hello hey bonjour coucou j'espère j’espère qu'est-ce qu’est-ce".split()) \
+    | frozenset("yes yep yeah nope nah ok oui ouais honnêtement".split()) \
+    | frozenset("oh ah aw aww awww wow whoa yay ugh ha haha hehe oof phew yikes gosh omg alright okay um uh "
+                "ouf bof super génial bravo merci désolé ravi oh là".split()) \
+    | frozenset("congratulations félicitations côté carrément ouah hi sacré sacrée chouette dingue why ouch aïe ouille "
+                "gush relire chanter hocher".split())
+# 0010 / 0079 (Cowork, 2026-11-20 and 21):
+# "Yes! I can show you my steps", Nick's approved "Nope! I'm Cubby" and "Oh no, that sounds worrying" were refused
+# as names: an interjection opening a sentence is a forced capital, never a name
 
 _TOKEN = re.compile(r"[A-Za-zÀ-ÿ][\w'’\-]*|\d[\d.,:/\-]*")        # ask._TOKEN
 _ENUM = re.compile(r"(?m)^\s*(?:\d{1,2}[.)]|[-*•])\s+")
@@ -62,7 +70,11 @@ def opener_view(answer: str, common: set[str] | frozenset[str] | None = None) ->
         low = tok.lower().strip("'’-.,:")
         if low.endswith(("'s", "’s")):
             low = low[:-2]
-        if tok[0].isupper() and (low in _PRONOUN_I or (m.start() in starts and (low in common or _FR_VERB.match(low)))):
+        joined = "-" in low and all(p in common for p in low.split("-") if p)   # "Front-row seats": common words
+        stem = low[:-3] if low.endswith("ing") and len(low) > 5 else ""          # "Picturing", "Blanking", "Gushing"
+        joined = joined or bool(stem) and (stem in common or stem + "e" in common or stem[:-1] in common)
+        if tok[0].isupper() and (low in _PRONOUN_I or (m.start() in starts and (low in common or joined
+                                                                                 or _FR_VERB.match(low)))):
             out[m.start()] = tok[0].lower()
     return "".join(out)
 

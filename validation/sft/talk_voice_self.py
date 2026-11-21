@@ -31,7 +31,9 @@ def identity_rows(v: Voice, qa: list[dict]) -> None:
                     variants.add((pre + form) if pre else form)
         for q in v.rng.sample(sorted(variants), min(per_group, len(variants))):
             ans, wording = g["a"].format(**v.strs), ["identity: Nick's approved answer"]
-            if "abilities_text" in g["a"] and v.pool("about", lang) and v.rng.random() < 0.5:
+            # talk_v3b (`v.sentence`): what Cubby can do stays Nick's approved sentence; no list unless asked for
+            if "abilities_text" in g["a"] and v.pool("about", lang) and not getattr(v, "sentence", False) \
+                    and v.rng.random() < 0.5:
                 t = v.pool("about", lang).take()
                 ans = fill_list(t["text"], "abilities", v.abilities(lang), True, lang)
                 wording = [src(t), "identity: the record's abilities"]
@@ -72,6 +74,8 @@ def record_rows(v: Voice) -> None:
         kind = ("lang", "can", "who")[i % 3]
         if kind == "lang":
             ans, wording = _languages(today, nxt, lang), ["rule", "identity: the record's languages"]
+        elif kind == "can" and getattr(v, "sentence", False):     # talk_v3b: the block's own lines, as prose
+            ans, wording = " ".join(x["text"] for x in abil), ["rule", "identity: the record's abilities"]
         elif kind == "can":
             if not v.pool("about", lang):
                 continue
@@ -99,7 +103,10 @@ def hello_rows(v: Voice) -> None:
                 break
             t = v.pool("hello_name", lang).take()
         ans, wording = t["text"].replace("{user}", shown), [src(t)]
-        if asks and v.pool("about", lang):
+        if asks and getattr(v, "sentence", False):                 # talk_v3b: Nick's approved sentence
+            ans += " " + v.strs["abilities_text" if lang == "en" else "abilities_text_fr"]
+            wording += ["identity: Nick's approved abilities_text"]
+        elif asks and v.pool("about", lang):
             t2 = v.pool("about", lang).take()
             ans += "\n\n" + fill_list(t2["text"], "abilities", v.abilities(lang), True, lang)
             wording += [src(t2), "identity: the record's abilities"]

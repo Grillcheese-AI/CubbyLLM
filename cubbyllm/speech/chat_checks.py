@@ -48,6 +48,59 @@ _SURE = re.compile(r"^\s*(?:tell|say|dire)\s+(?:you\s+|te\s+|vous\s+)?(?:if|whet
 # claim": the record's "if I have no checked fact, I tell you so"
 _CLAUSE = re.compile(r"[;,]|\s(?:but|mais|and I|et je)\s")      # an "I can" says its ability before the next clause
 _IDIOM = re.compile(r"^\s*(?:agree more|wait|believe|thank you enough|stress enough|emphasi[sz]e enough|m['’]empêcher)\b", re.I)
+# order 0079 (Cowork, 2026-11-20; the pilot's first 20 conversations): h refused the very honesty the record asks for.
+# "I don't have anything on OAR", "I can't say much more", "je ne sais pas grand-chose de plus" are the record's
+# "If I have no checked fact, I tell you so, and what is missing"; "I don't have hands for a teacup" is true of a model
+# ("is: a model"). They pass. "I can't tell jokes", "I can't send emails" still do not.
+_NOT_KNOWING = re.compile(
+    r"^\s*(?:(?:anything|much|more|that|this|it|any\s+(?:info|information|facts?|details?|news|notes|"
+    r"records?|data)|the\s+(?:detail|details|info|answer|facts?)|a\s+clear\s+picture|an\s+answer|enough|"
+    r"hands|a\s+body|eyes|ears|a\s+mouth|taste\s+buds|a\s+stomach|a\s+home|pets?|a\s+family|kids|a\s+past|a\s+childhood)\b|"
+    r"(?:say|tell\s+(?:you|for\s+sure|what|whether|if|which|how|much)|speak\s+to|confirm|be\s+sure|answer\s+that|"
+    r"check\s+that|know\s+for\s+sure)\b|"
+    r"(?:grand[- ]chose|beaucoup|tout|si\b|ce\s+qu|quoi|d['’]info|d['’]informations|de\s+détails|de\s+faits|ça\b|"
+    r"de\s+mains|de\s+corps|(?:te\s+)?dire|confirmer|savoir))", re.I)
+# order 0079 (Cowork, 2026-11-21; the pilot's next 50 conversations): h still refused true lines. What a model has not
+# got ("I don't have friends the way you do", "I don't have a car", "je n'ai pas de famille", "I don't have one to root
+# for"), what it cannot do without a body ("I can't watch anything myself", "I can't judge their music from here") and
+# more ways of not knowing ("I don't have any book titles", "je n'ai pas plus de détails", "I can't match that horse to
+# a name") are the record's "is: a model" and its don't-know line. They pass; "I can't tell jokes" still does not.
+_MODEL_LACKS = re.compile(
+    r"^\s*(?:(?:any|a|an|my\s+own|one)\s+)?(?:really\s+)?(?:favou?rite\s+)?(?:one\b|friends?|cars?|days?|favou?rites?|albums?|"
+    r"teams?|phones?|jobs?|weekends?|commutes?|houses?|apartments?|kitchens?|gardens?|money|birthdays?|beds?|siblings|"
+    r"parents|a\s+life|(?:\w+\s+)?(?:titles?|names?|suggestions?|recommendations?|specifics|examples?))\b|"
+    r"^\s*(?:(?:really|actually|even|exactly|quite)\s+)?(?:judge|match|place|identify|pin\s+(?:\w+\s+)?down|watch|see|"
+    r"hear|listen|taste|smell|touch|eat|drink|cook|drive|travel|go|visit|sleep|play|dance|hug|wear|check|look\s+(?:\w+\s+)?up|"
+    r"fill\s+in|add\s+(?:much|more|anything)|weigh\s+in|get\s+(?:cold|hot|tired|sick|hungry|bored)|regarder|écouter|voir|"
+    r"goûter|manger|boire|cuisiner|conduire|voyager|dormir|jouer|danser|vérifier)\b|"
+    r"^\s*(?:plus\s+de|de\s+(?:titres?|noms?|suggestions?|famille|voiture|journée|équipe|maison|préférée?s?|favori(?:te)?s?|"
+    r"canapé|cuisine|télé|livres?|chat|chien)|d['’](?:amis|exemples?|albums?|équipe|appart))|"
+    # not knowing, said with what is missing: "a year for the school", "facts about sharks", "le détail de son rôle"
+    r"^\s*(?:(?:a|an|the|any)\s+)?(?:\w+\s+){0,2}?(?:facts?|details?|years?|dates?|recommendations?|information|info|"
+    r"notes?|data|answers?)\b|"
+    r"^\s*(?:le|les|un|une|de|d['’])\s*(?:\w+\s+)?(?:détails?|infos?|informations?|recommandations?|dates?|années?|faits?)\b|"
+    # what a model owns: "a lap", "a place to put it", "a TV memory of my own", "de livres à moi"
+    r"^\s*(?:(?:a|an|any)\s+)?(?:laps?|couch|sofa|place\s+to|room\s+for|laundry|bags?|feet)\b|"
+    r"^[^.!?]*\b(?:of\s+my\s+own|à\s+moi)\b", re.I)
+# order 0079 (Cowork, 2026-11-21; the pilot's last batches): "I don't have ..." was still refused for one more thing a
+# model has not got after another ("legs", "a tongue", "a hobby the way you do", "a game to win", "a TV or a couch",
+# "anyone to tell", "a book in mind", "a solution on hand", "de coin précis à te proposer"). Saying what Cubby has not
+# got is refused only when it denies what the record says Cubby has: its languages, its mood, access to its facts.
+_HAS = frozenset("lang engl fren angl fran mood hume acce".split())   # stems: language, English, French, mood, access
+# "I can't give you a real take on it", "I can't explain its meaning", "I can't really pick one": not knowing
+_CANT_SAY = re.compile(r"^\s*(?:(?:really|quite|honestly)\s+)?(?:pick|choose|explain|recommend|be\s+(?:a|an)\s+\w+|"
+                       r"give\s+(?:you\s+)?(?:a|an|any|much\s+of\s+an?)\s+(?:\w+\s+)?(?:take|answer|opinion|view|verdict|rule|"
+                       r"recommendation|suggestion|tip|guess))\b", re.I)
+# "je n'ai pas suivi le match": a past tense, not a thing Cubby has not got
+_FR_PAST = re.compile(r"^\s*(?:encore\s+|jamais\s+|vraiment\s+|bien\s+)?(?!plus\b)[a-zà-ÿ]{2,}(?:é|ée|és|ées|i|is|it|u|us|ue|ert|eint)\b",
+                      re.I)
+_RELATIVE = re.compile(r"(?:\b(?:anything|nothing|much|more|whatever|all|any)\b[^.!?,;:\n]{0,40}|"   # "nothing on it I can share"
+                       r"\b(?:glad|happy|pleased|nice)\s+|\bce\s+que\s+|"                    # "glad I could help", "ce que je sais"
+                       r"\b(?:a|an|the|one|some|every)\s+(?:\w+\s+){0,2}?\w+\s+)$", re.I)        # "a plan I can get behind"
+_CAN_HEAR = re.compile(r"^\s*(?:(?:only|still|just)\s+)?(?:hear|picture|imagine|guess|enjoy|sense|relate|feel\s+how|"
+                       r"tell\s+you\s+what\s+I\s+have|"                    # "I can only tell you what I have": the record
+                       r"see\s+(?:why|how|that|what|it|clearly)|get\s+behind|tell\s+(?:how|that|it['’]s|you['’]re))\b", re.I)
+_KNOW_THAT = re.compile(r"^\s*(?:que|qu['’])", re.I)        # "je sais que X": knowing a fact, not an ability
 
 
 def no_loop_on() -> bool:
@@ -104,18 +157,28 @@ def _lines() -> tuple[tuple, tuple]:
 
 def abilities(reply: str) -> list[str]:
     """Change h: each "I can / I can't" in the reply that the record does not hold."""
+    from .cubby_record import NOT_YET
     can, cant = _lines()
     bad = []
     for m in _CAN.finditer(reply or ""):
         rest = _CLAUSE.split(m.group("rest"))[0]
         c = _content(rest)
-        if _OFFER.match(rest) or _TALK.match(rest) or c <= OFFER or any(c <= line for line in can):
+        if _RELATIVE.search(reply[max(0, m.start() - 40):m.start()]) and not NOT_YET.search(rest):
+            continue                                              # a relative clause, unless it says what is not yet
+        if _OFFER.match(rest) or _TALK.match(rest) or _CAN_HEAR.match(rest) or _KNOW_THAT.match(rest) \
+                or c <= OFFER or any(c <= line for line in can):
             continue
         bad.append(f"ability: {m.group(0).strip()[:60]}")
     for m in _CANT.finditer(reply or ""):
         rest = _CLAUSE.split(m.group("rest"))[0]
         c, head = _content(rest), [_stem(w) for w in _fold(rest) if w not in STOP][:1]
-        if not c or _IDIOM.match(rest) or _SURE.match(rest) or set(head) & _CHECKED or any(c <= line for line in cant):
+        said = m.group(0).lower().replace("’", "'")
+        past = said.startswith("je n'ai") and _FR_PAST.match(rest)
+        bare = {_stem(re.sub(r"^(?:qu|[dljnsmtc])'", "", w)) for w in _fold(rest)}   # "d'humeur" is "humeur"
+        lacks = said.startswith(("i don't have", "i do not have", "je n'ai")) and not bare & _HAS
+        if not c or past or lacks or _IDIOM.match(rest) or _SURE.match(rest) or _NOT_KNOWING.match(rest) \
+                or _MODEL_LACKS.match(rest) or _CANT_SAY.match(rest) or set(head) & _CHECKED \
+                or any(c <= line for line in cant):
             continue                                              # "je ne sais pas" alone; the record says so
         bad.append(f"ability: {m.group(0).strip()[:60]}")
     return bad

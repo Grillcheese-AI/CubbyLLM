@@ -62,6 +62,49 @@ _HEAD = re.compile(r"^\s*(?P<neg>not\s+|pas\s+)?(?:just |only |really |actually 
                    r"(?P<more>(?:\s*(?:,|\bor\b|\bou\b|\bnor\b|\bni\b|\band\b|\bet\b)\s*(?:(?:a|an|un|une)\s+)?[\w’'-]+)*)", re.I)
 
 
+EVALUATIVE = frozenset("idea question one thing point deal choice start plan way pleasure shame relief surprise classic "
+                       "favorite favourite treat mood vibe call move bummer pity joy win catch story combo trip mystery "
+                       "puzzle tough fun pain challenge step sign mix bit lot kind sort type suspect guess bet hit gem "
+                       "keeper pick fit match look sound mess blast nightmare dream lifesaver hero champ legend star "
+                       "natural pro reset routine habit".split())
+
+
+# an opinion is not a category either (order 0079, Cowork, 2026-11-21): "a great hook", "a strange pair", "a real
+# milestone", "a very honest haunting", "the worst", "the best for ..." say what Cubby thinks of a thing, not what kind
+# of thing it is; "astrophysics is the study of stars" is still a kind and still needs a fact
+OPINION = frozenset("great good nice lovely real strange odd weird honest perfect fun funny solid classic sweet cute "
+                    "brilliant terrible awful bad tough wild smart clever cool amazing wonderful fantastic excellent "
+                    "beautiful fair true proper total genuine rare welcome lucky happy sad pretty mild such very useful "
+                    "serious big kind bold right small strong cozy cosy simple".split())
+SUPERLATIVE = frozenset("best worst greatest coolest funniest sweetest nicest hardest easiest weirdest strangest cutest "
+                        "loveliest cosiest coziest happiest saddest toughest smartest finest".split())
+
+
+EVERYDAY_CAPS = frozenset("TV OK DIY ASAP FYI LOL BTW DJ BD Monday Tuesday Wednesday Thursday Friday Saturday Sunday "
+                          "Mondays Tuesdays Wednesdays Thursdays Fridays Saturdays Sundays".split())   # not names
+# heads that are idioms or times, never a kind ("a rite of passage", "the heart of it", "a small price", "tonight")
+IDIOM_HEADS = frozenset("rite heart price memory commitment clue threat tonight today tomorrow yesterday now".split())
+
+
+def _opinions(text: str) -> set[str]:
+    """The head of every 'X is a <adjective of opinion> <noun>' or 'X is the best', which says what Cubby thinks, and
+    of every 'is a ...' asked, not said ("What was the piece?", "Is the pasta a family recipe?")."""
+    from cubbyllm.reasoning.ask_words import _CATEGORY
+    out = set()
+    for m in _CATEGORY.finditer(text or ""):
+        words = m.group(1).split()
+        end = re.search(r"[.!?]", text[m.end():])
+        asked = bool(end) and end.group(0) == "?"
+        # an adjective of opinion makes it an opinion only when no name is its subject ("a big commitment", but
+        # "Paris is a big city" and "the Glorious Revolution was a political event" still need a fact)
+        start = max(text.rfind(".", 0, m.start()), text.rfind("!", 0, m.start()), text.rfind("?", 0, m.start())) + 1
+        named = any(w[:1].isupper() for w in text[start:m.start()].split())   # the opener view kept only names
+        if asked or set(words) & SUPERLATIVE or words[0] in ("most", "least") or words[-1] in IDIOM_HEADS \
+                or (set(words[:-1]) & OPINION and not named):
+            out.add(words[-1].strip("-"))
+    return out
+
+
 def on() -> bool:
     return os.environ.get("CB_CUBBY_RECORD") == "1"
 
@@ -139,8 +182,13 @@ def chat_check(reply: str, user_text: str, context: list[str] | None = None) -> 
     bad = self_claims(reply)
     if bad:
         return False, "self: " + "; ".join(bad[:3])
-    ok, names = grounded_prose(opener_view(reply), lines() + [user_text or ""] + list(context or ()), load()["name"])
-    return (True, "ok") if ok else (False, "ungrounded: " + ", ".join(names[:4]))
+    view = opener_view(reply)
+    ok, names = grounded_prose(view, lines() + [user_text or ""] + list(context or ()), load()["name"])
+    # an evaluative "is a ..." in chat ("a vet visit is a good idea", "that's a great question") is not a category
+    # claim about a thing; the head nouns below are refused nowhere else (order 0079, Cowork, 2026-11-20)
+    opinions = _opinions(view)
+    names = [n for n in names if not (n.islower() and (n in EVALUATIVE or n in opinions)) and n not in EVERYDAY_CAPS]
+    return (True, "ok") if not names else (False, "ungrounded: " + ", ".join(names[:4]))
 
 
 __all__ = ["block", "chat_check", "is_about_cubby", "lines", "load", "on", "self_claims"]

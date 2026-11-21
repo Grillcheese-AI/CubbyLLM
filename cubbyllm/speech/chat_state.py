@@ -14,6 +14,27 @@ from ..affect.neurochem import Neurochemistry, appraise  # noqa: E402
 __wiring__ = "WIRED"
 
 
+def regulated_on() -> bool:
+    """Order 0079: novelty habituates within a conversation and a friendly turn raises serotonin. Off by default."""
+    import os
+    return os.environ.get("CB_MOOD_REGULATION") == "1"
+
+
+# 0079's second round (Nick: "one more", then "Balanced"): a calm, unthreatening exchange counts as slightly safe with
+# nothing warm in it (SAFETY_BASE), and safety quiets attention's push on noradrenaline (FOCUS_SAFE). Measured on about
+# 2,900 Topical-Chat conversations against 0 and 0 (the first round): mild anger 94% -> 52% of turns, strong anger 1%
+# -> 0%, joy above 0 30% -> 63%; the upsetting messages still move the mood (12 -> 13, 8 -> 9 on their first turn).
+SAFETY_BASE = 0.2
+FOCUS_SAFE = 1.0
+NOVELTY_PRIOR = 0.33
+# CARING FOR SOMEONE IN TROUBLE IS NOT DANGER (0079, Cowork, 2026-11-21): concern (the transfer's warmth for a user who is
+# having a bad time) raised attention with no serotonin behind it, which the cube reads as anger: with the serving read
+# replayed over the pilot, anger +1 or more on 36 of the 44 turns where the user seemed nervous or afraid. Half the
+# concern now counts as safety: with `mood.SIDE_MARGIN`, 8 of 44, and no joy shade on the 40 sad turns
+# (exp_0079_mood_read).
+CONCERN_SAFE = 0.5
+
+
 class ChatState:
     """CubbyChat's state (a mixin; order 0031)."""
 
@@ -84,13 +105,31 @@ class ChatState:
                            warmth=self.signals.get("social", 0.0), gap_s=gap_s, burst=burst,
                            hour=hour, words=len(user_text.split()))
         tr = self.afferent.drives()
+        novelty, extra, focus_scale = self.signals.get("novelty", 0.0), {}, 1.0
+        if regulated_on():                                       # order 0079, behind CB_MOOD_REGULATION=1
+            # NOVELTY HABITUATES: what counts is novelty above what this conversation has been bringing (an EMA of
+            # it), so a conversation that keeps bringing new words stops lifting dopamine and noradrenaline turn
+            # after turn, and a real surprise still does.
+            seen = getattr(self, "_novelty_seen", None)
+            # a new conversation is EXPECTED to bring new words: the first turn is measured against the novelty an
+            # ordinary turn brings (0.33, the mean over 97,204 Topical-Chat turns), not against none, which read
+            # every opening message as a jolt (anger +2 on 83 of 99 openers; with this, 0 of 99)
+            expected = NOVELTY_PRIOR if seen is None else seen
+            self._novelty_seen = novelty if seen is None else 0.7 * seen + 0.3 * novelty
+            novelty = max(0.0, novelty - expected)
+            # SAFETY: the user's own warmth and good mood, with no threat in the turn, is contentment (serotonin)
+            threat = self.signals.get("threat", 0.0)
+            extra["safety"] = min(1.0, (SAFETY_BASE + max(0.0, self.signals.get("valence", 0.0))
+                                        + max(self.signals.get("social", 0.0), CONCERN_SAFE * tr["social"]))
+                                       * (1.0 - threat))
+            focus_scale = 1.0 - FOCUS_SAFE * extra["safety"]    # attention in a safe exchange is calm attention
         self.chem.step_message({
-            "novelty": self.signals.get("novelty", 0.0),
+            "novelty": novelty,
             "threat": self.signals.get("threat", 0.0),          # the task's danger, never the user's mood
-            "focus": max(self.signals.get("focus", 0.0), tr["focus"]),
+            "focus": max(self.signals.get("focus", 0.0), tr["focus"]) * focus_scale,
             "valence": tr["valence"],                           # 0.0 when they are having a bad time
             "social": tr["social"],                             # ... which is where it went instead
-            "surge": tr["surge"]})
+            "surge": tr["surge"], **extra})
         self.state = self._hormones()
         return self.state
 

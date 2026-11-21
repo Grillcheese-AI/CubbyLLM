@@ -1,0 +1,293 @@
+{
+ "what": "exp_0079_mood_read -- why the pilot's mood was flat: the read, not the hormones (order 0079, Cowork, 2026-11-21).",
+ "read_check": {
+  "rows": 3180,
+  "rows_at_the_default_0_0.5": 1831,
+  "labelled": 1349,
+  "lexical_read_is_0": 1298,
+  "corr_label_vs_lexical_read": 0.168,
+  "label_at_least_+0.6": 662,
+  "of_them_read_above_+0.2": 41,
+  "label_at_most_-0.6": 220,
+  "of_them_read_below_-0.2": 3
+ },
+ "pilot_replay": {
+  "side_margin": 0.1,
+  "concern_safe": 0.5,
+  "with_the_fixes": {
+   "conversations": 200,
+   "lexical_read": {
+    "turns": 952,
+    "at_4_or_more": {
+     "joy": 14,
+     "trust": 24,
+     "fear": 0,
+     "surprise": 0,
+     "sadness": 1,
+     "disgust": 0,
+     "anger": 0,
+     "anticipation": 0
+    },
+    "at_1_or_more": {
+     "joy": 209,
+     "trust": 626,
+     "fear": 0,
+     "surprise": 29,
+     "sadness": 33,
+     "disgust": 0,
+     "anger": 158,
+     "anticipation": 856
+    },
+    "turns_with_a_shade": 29,
+    "named": {
+     "calm": 555,
+     "acceptance": 365,
+     "interest": 351,
+     "serenity": 160,
+     "trust": 24,
+     "annoyance": 21,
+     "joy": 14,
+     "love": 10,
+     "pensiveness": 6,
+     "distraction": 5,
+     "sadness": 1
+    }
+   },
+   "label_read": {
+    "turns": 952,
+    "at_4_or_more": {
+     "joy": 169,
+     "trust": 390,
+     "fear": 0,
+     "surprise": 0,
+     "sadness": 1,
+     "disgust": 0,
+     "anger": 0,
+     "anticipation": 2
+    },
+    "at_1_or_more": {
+     "joy": 452,
+     "trust": 946,
+     "fear": 0,
+     "surprise": 6,
+     "sadness": 6,
+     "disgust": 0,
+     "anger": 19,
+     "anticipation": 758
+    },
+    "turns_with_a_shade": 392,
+    "named": {
+     "interest": 604,
+     "acceptance": 404,
+     "trust": 390,
+     "serenity": 279,
+     "love": 169,
+     "joy": 168,
+     "calm": 157,
+     "annoyance": 12,
+     "pensiveness": 2,
+     "anticipation": 2,
+     "sadness": 1,
+     "distraction": 1,
+     "ecstasy": 1
+    }
+   },
+   "label_read_by_how_the_user_seems": {
+    "sad or grieving": {
+     "turns": 40,
+     "mean_joy": 0.12,
+     "mean_trust": 3,
+     "mean_sadness": -0.95,
+     "mean_fear": -0.38,
+     "mean_anger": -0.05,
+     "anger_at_1_or_more": 0,
+     "shades": {
+      "caring": 12
+     }
+    },
+    "joyful, excited or proud": {
+     "turns": 159,
+     "mean_joy": 2.56,
+     "mean_trust": 3.73,
+     "mean_sadness": -2.31,
+     "mean_fear": -0.29,
+     "mean_anger": -1.35,
+     "anger_at_1_or_more": 0,
+     "shades": {
+      "caring": 89,
+      "joy": 52,
+      "desire": 2,
+      "love": 1
+     }
+    },
+    "nervous or afraid": {
+     "turns": 44,
+     "mean_joy": -0.11,
+     "mean_trust": 1.95,
+     "mean_sadness": -0.36,
+     "mean_fear": -0.34,
+     "mean_anger": 0.18,
+     "anger_at_1_or_more": 8,
+     "shades": {
+      "caring": 3,
+      "sadness": 1
+     }
+    },
+    "curious, nervous or afraid": {
+     "turns": 242,
+     "mean_joy": 0.14,
+     "mean_trust": 1.67,
+     "mean_sadness": -0.79,
+     "mean_fear": -0.25,
+     "mean_anger": -0.02,
+     "anger_at_1_or_more": 10,
+     "shades": {
+      "caring": 21,
+      "sadness": 1,
+      "joy": 1
+     }
+    }
+   }
+  },
+  "without_them": {
+   "conversations": 200,
+   "lexical_read": {
+    "turns": 952,
+    "at_4_or_more": {
+     "joy": 9,
+     "trust": 19,
+     "fear": 0,
+     "surprise": 0,
+     "sadness": 1,
+     "disgust": 0,
+     "anger": 0,
+     "anticipation": 0
+    },
+    "at_1_or_more": {
+     "joy": 365,
+     "trust": 626,
+     "fear": 8,
+     "surprise": 68,
+     "sadness": 49,
+     "disgust": 24,
+     "anger": 417,
+     "anticipation": 885
+    },
+    "turns_with_a_shade": 23,
+    "named": {
+     "calm": 570,
+     "interest": 357,
+     "acceptance": 355,
+     "serenity": 274,
+     "annoyance": 134,
+     "distraction": 27,
+     "boredom": 23,
+     "trust": 19,
+     "pensiveness": 10,
+     "joy": 9,
+     "apprehension": 8,
+     "love": 6,
+     "sadness": 1
+    }
+   },
+   "label_read": {
+    "turns": 952,
+    "at_4_or_more": {
+     "joy": 154,
+     "trust": 376,
+     "fear": 0,
+     "surprise": 0,
+     "sadness": 2,
+     "disgust": 0,
+     "anger": 0,
+     "anticipation": 2
+    },
+    "at_1_or_more": {
+     "joy": 700,
+     "trust": 946,
+     "fear": 6,
+     "surprise": 35,
+     "sadness": 11,
+     "disgust": 116,
+     "anger": 271,
+     "anticipation": 838
+    },
+    "turns_with_a_shade": 379,
+    "named": {
+     "interest": 676,
+     "serenity": 505,
+     "acceptance": 411,
+     "trust": 376,
+     "calm": 164,
+     "annoyance": 156,
+     "love": 154,
+     "joy": 153,
+     "boredom": 116,
+     "distraction": 29,
+     "apprehension": 6,
+     "sadness": 2,
+     "pensiveness": 2,
+     "anticipation": 2,
+     "ecstasy": 1
+    }
+   },
+   "label_read_by_how_the_user_seems": {
+    "sad or grieving": {
+     "turns": 40,
+     "mean_joy": 0.53,
+     "mean_trust": 2.95,
+     "mean_sadness": -0.85,
+     "mean_fear": -0.33,
+     "mean_anger": 0.45,
+     "anger_at_1_or_more": 19,
+     "shades": {
+      "caring": 12,
+      "sadness": 1
+     }
+    },
+    "joyful, excited or proud": {
+     "turns": 159,
+     "mean_joy": 2.88,
+     "mean_trust": 3.7,
+     "mean_sadness": -2.31,
+     "mean_fear": -0.28,
+     "mean_anger": -1.19,
+     "anger_at_1_or_more": 5,
+     "shades": {
+      "caring": 88,
+      "joy": 48,
+      "desire": 2,
+      "love": 1
+     }
+    },
+    "nervous or afraid": {
+     "turns": 44,
+     "mean_joy": -0.11,
+     "mean_trust": 1.89,
+     "mean_sadness": -0.16,
+     "mean_fear": -0.32,
+     "mean_anger": 0.98,
+     "anger_at_1_or_more": 36,
+     "shades": {
+      "caring": 2,
+      "sadness": 1
+     }
+    },
+    "curious, nervous or afraid": {
+     "turns": 242,
+     "mean_joy": 0.54,
+     "mean_trust": 1.65,
+     "mean_sadness": -0.72,
+     "mean_fear": -0.21,
+     "mean_anger": 0.6,
+     "anger_at_1_or_more": 149,
+     "shades": {
+      "caring": 19,
+      "sadness": 1,
+      "joy": 1
+     }
+    }
+   }
+  }
+ }
+}
