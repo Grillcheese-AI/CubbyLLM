@@ -272,7 +272,8 @@ def plans(n: int, rng: random.Random, users: list[dict], idx: dict) -> list[dict
     tc = [r for r in users if r["split"] == "train" and r["standalone"] and not r.get("sensitive")
           and r["kind"] in ("hello", "about_you", "question", "know_ask") and 3 <= r["words"] <= 25]
     rng.shuffle(tc)
-    known = [e for e in idx if 4 <= len(e) <= 40 and len(idx[e]) >= 3]
+    mentions("", idx)                                    # builds the name table, everyday one-word names left out
+    known = [e for e in _LOWER[id(idx)].values() if 4 <= len(e) <= 40 and len(idx[e]) >= 3]
     out = []
     for i in range(n):
         length = rng.randint(4, 6)
