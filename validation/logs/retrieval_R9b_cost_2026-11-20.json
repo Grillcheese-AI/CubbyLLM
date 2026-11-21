@@ -1,0 +1,512 @@
+{
+ "what": "order 0046 R9b's cost: block codes four ways on the CPU, MAP beside them",
+ "date": "2026-11-20",
+ "run": [
+  "19:28:48",
+  "19:38:57"
+ ],
+ "machine": {
+  "system": "Windows",
+  "processor": "Intel64 Family 6 Model 151 Stepping 5, GenuineIntel",
+  "cpus": 12,
+  "python": "3.12.10",
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "numba": "0.64.0",
+  "numba_threads": 6
+ },
+ "single_calls": [
+  {
+   "arm": "numpy",
+   "bind": 163770.0,
+   "bundle16": 65073.5,
+   "similarity": 5935.0,
+   "k": 80,
+   "unit": "ns per call"
+  },
+  {
+   "arm": "scipy",
+   "bind": 53482.0,
+   "bundle16": 28876.5,
+   "similarity": 6074.5,
+   "k": 80,
+   "unit": "ns per call"
+  },
+  {
+   "arm": "spectral",
+   "bind": 2262.5,
+   "bundle16": 34811.0,
+   "similarity": 12164.0,
+   "to_spec": 39278.0,
+   "from_spec": 36578.0,
+   "k": 80,
+   "unit": "ns per call"
+  },
+  {
+   "arm": "index",
+   "bind": 997.0,
+   "bundle16": 3104.0,
+   "similarity": 456.0,
+   "frame_against_key": 380.0,
+   "frame_bound_with_key": 16869.5,
+   "k": 80,
+   "unit": "ns per call"
+  },
+  {
+   "arm": "numpy",
+   "bind": 1033436.5,
+   "bundle16": 359664.5,
+   "similarity": 20112.5,
+   "k": 512,
+   "unit": "ns per call"
+  },
+  {
+   "arm": "scipy",
+   "bind": 241552.0,
+   "bundle16": 157844.5,
+   "similarity": 19208.0,
+   "k": 512,
+   "unit": "ns per call"
+  },
+  {
+   "arm": "spectral",
+   "bind": 6722.5,
+   "bundle16": 194838.5,
+   "similarity": 45004.5,
+   "to_spec": 219301.0,
+   "from_spec": 191944.0,
+   "k": 512,
+   "unit": "ns per call"
+  },
+  {
+   "arm": "index",
+   "bind": 1589.0,
+   "bundle16": 17575.0,
+   "similarity": 444.0,
+   "frame_against_key": 582.0,
+   "frame_bound_with_key": 96178.0,
+   "k": 512,
+   "unit": "ns per call"
+  }
+ ],
+ "map_rust": [
+  {
+   "arm": "map",
+   "impl": "rust",
+   "task": "cost",
+   "dim": 4096,
+   "reps": 200,
+   "bind_ns": 222,
+   "bundle16_ns": 3926,
+   "similarity_ns": 5371,
+   "similarity_packed_ns": 42,
+   "bytes": 512
+  },
+  {
+   "arm": "map",
+   "impl": "rust",
+   "task": "cost",
+   "dim": 640,
+   "reps": 200,
+   "bind_ns": 55,
+   "bundle16_ns": 727,
+   "similarity_ns": 990,
+   "similarity_packed_ns": 8,
+   "bytes": 80
+  }
+ ],
+ "index_job": [
+  {
+   "arm": "index",
+   "size": 80,
+   "n": 10000,
+   "batch": 1,
+   "score_ns_per_query": 36600.0,
+   "top1_ns_per_query": 160600.0,
+   "top10_ns_per_query": 50900.0,
+   "bytes_held": 800000
+  },
+  {
+   "arm": "index",
+   "size": 512,
+   "n": 10000,
+   "batch": 1,
+   "score_ns_per_query": 168050.0,
+   "top1_ns_per_query": 112900.0,
+   "top10_ns_per_query": 59200.0,
+   "bytes_held": 5120000
+  },
+  {
+   "arm": "map_packed",
+   "size": 4096,
+   "n": 10000,
+   "batch": 1,
+   "score_ns_per_query": 1216350.0,
+   "top1_ns_per_query": 169600.0,
+   "top10_ns_per_query": 76900.0,
+   "bytes_held": 5120000
+  },
+  {
+   "arm": "map_packed",
+   "size": 640,
+   "n": 10000,
+   "batch": 1,
+   "score_ns_per_query": 274600.0,
+   "top1_ns_per_query": 71200.0,
+   "top10_ns_per_query": 29900.0,
+   "bytes_held": 800000
+  },
+  {
+   "arm": "dense",
+   "size": 80,
+   "n": 10000,
+   "batch": 1,
+   "score_ns_per_query": 15886400.0,
+   "top1_ns_per_query": 154100.0,
+   "top10_ns_per_query": 58200.0,
+   "bytes_held": 409600000
+  },
+  {
+   "arm": "map",
+   "impl": "rust",
+   "task": "index",
+   "dim": 4096,
+   "n": 10000,
+   "batch": 1,
+   "top": 10,
+   "ns_per_query": 636400,
+   "bytes_held": 5120000
+  },
+  {
+   "arm": "map",
+   "impl": "rust",
+   "task": "index",
+   "dim": 640,
+   "n": 10000,
+   "batch": 1,
+   "top": 10,
+   "ns_per_query": 121300,
+   "bytes_held": 800000
+  },
+  {
+   "arm": "index",
+   "size": 80,
+   "n": 10000,
+   "batch": 1000,
+   "score_ns_per_query": 58943.7,
+   "top1_ns_per_query": 45510.7,
+   "top10_ns_per_query": 43727.0,
+   "bytes_held": 800000
+  },
+  {
+   "arm": "index",
+   "size": 512,
+   "n": 10000,
+   "batch": 1000,
+   "score_ns_per_query": 176812.5,
+   "top1_ns_per_query": 46151.2,
+   "top10_ns_per_query": 45978.5,
+   "bytes_held": 5120000
+  },
+  {
+   "arm": "map_packed",
+   "size": 4096,
+   "n": 10000,
+   "batch": 1000,
+   "score_ns_per_query": 1197195.6,
+   "top1_ns_per_query": 56029.4,
+   "top10_ns_per_query": 55308.8,
+   "bytes_held": 5120000
+  },
+  {
+   "arm": "map_packed",
+   "size": 640,
+   "n": 10000,
+   "batch": 1000,
+   "score_ns_per_query": 323566.6,
+   "top1_ns_per_query": 65909.3,
+   "top10_ns_per_query": 56875.6,
+   "bytes_held": 800000
+  },
+  {
+   "arm": "dense",
+   "size": 80,
+   "n": 10000,
+   "batch": 1000,
+   "score_ns_per_query": 546505.2,
+   "top1_ns_per_query": 37541.4,
+   "top10_ns_per_query": 37591.5,
+   "bytes_held": 409600000
+  },
+  {
+   "arm": "map",
+   "impl": "rust",
+   "task": "index",
+   "dim": 4096,
+   "n": 10000,
+   "batch": 1000,
+   "top": 10,
+   "ns_per_query": 513389.4,
+   "bytes_held": 5120000
+  },
+  {
+   "arm": "map",
+   "impl": "rust",
+   "task": "index",
+   "dim": 640,
+   "n": 10000,
+   "batch": 1000,
+   "top": 10,
+   "ns_per_query": 139634.2,
+   "bytes_held": 800000
+  },
+  {
+   "arm": "index",
+   "size": 80,
+   "n": 100000,
+   "batch": 1,
+   "score_ns_per_query": 298000.0,
+   "top1_ns_per_query": 457900.0,
+   "top10_ns_per_query": 212000.0,
+   "bytes_held": 8000000
+  },
+  {
+   "arm": "index",
+   "size": 512,
+   "n": 100000,
+   "batch": 1,
+   "score_ns_per_query": 1964800.0,
+   "top1_ns_per_query": 297900.0,
+   "top10_ns_per_query": 201100.0,
+   "bytes_held": 51200000
+  },
+  {
+   "arm": "map_packed",
+   "size": 4096,
+   "n": 100000,
+   "batch": 1,
+   "score_ns_per_query": 19355900.0,
+   "top1_ns_per_query": 476600.0,
+   "top10_ns_per_query": 257900.0,
+   "bytes_held": 51200000
+  },
+  {
+   "arm": "map_packed",
+   "size": 640,
+   "n": 100000,
+   "batch": 1,
+   "score_ns_per_query": 4310000.0,
+   "top1_ns_per_query": 274500.0,
+   "top10_ns_per_query": 223600.0,
+   "bytes_held": 8000000
+  },
+  {
+   "arm": "map",
+   "impl": "rust",
+   "task": "index",
+   "dim": 4096,
+   "n": 100000,
+   "batch": 1,
+   "top": 10,
+   "ns_per_query": 6736300,
+   "bytes_held": 51200000
+  },
+  {
+   "arm": "map",
+   "impl": "rust",
+   "task": "index",
+   "dim": 640,
+   "n": 100000,
+   "batch": 1,
+   "top": 10,
+   "ns_per_query": 1801700,
+   "bytes_held": 8000000
+  },
+  {
+   "arm": "index",
+   "size": 80,
+   "n": 100000,
+   "batch": 1000,
+   "score_ns_per_query": 419832.5,
+   "top1_ns_per_query": 358479.2,
+   "top10_ns_per_query": 398154.8,
+   "bytes_held": 8000000
+  },
+  {
+   "arm": "index",
+   "size": 512,
+   "n": 100000,
+   "batch": 1000,
+   "score_ns_per_query": 1898546.3,
+   "top1_ns_per_query": 381184.9,
+   "top10_ns_per_query": 392251.0,
+   "bytes_held": 51200000
+  },
+  {
+   "arm": "map_packed",
+   "size": 4096,
+   "n": 100000,
+   "batch": 1000,
+   "score_ns_per_query": 20402089.3,
+   "top1_ns_per_query": 574562.2,
+   "top10_ns_per_query": 581320.4,
+   "bytes_held": 51200000
+  },
+  {
+   "arm": "map_packed",
+   "size": 640,
+   "n": 100000,
+   "batch": 1000,
+   "score_ns_per_query": 3166797.1,
+   "top1_ns_per_query": 567095.5,
+   "top10_ns_per_query": 567350.2,
+   "bytes_held": 8000000
+  },
+  {
+   "arm": "map",
+   "impl": "rust",
+   "task": "index",
+   "dim": 4096,
+   "n": 100000,
+   "batch": 1000,
+   "top": 10,
+   "ns_per_query": 6979692,
+   "bytes_held": 51200000
+  },
+  {
+   "arm": "map",
+   "impl": "rust",
+   "task": "index",
+   "dim": 640,
+   "n": 100000,
+   "batch": 1000,
+   "top": 10,
+   "ns_per_query": 2007816.2,
+   "bytes_held": 8000000
+  },
+  {
+   "arm": "index",
+   "size": 80,
+   "n": 1000000,
+   "batch": 1,
+   "score_ns_per_query": 3710400.0,
+   "top1_ns_per_query": 3823400.0,
+   "top10_ns_per_query": 3368100.0,
+   "bytes_held": 80000000
+  },
+  {
+   "arm": "index",
+   "size": 512,
+   "n": 1000000,
+   "batch": 1,
+   "score_ns_per_query": 20271500.0,
+   "top1_ns_per_query": 3755800.0,
+   "top10_ns_per_query": 3455100.0,
+   "bytes_held": 512000000
+  },
+  {
+   "arm": "map_packed",
+   "size": 4096,
+   "n": 1000000,
+   "batch": 1,
+   "score_ns_per_query": 217315400.0,
+   "top1_ns_per_query": 4187800.0,
+   "top10_ns_per_query": 4707300.0,
+   "bytes_held": 512000000
+  },
+  {
+   "arm": "map_packed",
+   "size": 640,
+   "n": 1000000,
+   "batch": 1,
+   "score_ns_per_query": 48820800.0,
+   "top1_ns_per_query": 3498300.0,
+   "top10_ns_per_query": 4200700.0,
+   "bytes_held": 80000000
+  },
+  {
+   "arm": "map",
+   "impl": "rust",
+   "task": "index",
+   "dim": 4096,
+   "n": 1000000,
+   "batch": 1,
+   "top": 10,
+   "ns_per_query": 71874400,
+   "bytes_held": 512000000
+  },
+  {
+   "arm": "map",
+   "impl": "rust",
+   "task": "index",
+   "dim": 640,
+   "n": 1000000,
+   "batch": 1,
+   "top": 10,
+   "ns_per_query": 23700300,
+   "bytes_held": 80000000
+  },
+  {
+   "arm": "index",
+   "size": 80,
+   "n": 1000000,
+   "batch": 1000,
+   "score_ns_per_query": 4489166.5,
+   "top1_ns_per_query": 5607995.2,
+   "top10_ns_per_query": 4716710.0,
+   "bytes_held": 80000000
+  },
+  {
+   "arm": "index",
+   "size": 512,
+   "n": 1000000,
+   "batch": 1000,
+   "score_ns_per_query": 21642837.5,
+   "top1_ns_per_query": 4757522.1,
+   "top10_ns_per_query": 4488571.8,
+   "bytes_held": 512000000
+  },
+  {
+   "arm": "map_packed",
+   "size": 4096,
+   "n": 1000000,
+   "batch": 1000,
+   "score_ns_per_query": 213421595.2,
+   "top1_ns_per_query": 7454405.8,
+   "top10_ns_per_query": 7440975.2,
+   "bytes_held": 512000000
+  },
+  {
+   "arm": "map_packed",
+   "size": 640,
+   "n": 1000000,
+   "batch": 1000,
+   "score_ns_per_query": 47752415.6,
+   "top1_ns_per_query": 6392846.4,
+   "top10_ns_per_query": 6511393.2,
+   "bytes_held": 80000000
+  },
+  {
+   "arm": "map",
+   "impl": "rust",
+   "task": "index",
+   "dim": 4096,
+   "n": 1000000,
+   "batch": 1000,
+   "top": 10,
+   "ns_per_query": 73144327.3,
+   "bytes_held": 512000000
+  },
+  {
+   "arm": "map",
+   "impl": "rust",
+   "task": "index",
+   "dim": 640,
+   "n": 1000000,
+   "batch": 1000,
+   "top": 10,
+   "ns_per_query": 24142752.1,
+   "bytes_held": 80000000
+  }
+ ]
+}
