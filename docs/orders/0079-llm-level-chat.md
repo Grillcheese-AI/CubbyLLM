@@ -357,10 +357,8 @@ everything except the last round, where the 38 reopened conversations were finis
 - **The mood is flat, and this is the finding that matters most.** The wheel names calm on 555 of the 927 turns; joy
   reaches +4 on 9, trust on 16, sadness on 1. On the 40 turns where the user seemed sad or grieving, Cubby's sadness
   reached +1 on 6. Mild anger (+1 to +3) sits on 408 turns of friendly chat, and anticipation is +1 or more on 863. A
-  shade appears on 20 turns. So the empathy in these replies comes from the `They seem:` line, not from the mood: the
-  regulation (the Balanced round and the novelty prior) settled the jolts, and with them most of the movement. Nick's
-  call: whether the user's feeling should reach Cubby's hormones (an empathy input to the ODE), and whether the mild
-  anger should be read as alertness instead.
+  shade appears on 20 turns. So the empathy in these replies comes from the `They seem:` line, not from the mood. The
+  cause is the read, not the hormones (the section after this one).
 - **The voice:** warm, short (median 33 words), honest about what it does not have, and it does not volunteer a
   disclaimer; but 773 of the 927 replies end with a question, which reads as a pattern. In the last round the prompt
   asked for a question only when it helps: 24 of 44 Sonnet replies and 27 of 46 Haiku replies ended with one. Sonnet
@@ -370,5 +368,33 @@ everything except the last round, where the 38 reopened conversations were finis
 - **The lookup is a stand-in, and it shows:** "hum the chorus" brought a film called Chorus, which Cubby mentioned as a
   side note; Japan came with two capitals. The agents mostly ignored such lines, but the host's resolver has to decide
   which name the user means before the facts reach the seat.
-- **Next:** the final run on the new model set, mixed (Nick); the mood question above; the ask-back rule in the
+- **Next:** the final run on the new model set, mixed (Nick); the read it drafts with (below); the ask-back rule in the
   drafting prompt from the start.
+
+### Why the mood was flat: the pilot's read was nearly blind (Cowork, 2026-11-21; `validation/exp_0079_mood_read.py`)
+Nick pointed at two of his files (off the repo): `amygdala_affect.jsonl` (3,180 short texts with a valence and an
+arousal) and `ei_11.jsonl` (728 turns of emotion-adapted replies). The first one measures the read; log in
+`validation/logs/exp_0079_mood_read.json`.
+- **The read the pilot used is nearly blind.** The pilot's `ChatState` had no appraiser, so only the lexical
+  `appraise` read the user. 1,831 of the file's 3,180 rows sit at its default (valence 0.0, arousal 0.5) and are left
+  out; on the 1,349 labelled ones, the lexical valence is 0 on 1,298 (correlation with the label 0.168). Of 662 texts
+  labelled +0.6 or more it reads above +0.2 on 41; of 220 labelled -0.6 or less it reads below -0.2 on 3. The hormones
+  had almost nothing to move on.
+- **With the read the host has at serving, the mood moves.** `perception.ModelAppraiser` (the trunk names the user's
+  emotion, its petal goes through `PETAL_AFFECT` and then `afferent`, so Cubby is not made to mirror the user) was
+  replayed over the pilot's 952 user turns, with each turn's GoEmotions label standing in for the trunk's read: joy
+  reaches +4 on 154 turns (9 with the lexicon alone), trust on 376 (19), a shade appears on 379 (23), calm is named
+  on 164 (570). On the 159 turns where the user seemed joyful, excited or proud, Cubby's joy averages +2.88 and trust
+  +3.70; on the 40 sad or grieving ones, trust averages +2.95 with a caring shade on 12, and Cubby's sadness stays at
+  -0.85, which is the no-mirroring rule doing its job.
+- **What is still odd with the label read:** mild disgust (named boredom) on 116 turns and mild anger on 271; on the
+  44 nervous or afraid turns, anger averages +0.98. Worth a look before the final run.
+- **What it means for the rows:** the pilot's 913 rows carry the flat moods they were written for; they stay as a
+  trial and are not mixed with rows written for the read the host serves with.
+- **`ei_11.jsonl`:** 728 English turns in 120 conversations, synthetic (2023-10 to 2024-07), in a customer-support
+  frame (Student, Small Business Owner, Online Shopper, Healthcare Patient, ...), each with the user's emotional state
+  and its trigger (Overwhelmed, Frustrated, Confused, Excited, Anxious, ...), a standard reply (median 16 words) and an
+  emotion-adapted one (median 68). 397 of the adapted replies pass the host's checks as they are; the others claim
+  actions Cubby cannot take ("I'm initiating a diagnostic test on your line") or names from nowhere. Its user turns
+  and labels can seed the final run's openers, beside Topical-Chat; its pairs show "name the feeling first, then ask",
+  which is already in the character sheet. Its replies are not Cubby's voice and are not used as rows.
