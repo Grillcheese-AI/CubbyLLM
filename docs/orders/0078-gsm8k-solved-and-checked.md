@@ -206,14 +206,18 @@ teacher, never a test-time solver (it needs the gold steps). Today it does not c
   and the beam's reads on the val arithmetic (H-E19, `exp_he19_*` logs); and the branching cutoff set on 80 of the val
   problems. No GSM8K test number has been written yet.
 
-### Code A: S2, the school (not built yet)
-- `validation/train_school_torch.py` already keeps a round only if its held-out gate does not drop. Wiring its
-  error kinds to `gsm8k.cube` needs the pool's rows to carry their gold's `<<...>>` text: that is S1's set (Code B's
-  conversion of GSM8K train). Built when S1's format is fixed.
-- **Commits:**
-- **Files:**
-- **Tests:**
-- **Measured:**
-- **Not verified here:**
-- **Found on the way:**
-- **Questions:**
+### Code A: S2, the school, wired (2026-11-20)
+- **The wiring** (`c46b9f6`): `train_school_torch.py --gsm8k --cube-exe --cube` (`validation/school_gsm8k.py`). The
+  pool is S1's GSM8K step rows (`gsm8k_id`, train, not one of dev's 329: 27,833 rows); each wrong step is named by
+  `gsm8k.cube`'s `classify_error`, on its gold cut to the first k+1 annotations when those are the plan's steps
+  (each replaying to the plan's value), else on the plan's values written as steps; each round counts which.
+  `school.mistake_rows` takes the namer (without it, unchanged). The dev gate is the trainer's own: a round is kept
+  only if the step loop on dev's 329 does not drop. Tests: `tests/validation/test_school_gsm8k.py` (4).
+- **Smoke on CPU, S0's adapter** (one round of 8 problems, every level open, a 4-question gate): 6 solved in 18
+  tries, 9 mistakes named by the cube (6 on the gold's own steps, 2 on the plan's values; all 9 "other"), the gate
+  kept the round. The namer against the real VM gives all five kinds on a known case (no failed call).
+- **The notebook** (`notebooks/school_s2.ipynb`, `de51c46`; Nick's to run **after Code B's dev read calls no
+  scale-up**): S1's adapter, 20 rounds of 256, up to 16 tries, the gate on all 329; cubelang built on Colab at
+  `efa2559`; the GSM8K train file and dev ids on Drive under `gsm8k/` (the same SHA-256 as at home).
+- **Not verified here:** cubelang's Linux build on Colab (built and tested only on Windows here), and the school's
+  speed on an A100 at these settings.
