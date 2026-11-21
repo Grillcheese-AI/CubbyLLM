@@ -48,8 +48,11 @@ def emitter_from(a: argparse.Namespace):
         return DryEmitter()
     sys.path.insert(0, str(ROOT / "standin" / "data"))
     if a.cubby:
-        from standin.emitter import Cubby450mEmitter
-        return Cubby450mEmitter(a.export, a.cubby, a.tokenizer)
+        # the TALK seat, as the host serves the perception read (Cubby450mEmitter is the programs seat: it wraps
+        # the prompt as "Question:/Program:" and decodes a program, so no petal could ever come back; 2026-11-21)
+        from cubbyllm.emit.seats_450m import Cubby450mTrunk
+        from cubbyllm.emit.talk import Cubby450mTalk
+        return Cubby450mTalk(Cubby450mTrunk(a.export, a.tokenizer, {"talk": a.cubby}))
     from standin.emitter import LlamaCppEmitter, LlamaServerEmitter
     return LlamaCppEmitter(a.gguf) if a.gguf else LlamaServerEmitter(a.server)
 
