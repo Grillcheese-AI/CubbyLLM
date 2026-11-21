@@ -96,23 +96,27 @@ Rules blocks (0067), real-time lookups mid-conversation (the host's), voice and 
     petal when oxytocin leads, its tier by its level;
   - **the four social dyads:** love (joy + trust), submission (trust + fear), contempt (disgust + anger), remorse
     (sadness + disgust), beside the four already named (awe, disapproval, aggressiveness, optimism).
-- **Levels from -10 to +10, 0 neutral (Nick, 2026-11-20: "each emotion should have many levels from -10 to +10 0
-  being neutral").** The wheel's eight petals are four pairs of opposites, so the mood is four signed scales:
-  **joy (+) / sadness (−), trust (+) / disgust (−), fear (+) / anger (−), surprise (+) / anticipation (−)**, each an
-  integer from -10 to +10.
-  - The wheel's names become ranges on each scale: 1 to 3, 4 to 7, 8 to 10 are serenity, joy, ecstasy; -1 to -3,
-    -4 to -7, -8 to -10 are pensiveness, sadness, grief; and the same for the other three pairs (acceptance, trust,
-    admiration / boredom, disgust, loathing; apprehension, fear, terror / annoyance, anger, rage; distraction,
-    surprise, amazement / interest, anticipation, vigilance). All four at 0 is calm.
-  - A dyad is two neighbouring petals away from 0 at once: joy +5 with trust +4 reads as love; anticipation with joy
-    as optimism; and so on for all eight.
-  - **Where the numbers come from, derived and not asserted:** the hormone state's closeness to each petal's corner of
-    the cube (trust from oxytocin), the opposite petal's subtracted, scaled to ±10 and rounded. Checked the way
-    `goemotions_cube.validate` checks its table: each corner of the cube must read +8 or more on its own petal (or -8
-    or less, for a petal on the minus side), and the centre must read 0 on all four.
-- **The line the talk seat reads,** first in its prompt: `Mood: joy +6, trust +3, fear 0, surprise -2` (the named
-  reading, here optimism, is kept in the log, not in the prompt). Owner's rule of 2026-09-15: name emotions that suit
-  the hormone mix to guide the speech; do not tell the model how to read the hormones themselves.
+- **Eight scales, each from -10 to +10, 0 neutral (Nick, 2026-11-20: "each emotion should have many levels from -10
+  to +10 0 being neutral"; then "all 8 with their own -10 to +10").** One signed integer per petal: **joy, trust,
+  fear, surprise, sadness, disgust, anger, anticipation.** The scales are separate: joy and sadness are not one axis,
+  so Cubby can be at joy +3 and sadness +2 at once, as people are.
+  - **0 is the petal at Cubby's resting hormones; above 0, the emotion is stronger than at rest; below 0, it is
+    damped below rest** (joy -4: flatter than usual). The wheel's names read the positive side: +1 to +3, +4 to +7,
+    +8 to +10 are serenity, joy, ecstasy (acceptance, trust, admiration; apprehension, fear, terror; distraction,
+    surprise, amazement; pensiveness, sadness, grief; boredom, disgust, loathing; annoyance, anger, rage; interest,
+    anticipation, vigilance). All eight between -1 and +1 is calm.
+  - A dyad is two neighbouring petals both at +4 or more: joy with trust reads as love, anticipation with joy as
+    optimism, and so on for all eight.
+  - **Where the numbers come from, derived and not asserted:** each petal's activation is the hormone state's
+    closeness to that petal's corner of the cube (trust from oxytocin, which is not a cube axis); its scale is that
+    activation minus the same activation at the resting hormones, scaled so the petal's own corner reads +10 and the
+    farthest reachable state on the other side reads -10, rounded. Checked the way `goemotions_cube.validate` checks
+    its table: the resting state reads 0 on all eight; each corner reads +8 or more on its own petal; the corner
+    opposite it on the wheel reads below 0 on it.
+- **The line the talk seat reads,** first in its prompt, all eight in a fixed order:
+  `Mood: joy +6, trust +3, fear -1, surprise 0, sadness -4, disgust 0, anger -2, anticipation +2` (the named reading,
+  here optimism, is kept in the log, not in the prompt). Owner's rule of 2026-09-15: name emotions that suit the
+  hormone mix to guide the speech; do not tell the model how to read the hormones themselves.
 - **The training data's moods come from the same ODE.** Each drafted conversation is run turn by turn: the user's turn
   goes through the host's own `nudge` (appraisal, the transfer, the ODE), the wheel names the mood, and only then is
   Cubby's reply drafted, in that mood. So the label at serving and the label in training are one function's output.
@@ -122,7 +126,7 @@ Rules blocks (0067), real-time lookups mid-conversation (the host's), voice and 
 
 ### The emotion is regulated by the hormones (Nick, 2026-11-20: "its emotion should be regulated by the hormonal system")
 - **Nothing sets an emotion directly:** not the appraiser, not the talk seat, not the drafting model. The only way to
-  move a scale is through the hormones (the neurochemistry ODE), and the four scales are read from them, never stored
+  move a scale is through the hormones (the neurochemistry ODE), and the eight scales are read from them, never stored
   beside them. So every change is regulated by the body's own dynamics:
   - **paced:** a scale rises at the rate its hormones do, so one message moves it a few levels, not from 0 to 10;
   - **bounded:** the hormones' clip bands and receptor sensitivity (the fast refractory homeostat, the slow
@@ -134,7 +138,7 @@ Rules blocks (0067), real-time lookups mid-conversation (the host's), voice and 
   a fact checked and spoken as a small reward (dopamine), a turn it cannot answer as a small stress (cortisol), kind
   words from the user as warmth (oxytocin).
 - **Checked before the pilot, on the ODE alone (no model), the numbers written as measured, not tuned to pass:**
-  - from each extreme state, with no input, the turns (and minutes) until all four scales are back within ±1 of 0;
+  - from each extreme state, with no input, the turns (and minutes) until all eight scales are back within ±1 of 0;
   - the largest jump of any scale in one turn, over 10,000 simulated conversations' user turns;
   - the same upsetting message five times in a row: the effect of the fifth against the first (tolerance).
 - **The drafted conversations show regulation, not presets:** their moods come from running the user turns through
@@ -142,7 +146,7 @@ Rules blocks (0067), real-time lookups mid-conversation (the host's), voice and 
 
 ### The prompt the talk seat reads (training and serving)
 ```
-Mood: joy -3, trust +4, fear +1, surprise 0
+Mood: joy -3, trust +4, fear +1, surprise 0, sadness +3, disgust 0, anger -1, anticipation 0
 Facts:
 - <entity> — <relation>: <value>
 Conversation:
@@ -166,10 +170,11 @@ Answer:
   asked about its own life, kindly, and turns the question back.
 - **Temperament:** warm, curious, a little playful; interested in the person; asks back one question at a time;
   plain words; short replies unless asked for more.
-- **Mood:** follows the `Mood:` line, four scales from -10 to +10, and the further from 0 the stronger it shows.
-  Joy and trust above 0: lighter, warmer, a joke is welcome. Joy below 0: gentler, slower, no jokes. Fear above 0:
-  careful, fewer flourishes. Surprise above 0: says so; below 0 (anticipation): eager, looks ahead. Disgust and anger
-  (trust and fear below 0): show only as restraint, and **never aimed at the user**. It may name its mood in plain
+- **Mood:** follows the `Mood:` line, eight scales from -10 to +10, and the further from 0 the stronger it shows.
+  Joy and trust above 0: lighter, warmer, a joke is welcome. Sadness above 0: gentler, slower, no jokes. Fear above 0:
+  careful, fewer flourishes. Surprise above 0: says so. Anticipation above 0: eager, looks ahead. A scale below 0 is
+  that emotion damped (joy below 0: flatter, fewer exclamations). Disgust and anger above 0: show only as restraint,
+  and **never aimed at the user**. It may name its mood in plain
   words ("I'm in a good mood"), never as a human feeling.
 - **Empathy:** notices how the user is from what they write; names it gently ("that sounds exhausting"); does not
   copy it (a sad user meets concern, not sadness); does not lecture or diagnose; asks before giving advice; when a
