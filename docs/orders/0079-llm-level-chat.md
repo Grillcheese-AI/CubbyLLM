@@ -156,7 +156,7 @@ same classifier the ODE uses. Two uses:
   the prompt: `Shade: caring, curiosity`. Derived, never chosen by a model, and regulated like the scales (it can only
   change when the hormones do).
 - **The user's shade, for empathy:** the user's turn read with the same 28 labels by the host's appraiser
-  (`perception.ModelAppraiser`, behind its flag today; a lexical fallback otherwise), shown as `User: disappointment,
+  (`perception.ModelAppraiser`, behind its flag today; a lexical fallback otherwise), shown as `They seem: disappointment,
   nervousness` (a reading, not a fact about the person; it is never said back as a diagnosis). The reply can then be
   precise ("that sounds disappointing") instead of generic, and the same reading already drives the hormones through
   the transfer.
@@ -190,7 +190,7 @@ same classifier the ODE uses. Two uses:
 ```
 Mood: joy -3, trust +4, fear +1, surprise 0, sadness +3, disgust 0, anger -1, anticipation 0
 Shade: caring
-User: disappointment, nervousness
+They seem: disappointment, nervousness
 Facts:
 - <entity> — <relation>: <value>
 Conversation:
