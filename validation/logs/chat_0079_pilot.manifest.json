@@ -1,0 +1,105 @@
+{
+ "what": "order 0079's Haiku pilot: 200 conversations drafted turn by turn by Haiku agents (both sides), moods from the hormone model (CB_MOOD_REGULATION=1), facts from the stand-in lookup over talk_v2_2, the host's checks as the gate",
+ "drafted_by": "claude-haiku (Cowork's subagents), Nick 2026-11-20: 'for now use haiku then the final one we will use a new set'",
+ "conversations": 200,
+ "conversations_whole": 132,
+ "conversations_cut": 68,
+ "by_source": {
+  "topical-chat": 94,
+  "feeling": 46,
+  "french": 36,
+  "asks about a fact": 24
+ },
+ "by_language": {
+  "en": 164,
+  "fr": 36
+ },
+ "cubby_turns_drafted": 855,
+ "cubby_turns_passed": 787,
+ "turns_passed_after_a_host_fix": 61,
+ "rows_written": 780,
+ "turns_excluded_on_review": {
+  "c0079:00051": "implies a past (\"I never got a 90s living room of my own\")",
+  "c0079:00090": "says it loves a bowl of noodles",
+  "c0079:00171": "a Quebec swear in Cubby's reply"
+ },
+ "rows_with_facts": 55,
+ "cut_by": {
+  "h: an ability the record does not hold": 31,
+  "d: a name, number or kind from nowhere": 30,
+  "a feeling word the mood does not back": 7
+ },
+ "moods_named": {
+  "calm": 465,
+  "interest": 302,
+  "acceptance": 301,
+  "serenity": 231,
+  "annoyance": 108,
+  "distraction": 24,
+  "boredom": 18,
+  "trust": 14,
+  "joy": 9,
+  "pensiveness": 9,
+  "love": 6,
+  "apprehension": 5,
+  "sadness": 1
+ },
+ "shades": {
+  "caring": 14,
+  "joy": 9,
+  "sadness": 1
+ },
+ "scales_at_1_or_more": {
+  "joy": 306,
+  "trust": 520,
+  "fear": 5,
+  "surprise": 55,
+  "sadness": 41,
+  "disgust": 19,
+  "anger": 354,
+  "anticipation": 734
+ },
+ "scales_at_4_or_more": {
+  "joy": 9,
+  "trust": 14,
+  "fear": 0,
+  "surprise": 0,
+  "sadness": 1,
+  "disgust": 0,
+  "anger": 0,
+  "anticipation": 0
+ },
+ "user_seems": {
+  "amusement": 184,
+  "curiosity": 167,
+  "joy": 83,
+  "gratitude": 61,
+  "neutral": 57,
+  "nervousness": 31,
+  "excitement": 30,
+  "sadness": 30,
+  "annoyance": 19,
+  "relief": 18,
+  "confusion": 16,
+  "pride": 15,
+  "optimism": 13,
+  "approval": 12,
+  "fear": 10,
+  "grief": 10,
+  "caring": 6,
+  "disappointment": 5,
+  "desire": 5,
+  "embarrassment": 5,
+  "anger": 4,
+  "admiration": 4,
+  "disapproval": 1,
+  "love": 1
+ },
+ "replies_ending_with_a_question": 678,
+ "user_seems_source": "the drafting agent's own GoEmotions label (at serving: the host's appraiser)",
+ "facts_source": "a stand-in lookup by name over talk_v2_2's fact index (not the host's resolver)",
+ "host_fix_commits": [
+  "18bff51",
+  "04903b2"
+ ]
+}

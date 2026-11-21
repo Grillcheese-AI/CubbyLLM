@@ -325,3 +325,42 @@ ungrounded over "Oh" and "idea". And the first turn of nearly every conversation
   largest one-turn change 6 (p50 / p90 / p99: 1 / 1 / 3). The cost: an upsetting message as the very first turn
   moves the mood less (the angry one 9, 4, 4, 1, 4; the grieving one 4, 1, 0, 1, 2, against 13 and 9 before), since
   its novelty is now expected too.
+
+### The Haiku pilot (Cowork, 2026-11-21; Nick: "for now use haiku then the final one we will use a new set")
+OpenRouter ran out of credit (402), so the 200 planned conversations were drafted by Haiku agents writing both sides,
+turn by turn, through a step tool that does what they cannot: the mood (the hormone model over the user's turns,
+`CB_MOOD_REGULATION=1`), the facts for the turn (a stand-in lookup by name over talk_v2_2's fact index, not the host's
+resolver), and the host's checks on each reply (g, h, d's self claims and `chat_check`, a feeling word the mood does
+not back, a body or a past, a disclaimer, an emoji, a list). A refused reply ends the conversation there. Counts in
+`validation/logs/chat_0079_pilot.manifest.json`; the conversations and the rows are off the repo.
+- **What came out:** 200 conversations (164 English, 36 French; 94 open on a Topical-Chat line, 46 on a feeling, 24
+  ask about a fact), 132 whole and 68 cut; 855 Cubby turns drafted, 787 passed, 780 rows in the serving format after
+  three turns were dropped on review (one implies a past, one says it loves noodles, one has a Quebec swear). 55 rows
+  carry facts.
+- **The host refused true lines, and was fixed twice** (`18bff51`, `04903b2`, tests in
+  `tests/speech/test_chat_0079_gate.py`): h refused what is true of a model ("I don't have friends the way you do",
+  "I can't watch anything myself", "je n'ai pas de famille"), not knowing said with what is missing ("I don't have
+  facts about sharks", "je n'ai pas plus de détails"), relative clauses ("a plan I can get behind") and a French past
+  tense ("je n'ai pas suivi le match"); d refused opinions as kinds ("a great hook", "the worst"), a question as a
+  claim ("What was the piece?") and "TV". 61 of the 787 turns passed only after a fix; the refused conversations were
+  reopened and finished. "I can tell jokes", "I can send emails", "a story I can write for you", "astrophysics is the
+  study of stars", "a period in Egypt" and "Sesame Street" from nowhere are still refused.
+- **The 68 cuts:** h 31, d 30, a feeling word 7. The last batches still hold false refusals of the same kinds, not yet
+  fixed: "I don't have a hobby the way you do", "I don't have a game to win", "a small price for", "a bold plan I
+  respect", sentence openers the word list lacks ("Ouch", "Gushing", "Blanking", "Relire"). Fixing them reopens about
+  20 conversations.
+- **The mood is flat, and this is the finding that matters most.** The wheel names calm on 465 of the 787 turns; joy
+  reaches +4 on 9, trust on 14, sadness on 1. On the 40 turns where the user seemed sad or grieving, Cubby's sadness
+  reached +1 on 6. Mild anger (annoyance, +1 to +3) sits on 354 turns of friendly chat, and anticipation is +1 or more
+  on 734. A shade appears on 18 turns. So the empathy in these replies comes from the `They seem:` line, not from the
+  mood: the regulation (the Balanced round and the novelty prior) settled the jolts, and with them most of the
+  movement. Nick's call: whether the user's feeling should reach Cubby's hormones (an empathy input to the ODE), and
+  whether the mild anger should be read as alertness instead.
+- **The voice:** warm, short (median 33 words), honest about what it does not have, and it does not volunteer a
+  disclaimer; but 678 of the 787 replies end with a question, which can read as a pattern. The user side repeats
+  itself (concerts, grandparents, "lol" in 151 user turns), which the final run's user model should vary.
+- **The lookup is a stand-in, and it shows:** "hum the chorus" brought a film called Chorus, which Cubby mentioned as a
+  side note; Japan came with two capitals. The agents mostly ignored such lines, but the host's resolver has to decide
+  which name the user means before the facts reach the seat.
+- **Next:** the final run on the new model set (Nick); the mood question above; the remaining h and d fixes; vary the
+  ask-back.
