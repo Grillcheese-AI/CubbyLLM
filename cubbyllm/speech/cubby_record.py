@@ -62,6 +62,11 @@ _HEAD = re.compile(r"^\s*(?P<neg>not\s+|pas\s+)?(?:just |only |really |actually 
                    r"(?P<more>(?:\s*(?:,|\bor\b|\bou\b|\bnor\b|\bni\b|\band\b|\bet\b)\s*(?:(?:a|an|un|une)\s+)?[\w’'-]+)*)", re.I)
 
 
+EVALUATIVE = frozenset("idea question one thing point deal choice start plan way pleasure shame relief surprise classic "
+                       "favorite favourite treat mood vibe call move bummer pity joy win catch story combo trip mystery "
+                       "puzzle tough fun pain challenge step sign mix bit lot".split())
+
+
 def on() -> bool:
     return os.environ.get("CB_CUBBY_RECORD") == "1"
 
@@ -140,7 +145,10 @@ def chat_check(reply: str, user_text: str, context: list[str] | None = None) -> 
     if bad:
         return False, "self: " + "; ".join(bad[:3])
     ok, names = grounded_prose(opener_view(reply), lines() + [user_text or ""] + list(context or ()), load()["name"])
-    return (True, "ok") if ok else (False, "ungrounded: " + ", ".join(names[:4]))
+    # an evaluative "is a ..." in chat ("a vet visit is a good idea", "that's a great question") is not a category
+    # claim about a thing; the head nouns below are refused nowhere else (order 0079, Cowork, 2026-11-20)
+    names = [n for n in names if not (n.islower() and n in EVALUATIVE)]
+    return (True, "ok") if not names else (False, "ungrounded: " + ", ".join(names[:4]))
 
 
 __all__ = ["block", "chat_check", "is_about_cubby", "lines", "load", "on", "self_claims"]

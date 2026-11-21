@@ -65,6 +65,14 @@ def test_interjections_and_the_running_joke_are_no_longer_refused():
     assert not cubby_record.chat_check("In 1850 I sold cheese.", "")[0]            # a number from nowhere still is
 
 
+def test_natural_chat_is_no_longer_refused_and_real_claims_still_are():
+    ok = cubby_record.chat_check
+    assert ok("Oh no, that sounds really worrying. If it keeps going past a day, a vet visit is a good idea.", "my cat")[0]
+    assert ok("Wow, that's a great question! Haha, I love that.", "guess what")[0]
+    assert not ok("Lou Reed is a painter.", "tell me about Lou Reed", ["Lou Reed — occupation: musician"])[0]
+    assert not ok("Oh, Daniel told me about it.", "hi")[0]                   # a name from nowhere still is
+
+
 def test_user_turn_and_strip_emoji():
     assert v3b.user_turn("Conversation:\nUser: hi\nAssistant: Hey!\nQuestion: thanks 🙏\nAnswer:") == "thanks 🙏"
     assert v3b.strip_emoji("Bye for now 👋 !") == "Bye for now!"

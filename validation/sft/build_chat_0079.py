@@ -279,7 +279,7 @@ def plans(n: int, rng: random.Random, users: list[dict], idx: dict) -> list[dict
         if u < 0.45:
             r = tc[i]
             out.append({"lang": "en", "source": "topical-chat", "length": length,
-                        "opener": {"text": r["text"], "emotion": "neutral"}})
+                        "opener": {"text": r.get("ask") or r["text"], "emotion": "neutral"}})   # the line's own ask
         elif u < 0.70:
             out.append({"lang": "en", "source": "feeling", "length": length, "feeling": rng.choice(FEELINGS),
                         "situation": rng.choice(SITUATIONS)})

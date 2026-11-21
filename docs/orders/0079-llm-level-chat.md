@@ -307,3 +307,21 @@ own) with `tests/affect/test_mood.py`; the record's `mood` and `feelings_answer`
   grieving one 9, 2, 2, 1, 2. The baseline applies to them too (they carry no threat), which is why their repeats
   move less than in the first round.
 - **The pilot can run on these moods.**
+
+### Before the pilot: three host fixes found by its first test turn (Cowork, 2026-11-20)
+The first drafted reply, "Oh no, that sounds really worrying. ... a vet visit is a good idea.", was refused as
+ungrounded over "Oh" and "idea". And the first turn of nearly every conversation read as a jolt.
+- **Interjections:** "Oh", "Wow", "Aw", "Haha", "Super", "Génial" and the like opening a sentence are forced
+  capitals, never names (`opener_view.INTERJECTIONS`).
+- **Evaluative "is a ...":** the category check (`ask_words.category_claims`, which caught "the Bank of England is a
+  financial institution") also refused "a vet visit is a good idea". In chat only (`cubby_record.chat_check`), a
+  short list of evaluative head nouns (idea, question, deal, choice, ...) is not a category claim. "Lou Reed is a
+  painter" is still refused when the facts say musician (test added).
+- **The first turn's novelty:** a new conversation is expected to bring new words, so the first turn is measured
+  against the novelty an ordinary turn brings (0.33, the measured mean), not against none (`NOVELTY_PRIOR`). On the
+  99 openers of the pilot's plans, anger at +2 or more went from 83 to 0.
+- **The full check re-run with it** (`exp_0079_mood_regulation_regulated.json`): over the 97,204 turns calm 42,329,
+  interest 48,137, serenity 44,053, acceptance 44,123, annoyance (+1 to +3) 11,923, joy 4,359, love 3,458; the
+  largest one-turn change 6 (p50 / p90 / p99: 1 / 1 / 3). The cost: an upsetting message as the very first turn
+  moves the mood less (the angry one 9, 4, 4, 1, 4; the grieving one 4, 1, 0, 1, 2, against 13 and 9 before), since
+  its novelty is now expected too.

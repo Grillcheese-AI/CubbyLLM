@@ -25,8 +25,11 @@ __wiring__ = "WIRED"
 WORDS = pathlib.Path(__file__).with_name("opener_words.txt")
 # 0010 addendum 2, point 3: openers the chat corpus's list lacks (the voice rows' manifest counts them)
 INTERJECTIONS = frozenset("hmm ooh aha oups hello hey bonjour coucou j'espère j’espère qu'est-ce qu’est-ce".split()) \
-    | frozenset("yes yep yeah nope nah ok oui ouais honnêtement".split())   # 0010, talk_v3b (Cowork, 2026-11-20):
-# "Yes! I can show you my steps" and Nick's approved "Nope! I'm Cubby" were refused as names
+    | frozenset("yes yep yeah nope nah ok oui ouais honnêtement".split()) \
+    | frozenset("oh ah aw aww awww wow whoa yay ugh ha haha hehe oof phew yikes gosh omg alright okay um uh "
+                "ouf bof super génial bravo merci désolé ravi oh là".split())   # 0010 / 0079 (Cowork, 2026-11-20):
+# "Yes! I can show you my steps", Nick's approved "Nope! I'm Cubby" and "Oh no, that sounds worrying" were refused
+# as names: an interjection opening a sentence is a forced capital, never a name
 
 _TOKEN = re.compile(r"[A-Za-zÀ-ÿ][\w'’\-]*|\d[\d.,:/\-]*")        # ask._TOKEN
 _ENUM = re.compile(r"(?m)^\s*(?:\d{1,2}[.)]|[-*•])\s+")

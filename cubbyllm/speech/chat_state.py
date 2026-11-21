@@ -26,6 +26,7 @@ def regulated_on() -> bool:
 # -> 0%, joy above 0 30% -> 63%; the upsetting messages still move the mood (12 -> 13, 8 -> 9 on their first turn).
 SAFETY_BASE = 0.2
 FOCUS_SAFE = 1.0
+NOVELTY_PRIOR = 0.33
 
 
 class ChatState:
@@ -104,7 +105,10 @@ class ChatState:
             # it), so a conversation that keeps bringing new words stops lifting dopamine and noradrenaline turn
             # after turn, and a real surprise still does.
             seen = getattr(self, "_novelty_seen", None)
-            expected = 0.0 if seen is None else seen
+            # a new conversation is EXPECTED to bring new words: the first turn is measured against the novelty an
+            # ordinary turn brings (0.33, the mean over 97,204 Topical-Chat turns), not against none, which read
+            # every opening message as a jolt (anger +2 on 83 of 99 openers; with this, 0 of 99)
+            expected = NOVELTY_PRIOR if seen is None else seen
             self._novelty_seen = novelty if seen is None else 0.7 * seen + 0.3 * novelty
             novelty = max(0.0, novelty - expected)
             # SAFETY: the user's own warmth and good mood, with no threat in the turn, is contentment (serotonin)
