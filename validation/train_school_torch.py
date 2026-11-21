@@ -398,7 +398,7 @@ def restore(params, snap) -> None:
 # -- the school day -------------------------------------------------------------------------------
 
 def run_round(model, tk, eos, dev, amp, cur: Curriculum, pool: dict, judge: Judge, world: ArithmeticWorld,
-              rng: random.Random, n: int, temperature: float, max_new: int) -> tuple[list[dict], dict]:
+              rng: random.Random, n: int, temperature: float, max_new: int, namer=None) -> tuple[list[dict], dict]:
     rows, st = [], Counter()
     for level in cur.plan_batch(n):
         if not pool.get(level):
@@ -419,7 +419,8 @@ def run_round(model, tk, eos, dev, amp, cur: Curriculum, pool: dict, judge: Judg
         else:
             ref_filled = table_of(rec["spans"]).fill(rec["program"])
             reference = {"program": rec["program"], "values": arith_step_values(ref_filled)}
-        new = mistake_rows(rec["prompt"], attempts, result, reference=reference)
+        new = mistake_rows(rec["prompt"], attempts, result, reference=reference,   # 0078: gsm8k.cube names them
+                           classify=namer.for_row(rec) if namer is not None and step else None)
         for r in new:
             if r["kind"] == "mistake":
                 cur.learn(level, r["error"])
@@ -436,6 +437,8 @@ def run_round(model, tk, eos, dev, amp, cur: Curriculum, pool: dict, judge: Judg
         if result["event"]:
             log(f"    level {level} ({cur.levels[level].name}): {result['event']}")
     st["dopamine"] = round(st["dopamine"] / max(1, st["problems"]), 4)
+    if namer is not None:                                 # which gold text named the mistakes (0078 S2)
+        st.update({f"named on {k}": v for k, v in namer.source.items()})
     return rows, dict(st)
 
 
@@ -465,6 +468,10 @@ def main(argv=None) -> None:
                                                              "the regression suite (catastrophic forgetting)")
     ap.add_argument("--regress-n", type=int, default=8, help="records per family in the regression suite")
     ap.add_argument("--step-max-new", type=int, default=96, help="--step: tokens a step may take (it ends at </s>)")
+    ap.add_argument("--gsm8k", default=None, help="0078 S2: the GSM8K folder (train.jsonl, dev_ids.json): the pool is "
+                                                   "GSM8K train outside dev, each mistake named by --cube in --cube-exe")
+    ap.add_argument("--cube-exe", default=None)
+    ap.add_argument("--cube", default=None, help="cubelang's examples/gsm8k.cube")
     ap.add_argument("--step", action="store_true", help="the write-back format: --pool is *_step.jsonl, one step "
                                                         "is one problem, the gate is the loop on --heldout questions")
     a = ap.parse_args(argv)
@@ -510,6 +517,12 @@ def main(argv=None) -> None:
         Curriculum(max_tries=a.max_tries, window=a.window, seed=a.seed, open_all=a.no_curriculum)
     world = ArithmeticWorld.load(world_path) if os.path.exists(world_path) else ArithmeticWorld()
     pool = load_step_pool(a.pool, "train") if a.step else load_pool(a.pool, "train")
+    namer = None
+    if a.gsm8k:                                           # 0078 S2 (validation/school_gsm8k.py)
+        from school_gsm8k import CubeNamer
+        namer = CubeNamer(a.cube_exe, a.cube, a.gsm8k)
+        pool = {lv: [r for r in rows if namer.keep(r)] for lv, rows in pool.items()}
+        log(f"0078 S2: the pool is GSM8K train outside dev: {sum(map(len, pool.values()))} step rows")
     held = [r for lv in load_pool(a.heldout, "val").values() for r in lv]
     random.Random(1).shuffle(held)
     held = held[:a.gate_n]
@@ -527,7 +540,8 @@ def main(argv=None) -> None:
     lf = open(os.path.join(a.out, "school_rounds.jsonl"), "a", encoding="utf-8")
     for rnd in range(1, a.rounds + 1):
         t0 = time.time()
-        rows, st = run_round(model, tk, eos, dev, amp, cur, pool, judge, world, rng, a.problems, a.temperature, smax)
+        rows, st = run_round(model, tk, eos, dev, amp, cur, pool, judge, world, rng, a.problems, a.temperature, smax,
+                             namer)
         up = update(model, tk, eos, rows, opt, params, dev, amp, beta=a.beta)
         acc = gate(model, tk, eos, held, judge, dev, smax)
         reg = read_regression(model, tk, eos, regress, dev, a.max_new)

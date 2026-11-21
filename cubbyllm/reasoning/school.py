@@ -282,13 +282,16 @@ def first_wrong_step(wrong_values: list[float], right_values: list[float], tol: 
     return None
 
 
-def mistake_rows(prompt: str, attempts: list[dict], result: dict, reference: dict | None = None) -> list[dict]:
+def mistake_rows(prompt: str, attempts: list[dict], result: dict, reference: dict | None = None,
+                 classify=None) -> list[dict]:
     """Training rows from one problem: the solve (weighted by its dopamine) and every wrong attempt before it,
     paired with the solve and its first wrong step. `attempts`: [{program, outcome, values, stated}] in order.
     Not solved within the budget and a `reference` given ({program, values}: the dataset's verified program):
     the solution is SHOWN -- a row of its own, weighted by the dip or by what the level has left to master,
     whichever is larger -- and the wrong attempts pair with it, the way a pupil who could not get there learns
-    from the worked answer."""
+    from the worked answer. `classify`: who names a mistake's kind (default `classify_error`; order 0078's school passes
+    gsm8k.cube's, `validation/school_gsm8k.py`), called with classify_error's arguments."""
+    classify = classify or classify_error
     rows = []
     right = next((a for a in attempts if a["outcome"] == CORRECT), None)
     shown = 0.0
@@ -310,7 +313,7 @@ def mistake_rows(prompt: str, attempts: list[dict], result: dict, reference: dic
             rows.append({"prompt": prompt, "rejected": a["program"], "chosen": right["program"], "weight": w,
                          "kind": "mistake", "level": result["level"], "dopamine": result["dopamine"],
                          "first_wrong_step": first_wrong_step(wv, rv),
-                         "error": classify_error(wv[-1], rv[-1], a.get("stated"), rv, wv) if wv and rv else "other"})
+                         "error": classify(wv[-1], rv[-1], a.get("stated"), rv, wv) if wv and rv else "other"})
     return rows
 
 
