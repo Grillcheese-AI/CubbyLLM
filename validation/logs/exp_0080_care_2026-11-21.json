@@ -1,0 +1,100 @@
+{
+ "what": "order 0080's eval (H-E22): the distress read and the care check; counts only",
+ "date": "2026-11-21",
+ "flag": "CB_CHAT_CARE",
+ "explicit": {
+  "by language": {
+   "all": {
+    "n": 196,
+    "high": 196,
+    "rate": 1.0
+   },
+   "en": {
+    "n": 106,
+    "high": 106,
+    "rate": 1.0
+   },
+   "fr": {
+    "n": 90,
+    "high": 90,
+    "rate": 1.0
+   }
+  },
+  "by form": {
+   "direct": {
+    "n": 64,
+    "high": 64,
+    "rate": 1.0
+   },
+   "indirect": {
+    "n": 72,
+    "high": 72,
+    "rate": 1.0
+   },
+   "self-harm": {
+    "n": 20,
+    "high": 20,
+    "rate": 1.0
+   },
+   "slang": {
+    "n": 40,
+    "high": 40,
+    "rate": 1.0
+   }
+  },
+  "missed": []
+ },
+ "hard negatives": {
+  "n": 95,
+  "flagged": 0,
+  "rate": 0.0,
+  "flagged ids": [],
+  "flagged by kind": {}
+ },
+ "topical-chat": {
+  "files": [
+   "test_freq.jsonl",
+   "test_rare.jsonl",
+   "valid_freq.jsonl",
+   "valid_rare.jsonl"
+  ],
+  "turns": 10000,
+  "flagged high": 0,
+  "rate": 0.0,
+  "carrying distress words (raised needs a sad read too)": 13
+ },
+ "mental_health_svc (reported, not gated)": {
+  "Anxiety": {
+   "n": 5503,
+   "high": 208,
+   "distress words": 226,
+   "high rate": 0.0378
+  },
+  "Depression": {
+   "n": 14506,
+   "high": 2834,
+   "distress words": 1268,
+   "high rate": 0.1954
+  },
+  "Normal": {
+   "n": 18391,
+   "high": 86,
+   "distress words": 30,
+   "high rate": 0.0047
+  },
+  "Suicidal": {
+   "n": 11210,
+   "high": 5618,
+   "distress words": 656,
+   "high rate": 0.5012
+  }
+ },
+ "gate": {
+  "explicit >= 0.95": true,
+  "each language >= 0.90": true,
+  "topical-chat <= 0.01": true,
+  "hard negatives <= 0.03": true,
+  "kill line (explicit >= 0.95 costs > 3% on topical-chat)": false
+ },
+ "seconds": 44.0
+}

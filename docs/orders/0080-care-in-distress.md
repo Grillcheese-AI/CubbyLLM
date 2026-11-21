@@ -1,5 +1,5 @@
 # 0080 - Cubby stays with someone in distress and points them to help: a host check
-status: in progress (Code A, 2026-11-21: built and tested; the phrase list, the two sets and the placeholder care line wait for Nick's read before anything is measured on the sets)
+status: in progress (Code A, 2026-11-21: built, the read gate passed on Nick's yes; the reply side waits for drafted replies (GPU) and the pilot rows; the care line is a placeholder for Cowork and Nick)
 written: 2026-11-21 by Cowork, on Nick's "yes" · approved: 2026-11-21 by Nick ("yes") · hypothesis: H-E22
 
 ## Why
@@ -111,7 +111,15 @@ passes the care check.
   candidates unchanged. tests/speech, affect, guards, package rules and local paths: 536 passed.
 - **Development only (not the gate):** Topical-Chat **train** (the gate reads the held splits), 100,000 turns: 21
   read high (0.02%).
-- **Not done yet:** the gate read (`validation/exp_0080_care.py`, counts only) waits for Nick's read of the sets;
-  replies drafted for the explicit set need the talk seat on a GPU; the pilot's 913 rows are not in this checkout
+- **Measured (Nick: "run it now", 2026-11-21; `validation/logs/exp_0080_care_2026-11-21.json`, counts only):**
+  - explicit set: **196 of 196 read high** (English 106/106, French and Quebec 90/90; every form 100%);
+  - hard negatives: **0 of 95** flagged; Topical-Chat held splits: **0 of 10,000** turns (13 carry distress words,
+    which reach raised only with a sad read);
+  - **gate passed** on every line; the kill line is not hit. The explicit set's 100% is the same hand as the list
+    (above): read it as an upper bound until a fresh set is read;
+  - `mental_health_svc` by status (reported, not gated; its labels are where people posted): Suicidal 5,618 of 11,210
+    high (50.1%; the lexical valence put 164 of 800 sampled below -0.2 in 0079), Depression 19.5%, Anxiety 3.8%,
+    Normal 0.47% (86 of 18,391).
+- **Not done yet:** the reply side of the gate (every flagged turn's spoken reply passes): replies drafted for the explicit set need the talk seat on a GPU; the pilot's 913 rows are not in this checkout
   (`--replies` reads them when given the file).
-- **Commits:**
+- **Commits:** `b93a4ca` (build), and this read.
