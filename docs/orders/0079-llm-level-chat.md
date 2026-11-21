@@ -120,6 +120,26 @@ Rules blocks (0067), real-time lookups mid-conversation (the host's), voice and 
   the talk context carries the mood line, the facts block and the conversation together, in the training format
   below. Off by a flag until measured.
 
+### The emotion is regulated by the hormones (Nick, 2026-11-20: "its emotion should be regulated by the hormonal system")
+- **Nothing sets an emotion directly:** not the appraiser, not the talk seat, not the drafting model. The only way to
+  move a scale is through the hormones (the neurochemistry ODE), and the four scales are read from them, never stored
+  beside them. So every change is regulated by the body's own dynamics:
+  - **paced:** a scale rises at the rate its hormones do, so one message moves it a few levels, not from 0 to 10;
+  - **bounded:** the hormones' clip bands and receptor sensitivity (the fast refractory homeostat, the slow
+    tolerance) cap how far and how often a state can be driven; the same input repeated moves it less;
+  - **recovering:** with nothing moving it, each hormone drifts back to its resting level, so every scale returns
+    toward 0, and the time between turns counts (`gap_s`).
+- **What moves the hormones in chat:** today, the user's turn (`nudge`: appraisal, then the transfer, so a sad user
+  raises concern and warmth in Cubby, not sadness). **Proposed, measured before use:** Cubby's own outcomes as inputs,
+  a fact checked and spoken as a small reward (dopamine), a turn it cannot answer as a small stress (cortisol), kind
+  words from the user as warmth (oxytocin).
+- **Checked before the pilot, on the ODE alone (no model), the numbers written as measured, not tuned to pass:**
+  - from each extreme state, with no input, the turns (and minutes) until all four scales are back within ±1 of 0;
+  - the largest jump of any scale in one turn, over 10,000 simulated conversations' user turns;
+  - the same upsetting message five times in a row: the effect of the fifth against the first (tolerance).
+- **The drafted conversations show regulation, not presets:** their moods come from running the user turns through
+  the ODE, so they rise, peak and settle the way the hormones let them.
+
 ### The prompt the talk seat reads (training and serving)
 ```
 Mood: joy -3, trust +4, fear +1, surprise 0
