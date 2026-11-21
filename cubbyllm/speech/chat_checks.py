@@ -48,6 +48,20 @@ _SURE = re.compile(r"^\s*(?:tell|say|dire)\s+(?:you\s+|te\s+|vous\s+)?(?:if|whet
 # claim": the record's "if I have no checked fact, I tell you so"
 _CLAUSE = re.compile(r"[;,]|\s(?:but|mais|and I|et je)\s")      # an "I can" says its ability before the next clause
 _IDIOM = re.compile(r"^\s*(?:agree more|wait|believe|thank you enough|stress enough|emphasi[sz]e enough|m['’]empêcher)\b", re.I)
+# order 0079 (Cowork, 2026-11-20; the pilot's first 20 conversations): h refused the very honesty the record asks for.
+# "I don't have anything on OAR", "I can't say much more", "je ne sais pas grand-chose de plus" are the record's
+# "If I have no checked fact, I tell you so, and what is missing"; "I don't have hands for a teacup" is true of a model
+# ("is: a model"). They pass. "I can't tell jokes", "I can't send emails" still do not.
+_NOT_KNOWING = re.compile(
+    r"^\s*(?:(?:anything|much|more|that|this|it|any\s+(?:info|information|facts?|details?|news|notes|"
+    r"records?|data)|the\s+(?:detail|details|info|answer|facts?)|a\s+clear\s+picture|an\s+answer|enough|"
+    r"hands|a\s+body|eyes|ears|a\s+mouth|taste\s+buds|a\s+stomach|a\s+home|pets?|a\s+family|kids|a\s+past|a\s+childhood)\b|"
+    r"(?:say|tell\s+(?:you|for\s+sure|what|whether|if|which|how|much)|speak\s+to|confirm|be\s+sure|answer\s+that|"
+    r"check\s+that|know\s+for\s+sure)\b|"
+    r"(?:grand[- ]chose|beaucoup|tout|si\b|ce\s+qu|quoi|d['’]info|d['’]informations|de\s+détails|de\s+faits|ça\b|"
+    r"de\s+mains|de\s+corps|(?:te\s+)?dire|confirmer|savoir))", re.I)
+_CAN_HEAR = re.compile(r"^\s*(?:hear|picture|sense|relate|feel\s+how|tell\s+(?:how|that|it['’]s|you['’]re))\b", re.I)
+_KNOW_THAT = re.compile(r"^\s*(?:que|qu['’])", re.I)        # "je sais que X": knowing a fact, not an ability
 
 
 def no_loop_on() -> bool:
@@ -109,13 +123,15 @@ def abilities(reply: str) -> list[str]:
     for m in _CAN.finditer(reply or ""):
         rest = _CLAUSE.split(m.group("rest"))[0]
         c = _content(rest)
-        if _OFFER.match(rest) or _TALK.match(rest) or c <= OFFER or any(c <= line for line in can):
+        if _OFFER.match(rest) or _TALK.match(rest) or _CAN_HEAR.match(rest) or _KNOW_THAT.match(rest) \
+                or c <= OFFER or any(c <= line for line in can):
             continue
         bad.append(f"ability: {m.group(0).strip()[:60]}")
     for m in _CANT.finditer(reply or ""):
         rest = _CLAUSE.split(m.group("rest"))[0]
         c, head = _content(rest), [_stem(w) for w in _fold(rest) if w not in STOP][:1]
-        if not c or _IDIOM.match(rest) or _SURE.match(rest) or set(head) & _CHECKED or any(c <= line for line in cant):
+        if not c or _IDIOM.match(rest) or _SURE.match(rest) or _NOT_KNOWING.match(rest) or set(head) & _CHECKED \
+                or any(c <= line for line in cant):
             continue                                              # "je ne sais pas" alone; the record says so
         bad.append(f"ability: {m.group(0).strip()[:60]}")
     return bad

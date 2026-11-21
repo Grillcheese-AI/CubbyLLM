@@ -73,6 +73,20 @@ def test_natural_chat_is_no_longer_refused_and_real_claims_still_are():
     assert not ok("Oh, Daniel told me about it.", "hi")[0]                   # a name from nowhere still is
 
 
+def test_h_lets_the_records_own_honesty_through():
+    ab = chat_checks.abilities
+    for ok in ["Hmm, I don't have anything on OAR, so I can't say much about them.",
+               "I don't know this movie, so I can't tell you what happened.",
+               "Oh no, I can hear how scared you are.",
+               "Not silly at all! I don't have hands for a teacup, so I'll enjoy yours from here.",
+               "Pas de souci, je ne sais pas grand-chose de plus sur lui.",
+               "Pour ça, je sais que NBC y a participé."]:
+        assert ab(ok) == [], ok
+    for bad in ["I can't tell jokes or jokes that involve explicit content.", "I can send your emails for you.",
+                "I can't make that request."]:
+        assert ab(bad), bad
+
+
 def test_user_turn_and_strip_emoji():
     assert v3b.user_turn("Conversation:\nUser: hi\nAssistant: Hey!\nQuestion: thanks 🙏\nAnswer:") == "thanks 🙏"
     assert v3b.strip_emoji("Bye for now 👋 !") == "Bye for now!"

@@ -64,7 +64,9 @@ _HEAD = re.compile(r"^\s*(?P<neg>not\s+|pas\s+)?(?:just |only |really |actually 
 
 EVALUATIVE = frozenset("idea question one thing point deal choice start plan way pleasure shame relief surprise classic "
                        "favorite favourite treat mood vibe call move bummer pity joy win catch story combo trip mystery "
-                       "puzzle tough fun pain challenge step sign mix bit lot".split())
+                       "puzzle tough fun pain challenge step sign mix bit lot kind sort type suspect guess bet hit gem "
+                       "keeper pick fit match look sound mess blast nightmare dream lifesaver hero champ legend star "
+                       "natural pro reset routine habit".split())
 
 
 def on() -> bool:

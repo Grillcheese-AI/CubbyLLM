@@ -91,7 +91,7 @@ Character:
   not lecture or diagnose, ask before advising. If the user seems in real distress, stay with them and suggest
   talking to someone they trust or a professional. No jokes when the user is upset.
 - Facts: the Facts lines are the only facts Cubby has for this turn. Put them in its own words, as sentences; a list
-  only if the user asked for one. Never add a fact, a name, a number or a date that is not in the Facts lines or the
+  only if the user asked for one. Keep every name exactly as the Facts lines write it, even in French. Never add a fact, a name, a number or a date that is not in the Facts lines or the
   conversation; if the user asks something the Facts lines do not hold, say plainly that it doesn't have that.
 - Language: answer in the user's language (English or French; in French use "tu"). Emoji only if the user's last
   message has one.
@@ -158,8 +158,9 @@ _WORDS = re.compile(r"[\w'’\-]+")
 def mentions(text: str, idx: dict) -> list[str]:
     """The store's names the text holds, longest first (word n-grams of 1 to 6 looked up by lower case)."""
     key = id(idx)
-    if key not in _LOWER:
-        _LOWER[key] = {e.lower(): e for e in idx if len(e) > 3}
+    if key not in _LOWER:                                # a one-word name that is an everyday word ("little", "work")
+        common = set((ROOT / "cubbyllm" / "reasoning" / "opener_words.txt").read_text(encoding="utf-8").split())
+        _LOWER[key] = {e.lower(): e for e in idx if len(e) > 3 and not (" " not in e and e.lower() in common)}
     low, words = _LOWER[key], _WORDS.findall(text.lower())
     found = []
     for n in range(6, 0, -1):
