@@ -186,6 +186,26 @@ teacher, never a test-time solver (it needs the gold steps). Today it does not c
   epoch, batch 16, lr 2e-4, rank 16 / alpha 32, 1,024 tokens, `--no-gen`), ~93,700 steps, about 3.5-5 h on an A100 in
   one session (the trainer does not resume at a step). Nick's to run; then the dev read here.
 
+### Code B: S1 trained (Nick's Colab run, 2026-11-20): the deviation, the rows, and S0's footnote
+- **A deviation from "the same recipe as S0's": batch 18, not 16.** `train.log` (Drive `emitter/cubby450m_s1_0078/`) holds
+  four starts, each from the Gate A adapter: 16:31:19 UTC (batch 16, 93,849 steps) and 16:52:01 (batch 16) and 17:03:34
+  (batch 20, 75,080 steps), each stopped within minutes; the run that finished started **17:18:55 at batch 18, 83,422
+  steps** (one epoch of the rows), lr 2e-4, rank 16 / alpha 32, 1,024 tokens, as the notebook. **Reason (Nick):** "batch
+  18 was more token per sec", chosen for throughput before the finishing run (first-step rates in the log: batch 16 at
+  2,831 and 4,158 tok/s, batch 20 at 5,422, batch 18 at 5,307, settling at 8,813). The rows and the epoch are unchanged;
+  S0 was batch 16 at the same lr. Final held program loss 0.0342 at step 83,422; 378.4 min of training.
+- **The trainer's 1,501,584 rows against S1's 1,499,937:** the file is 1,498,057 train rows + 1,880 val rows; the trainer
+  takes the train split only (`encode_records(..., "train")`) with each row's `repeat` (v12e's kernel 1,674 -> 3,511, chain
+  1,150 -> 2,840): 1,498,057 + 3,527 = 1,501,584, per family as the trainer prints it. **No dev row trained:** no train row
+  carries a dev id; the 329 dev problems are in the val split only.
+- **S0's footnote (the 14 of the first build):** S0 was trained on v12e's 14 programs that share a 10-word run with GSM8K
+  test (9) or dev (6) questions, so S0's reads are reported twice: all questions, and without those ids
+  (`base_dropped_overlap` in `s1_0078_2026-11-20.json`). **GSM8K numbers already written from adapters trained on v12e**,
+  each read on v12e's val arithmetic (= GSM8K dev, 6 of whose questions S0's line shares runs with), get the same
+  footnote: H-E19's control arm, 2 of 64 val arithmetic programs (2026-09-30); Gate A's val 14.6% (killed); the step loop's
+  and the beam's reads on the val arithmetic (H-E19, `exp_he19_*` logs); and the branching cutoff set on 80 of the val
+  problems. No GSM8K test number has been written yet.
+
 ### Code A: S2, the school (not built yet)
 - `validation/train_school_torch.py` already keeps a round only if its held-out gate does not drop. Wiring its
   error kinds to `gsm8k.cube` needs the pool's rows to carry their gold's `<<...>>` text: that is S1's set (Code B's
