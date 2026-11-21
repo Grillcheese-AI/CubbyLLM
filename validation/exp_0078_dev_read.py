@@ -1,0 +1,165 @@
+"""exp_0078_dev_read - order 0078's dev read (Cowork's ruling, 2026-11-20): one arm's adapter on GSM8K dev (the 329
+val arithmetic problems of `emitter_sft_v12e_w_slots.jsonl`), step by step in the VM (H-E19's `StepLoop`).
+
+Per question it writes one row (jsonl, resumable: a question already in the file is skipped):
+- **greedy:** one greedy chain (`StepLoop.solve`, H-E19's loop): answer, refusal, steps. Reported, not deciding.
+- **tries:** K sampled chains (temperature 0.7, top-k 40), each run step by step in the VM exactly as the greedy chain
+  is (the same slot check, the same VM, the same stop), each try's answer the VM value it stopped on (None when it was
+  refused). The chains run in lockstep: at each step the live chains that share a prompt are sampled in ONE batched
+  decode (`emit_samples`), seeded by (question, step, group). k = 8 is the first 8 of the 16.
+
+The speak rule's m and k are chosen afterwards from these rows (`--score`, `cubbyllm.reasoning.speak_vote.choose_m`),
+with no second pass. Test is never read here.
+
+    python validation/exp_0078_dev_read.py --arm s0 --export <base450m_cont/grilly> --adapter <adapter> \\
+        --tokenizer <tokenizer.json> --data <emitter_sft_v12e_w_slots.jsonl> [--limit 20]
+    python validation/exp_0078_dev_read.py --score validation/logs/gsm8k_dev_read_s0_<date>.jsonl [--drop <ids.json>]
+
+Wiring: STANDALONE (an experiment; order 0078).
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import sys
+import time
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+for _p in (ROOT, HERE):
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
+
+from cubbyllm.reasoning.arith_world import ArithmeticWorld  # noqa: E402
+from cubbyllm.reasoning.slots import Span, canon, extract, num_value  # noqa: E402
+from cubbyllm.reasoning.step_loop import (PROMPT_HEAD, PROMPT_TAIL, StepLoop, derivation, parse_emission,  # noqa: E402
+                                          render_step, wrap_step)
+
+__wiring__ = "STANDALONE"
+
+K, TEMPERATURE, TOP_K = 16, 0.7, 40
+
+
+class Chain:
+    """One try: its own slot table, stepped by the emission it is handed (StepLoop.solve's body, one step a call)."""
+
+    def __init__(self, question: str, world, vm):
+        self.table = extract(question, constants=world.constants(question) if world else None)
+        self.vm, self.k, self.steps = vm, 0, []
+        self.answer, self.refused, self.done = None, None, False
+
+    def prompt(self) -> str:
+        return PROMPT_HEAD + self.table.annotate().strip() + PROMPT_TAIL
+
+    def step(self, raw: str, max_steps: int) -> None:
+        kind, what = parse_emission(raw)
+        if kind == "stop":
+            s = self.table.get(what)
+            self.answer, self.refused = (s.filled, None) if s is not None else (None, f"stop on unknown slot {what}")
+            self.done = True
+            return
+        if kind != "step":
+            self.refused, self.done = "malformed step", True
+            return
+        block_text = render_step(self.k, what.ops)
+        verdict = self.table.check(block_text)
+        if not verdict.ok:
+            self.refused, self.done = verdict.reason, True
+            return
+        ok, result = self.vm(wrap_step(self.table.fill(block_text)))
+        v = num_value(result) if ok else None
+        if v is None:
+            self.refused, self.done = "vm: the step did not run", True
+            return
+        self.k += 1
+        self.table.spans.append(Span(f"$S{self.k}", derivation(what.ops).replace("$", ""), -1, -1, "S", canon(v)))
+        self.steps.append(canon(v))
+        if self.k > max_steps:
+            self.refused, self.done = f"no stop within {max_steps} steps", True
+
+
+def tries(emitter, loop: StepLoop, question: str, qi: int, k: int = K) -> list[dict]:
+    chains = [Chain(question, loop.world, loop.vm) for _ in range(k)]
+    for step in range(loop.max_steps + 2):
+        live = [c for c in chains if not c.done]
+        if not live:
+            break
+        groups: dict = {}
+        for c in live:
+            groups.setdefault(c.prompt(), []).append(c)
+        for gi, (prompt, cs) in enumerate(groups.items()):
+            raws = emitter.emit_samples(prompt, len(cs), max_new_tokens=loop.max_new_tokens, temperature=TEMPERATURE,
+                                        top_k=TOP_K, seed=(qi * 100 + step) * 100 + gi)
+            for c, raw in zip(cs, raws):
+                c.step(raw, loop.max_steps)
+    return [{"answer": c.answer, "refused": c.refused, "steps": c.steps} for c in chains]
+
+
+def load(path: str) -> list[dict]:
+    out = []
+    for line in open(path, encoding="utf-8"):
+        r = json.loads(line)
+        if r.get("task") == "arithmetic" and r.get("split", "val") == "val" and "#" not in r["id"]:
+            out.append(r)
+    return out
+
+
+def run(a) -> None:
+    from cubbyllm.emit.seats_450m import Cubby450mEmitter
+    recs = load(a.data)[a.offset:]
+    if a.limit:
+        recs = recs[:a.limit]
+    done = set()
+    if os.path.exists(a.out):
+        done = {json.loads(ln)["id"] for ln in open(a.out, encoding="utf-8")}
+    emitter = Cubby450mEmitter(a.export, a.adapter, a.tokenizer)
+    loop = StepLoop(emitter, world=ArithmeticWorld(), max_steps=a.max_steps, max_new_tokens=a.max_new)
+    t0, n = time.perf_counter(), 0
+    with open(a.out, "a", encoding="utf-8") as f:
+        for i, r in enumerate(recs, start=a.offset):
+            if r["id"] in done:
+                continue
+            q0 = time.perf_counter()
+            g = loop.solve(r["question"])
+            q1 = time.perf_counter()
+            ts = tries(emitter, loop, r["question"], i, a.k)
+            q2 = time.perf_counter()
+            f.write(json.dumps({"id": r["id"], "i": i, "gold": r["gold"], "arm": a.arm, "adapter": emitter.name,
+                                "greedy": {"answer": g["answer"], "refused": g["refused"],
+                                           "steps": [s["value"] for s in g["steps"]]},
+                                "tries": ts, "seconds": {"greedy": round(q1 - q0, 2), "tries": round(q2 - q1, 2)}},
+                               ensure_ascii=False) + "\n")
+            f.flush()
+            n += 1
+            el = time.perf_counter() - t0
+            print(f"  {n}/{len(recs)} {r['id']} greedy {q1 - q0:.1f}s tries {q2 - q1:.1f}s | mean {el / n:.1f}s a question",
+                  flush=True)
+
+
+def main(argv=None) -> None:
+    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    ap.add_argument("--arm", default="")
+    ap.add_argument("--export", default="")
+    ap.add_argument("--adapter", default="")
+    ap.add_argument("--tokenizer", default="")
+    ap.add_argument("--data", default="")
+    ap.add_argument("--out", default="")
+    ap.add_argument("--k", type=int, default=K)
+    ap.add_argument("--offset", type=int, default=0)
+    ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--max-steps", type=int, default=12)
+    ap.add_argument("--max-new", type=int, default=96)
+    ap.add_argument("--score", default="", help="a rows file: choose m and k on it (exp_0078_dev_score)")
+    ap.add_argument("--drop", default="", help="with --score: a json list of dev ids to leave out (S0's footnote)")
+    a = ap.parse_args(argv)
+    if a.score:
+        from exp_0078_dev_score import score
+        print(json.dumps(score(a.score, a.drop), indent=1))
+        return
+    a.out = a.out or os.path.join(HERE, "logs", f"gsm8k_dev_read_{a.arm}_{time.strftime('%Y-%m-%d')}.jsonl")
+    run(a)
+
+
+if __name__ == "__main__":
+    main()

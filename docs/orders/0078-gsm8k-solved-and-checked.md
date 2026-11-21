@@ -58,6 +58,14 @@ teacher, never a test-time solver (it needs the gold steps). Today it does not c
      a fixed seed, until the cut is reached; the counts by step count reported beside GSM8K's. **Scale-up, fixed now:**
      if S1's dev right is short of S0's dev right + 10 points, the next cut is 1M programs (~6.6M rows, the long plans
      first). Dev alone decides; the arm read on test is the last cut trained, once; a smaller cut's test is never read.
+     **Cowork's ruling, 2026-11-20 (how dev is read, fixed before any number):** the scale-up rule reads what test's
+     acceptance reads, the speak rule's right: per arm, k in {8, 16} (k = 8 is the first 8 of the 16 tries) and m the
+     smallest share keeping dev's wrong at or under 1%, both chosen on dev; S1's dev right against S0's dev right + 10
+     points, each at its own chosen k and m. One greedy try per question (H-E19's loop) is read beside it for both
+     arms, reported, not deciding. S0 is read twice: all 329, and without the dev questions its 14 dropped programs
+     share a run with (six programs, five dev questions: `validation/logs/gsm8k_dev_s0_overlap_2026-11-21.json`). Code A
+     reads dev on the home card (grilly2); every try's VM value goes to a log, so k and m are chosen without a second
+     pass (`validation/exp_0078_dev_read.py`, scored by `exp_0078_dev_score.py`). Test stays unread.
    - **S2:** S1, then the school (`validation/train_school_torch.py`, built in H-E19, smoke only until now) on GSM8K
      train: levels, tries until the VM says right, dopamine-weighted rows, each wrong try located at its first wrong
      step and named by `gsm8k.cube`'s `classify_error`; a round is kept only if dev does not drop.

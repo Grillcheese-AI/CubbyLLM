@@ -1,0 +1,27 @@
+{
+ "what": "order 0078: GSM8K dev questions (v12e val ids) that share a 10-word run with one of S0's 14 dropped v12e programs (s1_0078_2026-11-20.json base_dropped_overlap); S0 is read with and without them",
+ "date": "2026-11-21",
+ "programs_to_dev": {
+  "arithmetic-0c8ecc5caed9": "gsm8k-train-324",
+  "arithmetic-e305195f4870": "gsm8k-train-2434",
+  "arithmetic-07bd036c77e2": "gsm8k-train-705",
+  "arithmetic-d4b8318d2847": "gsm8k-train-705",
+  "arithmetic-4cd4cf8c8846": "gsm8k-train-1203",
+  "arithmetic-61bea7f13701": "gsm8k-train-3252"
+ },
+ "gsm8k_to_v12e": {
+  "gsm8k-train-324": "arithmetic-7928d3ed3de1",
+  "gsm8k-train-705": "arithmetic-110eb90f79f0",
+  "gsm8k-train-1203": "arithmetic-cb74ff725477",
+  "gsm8k-train-2434": "arithmetic-33b6ce2c6485",
+  "gsm8k-train-3252": "arithmetic-b578a34acc7f"
+ },
+ "drop": [
+  "arithmetic-110eb90f79f0",
+  "arithmetic-33b6ce2c6485",
+  "arithmetic-7928d3ed3de1",
+  "arithmetic-b578a34acc7f",
+  "arithmetic-cb74ff725477"
+ ],
+ "note": "six dropped programs share runs with dev, five distinct dev questions (two programs share gsm8k-train-705); matched by import_tinygsm.shingles on GSM8K's dev questions, then to v12e's val record by a shared run"
+}
