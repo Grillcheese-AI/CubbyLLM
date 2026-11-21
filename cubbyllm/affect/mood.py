@@ -13,7 +13,8 @@ hormones do: paced by their rates, bounded by their bands and receptors, back to
   scaled so the quiescent state is the centre) against each petal's Lövheim corner (`feeling._PETAL`), as closeness
   1 - d / sqrt(3): 0.5 at the centre, 1 at the corner, 0 at the opposite corner. The scale is (closeness - 0.5) * 20,
   so the quiescent state reads 0, the petal's own corner +10 and the farthest point -10. Sadness owns two corners
-  (distress, spent): the nearer one counts.
+  (distress, spent): the nearer one counts. A positive level also needs the state on the corner's side of the centre
+  on every axis (`SIDE_MARGIN`), so a neighbour does not light up from the axes it shares.
 - **trust:** oxytocin, which is not a cube axis (`feeling.py`: "trust is oxytocin"), against its quiescent level,
   scaled by the room its band (`_BAND["OT"]`) leaves on each side.
 - **The names** read the positive side: +1 to +3, +4 to +7, +8 to +10 are the petal's three tiers; a dyad is two
@@ -47,6 +48,16 @@ OPPOSITE.update({v: k for k, v in list(OPPOSITE.items())})
 LEANS = {"love": "trust", "remorse": "disgust", "optimism": "joy", "disappointment": "surprise",
          "nervousness": "anticipation", "pride": "anger"}
 DIAG = math.sqrt(3)
+# A FEELING NEEDS THE HORMONES ON ITS SIDE (order 0079, Cowork, 2026-11-21, Nick's yes to fixing the two oddities).
+# Closeness alone let a corner's neighbours light up from the two axes they share: a warm, content state near joy
+# (5-HT and DA high, NE low) also read boredom, its neighbour on the disgust corner, on 116 of the pilot's 952 turns
+# replayed with the serving read; an attentive one (NE up, 5-HT just above the centre) read annoyance, the anger
+# corner's share of interest, on 149 of the 242 curious, nervous or afraid turns. A positive level now fades out as the
+# state crosses to the far side of the centre on any axis of its corner, over this margin of the half-axis. With it
+# and `chat_state.CONCERN_SAFE`: 0 and 10 of 242; joy at +4 or more on 169 turns (154), a shade on 392 (379)
+# (`exp_0079_mood_read.json`). Over Topical-Chat's 97,204 turns (`exp_0079_mood_regulation_regulated.json`): annoyance
+# named 766 times (11,923), boredom 149 (6,656); the largest one-turn change is 7 (6), p90 2 (1).
+SIDE_MARGIN = 0.1
 # GoEmotions' labels on the petals and their tiers, copied from the builders' checked tables
 # (`validation/sft/chat_sft_v6.GOEMOTIONS_PETAL`, `validation/builders/goemotions_cube.TIER`) so the host never imports
 # a builder; `tests/affect/test_mood.py` pins them equal.
@@ -77,12 +88,15 @@ def tier_of(v: int) -> int | None:
 def scales_at(pos: tuple, ot: float, quiet_ot: float, band_ot: tuple) -> dict[str, int]:
     """The eight scales for a cube position (5-HT, DA, NE, quiescent at 0.5) and an oxytocin level."""
     from .neurochem import Neurochemistry
-    near: dict[str, float] = {}
+    level: dict[str, float] = {}
     for corner, petal in _corner_petal().items():
         c = Neurochemistry._CORNERS[corner]
-        close = 1.0 - math.dist(pos, c) / DIAG
-        near[petal] = max(near.get(petal, 0.0), close)
-    out = {p: max(-10, min(10, round((near[p] - 0.5) * 20))) for p in near}
+        x = (1.0 - math.dist(pos, c) / DIAG - 0.5) * 20
+        if x > 0:                                        # a feeling needs the hormones on its side on every axis
+            side = min((pos[i] - 0.5) * 2 * (1 if c[i] else -1) for i in range(3))
+            x *= max(0.0, min(1.0, 1.0 + side / SIDE_MARGIN))
+        level[petal] = max(level.get(petal, -10.0), x)
+    out = {p: max(-10, min(10, round(level[p]))) for p in level}
     lo, hi = band_ot
     room = (hi - quiet_ot) if ot >= quiet_ot else (quiet_ot - lo)
     out["trust"] = max(-10, min(10, round(10 * (ot - quiet_ot) / max(room, 1e-6))))

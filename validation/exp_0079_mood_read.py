@@ -9,7 +9,8 @@ Two checks, counts only, written to `validation/logs/exp_0079_mood_read.json`:
    turns: the lexical read alone (as drafted), and the read the host has at serving (`perception.ModelAppraiser`:
    the trunk names the user's emotion, its Plutchik petal goes through `PETAL_AFFECT`, blended with the lexicon by
    magnitude), with the drafting agent's GoEmotions label standing in for the trunk's read (`mood.LABEL_PETAL`).
-   Either way the read goes through `afferent` before the ODE, so Cubby is not made to mirror the user.
+   Either way the read goes through `afferent` before the ODE, so Cubby is not made to mirror the user. Each is
+   read with the two fixes for the oddities (`mood.SIDE_MARGIN`, `chat_state.CONCERN_SAFE`) and without them.
 
     python validation/exp_0079_mood_read.py --affect <amygdala_affect.jsonl> --pilot <chat_0079_pilot_conversations.jsonl>
 """
@@ -30,23 +31,8 @@ os.environ["CB_MOOD_REGULATION"] = "1"
 from cubbyllm.affect import mood  # noqa: E402
 from cubbyllm.affect.neurochem import appraise  # noqa: E402
 from cubbyllm.affect.perception import PETAL_AFFECT  # noqa: E402
-from validation.sft.build_chat_0079 import Body  # noqa: E402
-
-
-class LabelAppraiser:
-    """`ModelAppraiser.signals` with a given GoEmotions label in place of the trunk's read."""
-
-    def __init__(self) -> None:
-        self.label = "neutral"
-
-    def signals(self, text: str, seen: set[str], lang: str = "en") -> dict:
-        sig = appraise(text, seen)
-        aff = PETAL_AFFECT.get(mood.LABEL_PETAL.get(self.label) or "", {})
-        if "valence" in aff and abs(aff["valence"]) > abs(sig["valence"]):
-            sig["valence"] = aff["valence"]
-        sig["social"] = max(sig["social"], aff.get("warmth", 0.0))
-        sig["focus"] = max(sig["focus"], aff.get("focus", 0.0))
-        return sig
+from cubbyllm.speech import chat_state  # noqa: E402
+from validation.sft.build_chat_0079 import Body, LabelAppraiser  # noqa: E402
 
 
 def corr(x: list[float], y: list[float]) -> float | None:
@@ -91,15 +77,29 @@ def replay(path: str) -> dict:
             labelled.append(mood.scales(b.chem))
             seems.append(t["seems"])
     groups = {"sad or grieving": ("sadness", "grief"), "joyful, excited or proud": ("joy", "excitement", "pride"),
-              "nervous or afraid": ("nervousness", "fear")}
+              "nervous or afraid": ("nervousness", "fear"),
+              "curious, nervous or afraid": ("curiosity", "nervousness", "fear")}
     by = {}
     for name, labels in groups.items():
         idx = [i for i, s in enumerate(seems) if s in labels]
         by[name] = {"turns": len(idx), **{f"mean_{e}": round(statistics.mean(labelled[i][e] for i in idx), 2)
                                           for e in ("joy", "trust", "sadness", "fear", "anger")},
+                    "anger_at_1_or_more": sum(labelled[i]["anger"] >= 1 for i in idx),
                     "shades": dict(collections.Counter(x for i in idx for x in mood.shade(labelled[i])).most_common())}
     return {"conversations": len(convs), "lexical_read": summary(lexical), "label_read": summary(labelled),
             "label_read_by_how_the_user_seems": by}
+
+
+def replay_both(path: str) -> dict:
+    """The replay with the two fixes for the oddities (`mood.SIDE_MARGIN`, `chat_state.CONCERN_SAFE`) and without them
+    (an infinite margin, i.e. closeness alone, and no concern in safety: as the pilot drafted)."""
+    keep = (mood.SIDE_MARGIN, chat_state.CONCERN_SAFE)
+    try:
+        mood.SIDE_MARGIN, chat_state.CONCERN_SAFE = float("inf"), 0.0
+        before = replay(path)
+    finally:
+        mood.SIDE_MARGIN, chat_state.CONCERN_SAFE = keep
+    return {"side_margin": keep[0], "concern_safe": keep[1], "with_the_fixes": replay(path), "without_them": before}
 
 
 def main() -> int:
@@ -108,7 +108,7 @@ def main() -> int:
     ap.add_argument("--pilot", required=True)
     ap.add_argument("--log", default=str(ROOT / "validation" / "logs" / "exp_0079_mood_read.json"))
     a = ap.parse_args()
-    out = {"what": __doc__.split("\n\n")[0], "read_check": read_check(a.affect), "pilot_replay": replay(a.pilot)}
+    out = {"what": __doc__.split("\n\n")[0], "read_check": read_check(a.affect), "pilot_replay": replay_both(a.pilot)}
     pathlib.Path(a.log).write_text(json.dumps(out, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     print(json.dumps(out, indent=1, ensure_ascii=False))
     return 0

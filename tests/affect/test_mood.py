@@ -47,3 +47,16 @@ def test_the_shade_follows_the_strong_petals_and_leans_only_on_plutchiks_dyads()
     sc = dict.fromkeys(mood.ORDER, 0) | {"sadness": 5}
     assert mood.shade(sc) == ["sadness"]
     assert mood.shade(dict.fromkeys(mood.ORDER, 3)) == []   # nothing at +4 or more: no shade
+
+
+def test_a_neighbour_does_not_light_up_from_the_axes_it_shares():
+    """0079, 2026-11-21: near joy (5-HT and DA high, NE low) read boredom too; attentive (NE up, 5-HT just above the
+    centre) read annoyance beside interest. A positive level needs the state on its corner's side on every axis."""
+    from cubbyllm.affect import mood
+    from cubbyllm.affect.neurochem import Neurochemistry
+    q, band = Neurochemistry.quiescent(), Neurochemistry._BAND["OT"]
+    content = mood.scales_at((0.79, 0.74, 0.14), q["OT"], q["OT"], band)
+    assert content["joy"] >= 4 and content["disgust"] <= 0
+    attentive = mood.scales_at((0.54, 0.60, 0.59), q["OT"], q["OT"], band)
+    assert attentive["anticipation"] >= 1 and attentive["anger"] <= 0
+    assert mood.validate() == []

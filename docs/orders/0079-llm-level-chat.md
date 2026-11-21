@@ -387,8 +387,8 @@ arousal) and `ei_11.jsonl` (728 turns of emotion-adapted replies). The first one
   on 164 (570). On the 159 turns where the user seemed joyful, excited or proud, Cubby's joy averages +2.88 and trust
   +3.70; on the 40 sad or grieving ones, trust averages +2.95 with a caring shade on 12, and Cubby's sadness stays at
   -0.85, which is the no-mirroring rule doing its job.
-- **What is still odd with the label read:** mild disgust (named boredom) on 116 turns and mild anger on 271; on the
-  44 nervous or afraid turns, anger averages +0.98. Worth a look before the final run.
+- **What was still odd with the label read:** mild disgust (named boredom) on 116 turns and mild anger on 271; on the
+  44 nervous or afraid turns, anger averaged +0.98. Fixed in the next section.
 - **What it means for the rows:** the pilot's 913 rows carry the flat moods they were written for; they stay as a
   trial and are not mixed with rows written for the read the host serves with.
 - **`ei_11.jsonl`:** 728 English turns in 120 conversations, synthetic (2023-10 to 2024-07), in a customer-support
@@ -398,3 +398,36 @@ arousal) and `ei_11.jsonl` (728 turns of emotion-adapted replies). The first one
   actions Cubby cannot take ("I'm initiating a diagnostic test on your line") or names from nowhere. Its user turns
   and labels can seed the final run's openers, beside Topical-Chat; its pairs show "name the feeling first, then ask",
   which is already in the character sheet. Its replies are not Cubby's voice and are not used as rows.
+
+### The final run's read, the two oddities fixed, and the trunk's test set up (Cowork, 2026-11-21; Nick: "yes")
+Nick also pointed at `emotions.jsonl` (1,830 short English messages with a Plutchik primary, an intensity, an intent
+and a tone; its 1,726 distinct texts are the ones `amygdala_affect` leaves at its default) and `mental_health_svc.jsonl`.
+- **The final run drafts with the serving read** (`build_chat_0079.LabelAppraiser`): the user model's GoEmotions label
+  goes through `PETAL_AFFECT` and `afferent`, as `ModelAppraiser`'s petal does at serving. The user model now also
+  says how strongly (weak, medium, strong); it is kept with the turn and not applied, since scaling the read by it is
+  Nick's call. The cloud step tool for agent-drafted rounds reads the same way.
+- **Boredom beside joy was the cube, not the hormones.** Closeness to a corner let its neighbours light up from the two
+  axes they share. A positive level now needs the state on its corner's side of the centre on every axis, fading over
+  a tenth of the half-axis (`mood.SIDE_MARGIN`).
+- **Anger with a nervous user was concern without serotonin.** The transfer turns a user's bad time into attention and
+  warmth; attention with no safety behind it sits on the anger corner's side. Half the warmth concern brings now counts
+  as safety (`chat_state.CONCERN_SAFE`): caring for someone in trouble is not danger.
+- **Measured** (`exp_0079_mood_read.json`, the pilot's 952 user turns with the serving read, without and with the two
+  fixes): boredom 116 -> 0 turns; anger +1 or more 271 -> 19, of them on the 242 curious, nervous or afraid turns 149
+  -> 10, and on the 44 nervous or afraid ones 36 -> 8; joy +4 or more 154 -> 169, trust 376 -> 390, a shade 379 -> 392.
+  On the 40 sad or grieving turns trust averages +3.00 with a caring shade on 12, no joy shade, and Cubby's sadness
+  stays at -0.95. Over Topical-Chat's 97,204 turns with the lexical read (`exp_0079_mood_regulation_regulated.json`,
+  re-run): annoyance named 11,923 -> 766 times, boredom 6,656 -> 149, apprehension 5,578 -> 0; `validate()` passes and
+  recovery is unchanged (13 to 31 frames). The cost: the largest one-turn change is 7 against 6 (p50 / p90 / p99 1 / 2 /
+  3 against 1 / 1 / 3), as a state crossing the centre lets one feeling go and another come.
+- **The trunk's read, set up for the next GPU session** (`validation/exp_0079_appraiser_read.py`, a dry run passes):
+  through `ModelAppraiser.read`, the petal the trunk names on `emotions.jsonl`'s 1,714 one-petal texts against their
+  label (overall, by petal, the confusions), and on a sample of `mental_health_svc.jsonl` per status, how often it names
+  a petal of distress (sadness or fear) on Depression, Suicidal and Anxiety posts against Normal ones. The stand-ins'
+  last emotion read was 62.5 to 75% on 60 items (`standin_v9t_bakeoff_summary.json`). If the trunk misses, this file and
+  GoEmotions train its read; otherwise the training rows assume moods that serving cannot produce.
+- **`mental_health_svc.jsonl`:** 49,610 posts (48,943 distinct; Normal 18,391, Depression 14,506, Suicidal 11,210,
+  Anxiety 5,503), English, long (median 80 to 94 words; Normal 11). The lexical read puts valence below -0.2 on 164 of
+  800 sampled Suicidal posts. They are real people's words: the file measures the read in the moments Cubby's care
+  matters most, stays off the repo, and is not drafted from. Its licence is to check before any training use. A host
+  check that a reply to someone in distress stays with them and points to help would be its own order (Nick's call).

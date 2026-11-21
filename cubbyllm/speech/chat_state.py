@@ -27,6 +27,12 @@ def regulated_on() -> bool:
 SAFETY_BASE = 0.2
 FOCUS_SAFE = 1.0
 NOVELTY_PRIOR = 0.33
+# CARING FOR SOMEONE IN TROUBLE IS NOT DANGER (0079, Cowork, 2026-11-21): concern (the transfer's warmth for a user who is
+# having a bad time) raised attention with no serotonin behind it, which the cube reads as anger: with the serving read
+# replayed over the pilot, anger +1 or more on 36 of the 44 turns where the user seemed nervous or afraid. Half the
+# concern now counts as safety: with `mood.SIDE_MARGIN`, 8 of 44, and no joy shade on the 40 sad turns
+# (exp_0079_mood_read).
+CONCERN_SAFE = 0.5
 
 
 class ChatState:
@@ -114,7 +120,8 @@ class ChatState:
             # SAFETY: the user's own warmth and good mood, with no threat in the turn, is contentment (serotonin)
             threat = self.signals.get("threat", 0.0)
             extra["safety"] = min(1.0, (SAFETY_BASE + max(0.0, self.signals.get("valence", 0.0))
-                                        + self.signals.get("social", 0.0)) * (1.0 - threat))
+                                        + max(self.signals.get("social", 0.0), CONCERN_SAFE * tr["social"]))
+                                       * (1.0 - threat))
             focus_scale = 1.0 - FOCUS_SAFE * extra["safety"]    # attention in a safe exchange is calm attention
         self.chem.step_message({
             "novelty": novelty,

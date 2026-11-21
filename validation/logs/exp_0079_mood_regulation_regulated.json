@@ -155,73 +155,73 @@
   "anger": {
    "message": "I'm so angry, everything is ruined and I hate this.",
    "moves": [
-    9,
-    4,
-    4,
-    1,
-    4
+    8,
+    2,
+    3,
+    3,
+    1
    ],
    "after_five": {
-    "joy": -2,
+    "joy": -1,
     "trust": 4,
-    "fear": 0,
-    "surprise": -2,
-    "sadness": 0,
-    "disgust": -5,
-    "anger": 5,
-    "anticipation": 2
+    "fear": -1,
+    "surprise": -1,
+    "sadness": -1,
+    "disgust": -4,
+    "anger": 2,
+    "anticipation": 3
    },
-   "fifth_over_first": 0.444
+   "fifth_over_first": 0.125
   },
   "sad": {
    "message": "I feel awful, my dog died and I can't stop crying.",
    "moves": [
-    4,
-    1,
+    3,
+    3,
     0,
     1,
-    2
+    0
    ],
    "after_five": {
-    "joy": 1,
+    "joy": 0,
     "trust": 3,
     "fear": 0,
     "surprise": 0,
     "sadness": -1,
-    "disgust": -1,
-    "anger": 1,
+    "disgust": 0,
+    "anger": 0,
     "anticipation": 1
    },
-   "fifth_over_first": 0.5
+   "fifth_over_first": 0.0
   }
  },
  "pace_and_reach": {
   "conversations": 8628,
   "user_turns": 97204,
-  "largest_one_turn_change": 6,
+  "largest_one_turn_change": 7,
   "one_turn_change_p50_p90_p99": [
    1,
-   1,
+   2,
    3
   ],
   "largest_one_turn_change_by_petal": {
-   "joy": 5,
+   "joy": 7,
    "trust": 3,
    "fear": 3,
    "surprise": 5,
-   "sadness": 3,
-   "disgust": 4,
+   "sadness": 4,
+   "disgust": 2,
    "anger": 5,
    "anticipation": 6
   },
   "highest_by_petal": {
    "joy": 8,
    "trust": 8,
-   "fear": 1,
+   "fear": 0,
    "surprise": 2,
    "sadness": 5,
-   "disgust": 2,
-   "anger": 4,
+   "disgust": 1,
+   "anger": 3,
    "anticipation": 4
   },
   "lowest_by_petal": {
@@ -229,42 +229,40 @@
    "trust": -1,
    "fear": -3,
    "surprise": -5,
-   "sadness": -5,
-   "disgust": -5,
+   "sadness": -6,
+   "disgust": -4,
    "anger": -6,
    "anticipation": -3
   },
   "names_reached": {
-   "interest": 48137,
-   "acceptance": 44123,
-   "serenity": 44053,
-   "calm": 42329,
-   "annoyance": 11923,
-   "trust": 10209,
-   "boredom": 6656,
-   "apprehension": 5578,
-   "joy": 4359,
-   "love": 3458,
-   "distraction": 1658,
-   "pensiveness": 582,
-   "anticipation": 110,
-   "sadness": 11,
-   "ecstasy": 6,
-   "optimism": 5,
-   "admiration": 5,
-   "anger": 2
+   "acceptance": 43413,
+   "interest": 42068,
+   "calm": 40762,
+   "serenity": 26935,
+   "trust": 12494,
+   "joy": 6547,
+   "love": 5117,
+   "annoyance": 766,
+   "distraction": 386,
+   "pensiveness": 288,
+   "boredom": 149,
+   "anticipation": 131,
+   "ecstasy": 14,
+   "admiration": 8,
+   "sadness": 7,
+   "optimism": 3
   },
   "shades_reached": {
-   "caring": 10209,
-   "joy": 4359,
-   "desire": 105,
-   "sadness": 11,
-   "love": 6,
-   "admiration": 5,
-   "anger": 2
+   "caring": 12494,
+   "joy": 6547,
+   "desire": 128,
+   "love": 14,
+   "admiration": 8,
+   "sadness": 7
   },
   "shades_never_reached": [
    "amusement",
+   "anger",
    "annoyance",
    "approval",
    "confusion",

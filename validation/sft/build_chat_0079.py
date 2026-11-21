@@ -103,7 +103,8 @@ conversation going, react to what Cubby said, share a bit about your own day or 
 Never mention that you are a model. Answer with ONE JSON object: {"text": "<the message>", "emotion": "<one GoEmotions
 label for how the person feels in this message: admiration, amusement, anger, annoyance, approval, caring,
 confusion, curiosity, desire, disappointment, disapproval, disgust, embarrassment, excitement, fear, gratitude, grief,
-joy, love, nervousness, optimism, pride, realization, relief, remorse, sadness, surprise, or neutral>"}"""
+joy, love, nervousness, optimism, pride, realization, relief, remorse, sadness, surprise, or neutral>", "strength":
+"<how strongly: weak, medium or strong>"}"""
 
 EMOJI = re.compile("[\U0001F1E6-\U0001F1FF\U0001F300-\U0001FAFF☀-➿⭐⭕️]")
 LIST = re.compile(r"(?m)^\s*(?:\d{1,2}[.)]|[-*•])\s+")
@@ -132,6 +133,29 @@ class Body(ChatState):
         self.chem, self.afferent, self.appraiser = Neurochemistry(), Afferent(), None
         self._seen_vocab, self.signals = set(), {}
         self.state = self._hormones()
+
+
+class LabelAppraiser:
+    """The read the host serves with (`perception.ModelAppraiser`: the trunk names the user's emotion, its Plutchik
+    petal goes through `PETAL_AFFECT`, blended with the lexicon by magnitude, then through `afferent`), with the user
+    model's own GoEmotions label in place of the trunk's read (`mood.LABEL_PETAL`). The pilot drafted with the
+    lexicon alone, which reads valence 0 on 1,298 of 1,349 labelled texts (exp_0079_mood_read): its moods were flat.
+    Set `label` before each `nudge`. The strength the user model gives is kept with the turn, not applied (Nick's
+    call: whether intensity scales the read)."""
+
+    def __init__(self) -> None:
+        self.label = "neutral"
+
+    def signals(self, text: str, seen: set[str], lang: str = "en") -> dict:
+        from cubbyllm.affect.neurochem import appraise
+        from cubbyllm.affect.perception import PETAL_AFFECT
+        sig = appraise(text, seen)
+        aff = PETAL_AFFECT.get(mood.LABEL_PETAL.get(self.label) or "", {})
+        if "valence" in aff and abs(aff["valence"]) > abs(sig["valence"]):
+            sig["valence"] = aff["valence"]
+        sig["social"] = max(sig["social"], aff.get("warmth", 0.0))
+        sig["focus"] = max(sig["focus"], aff.get("focus", 0.0))
+        return sig
 
 
 def fact_index(base: pathlib.Path) -> dict[str, list[str]]:
@@ -237,32 +261,37 @@ def opener_prompt(feeling: str, situation: str, lang: str, ask: str | None) -> s
             f"Write your first message.")
 
 
-def parse_user(text: str) -> tuple[str, str]:
+def parse_user(text: str) -> tuple[str, str, str]:
+    """(the message, its GoEmotions label, its strength) from the user model's JSON."""
     m = re.search(r"\{.*\}", text or "", re.S)
     if m:
         try:
             d = json.loads(m.group(0))
-            return str(d.get("text") or "").strip(), str(d.get("emotion") or "neutral").strip().lower()
+            strength = str(d.get("strength") or "medium").strip().lower()
+            return (str(d.get("text") or "").strip(), str(d.get("emotion") or "neutral").strip().lower(),
+                    strength if strength in ("weak", "medium", "strong") else "medium")
         except ValueError:
             pass
-    return (text or "").strip().strip('"'), "neutral"
+    return (text or "").strip().strip('"'), "neutral", "medium"
 
 
 def conversation(i: int, rng: random.Random, plan: dict, idx: dict, models: dict, user_model) -> dict:
     lang, ask, opener = plan["lang"], plan.get("ask"), plan.get("opener")
     body, turns, out = Body(), [], {"id": f"c0079:{i:05d}", "lang": lang, "plan": {k: v for k, v in plan.items() if k != "opener"},
                                     "turns": [], "cut": None}
+    body.appraiser = LabelAppraiser()
     cub = models[CUBBY_MODELS[i % len(CUBBY_MODELS)]]
     out["cubby_model"] = cub.model
     if opener:
-        user_text, seems = opener["text"], opener.get("emotion", "neutral")
+        user_text, seems, strength = opener["text"], opener.get("emotion", "neutral"), "medium"
     else:
-        user_text, seems = parse_user(user_model.chat(opener_prompt(plan["feeling"], plan["situation"], lang, ask),
-                                                      USER_SYSTEM, max_tokens=200))
+        user_text, seems, strength = parse_user(user_model.chat(
+            opener_prompt(plan["feeling"], plan["situation"], lang, ask), USER_SYSTEM, max_tokens=200))
     for k in range(plan["length"]):
         if not user_text:
             out["cut"] = "the user model wrote nothing"
             break
+        body.appraiser.label = seems                     # the read the host serves with, the label standing in
         body.nudge(user_text)
         sc = mood.scales(body.chem)
         shade = mood.shade(sc)
@@ -272,14 +301,14 @@ def conversation(i: int, rng: random.Random, plan: dict, idx: dict, models: dict
         reply = cub.chat(cubby_prompt(mood.line(sc), shade, seems, facts, turns), SHEET, max_tokens=400).strip()
         why = gate(reply, user_text, facts + [t for _, t in turns[:-1]], sc,
                    cubby_record.is_about_cubby(user_text) or bool(re.search(r"\b(are you|es-tu|tu es)\b", user_text, re.I)))
-        out["turns"].append({"user": user_text, "seems": seems, "mood": sc, "named": mood.named(sc), "shade": shade,
+        out["turns"].append({"user": user_text, "seems": seems, "strength": strength, "mood": sc, "named": mood.named(sc), "shade": shade,
                              "facts": facts, "cubby": reply, "gate": why or "ok"})
         if why:
             out["cut"] = why
             break
         turns.append(("cubby", reply))
         if k + 1 < plan["length"]:
-            user_text, seems = parse_user(user_model.chat(user_prompt(turns, lang, ask if k == 0 else None), USER_SYSTEM,
+            user_text, seems, strength = parse_user(user_model.chat(user_prompt(turns, lang, ask if k == 0 else None), USER_SYSTEM,
                                                           max_tokens=200))
     return out
 
@@ -365,6 +394,7 @@ def main() -> int:
          "moods_named": dict(collections.Counter(n for t in kept for n in t["named"]).most_common()),
          "shades": dict(collections.Counter(s for t in kept for s in t["shade"]).most_common()),
          "user_seems_source": "the user model's own GoEmotions label (at serving: the host's appraiser)",
+         "mood_read": "LabelAppraiser: the user model's label through PETAL_AFFECT and afferent (the host's serving read)",
          "fact_index_entities": len(idx), "usage": usage,
          "cost_usd": round(sum(u["cost"] for u in usage.values()), 4)}
     pathlib.Path(a.manifest).write_text(json.dumps(m, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
