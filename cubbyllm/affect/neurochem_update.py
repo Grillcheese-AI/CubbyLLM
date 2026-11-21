@@ -17,7 +17,7 @@ class NeuroUpdate:
     # ── core ODE update (one perception frame) ──────────────────────────────
     def update(self, novelty: float = 0.0, threat: float = 0.0, focus: float = 0.0,
                valence: float = 0.0, social: float = 0.0,
-               pain: float = 0.0, surge: float = 0.0, reward: float = 0.0) -> None:
+               pain: float = 0.0, surge: float = 0.0, reward: float = 0.0, safety: float = 0.0) -> None:
         """One perception frame.
 
         The three newer signals are deliberately not shades of the old ones:
@@ -80,7 +80,11 @@ class NeuroUpdate:
         drive_DA = ((novelty * 0.5 + joy * 0.4 + reward * 0.9)
                     * self._da_sensitivity * self._da_tolerance
                     + s_da - threat * 0.45)
-        drive_5HT = 0.25 * joy - 0.2 * threat - 0.1 * neg + s_5ht
+        # SAFETY is serotonin's own input (order 0079, Nick's yes of 2026-11-20): a warm, unthreatening exchange is
+        # contentment, and nothing else here could raise serotonin in a friendly conversation, so ordinary small talk
+        # (novelty lifting DA and NE, NE pulling 5-HT down) sat on Lövheim's anger corner. Only the chat passes it,
+        # behind its flag; every other caller passes 0 and is unchanged.
+        drive_5HT = 0.25 * joy - 0.2 * threat - 0.1 * neg + s_5ht + 0.3 * _clip(safety, 0, 1)
         # No ambient affiliation term. The `+0.05` this port inherited kept
         # oxytocin sitting well above resting with no social input at all,
         # which is defensible for a chat agent and plainly wrong for an agent

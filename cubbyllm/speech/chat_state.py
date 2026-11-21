@@ -14,6 +14,12 @@ from ..affect.neurochem import Neurochemistry, appraise  # noqa: E402
 __wiring__ = "WIRED"
 
 
+def regulated_on() -> bool:
+    """Order 0079: novelty habituates within a conversation and a friendly turn raises serotonin. Off by default."""
+    import os
+    return os.environ.get("CB_MOOD_REGULATION") == "1"
+
+
 class ChatState:
     """CubbyChat's state (a mixin; order 0031)."""
 
@@ -84,13 +90,26 @@ class ChatState:
                            warmth=self.signals.get("social", 0.0), gap_s=gap_s, burst=burst,
                            hour=hour, words=len(user_text.split()))
         tr = self.afferent.drives()
+        novelty, extra = self.signals.get("novelty", 0.0), {}
+        if regulated_on():                                       # order 0079, behind CB_MOOD_REGULATION=1
+            # NOVELTY HABITUATES: what counts is novelty above what this conversation has been bringing (an EMA of
+            # it), so a conversation that keeps bringing new words stops lifting dopamine and noradrenaline turn
+            # after turn, and a real surprise still does.
+            seen = getattr(self, "_novelty_seen", None)
+            expected = 0.0 if seen is None else seen
+            self._novelty_seen = novelty if seen is None else 0.7 * seen + 0.3 * novelty
+            novelty = max(0.0, novelty - expected)
+            # SAFETY: the user's own warmth and good mood, with no threat in the turn, is contentment (serotonin)
+            threat = self.signals.get("threat", 0.0)
+            extra["safety"] = min(1.0, (max(0.0, self.signals.get("valence", 0.0))
+                                        + self.signals.get("social", 0.0)) * (1.0 - threat))
         self.chem.step_message({
-            "novelty": self.signals.get("novelty", 0.0),
+            "novelty": novelty,
             "threat": self.signals.get("threat", 0.0),          # the task's danger, never the user's mood
             "focus": max(self.signals.get("focus", 0.0), tr["focus"]),
             "valence": tr["valence"],                           # 0.0 when they are having a bad time
             "social": tr["social"],                             # ... which is where it went instead
-            "surge": tr["surge"]})
+            "surge": tr["surge"], **extra})
         self.state = self._hormones()
         return self.state
 

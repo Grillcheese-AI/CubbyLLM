@@ -1,0 +1,287 @@
+{
+ "what": "order 0079: the mood's regulation on the hormone model alone",
+ "regulated": true,
+ "validate": [],
+ "recovery": {
+  "spent": {
+   "start": {
+    "joy": -6,
+    "trust": 0,
+    "fear": -2,
+    "surprise": -6,
+    "sadness": 10,
+    "disgust": -2,
+    "anger": -6,
+    "anticipation": -10
+   },
+   "frames_to_within_1": 15,
+   "empty_messages": 8
+  },
+  "distress": {
+   "start": {
+    "joy": -10,
+    "trust": 0,
+    "fear": -6,
+    "surprise": -2,
+    "sadness": 10,
+    "disgust": -6,
+    "anger": -2,
+    "anticipation": -6
+   },
+   "frames_to_within_1": 21,
+   "empty_messages": 11
+  },
+  "fear": {
+   "start": {
+    "joy": -2,
+    "trust": 0,
+    "fear": 10,
+    "surprise": -10,
+    "sadness": -2,
+    "disgust": -6,
+    "anger": -2,
+    "anticipation": -6
+   },
+   "frames_to_within_1": 13,
+   "empty_messages": 7
+  },
+  "anger": {
+   "start": {
+    "joy": -6,
+    "trust": 0,
+    "fear": -2,
+    "surprise": -6,
+    "sadness": -2,
+    "disgust": -10,
+    "anger": 10,
+    "anticipation": -2
+   },
+   "frames_to_within_1": 21,
+   "empty_messages": 11
+  },
+  "disgust": {
+   "start": {
+    "joy": -2,
+    "trust": 0,
+    "fear": -6,
+    "surprise": -2,
+    "sadness": -2,
+    "disgust": 10,
+    "anger": -10,
+    "anticipation": -6
+   },
+   "frames_to_within_1": 31,
+   "empty_messages": 16
+  },
+  "surprise": {
+   "start": {
+    "joy": -6,
+    "trust": 0,
+    "fear": -10,
+    "surprise": 10,
+    "sadness": -2,
+    "disgust": -2,
+    "anger": -6,
+    "anticipation": -2
+   },
+   "frames_to_within_1": 26,
+   "empty_messages": 13
+  },
+  "joy": {
+   "start": {
+    "joy": 10,
+    "trust": 0,
+    "fear": -2,
+    "surprise": -6,
+    "sadness": -6,
+    "disgust": -2,
+    "anger": -6,
+    "anticipation": -2
+   },
+   "frames_to_within_1": 31,
+   "empty_messages": 16
+  },
+  "interest": {
+   "start": {
+    "joy": -2,
+    "trust": 0,
+    "fear": -6,
+    "surprise": -2,
+    "sadness": -6,
+    "disgust": -6,
+    "anger": -2,
+    "anticipation": 10
+   },
+   "frames_to_within_1": 26,
+   "empty_messages": 13
+  },
+  "oxytocin high": {
+   "start": {
+    "joy": 0,
+    "trust": 10,
+    "fear": 0,
+    "surprise": 0,
+    "sadness": 0,
+    "disgust": 0,
+    "anger": 0,
+    "anticipation": 0
+   },
+   "frames_to_within_1": 11,
+   "empty_messages": 6
+  },
+  "oxytocin low": {
+   "start": {
+    "joy": 0,
+    "trust": -10,
+    "fear": 0,
+    "surprise": 0,
+    "sadness": 0,
+    "disgust": 0,
+    "anger": 0,
+    "anticipation": 0
+   },
+   "frames_to_within_1": 11,
+   "empty_messages": 6
+  },
+  "_quiescent": {
+   "DA": 0.4097,
+   "5HT": 0.3302,
+   "NE": 0.1138,
+   "OT": 0.3151,
+   "C": 0.0612
+  }
+ },
+ "tolerance": {
+  "anger": {
+   "message": "I'm so angry, everything is ruined and I hate this.",
+   "moves": [
+    12,
+    5,
+    4,
+    4,
+    2
+   ],
+   "after_five": {
+    "joy": -4,
+    "trust": 4,
+    "fear": 0,
+    "surprise": -3,
+    "sadness": 0,
+    "disgust": -6,
+    "anger": 6,
+    "anticipation": 0
+   },
+   "fifth_over_first": 0.167
+  },
+  "sad": {
+   "message": "I feel awful, my dog died and I can't stop crying.",
+   "moves": [
+    8,
+    3,
+    0,
+    0,
+    0
+   ],
+   "after_five": {
+    "joy": 0,
+    "trust": 2,
+    "fear": 1,
+    "surprise": -1,
+    "sadness": 0,
+    "disgust": -2,
+    "anger": 2,
+    "anticipation": 1
+   },
+   "fifth_over_first": 0.0
+  }
+ },
+ "pace_and_reach": {
+  "conversations": 8628,
+  "user_turns": 97204,
+  "largest_one_turn_change": 6,
+  "one_turn_change_p50_p90_p99": [
+   1,
+   2,
+   3
+  ],
+  "largest_one_turn_change_by_petal": {
+   "joy": 5,
+   "trust": 3,
+   "fear": 3,
+   "surprise": 5,
+   "sadness": 4,
+   "disgust": 4,
+   "anger": 5,
+   "anticipation": 6
+  },
+  "highest_by_petal": {
+   "joy": 7,
+   "trust": 7,
+   "fear": 2,
+   "surprise": 1,
+   "sadness": 5,
+   "disgust": 1,
+   "anger": 6,
+   "anticipation": 4
+  },
+  "lowest_by_petal": {
+   "joy": -6,
+   "trust": -2,
+   "fear": -2,
+   "surprise": -5,
+   "sadness": -5,
+   "disgust": -6,
+   "anger": -5,
+   "anticipation": -4
+  },
+  "names_reached": {
+   "annoyance": 74052,
+   "interest": 63949,
+   "acceptance": 57445,
+   "serenity": 26833,
+   "apprehension": 24815,
+   "calm": 17652,
+   "pensiveness": 12742,
+   "trust": 3938,
+   "anger": 1007,
+   "joy": 377,
+   "love": 366,
+   "boredom": 134,
+   "anticipation": 93,
+   "distraction": 35,
+   "sadness": 32,
+   "optimism": 1
+  },
+  "shades_reached": {
+   "caring": 3938,
+   "anger": 1007,
+   "joy": 377,
+   "desire": 92,
+   "sadness": 32
+  },
+  "shades_never_reached": [
+   "admiration",
+   "amusement",
+   "annoyance",
+   "approval",
+   "confusion",
+   "curiosity",
+   "disappointment",
+   "disapproval",
+   "disgust",
+   "embarrassment",
+   "excitement",
+   "fear",
+   "gratitude",
+   "grief",
+   "love",
+   "nervousness",
+   "optimism",
+   "pride",
+   "realization",
+   "relief",
+   "remorse",
+   "surprise"
+  ]
+ }
+}

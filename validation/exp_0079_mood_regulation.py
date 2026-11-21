@@ -137,9 +137,17 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--topical", required=True, help="Topical-Chat's train.jsonl (off-repo)")
     ap.add_argument("--conversations", type=int, default=10000)
-    ap.add_argument("--out", default=str(ROOT / "validation" / "logs" / "exp_0079_mood_regulation.json"))
+    ap.add_argument("--regulated", action="store_true",
+                    help="CB_MOOD_REGULATION=1: novelty habituates, a friendly turn raises serotonin (Nick's yes)")
+    ap.add_argument("--out", default="")
     a = ap.parse_args()
-    res = {"what": "order 0079: the mood's regulation on the hormone model alone", "validate": mood.validate(),
+    if a.regulated:
+        import os
+        os.environ["CB_MOOD_REGULATION"] = "1"
+    a.out = a.out or str(ROOT / "validation" / "logs" / ("exp_0079_mood_regulation" + ("_regulated" if a.regulated else "")
+                                                         + ".json"))
+    res = {"what": "order 0079: the mood's regulation on the hormone model alone", "regulated": a.regulated,
+           "validate": mood.validate(),
            "recovery": recovery(), "tolerance": tolerance(),
            "pace_and_reach": conversations(pathlib.Path(a.topical), a.conversations)}
     pathlib.Path(a.out).write_text(json.dumps(res, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")

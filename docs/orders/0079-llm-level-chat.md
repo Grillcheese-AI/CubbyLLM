@@ -269,3 +269,26 @@ own) with `tests/affect/test_mood.py`; the record's `mood` and `feelings_answer`
     turn raises serotonin (the transfer's valence averages 0.07).
 - **So the pilot waits.** Drafting conversations in these moods would teach Cubby to sound annoyed in small talk. The
   inputs from a chat turn to the hormones need Nick's call first (his system; the readout is not changed to hide it).
+
+### Both fixes, measured (Nick, 2026-11-20: "Both fixes, measured"; `CB_MOOD_REGULATION=1`, off by default)
+- **Built:** in the chat's `nudge` only, behind the flag: novelty habituates within a conversation (what counts is
+  novelty above an EMA of what the conversation has been bringing, so a real surprise still counts), and a warm,
+  unthreatening turn raises serotonin through a new ODE input, `safety` (0 for every other caller, so the game and
+  everything else are unchanged; `tests/affect` and `tests/speech` pass).
+- **The same check, re-run** (`validation/logs/exp_0079_mood_regulation_regulated.json`, against the run above):
+
+  | over 97,204 user turns | before | after |
+  |---|---|---|
+  | anger at +4 or more ("anger", "rage") | 83,991 | 1,007 |
+  | mild anger, +1 to +3 ("annoyance") | 13,213 | 74,052 |
+  | calm (all eight within one of 0) | 0 | 17,652 |
+  | serenity / joy / love / optimism | 91 / 0 / 0 / 0 | 26,833 / 377 / 366 / 1 |
+  | highest joy, trust | +1, +5 | +7, +7 |
+  | GoEmotions shades reached | 2 | 5 (caring, anger, joy, desire, sadness) |
+  | largest one-turn change; p50 / p90 / p99 | 4; 1 / 2 / 3 | 6; 1 / 2 / 3 |
+
+- **Unchanged, as they should be:** recovery (13 to 31 frames), the upsetting messages (12, 5, 4, 4, 2 and 8, 3, 0,
+  0, 0: they carry no warmth, and their first novelty counts in full), `validate()`.
+- **What is left:** strong anger is gone from small talk, but a mild lean toward it (anger +1 to +3) remains on three
+  turns in four, because noradrenaline still sits above rest (focus and novelty spikes) while serotonin is not high
+  enough to reach the interest corner. 22 of the 27 shades are never reached in Topical-Chat's small talk.
