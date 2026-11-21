@@ -145,6 +145,27 @@ Rules blocks (0067), real-time lookups mid-conversation (the host's), voice and 
   the talk context carries the mood line, the facts block and the conversation together, in the training format
   below. Off by a flag until measured.
 
+### GoEmotions for nuance (Nick, 2026-11-20: "we can also map goemotion for more nuance")
+The eight scales say how strong each emotion is; GoEmotions' 27 labels (admiration, amusement, caring, curiosity,
+disappointment, embarrassment, gratitude, nervousness, pride, relief, ...) say which shade it is. Both maps already
+exist and are checked: `build_chat_sft.GOEMOTIONS_PETAL` puts all 28 labels (27 and neutral) on the eight petals, and
+`validation/builders/goemotions_cube.py` derives each label's place in the cube from it and validates it against the
+same classifier the ODE uses. Two uses:
+- **Cubby's shade:** the one or two labels whose derived places are nearest Cubby's current hormone state, among the
+  labels of the petals at +4 or more (oxytocin-led ones, such as caring and gratitude, from trust). A second line in
+  the prompt: `Shade: caring, curiosity`. Derived, never chosen by a model, and regulated like the scales (it can only
+  change when the hormones do).
+- **The user's shade, for empathy:** the user's turn read with the same 28 labels by the host's appraiser
+  (`perception.ModelAppraiser`, behind its flag today; a lexical fallback otherwise), shown as `User: disappointment,
+  nervousness` (a reading, not a fact about the person; it is never said back as a diagnosis). The reply can then be
+  precise ("that sounds disappointing") instead of generic, and the same reading already drives the hormones through
+  the transfer.
+- **Checked before the pilot:** every label's derived place lands on its own petal (`goemotions_cube.validate`, run
+  as it is); at the resting state no shade is shown; over the 10,000 simulated conversations, how often each label is
+  reached (a label never reached is reported, not forced).
+- **In the training data:** both lines come from running the drafted user turns through the same appraiser and ODE,
+  as the scales do.
+
 ### The emotion is regulated by the hormones (Nick, 2026-11-20: "its emotion should be regulated by the hormonal system")
 - **Nothing sets an emotion directly:** not the appraiser, not the talk seat, not the drafting model. The only way to
   move a scale is through the hormones (the neurochemistry ODE), and the eight scales are read from them, never stored
@@ -168,6 +189,8 @@ Rules blocks (0067), real-time lookups mid-conversation (the host's), voice and 
 ### The prompt the talk seat reads (training and serving)
 ```
 Mood: joy -3, trust +4, fear +1, surprise 0, sadness +3, disgust 0, anger -1, anticipation 0
+Shade: caring
+User: disappointment, nervousness
 Facts:
 - <entity> — <relation>: <value>
 Conversation:
