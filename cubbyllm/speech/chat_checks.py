@@ -82,13 +82,23 @@ _MODEL_LACKS = re.compile(
     # what a model owns: "a lap", "a place to put it", "a TV memory of my own", "de livres à moi"
     r"^\s*(?:(?:a|an|any)\s+)?(?:laps?|couch|sofa|place\s+to|room\s+for|laundry|bags?|feet)\b|"
     r"^[^.!?]*\b(?:of\s+my\s+own|à\s+moi)\b", re.I)
+# order 0079 (Cowork, 2026-11-21; the pilot's last batches): "I don't have ..." was still refused for one more thing a
+# model has not got after another ("legs", "a tongue", "a hobby the way you do", "a game to win", "a TV or a couch",
+# "anyone to tell", "a book in mind", "a solution on hand", "de coin précis à te proposer"). Saying what Cubby has not
+# got is refused only when it denies what the record says Cubby has: its languages, its mood, access to its facts.
+_HAS = frozenset("lang engl fren angl fran mood hume acce".split())   # stems: language, English, French, mood, access
+# "I can't give you a real take on it", "I can't explain its meaning", "I can't really pick one": not knowing
+_CANT_SAY = re.compile(r"^\s*(?:(?:really|quite|honestly)\s+)?(?:pick|choose|explain|recommend|be\s+(?:a|an)\s+\w+|"
+                       r"give\s+(?:you\s+)?(?:a|an|any|much\s+of\s+an?)\s+(?:\w+\s+)?(?:take|answer|opinion|view|verdict|rule|"
+                       r"recommendation|suggestion|tip|guess))\b", re.I)
 # "je n'ai pas suivi le match": a past tense, not a thing Cubby has not got
 _FR_PAST = re.compile(r"^\s*(?:encore\s+|jamais\s+|vraiment\s+|bien\s+)?(?!plus\b)[a-zà-ÿ]{2,}(?:é|ée|és|ées|i|is|it|u|us|ue|ert|eint)\b",
                       re.I)
-_RELATIVE = re.compile(r"(?:\b(?:anything|nothing|much|more|whatever|all)\b[^.!?,;:\n]{0,40}|"   # "nothing on it I can share"
+_RELATIVE = re.compile(r"(?:\b(?:anything|nothing|much|more|whatever|all|any)\b[^.!?,;:\n]{0,40}|"   # "nothing on it I can share"
                        r"\b(?:glad|happy|pleased|nice)\s+|\bce\s+que\s+|"                    # "glad I could help", "ce que je sais"
                        r"\b(?:a|an|the|one|some|every)\s+(?:\w+\s+){0,2}?\w+\s+)$", re.I)        # "a plan I can get behind"
 _CAN_HEAR = re.compile(r"^\s*(?:(?:only|still|just)\s+)?(?:hear|picture|imagine|guess|enjoy|sense|relate|feel\s+how|"
+                       r"tell\s+you\s+what\s+I\s+have|"                    # "I can only tell you what I have": the record
                        r"see\s+(?:why|how|that|what|it|clearly)|get\s+behind|tell\s+(?:how|that|it['’]s|you['’]re))\b", re.I)
 _KNOW_THAT = re.compile(r"^\s*(?:que|qu['’])", re.I)        # "je sais que X": knowing a fact, not an ability
 
@@ -162,9 +172,13 @@ def abilities(reply: str) -> list[str]:
     for m in _CANT.finditer(reply or ""):
         rest = _CLAUSE.split(m.group("rest"))[0]
         c, head = _content(rest), [_stem(w) for w in _fold(rest) if w not in STOP][:1]
-        past = m.group(0).lower().startswith(("je n'ai", "je n’ai")) and _FR_PAST.match(rest)
-        if not c or past or _IDIOM.match(rest) or _SURE.match(rest) or _NOT_KNOWING.match(rest) or _MODEL_LACKS.match(rest) \
-                or set(head) & _CHECKED or any(c <= line for line in cant):
+        said = m.group(0).lower().replace("’", "'")
+        past = said.startswith("je n'ai") and _FR_PAST.match(rest)
+        bare = {_stem(re.sub(r"^(?:qu|[dljnsmtc])'", "", w)) for w in _fold(rest)}   # "d'humeur" is "humeur"
+        lacks = said.startswith(("i don't have", "i do not have", "je n'ai")) and not bare & _HAS
+        if not c or past or lacks or _IDIOM.match(rest) or _SURE.match(rest) or _NOT_KNOWING.match(rest) \
+                or _MODEL_LACKS.match(rest) or _CANT_SAY.match(rest) or set(head) & _CHECKED \
+                or any(c <= line for line in cant):
             continue                                              # "je ne sais pas" alone; the record says so
         bad.append(f"ability: {m.group(0).strip()[:60]}")
     return bad

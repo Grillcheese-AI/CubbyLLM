@@ -74,12 +74,16 @@ EVALUATIVE = frozenset("idea question one thing point deal choice start plan way
 # of thing it is; "astrophysics is the study of stars" is still a kind and still needs a fact
 OPINION = frozenset("great good nice lovely real strange odd weird honest perfect fun funny solid classic sweet cute "
                     "brilliant terrible awful bad tough wild smart clever cool amazing wonderful fantastic excellent "
-                    "beautiful fair true proper total genuine rare welcome lucky happy sad pretty mild such".split())
+                    "beautiful fair true proper total genuine rare welcome lucky happy sad pretty mild such very useful "
+                    "serious big kind bold right small strong cozy cosy simple".split())
 SUPERLATIVE = frozenset("best worst greatest coolest funniest sweetest nicest hardest easiest weirdest strangest cutest "
                         "loveliest cosiest coziest happiest saddest toughest smartest finest".split())
 
 
-EVERYDAY_CAPS = frozenset("TV OK DIY ASAP FYI LOL BTW DJ BD".split())   # capitals that are everyday words, not names
+EVERYDAY_CAPS = frozenset("TV OK DIY ASAP FYI LOL BTW DJ BD Monday Tuesday Wednesday Thursday Friday Saturday Sunday "
+                          "Mondays Tuesdays Wednesdays Thursdays Fridays Saturdays Sundays".split())   # not names
+# heads that are idioms or times, never a kind ("a rite of passage", "the heart of it", "a small price", "tonight")
+IDIOM_HEADS = frozenset("rite heart price memory commitment clue threat tonight today tomorrow yesterday now".split())
 
 
 def _opinions(text: str) -> set[str]:
@@ -91,7 +95,12 @@ def _opinions(text: str) -> set[str]:
         words = m.group(1).split()
         end = re.search(r"[.!?]", text[m.end():])
         asked = bool(end) and end.group(0) == "?"
-        if asked or set(words) & SUPERLATIVE or words[0] in ("most", "least") or set(words[:-1]) & OPINION:
+        # an adjective of opinion makes it an opinion only when no name is its subject ("a big commitment", but
+        # "Paris is a big city" and "the Glorious Revolution was a political event" still need a fact)
+        start = max(text.rfind(".", 0, m.start()), text.rfind("!", 0, m.start()), text.rfind("?", 0, m.start())) + 1
+        named = any(w[:1].isupper() for w in text[start:m.start()].split())   # the opener view kept only names
+        if asked or set(words) & SUPERLATIVE or words[0] in ("most", "least") or words[-1] in IDIOM_HEADS \
+                or (set(words[:-1]) & OPINION and not named):
             out.add(words[-1].strip("-"))
     return out
 

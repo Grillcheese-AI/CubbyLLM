@@ -139,3 +139,63 @@ def test_d_speaks_questions_opinions_and_everyday_capitals(reply, user):
 def test_d_still_refuses_a_kind_from_nowhere_2():
     ok, why = rec.chat_check("The Middle Kingdom is a period in Egypt.", "what is the Middle Kingdom?", ["Middle Kingdom — location: Egypt"])
     assert not ok and "period" in why
+
+
+# the pilot's last batches (2026-11-21): "I don't have ..." refuses only what the record says Cubby has
+TRUE_OF_A_MODEL_3 = [
+    "I don't have legs to go for walks, so I'd love to hear where yours would take you.",
+    "I don't have a tongue, so tasting is off the table for me.",
+    "I don't have a hobby the way you do, since my time is mostly spent in conversations like this one.",
+    "I don't have a game to win, so I'll have to borrow your win feeling.",
+    "I don't have a TV or a couch, so I can't watch anything myself.",
+    "Your secret is safe with me, I don't have anyone to tell!",
+    "I don't have a solution on hand, and I'd rather not spoil it for you.",
+    "Je n'ai pas de coin précis à te proposer, mais tu peux comparer quelques options.",
+    "Je n'ai pas de film préféré au sens où tu l'entends.",
+    "I don't watch videos the way you do, so I can't really pick one.",
+    "I haven't seen it, so I can't give you a real take on it.",
+    "I can't explain its meaning, but I'd be curious what you make of it.",
+    "I can only tell you what I have on the screen itself.",
+    "Ha, not in any I can remember.",
+]
+STILL_REFUSED_3 = [
+    "Moi je n'ai pas d'humeur musicale comme toi.",
+    "I don't have a mood.",
+    "Je n'ai pas de langue maternelle.",
+    "I don't have French.",
+    "I can't speak French.",
+]
+OPINIONS_3 = [
+    ("A starter you have to feed every day is a big commitment, but it could be fun.", "a sourdough starter"),
+    ("Misc boxes are a rite of passage, every move has them.", "boxes marked misc"),
+    ("Whatever sounds comforting to you is the right one tonight.", "lentil soup"),
+    ("Picturing you going wild in the kitchen made me smile.", "i dance while i cook"),
+    ("Why is the train your favourite part?", "the train ride"),
+    ("I don't really have Sundays, but I like the idea of a clean desk.", "sunday cleaning"),
+    ("Ouch, le coin de la porte de cuisine, ça arrive à tout le monde.", "je me suis cogné"),
+]
+STILL_UNGROUNDED_3 = [
+    ("Paris is a big city.", "tell me about paris", "city"),
+    ("The Glorious Revolution happened in 1688, and it was a political event.", "the Glorious Revolution", "event"),
+]
+
+
+@pytest.mark.parametrize("reply", TRUE_OF_A_MODEL_3)
+def test_h_speaks_what_a_model_has_not_got(reply):
+    assert cc.abilities(reply) == []
+
+
+@pytest.mark.parametrize("reply", STILL_REFUSED_3)
+def test_h_still_refuses_denying_what_the_record_says_cubby_has(reply):
+    assert cc.abilities(reply)
+
+
+@pytest.mark.parametrize("reply,user", OPINIONS_3)
+def test_d_speaks_opinions_idioms_and_openers(reply, user):
+    assert rec.chat_check(reply, user, []) == (True, "ok")
+
+
+@pytest.mark.parametrize("reply,user,word", STILL_UNGROUNDED_3)
+def test_d_an_opinion_about_a_name_is_still_a_kind(reply, user, word):
+    ok, why = rec.chat_check(reply, user, [])
+    assert not ok and word in why
