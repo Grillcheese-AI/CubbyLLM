@@ -152,22 +152,34 @@ def fact_index(base: pathlib.Path) -> dict[str, list[str]]:
 
 
 _LOWER: dict[int, dict[str, str]] = {}
+_COMMON: set[str] = set()                                # the host's opener words: everyday words
 _WORDS = re.compile(r"[\w'’\-]+")
 
 
 def mentions(text: str, idx: dict) -> list[str]:
     """The store's names the text holds, longest first (word n-grams of 1 to 6 looked up by lower case)."""
     key = id(idx)
+    if not _COMMON:
+        _COMMON.update((ROOT / "cubbyllm" / "reasoning" / "opener_words.txt").read_text(encoding="utf-8").split())
     if key not in _LOWER:                                # a one-word name that is an everyday word ("little", "work")
-        common = set((ROOT / "cubbyllm" / "reasoning" / "opener_words.txt").read_text(encoding="utf-8").split())
-        _LOWER[key] = {e.lower(): e for e in idx if len(e) > 3 and not (" " not in e and e.lower() in common)}
-    low, words = _LOWER[key], _WORDS.findall(text.lower())
-    found = []
+        _LOWER[key] = {e.lower(): e for e in idx if len(e) > 3 and not (" " not in e and e.lower() in _COMMON)}
+    low, raw = _LOWER[key], _WORDS.findall(text)
+    words, found, covered = [w.lower() for w in raw], [], set()
     for n in range(6, 0, -1):
         for i in range(len(words) - n + 1):
             e = low.get(" ".join(words[i:i + n]))
-            if e and e not in found:
-                found.append(e)
+            # a one-word name inside a longer capitalised one is not that name ("Reed" in "Lou Reed")
+            if e and n == 1 and ((i > 0 and raw[i - 1][:1].isupper()) or (i + 1 < len(raw) and raw[i + 1][:1].isupper())):
+                continue
+            # a name made of everyday words is that name only when written as one ("The Detective", not "the
+            # detective just found a letter"; the pilot's second batch, 2026-11-21)
+            if e and all(w in _COMMON for w in words[i:i + n]) and not any(
+                    t[:1].isupper() for t in raw[i:i + n] if t.lower() not in ("the", "a", "an", "le", "la", "les")):
+                continue
+            if e and covered.isdisjoint(range(i, i + n)):  # a name inside a longer one found first is not another
+                covered.update(range(i, i + n))
+                if e not in found:
+                    found.append(e)
     return found
 
 

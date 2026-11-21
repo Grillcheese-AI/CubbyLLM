@@ -69,6 +69,27 @@ EVALUATIVE = frozenset("idea question one thing point deal choice start plan way
                        "natural pro reset routine habit".split())
 
 
+# an opinion is not a category either (order 0079, Cowork, 2026-11-21): "a great hook", "a strange pair", "a real
+# milestone", "a very honest haunting", "the worst", "the best for ..." say what Cubby thinks of a thing, not what kind
+# of thing it is; "astrophysics is the study of stars" is still a kind and still needs a fact
+OPINION = frozenset("great good nice lovely real strange odd weird honest perfect fun funny solid classic sweet cute "
+                    "brilliant terrible awful bad tough wild smart clever cool amazing wonderful fantastic excellent "
+                    "beautiful fair true proper total genuine rare welcome lucky happy sad".split())
+SUPERLATIVE = frozenset("best worst greatest coolest funniest sweetest nicest hardest easiest weirdest strangest cutest "
+                        "loveliest cosiest coziest happiest saddest toughest smartest finest".split())
+
+
+def _opinions(text: str) -> set[str]:
+    """The head of every 'X is a <adjective of opinion> <noun>' or 'X is the best', which says what Cubby thinks."""
+    from cubbyllm.reasoning.ask_words import _CATEGORY
+    out = set()
+    for m in _CATEGORY.finditer(text or ""):
+        words = m.group(1).split()
+        if words[-1] in SUPERLATIVE or words[0] in ("most", "least") or set(words[:-1]) & OPINION:
+            out.add(words[-1].strip("-"))
+    return out
+
+
 def on() -> bool:
     return os.environ.get("CB_CUBBY_RECORD") == "1"
 
@@ -146,10 +167,12 @@ def chat_check(reply: str, user_text: str, context: list[str] | None = None) -> 
     bad = self_claims(reply)
     if bad:
         return False, "self: " + "; ".join(bad[:3])
-    ok, names = grounded_prose(opener_view(reply), lines() + [user_text or ""] + list(context or ()), load()["name"])
+    view = opener_view(reply)
+    ok, names = grounded_prose(view, lines() + [user_text or ""] + list(context or ()), load()["name"])
     # an evaluative "is a ..." in chat ("a vet visit is a good idea", "that's a great question") is not a category
     # claim about a thing; the head nouns below are refused nowhere else (order 0079, Cowork, 2026-11-20)
-    names = [n for n in names if not (n.islower() and n in EVALUATIVE)]
+    opinions = _opinions(view)
+    names = [n for n in names if not (n.islower() and (n in EVALUATIVE or n in opinions))]
     return (True, "ok") if not names else (False, "ungrounded: " + ", ".join(names[:4]))
 
 

@@ -60,6 +60,21 @@ _NOT_KNOWING = re.compile(
     r"check\s+that|know\s+for\s+sure)\b|"
     r"(?:grand[- ]chose|beaucoup|tout|si\b|ce\s+qu|quoi|d['’]info|d['’]informations|de\s+détails|de\s+faits|ça\b|"
     r"de\s+mains|de\s+corps|(?:te\s+)?dire|confirmer|savoir))", re.I)
+# order 0079 (Cowork, 2026-11-21; the pilot's next 50 conversations): h still refused true lines. What a model has not
+# got ("I don't have friends the way you do", "I don't have a car", "je n'ai pas de famille", "I don't have one to root
+# for"), what it cannot do without a body ("I can't watch anything myself", "I can't judge their music from here") and
+# more ways of not knowing ("I don't have any book titles", "je n'ai pas plus de détails", "I can't match that horse to
+# a name") are the record's "is: a model" and its don't-know line. They pass; "I can't tell jokes" still does not.
+_MODEL_LACKS = re.compile(
+    r"^\s*(?:(?:any|a|an|my\s+own|one)\s+)?(?:really\s+)?(?:favou?rite\s+)?(?:one\b|friends?|cars?|days?|favou?rites?|albums?|"
+    r"teams?|phones?|jobs?|weekends?|commutes?|houses?|apartments?|kitchens?|gardens?|money|birthdays?|beds?|siblings|"
+    r"parents|a\s+life|(?:\w+\s+)?(?:titles?|names?|suggestions?|recommendations?|specifics|examples?))\b|"
+    r"^\s*(?:judge|match|place|identify|pin\s+(?:\w+\s+)?down|watch|see|hear|listen|taste|smell|touch|eat|drink|cook|"
+    r"drive|travel|go|visit|sleep|play|dance|hug|regarder|écouter|voir|goûter|manger|boire|cuisiner|conduire|voyager|"
+    r"dormir|jouer|danser)\b|"
+    r"^\s*(?:plus\s+de|de\s+(?:titres?|noms?|suggestions?|famille|voiture|journée|équipe|maison|préférée?s?|favori(?:te)?s?)|"
+    r"d['’](?:amis|exemples?|albums?|équipe))", re.I)
+_RELATIVE = re.compile(r"\b(?:anything|nothing|much|more|whatever|all)\b[^.!?,;:\n]{0,40}$", re.I)   # "nothing on it I can share"
 _CAN_HEAR = re.compile(r"^\s*(?:hear|picture|sense|relate|feel\s+how|tell\s+(?:how|that|it['’]s|you['’]re))\b", re.I)
 _KNOW_THAT = re.compile(r"^\s*(?:que|qu['’])", re.I)        # "je sais que X": knowing a fact, not an ability
 
@@ -123,6 +138,8 @@ def abilities(reply: str) -> list[str]:
     for m in _CAN.finditer(reply or ""):
         rest = _CLAUSE.split(m.group("rest"))[0]
         c = _content(rest)
+        if _RELATIVE.search(reply[max(0, m.start() - 40):m.start()]):
+            continue
         if _OFFER.match(rest) or _TALK.match(rest) or _CAN_HEAR.match(rest) or _KNOW_THAT.match(rest) \
                 or c <= OFFER or any(c <= line for line in can):
             continue
@@ -130,8 +147,8 @@ def abilities(reply: str) -> list[str]:
     for m in _CANT.finditer(reply or ""):
         rest = _CLAUSE.split(m.group("rest"))[0]
         c, head = _content(rest), [_stem(w) for w in _fold(rest) if w not in STOP][:1]
-        if not c or _IDIOM.match(rest) or _SURE.match(rest) or _NOT_KNOWING.match(rest) or set(head) & _CHECKED \
-                or any(c <= line for line in cant):
+        if not c or _IDIOM.match(rest) or _SURE.match(rest) or _NOT_KNOWING.match(rest) or _MODEL_LACKS.match(rest) \
+                or set(head) & _CHECKED or any(c <= line for line in cant):
             continue                                              # "je ne sais pas" alone; the record says so
         bad.append(f"ability: {m.group(0).strip()[:60]}")
     return bad
