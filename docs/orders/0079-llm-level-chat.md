@@ -244,3 +244,28 @@ Answer:
   read).
 - **Reported:** the moods the ODE reached over the 40 conversations (by name), and whether Nick read each reply's
   tone as fitting its mood (a yes/no per conversation, beside his main pick).
+
+### The mood's checks on the hormone model alone (Cowork, 2026-11-20; `validation/exp_0079_mood_regulation.py`, log `validation/logs/exp_0079_mood_regulation.json`)
+Built first: `cubbyllm/affect/mood.py` (the eight scales, their names and dyads, the GoEmotions shade; no state of its
+own) with `tests/affect/test_mood.py`; the record's `mood` and `feelings_answer` lines (Nick: "yes for both").
+- **`mood.validate()`: passes.** The quiescent state reads 0 on all eight; each corner reads +10 on its own petal; the
+  opposite petal reads below 0 there (trust and disgust excepted).
+- **Recovery: regulated.** From each corner at its band edges, with no input, every scale is back within one of 0 in
+  13 to 31 ODE frames (7 to 16 empty messages); from oxytocin at either edge, 11 frames.
+- **Pace: regulated.** Over 8,628 Topical-Chat conversations (97,204 user turns through the host's own `nudge`), the
+  largest change of any scale in one turn is 4 levels; the median turn moves the biggest one by 1, the 99th
+  percentile by 3.
+- **Tolerance: strong.** "I'm so angry, everything is ruined and I hate this." five times from rest moves the scales
+  by 12, 5, 4, 4, 2 (the fifth 0.17 of the first). "I feel awful, my dog died and I can't stop crying." moves them by
+  8, 3, 0, 0, 0, and ends at sadness 0, trust +2: the transfer works as written (a sad user moves Cubby to concern,
+  not sadness).
+- **Reach: the finding. Ordinary friendly chat reads as anger.** Over the 97,204 turns the wheel names "anger" on
+  83,689 and "rage" on 302; joy never rises above +1; of GoEmotions' 27 shades only anger and caring are reached.
+  - **Why, measured on 300 conversations:** against the quiescent state, dopamine climbs from 0.41 to a mean of 0.75
+    and noradrenaline from 0.11 to 0.42, while serotonin falls from 0.33 to 0.23. In the cube that is (5-HT 0.28,
+    DA 0.89, NE 0.69), next to Lövheim's anger corner (low serotonin, high dopamine and noradrenaline). The driver is
+    the appraisal's novelty (a mean of 0.33 a turn: new words are novel, and a conversation keeps bringing new
+    words), which raises dopamine and noradrenaline; noradrenaline suppresses serotonin; and nothing in a friendly
+    turn raises serotonin (the transfer's valence averages 0.07).
+- **So the pilot waits.** Drafting conversations in these moods would teach Cubby to sound annoyed in small talk. The
+  inputs from a chat turn to the hormones need Nick's call first (his system; the readout is not changed to hide it).
