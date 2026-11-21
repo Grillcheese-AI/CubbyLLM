@@ -292,3 +292,18 @@ own) with `tests/affect/test_mood.py`; the record's `mood` and `feelings_answer`
 - **What is left:** strong anger is gone from small talk, but a mild lean toward it (anger +1 to +3) remains on three
   turns in four, because noradrenaline still sits above rest (focus and novelty spikes) while serotonin is not high
   enough to reach the interest corner. 22 of the 27 shades are never reached in Topical-Chat's small talk.
+
+### One more round (Nick: "one more"; then "Balanced")
+- **Measured on about 2,900 of the conversations, four variants against the first round:** Cowork's proposed fix
+  alone (attention in a safe turn pushes noradrenaline less) barely moved it (mild anger 94% to 92% of turns). What
+  moved it: a calm, unthreatening exchange counts as slightly safe with nothing warm in it (a serotonin baseline,
+  `SAFETY_BASE`). Nick chose the balanced one: `SAFETY_BASE = 0.2`, `FOCUS_SAFE = 1.0` (`chat_state.py`).
+- **The full check re-run with it** (`exp_0079_mood_regulation_regulated.json`, replaced): over the 97,204 turns the
+  wheel names interest on 66,342, acceptance 54,728, serenity 48,337, annoyance (+1 to +3) 36,782, calm 25,912, trust
+  10,259, joy 3,710, love 3,080, anger (+4 or more) 4; joy and trust reach +8; GoEmotions shades reached: 7 (caring,
+  joy, desire, sadness, love, admiration, anger). The largest one-turn change is 6 levels (p50 / p90 / p99: 1 / 2 / 3);
+  recovery is unchanged (13 to 31 frames).
+- **Upsetting messages still move it, and tolerance holds:** the angry one 13, 2, 2, 4, 1 (fifth over first 0.08); the
+  grieving one 9, 2, 2, 1, 2. The baseline applies to them too (they carry no threat), which is why their repeats
+  move less than in the first round.
+- **The pilot can run on these moods.**

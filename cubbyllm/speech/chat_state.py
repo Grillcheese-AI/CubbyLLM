@@ -20,6 +20,14 @@ def regulated_on() -> bool:
     return os.environ.get("CB_MOOD_REGULATION") == "1"
 
 
+# 0079's second round (Nick: "one more", then "Balanced"): a calm, unthreatening exchange counts as slightly safe with
+# nothing warm in it (SAFETY_BASE), and safety quiets attention's push on noradrenaline (FOCUS_SAFE). Measured on about
+# 2,900 Topical-Chat conversations against 0 and 0 (the first round): mild anger 94% -> 52% of turns, strong anger 1%
+# -> 0%, joy above 0 30% -> 63%; the upsetting messages still move the mood (12 -> 13, 8 -> 9 on their first turn).
+SAFETY_BASE = 0.2
+FOCUS_SAFE = 1.0
+
+
 class ChatState:
     """CubbyChat's state (a mixin; order 0031)."""
 
@@ -90,7 +98,7 @@ class ChatState:
                            warmth=self.signals.get("social", 0.0), gap_s=gap_s, burst=burst,
                            hour=hour, words=len(user_text.split()))
         tr = self.afferent.drives()
-        novelty, extra = self.signals.get("novelty", 0.0), {}
+        novelty, extra, focus_scale = self.signals.get("novelty", 0.0), {}, 1.0
         if regulated_on():                                       # order 0079, behind CB_MOOD_REGULATION=1
             # NOVELTY HABITUATES: what counts is novelty above what this conversation has been bringing (an EMA of
             # it), so a conversation that keeps bringing new words stops lifting dopamine and noradrenaline turn
@@ -101,12 +109,13 @@ class ChatState:
             novelty = max(0.0, novelty - expected)
             # SAFETY: the user's own warmth and good mood, with no threat in the turn, is contentment (serotonin)
             threat = self.signals.get("threat", 0.0)
-            extra["safety"] = min(1.0, (max(0.0, self.signals.get("valence", 0.0))
+            extra["safety"] = min(1.0, (SAFETY_BASE + max(0.0, self.signals.get("valence", 0.0))
                                         + self.signals.get("social", 0.0)) * (1.0 - threat))
+            focus_scale = 1.0 - FOCUS_SAFE * extra["safety"]    # attention in a safe exchange is calm attention
         self.chem.step_message({
             "novelty": novelty,
             "threat": self.signals.get("threat", 0.0),          # the task's danger, never the user's mood
-            "focus": max(self.signals.get("focus", 0.0), tr["focus"]),
+            "focus": max(self.signals.get("focus", 0.0), tr["focus"]) * focus_scale,
             "valence": tr["valence"],                           # 0.0 when they are having a bad time
             "social": tr["social"],                             # ... which is where it went instead
             "surge": tr["surge"], **extra})
