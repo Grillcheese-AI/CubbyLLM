@@ -1088,3 +1088,16 @@ assistants.
 - **Kill:** a spoken `talk_v3b` reply false of Cubby's record stops the A/B, as on 2026-11-11.
 - **Reported, not gates:** the build's drops by check and family; distinct openings per 100 replies; emoji per reply;
   mean length.
+
+### `talk_v3b` is not trained (Nick, 2026-11-20, the same evening)
+- **Nick:** "I want it to be llm level chat"; "it should not appear templated. Cubby should have a personality and be
+  able to rephrase the facts itself." The bar becomes a small open chat model on whole conversations; the base grows
+  if the 450M seat falls short. That is order 0079 (proposed).
+- **Built and measured once, not trained** (`validation/logs/talk_v3b.manifest.json`, on the first build): 269,711 of
+  272,434 base rows and 48,633 of 51,017 voice rows kept by the gate. The `chat` family lost 2,158 rows to h, 393 to g
+  and 98 to d, and 2,210 of its targets had emoji removed.
+- **Kept for 0079:** the gate (`talk_voice_v3b.Gate`, with tests) and two host fixes found while building it:
+  - "Yes", "Nope", "Oui" and other interjections opening a sentence were refused as names, among them Nick's approved
+    "Nope! I'm Cubby" (`opener_view.INTERJECTIONS`);
+  - the record lacked the running joke, so every past-life joke was refused as ungrounded ("1700"); the yaml's
+    approved English line is now in `cubby_record.json`.
