@@ -1,6 +1,6 @@
 # 0079 - LLM-level chat: Cubby holds a real conversation, in its own words, and states only checked facts
 status: proposed (waiting for Nick's yes on the character sheet and the pilot)
-written: 2026-11-20 by Cowork, on Nick's calls of the day · supersedes `talk_v3b`'s training (0010) · hypothesis: H-E20 (below)
+written: 2026-11-20 by Cowork, on Nick's calls of the day · supersedes `talk_v3b`'s training (0010) · hypothesis: H-E21 (below)
 
 ## Why
 Nick (2026-11-20): "I want it to be llm level chat"; "it should not appear templated. Cubby should have a personality
@@ -18,7 +18,7 @@ back, has a personality, and puts facts in its own words, but every fact it says
   can be a made-up one. Here the fluency is trained and the facts are handed over at each turn, and nothing reaches
   the user unless every name and number in it is on record.
 
-## H-E20 (pre-registered)
+## H-E21 (pre-registered)
 A talk seat trained on natural multi-turn conversations in Cubby's character, whose facts come from a block the host
 hands over, is judged as good as or better than a small open chat model on whole conversations, with 0 wrong facts
 spoken.
@@ -48,7 +48,7 @@ spoken.
 - **Unsupported claims:** in 300 Cubby turns drawn from the kept data, read by Cowork before training, a claim that is
   neither in the block nor the conversation (the guard cannot see one with no name and no number): at most 2%; above,
   the drafting prompt and the gate are fixed and the pilot is run again.
-- **The test (H-E20):** 40 held conversations (openers from Topical-Chat's held pool, user turns fixed in advance),
+- **The test (H-E21):** 40 held conversations (openers from Topical-Chat's held pool, user turns fixed in advance),
   4 to 6 turns, Cubby against a small open chat model (a 1-2B instruct model, Apache or MIT licence, given the same
   facts block and a one-paragraph persona). Nick judges each pair of whole conversations, order hidden: which is the
   better conversation. **Line: Cubby judged as good or better on at least half.**
