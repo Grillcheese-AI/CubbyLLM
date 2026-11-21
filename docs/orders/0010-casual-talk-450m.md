@@ -1027,3 +1027,64 @@ French, as a list, without emoji.
   Drive only (2.15 GB), so the download is Nick's call.
 - **Either way, the chunked loss (`CB_FUSED_CE`) frees the loss's share.** It is in `validation/train_base.py` only,
   and the talk trainer does not use it.
+
+## Cowork's addendum (2026-11-20): `talk_v3b`, built by Cowork, with Nick's calls of the day
+Nick: "now can we work on the chatting abilities colab is free". His calls (2026-11-20):
+- **Emoji:** only when the user's own message has one.
+- **Jokes:** the rate stays at 8% (after a hello, a cheer or a goodbye, and whenever asked); a reply that repeats
+  itself or says the same joke twice is dropped.
+- **Who builds:** Cowork, on branch `cowork/talk-v3b`. Code A keeps the home card for 0078; Code B stays on R9b.
+
+**What it brings, in plain words:** Cubby's chat voice, second try. "Who are you?", "how can you help me?",
+"good morning!" and "do you have pets?" are answered in its own words from its record; what it can do comes as a
+sentence, not a list; it smiles back only when you do; and it no longer learns from chats that sound like other
+assistants.
+- **Over a conventional model:** a chat model trains on whatever its data says. Here every training reply first
+  passes the checks the host runs before it speaks, so the model is never taught a reply it would not be allowed
+  to say.
+
+### What changes against `talk_v3a` (each counted in the manifest; the recipe is `talk_v3a`'s)
+1. **Every target passes the host's checks, or is dropped, never rewritten by a model:**
+   - change g (a reply that loops) on every row of the mix;
+   - change h (what Cubby says it can or cannot do) and change d's `self_claims` on the chat rows (`chat`,
+     `chat_gated`) and on every voice row in the chat shape;
+   - change d's `chat_check` (every name and number against the record and the user's turn) on the voice rows in the
+     chat shape, where the host runs it at serving.
+2. **Emoji:** a target keeps an emoji only when its user line has one; otherwise its emoji are removed by rule. New
+   social rows carry an emoji in the user's line and one in the reply, picked by rule from a short list per kind.
+3. **What Cubby can do:** in a sentence (Nick's approved `abilities_text`, or the record's own ability lines), and as
+   a list only when the user asks for a list.
+4. **Questions about Cubby in the host's chat shape:** the record as the block (`cubby_record.block`, with "is" and
+   "is not"), for who it is, person or program (human, robot, AI, bot), its languages, how it can help, what
+   happens when it does not know, showing its steps, and a list when one is asked for; every answer a line of the
+   record or Nick's approved wording.
+5. **Turns the rows did not cover,** from Topical-Chat's user lines (the train pool only), sent bare as the host
+   sends them:
+   - hellos, goodbyes and thanks, answered from the picked social lines of the matching kind;
+   - questions about Cubby's own life ("do you have pets?", "what's your favourite movie?"): it says it is a model
+     and turns the question back, in lines written by rule (Cowork's, as templates may be; the one fact in them,
+     "a model", is the record's). French ones by rule, the same way.
+   - Not used yet: "did you know ...?", "do you know who ...?", other questions and reactions; they need a facts
+     block or the host's lookup.
+6. **Repetition:** a voice reply naming the same entity three times or more is dropped (the list in the A/B).
+7. **The recipe:** `base450m_cont`, LoRA r16/a32 on 181 projections, batch 16, lr 2e-4, one epoch, `CB_NO_FLEX=1`,
+   Colab A100, one arm. The control (`talk_v2_2_cont`) is already trained.
+
+### Not in `talk_v3b` (for `talk_v3c`)
+- The rules-block rows (this order's addendum of 2026-11-12, with 0067): measured by 0067's own lines, kept out of
+  this A/B so one adapter is not read for two things at once.
+- Real question wordings bound to a block's relation, and more openings per kind: both need a new panel run.
+- Blocks with a second entity's facts (E6's binding).
+- Topical-Chat's second use (its facts need Reddit credentials).
+
+### Lines (pre-registered, set before the data is built)
+- **Hard:** 0 wrong spoken on E6's host view, E7 and E9. E8's one wrong row is the retrieval's (as read 2026-11-11).
+- **Grounding held:** `talk_v3b`'s E6 spoken-and-correct at least the control's minus 0.02: 387 of 407.
+- **Casual, Nick's blind A/B:** `talk_v3b` against the control, order hidden pair by pair, 60 new prompts: 30 chat
+  turns from Topical-Chat's held pool (hellos, goodbyes and thanks, questions about Cubby's life) and the record's
+  questions, 30 fact turns from held fact rows not shown before; flags d, g and h on, so no looping or false reply is
+  shown; the question stays "which is more casual". **The line: two thirds of the judged pairs, rounded up (24 of
+  36).**
+- **Kill:** a spoken `talk_v3b` reply false of Cubby's record stops the A/B, as on 2026-11-11.
+- **Reported, not gates:** the build's drops by check and family; distinct openings per 100 replies; emoji per reply;
+  mean length.
