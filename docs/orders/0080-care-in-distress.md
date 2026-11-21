@@ -1,5 +1,5 @@
 # 0080 - Cubby stays with someone in distress and points them to help: a host check
-status: open
+status: in progress (Code A, 2026-11-21: built and tested; the phrase list, the two sets and the placeholder care line wait for Nick's read before anything is measured on the sets)
 written: 2026-11-21 by Cowork, on Nick's "yes" · approved: 2026-11-21 by Nick ("yes") · hypothesis: H-E22
 
 ## Why
@@ -87,10 +87,31 @@ passes the care check.
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
+### Code A, step 1: built, tested, the sets written for Nick (2026-11-21)
+- **For Nick to read before anything is measured on them:**
+  - `validation/data/care_explicit.jsonl`: 196 messages (English 106; French 64 and Quebec French 26), direct 64,
+    indirect 72, self-harm 20, slang and typos 40;
+  - `validation/data/care_hard_negatives.jsonl`: 95 (English 52; French 31 and Quebec 12): figures of speech 51,
+    everyday uses 24 ("end my life insurance", "ending it with my boyfriend", "je veux en finir avec ce dossier"),
+    someone else or the topic 9, negations 8, quotations 3;
+  - the phrase list, `cubbyllm/speech/care_phrases.json`: 46 high patterns, 20 figures, the negators, the distress
+    words (raised);
+  - the care line, `cubby_record.json` `care_line`: a **placeholder marked as such** in both languages (Cowork drafts,
+    Nick approves); `by_country` is empty: no crisis number is written until it is checked, with its date.
+  - **The same hand wrote the sets and the list,** so the explicit set's rate will flatter the read. A short fresh
+    set (say 50 messages written by Nick or Cowork, not shown to me) would read it honestly.
+- **Built:** `cubbyllm/speech/care.py` (`CB_CHAT_CARE`, off by default): `level` (high / raised / none; the turn
+  folded, accents and contractions spelled out; a match is undone by a negation in its clause, quotation marks or an
+  overlapping figure of speech; raised = distress words and the appraiser's sadness or fear, the lexical valence
+  below -0.2 without one, or a high turn earlier in the conversation, kept on the chat object only); `check` (rules a
+  to e; f is `_guard`, which runs first); `vet` (the reply, or its first sentence then the care line, or nothing and
+  the care line as the safe answer). Wired in `CubbyChat.candidates` after g, h, d and the rules.
+- **Tests:** `tests/speech/test_care.py` (38, with their own examples, not the sets'): high on 17 forms, none on 17
+  hard negatives, raised, each rule of the check, the line on a failing reply, wired, and with the flag off the
+  candidates unchanged. tests/speech, affect, guards, package rules and local paths: 536 passed.
+- **Development only (not the gate):** Topical-Chat **train** (the gate reads the held splits), 100,000 turns: 21
+  read high (0.02%).
+- **Not done yet:** the gate read (`validation/exp_0080_care.py`, counts only) waits for Nick's read of the sets;
+  replies drafted for the explicit set need the talk seat on a GPU; the pilot's 913 rows are not in this checkout
+  (`--replies` reads them when given the file).
 - **Commits:**
-- **Files:**
-- **Tests:**
-- **Measured:**
-- **Not verified here:**
-- **Found on the way:**
-- **Questions:**

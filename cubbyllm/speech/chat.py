@@ -158,6 +158,9 @@ class CubbyChat(ChatState):
         draws = choosing.breadth(max(1, int(getattr(self, "n_candidates", 1))), mod)
         self._said_lang = lang                           # a rule is said back in the user's language
         tr = self.turn_rules = self._turn_rules()        # order 0067 (CB_RULES=1): None when off
+        from . import care                               # order 0080 (CB_CHAT_CARE=1): the distress read, None when off
+        care_lvl = care.turn_level(self, user_text, lang) if care.on() else None
+        line = care.care_line(self.facts, lang, getattr(self, "country", None)) if care_lvl else None
 
         offered, rejected, seen = [], [], set()
         for k in range(draws):
@@ -176,6 +179,9 @@ class CubbyChat(ChatState):
             why = self._guard(reply, user_text, bool(last.get("hit_limit")))
             if why is None and tr is not None:           # every rule in force, run by the VM on this candidate
                 why = tr.why_not(reply, steered=bool(last.get("steered")))
+            if why is None and care_lvl:                 # after g, h and d: the care check (0080), or the care line
+                vetted, why = care.vet(reply, care_lvl, line)
+                reply = vetted or reply
             if why is None:
                 offered.append(reply)
             else:
@@ -184,7 +190,8 @@ class CubbyChat(ChatState):
 
         spoken = [r["reply"] for r in self.history[-8:]]
         backed = set(self.grounded) | set(grounded or ())
-        offered, self.last_choice = saying.rank(offered, mod, safe=tr.safe(dont_know, lang) if tr else dont_know,
+        safe = line if care_lvl == care.HIGH else tr.safe(dont_know, lang) if tr else dont_know
+        offered, self.last_choice = saying.rank(offered, mod, safe=safe,
                                                 history=spoken, grounded=backed)
         return offered, rejected
 

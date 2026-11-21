@@ -111,5 +111,11 @@
    "Dire quand je ne sais pas",
    "Demander lequel tu veux dire"
   ]
+ },
+ "care_line": {
+  "status": "PLACEHOLDER for order 0080's build and tests: Cowork drafts the line (English and French), Nick approves the wording; not to be spoken to a person. No crisis number is written here until it is checked, with the date beside it (by_country).",
+  "en": "[placeholder, not approved] I'm really worried about you, and I'm here with you right now. Please reach out to someone you trust, and contact a crisis line or your local emergency number.",
+  "fr": "[texte provisoire, non approuvé] Je m'inquiète vraiment pour toi, et je suis là avec toi. S'il te plaît, parle à quelqu'un en qui tu as confiance, et contacte une ligne d'écoute ou le numéro d'urgence local.",
+  "by_country": {}
  }
 }

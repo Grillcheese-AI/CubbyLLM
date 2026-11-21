@@ -1,0 +1,271 @@
+{
+ "about": "Order 0080's phrase list (H-E22), written by Claude Code on 2026-11-21 for Nick to approve before CB_CHAT_CARE is turned on anywhere a person talks to Cubby. Patterns are regular expressions over the turn FOLDED: lowercase, accents dropped, curly apostrophes made straight, French contractions spelled out (jveux, j'veux -> je veux; chu -> je suis; m'tuer -> me tuer). 'high' patterns read a turn as high distress; 'neg': true means a negation in the same clause before the words (not, never, don't, ne ... pas, jamais) undoes it ('I'd never kill myself', 'je ne veux pas mourir'); patterns that carry their own negation ('I don't want to live') have 'neg': false. 'figures' are figures of speech and everyday uses that undo a match they overlap ('dying to', 'mourir de rire', 'end my life insurance', 'en finir avec'). A match inside quotation marks does not count. 'distress' words feed the raised level only.",
+ "high": [
+  {
+   "p": "\\b(kill(ing|ed)?|hang(ing)?|shoot(ing)?|unaliv(e|ing)|off(ing)?|drown(ing)?) myself\\b",
+   "neg": true
+  },
+  {
+   "p": "\\bkms\\b",
+   "neg": false
+  },
+  {
+   "p": "\\bsuicid\\w*",
+   "neg": true
+  },
+  {
+   "p": "\\b(want|wanna|wanting|wish|ready|going|gonna|deserve|should|hope|need)\\b[^.!?,;]{0,20}\\b(die|dei|diee|be dead|was dead|were dead|had died)\\b",
+   "neg": true
+  },
+  {
+   "p": "\\brather be dead\\b|\\bbetter off dead\\b|\\b(easier|better|happier)\\b[^.!?;]{0,30}\\b(be dead|i was dead|i were dead|i was gone|i were gone|i died|without me)\\b",
+   "neg": true
+  },
+  {
+   "p": "\\bbetter off\\b[^.!?;]{0,25}\\b(if i|without me)\\b|\\bbetter without me\\b",
+   "neg": false
+  },
+  {
+   "p": "\\b(miss|care|notice)\\b[^.!?;]{0,20}\\bif i (died|die|was dead|were dead|was gone|were gone|killed myself)\\b",
+   "neg": false
+  },
+  {
+   "p": "\\bend(ing)? my (own )?life\\b|\\btak(e|ing) my (own )?life\\b|\\bend(ing)? it all\\b|\\bend(ing)? everything\\b",
+   "neg": true
+  },
+  {
+   "p": "\\b(gonna|going to|want to|wanna|feel like|night i|day i) end(ing)? it\\b|\\bfeel like ending it\\b",
+   "neg": true
+  },
+  {
+   "p": "\\bend(ing)? things\\b(?! with)",
+   "neg": true
+  },
+  {
+   "p": "\\b(over|end) for good\\b",
+   "neg": true
+  },
+  {
+   "p": "\\b(don't|dont|do not|didn't|never)\\s+(want|wanna)( to)?\\s+(live|be alive|be here|exist|wake up|be around)\\b",
+   "neg": false
+  },
+  {
+   "p": "\\b(hope|wish) i (don't|dont|do not|never|won't|wont) wake up\\b|\\b(and|to) never wake up\\b|\\bsleep forever\\b",
+   "neg": false
+  },
+  {
+   "p": "\\b(stop|quit) (existing|living|being alive)\\b|\\bnot exist anymore\\b",
+   "neg": true
+  },
+  {
+   "p": "\\bdisappear\\b[^.!?;]{0,25}\\b(forever|for good|never come back)\\b",
+   "neg": true
+  },
+  {
+   "p": "\\b(no|any) reasons? (left )?(for me )?to (keep )?(on )?(live|living|go on|be alive)\\b|\\bnothing (left )?to live for\\b|\\bpoint (of|in) (living|going on|being alive|life)\\b|\\b(isn't|isnt|is not|not) worth living\\b",
+   "neg": false
+  },
+  {
+   "p": "\\btired of (being alive|living|life|existing)\\b|\\b(done with|give up on|given up on|gave up on) (life|living)\\b|\\bi'?m done living\\b",
+   "neg": true
+  },
+  {
+   "p": "\\bgoodbye (letters?|notes?)\\b|\\bsuicide note\\b|\\blast message\\b[^.!?]{0,3}[.!]?\\s*goodbye\\b",
+   "neg": false
+  },
+  {
+   "p": "\\b(won't|wont|will not|not|don't|dont|do not)\\b[^.!?;]{0,20}\\baround (much|any) longer\\b",
+   "neg": false
+  },
+  {
+   "p": "\\bi (wish i )?(had |'d |d )?never (been born|existed)\\b",
+   "neg": false
+  },
+  {
+   "p": "\\bi want out\\b(?! of)",
+   "neg": true
+  },
+  {
+   "p": "\\b(i|i'm|im|i've|ive|i'll|me)\\b[^.!?;]{0,40}(\\bjump(ing)?\\b[^.!?;]{0,25}\\b(bridge|building|roof|cliff|balcony|in front of a (train|car|bus))\\b|\\b(bridge|building|roof|cliff)\\b[^.!?;]{0,40}\\bjump(ing)?\\b)",
+   "neg": true
+  },
+  {
+   "p": "\\b(i|i've|ive|i'm|im|me|my|je)\\b[^.!?;]{0,25}\\boverdos\\w*|\\b(took|take|taking|swallowed)\\b[^.!?;]{0,25}\\bpills\\b[^.!?;]{0,30}\\b(stop|end|die|sleep)\\b",
+   "neg": true
+  },
+  {
+   "p": "\\b(want|wanna|going|gonna|thinking|think|thought|might|may|could|urge|scared|afraid|keep)\\b[^.!?;]{0,25}\\b(hurt(ing)?|harm(ing)?|cut(ting)?|burn(ing)?) myself\\b",
+   "neg": true
+  },
+  {
+   "p": "\\b(hurt|harm|cut|burn|burned|burnt) myself\\b[^.!?;]{0,30}\\b(again|on purpose|purposely|deliberately|so i (can )?feel)\\b",
+   "neg": true
+  },
+  {
+   "p": "\\b(hitting|punching|hurting|cutting|burning|starving|scratching) myself\\b|\\bpunish myself\\b",
+   "neg": true
+  },
+  {
+   "p": "\\bself[- ]?harm(ing|ed)?\\b|\\brelapsed?\\b[^.!?;]{0,20}\\b(sh|self[- ]?harm)\\b|\\b(been|started|start|keep|kept) cutting\\b|\\bcutting again\\b",
+   "neg": true
+  },
+  {
+   "p": "\\bme (tuer|suicider|pendre|foutre en l'air|noyer|faire sauter)\\b|\\bm'enlever la vie\\b",
+   "neg": true
+  },
+  {
+   "p": "\\b(veux|veut|voudrais|envie de|aimerais|prefererais|vais|devrais|pret|prete|gout de|souhaite|hate de)\\b[^.!?,;]{0,15}\\b(mourir|crever|etre mort|etre morte)\\b",
+   "neg": true
+  },
+  {
+   "p": "\\ben finir(ais|ai|ait)?\\b(?! avec)",
+   "neg": true
+  },
+  {
+   "p": "\\bmettre fin a (mes jours|ma vie)\\b|\\b(m'|me )?ote?r? la vie\\b",
+   "neg": true
+  },
+  {
+   "p": "\\b(plus|pu)\\b[^.!?,;]{0,20}\\b(vivre|exister|etre la|etre icitte|etre en vie)\\b",
+   "neg": false
+  },
+  {
+   "p": "\\b(plus|pas|pu|jamais)\\s+me\\s+reveiller\\b",
+   "neg": false
+  },
+  {
+   "p": "\\b(plus|aucune|pu|pas de|sans|plus aucune)\\b[^.!?;]{0,12}\\braisons? de vivre\\b|\\bpour quoi vivre\\b|\\ba quoi bon (vivre|continuer)\\b|\\bsert a rien de vivre\\b|\\bpeine d'etre vecue\\b",
+   "neg": false
+  },
+  {
+   "p": "\\bmieux sans moi\\b|\\bmieux si je (n'etais|netais|etais) (plus la|pu la|mort|morte|partie?)\\b",
+   "neg": false
+  },
+  {
+   "p": "\\bdisparaitre\\b[^.!?;]{0,15}\\b(pour toujours|a jamais|pour de bon)\\b",
+   "neg": true
+  },
+  {
+   "p": "\\bsi je (mourais|mourrais|disparaissais|me tuais)\\b",
+   "neg": false
+  },
+  {
+   "p": "\\blettres? d'adieu\\b|\\bmon dernier message\\b[^.!?]{0,3}[.!]?\\s*adieu\\b|\\badieu (a tous|tout le monde)\\b",
+   "neg": false
+  },
+  {
+   "p": "\\b(fatigue|fatiguee|tanne|tannee|las|lasse)\\b[^.!?;]{0,6}\\b(de vivre|d'etre en vie|de la vie)\\b",
+   "neg": true
+  },
+  {
+   "p": "\\bque tout s'arrete\\b|\\bque (ca|tout) finisse pour de bon\\b|\\bpu capable de vivre\\b",
+   "neg": true
+  },
+  {
+   "p": "\\bjamais (etre nee?|naitre|exister)\\b",
+   "neg": false
+  },
+  {
+   "p": "\\bscarifi|\\bme (faire|fais|suis fait|suis faite) du mal\\b",
+   "neg": true
+  },
+  {
+   "p": "\\bencore coupee?s?\\b|\\bcoupee?s?\\b[^.!?;]{0,20}\\b(expres|les bras|les poignets|les cuisses)\\b",
+   "neg": true
+  },
+  {
+   "p": "\\b(sauter|jeter|lancer)\\b[^.!?;]{0,20}\\b(pont|train|metro|immeuble|toit|falaise)\\b",
+   "neg": true
+  },
+  {
+   "p": "\\bcachets\\b[^.!?;]{0,30}\\b(arrete|finir|mourir|dormir pour toujours)\\b",
+   "neg": true
+  },
+  {
+   "p": "\\barreter (d'exister|de vivre)\\b",
+   "neg": true
+  }
+ ],
+ "figures": [
+  "\\bdying (to|for|of)\\b",
+  "\\b(die|died|dead) (of|from) (laughing|laughter|embarrassment|boredom|thirst|hunger|shame)\\b",
+  "\\b(die|dead) if\\b",
+  "\\bdie than\\b",
+  "\\bsuicide (prevention|rate|rates|squad|hotline|awareness|statistics|blonde)\\b",
+  "\\b(about|on) suicide prevention\\b",
+  "\\b(he|she|they|who|villain|character) (kills?|killed) (himself|herself|themselves)\\b",
+  "\\bend my life insurance\\b",
+  "\\bend(ing)? it (with|here|there|now)\\b",
+  "\\bjump(ing)? off the (diving board|dock)\\b",
+  "\\bmourir de (rire|faim|soif|honte|froid|chaud|ennui|peur)\\b",
+  "\\ba mourir\\b",
+  "\\ben finir avec\\b",
+  "\\bjeter a l'eau\\b",
+  "\\btaux de suicide\\b",
+  "\\bprevention du suicide\\b",
+  "\\b(qui|il|elle|ils|elles|personnage) se suicid",
+  "\\bmettre fin a (mon|mes|son|sa|ce|cet|cette) (abonnement|contrat|compte)\\b",
+  "\\bcommitted suicide\\b",
+  "\\bsuicide (bomb\\w*|mission|doors?|squeeze|run)\\b"
+ ],
+ "negators": "\\b(not|never|don't|dont|do not|didn't|won't|wont|wouldn't|no|ne|n'|jamais|pas|aucunement)\\b",
+ "distress": {
+  "en": [
+   "can't cope",
+   "cant cope",
+   "can't take it",
+   "cant take it",
+   "can't go on",
+   "cant go on",
+   "worthless",
+   "hopeless",
+   "all alone",
+   "so alone",
+   "no way out",
+   "empty inside",
+   "numb",
+   "trapped",
+   "falling apart",
+   "breaking down",
+   "nobody cares",
+   "no one cares",
+   "hate myself",
+   "i'm a failure",
+   "im a failure",
+   "i'm a burden",
+   "can't do this anymore",
+   "cant do this anymore",
+   "giving up",
+   "nothing matters",
+   "no hope",
+   "drowning"
+  ],
+  "fr": [
+   "j'en peux plus",
+   "je n'en peux plus",
+   "je n'en peux plus",
+   "sans valeur",
+   "je suis nul",
+   "je suis nulle",
+   "tout seul",
+   "toute seule",
+   "desespere",
+   "desesperee",
+   "aucune issue",
+   "pas d'issue",
+   "vide",
+   "piege",
+   "piegee",
+   "je craque",
+   "personne ne m'aime",
+   "je me deteste",
+   "pu capable",
+   "plus capable",
+   "je suis un fardeau",
+   "j'abandonne",
+   "plus d'espoir",
+   "rien ne sert",
+   "a bout"
+  ]
+ }
+}
