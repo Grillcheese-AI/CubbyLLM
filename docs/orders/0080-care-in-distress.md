@@ -1,5 +1,5 @@
 # 0080 - Cubby stays with someone in distress and points them to help: a host check
-status: in progress (Code A, 2026-11-21: built, the read gate passed on Nick's yes; the reply side waits for drafted replies (GPU) and the pilot rows; the care line is a placeholder for Cowork and Nick)
+status: in progress (Code A, 2026-11-21: built, the read gate passed on Nick's yes; the reply side waits for drafted replies (GPU) and the pilot rows; the care line is Nick's approved one, `ac69148`)
 written: 2026-11-21 by Cowork, on Nick's "yes" · approved: 2026-11-21 by Nick ("yes") · hypothesis: H-E22
 
 ## Why
@@ -96,8 +96,9 @@ passes the care check.
     someone else or the topic 9, negations 8, quotations 3;
   - the phrase list, `cubbyllm/speech/care_phrases.json`: 46 high patterns, 20 figures, the negators, the distress
     words (raised);
-  - the care line, `cubby_record.json` `care_line`: a **placeholder marked as such** in both languages (Cowork drafts,
-    Nick approves); `by_country` is empty: no crisis number is written until it is checked, with its date.
+  - the care line, `cubby_record.json` `care_line`: first a placeholder marked as such; **since `ac69148` the line Nick
+    approved** (2026-11-23), English and French, with checked lines for CA-QC, CA, US and FR; all ten pass the care
+    check and `care_line` picks the country's line when the host knows it.
   - **The same hand wrote the sets and the list,** so the explicit set's rate will flatter the read. A short fresh
     set (say 50 messages written by Nick or Cowork, not shown to me) would read it honestly.
 - **Built:** `cubbyllm/speech/care.py` (`CB_CHAT_CARE`, off by default): `level` (high / raised / none; the turn
@@ -124,7 +125,7 @@ passes the care check.
   user/Cubby turns (the 913 rows and the turns the gate cut) through `exp_0080_care.replies`: **0 read high**, 1 raised
   (the lexical read, no appraiser), 951 none. None is flagged, as the order wants.
 - **Not done yet:** the reply side of the gate (every flagged turn's spoken reply passes) needs replies drafted for the
-  explicit set by the talk seat on a GPU; the care line's wording (Cowork drafting, numbers checked and dated).
+  explicit set by the talk seat on a GPU.
 - **Found on the way (0079's trunk read, `validation/logs/exp_0079_appraiser_read_talk_v3a_loose.json`):** the trunk
   (talk_v3a) names a distress petal on 7 of 300 Suicidal posts and 6 of 300 Normal ones, and keeps the asked answer
   form on 9 of 2,914 reads. The raised level's `ModelAppraiser` branch would almost never fire on this trunk; the
