@@ -26,7 +26,7 @@ def alone(model, ids, max_new):
         st = model.init_state(1, "cpu")
         for t in ids[:-1]:
             _, st = model.step(torch.tensor([t]), st)
-        return D.decode(model, st, torch.tensor([ids[-1]]), EOS, max_new, 0.0, 0)[0]
+        return D.decode(D.Eager(model).start(st, 1), torch.tensor([ids[-1]]), EOS, max_new, 0.0, 0)[0]
 
 
 def test_rows_equal_each_prompt_alone():
@@ -57,3 +57,24 @@ def test_the_prefix_cache_changes_nothing():
     for ids in calls:
         assert D.rows_ids(model, ids, EOS, 10, 0.0, 0, "cpu", cache) == D.rows_ids(model, ids, EOS, 10, 0.0, 0, "cpu")
     assert any(k == tuple(q) for k, _ in cache)                         # the question, kept between the steps
+
+
+def test_copy_into_broadcasts_a_row_and_keeps_counters():
+    model = build_model(META, "cpu", seed=0)
+    with torch.no_grad():
+        _, one = model.step(torch.tensor([3]), model.init_state(1, "cpu"))
+        big = model.init_state(4, "cpu")
+        D.copy_into(big, one)
+        assert torch.equal(big["ctx_sum"], one["ctx_sum"].expand(4, -1)) and float(big["ctx_n"]) == 1.0
+        a, _ = model.step(torch.tensor([7, 7, 7, 7]), big)
+        b, _ = model.step(torch.tensor([7]), one)
+    assert torch.allclose(a, b.expand(4, -1), atol=1e-5)               # four copies of the same row, read on
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA graphs need a CUDA card (Colab)")
+def test_graph_step_equals_eager_on_cuda():
+    model = build_model(META, "cuda", seed=0)
+    prefix = [5, 9, 13, 17, 21, 25, 29, 33, 37, 41, 45]
+    ids = [prefix + [50, 51], prefix + [60, 61, 62, 63], prefix + [70, 71]]
+    g = D.rows_ids(model, ids, EOS, 12, 0.0, 0, "cuda", stepper=D.GraphStep(model, torch.device("cuda")))
+    assert g == D.rows_ids(model, ids, EOS, 12, 0.0, 0, "cuda")

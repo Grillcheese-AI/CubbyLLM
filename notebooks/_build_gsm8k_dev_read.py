@@ -37,7 +37,10 @@ second pass. **S0** is `cubby450m_v12e_w_step_cont`, **S1** is `cubby450m_s1_007
 
 **Time:** about 5.3 h per arm at home (58 s a question). The tries are decoded in batches by prompt length with the
 question read once (`validation/dev_read_torch.py`, exact; 2026-11-24). Before that a T4 took 306 s a question; take an
-A100 or an L4 when one is free (a T4 has no fast bf16). **It resumes:** the logs are on Drive
+A100 or an L4 when one is free (a T4 has no fast bf16). An L4 still took ~75 s a question, nearly all of it Python
+launching the step's kernels one token at a time; on CUDA each batch size's step is now recorded once as a CUDA graph and
+replayed (`GraphStep`, checked against the eager step when recorded; the check cell below runs the same test on the
+card; `CB_DEV_READ_GRAPHS=0` turns it off). Rows read with it carry `"decode": "rows-graphs"`. **It resumes:** the logs are on Drive
 (`emitter/gsm8k_dev_read/`); run the same cells again after a disconnect and it skips what is written. Rows written by
 the first decode carry no `decode` field, the new ones `"decode": "rows"`: both are the same sampling (temperature 0.7,
 top-k 40), seeded differently. Disconnect when it prints `dev read done`.
@@ -65,6 +68,10 @@ EXE = '/content/cubelang/target/release/cubelang'
 os.environ['CUBELANG_EXE'] = EXE
 print(subprocess.run([EXE, 'check', '/content/cubelang/examples/gsm8k.cube'], capture_output=True, text=True).stdout.strip())
 """.replace("__COMMIT__", CUBELANG_COMMIT)),
+    code(r"""
+# --- check: the recorded step decodes exactly as the eager one, on this card ---
+!cd {REPO} && python -m pytest -q tests/validation/test_dev_read_torch.py
+"""),
     code(r"""
 # --- the read: S0 then S1, each resumable from its log ---
 DRIVE     = '/content/drive/MyDrive/cubbyllm'

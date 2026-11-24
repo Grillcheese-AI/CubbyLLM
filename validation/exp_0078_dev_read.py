@@ -138,7 +138,9 @@ def run(a) -> None:
             f.write(json.dumps({"id": r["id"], "i": i, "gold": r["gold"], "arm": a.arm, "adapter": emitter.name,
                                 "greedy": {"answer": g["answer"], "refused": g["refused"],
                                            "steps": [s["value"] for s in g["steps"]]},
-                                "tries": ts, "decode": "rows" if hasattr(emitter, "emit_rows") else "groups", "seconds": {"greedy": round(q1 - q0, 2), "tries": round(q2 - q1, 2)}},
+                                "tries": ts,
+                                "decode": getattr(emitter, "decode_kind", "rows" if hasattr(emitter, "emit_rows") else "groups"),
+                                "seconds": {"greedy": round(q1 - q0, 2), "tries": round(q2 - q1, 2)}},
                                ensure_ascii=False) + "\n")
             f.flush()
             n += 1
