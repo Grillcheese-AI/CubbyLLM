@@ -57,10 +57,10 @@ nothing trains and the gate (coverage, the walk, the VM) does not change.
      seeds 7, 8 and 9. It uses the same gate and store as the stand-in's runs (v13e: 599, 600 and 600 of 600; v12e on
      seed 7: 531).
    - H-E15's eight live questions, through the served loop with H-E15's flags (`--ask --web off`).
-   - H-E18's unseen-writer eval (`pf_heldout_eval_slots.jsonl`: 285 plan and 294 chain records), generated per
-     arm with the seat as served and scored by `validation/exp_he18_ab.py`'s reader. Reported, with no gate of
+   - H-E18's unseen-writer eval (`pf_heldout_eval_w_slots.jsonl`, the slot form the served adapter reads: 285
+     plan and 294 chain records), generated per arm with the seat as served and scored by `validation/exp_he18_ab.py`'s reader. Reported, with no gate of
      its own: arm A here is the floor the next emitter adapter (H-E18's plan and chain records in its mix) is
-     read against.
+     read against (order 0082).
    - Arms: A `off`, B `rel`, C `rel+slot`, on the same rows, greedy.
 
 ## Acceptance (pre-registered)
