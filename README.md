@@ -1,282 +1,210 @@
 # CubbyLLM
 
-CubbyLLM is **not a small language model**. It is an eight-layer infrastructure in which the language model is
-deliberately the smallest and most replaceable layer: **compute** (`grilly`, Vulkan, any GPU, no CUDA) →
-**representation** (one VSA algebra, sparse block codes, text encoded with no neural model in the path) →
-**the VM** (CubeLang: Rust, deny-by-default, verify-before-execute) → **the symbolic boundary** (only
-`(symbol, similarity)` crosses it, never raw hypervectors) → **worlds / knowledge** (MoWM; `FactStore` +
-`TripleIndex` is the serving form) → **reasoning** (the verified CoT pipeline) → **the brain / host**
-(neurochemistry → route → cortices; every spoken word exits through a VM-mediated ASK) → **the trunk**, the LM,
-which proposes programs and speaks and never judges. Every spoken answer is a program the VM ran against a fact
-store, or a refusal with a reason. Honest by construction rather than by judgement; one stack for cloud API and
-enterprise on-prem.
+CubbyLLM is an architecture that answers with proof or says it does not know. A language model inside it proposes
+how to answer a question, as a short program, and the host checks that the program covers the question. CubeLang,
+our verifying VM, then runs it against a fact store and returns the answer with the statements it rests on, or a
+refusal with its reason. The model is the most replaceable layer of the stack, and it never judges its own work.
 
-> **Status caveat, first.** GRL's own model now exists: **base450m**, a 450M hybrid (MinGRU recurrence + windowed
-> attention, hidden 1024, 32 layers, the bbpe128k tokenizer) pretrained on ~4B tokens and served natively on
-> `grilly2` (Vulkan, no CUDA), with the program emitter as a LoRA adapter trained on Colab. It grows without a
-> restart: `cubbyllm/model/grow.py` widens or deepens a trained base into a bigger model that computes the same
-> function at step 0. The third-party stand-in (LFM2.5-2.6B GGUF) still sits behind the same `Emitter` interface,
-> and **the September tables below measure the host with the stand-in in the trunk's seat**; the October section
-> measures base450m itself.
+What this gives you is an answer you can check. Every answer Cubby speaks carries a certificate naming the facts it
+read and the store they came from, and anyone you hand that answer to can confirm it is genuine and unchanged.
 
-## The seven invariants
+## Why we built it this way
+
+Language models answer first, and nothing checks the answer before it is given. Retrieval puts documents in the
+prompt, however the model still writes the final string, so a citation tells you where the model looked and not that
+the answer follows from what it read. Tool use is closer to a solution, as a calculator or a search call computes
+the part a model would otherwise guess, but the model still decides what to call and how to read what comes back. We
+took the opposite position: the model proposes, the host disposes, and every sentence Cubby says about the world
+leaves through a program the VM ran against a store.
+
+Note that this makes Cubby quiet: it refuses most open-domain questions today, and the measurements below say why,
+but what it does say comes with a trace a person can read step by step. Certified is also not correct, since a
+certificate proves the answer follows from the statements in the store: when a statement is wrong, the answer is
+wrong with a faithful certificate, and we count it as wrong.
+
+## How a question is answered
+
+```mermaid
+flowchart LR
+  Q[question] --> S{shape the host knows?}
+  S -- yes --> D
+  S -- no --> P[programs seat writes a plan<br/>names and numbers as slots]
+  P --> D{disposer: relations held,<br/>question covered?}
+  D -- no --> R[refusal with its reason]
+  D -- yes --> W[walk the fact store]
+  W -- fact missing --> L[ask a source, gate it,<br/>store it with provenance] --> W
+  W --> V[CubeLang VM runs the chain]
+  V -- verified --> A[answer + certificate]
+  V -- not verified --> R
+```
+
+The host reads the question first, and a question about Cubby itself, about how two people are related, about a
+mounted scene, or of an everyday shape it already knows ("what is the capital of France?") gets its plan from rules.
+On a 20-question bench of 24 October, the questions planned by rules took a median of 0.07 s, the lookup and the VM
+check included. Every other question goes to the programs seat, an adapter on our own 450M trunk, which writes the
+plan in slot form. The host marks the question's names and numbers as slots (`[E1: Marie Curie]`, `[N1: 48]`) and the
+program can only point at them, so the model never copies a name or a number. A program naming a slot it was not
+given is refused before it runs. That path took a median of 2.74 s on the same bench, nearly all of it the seat
+writing.
+
+The disposer then checks that the store holds every relation the plan names and that the plan covers the question,
+the walk reads the facts, and the VM runs the chain and checks each hop. A fact the store lacks can be learned on the
+spot, as the host asks a source, gates what comes back, stores it with its provenance and walks again.
+
+## The layers
+
+| layer | what it is | what it does for you |
+|---|---|---|
+| compute | `grilly2`, the torch API on Vulkan (on PyPI as `grilly2`) | Cubby runs on consumer AMD and Intel cards, and on Colab's NVIDIA cards through the same path |
+| representation | one VSA algebra, sparse block codes; text encoded with no neural model in the path | a lookup is exact algebra, not a guess |
+| the VM | CubeLang: Rust, deny-by-default, verify-before-execute | one component, not a model, decides whether an answer follows from the store |
+| the boundary | only (symbol, similarity) crosses into the VM, never raw vectors | what gets checked is always a named fact |
+| worlds | the fact store (`FactStore`, `TripleIndex`) over Wikidata's dump, books, an encyclopedia and news; MoWM | knowledge you update by editing one fact, each with where it came from |
+| reasoning | the planner, the disposer, the walk, search-and-learn, the rule library, the step loop | answers over several facts, checked hop by hop |
+| the host | the brain: neurochemistry, routing, the cortices, the checks on every reply | a conversation partner whose claims all go through the VM |
+| the trunk | base450m and its LoRA roles | proposes plans and words the replies; replaceable |
+
+## Our model
+
+base450m is GRL's own trunk, a hybrid of MinGRU recurrence and windowed attention (hidden size 1024, 32 layers,
+attention over a 512-token window every third layer, a 128,000-token vocabulary). It has 576M trainable parameters,
+314M of them in the trunk and the rest in the embedding table and the output head. It has read 7.57B tokens, 2.77B in
+its first run and 4.80B in a continuation, each on one Colab A100, and it runs at home on grilly2 on an RX 6750 XT.
+One base carries the LoRA adapters of every role, swapped in place: the programs seat and the talk seat today. The
+LFM2.5-2.6B stand-in still sits behind the same interface, as the control arm.
+
+The model is small on purpose, because facts live in the store: the trunk only has to learn language and planning,
+and a fact is written once instead of being seen until the weights keep it. On a 1.06M-parameter trunk of ours trained
+on 1,000 synthetic facts, exact recall was 0.50 after 100 sightings of a fact and 0.99 after 1,000 (H-K7). The next
+base run (order 0045) reads about 10.8B more tokens.
+
+## Where it stands, 24 November 2026
+
+Every row says who proposed the answers, and each number has its log in `validation/logs/` and its entry in
+`CUBBYLLM_HYPOTHESES.md` or an order in `docs/orders/`.
+
+| set | who proposed | spoken | wrong among spoken | refused |
+|---|---|---:|---:|---:|
+| CLUTRR kinship, 2 to 10 hops, 1,146 questions (H-A13) | no language model: 109 rules learned in one night from refused questions | 827 | 0 | 319 |
+| the same, 4 to 10 hops, depths no training record reaches, 1,003 | the same rules | 746 | 0 | 257 |
+| SimpleQA, 4,326 (order 0054) | the host's rules, the rule library and the 450M programs seat, over Wikidata's dump of 29 December 2025 | 6 | 0 | 4,320 |
+| Natural Questions (open), 3,610 | the same | 13 | 2 (+1 debatable) | 3,597 |
+| WebQuestions, 2,032 | the same | 62 | 1 (+2 debatable) | 1,970 |
+| AA-Omniscience, 600 | the same | 0 | none spoken | 600 |
+| 236 word problems never trained on (H-E19) | the 450M, one VM-run step at a time, said only when the 2.6B stand-in's own program agrees | 55 | 2 | 181 |
+| 600 free-text questions over entities never trained on, built from the store's chains, 3 seeds | the 2.6B stand-in's programs seat (`emitter_v13e`) | 599 / 600 / 600 | 0 | 1 / 0 / 0 |
+| 300 reworded questions about chains seen before (exp_r13) | no model: plans recalled from memory | 272 | 0 | 28 |
+
+The open-domain rows run with order 0066's four answer checks on. The checker holds where the plans and the facts
+are there, with 0 wrong on CLUTRR at depths no training record reaches and on the free-text sets built from the
+store. On open questions it is not perfect, as 3 of the 81 spoken answers are wrong and 3 are debatable. Before those
+checks, 2 of the 8 wrong answers were Wikidata's own value against the benchmark's gold (the year a podcast started,
+the year a strike ended), so the certificate was faithful and the answer still wrong. Without the VM, the same
+proposals would have said 11 SimpleQA answers with 3 wrong, 16 Natural Questions answers with 4 wrong and 105
+WebQuestions answers with 10 wrong and 2 debatable (arm C−VM of order 0054, before the checks).
+
+The main problem now is the proposer, not the checker: on SimpleQA, 3,759 of the 4,326 questions never became a plan
+the store could answer. Order 0081, open today, lets the programs seat name only relations the store holds, so
+"birth" can no longer be written where the store says "birthplace". Order 0082 trains the seat on a second writer's
+wordings, which in September raised the 450M's plans on unseen wordings from 0.225 to 0.495 (H-E18). On arithmetic,
+the 2.6B stand-in alone gets 85.2% of the same 236 problems right in one pass and says a wrong answer on 14.8% of
+them, while the 450M alone, one step at a time, gets 22.9%. GSM8K's own test is order 0078 and has not been read.
+
+We also measured what a model's memory is worth as a source. Asked for the facts behind 600 SimpleQA questions, the
+2.6B stand-in produced 7 answers Cubby held back, and all 7 were wrong; against Wikidata it agreed on 1 fact and
+disagreed on 28. This is why a fact a model remembers is stored as latent and never spoken until a second source
+states it. The tables of September and October are in `docs/RESULTS.md`.
+
+## What is new in it
+
+| idea | what it does for you | over a conventional model |
+|---|---|---|
+| slots (H-E15): the host places every name and number, the program only points at them | the name in the answer is the one you wrote, never a near-miss spelling | a model copies names and numbers token by token and can garble them |
+| the disposer and named refusals (`plan_verify`) | when Cubby cannot answer, it says which step stopped: no plan, a relation it does not hold, a name it cannot resolve, a missing fact | a model rarely knows why it does not know |
+| certificates anyone can check (order 0076: CheezML's Comté protocol for answers, Maasdam for refusals) | you, or anyone you forward an answer to, can confirm it is genuine and unchanged | a citation cannot be checked against what the model read |
+| search and learn (`reasoning/learn.py`) | a fact Cubby lacked is fetched, gated and stored with its source, and it is still known tomorrow | a model is retrained to learn a fact, and keeps no record of where it came from |
+| the latent tier | what a model remembers is kept, and never said until a second source agrees | a model's memory is spoken as fact |
+| arithmetic one step at a time (H-E19) | every number in a worked answer was computed by the VM | arithmetic in a model's head makes slips that look like answers |
+| the rule library (H-A13) | family-relation questions answered at depths it was never shown, with 0 wrong | a model's accuracy falls with the number of hops |
+| the loci link (H-K10): a token bound to its place in the input, read back by algebra inside the trunk | the 450M recalls a fact it was shown once, more than 800 tokens earlier: 0.946 exact on 2,002 held-out questions, up from 0.021, by training 1,027 parameters, its 21 text sources within 0.005 of before | a model adds knowledge by fine-tuning every weight, or by a longer context |
+| the 128k vocabulary at a 32k head's cost (order 0068, route 5) | a large vocabulary without paying for it at every word: a decode step of 21.603 ms against 21.686 for a 32,000-word head and 22.759 for the full head, the full head's word on 99.76% of held-out positions | a bigger vocabulary costs every token |
+| one VM per user (exp_r20) | your session's facts and programs are walled off from everyone else's, at 1.69 MB and 19 ms a session | isolating users usually means a container or a process each |
+| a memory of checked plans (the hippocampus; on the serve path with order 0083) | a question Cubby has answered before comes back fast, checked again | a cache returns text it cannot re-check |
+
+Two more are in progress: order 0079 gives Cubby its own voice in conversation, with every reply checked for facts,
+feelings and abilities it does not have. Order 0080 makes a reply to someone in distress stay with them and point to
+help. The 128k route and the loci link are off by default until their serving checks pass (orders 0083 and 0052).
+
+## The invariants
 
 1. **The VM is the only truth gate.** No LLM-as-judge anywhere in the loop; the model never scores its own thoughts.
-2. **The model proposes, the host disposes.** Identity, provenance, execution, reward, retirement, and what the model is shown are host decisions.
+2. **The model proposes, the host disposes.** Identity, provenance, execution, reward, retirement, and what the model
+   is shown are host decisions.
 3. **The don't-know contract.** An unverified claim is never spoken.
 4. **Retire, never delete.** Every record carries a store-snapshot hash and a git revision.
-5. **Serve-time budget.** A small model on a 12 GB GPU; VM calls in milliseconds; training on one 80 GB GPU for tens of minutes per round.
+5. **Serve-time budget.** A small model on a 12 GB GPU, VM calls in milliseconds, an adapter round on one 80 GB GPU in
+   tens of minutes.
 6. **No self-play or self-judging shortcuts.**
-7. **Ported, never linked.** Nothing depends on another repository at runtime.
-
-## Where it stands — 5 October 2026
-
-Two lines of work on GRL's own model, each run as a hypothesis with a kill line in `CUBBYLLM_HYPOTHESES.md`
-(H-E19, H-M1); every number has a log in `validation/logs/`.
-
-**Arithmetic through the VM, one step at a time (H-E19, `cubbyllm/reasoning/step_loop.py`).** The emitter never
-writes the whole program: each turn it proposes ONE operation on numbers the host placed (the question's, as
-`[N1: 308]` slots, and earlier results written back as `[S1: 154 = N1 / N2]`), the VM runs it, and the host writes
-the value back. Every intermediate number is the VM's, never the model's.
-
-| measured on 236 held-out word problems (base450m + emitter adapter) | |
-|---|---:|
-| whole program in one pass → one VM-verified step at a time | **5.5% → 22.9%** correct (the 2.6B stand-in, one pass: 85.2%) |
-| templates seen in training / never seen | 24.6% / 20.4% — the gain is not memorisation (n = 138 / 98) |
-| speak only when the 450M loop and the 2.6B stand-in agree | **0.8% of questions answered wrong**, precision 0.964 |
-| every legal next step ranked by the adapter (the host's "menu", ~135 options) | right step top-1 0.62, **top-3 0.86**; stops 0.99; the margin is calibrated (lowest quarter 0.41, highest 0.98) |
-| what did not move it | self-vote over 5 samples (0.237), a VM-judged step school (0.229), a pointer head on frozen features, a listwise fine-tune (0.119 / 0.059); model-free pruning catches 3% of the real mistakes |
-| pick each step from that menu instead of writing it (no training) | **0.275** (seen 0.290 / unseen 0.255) |
-| branch to the top-3 where the model is unsure (cutoff set on a separate dev set) | paths ranked by mean log-prob per step (ranker chosen on dev) **0.309**; the right answer is among the finished paths for **0.496** — choosing between paths is now the bottleneck |
-
-What it brings over a conventional LM: the model is never trusted with a number. It proposes, the VM computes,
-the trace is inspectable step by step, and a question is answered only when two independent proposers agree.
-
-**An n-gram memory in the hypervector space (H-M1).** Qwen's 2026 preview reads a 51B-row n-gram table from host
-RAM by hashed address. Here an n-gram is bound from the qFHRR word codes the serving table already holds
-(`docs/papers/2026-08-07-qfhrr-semantic-word-tables.md`; 60,147 words, 10,240 dimensions): the Rubik's-cube encoding
-from `grilly`'s cubemind cache, role (position) XOR filler (the word), bundled by majority and recalled by a
-Hamming scan. 597k corpus trigrams, one word swapped, match accepted when the original is the nearest key within a
-distance cutoff:
-
-| table (teacher) | paraphrase reaches the row | a different fact (france → germany) | random word |
-|---|---:|---:|---:|
-| shipped table (potion-retrieval) | 22.3% | 0% | 0% |
-| paraphrase-MiniLM | 74.7% | 10.7% | 0% |
-| paraphrase-MiniLM + Attract-Repel (WordNet, test words held out) | **74.3%** | **4.0%** | 0% |
-
-What it brings over a hashed n-gram table: a reworded n-gram still reaches its memory row, where a hash reaches
-nothing, and one distance cutoff sets the trade-off against reading a different fact; the exact address stays
-available as an identity tag. Open: the paraphrase list is 35 hand pairs (a larger fresh list is next), the scan
-is measured on CPU (~330 ms over 597k keys; the GPU scan is next), and the language-model test has not run.
-
-## The reasoning stack — 11 September 2026
-
-The reasoning pipeline (`cubbyllm/reasoning/`) is wired end to end and measured on two worlds:
-
-```
-question ──► plan ──► plan_verify (disposer) ──► lookup-first walk ──► CotChain program ──► CubeLang VM ──► answer / refusal
-          └─ a refusal the store caused ──► source ──► gate ──► store (+provenance) ──► walk again   (learn.py, lever 3)
-              │              │                        │                                        │
-     grammar or emitter   relations known?     TripleIndex, exact hop 0,          per-hop similarity ≥ frame-size floor,
-     (CotPlan: SEED,      plan covers the      paraphrase tier on hops ≥ 1        control role below the floor; verdict
-      HOP1..HOPk)         question?            (Jaccard ≥ 0.6)                    over a resident process, ~2 ms/question
-```
-
-| measured on the 800-question eval (1,241 facts, 165 relations) | |
-|---|---:|
-| verified coverage, lookup-first + disposer | **0.718** (574/800) at **precision 1.000** — every wrong answer the pipeline ever spoke here was a pick between several true facts; an ambiguous hop is now a refusal (lever 3) |
-| honest refusals with a named reason | 226 (152 no-such-edge or plan-coverage · 28 no seed fact · 9 ambiguous, candidates named · 37 unparseable) |
-| misparsed plans the disposer stops before any walk | 90 / 92 |
-| VM-verified 3-hop answer, wall, resident VM | **2.0 ms** (65.7 ms per-process; CoT is now faster than chase-only) |
-| gen-2 emitter (`emitter_v12e`) vs gen 1 on the 79 held-out B questions | 10 vs 5 accepted + gold hop; 4/4 verified correct, 0 wrong — bar met |
-| gen 2 outside the grammar, arms B + C (exp_r7 --exclude) | **18/116** by emitter plan alone (B 7/79, C 11/37) after coverage levers 1–3, 0 wrong; 14 more C composed through the grammar (GoT-1 slice, exp_r8), 0 wrong |
-
-| measured on the wiki world (552,297 facts, 2,967 relations — the emitter has seen 165) | |
-|---|---:|
-| 300 canonical two-hop chains (exp_g4b) | 300/300 VM-verified |
-| matched pairs, 200 chains × 4 surface forms (exp_r9) — out of basin | grammar **0** correct · emitter **228** correct · **0 wrong** on every form |
-| canonical / have / relative / possessive, emitter | 110 / 80 / 127 / 21 of 200, 0 wrong; the possessive residue is the emitter folding a hop into the seed, refused correctly |
-| canonical form | grammar 189/200 · emitter 110/200 · 0 wrong |
-| SimpleQA, 4,326 free-text questions through the whole gate (exp_r10) | 3,858 plans → 3,825 refused with a reason + 33 walk failures; 0 verified, **0 wrong** (the store holds 3 of the answers) |
-| search-and-learn (exp_r11): held-out facts, then Wikidata on 600 SimpleQA | held-out: 200 refused → 195 learned and verified, 0 wrong; poisoned source, either order: ambiguous refusals, 0 wrong. Wikidata: 1,715 facts learned with provenance; with the source resolving relation words to its labels (`born` → `date of birth`, lever 4) **4 VM-verified, 3 correct, 0 false facts** (the 4th: Wikidata's transliteration and granularity vs the gold's). A WordNet+WOLF synonym oracle (`reasoning/lexicon.py`, lever 5) adds the bilingual axis — a French question verifies against an English store — and changes nothing on English factoids. With the typed answer class, the near rule and the local property table (12,684 Wikidata properties, EN+FR labels, aliases and datatypes, built once): **6 verified, 5 correct, 1 near, 0 wrong, 0 API calls** on the same 600 — the wording step (`born` → `date of birth`, a two-sense wording narrowed by the question's ask type and the property's datatype) never touches the network; 845 s against 1,395 |
-| the offline Source (`standin/wikitext.py`): regex frames over 4.7M local article openings, provenance per sentence, EN + FR | same 600 SimpleQA: 9 facts admitted, all re-read true against their sentences; **2 verified, 2 correct, 0 wrong**, 0 API calls. Run 1 stored one false fact (`British is the author of The Roar`) — two source hazards, fixed and pinned. Half the API source's verified count, offline, with the sentence on record |
-| the ceiling probe: a frontier model (Gemini 3.8 Flash) in the emitter's seat, same disposer / walk / VM / kill line (`standin/openrouter.py`; the serving model never calls it) | 600 questions, $0.27: the model declines 403 outright, plans 195; **4 verified, 3 correct, 0 false facts** vs the stand-in emitter's 6 / 5 / 0 the same day. Run 2 spoke one wrong answer — the source picked among several items labelled `James Young`; an entity label shared by two items is now a refusal, never a pick (pinned). What the probe exposed is the host's: lever 6 (`learn.resolve_wordings`, the question's own word for a canonical label, `founded` → `inception`) and a coverage rule that is wording-bound and vocabulary-sensitive. The ceiling on free text is not the proposer |
-| the hippocampal side cortex (`reasoning/hippocampus.py`, exp_r13): certified chains as episodes, 256-bit codes, recalled as plan candidates through the same gate | matched pairs, 100 seen chains × 3 out-of-basin forms: **272/300 correct, 0 wrong** (possessive 90/100 — the emitter's 21/200 hole was folding a hop the memory has no reason to fold); 100 unseen chains: 7 verified by rebinding a remembered shape to the new entity, 0 wrong (ceiling 11); 1,200 VM walks, no model in the loop, 37 s. Memory proposes, the host disposes, the VM decides; consolidation retires by utility and deletes nothing |
-| the encyclopedia Source (`standin/encyclopedia.py`, exp_r16): 29 OCR'd volumes of a 2005 encyclopedia, entries by headword, frames over each entry's opening, provenance = volume + headword + sentence; no model, no network | volume 13: 718 entries, 204 persons, **577 facts** in 16 s; cross-checked against Wikidata where the name resolves to exactly one item: years **121/125 agree** (the 4 disagreements: a calendar-style year, one entity the search resolved to the father, one genuine), places 58 agree + 6 spellings + 13 the same place at another granularity or name + 2 genuine disagreements; 50 hand-read: 49 true, 1 partial place (fixed, pinned). The OCR's hazards — line-break hyphens, `bom`, captions and bylines run into names and places, a missed headword handing the next entry's birth sentence to the previous person — each a rule, each pinned. All 29 volumes: 22,213 entries, 3,601 persons, **10,790 facts in 16 s**; 60 hand-read: 57 true, 3 the rules above (fixed, pinned) |
-| the gen-3 builder (`standin/data/build_gen3.py`): certified chains in, free-text questions out, the plan the host's — each (question, plan) certified by the serving gate itself before it becomes a record; no LLM | 16,626 chains × 50 wordings: **63,138 questions, 52,538 certified (83.2%)**, 105k records in 1,050 s. The first probe certified 49.6%, and its refusals were the coverage rule's own measurement on free text — five host rules later (inflections in the property table; lever 4 through the property's every wording, both ways; a *place* ask type; `covers()` v5, the mixed reading; the question decides an unheld tail's split) coverage refusals went 1,476 → 0. On the held split (entities no record trains on), the gen-2 emitter — which never saw a free-text wording — plans 599/600 and verifies **511 correct, 0 wrong** once lever 7 snaps its garbled seeds to the question's spelling; the 82 it still misses read the ask words as relations, which is what gen 3 trains |
-| hdc through the gate (`validation/exp_r18_hdc_rephrased.py`): Wiki5M 1/2/3-hop questions, each in its template wording and an LLM's rephrasing, with the chain's facts — a matched-pair set at 10,000 with nothing missing from the store | 8,840 chains × 2 wordings, **0 wrong** on every row scored. The probe found three gate defects, each pinned: a relation ending in `of` (`instance of`) split at the wrong ` of `; the walk's overlap tier read an *inverse* relation where the table's exact alias named the right one (lever 4 now runs ahead of the walk); and the **split wording** (`covers()` v6: `Which country does X hold citizenship in?` covers *country of citizenship*, word by word, the residual rule untouched). Rephrased one-hop certified went **31.5% → 87.1%**, two-hop 27.8% → 55.1%, three-hop 11.0% → 35.1% (265 rephrasings that dropped the chain's last hop counted, not scored; 0 wrong of 17,415). The battery caught the place ask over-reaching twice: 2 wrong on exp_r9 (a class noun followed by `of` is a relation) and 1 on the emitter arm (`In which country is the location of formation of X?` — the asked class noun is a hop when the store holds it as a relation, exactly); the emitter arm's 11 wrong on its first run all became rules or exclusions — **0 wrong of 1,180** on the rerun. 26,216 gen-3 records with two- and three-hop free-text wordings; exp_r17's bar moved 511 → **531 at 0 wrong**, exp_r9 228/0 and exp_r11 7/5/2/0 unchanged |
-| the loop, live (`standin/ask.py`, `serve_api --ask`, the panel's ask box): one natural question at a time, every step streamed to the control panel as it happens, links drawn between questions that share a fact or an entity | The first evening found **one wrong answer spoken** — `Who is the mother of Justin Trudeau?` → Pierre Trudeau, verified: the synonym oracle's *verb* sense of "mother" (beget, sire, father) reached lever 4 behind a property the table knew and the store lacked. Two rules, pinned: the first resolver that names a wording decides (a known, unheld relation is fetched, never paraphrased), and the lexicon words relations with noun senses only. Entity resolution went from "a shared label is refused" (which refused Marie Curie — a physicist, a book, a metro station, a ferry) to three deterministic tiers: the item a served claim pointed at, one exact hit, the question's next hop then label over alias; Bill Haslam's father's given name and Marie Curie's birthplace verify. The gate's snapshot hashed 552k texts per fact (0.35 s) — a running set hash now. exp_r11 on the same 600 SimpleQA with all of it in: **6 / 5 / 1 / 0** (one near traded for an mbiguous_relation refusal; 2,406 facts admitted against 1,328 as shared names now resolve) |
-| LFM2.5-2.6B as a fact Source (`standin/lfm_source.py`, the **latent** tier: a model's fact is stored with provenance and never spoken until a second source attests) | Same 600 SimpleQA: 450 facts admitted latent, 0 verified, **7 answers held — all 7 wrong**; against Wikidata's cached facts, **agree 1, disagree 28** (dates of birth 0 / 22). The base model's parametric facts are nearly always wrong on this tail; the latent tier is what made that safe to measure — nothing it said was spoken |
-| one VM per user — what isolation costs (`validation/exp_r20_vm_per_user.py`): a resident CubeLang process per session, so no user's frame, knowledge path or program can reach another's | 256 sessions on one machine: **1.69 MB per user marginal** (592 users per GB; summed RSS says 6.8 MB each — the executable's pages counted once per process and mapped once by the OS, a 4× over-count that would become a wrong capacity plan), **19 ms** median spawn + first call, **5,211 programs/s** from 8 threads (3.62× the 1,438/s serial baseline), p99 2.77 ms, 506 MB released on close. Flat from 16 to 256 sessions. Isolation is not the expensive part of serving — the shared emitter is |
-| "Who is X?" — the retrieval program (`standin/ask.py`: SEED + ASK, no hop; the host runs it, the VM recovers each fact, the facts are the reply; a mounted talk adapter paraphrases them and the paraphrase is kept only when every name and number in it is in the facts) | *who is marie curie?* → nine facts bound, nine recovered by the VM, the grounded paraphrase spoken; *where is Lévis?* → country, administrative entity, waters, inception; *what is Ottawa?* → `ambiguous_entity` with the four Ottawas named. `standin/data/build_profile_sft.py`: **30,964 (question, program) records** so gen 3 writes the program itself (who 12,000 · what 12,000 · where 6,964) |
-
-The reading: the grammar gets the templates; the emitter gets the shapes the grammar cannot parse; the disposer
-and the VM keep the wrong count at zero on both; free text against a store that cannot answer it is refused, not
-guessed. The loop closes: emitted plans the VM verified (`cot_harvest_r7*.jsonl`) were the first training records
-that did not come from the grammar, and gen 2 was trained on them.
-
-Full record: `docs/research/2026-09-11-plan-verify.md` (the disposer, the resident VM, the emitter's plans walked,
-arm C, gen 2, matched pairs), with `2026-09-11-entry-diagnosis.md` and `2026-09-11-hop0-search-is-dead-code.md`.
+7. **Ported, never linked.** No code reaches into a sibling checkout at runtime; grilly2 comes in as an installed
+   package, through `cubbyllm/ops/` only.
 
 ## Run it
 
-Needs a built cubelang binary (`cargo build --release` in the sibling repo; found via `--exe`, `$CUBELANG_EXE`,
-or a `cubelang/` checkout beside this one) and a Python environment with the package deps. The GGUF stand-ins
-live in `standin/models/` (not tracked).
+With Python 3.12 or later, `pip install -e .` installs the two packages (their dependencies are not declared yet:
+numpy, and torch for training), and `pip install grilly2` brings the Vulkan runtime for the 450M. A built CubeLang
+binary is needed (`cargo build --release` in the CubeLang repository), found through `--exe`, `$CUBELANG_EXE`, or a
+`cubelang` checkout beside this one. The base, the adapters, the tokenizer and the worlds' data are kept off the
+repository.
 
 ```
-python -m pytest validation/test_plan_verify.py validation/test_plan_verify_vm.py validation/test_pipeline_plan_refusal.py -q
+python -m pytest tests -q
 
-python validation/exp_m3_cot_pipeline.py --lookup --verify-plan vm --resident     # the harvest, plan-verified, resident VM
-python validation/exp_r6_plan_verify.py --real --vm                              # disposer: host verdict == VM verdict
-python validation/exp_r7_emitter_planned_walk.py --exclude                       # the emitter's plans, walked and verified
-python validation/exp_r8_decomposition.py                                        # GoT-1 slice on arm C
-python validation/exp_r9_matched_pairs.py --n 200 --resident                     # generality: 4 forms on the wiki world
+python -m cubby_serve --cubby450m <export> --emitter-adapter <dir> --talk-adapter <dir> --ask --web off   # our model
+python -m cubby_serve --gguf <stand-in GGUF>                                     # the stand-in, the control arm
+
+python validation/exp_r9_matched_pairs.py --n 200 --resident                     # four wordings of each chain
 python validation/exp_r10_simpleqa.py --resident                                 # free text through the whole gate
-
-python -m cubby_serve --gguf <stand-in GGUF> | --cubby450m <export> --emitter-adapter <dir>   # the server (python standin/serve_api.py ... for one cycle)
-python -m cubby_serve.build --gguf <stand-in GGUF>                              # the brain in a REPL, or --selftest N
-
-# base450m (pass --export <grilly export> --adapter <emitter adapter dir> --tokenizer <bbpe128k json>, all off-repo)
-python validation/exp_he19_step_loop.py --data standin/data/out/pf_heldout_eval_w_slots.jsonl --tag <tag>   # the step loop
-python validation/exp_he19_rank.py --n 400 --tag <tag>                            # every legal next step, ranked
-python validation/exp_he19_beam.py --mode calibrate|loop                          # menu argmax and the margin-triggered beam
-python validation/exp_hm1c_hamming.py --table <fastword table> --shard <token shard>   # the n-gram memory, cube encoding
+python validation/exp_he19_step_loop.py --export <grilly export> --adapter <adapter dir> --tokenizer <bbpe128k json> \
+    --data <held-out slots jsonl> --tag <tag>                                    # arithmetic, one step at a time
 ```
 
-Every experiment writes `validation/logs/<name>.{json,log}`; every number in the docs points at one of them.
-Training notebooks (Colab, one 80 GB GPU, tens of minutes): `notebooks/standin_gen2_emitter_sft.ipynb` is the
-current emitter recipe; `validation/sft/build_gen2_partition.py` builds its data from the harvest.
+Every experiment writes `validation/logs/<name>.{json,log}`, and every number in this README points at one of them.
+The training runs are Colab notebooks in `notebooks/`.
 
-## Layout
+## How the work is organized
 
-Three homes, by kind (order 0031): what makes Cubby think is `cubbyllm/`, the product around it is `cubby_serve/`, and
-`standin/` keeps only the stand-in. `cubbyllm/` imports neither of the others, opens no socket and edits no `sys.path`
+The research runs as pre-registered hypotheses and work orders. `CUBBYLLM_HYPOTHESES.md` holds every claim with a
+kill line written before its run, its dated result, and a rule on held-out sets (section 0). The work orders in
+`docs/orders/` are each an argument with its acceptance lines, its kill and its report, `docs/RESULTS.md` keeps the
+dated tables this README used to carry, and `docs/research/` holds the longer write-ups. A negative result stays in
+the record: the grown model of H-E20 is parked with its reasons, and each killed lever says why it was killed.
+`VISION.md` and `docs/ARCHITECTURE_VISION.md` are the north star, and `docs/PATH.md` says what is measured, what
+turned out false, and what would prove the whole approach wrong.
+
+```
+cubbyllm/      the package (Apache-2.0): reasoning, worlds, sources, speech, affect, emit (the seats), model, ops
+cubby_serve/   the product layer (BSL-1.1): the server, the control board, the harness, the fetchers
+standin/       the GGUF stand-in and the Cubby-Man game (BSL-1.1)
+validation/    the experiments, the trainers, the data builders and the logs (Apache-2.0)
+dashboard/     the control panel
+notebooks/     the Colab runs
+docs/          the orders, the research notes, the papers, RESULTS.md
+```
+
+`cubbyllm/` imports neither of the other two packages, opens no socket and edits no `sys.path`
 (`tests/test_package_rules.py`).
-
-```
-cubbyllm/            the package (Apache-2.0). `import cubbyllm` loads neither torch nor grilly.
-  reasoning/         planner (the grammar), plan_verify (the disposer), retriever, index (TripleIndex), programs
-                     (CotChain emission), pipeline (answer(): plan -> verify -> walk -> VM); learn (search-and-learn:
-                     refusal -> source -> gate -> store with provenance -> walk again); lexicon (WordNet 3.0 + WOLF);
-                     hippocampus, step_loop, school, events; ask (the verified-program loop on one natural question,
-                     the profile ask), question_forms, context_graph, loci_reader (the 450M's loci path as a reader)
-  worlds/            the stores and their routing (base: FactStore, Worlds, Knows), the manifest and ingest, adapters,
-                     fiction worlds, the hdc store and world, books and their reader, the encyclopedia, wikitext, the
-                     history graph and lookup, the time rule, capsules, the self source, hygiene, wikikg, science, the
-                     serve stack's fact pool
-  sources/           the sources' logic, each fetching only through the `fetch` it is handed: wikidata (claims as
-                     facts), web (search hits, pages, corroboration), robots (the parser); news/ (the archive's day
-                     files, parse, events, GDELT, Global Voices, backfill, reply, trigger, the RSS source)
-  affect/            neurochem, the ear and its lexicon, word_affect, feeling, perception, choosing, saying, afferent
-  speech/            grounding, passage, the explicit gate, the audience rules (sources are internal), the VM-mediated
-                     chat turn, identity (who Cubby is, the voice rules), the vault (user chats never in the clear)
-  emit/              the emitter contract and reply cleaning (base), the program format, the 450M's seats on grilly2
-                     (seats_450m, talk: one trunk, LoRA roles swapped in place)
-  plugins/           one folder format, found, approved, routed, claimed and loaded on demand (`python -m cubbyllm.plugins`)
-  cortex/            the sensory cortex (retina, salience, where, what, the forward model)
-  brain.py           CubbyBrain: sense -> route -> thalamus -> cortices; every reply through the VM-mediated exit
-  bridges/           cubelang_client (subprocess + resident CubelangSession, protobuf framing), programs/*.cube,
-                     world_model (the MoWM bridge contract), possibility
-  model/ core/ ops/ training/   the trunk: the hybrid backbone, spatial link and copy, growth, the model from a
-                     checkpoint's meta (model/build.py); ops/ is the only place that imports grilly
-cubby_serve/         the product layer (BSL-1.1, cubby_serve/LICENSE): `python -m cubby_serve` (api, cli, events, get,
-                     post), build (build_serve: the seats, the worlds, the selftest), board/ (the control board's routes
-                     and data), plugins (the plugins' server part), harness and its wiring, ledger, keys (where the host
-                     key lives), sources/ (everything that opens a socket: http, news (the poller), hub)
-standin/             the GGUF stand-in (BSL-1.1): emitter_llama behind the emitter facade, lfm_source (the LFM as a
-                     latent source), openrouter (a frontier proposer for datasets only), eval_emitter_vm, probes, the
-                     cubby-man game (pac*, verse, world, coach, forge, programs, hypothesis), three GGUF-only builders;
-                     the old module names as one-cycle shims
-dashboard/           the three.js control panel and the board's pages, served by cubby_serve
-validation/          the experiments, the trainers, logs/ (Apache-2.0); sft/ and builders/ (the adapters' SFT sets, the
-                     worlds' and the benches' data). Never imported by cubbyllm/.
-```
-
-Related repos, each ported from rather than linked: `cubelang` (the VM, Rust, BSL-1.1), `mowm` (Mixture of
-World Models — implements the `WorldModelBridge`; the disposer's relation oracle is injectable so MoWM can be
-the "possible edge" source), `grilly` (Vulkan compute and the VSA substrate), `cubemind` (the environment).
 
 ## Licensing
 
-`cubbyllm/` (what makes Cubby think) and `validation/` (how it is made and measured: the experiments, the trainers,
-the data builders) are **Apache-2.0** (`LICENSE`). `cubby_serve/` (the product: the server, the board, the
-harness, the fetchers) is **Business Source License 1.1** (`cubby_serve/LICENSE`), and so is `standin/` (the GGUF
-stand-in and the game; `standin/LICENSE`, change date 2030-09-11 → Apache-2.0).
-`cubelang` carries its own BSL-1.1. Licensing questions: licensing@grillcheese.ai.
+`cubbyllm/` (what makes Cubby think) and `validation/` (how it is made and measured) are **Apache-2.0** (`LICENSE`).
+`cubby_serve/` (the product: the server, the board, the harness, the fetchers) is **Business Source License 1.1**
+(`cubby_serve/LICENSE`), and so is `standin/` (the GGUF stand-in and the game; `standin/LICENSE`, change date
+2030-09-11 → Apache-2.0). CubeLang carries its own BSL-1.1, and licensing questions go to licensing@grillcheese.ai.
 
-## How it got here
+## Where it comes from
 
-**The validation campaign (2026-07-23).** `VALIDATION_REPORT.md` resolved the three structural decisions the
-trunk is built around, all tracing back to one bet (`CUBBYLLM_HYPOTHESES.md`, Section 2): a model's active
-weights as a function of context rather than a fixed stored state. The **VSA binding head** standardizes on
-`grilly`'s `BlockCodeOps` (NVSA sparse block codes) — cubby-lm's head had no unbind at all. The **Hebbian memory
-layer** forgot catastrophically under sequential learning (94% measured); the fix is context-conditioned
-parameter generation, hardened, with a router pretrained offline and frozen — a Zero-Forgetting Stability
-Benchmark now exists and ran on four candidates and on real correlated keys. The **vocabulary** is hybrid: a
-128k–256k BPE core plus a retrieval output head from day one, hypertokens deferred. The campaign's caveat stands:
-the bet only works hardened against its own drift, and context *inference* is the harder half.
-
-**The stand-in serve stack (2026-08-30 → 2026-09-04).** While the trunk waits for its corpus, a fine-tuned open
-model stands in behind the trunk interface so the host could be built and measured: a brain (neurochemistry →
-route → thalamus → cortices), every spoken line through a CubeLang VM program, live learning of facts, a 3D
-Pac-Man world (cubby-man) in which the model learns the maze from VM refusals, eleven SFT rounds whose
-VM-verified reads drove the design to **two adapters on one base** — the program emitter (`e`) and the talk
-cortex (`t`), never mixed — plus the signed certificate ledger and the encrypted vault. `standin/README.md` is
-the record.
-
-**The reasoning stack (2026-09-03 → 2026-09-14).** The GoT challenge (`docs/research/2026-09-03-got-challenge-scored.md`),
-the rung-1 generality-gate competition (`2026-09-10-rung1-generality-gate-competition.md`) and the neutral-prior
-competition (`2026-09-14-neutral-scoring-competition.md` — how the loop may learn what an asker means without
-becoming a ranker, and the multi-valued-relation trap it found) put outside models against the measured record;
-their pre-checks reshaped the roadmap. The token-free competition (`2026-09-14-token-free-vm-competition.md`) answered how a VM generalizes without tokens: opaque payloads in a closed role set, a per-request manifest compiled into the grammar, and a bytecode verifier that rejects any statement compiling to zero instructions. What followed, each with a before/after
-on the same store and seeds: the lookup-first walk over a TripleIndex; the entry diagnosis (absent facts 42%,
-relation mismatch 58% of the residue); the finding that the plan never crossed the gate and the disposer that
-closed it; the resident VM; the emitter's plans walked and harvested; gen 2 trained on the harvest and gated;
-the matched-pair generality test on a world 445× the training store.
-
-**Our own model (2026-09-15 → 2026-10-05).** The work orders of `docs/WORK_ORDERS.md` ran (CLUTRR at ten hops with
-zero wrong answers, the emitter at depth, Cubby-Man learning the maze and writing his own sentences, the affect
-cube checked against human ratings); then base450m was pretrained, moved onto `grilly2`, and given its emitter
-adapter. Arithmetic became a world (H-E19): one pass, the 450M gets 5.5%; one VM-verified step at a time, 22.9%,
-and every training-side lever tried since has been measured against that number. The serving word table became
-the address space for an n-gram memory (H-M1).
-
-## Documents in this folder
-
-`CLAUDE.md` — orientation for coding sessions: the from-scratch/no-frozen-trunk correction, the implemented
-state, the sibling-repo anti-patterns to avoid.
-
-`CUBBYLLM_HYPOTHESES.md` — every research claim as a falsifiable hypothesis with a kill criterion; most carry a
-dated result. Read this first for the trunk. `VALIDATION_REPORT.md` — the campaign behind it, every number linked
-to a script in `validation/` and a log in `validation/logs/`.
-
-`docs/research/` — the dated findings (`2026-09-14-ask-loop.md` is the current one; `2026-09-11-plan-verify.md`
-is the walk it sits on) and the outside-model competitions with their scoring. `docs/ARCHITECTURE_VISION.md` and `VISION.md` — the north star: Cubby (the trunk)
-+ CubeLang (the verified VM, an OS for AI) + cubemind (the environment); deny-by-default; the Brain-SDK contracts.
-
-`docs/papers/` — the qFHRR semantic word tables paper (a teacher distilled into the model-free block-code table the
-host serves). `docs/PATH.md` — from "a thought is a program the VM executes" to the model writing programs for questions no rule
-covers: what is measured, what turned out false, what would prove the whole thing wrong.
-
-`docs/WORK_ORDERS.md` — work that is argued for and NOT built, each entry written to be picked up
-cold: what to build, where, why it is shaped that way, what would prove it wrong, and the measured
-numbers the decision rests on. Start here for the next piece of work.
-
-`PACKAGE_LAYOUT.md` — the target package layout, written before code could accumulate one by accident.
-`docs/superpowers/` — the implemented package's design spec and plan. `TODO.md` — the working checklist.
-`CUBEMIND_CLEANUP_PLAN.md` and `cubby-model-environment-map.md` — the verified state of the sibling repos this
-project ports from.
-
-## Training data and source repos
-
-The training-data archive (~210 GB, surveyed 2026-07-23, kept off-repo): a real tokenizer history (19,947 →
-32,000 → 65,536, costed to 131,072), a dated NYT archive (1851–2024) used for the forgetting benchmark on real
-keys, and a 120 GB candidate pretraining corpus that still needs its dedup/content-filter pass — the one
-substantial piece of Group G not done. See `CUBBYLLM_HYPOTHESES.md`, Group G.
-
-`cubby-lm` and `cubemind` are the direct predecessors; CubbyLLM is a fresh design, not a fork — the package layout
-mirrors cubemind's documented intent, the model architecture and vocabulary are new. `cubby-concepts`, `grilly`,
-and three earlier sibling projects (AURA_GENESIS, GrillCheese, Novel_GNN_Arch) were surveyed for reusable
-concepts; what each contributed is cited in `CUBBYLLM_HYPOTHESES.md`.
+CubbyLLM is a fresh design from GRL, the GrillCheese Research Lab, with cubby-lm and cubemind as its direct
+predecessors. It ports from its sibling repositories rather than linking to them: CubeLang (the VM), grilly and
+grilly2 (Vulkan compute and the VSA substrate), MoWM (Mixture of World Models) and cubemind. The validation campaign
+of July 2026 (`VALIDATION_REPORT.md`) set the decisions the trunk is built around, and the stand-in serve stack of
+August and September built the host before our own model existed (`standin/README.md`).
