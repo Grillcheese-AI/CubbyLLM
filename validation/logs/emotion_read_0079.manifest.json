@@ -1,0 +1,49 @@
+{
+ "what": "order 0079: the talk seat's emotion-read rows and the read's held-out test (counts only; the rows and texts are off the repo)",
+ "rows": {
+  "chat:held:chat_0079_pilot": 45,
+  "chat:train:chat_0079_pilot": 868,
+  "emotion_read:held:emotions.jsonl": 60,
+  "emotion_read:train:emotions.jsonl": 5488,
+  "emotion_read:train:goemotions": 32646
+ },
+ "emotion_rows_train": 38134,
+ "cap (15% of talk_v3a's 254,231 rows)": 38134,
+ "emotions.jsonl": {
+  "distinct texts": 1714,
+  "train": 1372,
+  "held": 342,
+  "repeat": 4
+ },
+ "goemotions": {
+  "train available": 43410,
+  "train drawn": 32646,
+  "neutral drawn": 3627
+ },
+ "held test": {
+  "emotions.jsonl": 342,
+  "goemotions_test": 5427,
+  "goemotions_fr_machine_translated": 300
+ },
+ "answer petals (train)": {
+  "anger": 4057,
+  "trust": 10142,
+  "anticipation": 3486,
+  "joy": 6521,
+  "disgust": 2419,
+  "sadness": 3376,
+  "calm": 3627,
+  "fear": 1392,
+  "surprise": 3114
+ },
+ "row_licences": {
+  "emotions.jsonl": "Nick's own",
+  "goemotions": "Apache-2.0",
+  "chat_0079_pilot": "drafted by Claude agents for 0079 (Cowork's pilot)"
+ },
+ "seed": 79,
+ "not used": [
+  "mental_health_svc.jsonl",
+  "machine-translated French GoEmotions (test only)"
+ ]
+}

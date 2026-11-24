@@ -471,3 +471,33 @@ not depend on it (its high level is the phrase read), but its raised level and C
 - **Reported, not gated:** the petal named by status on `mental_health_svc` (300 a status); the read on a French
   sample (the machine-translated GoEmotions test, flagged as such); the talk rows' held-out loss with and without the
   emotion rows.
+
+### Code A: the emotion read's rows, the trainer's continue, the notebook (2026-11-24)
+- **The rows** (`validation/sft/build_emotion_read_0079.py`; counts in `validation/logs/emotion_read_0079.manifest.json`;
+  the rows off the repo, on Drive `talk/emotion_0079/`): the prompt is `talk_prompt` over `EMOTION_PROMPT`, exactly what
+  the talk seat is shown for `ModelAppraiser.read` (pinned); the answer is the word, an em dash, the petal, and
+  `parse_emotion` reads it as it stands (pinned; the parser is unchanged).
+  - emotions.jsonl (the cleaned file): 1,714 distinct texts, **342 held out** (a fifth, seed 79), 1,372 trained,
+    repeated 4 times (5,488 rows): they are the first gate's source and few.
+  - GoEmotions train (English, simplified): 32,646 drawn (seed 79). **One choice of mine, for Cowork to check:** its
+    neutral rows (a third of the split) are capped at one petal's share (3,627), so calm is not the read's default;
+    uncapped, calm was 25% of the emotion rows, and emotions.jsonl has no calm at all.
+  - **Emotion rows: 38,134 = 15% of talk_v3a's 254,231 rows** (I read the cap against the talk seat's whole set; against
+    this first training's own rows it would allow only ~160). The pilot's 913 chat rows beside them (868 train, 45
+    held), and 60 of the held emotions.jsonl texts as held rows, for the trainer's held loss by family.
+  - **The held test** (off the repo): the 342 emotions.jsonl texts, GoEmotions' 5,427 test rows (fetched beside the
+    train split, git-ignored), 300 machine-translated French rows (flagged). `mental_health_svc` is not in it.
+- **The trainer** (`validation/train_talk_torch.py`, both flags off by default): `--init-adapter DIR` continues an
+  adapter (talk_v3a) instead of a fresh LoRA, and `--by-family` logs the held loss per family at the start and the
+  end: with the emotion rows (the end) against talk_v3a without them (step 0). CPU smoke, 2 steps from talk_v3a: chat
+  held loss 3.10 at step 0, against 3.18 from a fresh LoRA, so the continue loads it.
+- **The read after training** (`exp_0079_appraiser_read.py --held FILE --torch-ckpt`): per source, the answers in
+  the asked form, the petal right by the strict parse (as served; the gate) and by the loose one, and the gate's
+  lines. On Colab the talk seat runs on torch (`validation/talk_read_torch.py`), in batches by prompt length; on CPU it
+  answers word for word as the grilly2 seat at home on three messages.
+- **The notebook:** `notebooks/emotion_read_0079.ipynb`: train (one epoch, batch 16, lr 2e-4, as talk_v3a), then the
+  gate on the held test. **Nick's to run.** The `mental_health_svc` read (300 a status) runs at home after, on grilly2,
+  since the file stays on the machine.
+- **Tests:** `tests/validation/test_emotion_read_0079.py` (3), with `test_exp_0079_appraiser_read.py` and
+  `test_dev_read_torch.py`: 34 passed with the guards.
+- **Not verified here:** the training on Colab, the read's speed there.

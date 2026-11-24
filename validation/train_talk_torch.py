@@ -180,6 +180,9 @@ def main():
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--tag", default="")
     ap.add_argument("--micro-tokens", type=int, default=0, help="a batch in chunks of at most N padded tokens (0: off)")
+    ap.add_argument("--init-adapter", default="", help="continue this talk adapter (its rank, alpha, targets) "
+                    "instead of a fresh LoRA (0079, 2026-11-24); absent: unchanged")
+    ap.add_argument("--by-family", action="store_true", help="also log the held loss of each family (0079)")
     ap.add_argument("--key-weight", type=float, default=1.0, help="train loss weight of the tokens that carry a "
                     "program's meaning (key_tokens.py; 1: off, the plain mean); the held loss stays unweighted")
     args = ap.parse_args()
@@ -206,8 +209,14 @@ def main():
         meta = torch.load(args.ckpt, map_location="cpu", weights_only=False)["meta"]
     for p in model.parameters():
         p.requires_grad_(False)
-    targets = lora_targets(meta["L"], meta["attn_every"])
-    wrapped = apply_lora(model, targets, args.rank, args.alpha)
+    if args.init_adapter:                                     # 0079: talk_v3a continued on the emotion rows
+        from train_emitter_torch import _find
+        ameta = load_adapter(model, args.init_adapter, "talk_lora")
+        targets, args.rank, args.alpha = ameta["targets"], ameta["rank"], ameta["alpha"]
+        wrapped = {t: _find(model, t) for t in targets}
+    else:
+        targets = lora_targets(meta["L"], meta["attn_every"])
+        wrapped = apply_lora(model, targets, args.rank, args.alpha)
     params = [p for w in wrapped.values() for p in (w.lora_A.weight, w.lora_B.weight)]
     for p in params:
         p.requires_grad_(True)
@@ -230,11 +239,11 @@ def main():
         frac = (step - args.warmup) / max(1, total - args.warmup)
         return args.lr * (0.1 + 0.9 * 0.5 * (1 + math.cos(math.pi * min(1.0, frac))))
 
-    def evaluate():
-        tot, n = 0.0, 0.0
+    def evaluate(rows=None):
+        tot, n, rows = 0.0, 0.0, held if rows is None else rows
         with torch.no_grad():
-            for s in range(0, len(held), args.batch):
-                for part in chunks(held[s:s + args.batch], args.micro_tokens):
+            for s in range(0, len(rows), args.batch):
+                for part in chunks(rows[s:s + args.batch], args.micro_tokens):
                     x, y, m, _ = make_batch(part)
                     k = float(m.sum())
                     tot += float(masked_loss(model, x, y, m, dev, amp)) * k
@@ -249,7 +258,14 @@ def main():
         return {"step": step, "rank": args.rank, "alpha": args.alpha, "targets": targets, "trainer": "torch",
                 "ckpt": os.path.basename(args.ckpt) if args.ckpt else "smoke", "ckpt_sha256": base_sha,
                 "data": os.path.basename(args.data), "epochs": args.epochs, "batch": args.batch, "lr": args.lr, "tag": args.tag,
-                "row_licences": data_man.get("row_licences")}     # from the set's manifest, when it says (0067)
+                "row_licences": data_man.get("row_licences"),     # from the set's manifest, when it says (0067)
+                **({"init_adapter": os.path.basename(os.path.normpath(args.init_adapter))} if args.init_adapter else {})}
+
+    def by_family(step):
+        if args.by_family:
+            ev_f = {f: evaluate([r for r in held if r["family"] == f]) for f in sorted({r["family"] for r in held})}
+            log(f"  step {step} held loss by family " + "  ".join(f"{f} {v:.4f}" for f, v in ev_f.items()))
+            mf.write(json.dumps({"step": step, "held_loss_by_family": ev_f}) + "\n")
 
     logs = os.path.join(HERE, "logs")
     os.makedirs(logs, exist_ok=True)
@@ -257,6 +273,7 @@ def main():
     ev = evaluate()
     log(f"  step 0 held answer loss {ev:.4f}")
     mf.write(json.dumps({"step": 0, "held_loss": ev}) + "\n")
+    by_family(0)
     order, step, tokens, t_start, run = [], 0, 0, time.time(), []
     while step < total:
         if not order:
@@ -293,6 +310,8 @@ def main():
             ev = evaluate()
             log(f"  step {step} held answer loss {ev:.4f}")
             mf.write(json.dumps({"step": step, "held_loss": ev}) + "\n")
+            if step == total:
+                by_family(step)
         if args.out and (step % args.save_every == 0 or step == total):
             save_adapter(wrapped, args.out, meta_out(step))
     mf.close()

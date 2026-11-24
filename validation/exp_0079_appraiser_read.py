@@ -19,6 +19,12 @@ repo); counts only, written to `validation/logs/exp_0079_appraiser_read{--tag}.j
 
 `--dry` runs the whole pipeline with an emitter that names nothing (every read a miss), to check the files and the
 script before a GPU session.
+
+**After training (Cowork's addendum, 2026-11-24): `--held FILE`** (`build_emotion_read_0079.py`'s held-out test:
+emotions.jsonl's held fifth, GoEmotions' test, a machine-translated French sample) scores, per source, the answers in
+the asked form (the strict parse found a petal), the petal right by the strict parse (as served: the gate) and by the
+loose one; with the gate's lines. `--torch-ckpt` reads with the talk seat on torch (Colab; `talk_read_torch`), in
+batches: the same prompt, the same parse, the same answer as `ModelAppraiser.read`.
 """
 from __future__ import annotations
 
@@ -48,6 +54,10 @@ def emitter_from(a: argparse.Namespace):
     if a.dry:
         return DryEmitter()
     sys.path.insert(0, str(ROOT / "standin" / "data"))
+    if a.torch_ckpt:                                     # the talk seat on torch (Colab); --cubby is its adapter
+        sys.path.insert(0, str(ROOT / "validation"))
+        from talk_read_torch import TorchTalk
+        return TorchTalk(a.torch_ckpt, a.cubby, a.tokenizer)
     if a.cubby:
         # the TALK seat, as the host serves the perception read (Cubby450mEmitter is the programs seat: it wraps
         # the prompt as "Question:/Program:" and decodes a program, so no petal could ever come back; 2026-11-21)
@@ -138,10 +148,54 @@ def mental_health(path: str, app: Reader, per_status: int, words: int, seed: int
     return out
 
 
+def held_read(path: str, emitter, app: ModelAppraiser) -> dict:
+    """The held-out test: per source, in the asked form, right by the strict parse (the gate) and by the loose one."""
+    from cubbyllm.affect.perception import EMOTION_PROMPT, EMOTION_PROMPT_FR, parse_emotion
+    rows = [json.loads(ln) for ln in open(path, encoding="utf-8")]
+    answers: list = [None] * len(rows)
+    inner = getattr(emitter, "emitter", emitter)
+    for lang in ("en", "fr"):
+        idx = [i for i, r in enumerate(rows) if r["lang"] == lang]
+        prompts = [(EMOTION_PROMPT_FR if lang == "fr" else EMOTION_PROMPT).format(t=" ".join(rows[i]["text"].split()))
+                   for i in idx]
+        if hasattr(inner, "emit_batch"):
+            for s in range(0, len(idx), 512):
+                got = inner.emit_batch(prompts[s:s + 512], context="talk", max_new_tokens=app.max_new_tokens)
+                for i, g in zip(idx[s:s + 512], got):
+                    answers[i] = g
+        else:
+            for i in idx:
+                app.read(rows[i]["text"], lang)
+                answers[i] = emitter.text
+    by = collections.defaultdict(collections.Counter)
+    for r, ans in zip(rows, answers):
+        strict = parse_emotion(ans or "")[1]
+        loose = strict or loose_petal(ans or "")
+        c = by[r["source"]]
+        c["texts"] += 1
+        c["in_form"] += strict is not None
+        c["right_strict"] += strict == r["petal"]
+        c["right_loose"] += loose == r["petal"]
+    out = {s: {**c, **{f"{k}_share": round(c[k] / c["texts"], 4) for k in ("in_form", "right_strict", "right_loose")}}
+           for s, c in sorted(by.items())}
+    every = sum(c["texts"] for c in by.values())
+    form = sum(c["in_form"] for c in by.values()) / max(1, every)
+    e, g = out.get("emotions.jsonl", {}), out.get("goemotions_test", {})
+    out["gate"] = {"asked form >= 0.95 (all answers)": round(form, 4) >= 0.95,
+                   "emotions.jsonl petal >= 0.60": e.get("right_strict_share", 0) >= 0.60,
+                   "goemotions test petal >= 0.50": g.get("right_strict_share", 0) >= 0.50,
+                   "kill: emotions.jsonl petal < 0.35": e.get("right_strict_share", 0) < 0.35,
+                   "asked form share": round(form, 4)}
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    ap.add_argument("--emotions", required=True)
-    ap.add_argument("--mental-health", required=True)
+    ap.add_argument("--emotions", default="")
+    ap.add_argument("--mental-health", default="")
+    ap.add_argument("--held", default="", help="build_emotion_read_0079's held-out test (after training)")
+    ap.add_argument("--torch-ckpt", default="", help="the torch base: the talk seat on torch (Colab), --cubby the "
+                    "adapter dir, --tokenizer")
     ap.add_argument("--gguf")
     ap.add_argument("--server")
     ap.add_argument("--cubby", help="the 450M talk adapter dir, with --export and --tokenizer")
@@ -156,14 +210,19 @@ def main() -> int:
     ap.add_argument("--loose", action="store_true", help="a petal named anywhere, else a GoEmotions label's (Cowork, "
                     "2026-11-23); the asked form counted apart. perception.parse_emotion is unchanged")
     a = ap.parse_args()
-    if not (a.dry or a.gguf or a.server or a.cubby):
+    if not (a.dry or a.gguf or a.server or a.cubby or a.torch_ckpt):
         raise SystemExit("give --gguf PATH, --server URL, --cubby ADAPTER (with --export, --tokenizer) or --dry")
     cap = Capture(emitter_from(a))
     app = Reader(ModelAppraiser(cap), cap, a.loose)
-    out = {"what": __doc__.split("\n\n")[0], "emitter": "dry" if a.dry else (a.gguf or a.server or a.cubby),
-           "parse": "loose (a petal anywhere, else a GoEmotions label)" if a.loose else "strict (parse_emotion)",
-           "emotions": emotions(a.emotions, app, a.limit),
-           "mental_health": mental_health(a.mental_health, app, a.per_status, a.words, a.seed)}
+    name = "dry" if a.dry else (a.gguf or a.server or a.cubby)
+    out = {"what": __doc__.split("\n\n")[0], "emitter": pathlib.Path(name).name if a.cubby else name,
+           "parse": "loose (a petal anywhere, else a GoEmotions label)" if a.loose else "strict (parse_emotion)"}
+    if a.held:
+        out["held"] = held_read(a.held, cap, app.app)
+    if a.emotions:
+        out["emotions"] = emotions(a.emotions, app, a.limit)
+    if a.mental_health:
+        out["mental_health"] = mental_health(a.mental_health, app, a.per_status, a.words, a.seed)
     out["answers_in_the_asked_form"] = {"in_form": app.in_form, "reads": app.reads}
     log = ROOT / "validation" / "logs" / f"exp_0079_appraiser_read{a.tag}.json"
     log.write_text(json.dumps(out, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
