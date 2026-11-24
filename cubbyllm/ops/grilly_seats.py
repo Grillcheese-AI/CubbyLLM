@@ -178,3 +178,12 @@ def allowed_processor(allowed, start: int, g=None):
         mask.scatter_(1, g.tensor([list(ids)], dtype=g.int64), value=0.0)
         return scores + mask
     return process
+
+
+def device_name(g=None) -> str:
+    """The card grilly2 decodes on (Cowork, 2026-11-24: every log names its card), or "unknown"."""
+    try:
+        g = g or grilly()
+        return str(g._C.device_name())
+    except Exception:                                    # noqa: BLE001 -- a log line, never a failure
+        return "unknown"

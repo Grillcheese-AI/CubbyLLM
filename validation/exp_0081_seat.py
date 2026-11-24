@@ -33,7 +33,9 @@ def build_seat(export: str, adapter: str, tokenizer: "str | None", worlds, known
     trunk = Cubby450mTrunk(export, tokenizer or os.path.join(export, "tokenizer.json"), {"programs": adapter})
     seat = SlotEmitter(Cubby450mEmitter(trunk), index=NameIndex(names(*worlds)))
     seat.relations = known
-    seat.described = {"export": short_name(export), "adapter": short_name(adapter), "names": len(seat.index)}
+    from cubbyllm.ops.grilly_seats import device_name
+    seat.described = {"export": short_name(export), "adapter": short_name(adapter), "names": len(seat.index),
+                      "card": device_name()}
     return seat
 
 

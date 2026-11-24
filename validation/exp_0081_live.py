@@ -54,6 +54,7 @@ def main() -> None:
     a = ap.parse_args()
     from cubby_serve import cli
     from cubbyllm.emit.seats_450m import short_name
+    from cubbyllm.ops.grilly_seats import device_name
     sap = cli.parser()
     argv = ["--cubby450m", a.cubby450m, "--emitter-adapter", a.emitter_adapter, "--ask", "--web", "off"]
     argv += ["--talk-adapter", a.talk_adapter] if a.talk_adapter else []
@@ -64,6 +65,7 @@ def main() -> None:
     report = {"order": "0081", "what": "H-E15's eight live questions, the 450M seat under each trie arm",
               "export": short_name(a.cubby450m), "adapter": short_name(a.emitter_adapter),
               "talk": short_name(a.talk_adapter) if a.talk_adapter else None, "relations": len(loop.known),
+              "card": device_name(),
               "questions": QUESTIONS, "runs": []}
     for everyday in a.everyday.split(","):
         loop._everyday = None

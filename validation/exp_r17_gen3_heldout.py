@@ -91,7 +91,7 @@ def main() -> None:
         import exp_0081_seat as seat81
         seat = seat81.build_seat(a.cubby450m, a.emitter_adapter, a.tokenizer, [world], known)
         arms = a.arms.split(",")
-        what = f"cubby450m {seat.described['export']} + {seat.described['adapter']} ({seat.described['names']:,} names)"
+        what = f"cubby450m {seat.described['export']} + {seat.described['adapter']} ({seat.described['names']:,} names) on {seat.described['card']}"
     else:
         from emitter import LlamaCppEmitter
         em = LlamaCppEmitter(a.gguf)
@@ -181,6 +181,7 @@ def main() -> None:
            "rows": out_rows, "vm_calls": calls["vm"], "wall_s": round(wall, 1)}
     if a.cubby450m:
         out["trie_options"] = seat81.options_described(seat, known)
+        out["card"] = seat.described["card"]
     else:
         out["gguf"] = a.gguf
     (LOGS / f"{stem}.json").write_text(json.dumps(out, indent=1, ensure_ascii=False), encoding="utf-8")

@@ -44,6 +44,7 @@ def main() -> None:
     a = ap.parse_args()
     from cubbyllm.emit import plan_trie
     from cubbyllm.emit.seats_450m import Cubby450mEmitter, Cubby450mTrunk, short_name
+    from cubbyllm.ops.grilly_seats import device_name
     from cubbyllm.reasoning.plan_verify import StoreRelations
     from cubbyllm.worlds import wikikg as wk
     from emitter_data import table_of
@@ -86,7 +87,8 @@ def main() -> None:
     os.environ["CB_EMIT_TRIE"] = "off"
     report = {"order": "0081", "what": "H-E18's unseen-writer eval, per trie arm (no gate; arm A = 0082's floor)",
               "data": pathlib.Path(a.data).name, "export": short_name(a.cubby450m),
-              "adapter": short_name(a.emitter_adapter), "relations": len(known), "max_new": a.max_new, "arms": {}}
+              "adapter": short_name(a.emitter_adapter), "relations": len(known), "max_new": a.max_new,
+              "card": device_name(), "arms": {}}
     for arm in arms:
         out = [x for x in rows if x["arm"] == arm]
         ms = [x["ms"] for x in out]
