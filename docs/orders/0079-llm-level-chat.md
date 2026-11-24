@@ -1,5 +1,5 @@
 # 0079 - LLM-level chat: Cubby holds a real conversation, in its own words, and states only checked facts
-status: proposed (waiting for Nick's yes on the character sheet and the pilot)
+status: open (Nick: yes to the character sheet and the pilot, 2026-11-20; to training the trunk's emotion read with the talk seat, 2026-11-24)
 written: 2026-11-20 by Cowork, on Nick's calls of the day · supersedes `talk_v3b`'s training (0010) · hypothesis: H-E21 (below)
 
 ## Why
@@ -431,3 +431,43 @@ and a tone; its 1,726 distinct texts are the ones `amygdala_affect` leaves at it
   800 sampled Suicidal posts. They are real people's words: the file measures the read in the moments Cubby's care
   matters most, stays off the repo, and is not drafted from. Its licence is to check before any training use. A host
   check that a reply to someone in distress stays with them and points to help would be its own order (Nick's call).
+
+### The trunk's emotion read is trained with the talk seat (Cowork, 2026-11-24; Nick: "yes")
+**Why:** `exp_0079_appraiser_read` (Code A, `28aaef6`, the loose parse) found that the trunk does not read the user's
+emotion: talk_v3a names the right petal on 193 of 1,714 of `emotions.jsonl`'s texts (11.3%), keeps the asked
+"emotion -- petal" form on 9 of 2,914 answers, and on 300 Suicidal posts of `mental_health_svc` names sadness or fear
+on 7. The host serves with `ModelAppraiser`, so the moods the final run's rows are written for (the serving read, the
+label standing in) would not be the moods serving produces: the mood would be flat again after training. 0080 does
+not depend on it (its high level is the phrase read), but its raised level and Cubby's mood do.
+
+**What it brings, in plain words:** Cubby notices how you feel from what you write, so its mood answers yours.
+- **Over a conventional model:** a chat model's sense of the user's feeling is implicit and unchecked; here it is a
+  named reading with its own test, and the mood that follows is the hormones', not a copy of the user's.
+
+**Build (Code A):**
+1. **The rows** (`validation/sft/build_emotion_read_0079.py`): the exact prompt `ModelAppraiser.read` sends
+   (`perception.EMOTION_PROMPT`, the identity system prompt, the talk context), and the answer in the form
+   `parse_emotion` reads: the emotion word, an em dash (U+2014, the separator it splits on), then the petal.
+   - `emotions.jsonl` through `validation/emotions_corpus.py`'s cleaning: the petal is the row's primary; the emotion
+     word is the petal's tier by intensity (`mood.TIERS`: up to 0.4 the mild word, up to 0.8 the middle one, above it
+     the strong one), so "a bit annoyed" and "furious" answer differently.
+   - GoEmotions English (its train split): the first rater label as the word, its petal by `mood.LABEL_PETAL`
+     (neutral -> calm). The labels that share a petal do not matter here: the host reads the petal.
+   - **Held out for the test:** a fifth of `emotions.jsonl`'s distinct texts (seed 79), and GoEmotions' test split.
+   - **Not used:** `mental_health_svc.jsonl` (real people's posts; licence unchecked), and the machine-translated
+     French GoEmotions, whose affect does not survive translation (`emotions_corpus.py`'s finding); there is no native
+     French source yet, so the French read is measured, not trained (below).
+2. **The mix:** emotion rows at most 15% of the talk seat's rows. The final chat rows wait for the final run (no
+   OpenRouter for now), so the **first training** is talk_v3a continued on the emotion rows with the pilot's 913 chat
+   rows beside them to keep the voice: Colab, Nick's run, Code A's notebook. The final mix takes the same rows.
+3. **The test:** `exp_0079_appraiser_read.py` on the held-out texts (strict parse and `--loose`), and on
+   `mental_health_svc` by status as before.
+
+**Acceptance (pre-registered):**
+- **Gate:** the asked form on at least 95% of answers; the petal right on at least 60% of the held-out
+  `emotions.jsonl` texts and at least 50% of GoEmotions' test (its first label's petal).
+- **Kill line:** under 35% on the held-out `emotions.jsonl` texts: the talk seat cannot hold the read beside the
+  voice, and the read gets its own adapter (a perception context for `ModelAppraiser`) in a new order.
+- **Reported, not gated:** the petal named by status on `mental_health_svc` (300 a status); the read on a French
+  sample (the machine-translated GoEmotions test, flagged as such); the talk rows' held-out loss with and without the
+  emotion rows.
