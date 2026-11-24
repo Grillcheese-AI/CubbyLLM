@@ -27,7 +27,7 @@ import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-for _p in (ROOT, HERE):
+for _p in (ROOT, HERE, os.path.join(ROOT, "validation", "sft")):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
@@ -105,15 +105,47 @@ def load(path: str) -> list[dict]:
     return out
 
 
+class TorchStepEmitter:
+    """--ckpt (Colab, CUDA): the torch base and the emitter adapter, decoded by the school's own `sample_programs`
+    (greedy for `emit`; `emit_samples` = n rows in one batch, top-k, seeded through torch)."""
+
+    def __init__(self, ckpt: str, adapter: str, tokenizer: str):
+        import torch
+        from tokenizers import Tokenizer
+        from train_base import load_base
+        from train_talk_torch import load_adapter
+        self.torch, self.dev = torch, torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.tk = Tokenizer.from_file(tokenizer)
+        self.eos = self.tk.token_to_id("</s>")
+        self.model = load_base(ckpt, str(self.dev))
+        load_adapter(self.model, adapter, "emitter_lora")      # load_base already placed it on dev
+        self.name = f"torch:{os.path.basename(os.path.normpath(adapter))}"
+
+    def emit(self, prompt: str, max_new_tokens: int = 96, **kw) -> str:
+        from train_school_torch import sample_programs
+        return sample_programs(self.model, self.tk, self.eos, prompt, 1, 0.0, max_new_tokens, self.dev)[0]
+
+    def emit_samples(self, prompt: str, n: int, max_new_tokens: int = 96, temperature: float = 0.7, top_k: int = 40,
+                     seed: int | None = None) -> list[str]:
+        from train_school_torch import sample_programs
+        if seed is not None:
+            self.torch.manual_seed(int(seed))
+        return sample_programs(self.model, self.tk, self.eos, prompt, n, temperature, max_new_tokens, self.dev,
+                               top_k=top_k)
+
+
 def run(a) -> None:
-    from cubbyllm.emit.seats_450m import Cubby450mEmitter
     recs = load(a.data)[a.offset:]
     if a.limit:
         recs = recs[:a.limit]
     done = set()
     if os.path.exists(a.out):
         done = {json.loads(ln)["id"] for ln in open(a.out, encoding="utf-8")}
-    emitter = Cubby450mEmitter(a.export, a.adapter, a.tokenizer)
+    if a.ckpt:
+        emitter = TorchStepEmitter(a.ckpt, a.adapter, a.tokenizer)
+    else:
+        from cubbyllm.emit.seats_450m import Cubby450mEmitter
+        emitter = Cubby450mEmitter(a.export, a.adapter, a.tokenizer)
     loop = StepLoop(emitter, world=ArithmeticWorld(), max_steps=a.max_steps, max_new_tokens=a.max_new)
     t0, n = time.perf_counter(), 0
     with open(a.out, "a", encoding="utf-8") as f:
@@ -140,7 +172,8 @@ def run(a) -> None:
 def main(argv=None) -> None:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--arm", default="")
-    ap.add_argument("--export", default="")
+    ap.add_argument("--export", default="", help="the grilly2 export (home card)")
+    ap.add_argument("--ckpt", default="", help="the torch base checkpoint instead (Colab, CUDA): TorchStepEmitter")
     ap.add_argument("--adapter", default="")
     ap.add_argument("--tokenizer", default="")
     ap.add_argument("--data", default="")
