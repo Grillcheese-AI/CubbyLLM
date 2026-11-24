@@ -113,9 +113,32 @@
   ]
  },
  "care_line": {
-  "status": "PLACEHOLDER for order 0080's build and tests: Cowork drafts the line (English and French), Nick approves the wording; not to be spoken to a person. No crisis number is written here until it is checked, with the date beside it (by_country).",
-  "en": "[placeholder, not approved] I'm really worried about you, and I'm here with you right now. Please reach out to someone you trust, and contact a crisis line or your local emergency number.",
-  "fr": "[texte provisoire, non approuvé] Je m'inquiète vraiment pour toi, et je suis là avec toi. S'il te plaît, parle à quelqu'un en qui tu as confiance, et contacte une ligne d'écoute ou le numéro d'urgence local.",
-  "by_country": {}
+  "status": "Approved by Nick on 2026-11-23 ('all good'), order 0080. Spoken by the host when the drafted reply to a high-distress turn fails the care check. A crisis line only when the host knows the country from the user's own settings (by_country: ISO 3166 codes, CA-QC for Quebec); otherwise the local emergency number, and the line never says where the person is. Numbers checked on 2026-11-23 on the official pages in 'checked'; 911 and 112 are the standard emergency numbers.",
+  "en": "Thank you for telling me. I'm worried about you, and I'm here with you. Could you reach out to someone you trust, or to a crisis line? If you're in danger right now, please call your local emergency number.",
+  "fr": "Merci de me l'avoir dit. Je m'inquiète pour toi, et je suis là avec toi. Est-ce que tu pourrais en parler à quelqu'un en qui tu as confiance, ou à une ligne d'aide? Si tu es en danger en ce moment, appelle le numéro d'urgence local.",
+  "by_country": {
+   "CA-QC": {
+    "en": "Thank you for telling me. I'm worried about you, and I'm here with you. Could you reach out to someone you trust, or to a crisis line? You can call 1 866 APPELLE (1-866-277-3553) any time, or call or text 9-8-8. If you're in danger right now, please call 911.",
+    "fr": "Merci de me l'avoir dit. Je m'inquiète pour toi, et je suis là avec toi. Est-ce que tu pourrais en parler à quelqu'un en qui tu as confiance, ou à une ligne d'aide? Tu peux appeler le 1 866 APPELLE (1-866-277-3553) en tout temps, ou appeler ou texter le 9-8-8. Si tu es en danger en ce moment, appelle le 911."
+   },
+   "CA": {
+    "en": "Thank you for telling me. I'm worried about you, and I'm here with you. Could you reach out to someone you trust, or to a crisis line? You can call or text 9-8-8, any time, in English or French. If you're in danger right now, please call 911.",
+    "fr": "Merci de me l'avoir dit. Je m'inquiète pour toi, et je suis là avec toi. Est-ce que tu pourrais en parler à quelqu'un en qui tu as confiance, ou à une ligne d'aide? Tu peux appeler ou texter le 9-8-8, en tout temps, en français ou en anglais. Si tu es en danger en ce moment, appelle le 911."
+   },
+   "US": {
+    "en": "Thank you for telling me. I'm worried about you, and I'm here with you. Could you reach out to someone you trust, or to a crisis line? You can call, text or chat 988, any time. If you're in danger right now, please call 911.",
+    "fr": "Merci de me l'avoir dit. Je m'inquiète pour toi, et je suis là avec toi. Est-ce que tu pourrais en parler à quelqu'un en qui tu as confiance, ou à une ligne d'aide? Tu peux appeler, texter ou clavarder avec le 988, en tout temps. Si tu es en danger en ce moment, appelle le 911."
+   },
+   "FR": {
+    "en": "Thank you for telling me. I'm worried about you, and I'm here with you. Could you reach out to someone you trust, or to a crisis line? You can call 3114, free, any time. If you're in danger right now, please call 112.",
+    "fr": "Merci de me l'avoir dit. Je m'inquiète pour toi, et je suis là avec toi. Est-ce que tu pourrais en parler à quelqu'un en qui tu as confiance, ou à une ligne d'aide? Tu peux appeler le 3114, gratuitement, à toute heure. Si tu es en danger en ce moment, appelle le 112."
+   }
+  },
+  "checked": {
+   "CA": "2026-11-23, canada.ca (9-8-8 Suicide Crisis Helpline: call or text, 24/7, English and French)",
+   "CA-QC": "2026-11-23, suicide.ca (1 866 APPELLE: 24/7, for anyone living in Quebec)",
+   "US": "2026-11-23, samhsa.gov (988 Suicide & Crisis Lifeline: call, text or chat, 24/7)",
+   "FR": "2026-11-23, sante.fr (3114: free, 24/7)"
+  }
  }
 }
