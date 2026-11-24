@@ -120,6 +120,13 @@ passes the care check.
   - `mental_health_svc` by status (reported, not gated; its labels are where people posted): Suicidal 5,618 of 11,210
     high (50.1%; the lexical valence put 164 of 800 sampled below -0.2 in 0079), Depression 19.5%, Anxiety 3.8%,
     Normal 0.47% (86 of 18,391).
-- **Not done yet:** the reply side of the gate (every flagged turn's spoken reply passes): replies drafted for the explicit set need the talk seat on a GPU; the pilot's 913 rows are not in this checkout
-  (`--replies` reads them when given the file).
-- **Commits:** `b93a4ca` (build), and this read.
+- **The pilot (2026-11-23; Cowork's copy off the repo, `chat_0079_pilot_conversations.jsonl`):** all 952 drafted
+  user/Cubby turns (the 913 rows and the turns the gate cut) through `exp_0080_care.replies`: **0 read high**, 1 raised
+  (the lexical read, no appraiser), 951 none. None is flagged, as the order wants.
+- **Not done yet:** the reply side of the gate (every flagged turn's spoken reply passes) needs replies drafted for the
+  explicit set by the talk seat on a GPU; the care line's wording (Cowork drafting, numbers checked and dated).
+- **Found on the way (0079's trunk read, `validation/logs/exp_0079_appraiser_read_talk_v3a_loose.json`):** the trunk
+  (talk_v3a) names a distress petal on 7 of 300 Suicidal posts and 6 of 300 Normal ones, and keeps the asked answer
+  form on 9 of 2,914 reads. The raised level's `ModelAppraiser` branch would almost never fire on this trunk; the
+  lexical branch (used when no appraiser is set) is the one that works today.
+- **Commits:** `b93a4ca` (build), `1557f81` (the read), and the pilot's read.
