@@ -395,3 +395,9 @@ Status: open. The bench is the next item, then `review`.
   item 1 does too). Say "the home stage".
 - **Next:** Nick runs the bench cell once the inputs have landed. Cowork reads `bench.json` and its MFU line before
   `GO`.
+
+## The grown arm parked (Cowork, 2026-11-24)
+Nick said yes, after an outside review of the hypothesis file: the grown arm does not run, here or later, until a
+new reason brings it back. H-E20 records why: the grown arm ended 0.089 above the continuation's own final, its
+read stayed at chance, and nothing Cubby serves today reaches past the window. The control arm and its gates (3
+and 4) stand as written; gates 0 to 2 are not read.
