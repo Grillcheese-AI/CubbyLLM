@@ -33,8 +33,9 @@ nothing trains and the gate (coverage, the walk, the VM) does not change.
 ## Build
 1. **`cubbyllm/emit/plan_trie.py`** (new):
    - `PlanTrie(tokenizer, relations, slots)`: the options as a trie, the way `rule_reader._Trie` holds them. For a
-     relation literal: every label `known` holds, normalized as `emitted_plan` reads them (`planner.normalize`). For
-     the seed literal: the slot ids of the prompt's `SlotTable`.
+     relation literal: every label `known` holds, normalized as `emitted_plan` reads them (`planner.normalize`);
+     the wiki world's share is H-G4b's 163-entry relation table, and the other worlds add theirs. For the seed
+     literal: the slot ids of the prompt's `SlotTable`.
    - `allowed(new_ids) -> list | None`: reads the text written so far. Outside a literal it returns None (no
      constraint). Inside `bind frame, HOPk, "` it returns the trie's continuations; inside `bind frame, SEED, "`, the
      slot ids' continuations.
@@ -56,6 +57,10 @@ nothing trains and the gate (coverage, the walk, the VM) does not change.
      seeds 7, 8 and 9. It uses the same gate and store as the stand-in's runs (v13e: 599, 600 and 600 of 600; v12e on
      seed 7: 531).
    - H-E15's eight live questions, through the served loop with H-E15's flags (`--ask --web off`).
+   - H-E18's unseen-writer eval (`pf_heldout_eval_slots.jsonl`: 285 plan and 294 chain records), generated per
+     arm with the seat as served and scored by `validation/exp_he18_ab.py`'s reader. Reported, with no gate of
+     its own: arm A here is the floor the next emitter adapter (H-E18's plan and chain records in its mix) is
+     read against.
    - Arms: A `off`, B `rel`, C `rel+slot`, on the same rows, greedy.
 
 ## Acceptance (pre-registered)
@@ -92,6 +97,11 @@ nothing trains and the gate (coverage, the walk, the VM) does not change.
 - **The fetch tiers:** with the store fixed (`--web off`, and r17's "no source to fetch from"), a relation the store
   does not hold cannot be learned anyway. With a source on, lever 4 can learn such a relation, and the constraint
   closes that path. On the live eight, report any question arm A answered through lever 4 that B or C loses.
+- **The decode:** the arms decode as the served seat does: greedy, no repetition guards, the full head
+  (`CB_HEAD_SHORTLIST` off). `core/decoding.DecodeConfig`'s defaults (repetition penalty 1.3, no repeated
+  3-grams) are not on this path; if a bench you use decodes through it, set 1.0 and 0 and say so.
+- **Held-out discipline** (the hypothesis file, section 0): nothing here is tuned, and each set is read once
+  per arm.
 - The home card is shared with Code A: check the inbox before a long run, and don't start one while Code A has one
   going.
 - Logs go to `validation/logs/exp_0081_*_<date>.json`, with no local paths in committed files.
