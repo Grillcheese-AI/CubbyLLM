@@ -1,0 +1,126 @@
+{
+ "what": "exp_0079_appraiser_read -- does the trunk read the user's emotion as well as 0079's training data will assume?\n(order 0079, Cowork, 2026-11-21; set up for Nick's next GPU session.)",
+ "emitter": "C:/CUBBY-TRAINED-MODELS/base450m_cont/talk_v3a",
+ "parse": "loose (a petal anywhere, else a GoEmotions label)",
+ "emotions": {
+  "texts": 1714,
+  "petal_right": 193,
+  "no_petal_named": 1440,
+  "by_petal": {
+   "anger": {
+    "right": 13,
+    "of": 170
+   },
+   "anticipation": {
+    "right": 10,
+    "of": 133
+   },
+   "disgust": {
+    "right": 10,
+    "of": 92
+   },
+   "fear": {
+    "right": 14,
+    "of": 264
+   },
+   "joy": {
+    "right": 54,
+    "of": 359
+   },
+   "sadness": {
+    "right": 38,
+    "of": 283
+   },
+   "surprise": {
+    "right": 15,
+    "of": 160
+   },
+   "trust": {
+    "right": 39,
+    "of": 253
+   }
+  },
+  "confusions": {
+   "anger -> sadness": 13,
+   "joy -> surprise": 12,
+   "surprise -> joy": 10,
+   "anger -> trust": 4,
+   "fear -> sadness": 4,
+   "disgust -> joy": 3,
+   "trust -> joy": 3,
+   "trust -> calm": 3,
+   "sadness -> trust": 3,
+   "joy -> trust": 3,
+   "fear -> trust": 3,
+   "disgust -> sadness": 3,
+   "fear -> calm": 2,
+   "sadness -> calm": 2,
+   "anticipation -> surprise": 2
+  }
+ },
+ "mental_health": {
+  "Anxiety": {
+   "sampled": 300,
+   "of": 5503,
+   "petals": {
+    "none": 215,
+    "anger": 61,
+    "fear": 14,
+    "calm": 3,
+    "joy": 3,
+    "sadness": 2,
+    "trust": 2
+   },
+   "distress_petal": 16,
+   "expected_petal": 14
+  },
+  "Depression": {
+   "sampled": 300,
+   "of": 14506,
+   "petals": {
+    "none": 221,
+    "anger": 52,
+    "sadness": 16,
+    "joy": 5,
+    "fear": 4,
+    "trust": 2
+   },
+   "distress_petal": 20,
+   "expected_petal": 16
+  },
+  "Normal": {
+   "sampled": 300,
+   "of": 18391,
+   "petals": {
+    "none": 247,
+    "joy": 23,
+    "anger": 15,
+    "sadness": 6,
+    "trust": 4,
+    "calm": 3,
+    "anticipation": 2
+   },
+   "distress_petal": 6,
+   "expected_petal": 0
+  },
+  "Suicidal": {
+   "sampled": 300,
+   "of": 11210,
+   "petals": {
+    "none": 231,
+    "anger": 50,
+    "joy": 10,
+    "sadness": 5,
+    "fear": 2,
+    "anticipation": 1,
+    "calm": 1
+   },
+   "distress_petal": 7,
+   "expected_petal": 7
+  }
+ },
+ "answers_in_the_asked_form": {
+  "in_form": 9,
+  "reads": 2914
+ }
+}

@@ -27,6 +27,7 @@ import collections
 import json
 import pathlib
 import random
+import re
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -57,7 +58,45 @@ def emitter_from(a: argparse.Namespace):
     return LlamaCppEmitter(a.gguf) if a.gguf else LlamaServerEmitter(a.server)
 
 
-def emotions(path: str, app: ModelAppraiser, limit: int) -> dict:
+class Capture:
+    """The emitter, its whole last answer kept (ModelAppraiser keeps 80 characters of it)."""
+
+    def __init__(self, emitter):
+        self.emitter, self.text = emitter, ""
+
+    def emit(self, prompt: str, **kw) -> str:
+        self.text = self.emitter.emit(prompt, **kw)
+        return self.text
+
+
+def loose_petal(text: str) -> str | None:
+    """--loose (Cowork, 2026-11-23): the first Plutchik petal named anywhere in the answer, else the petal of the first
+    GoEmotions label named (`mood.LABEL_PETAL`); None when it names neither."""
+    from cubbyllm.affect.mood import LABEL_PETAL
+    t = text.lower()
+    hits = [(m.start(), p) for p in PETALS for m in [re.search(rf"\b{p}\b", t)] if m]
+    if hits:
+        return min(hits)[1]
+    hits = [(m.start(), LABEL_PETAL[w]) for w in LABEL_PETAL for m in [re.search(rf"\b{w}\b", t)] if m]
+    return min(hits)[1] if hits else None
+
+
+class Reader:
+    """One read: the petal (strict: `parse_emotion`, as served; --loose: `loose_petal`), and whether the answer kept
+    the asked "emotion -- petal" form (the strict parse found a petal), counted apart."""
+
+    def __init__(self, app: ModelAppraiser, cap: Capture, loose: bool):
+        self.app, self.cap, self.loose = app, cap, loose
+        self.in_form = self.reads = 0
+
+    def petal(self, text: str) -> str | None:
+        strict = self.app.read(text, "en").get("petal")
+        self.reads += 1
+        self.in_form += strict is not None
+        return loose_petal(self.cap.text) if self.loose and strict is None else strict
+
+
+def emotions(path: str, app: Reader, limit: int) -> dict:
     seen, rows = set(), []
     for ln in open(path, encoding="utf-8"):
         r = json.loads(ln)
@@ -68,7 +107,7 @@ def emotions(path: str, app: ModelAppraiser, limit: int) -> dict:
     rows = rows[:limit] if limit else rows
     hit, none, by, conf = 0, 0, collections.defaultdict(lambda: [0, 0]), collections.Counter()
     for text, gold in rows:
-        petal = app.read(text, "en").get("petal")
+        petal = app.petal(text)
         by[gold][1] += 1
         if petal is None:
             none += 1
@@ -82,7 +121,7 @@ def emotions(path: str, app: ModelAppraiser, limit: int) -> dict:
             "confusions": dict(conf.most_common(15))}
 
 
-def mental_health(path: str, app: ModelAppraiser, per_status: int, words: int, seed: int) -> dict:
+def mental_health(path: str, app: Reader, per_status: int, words: int, seed: int) -> dict:
     by: dict[str, list[str]] = collections.defaultdict(list)
     for ln in open(path, encoding="utf-8"):
         r = json.loads(ln)
@@ -91,7 +130,7 @@ def mental_health(path: str, app: ModelAppraiser, per_status: int, words: int, s
     for status, texts in sorted(by.items()):
         rng = random.Random(seed)
         sample = rng.sample(texts, min(per_status, len(texts)))
-        petals = collections.Counter(app.read(t, "en").get("petal") or "none" for t in sample)
+        petals = collections.Counter(app.petal(t) or "none" for t in sample)
         distress = sum(n for p, n in petals.items() if p in DISTRESS)
         out[status] = {"sampled": len(sample), "of": len(texts), "petals": dict(petals.most_common()),
                        "distress_petal": distress,
@@ -114,13 +153,18 @@ def main() -> int:
     ap.add_argument("--words", type=int, default=120)
     ap.add_argument("--seed", type=int, default=79)
     ap.add_argument("--tag", default="")
+    ap.add_argument("--loose", action="store_true", help="a petal named anywhere, else a GoEmotions label's (Cowork, "
+                    "2026-11-23); the asked form counted apart. perception.parse_emotion is unchanged")
     a = ap.parse_args()
     if not (a.dry or a.gguf or a.server or a.cubby):
         raise SystemExit("give --gguf PATH, --server URL, --cubby ADAPTER (with --export, --tokenizer) or --dry")
-    app = ModelAppraiser(emitter_from(a))
+    cap = Capture(emitter_from(a))
+    app = Reader(ModelAppraiser(cap), cap, a.loose)
     out = {"what": __doc__.split("\n\n")[0], "emitter": "dry" if a.dry else (a.gguf or a.server or a.cubby),
+           "parse": "loose (a petal anywhere, else a GoEmotions label)" if a.loose else "strict (parse_emotion)",
            "emotions": emotions(a.emotions, app, a.limit),
            "mental_health": mental_health(a.mental_health, app, a.per_status, a.words, a.seed)}
+    out["answers_in_the_asked_form"] = {"in_form": app.in_form, "reads": app.reads}
     log = ROOT / "validation" / "logs" / f"exp_0079_appraiser_read{a.tag}.json"
     log.write_text(json.dumps(out, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     print(json.dumps(out, indent=1, ensure_ascii=False))
