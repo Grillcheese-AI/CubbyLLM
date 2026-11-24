@@ -1,0 +1,112 @@
+{
+ "what": "order 0046 R9b arm 5: grilly2's block codes (Vulkan)",
+ "grilly2_commit": "03279a0",
+ "device": "unknown",
+ "checks": {
+  "80": {
+   "bind_onehot_exact": true,
+   "bind_frame_1e-5": true,
+   "unbind_frame_1e-5": true,
+   "bundle_1e-5": true,
+   "similarity_batch_1e-5": true
+  },
+  "512": {
+   "bind_onehot_exact": true,
+   "bind_frame_1e-5": true,
+   "unbind_frame_1e-5": true,
+   "bundle_1e-5": true,
+   "similarity_batch_1e-5": true
+  }
+ },
+ "calls": [
+  {
+   "k": 80,
+   "batch": 1,
+   "unit": "ns per call",
+   "bind_upload": 263450.0,
+   "bind_resident": 200400.0,
+   "bundle16_resident": 222400.0,
+   "similarity_resident": 536500.0
+  },
+  {
+   "k": 80,
+   "batch": 1000,
+   "unit": "ns per call",
+   "bind_upload": 65753300.0,
+   "bind_resident": 4742550.0,
+   "bundle16_resident": 186900.0,
+   "similarity_resident": 489050.0
+  },
+  {
+   "k": 80,
+   "batch": 100000,
+   "skipped": "does not fit under --max-bytes"
+  },
+  {
+   "k": 512,
+   "batch": 1,
+   "unit": "ns per call",
+   "bind_upload": 284300.0,
+   "bind_resident": 152200.0,
+   "bundle16_resident": 186700.0,
+   "similarity_resident": 2428700.0
+  },
+  {
+   "k": 512,
+   "batch": 1000,
+   "unit": "ns per call",
+   "bind_upload": 435365850.0,
+   "bind_resident": 33240700.0,
+   "bundle16_resident": 195950.0,
+   "similarity_resident": 2611600.0
+  },
+  {
+   "k": 512,
+   "batch": 100000,
+   "skipped": "does not fit under --max-bytes"
+  }
+ ],
+ "index_job": [
+  {
+   "k": 80,
+   "n": 10000,
+   "batch": 1,
+   "ns_per_query_resident_scores_back": 1185500.0,
+   "ns_per_query_with_upload": 1163600.0,
+   "bytes_held": 409600000
+  },
+  {
+   "k": 80,
+   "n": 10000,
+   "batch": 1000,
+   "ns_per_query_resident_scores_back": 171369.0,
+   "ns_per_query_with_upload": 190864.6,
+   "bytes_held": 409600000
+  },
+  {
+   "k": 80,
+   "n": 100000,
+   "skipped": "the codebook does not fit under --max-bytes"
+  },
+  {
+   "k": 80,
+   "n": 1000000,
+   "skipped": "the codebook does not fit under --max-bytes"
+  },
+  {
+   "k": 512,
+   "n": 10000,
+   "skipped": "the codebook does not fit under --max-bytes"
+  },
+  {
+   "k": 512,
+   "n": 100000,
+   "skipped": "the codebook does not fit under --max-bytes"
+  },
+  {
+   "k": 512,
+   "n": 1000000,
+   "skipped": "the codebook does not fit under --max-bytes"
+  }
+ ]
+}
