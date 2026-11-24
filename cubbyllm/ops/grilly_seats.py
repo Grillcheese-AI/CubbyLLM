@@ -155,3 +155,26 @@ def generate(model, rows: list, max_new_tokens: int, eos: int, temperature: floa
         else:
             out = model.generate(g.tensor(rows), max_new_tokens=max_new_tokens, eos_token_id=eos, **hook)
     return out.tolist()
+
+
+def allowed_processor(allowed, start: int, g=None):
+    """Order 0081: a logits processor for ONE row that keeps only the ids ``allowed(row ids after ``start``)``
+    returns, and leaves the scores as they are when it returns None (outside a constrained literal: no mask is built,
+    so an unconstrained step costs one read of the row's ids). grilly2's ``prefix_allowed_tokens_fn`` must return a
+    non-empty list every step, so "no constraint" would be the whole vocabulary's mask at every step."""
+    import math
+    g = g or grilly()
+
+    def process(input_ids, scores):
+        rows, vocab = scores.shape
+        if rows != 1:
+            raise ValueError("allowed_processor constrains one row")
+        ids = allowed(input_ids[0].tolist()[start:])
+        if ids is None:
+            return scores
+        if not ids:
+            raise ValueError("allowed_processor: the constraint allows nothing")
+        mask = g.full((1, vocab), -math.inf)
+        mask.scatter_(1, g.tensor([list(ids)], dtype=g.int64), value=0.0)
+        return scores + mask
+    return process

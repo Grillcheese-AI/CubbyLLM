@@ -206,6 +206,9 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
                 self._keep(rec)
                 return rec
             asked, _year = strip_as_of(question)         # the year is a constraint, not a relation
+            from ..emit import plan_trie
+            if not (sa or ed) and plan_trie.mode() != "off":    # order 0081: the seat names only relations held
+                plan_trie.hand(self.emitter, self.known)
             try:
                 raw = "no plan\n" if sa or ed else self.emitter.emit(asked, max_new_tokens=self.max_new)
                 if program_world(strip_fences(raw)) == "self":

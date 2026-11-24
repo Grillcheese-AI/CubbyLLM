@@ -205,13 +205,17 @@ class Cubby450mTrunk:
         return self._eos
 
     def generate(self, role: str, rows: list, max_new_tokens: int, temperature: float = 0.0,
-                 top_k: int = 40, seed: "int | None" = None, **hook) -> list:
+                 top_k: int = 40, seed: "int | None" = None, allowed=None, **hook) -> list:
         """`rows` of token ids -> the generated ids per row (the prompt cut off), under the role's adapter. ``hook``:
         ``logits_processor`` / ``prefix_allowed_tokens_fn`` for grilly2's logits hook (order 0071), passed on only
-        when given."""
+        when given. ``allowed`` (order 0081, one row): ``(ids written so far) -> the ids allowed next | None``."""
         with self._lock:
             self.use(role)
             from ..ops import grilly_seats as ops
+            if allowed is not None:
+                if len(rows) != 1 or "logits_processor" in hook:
+                    raise ValueError("allowed= takes one row and no other logits_processor")
+                hook["logits_processor"] = ops.allowed_processor(allowed, len(rows[0]), self._grilly)
             out = ops.generate(self._model, rows, max_new_tokens, self._eos, temperature=temperature,
                                top_k=top_k, seed=seed, g=self._grilly, **hook)
             return [r[len(p):] for r, p in zip(out, rows)]
@@ -250,10 +254,13 @@ class Cubby450mEmitter:
 
     def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None,
              prefix: str = "", temperature: float = 0.0, seed: int | None = None,
-             context: "str | dict | None" = None) -> str:
+             context: "str | dict | None" = None, allowed=None) -> str:
+        """``allowed`` (order 0081, ``plan_trie.PlanTrie.allowed``): the ids the seat may write next, read off the ids
+        it wrote after ``prefix``; None (the default) decodes exactly as before."""
         from .format import PROMPT_HEAD, PROMPT_TAIL, decode_program
         text = prompt if prompt.startswith(PROMPT_HEAD) else PROMPT_HEAD + prompt.strip() + PROMPT_TAIL
-        out = self.trunk.generate(self.role, [self._ids(text + prefix)], max_new_tokens)[0]
+        hook = {} if allowed is None else {"allowed": allowed}
+        out = self.trunk.generate(self.role, [self._ids(text + prefix)], max_new_tokens, **hook)[0]
         return prefix + decode_program(self.trunk.tokenizer, out, self.trunk.eos)   # keeps ACTION/AGENT/OBJECT (special tokens)
 
     def emit_samples(self, prompt: str, n: int, max_new_tokens: int = 96, temperature: float = 0.7,
