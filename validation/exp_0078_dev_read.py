@@ -85,6 +85,12 @@ def tries(emitter, loop: StepLoop, question: str, qi: int, k: int = K) -> list[d
         live = [c for c in chains if not c.done]
         if not live:
             break
+        if hasattr(emitter, "emit_rows"):                 # one call for every live try (dev_read_torch: by length)
+            raws = emitter.emit_rows([c.prompt() for c in live], max_new_tokens=loop.max_new_tokens,
+                                     temperature=TEMPERATURE, top_k=TOP_K, seed=qi * 100 + step)
+            for c, raw in zip(live, raws):
+                c.step(raw, loop.max_steps)
+            continue
         groups: dict = {}
         for c in live:
             groups.setdefault(c.prompt(), []).append(c)
@@ -105,35 +111,6 @@ def load(path: str) -> list[dict]:
     return out
 
 
-class TorchStepEmitter:
-    """--ckpt (Colab, CUDA): the torch base and the emitter adapter, decoded by the school's own `sample_programs`
-    (greedy for `emit`; `emit_samples` = n rows in one batch, top-k, seeded through torch)."""
-
-    def __init__(self, ckpt: str, adapter: str, tokenizer: str):
-        import torch
-        from tokenizers import Tokenizer
-        from train_base import load_base
-        from train_talk_torch import load_adapter
-        self.torch, self.dev = torch, torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.tk = Tokenizer.from_file(tokenizer)
-        self.eos = self.tk.token_to_id("</s>")
-        self.model = load_base(ckpt, str(self.dev))
-        load_adapter(self.model, adapter, "emitter_lora")      # load_base already placed it on dev
-        self.name = f"torch:{os.path.basename(os.path.normpath(adapter))}"
-
-    def emit(self, prompt: str, max_new_tokens: int = 96, **kw) -> str:
-        from train_school_torch import sample_programs
-        return sample_programs(self.model, self.tk, self.eos, prompt, 1, 0.0, max_new_tokens, self.dev)[0]
-
-    def emit_samples(self, prompt: str, n: int, max_new_tokens: int = 96, temperature: float = 0.7, top_k: int = 40,
-                     seed: int | None = None) -> list[str]:
-        from train_school_torch import sample_programs
-        if seed is not None:
-            self.torch.manual_seed(int(seed))
-        return sample_programs(self.model, self.tk, self.eos, prompt, n, temperature, max_new_tokens, self.dev,
-                               top_k=top_k)
-
-
 def run(a) -> None:
     recs = load(a.data)[a.offset:]
     if a.limit:
@@ -142,6 +119,7 @@ def run(a) -> None:
     if os.path.exists(a.out):
         done = {json.loads(ln)["id"] for ln in open(a.out, encoding="utf-8")}
     if a.ckpt:
+        from dev_read_torch import TorchStepEmitter        # the batched decode (validation/dev_read_torch.py)
         emitter = TorchStepEmitter(a.ckpt, a.adapter, a.tokenizer)
     else:
         from cubbyllm.emit.seats_450m import Cubby450mEmitter
@@ -160,7 +138,7 @@ def run(a) -> None:
             f.write(json.dumps({"id": r["id"], "i": i, "gold": r["gold"], "arm": a.arm, "adapter": emitter.name,
                                 "greedy": {"answer": g["answer"], "refused": g["refused"],
                                            "steps": [s["value"] for s in g["steps"]]},
-                                "tries": ts, "seconds": {"greedy": round(q1 - q0, 2), "tries": round(q2 - q1, 2)}},
+                                "tries": ts, "decode": "rows" if hasattr(emitter, "emit_rows") else "groups", "seconds": {"greedy": round(q1 - q0, 2), "tries": round(q2 - q1, 2)}},
                                ensure_ascii=False) + "\n")
             f.flush()
             n += 1

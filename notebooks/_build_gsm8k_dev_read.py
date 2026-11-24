@@ -35,9 +35,12 @@ the VM (H-E19's loop). Per question: one greedy chain (reported, not deciding) a
 top-k 40), every try's VM value written to a log, so the speak rule's k (8 or 16) and m are chosen afterwards with no
 second pass. **S0** is `cubby450m_v12e_w_step_cont`, **S1** is `cubby450m_s1_0078`. Test is not read here.
 
-**Time:** about 5.3 h per arm at home (58 s a question); an A100 should be faster, not measured. **It resumes:** the
-logs are on Drive (`emitter/gsm8k_dev_read/`); run the same cells again after a disconnect and it skips what is written.
-Disconnect when it prints `dev read done`.
+**Time:** about 5.3 h per arm at home (58 s a question). The tries are decoded in batches by prompt length with the
+question read once (`validation/dev_read_torch.py`, exact; 2026-11-24). Before that a T4 took 306 s a question; take an
+A100 or an L4 when one is free (a T4 has no fast bf16). **It resumes:** the logs are on Drive
+(`emitter/gsm8k_dev_read/`); run the same cells again after a disconnect and it skips what is written. Rows written by
+the first decode carry no `decode` field, the new ones `"decode": "rows"`: both are the same sampling (temperature 0.7,
+top-k 40), seeded differently. Disconnect when it prints `dev read done`.
 """),
     code(r"""
 # --- setup: clone, deps, Drive (once per session) ---
