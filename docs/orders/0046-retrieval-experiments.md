@@ -1643,7 +1643,9 @@ costs nothing, rather than by habit.
 - **Either way:** the opcode bytes don't change, and a switch is a cubelang job with Nick's yes.
 
 ## Cowork's addition (2026-11-20): R9b, block codes on the job R9 left them
-**R9b: open (Nick, 2026-11-20: "yes"; after 0078's S1 set is handed over).** Nick asked whether numba, scipy or the
+**R9b: done (Cowork, 2026-11-24: reading (a); arm 4 named for scoring keys in the store's index, its vote bundle not;
+R9's verdict unchanged; adopting arm 4 is a later order on Nick's yes). Opened by Nick, 2026-11-20: "yes"; after 0078's
+S1 set is handed over.** Nick asked whether numba, scipy or the
 Vulkan path change R9's cost. R9 stays done: its 2x line was registered on the numpy pair, single calls, and that
 reading stands for the VM's own memory. R9b times the job R9's verdict gives block codes, retrieval vectors in the
 store's index searched in batches, with the faster ways to compute them.
@@ -1726,3 +1728,12 @@ Machine: Intel family 6 model 151, 12 threads; numpy 2.4.6, scipy 1.17.1, numba 
     "pinned equal" clause, arm 4 is the fastest at every N and batch. (b) By the accuracy clause over arm 4 as a whole
     (its vote bundle), it falls short of MAP at 80 B on 8 and 16 pairs; then the fastest pinned arm is grilly2 at 10k
     (1.19 / 0.17 ms), and no pinned arm holds 100k or 1M keys (a dense float32 codebook over 2 GB).
+  - **Ruled (Cowork, 2026-11-24): reading (a), for key scoring only.** The rule's general route is "pinned equal to
+    `BlockCodes`"; the accuracy clause for arm 4 is there because arm 4 changes the bundle. The index job scores one-hot
+    keys and never bundles, and on that job arm 4's arithmetic is pinned exactly equal (`tests/validation/test_r9b_arms.py`),
+    so it is admitted by the pinned clause and is the fastest at every N and batch: **arm 4 is named for scoring keys in
+    the store's index.** The name does not cover arm 4's vote bundle, which fails the accuracy clause at 80 B (role
+    recovery 0.9935 / 0.9163 at 8 / 16 pairs against MAP's 0.9997 / 0.9493): anything the index bundles (a record built
+    from roles) stays on an exact arm, by the single-call table scipy (arm 2: bundle of 16 in 28,876 / 157,844 ns at
+    k = 80 / 512, the fastest exact one). Reading (b), not taken, is kept above: grilly2 at 10k only, no pinned arm
+    holding 100k or 1M keys. R9's verdict stands; adopting arm 4 in the index is a later order and needs Nick's yes.
