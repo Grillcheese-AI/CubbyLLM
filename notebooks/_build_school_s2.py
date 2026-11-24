@@ -90,6 +90,7 @@ os.makedirs(OUT, exist_ok=True)
 cmd = [sys.executable, '-u', 'validation/train_school_torch.py', '--ckpt', CKPT, '--tokenizer', TOKENIZER,
        '--adapter', S1, '--pool', POOL, '--heldout', HELDOUT, '--out', OUT, '--step',
        '--rounds', str(ROUNDS), '--problems', str(PROBLEMS), '--max-tries', str(MAX_TRIES), '--gate-n', str(GATE_N),
+       '--gate-skip', '80:200',                          # 0078's split: dev 80:200 is read once, never gated on
        '--gsm8k', GSM8K, '--cube-exe', EXE, '--cube', CUBE]
 with open(f'{OUT}/train.log', 'a', encoding='utf-8', buffering=1) as f:
     f.write(f"\n=== {time.strftime('%F %T')} {' '.join(cmd[2:])}\n")

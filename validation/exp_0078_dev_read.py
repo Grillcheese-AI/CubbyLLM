@@ -165,10 +165,11 @@ def main(argv=None) -> None:
     ap.add_argument("--max-new", type=int, default=96)
     ap.add_argument("--score", default="", help="a rows file: choose m and k on it (exp_0078_dev_score)")
     ap.add_argument("--drop", default="", help="with --score: a json list of dev ids to leave out (S0's footnote)")
+    ap.add_argument("--all-dev", action="store_true", help="with --score: choose on all rows (before the split)")
     a = ap.parse_args(argv)
     if a.score:
-        from exp_0078_dev_score import score
-        print(json.dumps(score(a.score, a.drop), indent=1))
+        from exp_0078_dev_score import HELD, score         # k, m on dev without 80:200; 80:200 read once at them
+        print(json.dumps(score(a.score, a.drop, None if a.all_dev else HELD), indent=1))
         return
     a.out = a.out or os.path.join(HERE, "logs", f"gsm8k_dev_read_{a.arm}_{time.strftime('%Y-%m-%d')}.jsonl")
     run(a)
