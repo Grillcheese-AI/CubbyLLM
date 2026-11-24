@@ -1,6 +1,6 @@
 {
  "what": "exp_0079_appraiser_read -- does the trunk read the user's emotion as well as 0079's training data will assume?\n(order 0079, Cowork, 2026-11-21; set up for Nick's next GPU session.)",
- "emitter": "C:/CUBBY-TRAINED-MODELS/base450m_cont/talk_v3a",
+ "emitter": "$CUBBY_MODELS/base450m_cont/talk_v3a",
  "parse": "loose (a petal anywhere, else a GoEmotions label)",
  "emotions": {
   "texts": 1714,
