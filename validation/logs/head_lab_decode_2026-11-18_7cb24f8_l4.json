@@ -1,0 +1,139 @@
+{
+ "what": "order 0068 step 2e: route 5 inside a real decode step (grilly2), 128k and a synthetic 256k head",
+ "date": "2026-11-18",
+ "grilly2": "7cb24f8",
+ "machine": "Linux-6.6.159+-x86_64-with-glibc2.39",
+ "batch": 1,
+ "precision": "fp32",
+ "vocab": 128000,
+ "hidden": 1024,
+ "k": 8192,
+ "n": 2048,
+ "ranks": 256,
+ "prompts": [
+  "arxiv",
+  "books",
+  "fineweb_edu",
+  "kbtxt",
+  "nemotron_code",
+  "nemotron_legal",
+  "nemotron_qa",
+  "pretrain_ext"
+ ],
+ "prompt_len": 256,
+ "steps": 64,
+ "warm_steps_left_out": 2,
+ "synthetic_256k": {
+  "rows": 256000,
+  "noise_of_row_std": 0.1,
+  "seed": 68,
+  "time_only": true
+ },
+ "decode_step": {
+  "trunk": {
+   "p50_ms": 26.445,
+   "mean_ms": 26.52,
+   "p90_ms": 26.941,
+   "n": 496
+  },
+  "full128": {
+   "p50_ms": 28.735,
+   "mean_ms": 28.834,
+   "p90_ms": 29.213,
+   "n": 496
+  },
+  "head32k": {
+   "p50_ms": 26.978,
+   "mean_ms": 27.056,
+   "p90_ms": 27.39,
+   "n": 496
+  },
+  "route128": {
+   "p50_ms": 26.836,
+   "mean_ms": 26.955,
+   "p90_ms": 27.438,
+   "n": 496
+  },
+  "full256": {
+   "p50_ms": 31.16,
+   "mean_ms": 31.256,
+   "p90_ms": 31.67,
+   "n": 496
+  },
+  "route256": {
+   "p50_ms": 26.988,
+   "mean_ms": 27.102,
+   "p90_ms": 27.458,
+   "n": 496
+  }
+ },
+ "head_inside_the_step_ms": {
+  "full128": 2.29,
+  "head32k": 0.533,
+  "route128": 0.391,
+  "full256": 4.715,
+  "route256": 0.543
+ },
+ "short_lists": {
+  "route128": 3,
+  "route256": 0
+ },
+ "agreement_128k_route_decoding_on_its_own": {
+  "same_token_as_full_head": 510,
+  "steps": 512,
+  "per_prompt": [
+   {
+    "shard": "arxiv",
+    "steps": 64,
+    "same_token_as_full_head": 64,
+    "first_difference_at_step": null
+   },
+   {
+    "shard": "books",
+    "steps": 64,
+    "same_token_as_full_head": 64,
+    "first_difference_at_step": null
+   },
+   {
+    "shard": "fineweb_edu",
+    "steps": 64,
+    "same_token_as_full_head": 62,
+    "first_difference_at_step": 20
+   },
+   {
+    "shard": "kbtxt",
+    "steps": 64,
+    "same_token_as_full_head": 64,
+    "first_difference_at_step": null
+   },
+   {
+    "shard": "nemotron_code",
+    "steps": 64,
+    "same_token_as_full_head": 64,
+    "first_difference_at_step": null
+   },
+   {
+    "shard": "nemotron_legal",
+    "steps": 64,
+    "same_token_as_full_head": 64,
+    "first_difference_at_step": null
+   },
+   {
+    "shard": "nemotron_qa",
+    "steps": 64,
+    "same_token_as_full_head": 64,
+    "first_difference_at_step": null
+   },
+   {
+    "shard": "pretrain_ext",
+    "steps": 64,
+    "same_token_as_full_head": 64,
+    "first_difference_at_step": null
+   }
+  ]
+ },
+ "lines": {
+  "route128_at_most_head32k": true,
+  "route256_at_most_head32k": false
+ }
+}

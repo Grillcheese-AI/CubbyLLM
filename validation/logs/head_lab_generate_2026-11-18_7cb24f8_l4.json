@@ -1,0 +1,106 @@
+{
+ "what": "order 0068 step 2f: route 5 wired into grilly2's generate (greedy, batch 1), timed",
+ "date": "2026-11-18",
+ "grilly2": "7cb24f8",
+ "machine": "Linux-6.6.159+-x86_64-with-glibc2.39",
+ "batch": 1,
+ "precision": "fp32",
+ "vocab": 128000,
+ "hidden": 1024,
+ "k": 8192,
+ "n": 2048,
+ "ranks": 256,
+ "prompts": [
+  "arxiv",
+  "books",
+  "fineweb_edu",
+  "kbtxt",
+  "nemotron_code",
+  "nemotron_legal",
+  "nemotron_qa",
+  "pretrain_ext"
+ ],
+ "prompt_len": 256,
+ "steps": 64,
+ "warm_steps_left_out": 2,
+ "generate_step": {
+  "full128": {
+   "p50_ms": 28.599,
+   "mean_ms": 28.807,
+   "p90_ms": 29.279,
+   "n": 488
+  },
+  "head32k": {
+   "p50_ms": 26.867,
+   "mean_ms": 27.059,
+   "p90_ms": 27.53,
+   "n": 488
+  },
+  "route128": {
+   "p50_ms": 26.703,
+   "mean_ms": 26.8,
+   "p90_ms": 27.233,
+   "n": 488
+  }
+ },
+ "route_picks_timed": 512,
+ "route_short_picks_timed": 3,
+ "hand_loop": {
+  "same_token_as_full_head": 510,
+  "steps": 512,
+  "per_prompt": [
+   {
+    "shard": "arxiv",
+    "generate_writes_the_hand_loops_tokens": true,
+    "hand_loop_same_token_as_full_head": 64,
+    "route_generate_first_difference_from_full128": null
+   },
+   {
+    "shard": "books",
+    "generate_writes_the_hand_loops_tokens": true,
+    "hand_loop_same_token_as_full_head": 64,
+    "route_generate_first_difference_from_full128": null
+   },
+   {
+    "shard": "fineweb_edu",
+    "generate_writes_the_hand_loops_tokens": true,
+    "hand_loop_same_token_as_full_head": 62,
+    "route_generate_first_difference_from_full128": 21
+   },
+   {
+    "shard": "kbtxt",
+    "generate_writes_the_hand_loops_tokens": true,
+    "hand_loop_same_token_as_full_head": 64,
+    "route_generate_first_difference_from_full128": null
+   },
+   {
+    "shard": "nemotron_code",
+    "generate_writes_the_hand_loops_tokens": true,
+    "hand_loop_same_token_as_full_head": 64,
+    "route_generate_first_difference_from_full128": null
+   },
+   {
+    "shard": "nemotron_legal",
+    "generate_writes_the_hand_loops_tokens": true,
+    "hand_loop_same_token_as_full_head": 64,
+    "route_generate_first_difference_from_full128": null
+   },
+   {
+    "shard": "nemotron_qa",
+    "generate_writes_the_hand_loops_tokens": true,
+    "hand_loop_same_token_as_full_head": 64,
+    "route_generate_first_difference_from_full128": null
+   },
+   {
+    "shard": "pretrain_ext",
+    "generate_writes_the_hand_loops_tokens": true,
+    "hand_loop_same_token_as_full_head": 64,
+    "route_generate_first_difference_from_full128": null
+   }
+  ]
+ },
+ "lines": {
+  "route128_at_most_head32k": true,
+  "generate_writes_the_hand_loops_tokens": true
+ }
+}

@@ -1,5 +1,5 @@
 # 0068 - The head lab: four ways to stop scoring 128,000 words at every token, tried on the frozen trunk's saved states
-status: in progress (Cowork builds this one, on Nick's word of 2026-11-12; steps through 2d merged to master on 2026-11-17 on Nick's "merge all changes", with grilly2's `ShortlistHead` merged to grilly2's main; the A100 timing and the wiring are still to do)
+status: in progress (Cowork builds this one, on Nick's word of 2026-11-12; steps through 2d merged to master on 2026-11-17 on Nick's "merge all changes", with grilly2's `ShortlistHead` merged to grilly2's main; the A100 timing is still to do; the wiring (step 2f) is on grilly2's branch `cowork/shortlist-generate`, for Nick's review, and on `cowork/0068` behind `CB_HEAD_SHORTLIST`, off by default)
 written: 2026-11-12 by Cowork - approved: 2026-11-12 by Nick ("can you do it yourself?") - hypothesis: H-C3 (with H-C2, H-C6)
 
 ## Why
@@ -513,3 +513,186 @@ numbers are found, not what the union is, so the route and its read stand as the
 - **What is not:** the A100 (a Colab session, Nick's to open); batches larger than 1 (not timed); wiring into
   grilly2's decode loop and Cubby's serving path, then the serving batteries and sampled talk. Nothing under
   `cubbyllm/` is touched. The grilly2 branch is local, for Nick's review.
+
+### Step 2e, route 5 inside a real decode step, at 128k and at 256k, pre-registered before its run (Cowork, 2026-11-17, on Nick's "we need to test the real decode" and "lets also test 256k")
+Step 2d timed the head alone, token after token, where the route's 16 MB of codes and its centroids can stay in the
+card's 96 MB last-level cache between tokens. Here the head runs inside the model's own decode step, where the
+trunk's weights pass through the card between two tokens.
+- **What runs:** `validation/head_lab_decode.py` on grilly2 (3cba3e3) at home, batch 1, the heads in fp32, greedy.
+  8 prompts of 256 tokens from the middle of the held-in text of the first 8 shards (no held-out token), 64 decode
+  steps each, the first 2 of each run left out; each head on its own fresh state, the order of the heads rotated
+  from one prompt to the next, after one warm-up pass. A step is timed from the token going in to the next token on
+  the host.
+- **Heads:** the trunk with no head (one value read back, the text's next token fed in: the trunk alone); the full
+  128k head; a full 32k head (the head's first 32,000 rows); route 5 over the 128k head (K 8,192, N 2,048, rank
+  bound 256, as 2d); a 256k head, and route 5 over it.
+- **The 256k head is synthetic:** the trained 128,000 rows and a copy of them with Gaussian noise at a tenth of each
+  row's spread (seed 68); the cluster lists hold each token and its copy; the successors are repeated. It has no
+  trained meaning. It measures time only, a chosen copy is fed back as its original, and no agreement is claimed at
+  256k.
+- **The lines:** route 5's decode step at most the 32k head's decode step (p50), at 128k and at 256k.
+- **Also reported, not lines:** each head's time inside the step (its p50 less the trunk's); at 128k, how often route
+  5 picks the full head's token while the model decodes on route 5's own choices (a separate, untimed pass), and the
+  steps to the first difference.
+- **Not claimed:** the A100, batches above 1, sampled talk.
+
+### Step 2e, read: inside a real decode step, route 5 is under the 32k line at 128k and 0.070 ms over it at 256k (Cowork, 2026-11-17)
+- **Log:** `validation/logs/head_lab_decode_2026-11-17_3cba3e3.json` (grilly2 3cba3e3; 8 prompts of 256 held-in
+  tokens, one from each of arxiv, books, fineweb_edu, kbtxt, nemotron_code, nemotron_legal, nemotron_qa and
+  pretrain_ext; 496 timed steps per head; run once).
+
+| head | decode step, p50 ms | p90 ms | the head inside the step, ms |
+| --- | --- | --- | --- |
+| none (the trunk alone) | 21.157 | 22.637 | 0 |
+| full 128k | 22.759 | 24.193 | 1.602 |
+| full 32k | 21.686 | 23.309 | 0.529 |
+| **route 5, 128k** | **21.603** | 23.054 | **0.446** |
+| full 256k (synthetic) | 24.247 | 25.645 | 3.090 |
+| **route 5, 256k (synthetic)** | **21.756** | 23.483 | **0.599** |
+
+  The head's time inside the step is its p50 less the trunk's p50 (a difference of medians, not a median of
+  differences).
+- **128k: the line is met.** Route 5's step is 21.603 ms against the 32k head's 21.686. Inside the step the route
+  takes 0.446 ms, less than it took alone in step 2d (0.495), since it now shares the step's submit and readback.
+  The cache concern of 2d does not show here: the trunk's weights pass between tokens and the route still beats a
+  full 32k head.
+- **256k (synthetic, time only): the line is missed** by 0.070 ms (21.756 against 21.686). The route takes 0.599 ms
+  inside the step against 3.090 for the full 256k head, so it saves 2.491 ms a step there; doubling the vocabulary
+  added 0.153 ms to the route and 1.488 ms to the full head.
+- **The full head's share of a real step:** 1.602 of 22.759 ms at 128k, a little under 0050's 7.3 to 9.6% at home
+  (0050 timed the head alone; this is a difference of medians inside the step); 3.090 of 24.247 at 256k.
+- **Agreement while decoding on its own choices (128k, untimed):** route 5 picked the full head's token on 510 of
+  512 steps. 7 prompts never differed in 64 steps; on fineweb_edu the first difference came at step 20, and that run
+  matched on 62 of 64.
+- **Short lists:** 3 of the 496 timed steps at 128k, none at 256k.
+- **What is established:** on this card at batch 1, inside the model's own decode step, the trained 128k head costs
+  less with route 5 than a full 32k head would, and a 256k head would cost 0.070 ms more than a 32k one instead of
+  2.561 ms more. **Not:** the A100, batches above 1, sampled talk, and any agreement at 256k (its head is synthetic).
+
+### Step 2f, route 5 wired into the decode loop and the seats, pre-registered before its run (Cowork, 2026-11-17, on Nick's "can we wire it ?")
+- **What is wired.**
+  - grilly2, on a branch for Nick's review (`cowork/shortlist-generate` at 7cb24f8, off main; main untouched): a
+    model with `hidden()` (its forward without the head; `CubbyForCausalLM` now has one) can carry a `ShortlistHead`
+    as `model.shortlist`. `generate()` then picks each token of a greedy one-row decode with no repetition penalty
+    and no processors with it, the route's successors being those of the token just fed in. Sampling, a penalty, a
+    processor, a batch or padding run the full head as before, and so does `use_shortlist=False`. With no shortlist
+    set, nothing changes. Tests: 9 new (`tests/python/test_generate_shortlist.py`); `tests/python` 1,196 passed,
+    13 skipped.
+  - CubbyLLM: `grilly_seats.attach_route` builds the route from a `ShortlistIndex` (`.npz`, screen lists and
+    successors) over the model's own head rows, and refuses an index over another head. `seats_450m.route_index`
+    gives the trunk an index only with 0050's switch `CB_HEAD_SHORTLIST=1`, **off by default**:
+    `CB_HEAD_ROUTE_INDEX` when set, else `head_route.npz` beside the export. Off, the trunk is the one before. Tests:
+    5 new (`tests/ops/test_grilly_seats_route.py`).
+  - **Which decodes it reaches when on:** the trunk's greedy one-row calls with no hook, so talk at temperature 0
+    without 0067's steering. A steered, hooked or sampled call, or a batch, runs the full head.
+- **What runs:** `validation/head_lab_generate.py`, grilly2's `model.generate` at home, greedy, batch 1, fp32, on
+  2e's 8 prompts (256 held-in tokens each), 64 new tokens, no EOS. Three heads: the full 128k head; a full 32k head
+  (`lm_head` replaced by its first 32,000 rows); route 5 over the 128k head through `attach_route`
+  (`index_router_succ.npz`, K 8,192, N 2,048, rank bound 256, as 2d and 2e). A streamer stamps each token on the
+  host; a step is the time between two stamps after the first token, the first 2 of each run left out. The order
+  of the heads rotates from prompt to prompt, after one warm-up pass.
+- **The lines:**
+  1. route 5's `generate` step at most the 32k head's `generate` step (p50);
+  2. the wired `generate` writes, on all 8 prompts, the tokens a hand loop writes with route 5 (`hidden()` and
+     `ShortlistHead.argmax`, as 2e decoded). A miss is a wiring fault to fix, not a result about route 5.
+- **Also reported, not lines:** the full 128k head's step; the route's picks on a short list; in the hand loop, how
+  often route 5 picks the full head's token while decoding on its own choices (2e: 510 of 512); where the wired
+  route's text first differs from the full head's.
+- **Not claimed:** the A100 (a Colab notebook follows, the session Nick's to open); batches above 1; sampled talk;
+  the serving batteries (0050's list), which come before the switch is turned on in any serve.
+
+### Step 2f, read: through the wired `generate`, route 5 is at the 32k line and writes the hand loop's tokens (Cowork, 2026-11-17)
+- **Log:** `validation/logs/head_lab_generate_2026-11-17_7cb24f8.json` (grilly2 `cowork/shortlist-generate` at
+  7cb24f8; 2e's 8 prompts; 488 timed steps per head; run once).
+
+| head, in grilly2's `generate` | step, p50 ms | mean ms | p90 ms |
+| --- | --- | --- | --- |
+| full 128k | 22.062 | 22.333 | 23.723 |
+| full 32k | 20.902 | 21.225 | 22.586 |
+| **route 5, 128k** | **20.875** | 21.123 | 22.160 |
+
+- **Line 1, met, by 0.027 ms** at the p50 (at the p90 the route is 0.426 ms under). The margin is thin: route 5 and
+  a full 32k head cost the same step here, and the route saves 1.187 ms a step against the full head it replaces.
+  These steps are shorter than 2e's for all three heads (2e timed its own loop; here the streamer's stamps time the
+  seats' call), so the two runs are not compared step for step.
+- **Line 2, met.** On all 8 prompts the wired `generate` wrote exactly the 64 tokens the hand loop wrote with route 5.
+- **Agreement while decoding on its own choices** (the hand loop): 510 of 512 steps chose the full head's token, as
+  in 2e. The wired route's text is the full head's on 7 of 8 prompts for all 64 tokens; on fineweb_edu it first
+  differs at its 22nd token, 2e's step 20.
+- **Short lists:** 3 of the 512 timed picks.
+- **What is established:** route 5 is wired into grilly2's own decode loop, and through it into the seats' trunk
+  behind `CB_HEAD_SHORTLIST`, off by default. Greedy one-row decoding with the trained 128k head then costs what a
+  full 32k head's would on this card, and writes the tokens the route chooses.
+- **What is not:** the A100 (a Colab session, Nick's to open); batches above 1, which run the full head; sampled
+  talk; the serving batteries (0050's list), which come before the switch is turned on in any serve. The grilly2
+  branch is local, for Nick's review.
+
+### Step 2g, the three timings on an A100, pre-registered before its run (Cowork, 2026-11-18, on Nick's "we could have a test run on it")
+- **What runs:** `notebooks/head_lab_a100.ipynb`, on a Colab A100 session Nick opens. It builds grilly2 from source
+  there (`cowork/shortlist-generate` at 7cb24f8; the LunarG SDK 1.4.335.0 that grilly2's CI pins; Rust; maturin),
+  checks that grilly2 sees the A100 through Vulkan and stops if not, exports the base from the checkpoint 0068 read
+  (`base450m_cont_final.pt`), and checks the export's head rows and the two input files against their SHA-256
+  (the head rows `63fcdfe2...`, `index_router_succ.npz` `814c8e03...`, `heldout_b.npz` `eef2d754...`). grilly2 has
+  not run on Colab before; grilly v1 has.
+- **Then the home card's three runs, unchanged:** `head_lab_time.py --route card` (2d: the head alone, the same 50
+  states), `head_lab_decode.py` (2e: inside a decode step, 128k and the synthetic 256k), `head_lab_generate.py` (2f:
+  through the wired `generate`), with their defaults. Each runs once. The logs are kept on Drive with `_a100` in
+  their names and committed from there, with the card and driver `nvidia-smi` names.
+- **The lines are 2d's, 2e's and 2f's:** route 5 at most a full 32k head's time (p50) alone, inside the decode step at
+  128k and at 256k, and through `generate`; and `generate` writing the hand loop's tokens on all 8 prompts.
+- **What could differ from home, said before the run:** the A100 reads memory several times faster than the home
+  card, so both full heads cost less there, while the route's fixed costs (eight dispatches and one readback a token)
+  may not shrink with it. A missed line on the A100 is reported with each dispatch's time, as at home; it kills
+  nothing, and the home card's reads stand. The token checks (the union, 2e's agreement, 2f's hand loop) are run on
+  this card too, and any difference from home is reported as it comes.
+- **Not claimed:** batches above 1; sampled talk; the serving batteries.
+
+- **Found at the run, before its read (2026-11-18):** the notebook's SDK step did not work on Colab. Nick took the
+  Linux tarball of SDK 1.4.363.1 and set it up by LunarG's getting-started page, and grilly2 then built and ran
+  there. So the A100's kernels are compiled by 1.4.363.1's `glslc`, not 1.4.335.0's as written above; grilly2's
+  code is 7cb24f8 as pre-registered, and the lines are unchanged. The notebook now sets the SDK up that way (newer
+  SDKs keep the loader in `lib/VulkanLoader/lib`, which grilly2's build does not search, so the cell adds it), and
+  takes the tarball from Drive when the download fails.
+
+### Step 2g, read: the session got an NVIDIA L4, not an A100; there every home line holds but 256k's, missed by 0.010 ms (Cowork, 2026-11-18)
+- **The card was an NVIDIA L4** (23,034 MiB, driver 580.82.07; `nvidia-smi`), not the A100 the pre-registration
+  names: Colab gave the session an L4. NVIDIA lists the L4 at 300 GB/s of memory bandwidth, against the home card's
+  432. The notebook named the logs `_a100` regardless; they are committed under the card that ran them:
+  `validation/logs/head_lab_time_grilly_card_2026-11-18_7cb24f8_l4.json`, `..._decode_..._l4.json`,
+  `..._generate_..._l4.json` (grilly2 7cb24f8 built with SDK 1.4.363.1, Python 3.13; each run once). The notebook now
+  names its logs by the card. **The A100 is still unrun.**
+- **The head alone** (2d's 50 states): route 5 **0.699 ms**, a full 32k head **0.983**, the full head 3.359. The line
+  is **met**, by 0.284 ms; the route saves 2.660 ms against the full head. The check: the union held the full head's
+  token on 50 of 50, the card chose it on 50 of 50, none short. By dispatch: context 0.124, Hamming 0.022, ranking
+  -0.003 (a difference of medians, below the noise), mark 0.020, count 0.012, cut 0.021, score 0.201, best 0.110; all
+  eight and a wait 0.511. Against home (2d), the scoring took 0.201 against 0.101 and the last reduction 0.110 against
+  0.002.
+- **Inside a real decode step** (2e's 8 prompts, 496 steps a head):
+
+| head | step, p50 ms | p90 ms | the head inside the step, ms |
+| --- | --- | --- | --- |
+| none (the trunk alone) | 26.445 | 26.941 | 0 |
+| full 128k | 28.735 | 29.213 | 2.290 |
+| full 32k | 26.978 | 27.390 | 0.533 |
+| **route 5, 128k** | **26.836** | 27.438 | **0.391** |
+| full 256k (synthetic) | 31.160 | 31.670 | 4.715 |
+| **route 5, 256k (synthetic)** | **26.988** | 27.458 | **0.543** |
+
+  128k: **met**, by 0.142 ms. 256k: **missed by 0.010 ms** (home: 0.070); the route saves 4.172 ms a step against the
+  full 256k head there. The full head is 2.290 of 28.735 ms of a step at 128k (8.0%) and 4.715 of 31.160 at 256k
+  (15.1%).
+- **Through the wired `generate`** (488 steps a head): route 5 **26.703 ms**, a full 32k head **26.867**, the full
+  head 28.599. Line 1 **met**, by 0.164 ms; the route saves 1.896 ms a step. Line 2 **met**: `generate` wrote the
+  hand loop's tokens on all 8 prompts.
+- **The tokens, against home:** route 5 decoding on its own choices picked the full head's token on 510 of 512 steps,
+  the first difference on fineweb_edu at step 20 (the wired text's 22nd token), 3 short lists of the timed picks at
+  128k and none at 256k: the same counts and the same positions as on the home card, on another vendor's GPU.
+- **What is established:** on a second card, an NVIDIA L4 through Vulkan, route 5 again picks the next token of the
+  trained 128k head in less time than a full 32k head, alone, inside the model's decode step and through the seats'
+  `generate`; the 256k case sits at the line (0.010 ms over).
+- **What is not:** the A100, which needs a session that gets one; batches above 1; sampled talk; the serving
+  batteries.
+- **Setup found at the run:** grilly2 first built but did not see the card; Nick set Vulkan up in the runtime's
+  terminal by LunarG's Linux (Ubuntu) getting-started instructions, after which grilly2's doctor reports `VK_ICD_FILENAMES` set to
+  `/etc/vulkan/icd.d/nvidia_icd.json` and the NVIDIA L4 as its device, and the runs followed. The notebook's cell 3
+  now names that ICD file to the loader the same way before anything else. It changes the setup, not what was timed.

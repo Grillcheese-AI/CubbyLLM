@@ -35,6 +35,25 @@ def check_base(meta: dict, base_hash, export_name: str, adapter_name: str) -> st
     return "ok"
 
 
+ROUTE_FILE = "head_route.npz"
+
+
+def route_index(export_dir: str) -> "str | None":
+    """Order 0068: the route 5 index the trunk decodes with, or None (the full head, as before). Only with
+    ``CB_HEAD_SHORTLIST=1``, off by default: ``CB_HEAD_ROUTE_INDEX`` when set (``$NAME`` places expanded), else
+    ``head_route.npz`` beside the export. The flag on and no index there warns, and the full head runs."""
+    from ..model.vocab.shortlist import on
+    if not on():
+        return None
+    from ..local_paths import expand
+    named = os.environ.get("CB_HEAD_ROUTE_INDEX")
+    path = expand(named) if named else os.path.join(export_dir, ROUTE_FILE)
+    if not os.path.exists(path):
+        warnings.warn(f"CB_HEAD_SHORTLIST=1 but no route index ({short_name(path)}): the full head runs", stacklevel=2)
+        return None
+    return path
+
+
 class Cubby450mTrunk:
     """ONE base450m on grilly2 (the local card) and several LoRA adapters, one per role, swapped in place
     (2026-10-17, Nick: "I want to be able to replace the stand-in"). The base is loaded once (2.3 GB fp32);
@@ -63,6 +82,7 @@ class Cubby450mTrunk:
         self._weights: dict = {}                             # role -> {path: (A numpy, B numpy)}
         self._role = None
         self.swaps = 0
+        self.route = None                                    # grilly2's ShortlistHead when route_index() gives one
         self._lock = threading.Lock()
 
     def _adapter_files(self, role: str) -> tuple:
@@ -96,6 +116,12 @@ class Cubby450mTrunk:
             tensors = load_file(tensors_p)
             self._weights[role] = {path: (tensors[f"{path}.lora_A.weight"], tensors[f"{path}.lora_B.weight"])
                                    for path in self._wrapped}
+        index = route_index(self.export_dir)
+        if index:                                        # greedy one-row decodes pick tokens with route 5 (order 0068)
+            self.route = ops.attach_route(model, index)
+            if self.route is None:
+                warnings.warn("CB_HEAD_SHORTLIST=1 but this grilly2 has no shortlist decode: the full head runs",
+                              stacklevel=2)
         self._tk = Tokenizer.from_file(self.tokenizer_path)
         self._eos = self._tk.token_to_id("</s>")
         self._model, self._grilly = model, ops.grilly()
