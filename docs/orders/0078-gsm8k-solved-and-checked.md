@@ -229,3 +229,18 @@ teacher, never a test-time solver (it needs the gold steps). Today it does not c
   `efa2559`; the GSM8K train file and dev ids on Drive under `gsm8k/` (the same SHA-256 as at home).
 - **Not verified here:** cubelang's Linux build on Colab (built and tested only on Windows here), and the school's
   speed on an A100 at these settings.
+
+## Held-out discipline for the vote and the school (Cowork, 2026-11-24)
+The hypothesis file's new rule (section 0, after an outside review; Nick's yes) applies here before m, k and the
+school's rounds are chosen. Nothing is decoded again: the dev read's rows already hold every try.
+- **The split of dev's 329:** m and k (`exp_0078_dev_read.py --score`) and the school's round gate use dev 0:80 and
+  200:329 (209 problems). Dev 80:200 (120 problems, all unseen templates, where H-E19's mean ranker read 0.250) is
+  read once with the frozen m and k, then test as line 4 says. Code A: add the split to `--score` and to the
+  school's gate before Nick runs either notebook.
+- **The next step, pre-registered, if the vote falls short:** on dev 80:200, top-1 under 0.300, or spoken-wrong
+  above 1% at every m that speaks on 20% or more. H-E19's Gate D is the reason to expect it: the 450M's samples agreed
+  on wrong answers, with precision 0.615 even when unanimous. Then a path verifier (a yes/no LoRA on the same trunk)
+  is trained on the 209 problems' tries with their VM labels and read once on 80:200. Nick says yes before it runs.
+  If the vote clears both bars, no verifier is built.
+- **The win that counts beyond GSM8K:** the 236's 98 unseen-template problems at 0.340 or more (the mean ranker:
+  0.286) with spoken-wrong at most 1%, reported beside line 5's 236.
