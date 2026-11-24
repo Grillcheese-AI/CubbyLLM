@@ -1,5 +1,5 @@
 # 0081 - The programs seat names only relations the store holds: a decode-time constraint, no training
-status: open (Code B, 2026-11-24)
+status: in progress (Code B, 2026-11-24)
 written: 2026-11-24 by Cowork, after an outside review of the hypothesis file · approved: 2026-11-24 by Nick ("yes") · hypothesis: H-E15 (the emitter never copies a name or a number)
 
 ## Why
