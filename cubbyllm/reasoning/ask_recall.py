@@ -160,14 +160,14 @@ class AskRecall:
         return got
 
     def _remember(self, question: str, rec: dict | None) -> None:
-        """After an ask that reached the memory step: the emitter's try to the striatum (when the emitter ran), and with
-        ``CB_ASK_MEMORY_WRITE=1`` a certified chain written as the episode ``sleep.replay`` would write for this record.
-        `rec`: the ask's record (None when it raised). Off, or no memory step in this ask: nothing."""
+        """After an ask, memory on: when the ask reached the memory step and the emitter ran, the emitter's try to the
+        striatum; with ``CB_ASK_MEMORY_WRITE=1``, any certified chain (the host's shapes' too, as at night) written as the
+        episode ``sleep.replay`` would write for this record. `rec`: the ask's record (None when it raised). Off: nothing."""
         mem, _CALL.memory = getattr(_CALL, "memory", None), None
-        if rec is None or mem is None or not on() or self.hippocampus is None:
+        if rec is None or not on() or self.hippocampus is None:
             return
         with _LOCK:
-            if rec.get("how") != "a remembered plan":
+            if mem is not None and rec.get("how") != "a remembered plan":
                 self.striatum.reward(question, "emitter", "certified" if answered(rec) else "refused")
             if write_on():
                 write_episode(self.hippocampus, rec)

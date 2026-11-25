@@ -170,3 +170,16 @@ def test_mount_reads_the_folder_sleep_writes(memory_on, tmp_path):
     empty = loop()
     assert "0 live episodes" in R.mount(empty, tmp_path / "nothing") and len(empty.hippocampus) == 0
     assert json.loads((tmp_path / "sleep" / "striatum.json").read_text(encoding="utf-8"))["expected"]
+
+
+def test_a_host_shape_answer_is_written_too_and_never_asks_memory(memory_on):
+    lp = loop(store=STORE + ["shakespeare is the author of hamlet"])
+    vm = faithful_vm([])
+    def one_hop(source, fn):                                 # one hop's tau is 1.0; the control still recovers nothing
+        out = vm(source, fn)
+        return {**out, "similarity": 1.0} if out.get("similarity") else out
+    lp._vm = one_hop
+    R.mount(lp)
+    rec = lp.ask("Who wrote Hamlet?")                       # the everyday table restates it: no memory step, no emitter
+    assert rec["verified"] and rec.get("restated") and "memory" not in rec and lp.emitter.calls == 0
+    assert [e.seed for e in lp.hippocampus.episodes] == ["hamlet"] and not lp.striatum.trace

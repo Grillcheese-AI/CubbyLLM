@@ -113,6 +113,8 @@ def main():
     ap.add_argument("--min-score", type=float, default=MIN_SCORE)
     ap.add_argument("--margin", type=float, default=MARGIN)
     ap.add_argument("--tag", default="")
+    ap.add_argument("--route", default="", help="order 0083: route 5's index (0068's index_router_succ.npz); the talk "
+                    "adapter's greedy decode then picks its tokens with it. Empty: the full head, as before")
     args = ap.parse_args()
     qs = [q for q in map(json.loads, open(args.questions, encoding="utf-8")) if q["split"] == args.split]
     t0 = time.time()
@@ -145,6 +147,11 @@ def main():
         model, _ = load_grilly(args.export)
         model_meta = load_adapter(model, args.adapter)
         log(f"adapter: step {model_meta.get('step')} r={model_meta['rank']} alpha={model_meta['alpha']}")
+        if args.route:                                   # order 0083's battery: the same questions, route 5 against none
+            from cubbyllm.ops.grilly_seats import attach_route
+            if attach_route(model, args.route) is None:
+                raise SystemExit("this grilly2 has no shortlist decode")
+            log(f"route 5: {os.path.basename(args.route)} over the head's rows")
         t2 = time.time()
         for r in rows:
             hit, q = r["_hit"], r["_q"]
