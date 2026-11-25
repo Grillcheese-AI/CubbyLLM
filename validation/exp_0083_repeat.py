@@ -208,7 +208,17 @@ def report(out: str | None) -> None:
                 "first asking median <= base + 0.05 s": mp["gen3-1"]["s_median"] <= bp["gen3-1"]["s_median"] + 0.05,
                 "0 wrong on every pass": all(p["WRONG"] == 0 for p in mp.values()),
                 "kill: a wrong answer from a remembered plan": any(p["WRONG_remembered"] for p in mp.values())}
-    if "A" in arms and "H" in arms:                           # the programs seat's greedy programs, route against none
+            base_wrong = {(r["pass"], r["i"]) for r in arms[base]["rows"] if r["match"] == "WRONG"}
+            g[f"memory {m} vs {base}"]["WRONG not on the base arm's row"] = [   # reported beside the line, not instead
+                [r["pass"], r["i"], r["how"]] for r in arms[m]["rows"]
+                if r["match"] == "WRONG" and (r["pass"], r["i"]) not in base_wrong]
+    for x, base in (("H", "A"), ("MH", "M")):                 # route 5 against none: what each arm says on the same rows
+        if x in arms and base in arms:
+            said = {(r["pass"], r["i"]): (r["verified"], r["answer"]) for r in arms[base]["rows"]}
+            g[f"route {x} vs {base}: answers differ on"] = [[r["pass"], r["i"]] for r in arms[x]["rows"]
+                                                            if said.get((r["pass"], r["i"]), (r["verified"], r["answer"]))
+                                                            != (r["verified"], r["answer"])]
+    if "A" in arms and "H" in arms:                          # the programs seat's greedy programs, route against none
         a_prog = {(r["pass"], r["i"]): r["program"] for r in arms["A"]["rows"] if r["program"] is not None}
         h_prog = {(r["pass"], r["i"]): r["program"] for r in arms["H"]["rows"] if r["program"] is not None}
         both = [k for k in a_prog if k in h_prog and k[0] == "gen3-1"]

@@ -40,7 +40,8 @@ def test_the_report_states_the_gates(tmp_path, monkeypatch):
     gate = rep["gates"]["memory M vs A"]
     assert gate == {"second asking gives the first's certified answer on all": True, "second asking median <= 0.2 s": True,
                     "first asking median <= base + 0.05 s": True, "0 wrong on every pass": True,
-                    "kill: a wrong answer from a remembered plan": False}
+                    "kill: a wrong answer from a remembered plan": False, "WRONG not on the base arm's row": []}
+    assert rep["gates"]["route H vs A: answers differ on"] == []
     assert rep["arms"]["M"]["repeat"] == {"certified_first": 1, "same_answer": 1, "remembered": 1,
                                           "s_median_on_certified": 0.08, "lost": []}
     assert rep["gates"]["route programs identical"]["identical"] == 1 and not rep["gates"]["route programs identical"][">= 99%"]
