@@ -41,7 +41,7 @@ import torch  # noqa: E402
 
 from emitter_data import decode_program, encode_records, fill, table_of, val_records  # noqa: E402
 from talk_data import batches, lora_targets, make_batch  # noqa: E402
-from train_talk_torch import apply_lora, ckpt_sha256, load_adapter, masked_loss, save_adapter  # noqa: E402
+from train_talk_torch import apply_lora, chunks, ckpt_sha256, load_adapter, masked_loss, save_adapter  # noqa: E402
 
 ADAPTER = "emitter_lora"
 LOG: list[str] = []
@@ -165,6 +165,8 @@ def main():
     ap.add_argument("--epochs", type=float, default=2.0)
     ap.add_argument("--steps", type=int, default=0)
     ap.add_argument("--batch", type=int, default=16)
+    ap.add_argument("--micro-tokens", type=int, default=0, help="a batch in chunks of at most N padded tokens, the same "
+                                                                "gradient (train_talk_torch's; 0: off)")
     ap.add_argument("--lr", type=float, default=2e-4)
     ap.add_argument("--warmup", type=int, default=50)
     ap.add_argument("--rank", type=int, default=16)
@@ -246,7 +248,8 @@ def main():
     fam = Counter(r["family"] for r in train)
     log(f"train_emitter_torch | {dev} | {len(targets)} LoRA modules, {sum(p.numel() for p in params) / 1e6:.2f}M "
         f"trainable (r={args.rank}, alpha={args.alpha}) | train {len(train):,} rows {dict(fam)} | held-eval {len(held)} | "
-        f"{total} steps of {args.batch} | lr {args.lr} warmup {args.warmup} | max_len {args.max_len} | load {time.time() - t0:.0f}s")
+        f"{total} steps of {args.batch}{f' (chunks of <= {args.micro_tokens} tokens)' if args.micro_tokens else ''} | "
+        f"lr {args.lr} warmup {args.warmup} | max_len {args.max_len} | load {time.time() - t0:.0f}s")
     opt = torch.optim.AdamW(params, lr=args.lr, weight_decay=0.0, **({"fused": True} if amp else {}))
 
     def lr_at(step):
@@ -259,10 +262,11 @@ def main():
         tot, n = 0.0, 0.0
         with torch.no_grad():
             for s in range(0, len(held), args.batch):
-                x, y, m, _ = make_batch(held[s:s + args.batch])
-                k = float(m.sum())
-                tot += float(masked_loss(model, x, y, m, dev, amp)) * k
-                n += k
+                for part in chunks(held[s:s + args.batch], args.micro_tokens):
+                    x, y, m, _ = make_batch(part)
+                    k = float(m.sum())
+                    tot += float(masked_loss(model, x, y, m, dev, amp)) * k
+                    n += k
         return tot / max(n, 1.0)
 
     base_sha = ckpt_sha256(args.ckpt)
@@ -271,7 +275,7 @@ def main():
         return {"step": step, "rank": args.rank, "alpha": args.alpha, "targets": targets, "trainer": "torch",
                 "adapter": ADAPTER, "ckpt": os.path.basename(args.ckpt) if args.ckpt else "smoke", "ckpt_sha256": base_sha,
                 "data": os.path.basename(args.data), "epochs": args.epochs, "batch": args.batch, "lr": args.lr,
-                "max_len": args.max_len, "tag": args.tag}
+                "max_len": args.max_len, "tag": args.tag, **({"micro_tokens": args.micro_tokens} if args.micro_tokens else {})}
 
     mf = open(os.path.join(logs, f"train_emitter_torch{args.tag}.jsonl"), "w", encoding="utf-8")
     ev = evaluate()
@@ -281,12 +285,17 @@ def main():
     while step < total:
         if not order:
             order = batches(train, args.batch, rng)
-        x, y, m, _ = make_batch([train[i] for i in order.pop()])
+        rows = [train[i] for i in order.pop()]
         for g in opt.param_groups:
             g["lr"] = lr_at(step)
-        loss = masked_loss(model, x, y, m, dev, amp)
         opt.zero_grad(set_to_none=True)
-        loss.backward()
+        built = [make_batch(p) for p in chunks(rows, args.micro_tokens)]   # off: one chunk, weight exactly 1.0
+        ans, loss = sum(float(b[2].sum()) for b in built), 0.0
+        for x, y, m, _ in built:                 # each chunk weighted by its share of the answer tokens: the batch's mean
+            part = masked_loss(model, x, y, m, dev, amp) * (float(m.sum()) / ans)
+            part.backward()
+            loss = loss + part.detach()
+        x = np.concatenate([b[0].ravel() for b in built])
         gn = float(torch.nn.utils.clip_grad_norm_(params, 1.0))
         opt.step()
         lv = float(loss.detach())
