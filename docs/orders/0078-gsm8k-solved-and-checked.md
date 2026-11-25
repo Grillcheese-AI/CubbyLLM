@@ -318,3 +318,16 @@ answer, and a read of whether the score survives new names and numbers.
 - **Why it matters:** GSM-Symbolic is the field's test of whether a GSM8K score is reasoning or pattern matching. In
   Cubby the names and numbers are the host's and the arithmetic is the VM's, so whatever spread remains comes from
   the plans. That is a measurement, not a claim.
+
+### 3. SVAMP, read after GSM-Symbolic (Nick's yes, 2026-11-25; no gate)
+- **The data:** SVAMP (Patel, Bhattamishra and Goyal, NAACL 2021; MIT): 1,000 one-unknown word problems made by
+  changing problems of ASDiv-A on purpose (the question asked, the reasoning needed, the order of the story), with
+  fields `Body`, `Question`, `Equation`, `Answer` and `Type`. The copy on Hugging Face (`ChilleD/SVAMP`) splits it 700
+  and 300; the authors meant all 1,000 as a test, so all 1,000 are read, and none is ever trained on.
+- **What is read:** the arm line 6 keeps, with its frozen k, m and rules; about 5 h on an L4 at the dev read's pace.
+- **Overlap:** every problem checked for a 10-word run against every training row (TinyGSM, GSM8K train, v12e's
+  records). Overlapping problems are reported and scored apart.
+- **Reported:** right, wrong and refused, by `Type`; beside GSM8K test and GSM-Symbolic.
+- **Flag:** wrong above 3% of the 1,000 blocks serving the arm until its wrong answers are read.
+- **Why:** SVAMP is where a solver that keys on surface patterns is known to fall, and its changed questions test
+  whether the plan follows what is asked.
