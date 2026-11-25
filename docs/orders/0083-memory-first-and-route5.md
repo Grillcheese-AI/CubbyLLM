@@ -1,5 +1,5 @@
 # 0083 - Faster answers: a checked plan remembered before the 450M writes one, and the 128k head at a 32k head's cost
-status: open (Code B, after 0081: both touch the programs seat and the ask loop)
+status: in progress (Code B, 2026-11-25)
 written: 2026-11-24 by Cowork · approved: 2026-11-24 by Nick ("we should also include the 128k == 32k in it") · hypothesis: H-A5 (an external episodic store beside the weights), H-C3 (route 5, order 0068)
 
 ## Why
