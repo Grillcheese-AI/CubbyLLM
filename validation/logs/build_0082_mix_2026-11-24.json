@@ -1,0 +1,82 @@
+{
+ "what": "order 0082's mix: S0's file unchanged + the program-first plan and chain train records",
+ "built": "2026-11-24T17:09:33",
+ "s0": {
+  "file": "emitter_sft_v12e_w_tg30_step.jsonl",
+  "sha256": "00555c3518e0b0a1d4bc7c75c1c0728a3313937fe71e987459205cce6f9091e0",
+  "records by family and split": {
+   "arithmetic/train": 141159,
+   "arithmetic/val": 1595,
+   "chain/train": 1150,
+   "chain/val": 63,
+   "kernel/train": 1674,
+   "kernel/val": 95,
+   "plan/train": 1138,
+   "plan/val": 63,
+   "role_binding/train": 1436,
+   "role_binding/val": 64
+  }
+ },
+ "pf": {
+  "file": "emitter_sft_v12e_pf_slots.jsonl",
+  "sha256": "a87a7fcc33b9e18d82853e1a755931e5d1ddcc6079836a633d1db5d5c0ed5246"
+ },
+ "pf_raw": {
+  "file": "emitter_sft_v12e_pf.jsonl",
+  "sha256": "add981d94fa8a7e0c6f9176029c1a5fb4cd9f3a643939a511ab818b28614e64f"
+ },
+ "held": {
+  "file": "pf_heldout_eval_w_slots.jsonl",
+  "sha256": "9ad3fbfd1591563857afc548ba6e12e66c4d0fb2e7177560d5608ec7d3941a8f",
+  "seeds": 110,
+  "plan shapes": 117,
+  "prompts": 1630
+ },
+ "s0 plan and chain records identical in the program-first file": {
+  "same": 2288,
+  "differ": 0
+ },
+ "raw program-first train records (before slot conversion)": {
+  "plan": 1101,
+  "chain": 1101
+ },
+ "dropped by the slot conversion": {
+  "plan": 22,
+  "chain": 0
+ },
+ "left out by the checks": {
+  "plan: the VM disagrees": 3
+ },
+ "added records": {
+  "plan": 1076,
+  "chain": 1101
+ },
+ "added train rows (each record's own repeat)": {
+  "plan": 1076,
+  "chain": 1101
+ },
+ "S0's plan / chain train rows": {
+  "plan": 1138,
+  "chain": 2840
+ },
+ "S0's repeats (records by repeat)": {
+  "plan": {
+   "1": 1138
+  },
+  "chain": {
+   "2": 649,
+   "3": 488,
+   "6": 13
+  }
+ },
+ "program-first share within the family (H-E18's mix's)": {
+  "plan": 0.486,
+  "chain": 0.2794
+ },
+ "arithmetic added": 0,
+ "output": {
+  "file": "emitter_sft_0082_pf.jsonl",
+  "sha256": "09b9c387917534721de9181d854076578df2e1177e5410a7f18d73c0d22aa16a",
+  "records": 150614
+ }
+}

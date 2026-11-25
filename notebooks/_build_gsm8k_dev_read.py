@@ -101,7 +101,8 @@ for arm, adapter in ARMS.items():
 print('dev read done ->', LOGS)
 """),
     code(r"""
-# --- k and m from the logs (no second pass); S0 also without the five overlapping dev questions ---
+# --- k and m from the logs (no second pass), chosen on dev without 80:200, then 80:200 read once at them (the split,
+# Cowork 2026-11-24); S0 also without the five overlapping dev questions ---
 DROP = f'{REPO}/validation/logs/gsm8k_dev_s0_overlap_2026-11-21.json'
 for arm in ARMS:
     for drop in ([''] + ([DROP] if arm == 's0' else [])):
@@ -111,6 +112,10 @@ for arm in ARMS:
         print(arm, 'without the 5' if drop else 'all 329', '| speak rule k', s['speak rule']['k'], 'm',
               s['speak rule']['m'], 'right', s['speak rule']['right'], '| greedy', s['greedy'], '| oracle',
               s['any try right (the oracle)'])
+        h = s.get('held read')
+        if h:
+            print('   dev 80:200 at k', h['k'], 'm', h['m'], '|', h['at m'], '| top-1', h['top-1'],
+                  '| path verifier next:', h['next step (path verifier) pre-registered'])
 """),
 ]
 

@@ -458,6 +458,7 @@ def main(argv=None) -> None:
     ap.add_argument("--lr", type=float, default=5e-5)
     ap.add_argument("--beta", type=float, default=2.0)
     ap.add_argument("--gate-n", type=int, default=128, help="held-out problems read at one try each round")
+    ap.add_argument("--gate-skip", default="", help="lo:hi -- dev lo:hi (the dev read's order) left out of the gate")
     ap.add_argument("--window", type=int, default=64)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--smoke", action="store_true")
@@ -524,6 +525,10 @@ def main(argv=None) -> None:
         pool = {lv: [r for r in rows if namer.keep(r)] for lv, rows in pool.items()}
         log(f"0078 S2: the pool is GSM8K train outside dev: {sum(map(len, pool.values()))} step rows")
     held = [r for lv in load_pool(a.heldout, "val").values() for r in lv]
+    if a.gate_skip:                                       # 0078's split: dev 80:200 is read once, never gated on
+        from exp_0078_dev_score import held_out_ids
+        skip = held_out_ids(a.heldout, *map(int, a.gate_skip.split(":")))
+        held = [r for r in held if r["id"].split("#")[0] not in skip]
     random.Random(1).shuffle(held)
     held = held[:a.gate_n]
     judge = StepJudge(fake=a.fake_vm) if a.step else Judge(fake=a.fake_vm)

@@ -1,5 +1,5 @@
 # 0082 - The programs adapter learns the second writer's wordings: H-E18's plan and chain records in S0's mix
-status: open (Code A, 2026-11-24; the training is Nick's Colab run)
+status: in progress (Code A, 2026-11-24; the training is Nick's Colab run)
 written: 2026-11-24 by Cowork, after an outside review of the hypothesis file · approved: 2026-11-24 by Nick ("yes") · hypothesis: H-E18 (program first, words second), H-E15
 
 ## Why
@@ -90,10 +90,41 @@ read against.
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
-- **Commits:**
-- **Files:**
-- **Tests:**
-- **Measured:** <against each acceptance line>
-- **Not verified here:**
-- **Found on the way:**
-- **Questions:**
+### Code A: the mix and the notebook (2026-11-24); the training and the reads wait on Nick's run
+- **Files:** `validation/sft/build_0082_mix.py` (new), `notebooks/_build_emitter_pf_0082.py` -> `emitter_pf_0082.ipynb`,
+  `tests/validation/test_build_0082_mix.py`; manifest `validation/logs/build_0082_mix_2026-11-24.json`. The mix
+  (`emitter_sft_0082_pf.jsonl`, 150,614 records, SHA-256 `09b9c387...`) is on Drive beside S0's file, off the repo.
+- **The mix:** S0's file unchanged (146,557 train / 1,880 val records), then **1,076 plan and 1,101 chain**
+  program-first train records. No arithmetic. About 1.5% more train rows than S0.
+  - **The repeat used: each record's own (1), as in H-E18's mix.** S0's 2,288 plan and chain train records are
+    byte-identical (repeats too) to their twins in the program-first file, so S0 repeats v12e's families exactly as
+    H-E18's mix did. Keeping the added records at their own repeat therefore gives H-E18's share: 0.486 of plan rows,
+    0.279 of chain rows (S0 repeats its chain records 2, 3 or 6 times: 2,840 rows from 1,150 records). A first build
+    applied S0's most common chain repeat (2) to the added chains; that gives a share H-E18 never trained, so it was
+    replaced before anything ran.
+  - **Already in S0's slot form:** the program-first slot file was made by `emitter_data.convert` with v12e_w's
+    options, as the identical twins show. The conversion dropped 22 of the raw file's 1,101 plans (counted against
+    the raw file, not guessed back); 0 chains.
+  - **The VM check:** each added record's filled program and its reference were run in the real VM, giving the same
+    value (a chain's is its gold too). 3 plans fail and are left out: all three are seeded on
+    `james "beg" stewart`, whose quotes break the program's string literal when the slot is filled. The host would
+    fail the same way.
+  - **Held-out:** 0 prompts or questions, 0 seeds (chain and plan, normalized), 0 plan shapes (the seed and its
+    relations) shared with the unseen-writer eval (`pf_heldout_eval_w_slots.jsonl`: 579 seeds, read from the raw
+    file's provenance), and no added seed in bucket 0. The shape check is implied by the seed check here (a shape
+    carries its seed); it is kept as its own count.
+- **The notebook (Nick's to run, an A100):** arm P = the Gate A adapter continued one epoch on the mix, S0's recipe
+  (batch 16, lr 2e-4, rank 16 / alpha 32, max length 1,024, seed 0, the steps from the train rows' repeats, as
+  `emitter_s1.ipynb`), `--no-gen`. Then `--gen-only` for P and for S0 on the val split's chain, kernel, plan and
+  role-binding records and the unseen-writer eval's plan and chain records (all of them). S0's generations go to
+  `emitter/exp_0082/s0`, leaving S0's adapter folder as it is. Each step is skipped when its files exist; every log
+  line names the card.
+  - **The optional last cell (off):** grilly2 0.1.0 on Colab (Vulkan registered with the two JSON files from
+    grilly2's `notebooks/colab.ipynb`), cubelang built at `efa2559`, then the gen-3 split (seed 7) and the live eight
+    for S0 and P at one `CB_EMIT_TRIE` arm. It asserts its preconditions: 0081's 450M bench arm on master (on
+    `agent-b` now), and the base's grilly2 export on Drive (today it is only at home).
+- **Tests:** the builder on a fixture (S0's rows first and unchanged; no arithmetic added; a planted held-out prompt
+  and a held-out seed refused; a VM disagreement left out; the conversion drop counted; the share).
+- **Next (after Nick's run):** `exp_he18_ab.py --files` on S0's and P's generations; the 236's greedy step loop for P
+  against S0's 0.229; the served-loop reads after 0081's runs.
+- **Not verified here:** the notebook on Colab; the optional cell (needs the export on Drive and 0081 on master).

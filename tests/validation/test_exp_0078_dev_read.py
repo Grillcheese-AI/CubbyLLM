@@ -74,3 +74,24 @@ def test_score_picks_m_and_drops_ids(tmp_path):
     d = tmp_path / "drop.json"
     d.write_text(json.dumps({"drop": ["q0", "q1"]}), encoding="utf-8")
     assert S.score(str(p), str(d))["questions"] == 98
+
+
+def test_the_split_chooses_without_80_200_and_reads_it_once_at_the_frozen_m(tmp_path):
+    def row(i, gold, answers):
+        return {"id": f"q{i}", "i": i, "gold": str(gold), "greedy": {"answer": None},
+                "seconds": {"greedy": 1, "tries": 2}, "tries": [{"answer": a} for a in answers]}
+    rows = [row(i, 10, ["10"] * 8 + ["3"] * 8) for i in range(80)]             # chosen on: a tie at 8 of 16
+    rows += [row(i, 5, ["7"] * 5 + ["5"] * 3) for i in range(80, 200)]          # held: wrong 7s, never chosen on
+    rows += [row(i, 10, ["10"] * 5 + ["3"] * 3) for i in range(200, 329)]
+    p = tmp_path / "rows.jsonl"
+    p.write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8")
+    s = S.score(str(p), "", S.HELD)
+    assert s["questions"] == 209 and s["speak rule"]["k"] == 8 and s["speak rule"]["m"] == 1
+    h = s["held read"]
+    assert h["questions"] == 120 and (h["k"], h["m"]) == (8, 1)
+    assert h["at m"]["wrong"] == 120 and h["top-1"] == 0.0 and h["next step (path verifier) pre-registered"]
+    assert S.score(str(p))["questions"] == 329                                  # held=None: as before
+    src = tmp_path / "dev.jsonl"
+    src.write_text("".join(json.dumps({"id": f"q{i}", "task": "arithmetic", "split": "val"}) + "\n"
+                           for i in range(329)), encoding="utf-8")
+    assert S.held_out_ids([str(src)]) == {f"q{i}" for i in range(80, 200)}

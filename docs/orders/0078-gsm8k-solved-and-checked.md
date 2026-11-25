@@ -230,6 +230,37 @@ teacher, never a test-time solver (it needs the gold steps). Today it does not c
 - **Not verified here:** cubelang's Linux build on Colab (built and tested only on Windows here), and the school's
   speed on an A100 at these settings.
 
+### Code A: the dev read, scored with the split (2026-11-24)
+Nick's Colab runs (an L4), every try's VM value on Drive (`emitter/gsm8k_dev_read/`); scored at home with no second
+pass (`exp_0078_dev_read.py --score`, `validation/logs/gsm8k_dev_score_0078_2026-11-24.json`). **k and m chosen on dev
+without 80:200 (209 problems); dev 80:200 (120) read once at them**, as the held-out section below says.
+
+| arm | chosen on 209: k, m | right / wrong / refused (209) | dev 80:200 at that k, m (120) | top-1 on 80:200 | greedy (329) | any try right (329) |
+|---|---|---|---|---|---|---|
+| S0 | 8, 8 | 5 / 1 / 203 (2.4%) | 3 / 1 / 116 | 0.158 | 66 / 255 / 8 | 151 |
+| S0 without the 5 | 8, 8 | 5 / 1 / 200 (of 206; 2.4%) | 3 / 1 / 114 (of 118) | 0.161 | 64 / 252 / 8 (of 324) | 149 |
+| **S1** | **8, 7** | **43 / 2 / 164 (20.6%)** | **32 / 0 / 88 (26.7%)** | **0.467** | 146 / 174 / 9 | 226 |
+
+- **The scale-up rule:** S1's dev right 20.6% against S0's 2.4% + 10 points (12.4%), each at its own chosen k and m:
+  **S1 clears it; no 1M-program cut.** It clears it against S0 without the five overlapping questions too (2.4%).
+- **The pre-registered next step (a path verifier) is not called for S1:** on 80:200 its top-1 is 0.467 (line: 0.300),
+  and spoken-wrong is at most 1% at m = 6, 7 and 8, which speak on 30.8%, 26.7% and 17.5% (m = 5 speaks on 38.3% at
+  4.2% wrong). S0 would call it (top-1 0.158; every m that speaks on 20% or more is above 1% wrong); S0 is not the arm
+  going on.
+- **The split came after one look at all 329.** Nick's scoring cell printed the all-329 numbers before the split was
+  in `--score` (S0: k 16, m 13, right 17 / wrong 3; S1: k 8, m 7, right 75 / wrong 2). Nothing was chosen from them,
+  and S1's k and m from the 209 are the same (8, 7). Both are in the log.
+- **Frozen for test (line 5):** S1 at k = 8, m = 7 (the first 8 of the 16 tries, temperature 0.7, top-k 40). S2's
+  vote is chosen the same way on its own read.
+- **Time on the L4** (the read, not line 5's home median): median 16.7 s a question for S0, 18.7 s for S1 (greedy
+  plus 16 tries). The step is replayed as a CUDA graph per batch size (`dev_read_torch.GraphStep`, `e3dc741`; about
+  3.4x the eager batched decode on the same card); 17 of S0's rows were read before it (the same sampling, seeded
+  the same way), all of S1's with it.
+- **The school's gate leaves 80:200 out:** `train_school_torch.py --gate-skip 80:200` (`exp_0078_dev_score.held_out_ids`,
+  dev's order as the read's); `notebooks/school_s2.ipynb` passes it. S2 is Nick's to run next.
+- Tests: the split chooses without 80:200 and reads it once at the frozen k and m, `held_out_ids`
+  (`tests/validation/test_exp_0078_dev_read.py`).
+
 ## Held-out discipline for the vote and the school (Cowork, 2026-11-24)
 The hypothesis file's new rule (section 0, after an outside review; Nick's yes) applies here before m, k and the
 school's rounds are chosen. Nothing is decoded again: the dev read's rows already hold every try.

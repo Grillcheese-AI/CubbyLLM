@@ -1,0 +1,1109 @@
+{
+ "what": "order 0078's dev read scored (exp_0078_dev_score): k and m chosen on dev without 80:200 (209), dev 80:200 read once at them (120); all-329 beside, as first printed",
+ "card": "Colab L4 (the read); scored at home on CPU",
+ "decode": "rows-graphs after S0's first 12 questions (rows); S1 all rows-graphs",
+ "s0 split": {
+  "rows": "gsm8k_dev_read_s0.jsonl",
+  "dropped": null,
+  "chosen on": "dev without 80:200",
+  "questions": 209,
+  "speak rule": {
+   "k": 8,
+   "m": 8,
+   "right": 5,
+   "by k": {
+    "8": {
+     "m": 8,
+     "at m": {
+      "right": 5,
+      "wrong": 1,
+      "refused": 203,
+      "wrong share": 0.0048
+     },
+     "by m": {
+      "1": {
+       "right": 41,
+       "wrong": 99,
+       "refused": 69,
+       "wrong share": 0.4737
+      },
+      "2": {
+       "right": 41,
+       "wrong": 99,
+       "refused": 69,
+       "wrong share": 0.4737
+      },
+      "3": {
+       "right": 39,
+       "wrong": 55,
+       "refused": 115,
+       "wrong share": 0.2632
+      },
+      "4": {
+       "right": 29,
+       "wrong": 27,
+       "refused": 153,
+       "wrong share": 0.1292
+      },
+      "5": {
+       "right": 20,
+       "wrong": 13,
+       "refused": 176,
+       "wrong share": 0.0622
+      },
+      "6": {
+       "right": 14,
+       "wrong": 8,
+       "refused": 187,
+       "wrong share": 0.0383
+      },
+      "7": {
+       "right": 8,
+       "wrong": 5,
+       "refused": 196,
+       "wrong share": 0.0239
+      },
+      "8": {
+       "right": 5,
+       "wrong": 1,
+       "refused": 203,
+       "wrong share": 0.0048
+      }
+     }
+    },
+    "16": {
+     "m": 16,
+     "at m": {
+      "right": 4,
+      "wrong": 1,
+      "refused": 204,
+      "wrong share": 0.0048
+     },
+     "by m": {
+      "1": {
+       "right": 45,
+       "wrong": 112,
+       "refused": 52,
+       "wrong share": 0.5359
+      },
+      "2": {
+       "right": 45,
+       "wrong": 112,
+       "refused": 52,
+       "wrong share": 0.5359
+      },
+      "3": {
+       "right": 44,
+       "wrong": 84,
+       "refused": 81,
+       "wrong share": 0.4019
+      },
+      "4": {
+       "right": 43,
+       "wrong": 63,
+       "refused": 103,
+       "wrong share": 0.3014
+      },
+      "5": {
+       "right": 42,
+       "wrong": 42,
+       "refused": 125,
+       "wrong share": 0.201
+      },
+      "6": {
+       "right": 37,
+       "wrong": 30,
+       "refused": 142,
+       "wrong share": 0.1435
+      },
+      "7": {
+       "right": 31,
+       "wrong": 25,
+       "refused": 153,
+       "wrong share": 0.1196
+      },
+      "8": {
+       "right": 27,
+       "wrong": 19,
+       "refused": 163,
+       "wrong share": 0.0909
+      },
+      "9": {
+       "right": 20,
+       "wrong": 13,
+       "refused": 176,
+       "wrong share": 0.0622
+      },
+      "10": {
+       "right": 16,
+       "wrong": 10,
+       "refused": 183,
+       "wrong share": 0.0478
+      },
+      "11": {
+       "right": 15,
+       "wrong": 9,
+       "refused": 185,
+       "wrong share": 0.0431
+      },
+      "12": {
+       "right": 11,
+       "wrong": 6,
+       "refused": 192,
+       "wrong share": 0.0287
+      },
+      "13": {
+       "right": 10,
+       "wrong": 3,
+       "refused": 196,
+       "wrong share": 0.0144
+      },
+      "14": {
+       "right": 7,
+       "wrong": 3,
+       "refused": 199,
+       "wrong share": 0.0144
+      },
+      "15": {
+       "right": 4,
+       "wrong": 3,
+       "refused": 202,
+       "wrong share": 0.0144
+      },
+      "16": {
+       "right": 4,
+       "wrong": 1,
+       "refused": 204,
+       "wrong share": 0.0048
+      }
+     }
+    }
+   }
+  },
+  "greedy": {
+   "right": 40,
+   "wrong": 163,
+   "refused": 6
+  },
+  "any try right (the oracle)": 95,
+  "seconds a question": {
+   "mean": 25.4,
+   "median": 16.68
+  },
+  "held read": {
+   "questions": 120,
+   "k": 8,
+   "m": 8,
+   "at m": {
+    "right": 3,
+    "wrong": 1,
+    "refused": 116,
+    "wrong share": 0.0083
+   },
+   "top-1": 0.1583,
+   "by m": {
+    "1": {
+     "spoken share": 0.575,
+     "spoken-wrong share": 0.4167
+    },
+    "2": {
+     "spoken share": 0.575,
+     "spoken-wrong share": 0.4167
+    },
+    "3": {
+     "spoken share": 0.3583,
+     "spoken-wrong share": 0.2333
+    },
+    "4": {
+     "spoken share": 0.225,
+     "spoken-wrong share": 0.1167
+    },
+    "5": {
+     "spoken share": 0.175,
+     "spoken-wrong share": 0.075
+    },
+    "6": {
+     "spoken share": 0.1333,
+     "spoken-wrong share": 0.0417
+    },
+    "7": {
+     "spoken share": 0.0917,
+     "spoken-wrong share": 0.025
+    },
+    "8": {
+     "spoken share": 0.0333,
+     "spoken-wrong share": 0.0083
+    }
+   },
+   "next step (path verifier) pre-registered": true,
+   "greedy": {
+    "right": 26,
+    "wrong": 92,
+    "refused": 2
+   },
+   "dev": "80:200"
+  }
+ },
+ "s0 split without the 5": {
+  "rows": "gsm8k_dev_read_s0.jsonl",
+  "dropped": "gsm8k_dev_s0_overlap_2026-11-21.json",
+  "chosen on": "dev without 80:200",
+  "questions": 206,
+  "speak rule": {
+   "k": 8,
+   "m": 8,
+   "right": 5,
+   "by k": {
+    "8": {
+     "m": 8,
+     "at m": {
+      "right": 5,
+      "wrong": 1,
+      "refused": 200,
+      "wrong share": 0.0049
+     },
+     "by m": {
+      "1": {
+       "right": 39,
+       "wrong": 98,
+       "refused": 69,
+       "wrong share": 0.4757
+      },
+      "2": {
+       "right": 39,
+       "wrong": 98,
+       "refused": 69,
+       "wrong share": 0.4757
+      },
+      "3": {
+       "right": 37,
+       "wrong": 55,
+       "refused": 114,
+       "wrong share": 0.267
+      },
+      "4": {
+       "right": 28,
+       "wrong": 27,
+       "refused": 151,
+       "wrong share": 0.1311
+      },
+      "5": {
+       "right": 20,
+       "wrong": 13,
+       "refused": 173,
+       "wrong share": 0.0631
+      },
+      "6": {
+       "right": 14,
+       "wrong": 8,
+       "refused": 184,
+       "wrong share": 0.0388
+      },
+      "7": {
+       "right": 8,
+       "wrong": 5,
+       "refused": 193,
+       "wrong share": 0.0243
+      },
+      "8": {
+       "right": 5,
+       "wrong": 1,
+       "refused": 200,
+       "wrong share": 0.0049
+      }
+     }
+    },
+    "16": {
+     "m": 16,
+     "at m": {
+      "right": 4,
+      "wrong": 1,
+      "refused": 201,
+      "wrong share": 0.0049
+     },
+     "by m": {
+      "1": {
+       "right": 43,
+       "wrong": 112,
+       "refused": 51,
+       "wrong share": 0.5437
+      },
+      "2": {
+       "right": 43,
+       "wrong": 112,
+       "refused": 51,
+       "wrong share": 0.5437
+      },
+      "3": {
+       "right": 42,
+       "wrong": 84,
+       "refused": 80,
+       "wrong share": 0.4078
+      },
+      "4": {
+       "right": 41,
+       "wrong": 63,
+       "refused": 102,
+       "wrong share": 0.3058
+      },
+      "5": {
+       "right": 40,
+       "wrong": 42,
+       "refused": 124,
+       "wrong share": 0.2039
+      },
+      "6": {
+       "right": 35,
+       "wrong": 30,
+       "refused": 141,
+       "wrong share": 0.1456
+      },
+      "7": {
+       "right": 29,
+       "wrong": 25,
+       "refused": 152,
+       "wrong share": 0.1214
+      },
+      "8": {
+       "right": 25,
+       "wrong": 19,
+       "refused": 162,
+       "wrong share": 0.0922
+      },
+      "9": {
+       "right": 19,
+       "wrong": 13,
+       "refused": 174,
+       "wrong share": 0.0631
+      },
+      "10": {
+       "right": 16,
+       "wrong": 10,
+       "refused": 180,
+       "wrong share": 0.0485
+      },
+      "11": {
+       "right": 15,
+       "wrong": 9,
+       "refused": 182,
+       "wrong share": 0.0437
+      },
+      "12": {
+       "right": 11,
+       "wrong": 6,
+       "refused": 189,
+       "wrong share": 0.0291
+      },
+      "13": {
+       "right": 10,
+       "wrong": 3,
+       "refused": 193,
+       "wrong share": 0.0146
+      },
+      "14": {
+       "right": 7,
+       "wrong": 3,
+       "refused": 196,
+       "wrong share": 0.0146
+      },
+      "15": {
+       "right": 4,
+       "wrong": 3,
+       "refused": 199,
+       "wrong share": 0.0146
+      },
+      "16": {
+       "right": 4,
+       "wrong": 1,
+       "refused": 201,
+       "wrong share": 0.0049
+      }
+     }
+    }
+   }
+  },
+  "greedy": {
+   "right": 38,
+   "wrong": 162,
+   "refused": 6
+  },
+  "any try right (the oracle)": 93,
+  "seconds a question": {
+   "mean": 25.4,
+   "median": 16.439999999999998
+  },
+  "held read": {
+   "questions": 118,
+   "k": 8,
+   "m": 8,
+   "at m": {
+    "right": 3,
+    "wrong": 1,
+    "refused": 114,
+    "wrong share": 0.0085
+   },
+   "top-1": 0.161,
+   "by m": {
+    "1": {
+     "spoken share": 0.5763,
+     "spoken-wrong share": 0.4153
+    },
+    "2": {
+     "spoken share": 0.5763,
+     "spoken-wrong share": 0.4153
+    },
+    "3": {
+     "spoken share": 0.3644,
+     "spoken-wrong share": 0.2373
+    },
+    "4": {
+     "spoken share": 0.2288,
+     "spoken-wrong share": 0.1186
+    },
+    "5": {
+     "spoken share": 0.178,
+     "spoken-wrong share": 0.0763
+    },
+    "6": {
+     "spoken share": 0.1356,
+     "spoken-wrong share": 0.0424
+    },
+    "7": {
+     "spoken share": 0.0932,
+     "spoken-wrong share": 0.0254
+    },
+    "8": {
+     "spoken share": 0.0339,
+     "spoken-wrong share": 0.0085
+    }
+   },
+   "next step (path verifier) pre-registered": true,
+   "greedy": {
+    "right": 26,
+    "wrong": 90,
+    "refused": 2
+   },
+   "dev": "80:200"
+  }
+ },
+ "s1 split": {
+  "rows": "gsm8k_dev_read_s1.jsonl",
+  "dropped": null,
+  "chosen on": "dev without 80:200",
+  "questions": 209,
+  "speak rule": {
+   "k": 8,
+   "m": 7,
+   "right": 43,
+   "by k": {
+    "8": {
+     "m": 7,
+     "at m": {
+      "right": 43,
+      "wrong": 2,
+      "refused": 164,
+      "wrong share": 0.0096
+     },
+     "by m": {
+      "1": {
+       "right": 87,
+       "wrong": 67,
+       "refused": 55,
+       "wrong share": 0.3206
+      },
+      "2": {
+       "right": 87,
+       "wrong": 67,
+       "refused": 55,
+       "wrong share": 0.3206
+      },
+      "3": {
+       "right": 78,
+       "wrong": 40,
+       "refused": 91,
+       "wrong share": 0.1914
+      },
+      "4": {
+       "right": 68,
+       "wrong": 28,
+       "refused": 113,
+       "wrong share": 0.134
+      },
+      "5": {
+       "right": 62,
+       "wrong": 11,
+       "refused": 136,
+       "wrong share": 0.0526
+      },
+      "6": {
+       "right": 49,
+       "wrong": 5,
+       "refused": 155,
+       "wrong share": 0.0239
+      },
+      "7": {
+       "right": 43,
+       "wrong": 2,
+       "refused": 164,
+       "wrong share": 0.0096
+      },
+      "8": {
+       "right": 27,
+       "wrong": 0,
+       "refused": 182,
+       "wrong share": 0.0
+      }
+     }
+    },
+    "16": {
+     "m": 14,
+     "at m": {
+      "right": 37,
+      "wrong": 1,
+      "refused": 171,
+      "wrong share": 0.0048
+     },
+     "by m": {
+      "1": {
+       "right": 86,
+       "wrong": 93,
+       "refused": 30,
+       "wrong share": 0.445
+      },
+      "2": {
+       "right": 86,
+       "wrong": 92,
+       "refused": 31,
+       "wrong share": 0.4402
+      },
+      "3": {
+       "right": 86,
+       "wrong": 79,
+       "refused": 44,
+       "wrong share": 0.378
+      },
+      "4": {
+       "right": 83,
+       "wrong": 59,
+       "refused": 67,
+       "wrong share": 0.2823
+      },
+      "5": {
+       "right": 80,
+       "wrong": 42,
+       "refused": 87,
+       "wrong share": 0.201
+      },
+      "6": {
+       "right": 75,
+       "wrong": 37,
+       "refused": 97,
+       "wrong share": 0.177
+      },
+      "7": {
+       "right": 71,
+       "wrong": 29,
+       "refused": 109,
+       "wrong share": 0.1388
+      },
+      "8": {
+       "right": 67,
+       "wrong": 19,
+       "refused": 123,
+       "wrong share": 0.0909
+      },
+      "9": {
+       "right": 62,
+       "wrong": 14,
+       "refused": 133,
+       "wrong share": 0.067
+      },
+      "10": {
+       "right": 59,
+       "wrong": 10,
+       "refused": 140,
+       "wrong share": 0.0478
+      },
+      "11": {
+       "right": 54,
+       "wrong": 7,
+       "refused": 148,
+       "wrong share": 0.0335
+      },
+      "12": {
+       "right": 48,
+       "wrong": 6,
+       "refused": 155,
+       "wrong share": 0.0287
+      },
+      "13": {
+       "right": 43,
+       "wrong": 4,
+       "refused": 162,
+       "wrong share": 0.0191
+      },
+      "14": {
+       "right": 37,
+       "wrong": 1,
+       "refused": 171,
+       "wrong share": 0.0048
+      },
+      "15": {
+       "right": 30,
+       "wrong": 0,
+       "refused": 179,
+       "wrong share": 0.0
+      },
+      "16": {
+       "right": 22,
+       "wrong": 0,
+       "refused": 187,
+       "wrong share": 0.0
+      }
+     }
+    }
+   }
+  },
+  "greedy": {
+   "right": 85,
+   "wrong": 120,
+   "refused": 4
+  },
+  "any try right (the oracle)": 137,
+  "seconds a question": {
+   "mean": 27.4,
+   "median": 18.66
+  },
+  "held read": {
+   "questions": 120,
+   "k": 8,
+   "m": 7,
+   "at m": {
+    "right": 32,
+    "wrong": 0,
+    "refused": 88,
+    "wrong share": 0.0
+   },
+   "top-1": 0.4667,
+   "by m": {
+    "1": {
+     "spoken share": 0.7333,
+     "spoken-wrong share": 0.2667
+    },
+    "2": {
+     "spoken share": 0.725,
+     "spoken-wrong share": 0.2583
+    },
+    "3": {
+     "spoken share": 0.575,
+     "spoken-wrong share": 0.1417
+    },
+    "4": {
+     "spoken share": 0.45,
+     "spoken-wrong share": 0.0833
+    },
+    "5": {
+     "spoken share": 0.3833,
+     "spoken-wrong share": 0.0417
+    },
+    "6": {
+     "spoken share": 0.3083,
+     "spoken-wrong share": 0.0083
+    },
+    "7": {
+     "spoken share": 0.2667,
+     "spoken-wrong share": 0.0
+    },
+    "8": {
+     "spoken share": 0.175,
+     "spoken-wrong share": 0.0
+    }
+   },
+   "next step (path verifier) pre-registered": false,
+   "greedy": {
+    "right": 61,
+    "wrong": 54,
+    "refused": 5
+   },
+   "dev": "80:200"
+  }
+ },
+ "s0 all 329": {
+  "rows": "gsm8k_dev_read_s0.jsonl",
+  "dropped": null,
+  "chosen on": "all rows",
+  "questions": 329,
+  "speak rule": {
+   "k": 16,
+   "m": 13,
+   "right": 17,
+   "by k": {
+    "8": {
+     "m": 8,
+     "at m": {
+      "right": 8,
+      "wrong": 2,
+      "refused": 319,
+      "wrong share": 0.0061
+     },
+     "by m": {
+      "1": {
+       "right": 60,
+       "wrong": 149,
+       "refused": 120,
+       "wrong share": 0.4529
+      },
+      "2": {
+       "right": 60,
+       "wrong": 149,
+       "refused": 120,
+       "wrong share": 0.4529
+      },
+      "3": {
+       "right": 54,
+       "wrong": 83,
+       "refused": 192,
+       "wrong share": 0.2523
+      },
+      "4": {
+       "right": 42,
+       "wrong": 41,
+       "refused": 246,
+       "wrong share": 0.1246
+      },
+      "5": {
+       "right": 32,
+       "wrong": 22,
+       "refused": 275,
+       "wrong share": 0.0669
+      },
+      "6": {
+       "right": 25,
+       "wrong": 13,
+       "refused": 291,
+       "wrong share": 0.0395
+      },
+      "7": {
+       "right": 16,
+       "wrong": 8,
+       "refused": 305,
+       "wrong share": 0.0243
+      },
+      "8": {
+       "right": 8,
+       "wrong": 2,
+       "refused": 319,
+       "wrong share": 0.0061
+      }
+     }
+    },
+    "16": {
+     "m": 13,
+     "at m": {
+      "right": 17,
+      "wrong": 3,
+      "refused": 309,
+      "wrong share": 0.0091
+     },
+     "by m": {
+      "1": {
+       "right": 67,
+       "wrong": 174,
+       "refused": 88,
+       "wrong share": 0.5289
+      },
+      "2": {
+       "right": 67,
+       "wrong": 174,
+       "refused": 88,
+       "wrong share": 0.5289
+      },
+      "3": {
+       "right": 66,
+       "wrong": 139,
+       "refused": 124,
+       "wrong share": 0.4225
+      },
+      "4": {
+       "right": 64,
+       "wrong": 99,
+       "refused": 166,
+       "wrong share": 0.3009
+      },
+      "5": {
+       "right": 59,
+       "wrong": 70,
+       "refused": 200,
+       "wrong share": 0.2128
+      },
+      "6": {
+       "right": 53,
+       "wrong": 47,
+       "refused": 229,
+       "wrong share": 0.1429
+      },
+      "7": {
+       "right": 44,
+       "wrong": 39,
+       "refused": 246,
+       "wrong share": 0.1185
+      },
+      "8": {
+       "right": 38,
+       "wrong": 31,
+       "refused": 260,
+       "wrong share": 0.0942
+      },
+      "9": {
+       "right": 31,
+       "wrong": 23,
+       "refused": 275,
+       "wrong share": 0.0699
+      },
+      "10": {
+       "right": 27,
+       "wrong": 18,
+       "refused": 284,
+       "wrong share": 0.0547
+      },
+      "11": {
+       "right": 25,
+       "wrong": 13,
+       "refused": 291,
+       "wrong share": 0.0395
+      },
+      "12": {
+       "right": 19,
+       "wrong": 8,
+       "refused": 302,
+       "wrong share": 0.0243
+      },
+      "13": {
+       "right": 17,
+       "wrong": 3,
+       "refused": 309,
+       "wrong share": 0.0091
+      },
+      "14": {
+       "right": 12,
+       "wrong": 3,
+       "refused": 314,
+       "wrong share": 0.0091
+      },
+      "15": {
+       "right": 7,
+       "wrong": 3,
+       "refused": 319,
+       "wrong share": 0.0091
+      },
+      "16": {
+       "right": 5,
+       "wrong": 1,
+       "refused": 323,
+       "wrong share": 0.003
+      }
+     }
+    }
+   }
+  },
+  "greedy": {
+   "right": 66,
+   "wrong": 255,
+   "refused": 8
+  },
+  "any try right (the oracle)": 151,
+  "seconds a question": {
+   "mean": 25.4,
+   "median": 16.68
+  }
+ },
+ "s1 all 329": {
+  "rows": "gsm8k_dev_read_s1.jsonl",
+  "dropped": null,
+  "chosen on": "all rows",
+  "questions": 329,
+  "speak rule": {
+   "k": 8,
+   "m": 7,
+   "right": 75,
+   "by k": {
+    "8": {
+     "m": 7,
+     "at m": {
+      "right": 75,
+      "wrong": 2,
+      "refused": 252,
+      "wrong share": 0.0061
+     },
+     "by m": {
+      "1": {
+       "right": 143,
+       "wrong": 99,
+       "refused": 87,
+       "wrong share": 0.3009
+      },
+      "2": {
+       "right": 143,
+       "wrong": 98,
+       "refused": 88,
+       "wrong share": 0.2979
+      },
+      "3": {
+       "right": 130,
+       "wrong": 57,
+       "refused": 142,
+       "wrong share": 0.1733
+      },
+      "4": {
+       "right": 112,
+       "wrong": 38,
+       "refused": 179,
+       "wrong share": 0.1155
+      },
+      "5": {
+       "right": 103,
+       "wrong": 16,
+       "refused": 210,
+       "wrong share": 0.0486
+      },
+      "6": {
+       "right": 85,
+       "wrong": 6,
+       "refused": 238,
+       "wrong share": 0.0182
+      },
+      "7": {
+       "right": 75,
+       "wrong": 2,
+       "refused": 252,
+       "wrong share": 0.0061
+      },
+      "8": {
+       "right": 48,
+       "wrong": 0,
+       "refused": 281,
+       "wrong share": 0.0
+      }
+     }
+    },
+    "16": {
+     "m": 14,
+     "at m": {
+      "right": 67,
+      "wrong": 1,
+      "refused": 261,
+      "wrong share": 0.003
+     },
+     "by m": {
+      "1": {
+       "right": 144,
+       "wrong": 137,
+       "refused": 48,
+       "wrong share": 0.4164
+      },
+      "2": {
+       "right": 144,
+       "wrong": 136,
+       "refused": 49,
+       "wrong share": 0.4134
+      },
+      "3": {
+       "right": 143,
+       "wrong": 114,
+       "refused": 72,
+       "wrong share": 0.3465
+      },
+      "4": {
+       "right": 139,
+       "wrong": 84,
+       "refused": 106,
+       "wrong share": 0.2553
+      },
+      "5": {
+       "right": 133,
+       "wrong": 56,
+       "refused": 140,
+       "wrong share": 0.1702
+      },
+      "6": {
+       "right": 125,
+       "wrong": 47,
+       "refused": 157,
+       "wrong share": 0.1429
+      },
+      "7": {
+       "right": 116,
+       "wrong": 35,
+       "refused": 178,
+       "wrong share": 0.1064
+      },
+      "8": {
+       "right": 110,
+       "wrong": 24,
+       "refused": 195,
+       "wrong share": 0.0729
+      },
+      "9": {
+       "right": 104,
+       "wrong": 16,
+       "refused": 209,
+       "wrong share": 0.0486
+      },
+      "10": {
+       "right": 99,
+       "wrong": 12,
+       "refused": 218,
+       "wrong share": 0.0365
+      },
+      "11": {
+       "right": 92,
+       "wrong": 9,
+       "refused": 228,
+       "wrong share": 0.0274
+      },
+      "12": {
+       "right": 85,
+       "wrong": 7,
+       "refused": 237,
+       "wrong share": 0.0213
+      },
+      "13": {
+       "right": 78,
+       "wrong": 5,
+       "refused": 246,
+       "wrong share": 0.0152
+      },
+      "14": {
+       "right": 67,
+       "wrong": 1,
+       "refused": 261,
+       "wrong share": 0.003
+      },
+      "15": {
+       "right": 52,
+       "wrong": 0,
+       "refused": 277,
+       "wrong share": 0.0
+      },
+      "16": {
+       "right": 33,
+       "wrong": 0,
+       "refused": 296,
+       "wrong share": 0.0
+      }
+     }
+    }
+   }
+  },
+  "greedy": {
+   "right": 146,
+   "wrong": 174,
+   "refused": 9
+  },
+  "any try right (the oracle)": 226,
+  "seconds a question": {
+   "mean": 27.4,
+   "median": 18.66
+  }
+ }
+}
