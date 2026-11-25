@@ -76,6 +76,12 @@ def parser() -> argparse.ArgumentParser:
                          "proposes, the host disposes, the VM verifies, the source fills the store through the gate -- "
                          "'wikidata' (default), 'wikidata-offline' (cache only) or 'lfm' (the local base model, latent tier)")
     ap.add_argument("--ask-max-new", type=int, default=300)
+    ap.add_argument("--memory", default=None,
+                    help="order 0083, with CB_ASK_MEMORY=1: the folder of the sleep cycle's hippocampus.jsonl and "
+                         "striatum.json, loaded at boot (empty without them); the ask loop asks memory before the emitter")
+    ap.add_argument("--head-route", default=None,
+                    help="order 0083, with CB_HEAD_SHORTLIST=1: route 5's index over the base's head rows (order 0068's "
+                         "builder; default head_route.npz beside the export); an index over other rows is refused")
     ap.add_argument("--news", action="store_true",
                     help="mount the RSS date source for 'what happened in <date>' asks: headlines enter the "
                          "store as facts about the DATE, attributed to the publisher, through the same gate. "
@@ -155,6 +161,8 @@ def boot(args, ap: argparse.ArgumentParser):
         args.wiki = "auto"                               # the loop walks the wiki world
     if not args.gguf and not args.cubby450m:
         ap.error("give --gguf (the stand-in) or --cubby450m <export> --emitter-adapter <dir> [--talk-adapter <dir>]")
+    if args.head_route:                                  # the seats read it at their first decode (seats_450m.route_index)
+        os.environ["CB_HEAD_ROUTE_INDEX"] = args.head_route
     brain = build_serve(args.gguf, args.table, args.n_store, None, args.route_tau, args.n_gpu_layers,
                         talk_gguf=args.talk_gguf, wiki=args.wiki, cubby450m=args.cubby450m,
                         emitter_adapter=args.emitter_adapter, talk_adapter=args.talk_adapter, tokenizer=args.tokenizer,
@@ -189,6 +197,9 @@ def boot(args, ap: argparse.ArgumentParser):
         print("  web: " + (f"{web.backend.name} behind {args.ask}, reader {'the local model' if web.reader else 'off'}; "
                            "a web fact is held until two independent sites state it" if web else
                            "off (set BRAVE_SEARCH_API_KEY or --searxng to turn it on)"), flush=True)
+        from cubbyllm.reasoning import ask_recall
+        if ask_recall.on():                              # order 0083: memory before the emitter
+            print("  " + ask_recall.mount(brain.ask_loop, args.memory), flush=True)
         if args.learned:
             n = brain.ask_loop.load_learned(args.learned)
             print(f"  {n} facts learned on earlier days, loaded from the sleep cycle's log", flush=True)

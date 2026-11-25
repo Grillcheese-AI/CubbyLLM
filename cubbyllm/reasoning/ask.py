@@ -36,6 +36,7 @@ from .ask_namesakes import after_walk, also, seed_for
 from . import uncertified as unc
 from ..spatial.scene_ask import scene_ask
 from .ask_memory import AskMemory
+from .ask_recall import AskRecall
 from .ask_relation import AskRelation
 from .ask_profile import AskProfile
 from .ask_dated import AskDated
@@ -45,7 +46,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 __wiring__ = "WIRED"
 
 
-class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
+class AskLoop(AskDated, AskProfile, AskRelation, AskMemory, AskRecall):
     """`ask(question)` -> the loop's record. `emitter` is any object with `.emit(prompt, max_new_tokens=)`
     (the serving emitter, shared); `world` a FactStore with a TripleIndex (the wiki world when None);
     `source` 'wikidata' | 'wikidata-offline' | a Source object (the server builds the LFM source for `--ask lfm` and
@@ -169,15 +170,17 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
         from cubbyllm.reasoning.graph import Collector
         with Collector() as col:
             self._graph = (col, " ".join(question.split()))
+            rec = None
             try:
-                return self._ask(question, item=item, asker=asker, choose=choose)
+                rec = self._ask(question, item=item, asker=asker, choose=choose)
+                return rec
             finally:
                 self._graph = None
+                self._remember(" ".join(question.split()), rec)   # order 0083: the striatum's reward, the live write
 
     def _ask(self, question: str, item: str | None = None, asker: str | None = None, choose=None) -> dict:
         from cubbyllm.reasoning import events as ev
-        from cubbyllm.reasoning.learn import learn_and_answer
-        from cubbyllm.reasoning.planner import QuestionPlan, normalize
+        from cubbyllm.reasoning.planner import normalize
         from ..emit.base import strip_fences
         from cubbyllm.reasoning.emitted import emitted_plan
         t0 = time.perf_counter()
@@ -206,11 +209,12 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
                 self._keep(rec)
                 return rec
             asked, _year = strip_as_of(question)         # the year is a constraint, not a relation
+            mem = None if sa or ed else self._recall(question, asked, item, choose, rec)   # order 0083; off: None
             from ..emit import plan_trie
-            if not (sa or ed) and plan_trie.mode() != "off":    # order 0081: the seat names only relations held
+            if not (sa or ed or mem) and plan_trie.mode() != "off":    # order 0081: the seat names only relations held
                 plan_trie.hand(self.emitter, self.known)
             try:
-                raw = "no plan\n" if sa or ed else self.emitter.emit(asked, max_new_tokens=self.max_new)
+                raw = "no plan\n" if sa or ed or mem else self.emitter.emit(asked, max_new_tokens=self.max_new)
                 if program_world(strip_fences(raw)) == "self":
                     pp = profile_program(strip_fences(raw))
                     if pp:
@@ -230,42 +234,27 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
                 ep, rec["scene_shape"] = ([sa[1]], sa[2]), sa[0]
             if ed:
                 ep, rec["restated"] = ([ed[1]], ed[2]), ed[0]
+            if mem:
+                ep = mem["rels"], mem["seed"]
             if not ep or not ep[0] or not ep[1]:
                 rec["reason"] = rec["reason"] or "no_plan"
                 qid = ev.emit("question", text=question, source=getattr(self.source, "name", None))
                 ev.emit("answer", qid, answer=None, verified=False, reason=rec["reason"])
                 rec["wall_s"] = round(time.perf_counter() - t0, 3); self._keep(rec); return rec
             rels, seed = ep
-            one_item = seed_for(self, seed, item, question=question, rels=rels)  # a shared name (orders 0033, 0037)
-            plan = QuestionPlan(relations=[None] + rels[1:], tail=f"{rels[0]} of {seed}", n_hop=len(rels))
-            rec["plan"], rec["seed"] = rels, seed
-            source = self.source
-            if hasattr(source, "resolve"):                 # the name with the article the asker wrote (order 0047)
-                from .heldout import asked_span, on as heldout_on
-                from ..sources.wikidata_resolve import name_key
-                asked = asked_span(question, seed) if heldout_on() else None
-                source.asked_names = {name_key(seed): asked} if asked else {}
-            if self.scene is not None:
-                from cubbyllm.spatial.route import route
-                if route(plan, self.scene):
-                    source = self.scene
-                    rec["world"] = "scene"
-            def learn(src=None, store=None):             # `src`: another source for this walk (the reader's: none);
-                return learn_and_answer(sa[0] if sa else ed[0] if ed else question, lambda q, k: [], self._run_fn,   # `store`: a scratch
-                                        store=self.world if store is None else store, known=self.known,   # first world (a namesake apart, 0043;
-                                        # an empty store is falsy)
-                                        source=src or source, tau_vm=TAU_VM.get(plan.n_hop, 0.2202), top_k=3, max_repairs=1,
-                                        plan=plan, resolvers=self.resolvers, choose=parse_choose(choose) or None,
-                                        fallbacks=self.fallbacks if src is None else [],
-                                        before=[self.books] if self.books is not None and src is None else None)
-            if self.loci is not None:                    # the trunk reads first; a miss is looked up once (order 0007)
-                from .loci_reader import through_loci
-                if through_loci(self, rec, rels, seed, learn) is not None:
-                    rec["wall_s"] = round(time.perf_counter() - t0, 3)
-                    self._keep(rec)
-                    return rec
-            with one_item:
-                lr = learn()
+            if mem:                                      # a remembered plan, already walked and certified (order 0083)
+                plan, learn, lr = mem["plan"], mem["learn"], mem["lr"]
+            else:
+                plan, _source, learn, one_item = self._walk_setup(question, sa[0] if sa else ed[0] if ed else question,
+                                                                  rels, seed, item, choose, rec)
+                if self.loci is not None:                # the trunk reads first; a miss is looked up once (order 0007)
+                    from .loci_reader import through_loci
+                    if through_loci(self, rec, rels, seed, learn) is not None:
+                        rec["wall_s"] = round(time.perf_counter() - t0, 3)
+                        self._keep(rec)
+                        return rec
+                with one_item:
+                    lr = learn()
 
         def again():                                     # the same walk once more, under the same pin or cue: a snapshot's
             with self._lock, seed_for(self, seed, item, question=question, rels=rels):    # changing value, the source
