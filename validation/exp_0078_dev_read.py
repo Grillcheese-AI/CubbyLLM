@@ -14,6 +14,12 @@ with no second pass. Test is never read here.
     python validation/exp_0078_dev_read.py --arm s0 --export <base450m_cont/grilly> --adapter <adapter> \\
         --tokenizer <tokenizer.json> --data <emitter_sft_v12e_w_slots.jsonl> [--limit 20]
     python validation/exp_0078_dev_read.py --score validation/logs/gsm8k_dev_read_s0_<date>.jsonl [--drop <ids.json>]
+    python validation/exp_0078_dev_read.py --score <rows> --rules --data <v12e_w_slots> [--gsm8k-train <train.jsonl>]
+    python validation/exp_0078_dev_read.py --arm novm --ckpt <base .pt> --tokenizer <..> --data <..> --gsm8k-train <..>
+
+`--rules` (0078's addendum, part 1): the answer-kind rules checked on GSM8K train's golds, then the score without and
+with them (`exp_0078_dev_score.rules_read`). `--arm novm` (part 4): the base with no adapter, 4-shot, no VM
+(`exp_0078_novm.py`); its rows are scored by `--score` as any arm's.
 
 Wiring: STANDALONE (an experiment; order 0078).
 """
@@ -166,12 +172,28 @@ def main(argv=None) -> None:
     ap.add_argument("--score", default="", help="a rows file: choose m and k on it (exp_0078_dev_score)")
     ap.add_argument("--drop", default="", help="with --score: a json list of dev ids to leave out (S0's footnote)")
     ap.add_argument("--all-dev", action="store_true", help="with --score: choose on all rows (before the split)")
+    ap.add_argument("--rules", action="store_true", help="with --score and --data: the answer-kind rules (part 1)")
+    ap.add_argument("--gsm8k-train", default="", help="GSM8K train with ids (the rules' gold check; novm's shots)")
+    ap.add_argument("--shots-seed", type=int, default=0, help="--arm novm: the seed drawing the 4 shots")
     a = ap.parse_args(argv)
+    if not a.gsm8k_train:
+        from cubbyllm import local_paths
+        a.gsm8k_train = os.path.join(local_paths.value("CUBBY_DATASETS") or ".", "gsm8k", "train.jsonl")
     if a.score:
-        from exp_0078_dev_score import HELD, score         # k, m on dev without 80:200; 80:200 read once at them
-        print(json.dumps(score(a.score, a.drop, None if a.all_dev else HELD), indent=1))
+        from exp_0078_dev_score import HELD, rules_read, score   # k, m on dev without 80:200; 80:200 read once at them
+        held = None if a.all_dev else HELD
+        if a.rules:
+            qs = {r["id"]: r["question"] for r in load(a.data)}
+            print(json.dumps(rules_read(a.score, a.gsm8k_train, qs, a.drop, held), indent=1))
+        else:
+            print(json.dumps(score(a.score, a.drop, held), indent=1))
         return
     a.out = a.out or os.path.join(HERE, "logs", f"gsm8k_dev_read_{a.arm}_{time.strftime('%Y-%m-%d')}.jsonl")
+    if a.arm == "novm":
+        from exp_0078_novm import run as run_novm
+        recs = load(a.data)[a.offset:]
+        run_novm(a, recs[:a.limit] if a.limit else recs)
+        return
     run(a)
 
 
