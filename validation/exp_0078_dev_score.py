@@ -14,6 +14,12 @@ problems, all unseen templates) once at the frozen k and m: right / wrong / refu
 of the k tries, right), and per m the spoken share and the spoken-wrong share, for the pre-registered next step (a path
 verifier if top-1 < 0.300, or spoken-wrong > 1% at every m that speaks on 20% or more). `held=None`: all rows, as before.
 
+**The answer-kind rules (0078's addendum, part 1; off unless `rules` is given):** `gold_check` counts, per rule, the
+GSM8K train golds it would refuse (`cubbyllm.reasoning.answer_kind`); a rule refusing more than 7 (0.1%) is dropped.
+With `rules` and `questions` (id -> question), each try breaking a kept rule does not vote (`answer_kind.kept`), and k,
+m and the held read are chosen and read as above. `rules_read` gives both reads, without and with the rules, and the
+order's verdict on dev 80:200 (kept: no fewer right, no more wrong).
+
 Wiring: STANDALONE (order 0078).
 """
 from __future__ import annotations
@@ -78,9 +84,35 @@ def top1(values: list, gold: float) -> bool:
     return v["answer"] is not None and abs(v["answer"] - gold) <= 0.01
 
 
-def held_read(rows: list[dict], k: int, m: int) -> dict:
+def values(r: dict, rules=None, questions=None) -> list:
+    """A row's tries' VM values; with ``rules``, a value breaking one is None (it does not vote)."""
+    vs = [num(t["answer"]) for t in r["tries"]]
+    if rules:
+        from cubbyllm.reasoning.answer_kind import kept
+        vs = kept(vs, questions[r["id"]], rules)
+    return vs
+
+
+GOLD_LINE = 7          # a rule refusing more than 7 of GSM8K train's 7,473 golds (0.1%) is dropped (the order)
+
+
+def gold_check(train_path: str) -> dict:
+    """{"golds": n, "refused by": {rule: count}, "kept": [rules within the line], "dropped": [...]}: each rule on its
+    own, on GSM8K train's golds (the number after `####`)."""
+    from cubbyllm.reasoning.answer_kind import RULES, broken
+    rows = [json.loads(ln) for ln in open(train_path, encoding="utf-8")]
+    by = {r: 0 for r in RULES}
+    for row in rows:
+        gold = float(row["answer"].split("####")[-1].strip().replace(",", ""))
+        for rule in RULES:
+            by[rule] += broken(gold, row["question"], (rule,)) is not None
+    return {"golds": len(rows), "refused by": by, "line": GOLD_LINE,
+            "kept": [r for r in RULES if by[r] <= GOLD_LINE], "dropped": [r for r in RULES if by[r] > GOLD_LINE]}
+
+
+def held_read(rows: list[dict], k: int, m: int, rules=None, questions=None) -> dict:
     """Dev lo:hi at the frozen k and m, read once; and every m's spoken / spoken-wrong share (the next step's line)."""
-    dev = [([num(t["answer"]) for t in r["tries"]][:k], float(r["gold"])) for r in rows]
+    dev = [(values(r, rules, questions)[:k], float(r["gold"])) for r in rows]
     ch = choose_m(dev, k)
     n = max(1, len(dev))
     by_m = {mm: {"spoken share": round((c["right"] + c["wrong"]) / n, 4), "spoken-wrong share": c["wrong share"]}
@@ -92,13 +124,13 @@ def held_read(rows: list[dict], k: int, m: int) -> dict:
                 by_m[mm]["spoken-wrong share"] > 0.01 for mm in speaks)}
 
 
-def score(path: str, drop: str = "", held: "tuple | None" = None) -> dict:
+def score(path: str, drop: str = "", held: "tuple | None" = None, rules=None, questions=None) -> dict:
     rows = load_rows(path, drop)
     out_rows = []
     if held:
         out_rows = [r for r in rows if held[0] <= r["i"] < held[1]]
         rows = [r for r in rows if not held[0] <= r["i"] < held[1]]
-    dev = [([num(t["answer"]) for t in r["tries"]], float(r["gold"])) for r in rows]
+    dev = [(values(r, rules, questions), float(r["gold"])) for r in rows]
     by_k = {}
     for k in (8, 16):
         ch = choose_m(dev, k)
@@ -115,9 +147,42 @@ def score(path: str, drop: str = "", held: "tuple | None" = None) -> dict:
             "seconds a question": {"mean": round(sum(secs) / max(1, len(secs)), 1),
                                    "median": sorted(secs)[len(secs) // 2] if secs else None}}
     if held and best:
-        res["held read"] = {**held_read(out_rows, best, by_k[best]["m"]), "greedy": greedy(out_rows),
+        res["held read"] = {**held_read(out_rows, best, by_k[best]["m"], rules, questions), "greedy": greedy(out_rows),
                             "dev": f"{held[0]}:{held[1]}"}
+    if rules:
+        res["rules"] = list(rules)
+        res["tries out by rule"] = tries_out(rows + out_rows, rules, questions)
     return res
 
 
-__all__ = ["HELD", "greedy", "held_out_ids", "held_read", "load_rows", "score", "top1"]
+def tries_out(rows: list[dict], rules, questions) -> dict:
+    """How many tries each rule takes out of the vote (the first rule a value breaks), and their golds' share right."""
+    from cubbyllm.reasoning.answer_kind import broken
+    out = {r: {"tries": 0, "right": 0} for r in rules}
+    for r in rows:
+        g = float(r["gold"])
+        for v in (num(t["answer"]) for t in r["tries"]):
+            b = broken(v, questions[r["id"]], rules) if v is not None else None
+            if b:
+                out[b]["tries"] += 1
+                out[b]["right"] += abs(v - g) <= 0.01
+    return out
+
+
+def rules_read(path: str, train_path: str, questions: dict, drop: str = "", held=HELD) -> dict:
+    """The gold check, then the read without and with the kept rules; the verdict on dev lo:hi (the order's line)."""
+    gc = gold_check(train_path)
+    off = score(path, drop, held)
+    on = score(path, drop, held, gc["kept"], questions) if gc["kept"] else None
+    res = {"gold check": gc, "without the rules": off, "with the rules": on}
+    a, b = (off.get("held read") or {}).get("at m"), ((on or {}).get("held read") or {}).get("at m")
+    if a and b:
+        res["verdict on the held read"] = {
+            "without": {k: a[k] for k in ("right", "wrong", "refused")},
+            "with": {k: b[k] for k in ("right", "wrong", "refused")},
+            "kept": b["right"] >= a["right"] and b["wrong"] <= a["wrong"]}
+    return res
+
+
+__all__ = ["GOLD_LINE", "HELD", "gold_check", "greedy", "held_out_ids", "held_read", "load_rows", "rules_read", "score",
+           "top1", "tries_out", "values"]

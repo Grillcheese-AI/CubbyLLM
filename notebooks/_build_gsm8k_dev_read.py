@@ -100,10 +100,48 @@ for arm, adapter in ARMS.items():
     assert p.returncode == 0, f'{arm}: exit {p.returncode} (run the cell again: it resumes)'
 print('dev read done ->', LOGS)
 """),
+    md(r"""
+## Order 0078, part 4: the control without the VM (Nick's yes, 2026-11-25; no gate)
+
+The base S0 and S1 sit on, **with no adapter**, does the arithmetic itself: 4-shot (four GSM8K train problems outside
+dev, drawn by seed 0, their worked solutions without the calculator marks), at most 256 new tokens, one greedy and 16
+tries (temperature 0.7, top-k 40); the answer is the number after the first `####`, else the last number written
+(`validation/exp_0078_novm.py`). Its rows have the dev read's shape, so the cell below scores it as S0 and S1 are
+scored. Nothing is chosen from it and test is never read with it. **Run the setup and VM cells, then this one** (the
+read cell above can be skipped: S0 and S1 are written). Not timed yet: each question decodes 256 tokens, the 16 tries in
+one batch; expect about the dev read's pace or less. It resumes from its log like the read.
+"""),
+    code(r"""
+# --- part 4: the no-VM arm (resumable) ---
+DRIVE     = '/content/drive/MyDrive/cubbyllm'
+CKPT      = f'{DRIVE}/runs/base450m_cont/base450m_cont_final.pt'
+TOKENIZER = f'{DRIVE}/token_cache_base/tokenizer/grillcheese_bbpe128k.json'
+DATA      = f'{DRIVE}/emitter/emitter_sft_v12e_w_slots.jsonl'
+TRAIN     = f'{DRIVE}/gsm8k/train.jsonl'
+LOGS      = f'{DRIVE}/emitter/gsm8k_dev_read'
+for p in (CKPT, TOKENIZER, DATA, TRAIN):
+    assert os.path.exists(p), p
+out = f'{LOGS}/gsm8k_dev_read_novm.jsonl'
+done = sum(1 for _ in open(out, encoding='utf-8')) if os.path.exists(out) else 0
+print(f'=== novm: {done} of 329 already written', flush=True)
+if done < 329:
+    cmd = [sys.executable, '-u', 'validation/exp_0078_dev_read.py', '--arm', 'novm', '--ckpt', CKPT,
+           '--tokenizer', TOKENIZER, '--data', DATA, '--gsm8k-train', TRAIN, '--out', out]
+    with open(f'{LOGS}/run.log', 'a', encoding='utf-8', buffering=1) as f:
+        f.write(f"\n=== {time.strftime('%F %T')} {' '.join(cmd[2:])}\n")
+        p = subprocess.Popen(cmd, cwd=REPO, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+        for line in p.stdout:
+            print(line, end=''); f.write(line)
+        p.wait()
+    assert p.returncode == 0, f'novm: exit {p.returncode} (run the cell again: it resumes)'
+print('novm read done ->', out)
+"""),
     code(r"""
 # --- k and m from the logs (no second pass), chosen on dev without 80:200, then 80:200 read once at them (the split,
-# Cowork 2026-11-24); S0 also without the five overlapping dev questions ---
+# Cowork 2026-11-24); S0 also without the five overlapping dev questions; the no-VM arm when its log is complete ---
 DROP = f'{REPO}/validation/logs/gsm8k_dev_s0_overlap_2026-11-21.json'
+NOVM = f'{LOGS}/gsm8k_dev_read_novm.jsonl'
+ARMS = ['s0', 's1'] + (['novm'] if os.path.exists(NOVM) and sum(1 for _ in open(NOVM, encoding='utf-8')) >= 329 else [])
 for arm in ARMS:
     for drop in ([''] + ([DROP] if arm == 's0' else [])):
         args = [sys.executable, 'validation/exp_0078_dev_read.py', '--score', f'{LOGS}/gsm8k_dev_read_{arm}.jsonl']

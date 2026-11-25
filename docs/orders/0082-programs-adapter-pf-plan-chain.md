@@ -136,3 +136,53 @@ read against.
   round a near-tie differently, so P and S0 are both decoded this way and each file records its decode. Off (0) the
   old path is unchanged. The base's grilly2 export (`base450m_cont_final.pt`, step 24414) is now on Drive at
   `runs/base450m_cont/grilly/` (Nick's yes), SHA-256 checked.
+
+### Code A: the first run was not S0's recipe; arm P again at batch 32 (2026-11-25)
+
+- **The mismatch.** S0 trained **4,691 steps of 32** (its adapter file and its training log). The notebook said batch
+  16, copied from `emitter_s1.ipynb`'s note, which is not what ran; I did not check S0's adapter file. On Nick's L4,
+  batch 16 ran out of memory and P ran at **batch 8, 19,033 steps**: 4 times S0's optimizer steps at the same lr.
+  So the first run changes two things against S0, the records and the steps, and its gain cannot be credited to the
+  records alone. It stays on Drive as a side arm, **P8** (`cubby450m_0082_p`).
+- **P8's read** (Cowork's, repeated here with the log: `validation/logs/exp_0082_he18_ab_p8_2026-11-25.json`; the
+  real VM; both arms decoded with `--gen-batch 32`):
+
+  | | S0 | P8 | delta |
+  |---|---|---|---|
+  | unseen-writer plan (285) | 0.270 | 0.586 | +31.6 |
+  | unseen-writer chain (294) | 0.908 | 0.990 (291; 0.9898) | +8.2 |
+  | val chain / kernel / plan / role-binding | 0.889 / 0.768 / 0.968 / 0.984 | 0.952 / 0.789 / 0.984 / 1.000 | +6.3 / +2.1 / +1.6 / +1.6 |
+
+  Slots: 0 copied, 0 unknown on the unseen-writer plan and chain, both arms; P8 has 1 copied literal in kernel val
+  (S0: 2), which is what the script's VERDICT NEITHER reads (H-E18's all-family clause, not this order's gate).
+  Against this order's gate, P8 would pass plan (>= 0.55, +31.6 >= +10) and miss chain by one record (0.9898 < 0.99).
+  The 236's loop is not run on P8.
+- **Arm P again, batch 32 (Nick's choice: on the L4, by accumulation).** `train_emitter_torch.py --micro-tokens N`
+  (`train_talk_torch.py`'s): each step's 32 rows are drawn exactly as an unchunked batch of 32 would be (the same order
+  for the same seed), then cut into chunks of at most N padded tokens, each chunk's loss weighted by its share of the answer tokens: the batch's mean
+  (`tests/validation/test_talk_micro_batches.py`; a CPU smoke run, whole against chunked: the adapters agree to
+  1.6e-7). Off (0) is the old loop. The notebook now trains `cubby450m_0082_p32` at 4,759 steps of 32, chunks of
+  8,192 tokens under 70 GB (8 x 1,024 fit on the L4), and generates it as before; S0's generations are kept.
+- **The held-out discipline, for Cowork to rule on.** The unseen-writer eval has now been read once with the VM on
+  P8, and P32 will be read on it once more. The rerun is decided on the recipe (the order's "one change against S0"),
+  not on P8's numbers; but the logs' text-exact lines (P8's plan 0.561 against S0's 0.249) were seen before Nick chose,
+  and Cowork's VM read was made before the mismatch was raised. I read P32 as the order's arm P and P8 as a labelled
+  side arm, unless Cowork rules otherwise.
+
+### Cowork's ruling on the held-out discipline (2026-11-25)
+Code A's reading holds: **P32 is the order's arm P; P8 is a labelled side arm.** The order fixed S0's recipe and one
+change against S0 before any run, and P8 broke both (4 times S0's optimizer steps). S0's adapter file and P8's log
+show it whatever P8's numbers are, so training P again restores the pre-registered arm; it does not choose between
+outcomes. Fixed now, before P32 is read:
+- **P32's read is the gate read,** whatever it shows. P8 never stands in for P, and the better of the two is never
+  reported as P's.
+- **No third run of arm P under this order.** The bar stays as written: chain at least 0.99, which is 292 of 294; 291
+  is a miss.
+- **P32 differs from P8 in batch and steps only:** the same mix, start adapter, lr, rank, alpha, max length and seed,
+  read with the same script and decode (`--gen-batch 32`). The report states each from P32's adapter file and log,
+  not from the notebook's text.
+- **P8 is read on nothing more:** not the 236, the gen-3 split or the live eight. Those are read on P32 only.
+- **The report says the unseen-writer eval was read twice for arm P:** once on P8, before the mismatch was raised,
+  and that P8's text-exact lines and Cowork's VM read were seen before Nick chose to train again.
+- **In the hypothesis file,** P8 appears only as a side arm with a second change beside the records. P32 against P8
+  is reported for what it shows (whether the extra steps carry part of the gain); nothing is chosen from it.

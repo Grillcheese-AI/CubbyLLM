@@ -26,7 +26,7 @@ offered), each step's program, the VM's value after each step, and the vote over
    - the stop, and the answer;
    - the vote: k, m, every try's final value, and how many tries reached the answer;
    - the answer-kind checks of 0078's addendum, each with its outcome;
-   - the VM build (CubeLang's commit) and the adapter's name.
+   - the VM build (CubeLang's commit), and the adapter's name and SHA-256.
    A refusal gets a Maasdam record with its reason (no value reached m votes; a rule refused the value; a slot was
    copied or unknown).
 2. **CheezML:** written at the pin (`vendor/cheezml`, v0.2), with the classes v0.2 already has for a program run, a
@@ -45,8 +45,14 @@ offered), each step's program, the VM's value after each step, and the vote over
 - **Tests:** a planted change caught each time: a slot's span moved by one character, a step's program edited, a
   value changed, a try's value changed so the vote no longer reaches m, a `$K` that is not in the closed list.
 - **Line 1:** every spoken answer gets a certificate, every refusal a Maasdam record, and every record conforms to
-  CheezML's shapes at the pin.
+  CheezML's shapes at the pin. The shape check is tested first on the pin's own examples (`docs/v0.2/examples/`): it
+  accepts all 8 that conform and rejects all 15 broken ones in `negative/`, or it is fixed before it rules on a
+  record (from Gemini's review, 2026-11-25, on Nick's yes).
 - **Line 2:** every certificate's replay is `same`.
+- **Line 3, the freeze:** the test read writes, at its start and at its end, the SHA-256 of the adapter's weights, of
+  the speak rule's code (`cubbyllm/reasoning/speak_vote.py` and the answer-kind rules beside it), of the settings (k,
+  m, temperature, top-k) and of the VM build. The two sets must match, and every certificate carries the start's; a
+  mismatch voids the read, and the report says so (same review).
 - **Kill:** one replay that is not `same` stops the writer until the cause is fixed and recorded.
 - **Reported:** records written, the time the writer adds per question, the terms v0.2 lacks.
 

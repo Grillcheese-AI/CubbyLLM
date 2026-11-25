@@ -318,3 +318,81 @@ answer, and a read of whether the score survives new names and numbers.
 - **Why it matters:** GSM-Symbolic is the field's test of whether a GSM8K score is reasoning or pattern matching. In
   Cubby the names and numbers are the host's and the arithmetic is the VM's, so whatever spread remains comes from
   the plans. That is a measurement, not a claim.
+
+### 3. SVAMP, read after GSM-Symbolic (Nick's yes, 2026-11-25; no gate)
+- **The data:** SVAMP (Patel, Bhattamishra and Goyal, NAACL 2021; MIT): 1,000 one-unknown word problems made by
+  changing problems of ASDiv-A on purpose (the question asked, the reasoning needed, the order of the story), with
+  fields `Body`, `Question`, `Equation`, `Answer` and `Type`. The copy on Hugging Face (`ChilleD/SVAMP`) splits it 700
+  and 300; the authors meant all 1,000 as a test, so all 1,000 are read, and none is ever trained on.
+- **What is read:** the arm line 6 keeps, with its frozen k, m and rules; about 5 h on an L4 at the dev read's pace.
+- **Overlap:** every problem checked for a 10-word run against every training row (TinyGSM, GSM8K train, v12e's
+  records). Overlapping problems are reported and scored apart.
+- **Reported:** right, wrong and refused, by `Type`; beside GSM8K test and GSM-Symbolic.
+- **Flag:** wrong above 3% of the 1,000 blocks serving the arm until its wrong answers are read.
+- **Why:** SVAMP is where a solver that keys on surface patterns is known to fall, and its changed questions test
+  whether the plan follows what is asked.
+
+### 4. A control without the VM, on dev (Nick's yes, 2026-11-25, from Gemini's review; no gate)
+- **Why:** the paper has to show what the VM adds. Without it the 450M does the arithmetic itself, and that number
+  belongs beside S0's and S1's.
+- **The arm:** the 450M trunk S0 and S1 sit on, with no adapter (theirs write steps for the VM, not answers), 4-shot:
+  four GSM8K train problems outside dev's 329 with their worked solutions, fixed by seed, then the dev question. At
+  most 256 new tokens; the answer is the number after the first `####`, else the last number written; no number is
+  a refusal.
+- **The vote, so that its share is not credited to the VM:** greedy, and 16 tries at temperature 0.7, top-k 40, with
+  `speak_vote` on the numbers read; k and m chosen on the 209 as for S0 and S1, then dev 80:200 read once. The
+  answer-kind rules of part 1 are not applied (they check the VM's values).
+- **Built:** an arm in `exp_0078_dev_read.py` (`--arm novm`) and its notebook cell, by Code A with part 1; Nick runs
+  it on an L4, about as long as the dev read (S1's took 18.7 s a question).
+- **Reported:** a row in the dev table above (right, wrong and refused on the 209 and on 80:200, top-1, greedy on
+  329, any try right on 329) and the time a question. Nothing is chosen from it, nothing is served on it, and test is
+  never read with it.
+
+## Code A: the addendum, parts 1 and 4 (2026-11-25)
+Built while 0082's arm P32 trains on Nick's L4 (the queue had part 1 after 0082's report; nothing in it touches 0082).
+Part 1 read at home, no decoding (`validation/logs/gsm8k_dev_rules_0078_2026-11-25.json`); part 4 is Nick's run.
+
+**Part 1, the answer-kind rules: kept; at the frozen k 8, m 7 they change nothing.**
+- **Built:** `cubbyllm/reasoning/answer_kind.py` (`broken`, `kept`: a value breaking a rule becomes None, a try that
+  never votes), `exp_0078_dev_score.gold_check` / `rules_read`, `exp_0078_dev_read.py --score <rows> --rules --data
+  <v12e_w_slots>`. Off (no `--rules`): the score is unchanged.
+- **How the question is read** (my choices, in the module's docstring): the ask is the last "how many" / "how much";
+  the asked noun is the first word after "how many" that is not a modifier (more, fewer, total, square, of, the, ...),
+  and a verb there ("how many did she keep") is no noun, so not a measure; a money word is looked for in the whole
+  question (the prices sit in the story); inflections (paid, spent), singulars and British spellings count; the
+  lists are the order's.
+- **The gold check (GSM8K train, 7,473):** negative 3, whole 0, money 0; all three kept (line: 7). The check cannot
+  fail whole or money: every train gold is a whole number. It says nothing about how they read the question; the
+  dev tries are where they act.
+- **The read** (k and m chosen again on the 209, 80:200 read once):
+
+| arm | tries out (of 5,264): negative / whole / money | right among them | chosen k, m | 209: right / wrong / refused | 80:200 | top-1 on 80:200 |
+|---|---|---|---|---|---|---|
+| S1 without | | | 8, 7 | 43 / 2 / 164 | 32 / 0 / 88 | 0.467 |
+| **S1 with** | 368 / 227 / 6 | 0 | **8, 7** | **43 / 2 / 164** | **32 / 0 / 88** | 0.467 |
+| S0 without | | | 8, 8 | 5 / 1 / 203 | 3 / 1 / 116 | 0.158 |
+| S0 with | 528 / 333 / 34 | 0 | 8, 8 | 5 / 1 / 203 | 3 / 1 / 116 | 0.167 |
+
+- **Verdict:** kept by the order's line (S1 on 80:200: no fewer right, no more wrong). It joins the speak rule frozen
+  before test, but it is inert there: it takes tries out of the vote only where the vote is loose. S1 at k 8 on the
+  209, right / wrong without -> with: m 1 87/67 -> 90/62, m 2 87/67 -> 89/60, m 3 78/40 -> 78/35, m 4 68/28 -> 68/26;
+  from m 5 on nothing moves, so m stays 7. No dev gold breaks a rule (no right try was taken out).
+- Tests: `tests/reasoning/test_answer_kind.py` (planted values per rule, the ask's noun, a value out is a try and
+  never a vote), `tests/validation/test_exp_0078_rules_novm.py` (the gold check drops a rule over the line; with the
+  rules k and m are chosen again without 80:200; off is unchanged).
+
+**Part 4, the control without the VM: built; Nick's L4 run.**
+- `validation/exp_0078_novm.py`, `exp_0078_dev_read.py --arm novm --ckpt <base .pt> --tokenizer .. --data ..
+  --gsm8k-train <train.jsonl>`. The base with no adapter; 4 shots from GSM8K train outside dev (the train file's
+  `dev` flag), drawn with seed 0 (train ids 7239, 3293, 6501, 3600; the prompt is ~600 tokens before the question),
+  their solutions without the `<<expr=result>>` calculator marks (nothing runs them here; a shot showing them would
+  show a tool this arm does not have). At most 256 new tokens; greedy and 16 tries (0.7, top-k 40) in one batch; the
+  text cut at a next `Question:`, then the number after the first `####`, else the last number; none is a refusal.
+  The shots' state is read once and kept for every question. Rows have the dev read's shape, so `--score` reads the
+  arm as S0 and S1 (the rules not applied).
+- `notebooks/gsm8k_dev_read.ipynb`: a part 4 cell (resumable, its own paths; the read cell can be skipped) and the
+  scoring cell scores `novm` once its log has 329 rows. Not timed on a card: 256 tokens a question, the 16 tries in
+  one batch.
+- Checked here: a CPU run of the command line on a small random model with the real tokenizer and data (2 questions,
+  resumable rows); the cached shots' state decodes exactly as a fresh read (test). Not checked: the real base's text.
+- Full suite: 2069 passed, 43 skipped.
