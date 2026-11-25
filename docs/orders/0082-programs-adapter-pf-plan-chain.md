@@ -128,3 +128,11 @@ read against.
 - **Next (after Nick's run):** `exp_he18_ab.py --files` on S0's and P's generations; the 236's greedy step loop for P
   against S0's 0.229; the served-loop reads after 0081's runs.
 - **Not verified here:** the notebook on Colab; the optional cell (needs the export on Drive and 0081 on master).
+- **2026-11-25, the generations batched.** On an L4 the one-at-a-time generations ran at ~12 s a record (864 records
+  an arm: ~3 h, ~6 h for both). `train_emitter_torch.py --gen-batch N` decodes the records of one prompt length
+  together (at most N) with 0078's CUDA-graph step (`dev_read_torch.greedy_rows`); the 864 prompts have 153 lengths.
+  The notebook passes 32, for both arms. On CPU it gives what `generate` gives each record alone (pinned:
+  `test_greedy_rows_equal_generate_one_by_one`; and a smoke run, 8 of 8 the same). On a card a batch's matmuls may
+  round a near-tie differently, so P and S0 are both decoded this way and each file records its decode. Off (0) the
+  old path is unchanged. The base's grilly2 export (`base450m_cont_final.pt`, step 24414) is now on Drive at
+  `runs/base450m_cont/grilly/` (Nick's yes), SHA-256 checked.
