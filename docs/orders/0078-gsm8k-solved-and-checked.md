@@ -331,3 +331,19 @@ answer, and a read of whether the score survives new names and numbers.
 - **Flag:** wrong above 3% of the 1,000 blocks serving the arm until its wrong answers are read.
 - **Why:** SVAMP is where a solver that keys on surface patterns is known to fall, and its changed questions test
   whether the plan follows what is asked.
+
+### 4. A control without the VM, on dev (Nick's yes, 2026-11-25, from Gemini's review; no gate)
+- **Why:** the paper has to show what the VM adds. Without it the 450M does the arithmetic itself, and that number
+  belongs beside S0's and S1's.
+- **The arm:** the 450M trunk S0 and S1 sit on, with no adapter (theirs write steps for the VM, not answers), 4-shot:
+  four GSM8K train problems outside dev's 329 with their worked solutions, fixed by seed, then the dev question. At
+  most 256 new tokens; the answer is the number after the first `####`, else the last number written; no number is
+  a refusal.
+- **The vote, so that its share is not credited to the VM:** greedy, and 16 tries at temperature 0.7, top-k 40, with
+  `speak_vote` on the numbers read; k and m chosen on the 209 as for S0 and S1, then dev 80:200 read once. The
+  answer-kind rules of part 1 are not applied (they check the VM's values).
+- **Built:** an arm in `exp_0078_dev_read.py` (`--arm novm`) and its notebook cell, by Code A with part 1; Nick runs
+  it on an L4, about as long as the dev read (S1's took 18.7 s a question).
+- **Reported:** a row in the dev table above (right, wrong and refused on the 209 and on 80:200, top-1, greedy on
+  329, any try right on 329) and the time a question. Nothing is chosen from it, nothing is served on it, and test is
+  never read with it.
