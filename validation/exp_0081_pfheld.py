@@ -41,6 +41,7 @@ def main() -> None:
     ap.add_argument("--arms", default="off,rel,rel+slot")
     ap.add_argument("--max-new", type=int, default=640, help="the trainer's --gen-max-new")
     ap.add_argument("--resume", action="store_true")
+    ap.add_argument("--limit", type=int, default=0, help="stop after N records (a timing chunk; --resume goes on)")
     a = ap.parse_args()
     from cubbyllm.emit import plan_trie
     from cubbyllm.emit.seats_450m import Cubby450mEmitter, Cubby450mTrunk, short_name
@@ -84,19 +85,29 @@ def main() -> None:
                 f.write(json.dumps(row, ensure_ascii=False) + "\n")
         if i % 25 == 0:
             print(f"  {i}/{len(recs)} ({time.time() - t0:.0f}s)", flush=True)
+        if a.limit and i >= a.limit:
+            os.environ["CB_EMIT_TRIE"] = "off"
+            by = {arm: [x["ms"] for x in rows if x["arm"] == arm] for arm in arms}
+            print(f"stopped after {i} records ({time.time() - t0:.0f}s); ms median per arm "
+                  f"{ {k: statistics.median(v) for k, v in by.items() if v} }; rest: --resume", flush=True)
+            return
     os.environ["CB_EMIT_TRIE"] = "off"
     report = {"order": "0081", "what": "H-E18's unseen-writer eval, per trie arm (no gate; arm A = 0082's floor)",
               "data": pathlib.Path(a.data).name, "export": short_name(a.cubby450m),
               "adapter": short_name(a.emitter_adapter), "relations": len(known), "max_new": a.max_new,
-              "card": device_name(), "arms": {}}
-    for arm in arms:
+              "card": device_name(), "arms": {},
+              "runs": {f"{t}/{m}": sum(1 for x in rows if (x["task"], x["arm"]) == (t, m))
+                       for t in ("plan", "chain") for m in ("off", "rel", "rel+slot")}}
+    for arm in [m for m in ("off", "rel", "rel+slot") if any(x["arm"] == m for x in rows)]:   # every arm the rows hold
         out = [x for x in rows if x["arm"] == arm]
-        ms = [x["ms"] for x in out]
-        report["arms"][arm] = {"score": score(out), "ms_median": statistics.median(ms) if ms else None,
-                               "ms_p95": sorted(ms)[int(0.95 * len(ms))] if ms else None,
-                               "entered": {k: sum((x["trie"] or {}).get("entered", {}).get(k, 0) for x in out)
+        ms = {t: sorted(x["ms"] for x in out if x["task"] == t) for t in ("plan", "chain")}
+        report["arms"][arm] = {"score": score(out),
+                               "ms_median": {t: statistics.median(v) for t, v in ms.items() if v},
+                               "ms_p95": {t: v[int(0.95 * len(v))] for t, v in ms.items() if v},
+                               "entered":{k: sum((x["trie"] or {}).get("entered", {}).get(k, 0) for x in out)
                                            for k in ("HOP", "SEED")}}
-        print(arm, json.dumps(report["arms"][arm]["score"].get("_all")), flush=True)
+        for t in ("plan", "chain"):
+            print(arm, t, json.dumps(report["arms"][arm]["score"].get(t)), flush=True)
     report["rows"] = rows
     path = LOGS / f"exp_0081_pfheld_{datetime.date.today().isoformat()}.json"
     path.write_text(json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8")

@@ -1,0 +1,159 @@
+gen-3 held split: 5,234 plan records, 600 sampled (seed 7) | store 562,426 facts (10,765 encyclopedia), 2,797 relations | cubby450m base450m_cont/grilly + emitter/cubby450m_v12e_w_step_cont (377,608 names) | arms ['off', 'rel', 'rel+slot']
+  50/600 (466s) off: verified 15 WRONG 0 | rel: verified 9 WRONG 0 | rel+slot: verified 9 WRONG 0
+  100/600 (886s) off: verified 31 WRONG 0 | rel: verified 21 WRONG 0 | rel+slot: verified 21 WRONG 0
+  150/600 (1292s) off: verified 51 WRONG 0 | rel: verified 40 WRONG 0 | rel+slot: verified 40 WRONG 0
+  200/600 (1771s) off: verified 68 WRONG 0 | rel: verified 56 WRONG 0 | rel+slot: verified 56 WRONG 0
+  250/600 (2180s) off: verified 82 WRONG 0 | rel: verified 70 WRONG 0 | rel+slot: verified 70 WRONG 0
+  300/600 (2594s) off: verified 98 WRONG 0 | rel: verified 88 WRONG 0 | rel+slot: verified 88 WRONG 0
+  350/600 (2998s) off: verified 113 WRONG 0 | rel: verified 101 WRONG 0 | rel+slot: verified 101 WRONG 0
+  400/600 (3392s) off: verified 127 WRONG 0 | rel: verified 118 WRONG 0 | rel+slot: verified 118 WRONG 0
+  450/600 (3819s) off: verified 143 WRONG 0 | rel: verified 133 WRONG 0 | rel+slot: verified 133 WRONG 0
+  500/600 (4199s) off: verified 163 WRONG 0 | rel: verified 156 WRONG 0 | rel+slot: verified 156 WRONG 0
+  550/600 (4601s) off: verified 179 WRONG 0 | rel: verified 171 WRONG 0 | rel+slot: verified 171 WRONG 0
+  600/600 (4982s) off: verified 198 WRONG 0 | rel: verified 188 WRONG 0 | rel+slot: verified 188 WRONG 0
+
+[off] GEN-3 HELD SPLIT: {'correct': 198, 'final:ambiguous_relation': 39, 'final:plan_does_not_cover_question': 265, 'final:retrieval_exhausted': 91, 'final:unknown_relation': 1, 'no_plan': 6, 'plan': 594, 'verified': 198}
+[off] emission ms: median 2413, p95 3096
+[off] by wording (verified / asked, then the refusals):
+    36 /   37  'What is the date of death of {S}?'  correct 36 near 0 WRONG 0 | plan_does_not_cover_question 1
+    34 /   35  'What is the place of birth of {S}?'  correct 34 near 0 WRONG 0 | plan_does_not_cover_question 1
+    24 /   43  'In what year was {S} born?'  correct 24 near 0 WRONG 0 | plan_does_not_cover_question 19
+    13 /   46  'What is the birth date of {S}?'  correct 13 near 0 WRONG 0 | retrieval_exhausted 28, plan_does_not_cover_question 5
+    17 /   38  'On what day, month, and year was {S} born?'  correct 17 near 0 WRONG 0 | plan_does_not_cover_question 21
+    25 /   26  'What is the birthplace of {S}?'  correct 25 near 0 WRONG 0 | plan_does_not_cover_question 1
+    10 /   38  'When was {S} born?'  correct 10 near 0 WRONG 0 | plan_does_not_cover_question 28
+     0 /   46  'What is the date of birth of {S}?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 46
+     0 /   43  "What is {S}'s date of birth?"  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 43
+     0 /   39  'In what year did {S} die?'  correct 0 near 0 WRONG 0 | retrieval_exhausted 31, plan_does_not_cover_question 8
+     2 /   29  'In which city was {S} born?'  correct 2 near 0 WRONG 0 | ambiguous_relation 23, plan_does_not_cover_question 3, no_plan 1
+     0 /   31  'When did {S} die?'  correct 0 near 0 WRONG 0 | retrieval_exhausted 22, plan_does_not_cover_question 9
+    13 /   13  'Which administrative territorial entity is {S} located in?'  correct 13 near 0 WRONG 0 | 
+     0 /   25  'Where was {S} born?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 25
+    11 /   11  'What is the place of death of {S}?'  correct 11 near 0 WRONG 0 | 
+     0 /   14  'In which city did {S} die?'  correct 0 near 0 WRONG 0 | ambiguous_relation 14
+     0 /   13  'In which district is {S} located?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 13
+     0 /   12  'Where did {S} die?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 12
+     5 /    5  'What award did {S} receive?'  correct 5 near 0 WRONG 0 | 
+     0 /   10  "Who was {S}'s husband?"  correct 0 near 0 WRONG 0 | retrieval_exhausted 7, no_plan 2, plan_does_not_cover_question 1
+     0 /    7  "Who is {S}'s child?"  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 6, no_plan 1
+     2 /    3  'What is the occupation of {S}?'  correct 2 near 0 WRONG 0 | plan_does_not_cover_question 1
+     1 /    4  'Who is the author of {S}?'  correct 1 near 0 WRONG 0 | plan_does_not_cover_question 3
+     1 /    3  'Which award was {S} given?'  correct 1 near 0 WRONG 0 | plan_does_not_cover_question 1, unknown_relation 1
+     1 /    3  'What is the capital of {S}?'  correct 1 near 0 WRONG 0 | plan_does_not_cover_question 2
+     0 /    3  "What was {S}'s profession?"  correct 0 near 0 WRONG 0 | retrieval_exhausted 2, plan_does_not_cover_question 1
+     0 /    3  'Who is the director of {S}?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 3
+     1 /    2  'Who is the spouse of {S}?'  correct 1 near 0 WRONG 0 | plan_does_not_cover_question 1
+     0 /    3  "What is {S}'s capital?"  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 3
+     1 /    1  'What genre is {S}?'  correct 1 near 0 WRONG 0 | 
+     0 /    2  "What is {S}'s occupation?"  correct 0 near 0 WRONG 0 | retrieval_exhausted 1, plan_does_not_cover_question 1
+     1 /    1  'What is the genre of {S}?'  correct 1 near 0 WRONG 0 | 
+     0 /    2  'Who is the sibling of {S}?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 2
+     0 /    2  'Which city is the capital of {S}?'  correct 0 near 0 WRONG 0 | ambiguous_relation 2
+     0 /    2  'What is the alma mater of {S}?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 2
+     0 /    1  "Who was {S}'s wife?"  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 1
+     0 /    1  'Who is the employer of {S}?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 1
+     0 /    1  'Who does {S} work for?'  correct 0 near 0 WRONG 0 | no_plan 1
+     0 /    1  "Who is {S}'s sibling?"  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 1
+     0 /    1  'Who is {S} married to?'  correct 0 near 0 WRONG 0 | no_plan 1
+
+[rel] GEN-3 HELD SPLIT: {'correct': 188, 'final:ambiguous_relation': 7, 'final:plan_does_not_cover_question': 395, 'final:retrieval_exhausted': 4, 'no_plan': 6, 'plan': 594, 'verified': 188}
+[rel] emission ms: median 2479, p95 4247
+[rel] by wording (verified / asked, then the refusals):
+    44 /   46  'What is the birth date of {S}?'  correct 44 near 0 WRONG 0 | plan_does_not_cover_question 2
+    36 /   37  'What is the date of death of {S}?'  correct 36 near 0 WRONG 0 | plan_does_not_cover_question 1
+    34 /   35  'What is the place of birth of {S}?'  correct 34 near 0 WRONG 0 | plan_does_not_cover_question 1
+    20 /   46  'What is the date of birth of {S}?'  correct 20 near 0 WRONG 0 | plan_does_not_cover_question 26
+    25 /   26  'What is the birthplace of {S}?'  correct 25 near 0 WRONG 0 | plan_does_not_cover_question 1
+     0 /   43  'In what year was {S} born?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 43
+     0 /   43  "What is {S}'s date of birth?"  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 42, retrieval_exhausted 1
+     0 /   39  'In what year did {S} die?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 39
+     0 /   38  'When was {S} born?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 38
+     0 /   38  'On what day, month, and year was {S} born?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 38
+     0 /   31  'When did {S} die?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 31
+     0 /   29  'In which city was {S} born?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 28, no_plan 1
+     0 /   25  'Where was {S} born?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 25
+    11 /   11  'What is the place of death of {S}?'  correct 11 near 0 WRONG 0 | 
+     0 /   14  'In which city did {S} die?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 7, ambiguous_relation 7
+     0 /   13  'In which district is {S} located?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 13
+     0 /   13  'Which administrative territorial entity is {S} located in?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 13
+     0 /   12  'Where did {S} die?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 12
+     5 /    5  'What award did {S} receive?'  correct 5 near 0 WRONG 0 | 
+     0 /   10  "Who was {S}'s husband?"  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 8, no_plan 2
+     4 /    4  'Who is the author of {S}?'  correct 4 near 0 WRONG 0 | 
+     0 /    7  "Who is {S}'s child?"  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 6, no_plan 1
+     2 /    3  'What is the occupation of {S}?'  correct 2 near 0 WRONG 0 | plan_does_not_cover_question 1
+     2 /    3  'Which award was {S} given?'  correct 2 near 0 WRONG 0 | plan_does_not_cover_question 1
+     2 /    3  'What is the capital of {S}?'  correct 2 near 0 WRONG 0 | plan_does_not_cover_question 1
+     0 /    3  "What was {S}'s profession?"  correct 0 near 0 WRONG 0 | retrieval_exhausted 2, plan_does_not_cover_question 1
+     0 /    3  'Who is the director of {S}?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 3
+     0 /    3  "What is {S}'s capital?"  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 3
+     1 /    2  'Which city is the capital of {S}?'  correct 1 near 0 WRONG 0 | plan_does_not_cover_question 1
+     1 /    1  'What genre is {S}?'  correct 1 near 0 WRONG 0 | 
+     0 /    2  "What is {S}'s occupation?"  correct 0 near 0 WRONG 0 | retrieval_exhausted 1, plan_does_not_cover_question 1
+     1 /    1  'What is the genre of {S}?'  correct 1 near 0 WRONG 0 | 
+     0 /    2  'Who is the spouse of {S}?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 2
+     0 /    2  'Who is the sibling of {S}?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 2
+     0 /    2  'What is the alma mater of {S}?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 2
+     0 /    1  "Who was {S}'s wife?"  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 1
+     0 /    1  'Who is the employer of {S}?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 1
+     0 /    1  'Who does {S} work for?'  correct 0 near 0 WRONG 0 | no_plan 1
+     0 /    1  "Who is {S}'s sibling?"  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 1
+     0 /    1  'Who is {S} married to?'  correct 0 near 0 WRONG 0 | no_plan 1
+
+[rel+slot] GEN-3 HELD SPLIT: {'correct': 188, 'final:ambiguous_relation': 7, 'final:plan_does_not_cover_question': 395, 'final:retrieval_exhausted': 4, 'no_plan': 6, 'plan': 594, 'verified': 188}
+[rel+slot] emission ms: median 2486, p95 4258
+[rel+slot] by wording (verified / asked, then the refusals):
+    44 /   46  'What is the birth date of {S}?'  correct 44 near 0 WRONG 0 | plan_does_not_cover_question 2
+    36 /   37  'What is the date of death of {S}?'  correct 36 near 0 WRONG 0 | plan_does_not_cover_question 1
+    34 /   35  'What is the place of birth of {S}?'  correct 34 near 0 WRONG 0 | plan_does_not_cover_question 1
+    20 /   46  'What is the date of birth of {S}?'  correct 20 near 0 WRONG 0 | plan_does_not_cover_question 26
+    25 /   26  'What is the birthplace of {S}?'  correct 25 near 0 WRONG 0 | plan_does_not_cover_question 1
+     0 /   43  'In what year was {S} born?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 43
+     0 /   43  "What is {S}'s date of birth?"  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 42, retrieval_exhausted 1
+     0 /   39  'In what year did {S} die?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 39
+     0 /   38  'When was {S} born?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 38
+     0 /   38  'On what day, month, and year was {S} born?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 38
+     0 /   31  'When did {S} die?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 31
+     0 /   29  'In which city was {S} born?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 28, no_plan 1
+     0 /   25  'Where was {S} born?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 25
+    11 /   11  'What is the place of death of {S}?'  correct 11 near 0 WRONG 0 | 
+     0 /   14  'In which city did {S} die?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 7, ambiguous_relation 7
+     0 /   13  'In which district is {S} located?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 13
+     0 /   13  'Which administrative territorial entity is {S} located in?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 13
+     0 /   12  'Where did {S} die?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 12
+     5 /    5  'What award did {S} receive?'  correct 5 near 0 WRONG 0 | 
+     0 /   10  "Who was {S}'s husband?"  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 8, no_plan 2
+     4 /    4  'Who is the author of {S}?'  correct 4 near 0 WRONG 0 | 
+     0 /    7  "Who is {S}'s child?"  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 6, no_plan 1
+     2 /    3  'What is the occupation of {S}?'  correct 2 near 0 WRONG 0 | plan_does_not_cover_question 1
+     2 /    3  'Which award was {S} given?'  correct 2 near 0 WRONG 0 | plan_does_not_cover_question 1
+     2 /    3  'What is the capital of {S}?'  correct 2 near 0 WRONG 0 | plan_does_not_cover_question 1
+     0 /    3  "What was {S}'s profession?"  correct 0 near 0 WRONG 0 | retrieval_exhausted 2, plan_does_not_cover_question 1
+     0 /    3  'Who is the director of {S}?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 3
+     0 /    3  "What is {S}'s capital?"  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 3
+     1 /    2  'Which city is the capital of {S}?'  correct 1 near 0 WRONG 0 | plan_does_not_cover_question 1
+     1 /    1  'What genre is {S}?'  correct 1 near 0 WRONG 0 | 
+     0 /    2  "What is {S}'s occupation?"  correct 0 near 0 WRONG 0 | retrieval_exhausted 1, plan_does_not_cover_question 1
+     1 /    1  'What is the genre of {S}?'  correct 1 near 0 WRONG 0 | 
+     0 /    2  'Who is the spouse of {S}?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 2
+     0 /    2  'Who is the sibling of {S}?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 2
+     0 /    2  'What is the alma mater of {S}?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 2
+     0 /    1  "Who was {S}'s wife?"  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 1
+     0 /    1  'Who is the employer of {S}?'  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 1
+     0 /    1  'Who does {S} work for?'  correct 0 near 0 WRONG 0 | no_plan 1
+     0 /    1  "Who is {S}'s sibling?"  correct 0 near 0 WRONG 0 | plan_does_not_cover_question 1
+     0 /    1  'Who is {S} married to?'  correct 0 near 0 WRONG 0 | no_plan 1
+
+VM calls 1148
+every WRONG (0):
+
+verified examples (first 8 of 574):
+  [off] 'In what year was Bohuslav Martinu born?' plan ['born'] seed 'bohuslav martinu' -> '1890-12-08' (gold '1890-12-08')
+  [off] 'In what year was Sir John Douglas Cockcroft born?' plan ['born'] seed 'sir john douglas cockcroft' -> '1897' (gold '1897')
+  [off] 'In what year was Robert Treat Paine born?' plan ['born'] seed 'robert treat paine' -> '1731' (gold '1731')
+  [off] 'What is the occupation of Victoria Woodhull?' plan ['occupation'] seed 'victoria woodhull' -> 'Suffragist' (gold 'Suffragist')
+  [rel] 'What is the occupation of Victoria Woodhull?' plan ['occupation'] seed 'victoria woodhull' -> 'Suffragist' (gold 'Suffragist')
+  [rel+slot] 'What is the occupation of Victoria Woodhull?' plan ['occupation'] seed 'victoria woodhull' -> 'Suffragist' (gold 'Suffragist')
+  [off] 'What award did Spain National Football Team receive?' plan ['award'] seed 'spain national football team' -> 'European Championship' (gold 'European Championship')
+  [rel] 'What award did Spain National Football Team receive?' plan ['award'] seed 'spain national football team' -> 'European Championship' (gold 'European Championship')
+card: AMD Radeon RX 6750 XT (added by hand after the run; the run predates ee64f91)
