@@ -1,5 +1,5 @@
 # 0083 - Faster answers: a checked plan remembered before the 450M writes one, and the 128k head at a 32k head's cost
-status: in progress (Code B, 2026-11-25)
+status: review (Code B, 2026-11-25)
 written: 2026-11-24 by Cowork · approved: 2026-11-24 by Nick ("we should also include the 128k == 32k in it") · hypothesis: H-A5 (an external episodic store beside the weights), H-C3 (route 5, order 0068)
 
 ## Why
@@ -97,10 +97,112 @@ remembers is a latent source, and an answer resting only on it is held, `latent_
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
-- **Commits:**
+**Verdict (Code B, 2026-11-25):**
+- **Memory:** the kill fires as scored, so memory stays off. Every wrong answer memory spoke is one the gate also
+  speaks without memory, on the same row or for the same person in other words. One of them is a real wrong answer,
+  carried from a seat defect that arm A has seven times (Found on the way).
+- **Route 5:** the programs seat passes every line, but H-E8 (the talk seat) is under 99%, so the switch stays off.
+- **Commits:** on `agent-b`, not pushed:
+  - `458f97e` in progress;
+  - `172f4cf` memory first and the step counts;
+  - `08cc23d` the bench;
+  - `4ea44bc` the WRONG rows not on the base arm;
+  - `ce54ab5` the runs;
+  - `3749036` master merged in.
 - **Files:**
-- **Tests:**
-- **Measured:** <against each acceptance line>
-- **Not verified here:**
+  - `cubbyllm/reasoning/ask_recall.py` (new; AskLoop's mixin). The walk set-up of `_ask` moved into it verbatim, so a
+    remembered plan takes the walk an emitted plan takes. `ask.py` went from 294 to 284 lines.
+  - `cubby_serve/cli.py`: `--memory <folder>` and `--head-route <index>`.
+  - `cubbyllm/emit/seats_450m.py`: the trunk's decode steps per role and head, in `.steps`.
+  - `validation/exp_0083_repeat.py` (new).
+  - `validation/exp_e8_history_retrieval.py`: `--route`.
+  - Tests: `tests/reasoning/test_ask_recall.py`, `tests/emit/test_seat_steps.py`,
+    `tests/validation/test_exp_0083_repeat.py`.
+- **Tests:** after merging master (`0e79515`), the full suite gave 2,084 passed and 44 skipped. Under grilly2's
+  Python, with the card idle, `tests/ops/test_grilly_seats_route.py` and the seat-step tests gave 7 passed, among them
+  the route refused on an index over other head rows.
+  - Off is the same as before, with both flags and with or without a mounted memory: the records are equal.
+  - A recalled plan about another entity is refused by `covers()`, and the emitter then runs.
+  - The striatum's order and its rewards, on a scripted run.
+  - The live write is the episode `sleep.replay` writes for the same record.
+  - A remembered plan fetches nothing.
+  - A host-shape answer is written and never asks memory.
+- **Measured:** home card (AMD Radeon RX 6750 XT). The served stack is `cli.boot` with `--ask --web off --history ""
+  --no-board`, one loop per arm. The gen-3 held split is seed 7, 600 rows (r17's), asked twice. The log is
+  `validation/logs/exp_0083_repeat_2026-11-25.json`; scoring is r11's match against the record's gold.
+
+  | arm, pass | verified | correct / near / WRONG | from memory | seat calls | median, p90 s |
+  |---|---|---|---|---|---|
+  | A, first | 216 | 131 / 69 / 16 | 0 | 348 | 2.44, 2.87 |
+  | A, second | 218 | 132 / 70 / 16 | 0 | 348 | 2.41, 2.79 |
+  | M, first | 242 | 148 / 76 / 18 | 84 | 264 | 2.23, 4.16 |
+  | M, second | 257 | 158 / 81 / 18 | 151 | 197 | 0.015, 2.71 |
+  | H, first / second | 216 / 218 | as A | 0 | 348 | 2.25 / 2.24 |
+  | MH, first / second | 242 / 257 | as M | 84 / 151 | 264 / 197 | 0.043 / 0.014 |
+
+  - **Gate, memory, the second asking:** 241 of 242 first-asking answers came back, at a median 0.008 s on those
+    rows. The line asks for all of them at most 0.2 s, so it misses by one.
+    - The rows the seat had certified tell the two arms apart: M 95 of 96 at a median 0.008 s, A 70 of 70 at 2.46 s.
+      The host-restated rows run at 0.007 s in every arm.
+    - The one lost is row 73. The striatum explored (ε 0.1 while the recent reward was low), ranked the emitter first,
+      and memory was not tried. The seat then wrote `current birth`, which was refused.
+  - **Gate, memory, the first asking:** M's median is 2.23 s against A's 2.44 (pass). M ran first, on the colder source
+    cache, which counts against M. A memory miss costs a median 0.047 s (passes at 0.05 s).
+  - **Gate, memory, 0 wrong on every pass:** misses on every arm, A included: 16 of 600 a pass score WRONG in A.
+  - **Kill, memory:** WRONG from a remembered plan: 4 in the first asking, 8 in the second, 5 in the rephrased pass.
+    The kill fires as scored. Row by row:
+    - **The same answer A gives on that row** (gen-3 486, 499; second-pass 149, 199, 460, 498). These are mostly
+      gold disagreements: Thieuloy-Saint-Antoine against "Thienloy", the Morgenthau father and son, a county against
+      the village. Row 199 ("Saint Joseph" for Maria Gripe's husband) is a real wrong; see Found on the way.
+    - **A refused, but the host gives the same answer to the same person in other words.** Gen-3 308 is Rottach-Egern,
+      as row 14 says; gold is Egern am Tegernsee, a village inside it. Gen-3 543 is 1921-05-03, as row 167 says;
+      gold is 1920. Memory recalled the host's episode about the same person.
+    - **The rephrased pass repeats the template asking's answer.** Rows 31, 36, 41 and 71; the hdc golds are "Weasel
+      sharks" (Hemigaleidae's common name), "P:I" for Italy, and "Dennmark".
+    - **Row 144, "Ghana":** a real wrong answer. Memory carried an episode the seat had certified at row 100, where it
+      bound "citizenship" as the seed. Arm A's seat refused row 144, but spoke the same "Ghana" on 7 other rows of
+      the pass.
+  - **Tried and vetoed:** remembered plans also meet the checks after the walk. In the second pass, `time_mismatch`
+    rises from A's 18 to M's 44: a remembered chain the tense check refuses is not spoken.
+  - **Reported, no gate, the other words** (150 hdc one-hop pairs, template wording then rephrasing): 31 template
+    wordings were certified in each arm. On the rephrasing, M answered 18 from memory, against 3 verified answers in A.
+  - **Gate, route 5, programs:** 347 of 348 seat programs are identical (99.7%, pass). Row 196 is a non-plan program
+    that both heads write differently and both refuse. Every answer is identical on all 1,200 rows, H against A and
+    MH against M. Every seat step ran on route 5 (26,844 a pass). Seat ms per step: 30.7 against 33.7.
+  - **Gate, route 5, H-E8** (talk_v3a, test split; `exp_e8_history_retrieval_0083_{full,route}.json`):
+    - 546 of 594 drafts are identical (91.9%), which misses.
+    - Reworded spoken-and-correct goes from 302 to 291, refused from 17 to 28; wrong stays 1.
+    - Named: correct from 381 to 370, wrong stays 0.
+    - The full-head run matches the v3a log (303 and 1).
+  - **Gate, route 5, the live eight** (`exp_0083_live8_{full,route}_2026-11-25.json`; the trie off, everyday on and
+    off): identical on all 16 asks (pass).
+  - **Gate, route 5, the step** (`head_lab_generate_2026-11-25_9d5f076.json`): route 5 p50 20.446 ms, the 32k head
+    20.318, the full 128k head 21.604. It misses by 0.13 ms. 0068 had route 5 0.03 ms ahead (on 7cb24f8), so the two
+    are a tie within noise.
+  - **Kill, route 5:** H-E8 is under 99%, so it fires. The route stays off. My reading: free prose meets near-ties a
+    program does not. 0068's 99.76% token agreement leaves about one 64-token answer in seven with a different
+    token, and here no wrong answer was added.
+- **Not verified here:** the A100 or Colab; batches above 1 and sampled talk with the route (out of scope); memory
+  across a server restart (the sleep folder's files load, tested on the CPU only).
 - **Found on the way:**
+  - **A spoken wrong answer on the emitter path, memory off.** "Which country does <person> hold citizenship in?" gives
+    "Ghana" 7 times in 150 in arm A. The slotted seat binds `$E3` ("citizenship", a span the slot table knows) as the
+    seed. `covers()` passes the plan, because its residual rule refuses only leftover words that relation labels are
+    made of, and a person's name is not one. I left it unfixed, since 0083 keeps `plan_verify` unchanged (inbox,
+    2026-11-25).
+  - **"Saint Joseph" for Maria Gripe's husband** (arm A, row 199, the seat's plan): a shared-name answer for Mary.
+  - **Memory widens what the gate already says.** It answered 26 more first askings than A, and 3 of A's "Ghana" rows
+    became right answers from the template's own episode. But it also carries any certified wrong to every question
+    whose words its plan covers. Its kill is only as clean as `covers()`.
+  - **Both answers come from the gold:** the gen-3 golds of place and date questions mix levels and spellings, so a
+    third of the scored WRONGs are the same place or a disputed date.
+  - The route needed no grilly2 build from source: the installed one (`public-cleanup`, 9d5f076) has the shortlist
+    decode. 0068's index (`814c8e03...`) is over the served export's head rows (`63fcdfe2...`).
 - **Questions:**
+  1. Is the memory kill read as fired, when every remembered wrong is an answer the stack gives without memory? I
+     read it as fired, as pre-registered; your call.
+  2. When the striatum ranks the emitter first, should memory still be tried after an emitter refusal? Its docstring
+     says every proposer is tried until one certifies. I followed the order's wording, "first or not at all", which
+     cost row 73.
+  3. A `covers()` rule that a name the question holds must be the plan's seed or inside it: an order of its own?
+  4. Route 5 on the programs seat only (every programs line passes), with talk on the full head: worth an order?
