@@ -275,3 +275,46 @@ school's rounds are chosen. Nothing is decoded again: the dev read's rows alread
   If the vote clears both bars, no verifier is built.
 - **The win that counts beyond GSM8K:** the 236's 98 unseen-template problems at 0.340 or more (the mean ranker:
   0.286) with spoken-wrong at most 1%, reported beside line 5's 236.
+
+## Cowork's addendum (2026-11-25, on Nick's yes): impossible answers out before the vote, and GSM-Symbolic after test
+Two additions from Nick's list of GSM8K rules and from GSM-Symbolic (arXiv 2410.05229). Most of the list is already
+built in by design: one operation a step, each value run in the VM; the state written back as slots after every step;
+every number placed by the host; the final value the VM's. Two parts were missing: a plausibility check on the
+answer, and a read of whether the score survives new names and numbers.
+
+### 1. Answer-kind rules on the saved tries (Code A, after 0082's report, before the test read; no decoding)
+- **Why:** H-E19's Gate D found the 450M's wrong tries agreeing with each other (precision 0.615 even when
+  unanimous). A try whose VM value cannot answer the question should not vote at all; removing those tries may cut
+  wrong answers, or let a lower m speak at the same 1%.
+- **The rules, fixed here:**
+  - (a) a negative value is out;
+  - (b) a "how many" question whose asked noun is not a measure must get a whole number. The measures, a closed
+    list: dollars, cents, hours, minutes, seconds, days, weeks, months, years, miles, kilometers, meters, feet,
+    inches, pounds, ounces, kilograms, grams, liters, gallons, cups, percent, degrees;
+  - (c) a money question ("how much" with $, dollars, cost, pay, spend, earn, save or price) gets at most 2 decimals.
+  - Nothing else is added. Each rule is first checked on GSM8K train's 7,473 golds, and a rule that would refuse more
+    than 7 of them (0.1%) is dropped before the dev read and reported.
+- **Built:** the rules as one function beside `speak_vote` (a try whose value breaks a rule does not vote), with
+  tests on planted values; `exp_0078_dev_score.py --rules`.
+- **Read:** the dev read's saved tries (`gsm8k_dev_read_{arm}.jsonl`, S0 and S1) with the rules on; m and k chosen
+  again on dev 0:80 and 200:329 as the split says; dev 80:200 read once.
+- **Kept if:** on dev 80:200, at least as many right and no more wrong than the vote without the rules (S1 at k 8,
+  m 7: 32 right, 0 wrong, 88 refused). It is then part of the speak rule frozen before test.
+- **Kill:** fewer right or more wrong on dev 80:200, or a rule failing the gold check. The vote stays as it is.
+
+### 2. GSM-Symbolic, read after test (no gate)
+- **The data:** `apple/GSM-Symbolic` on Hugging Face, CC BY-NC-ND 4.0: evaluation only, kept off the repository and
+  out of every training set, and its canary string never enters a corpus. Released: the base set (100 templates x
+  50 instances), P1 (one added clause, 100 x 50) and P2 (two, 50 x 50). GSM-NoOp is not released.
+- **What is read:** the arm line 6 keeps, with its frozen k, m and rules, on instances 0 to 4 of every template:
+  base 500, P1 500, P2 250. That is 1,250 questions, about 6.5 h on an L4 at the dev read's pace. Beside it, the
+  same arm's GSM8K test result on the 100 originals (`original_id`), taken from the test read, not read again.
+- **Reported:** right, wrong and refused per variant; the spread across the five instance sets; the change from the
+  100 originals to the base set, P1 and P2.
+- **Flag:** a variant with wrong above 3% of its questions (test's kill line) blocks serving the arm until its wrong
+  answers are read.
+- **Overlap:** the templates come from GSM8K test, and training rows sharing a 10-word run with test were dropped
+  (line 2), so the instances are unseen by construction. The count is checked again on the 1,250 and reported.
+- **Why it matters:** GSM-Symbolic is the field's test of whether a GSM8K score is reasoning or pattern matching. In
+  Cubby the names and numbers are the host's and the arithmetic is the VM's, so whatever spread remains comes from
+  the plans. That is a measurement, not a claim.
