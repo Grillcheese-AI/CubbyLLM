@@ -104,8 +104,10 @@ proposals would have said 11 SimpleQA answers with 3 wrong, 16 Natural Questions
 WebQuestions answers with 10 wrong and 2 debatable (arm C−VM of order 0054, before the checks).
 
 The main problem now is the proposer, not the checker: on SimpleQA, 3,759 of the 4,326 questions never became a plan
-the store could answer. Order 0081, open today, lets the programs seat name only relations the store holds, so
-"birth" can no longer be written where the store says "birthplace". Order 0082 trains the seat on a second writer's
+the store could answer. Order 0081 tried the simplest fix, a seat
+that can only name relations the store holds, and it was killed: on 600 held-out questions the 450M answered 198
+without it and 188 with it, 0 wrong on both, because the gate reads the question's own word ("born") and the
+constraint took that word away. Order 0082 trains the seat on a second writer's
 wordings, which in September raised the 450M's plans on unseen wordings from 0.225 to 0.495 (H-E18). On arithmetic,
 the 2.6B stand-in alone gets 85.2% of the same 236 problems right in one pass and says a wrong answer on 14.8% of
 them, while the 450M alone, one step at a time, gets 22.9%. GSM8K's own test is order 0078 and has not been read.

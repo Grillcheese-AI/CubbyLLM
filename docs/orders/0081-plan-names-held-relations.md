@@ -1,5 +1,5 @@
 # 0081 - The programs seat names only relations the store holds: a decode-time constraint, no training
-status: review (Code B, 2026-11-24)
+status: done (2026-11-25, Cowork: the kill as pre-registered; `CB_EMIT_TRIE` stays off)
 written: 2026-11-24 by Cowork, after an outside review of the hypothesis file · approved: 2026-11-24 by Nick ("yes") · hypothesis: H-E15 (the emitter never copies a name or a number)
 
 ## Why
@@ -283,3 +283,24 @@ are lost, because the trie also closes lever 4: the seat can no longer write a r
     step admit a held label **or** the question's own words inside the literal, so coverage and lever 6 still see
     the word? Or have coverage read lever 6's table in reverse (a plan's `birth date` covers "born")? The second
     changes the gate, so it is not mine to take. Either is its own order.
+
+## Cowork's check (2026-11-25)
+- **The report holds against its logs.** `exp_0081_r17_s7_2026-11-24.json`: verified = correct 198 (A), 188 (B),
+  188 (C) of 600, coverage refusals 265 / 395 / 395, 0 wrong on every arm. The live eight and the unseen-writer set
+  read as the report says. The kill fires as pre-registered; the order is done and the flag stays off.
+- **Where the order was wrong** (Cowork's, not the build's):
+  - **Its argument.** The refusals were not the spelling. Coverage, lever 6 and lever 4 all read the question's
+    own word ("born", "year", "mother"), and a constraint on the plan's words removes exactly that evidence. The
+    trie helps only where the question already names a held label ("What is the birth date of X?": 13 -> 44 of
+    46).
+  - **The 163-entry table** in the build was the wrong number for this store: the served loop holds 2,793
+    relations, and every one went into the trie.
+  - **The unseen-writer set** was read with the wiki world's relations, while 216 of its 285 plan references name
+    relations of H-E18's own fact store; the fair read there is the 69 records whose relations are held (B 17,
+    A 14).
+- **Kept from it:** arm A's unseen-writer numbers are order 0082's floor (plan 77 of 285, chain 267 of 294, 0
+  copied, 0 unknown slot); every bench log now names its card; one loop per arm in the live runner.
+- **Code B's question** (admit the question's own words inside the literal, or have coverage read lever 6's table
+  in reverse) is Nick's to decide; neither is ordered here.
+- **The 9 bench asks** appended to `ask_history.jsonl` by the first live run are set aside, not deleted
+  (`ask_history.set_aside.jsonl`, beside it, with the reason).
