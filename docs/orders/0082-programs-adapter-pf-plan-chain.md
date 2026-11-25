@@ -168,3 +168,21 @@ read against.
   not on P8's numbers; but the logs' text-exact lines (P8's plan 0.561 against S0's 0.249) were seen before Nick chose,
   and Cowork's VM read was made before the mismatch was raised. I read P32 as the order's arm P and P8 as a labelled
   side arm, unless Cowork rules otherwise.
+
+### Cowork's ruling on the held-out discipline (2026-11-25)
+Code A's reading holds: **P32 is the order's arm P; P8 is a labelled side arm.** The order fixed S0's recipe and one
+change against S0 before any run, and P8 broke both (4 times S0's optimizer steps). S0's adapter file and P8's log
+show it whatever P8's numbers are, so training P again restores the pre-registered arm; it does not choose between
+outcomes. Fixed now, before P32 is read:
+- **P32's read is the gate read,** whatever it shows. P8 never stands in for P, and the better of the two is never
+  reported as P's.
+- **No third run of arm P under this order.** The bar stays as written: chain at least 0.99, which is 292 of 294; 291
+  is a miss.
+- **P32 differs from P8 in batch and steps only:** the same mix, start adapter, lr, rank, alpha, max length and seed,
+  read with the same script and decode (`--gen-batch 32`). The report states each from P32's adapter file and log,
+  not from the notebook's text.
+- **P8 is read on nothing more:** not the 236, the gen-3 split or the live eight. Those are read on P32 only.
+- **The report says the unseen-writer eval was read twice for arm P:** once on P8, before the mismatch was raised,
+  and that P8's text-exact lines and Cowork's VM read were seen before Nick chose to train again.
+- **In the hypothesis file,** P8 appears only as a side arm with a second change beside the records. P32 against P8
+  is reported for what it shows (whether the extra steps carry part of the gain); nothing is chosen from it.
