@@ -191,6 +191,11 @@ def report(out: str | None) -> None:
                                           "remembered": sum(r["how"] == "a remembered plan" for r in cert),
                                           "s_median_on_certified": pct([r["s"] for r in cert], 0.5),
                                           "lost": [r["i"] for r in cert if r not in same]}
+            for path, keep in (("seat", lambda r: not first[r["i"]]["restated"]), ("host", lambda r: first[r["i"]]["restated"])):
+                sub = [r for r in cert if keep(r)]                # the first asking's path: the seat's plan, or the host's
+                rep["arms"][arm]["repeat"][f"{path}_path"] = {"certified_first": len(sub),
+                                                              "same_answer": sum(r in same for r in sub),
+                                                              "s_median": pct([r["s"] for r in sub], 0.5)}
         if "other-1" in by and "other-2" in by:
             first = {r["i"]: r for r in by["other-1"]}
             got = [r for r in by["other-2"] if first[r["i"]]["verified"]]

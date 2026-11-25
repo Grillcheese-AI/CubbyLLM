@@ -43,7 +43,9 @@ def test_the_report_states_the_gates(tmp_path, monkeypatch):
                     "kill: a wrong answer from a remembered plan": False, "WRONG not on the base arm's row": []}
     assert rep["gates"]["route H vs A: answers differ on"] == []
     assert rep["arms"]["M"]["repeat"] == {"certified_first": 1, "same_answer": 1, "remembered": 1,
-                                          "s_median_on_certified": 0.08, "lost": []}
+                                          "s_median_on_certified": 0.08, "lost": [],
+                                          "seat_path": {"certified_first": 1, "same_answer": 1, "s_median": 0.08},
+                                          "host_path": {"certified_first": 0, "same_answer": 0, "s_median": None}}
     assert rep["gates"]["route programs identical"]["identical"] == 1 and not rep["gates"]["route programs identical"][">= 99%"]
     assert rep["arms"]["A"]["passes"]["gen3-1"]["steps"] == {"programs|route 5": 10}
 
