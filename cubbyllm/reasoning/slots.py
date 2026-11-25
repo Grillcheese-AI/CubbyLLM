@@ -336,15 +336,20 @@ class SlotEmitter:
 
     def __init__(self, inner, index: SpanIndex | None = None, referents: Callable[[str], dict] | None = None):
         self.inner, self.index, self.referents = inner, index, referents
+        self.relations = None                            # the store's relations, handed by the ask loop (order 0081)
         self.last: dict = {}
         self.name = f"slots({getattr(inner, 'name', inner.__class__.__name__)})"
 
     def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None, **kw) -> str:
+        from ..emit import plan_trie                     # CB_EMIT_TRIE: off (default) = no trie, the decode as before
         table = extract(prompt, self.index, self.referents(prompt) if self.referents else None)
+        pt = plan_trie.for_seat(self.inner, self.relations, [s.id for s in table.spans if s.kind in "ER"])
+        if pt is not None:
+            kw["allowed"] = pt.allowed
         raw = self.inner.emit(table.annotate(), max_new_tokens=max_new_tokens, system=system, **kw) \
             if system is not None else self.inner.emit(table.annotate(), max_new_tokens=max_new_tokens, **kw)
         verdict = table.check(raw)
-        self.last = {"table": table, "verdict": verdict, "raw": raw}
+        self.last = {"table": table, "verdict": verdict, "raw": raw, **({"trie": pt.stats()} if pt is not None else {})}
         if not verdict.ok:
             raise SlotRefused(verdict.reason)
         return table.fill(raw)

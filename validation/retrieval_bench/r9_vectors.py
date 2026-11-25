@@ -45,10 +45,18 @@ MAP_DIMS, BLOCK_KS = (4096, 640), (80, 512)
 
 def block_codes(k: int, l: int = L):
     """cubemind's BlockCodes on its numpy path (grilly's import blocked: Code B uses no GPU)."""
-    sys.modules.setdefault("grilly", None)
+    import importlib
     if CUBEMIND not in sys.path:
         sys.path.insert(0, CUBEMIND)
-    from cubemind.ops import block_codes as B
+    held = {k: sys.modules.pop(k) for k in [k for k in sys.modules if k == "grilly" or k.startswith("grilly.")]}
+    sys.modules["grilly"] = None                         # blocked even when an earlier import loaded it (a test suite)
+    try:
+        B = importlib.import_module("cubemind.ops.block_codes")
+        if B._BRIDGE_AVAILABLE or B._BLOCK_CODE_OPS_AVAILABLE:
+            B = importlib.reload(B)                      # it was first imported with grilly in reach
+    finally:
+        del sys.modules["grilly"]
+        sys.modules.update(held)
     assert not B._BRIDGE_AVAILABLE and not B._BLOCK_CODE_OPS_AVAILABLE, "BlockCodes must run its numpy path"
     return B.BlockCodes(k=k, l=l)
 
