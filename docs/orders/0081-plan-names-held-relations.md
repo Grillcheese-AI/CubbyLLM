@@ -1,5 +1,5 @@
 # 0081 - The programs seat names only relations the store holds: a decode-time constraint, no training
-status: in progress (Code B, 2026-11-24)
+status: review (Code B, 2026-11-24)
 written: 2026-11-24 by Cowork, after an outside review of the hypothesis file · approved: 2026-11-24 by Nick ("yes") · hypothesis: H-E15 (the emitter never copies a name or a number)
 
 ## Why
@@ -115,10 +115,171 @@ nothing trains and the gate (coverage, the walk, the VM) does not change.
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
-- **Commits:**
+**Verdict: the kill line fires on seed 7.** Arm B is 1.7 points below arm A. It turned 57 of arm A's 362
+unheld-relation refusals right (16%), and it lost 67 questions A had right. 0 wrong on every arm, set and seed. The
+flag stays off. The argument fails in a way the kill line did not name: these refusals do not come from the
+spelling. Coverage reads the question's own word ("born", "year", "when") against the plan, and lever 6 aliases that
+word to a held label. The trie takes the word away, so coverage refuses the held label, and the alias path closes.
+Arm B gains only where the question itself names the held label ("What is the birth date of X?": 13 → 44 of 46).
+On the live eight, the two "born" questions stay refused (the seat writes `birthplace`). Two of the four answered
+are lost, because the trie also closes lever 4: the seat can no longer write a relation the source would teach.
+
+- **Commits:** `90eda82` (the trie, the seat, the flag, the benches' 450M arm), `86af508` (the unseen-writer
+  runner), `ee64f91` (every bench log names its card), `8d496ae` (the runs and the runner fixes), the report commit.
 - **Files:**
-- **Tests:**
-- **Measured:** <against each acceptance line>
+  - new: `cubbyllm/emit/plan_trie.py`, `tests/emit/test_plan_trie.py`, `validation/exp_0081_seat.py`,
+    `validation/exp_0081_live.py`, `validation/exp_0081_pfheld.py`;
+  - changed: `cubbyllm/ops/grilly_seats.py` (`allowed_processor`, `device_name`), `cubbyllm/emit/seats_450m.py`
+    (`allowed=`), `cubbyllm/reasoning/slots.py` (`relations`, the seed trie; the file was over 300 lines and grew by
+    6, reason in `90eda82`), `cubbyllm/reasoning/ask.py` (hands `known` to the seat when the flag is on),
+    `validation/exp_r17_gen3_heldout.py` (the 450M arm, three arms on the same rows, resumable),
+    `validation/retrieval_bench/r9_vectors.py` (0046's test-order bug, below);
+  - logs: `validation/logs/exp_0081_r17_s7_2026-11-24.{json,log}`, `exp_0081_live_2026-11-24.json`,
+    `exp_0081_pfheld_2026-11-24.json`.
+- **Tests:** `tests/emit/test_plan_trie.py`, 9 tests:
+  - a held label written whole, and a prefix two labels share;
+  - the quote merged with a label's first letters (`, "bi`) and with its last piece (`rth";`);
+  - bbpe128k's own literals;
+  - text outside a literal left free;
+  - the seed literal admits only the table's ids;
+  - off passes no hook (decodes as before), and an unknown flag value raises;
+  - `emitted_plan` reads the program arm B writes;
+  - the processor's mask.
+
+  Full suite after merging master (`fdb4344`): 2,055 passed, 44 skipped.
+- **Measured** (the gen-3 held split, seed 7, 600 questions, the home card, AMD Radeon RX 6750 XT;
+  `exp_0081_r17_s7_2026-11-24.json`):
+
+  | arm | planned | verified = correct | WRONG | coverage | unknown rel. | ambiguous | retrieval exh. | unknown slot | no plan |
+  |---|---|---|---|---|---|---|---|---|---|
+  | A `off` | 594 | 198 | 0 | 265 | 1 | 39 | 91 | 0 | 6 |
+  | B `rel` | 594 | 188 | 0 | 395 | 0 | 7 | 4 | 0 | 6 |
+  | C `rel+slot` | 594 | 188 | 0 | 395 | 0 | 7 | 4 | 0 | 6 |
+
+  - **Gate, held split: fails; the kill line fires.**
+    - B − A = −10 (−1.7 points), against the +30 asked.
+    - A has 362 refusals whose plan names a relation the store does not hold (more than 60, so the 5-point gate is
+      the one that applies). B turned 57 of them right (16%), under the kill's quarter.
+    - B gained 57 and lost 67:
+      - 51 of the losses: A wrote `born`, lever 6 aliased it to `date of birth`, and it verified. B wrote
+        `birth date` (held), and coverage refused it.
+      - 13 more: A's `administrative territorial entity`, aliased to `located in the administrative territorial
+        entity`. B wrote `political position | state | region served`.
+      - The gains: A wrote `current birth date` (28) or `current birth` (19); B wrote `birth date` (51 of 57).
+    - Seeds 8 and 9 do not run (the read order).
+  - **By wording, A → B (verified of asked):**
+
+    | wording | A | B |
+    |---|---|---|
+    | "What is the birth date of X?" | 13 | 44 of 46 |
+    | "What is the date of birth of X?" | 0 | 20 of 46 |
+    | "In what year was X born?" | 24 | 0 of 43 |
+    | "When was X born?" | 10 | 0 of 38 |
+    | "On what day, month, and year was X born?" | 17 | 0 of 38 |
+    | "Which administrative territorial entity is X located in?" | 13 | 0 of 13 |
+  - **Relations arm A wrote that the store does not hold, and what B wrote in the same hop:**
+    - 431 rows, 522 mentions.
+    - `year` 62 → `first` 25, `in order to` 12, `date` 11
+    - `birth` 57 → `birth date` 35, `birthplace` 22
+    - `born` 56 → `birth date` 46
+    - `current birth date` 48 → `birth date` 37
+    - `current birth` 44 → `first` 24, `birth date` 19
+    - `city` 39 → `birthplace` 15, `birth date` 8, `population` 7
+    - `when` 27 → `first` 20
+    - `E1` 22, `on` 19, `current_year` 16, `E2` 12
+    - B and C wrote 0 unheld relations, as built.
+  - **Plan length:** A wrote 500 one-hop plans and 3 five-hop; B wrote 390 and 67. When the seat meant a word that
+    is not a relation (`year`, `when`, `current`), the trie forced the nearest held label, and greedy decoding then
+    ran on through more held labels: `first | weaker than ×4` 29 times, `first | time of setting ×4` 13.
+  - **C equals B on all 600 rows** (plans and outcomes). The seed trie entered 594 times and changed nothing: the
+    seat writes a table slot unprompted, and there are 0 unknown-slot refusals under A as well.
+  - **Time:**
+    - median per emission: A 2,413 ms, B 2,479 (1.03×), C 2,487 (1.03×). The gate line (at most 1.2×) holds.
+    - p95: A 3,096, B 4,247, C 4,258 (1.37×), from the longer plans.
+    - The first emission of the run took about 9 s (warm-up); without it, the medians are unchanged.
+  - **Wrong answers:** 0 on all three arms.
+  - **The live eight: the gate fails** (`exp_0081_live_2026-11-24.json`). One loop per (everyday, arm), booted
+    as the server boots it with `--ask --web off`: the Wikidata source is on, `known` holds 2,793 relations, and
+    the history is off.
+    - **Everyday table off** (H-E15's condition, 2026-10-17: the seat plans every question):
+
+      | question | A `off` | B `rel` (C the same) |
+      |---|---|---|
+      | mother of Justin Trudeau | verified (`mother`, learned by lever 4) | refused: `father` |
+      | country of Oak Park | verified (`country`, learned by lever 4) | refused: `selected by \| position \| location` |
+      | father of Bill Haslam | verified | verified |
+      | who is marie curie? | the profile | the profile |
+      | Marie Curie born | refused: `birth` | refused: `birthplace` |
+      | Hemingway born | refused: `birth` | refused: `birthplace` |
+      | capital of citizenship | refused: `country \| citizens \| E2` | refused: `country of citizenship` ×3 |
+      | prime minister of Canada | refused: `prime minister \| sue` | refused: `country of citizenship` ×2 |
+
+      Every refusal above is a coverage refusal.
+    - **The gate's lines:**
+      - neither "born" question is verified on B or C;
+      - of the four the 450M answered, two stay answered (Haslam, the profile);
+      - 0 wrong.
+    - **Lever 4 (the order's fetch-tier line):** A answered the Trudeau and Oak Park questions by learning `mother`
+      and `country` from Wikidata; the store held neither at boot. B and C lose both: the trie keeps those labels
+      from being written, so the loop never fetches.
+    - **Everyday table on** (today's default): the three arms are identical. The host restates six of the eight
+      (both "born" questions verified as `place of birth`), the profile answers one, and the seat plans only the
+      capital of citizenship and the prime minister, which are refused on every arm.
+  - **The unseen-writer set** (no gate; `exp_0081_pfheld_2026-11-24.json`). H-E18's eval: the served seat,
+    greedy, max_new 640, the full head; each record's own slot table checks and fills the program, and
+    `exp_he18_ab.score` runs every program in the VM. `known` is the wiki world's 2,793 relations.
+
+    | arm | plan correct | chain correct | plan ms, median / p95 | chain ms, median / p95 |
+    |---|---|---|---|---|
+    | A `off` (0082's floor) | 77 / 285 (27.0%) | 267 / 294 (90.8%; 98.3% execute) | 2,351 / 2,986 | 6,656 / 12,718 |
+    | B `rel` | 17 / 285 (6.0%) | 10 / 10 | 2,583 / 3,349 | (10 records) |
+    | C `rel+slot` | 17 / 285 (6.0%) | 10 / 10 | 2,598 / 3,359 | (10 records) |
+
+    0 copied and 0 unknown slot on every arm.
+    - **Chains:** the trie never fires on the CotChain form (0 entries). The 10 chain records timed under all three
+      arms were byte-identical across them, so B and C read only those 10 and the rest ran under A only (said in
+      the inbox before the run). `--tasks chain --arms rel,rel+slot --resume` adds them, about 70 min.
+    - **Why the plans drop:** 216 of the 285 references name a relation the wiki store does not hold. The top ones
+      are `country` 44, `administrative territorial entity` 27, `country of citizenship` 25, `given name` 24 and
+      `country of origin` 20. A wrote them and was right on 63 of those records; B cannot write them.
+      - On the 69 records whose relations are all held, B has 17 right and A 14 (B gains 3 and loses 0).
+      - The same pattern as r17: the trie helps only where the store and the question already agree.
+    - C equals B on all 285 plan records, and B writes A's program on 45 of 285.
 - **Not verified here:**
+  - seeds 8 and 9 (not run: the read order);
+  - Colab (all runs are on the home card);
+  - the stand-in's arm (out of scope).
 - **Found on the way:**
+  - **The hook.** grilly2's `prefix_allowed_tokens_fn` must return a non-empty list at every step, so "no
+    constraint outside a literal" cannot be said through it. The seat uses a one-row `logits_processor` instead
+    (`ops.allowed_processor`): the scores pass unchanged outside a literal, and a `-inf` mask with the options at
+    0 is applied inside one. Same effect, and only `cubbyllm/ops/` touches grilly.
+  - **Relations:** the store holds 2,797 relations in r17's store (2,793 in the served loop), not H-G4b's 163. 0
+    were left out of the trie (every option split cleanly), and the trie builds in 0.02 s.
+  - **Smoke run:** 3 rows of seed 7 ran before the run, to check the card path. Their log is scratch
+    (`_exp_0081_r17_s7_smoke_*`), and nothing was changed after it. It already showed the coverage refusals.
+  - **The plan form:** the served adapter (`cubby450m_v12e_w_step_cont`, `cubby_serve`'s `cubby` preset today)
+    writes CotPlan (SEED + HOPk). Under B, each of its 1,143 hops on r17 went through a `bind frame, HOPk` literal.
+    On the live eight, every program the seat wrote is CotPlan, and `emitted_plan` read every one B wrote. It writes CotChain (`Hk_<REL>`) when a Facts block is given (the unseen-writer chain records), and
+    the trie leaves that form free.
+  - **The live eight's wording:** H-E15's log did not keep the exact questions; `exp_0081_live.py` restates them
+    from its entry.
+  - **One loop learns across arms.**
+    - My first live run asked the three arms in one loop. What lever 4 learned on arm A (`mother`, `country`) was
+      then in the store for B and C, and the trie let them write it. That hid the lever-4 loss.
+    - The runner now boots one loop per (everyday, arm); `--shared` keeps the old way. The shared run's log is
+      scratch (`_exp_0081_live_shared_*`).
+    - The same run booted with the server's default `--history`, so it appended 9 bench asks to the sleep cycle's
+      input. That file is in Code A's checkout; I left it as it is and told Cowork. The runner now passes
+      `--history ""`.
+  - **The seed on "Where was Marie Curie born?"** (everyday off) is `marie` on every arm, so even a covered plan
+    would look up the wrong name. Under C the seat wrote `$E1`, which the table fills with "marie". The slot trie
+    admits every slot of the table, so it cannot choose between them.
+  - **A test-order bug in 0046's `r9_vectors.block_codes`:** it blocked grilly with `setdefault`, which does
+    nothing once an earlier test has imported grilly, so three R9 tests failed in a full run. It now blocks
+    `grilly.*` for cubemind's import and restores it afterwards (`8d496ae`).
 - **Questions:**
+  - Lever 6's alias table already maps a question word to a held label (`born` → `date of birth`). Would a next
+    step admit a held label **or** the question's own words inside the literal, so coverage and lever 6 still see
+    the word? Or have coverage read lever 6's table in reverse (a plan's `birth date` covers "born")? The second
+    changes the gate, so it is not mine to take. Either is its own order.
