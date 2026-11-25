@@ -106,6 +106,35 @@ the record pages.
   checked).
 - FIBO is the EDM Council's trademark: name it as the source, never as a product claim.
 
+### Checkers in the loop, and how robust reasoning is (draft paragraphs in Nick's voice, 2026-11-25, for v2)
+Sources read: Seed-Prover's and LeanAgent's abstracts (arXiv 2507.23726, 2410.06209), SIMA 2's announcement post
+(Google DeepMind, 13 November 2025; its technical report not read yet), GSM-Symbolic's paper text (arXiv
+2410.05229). Venues not confirmed; cite the arXiv records until they are.
+
+Systems that put a checker in the loop are closer to our position. Seed-Prover (ByteDance Seed AI4Math, 2025) writes
+whole Lean proofs and refines them with the compiler's feedback and the lemmas it has already proved. Its training
+signal is Lean's verification, so no model judges its output, and it proves 78.1% of the formalized past IMO problems
+and more than 50% of PutnamBench. LeanAgent (Kumarappan et al., 2024) trains its premise retriever on Lean
+repositories in order of difficulty and proved 155 theorems that had no proof across 23 repositories. Both are closer
+to a solution by making the verifier the reward. However, their problems arrive already stated in Lean, so the step
+we find hardest, turning a question in plain language into something a checker can check, is done for them by a
+person. Lean then checks the statement it is given, not the one that person meant. That is our "certified is not
+correct" in another field, and it is why Cubby's disposer checks that a plan covers the question before anything
+runs. SIMA 2 (Google DeepMind, 2025) is the closest in behaviour, an agent that plays in 3D worlds, explains its plan
+and improves from its own play. The main problem with this is that its self-improvement is scored by Gemini, which
+sets the tasks and estimates the reward, so a model judges the agent built on it. The post itself lists goal
+verification among the open problems. Cubby-Man learns its maze from the VM's refusals instead, and Cubby's school
+rewards a step only when the VM says it is right.
+
+GSM-Symbolic (Mirzadeh et al., Apple, 2024) rewrote 100 GSM8K test problems as templates and drew 50 instances of
+each, changing the names, the numbers and the number of clauses. Every model tested varied across instances, and
+changing the numbers hurt more than changing the names. Adding one clause that changes nothing (GSM-NoOp) cut
+performance by up to 65%, which the authors read as pattern matching rather than reasoning. In Cubby the model never
+writes a name or a number, as the host places them as slots and the VM computes every value, so a changed name or
+number can still change the plan the model proposes but never the arithmetic. Which of the three failures remain is
+a measurement, not a claim, and the distracting clause is the one that tests the plan. The templates are public
+(`apple/GSM-Symbolic` on Hugging Face, CC BY-NC-ND 4.0: evaluation only, never training).
+
 ## 3. Design points worth stating
 - **One store, not one specialist per topic.** All seven models on the design panel rejected routing by topic: "you
   cannot route to a topic before you know the entity".
