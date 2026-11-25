@@ -39,7 +39,9 @@ is about 1.5% longer.
 
 **Then the generations, P and S0, greedy** (`--gen-only`): the unseen-writer eval's plan and chain records (285 and
 294, `pf_heldout_eval_w_slots.jsonl`) and the v12e_w val split's chain, kernel, plan and role-binding records. They are
-read at home (`exp_he18_ab.py`, the real VM), once per arm. Nothing here is chosen on them.
+read at home (`exp_he18_ab.py`, the real VM), once per arm. Nothing here is chosen on them. Both arms are decoded the
+same way (`--gen-batch`: the records of one prompt length together, with 0078's CUDA-graph step; greedy, as one at a
+time gives them on CPU).
 
 **It resumes:** a finished step is skipped when its files exist. Disconnect when it prints `0082 done`.
 """),
@@ -98,6 +100,7 @@ print('P ->', P)
 """),
     code(r"""
 # --- the generations, P and S0: the unseen-writer eval (plan, chain) and the val split's other families ---
+GEN_BATCH = 32        # records of one prompt length decoded together, CUDA graphs (one at a time: ~12 s a record on an L4)
 for arm, out in GEN.items():
     adapter = P if arm == 'p' else S0
     done = [f'{out}/val_generations_0082_{arm}.json', f'{out}/val_generations_0082_{arm}_pfheld.json']
@@ -107,7 +110,7 @@ for arm, out in GEN.items():
     stream([sys.executable, '-u', 'validation/train_emitter_torch.py', '--ckpt', CKPT, '--tokenizer', TOKENIZER,
             '--data', MIX, '--out', out, '--gen-only', '--resume-adapter', adapter, '--gen-per-task', '0',
             '--gen-tasks', 'chain,kernel,plan,role_binding', '--gen-extra', HELD, '--gen-extra-per-task', '0',
-            '--tag', f'_0082_{arm}'], f'{out}/gen.log')
+            '--gen-batch', str(GEN_BATCH), '--tag', f'_0082_{arm}'], f'{out}/gen.log')
     open(f'{out}/CARD', 'w').write(CARD)
 print('0082 done ->', GEN)
 """),

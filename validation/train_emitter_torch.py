@@ -66,12 +66,28 @@ def emit(model, tk, eos, prompt: str, dev, max_new: int) -> str:
     return decode_program(tk, out, eos)          # keeps the role tokens (ACTION/AGENT/OBJECT are special)
 
 
-def generate_val(model, tk, eos, records, dev, max_new, out_path, tag, vm=False) -> dict:
+def emit_batched(model, tk, eos, records, dev, max_new, batch, t0) -> list:
+    """`--gen-batch N`: greedy as `emit`, the records of one prompt length decoded together, N at most
+    (`dev_read_torch.greedy_rows`; CUDA graphs on a card)."""
+    import dev_read_torch as D
+    seen = [0]
+
+    def progress(n):
+        if n // 20 > seen[0] // 20 or n == len(records):
+            log(f"  generated {n}/{len(records)} ({time.time() - t0:.0f}s)")
+        seen[0] = n
+    rows = D.greedy_rows(model, [tk.encode(r["prompt"]).ids for r in records], eos, max_new, dev, batch,
+                         D.stepper_for(model, dev), progress)
+    return [decode_program(tk, row, eos) for row in rows]
+
+
+def generate_val(model, tk, eos, records, dev, max_new, out_path, tag, vm=False, batch=0) -> dict:
     """Generate every val record, check and fill its slots, write the replay file, summarise."""
     t0 = time.time()
+    gens = emit_batched(model, tk, eos, records, dev, max_new, batch, t0) if batch else None
     outputs, stats = [], Counter()
     for i, r in enumerate(records, 1):
-        gen = emit(model, tk, eos, r["prompt"], dev, max_new)
+        gen = gens[i - 1] if gens is not None else emit(model, tk, eos, r["prompt"], dev, max_new)
         table = table_of(r["spans"], r["question"])
         verdict = table.check(gen)
         filled = table.fill(gen)
@@ -84,7 +100,7 @@ def generate_val(model, tk, eos, records, dev, max_new, out_path, tag, vm=False)
                         "reference": r["reference"], "gold": r.get("gold"), "generated": filled,
                         "generated_slotted": gen, "slots_ok": verdict.ok, "slot_reason": verdict.reason,
                         "unused_slots": verdict.unused_entities})
-        if i % 20 == 0:
+        if gens is None and i % 20 == 0:
             log(f"  generated {i}/{len(records)} ({time.time() - t0:.0f}s)")
     summary = {}
     for task in sorted({r["task"] for r in records}):
@@ -95,6 +111,7 @@ def generate_val(model, tk, eos, records, dev, max_new, out_path, tag, vm=False)
             f"unknown_slot={summary[task]['unknown_slot']:.3f} text_exact={summary[task]['text_exact']:.3f}")
     payload = {"model": f"cubby450m{tag}", "adapter": ADAPTER, "n": len(records), "summary": summary,
                "outputs": outputs, "wall_s": time.time() - t0,
+               "decode": f"batched by prompt length, at most {batch}" if batch else "one record at a time",
                "note": "generated = slots filled by the host (what the VM runs); generated_slotted = as emitted"}
     if vm:
         payload["vm"] = vm_read(outputs)
@@ -158,6 +175,9 @@ def main():
     ap.add_argument("--save-every", type=int, default=500)
     ap.add_argument("--gen-per-task", type=int, default=64, help="val records generated per family at the end (0 = all)")
     ap.add_argument("--gen-max-new", type=int, default=640)
+    ap.add_argument("--gen-batch", type=int, default=0, help="decode the generations N at a time, records of one "
+                                                             "prompt length together (CUDA graphs on a card); 0 = one "
+                                                             "record at a time, as before")
     ap.add_argument("--no-gen", action="store_true")
     ap.add_argument("--gen-extra", default="", help="a second slot-form jsonl whose val records are generated too "
                                                     "(H-E18: the program-first held-out eval, written by another writer)")
@@ -319,7 +339,8 @@ def run_generation(args, model, tk, eos, dev, logs, keep_previous=False) -> None
             log(f"kept the previous file as {os.path.basename(prev_path)}")
         log(f"generating {len(recs)} {what}{' (' + ','.join(sorted(tasks)) + ')' if tasks else ''} "
             f"(greedy, up to {args.gen_max_new} tokens each) ...")
-        payload = generate_val(model, tk, eos, recs, dev, args.gen_max_new, out_path, tag, vm=args.vm)
+        payload = generate_val(model, tk, eos, recs, dev, args.gen_max_new, out_path, tag, vm=args.vm,
+                               batch=args.gen_batch)
         if tasks and prev is not None:          # only these families regenerated: the rest of the file is kept
             payload["outputs"] = [o for o in prev["outputs"] if o["task"] not in tasks] + payload["outputs"]
             payload["summary"] = {**{k: v for k, v in prev["summary"].items() if k not in tasks}, **payload["summary"]}

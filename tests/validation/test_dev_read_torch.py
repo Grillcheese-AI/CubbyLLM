@@ -71,6 +71,20 @@ def test_copy_into_broadcasts_a_row_and_keeps_counters():
     assert torch.allclose(a, b.expand(4, -1), atol=1e-5)               # four copies of the same row, read on
 
 
+def test_greedy_rows_equal_generate_one_by_one():
+    """Order 0082's generations (`train_emitter_torch --gen-batch`): what `generate` gives each prompt alone, in the
+    prompts' order, with a length group split across batches (batch 2, three prompts of one length)."""
+    from cubbyllm.core.decoding import DecodeConfig, generate
+    model = build_model(META, "cpu", seed=0)
+    ids = [[5, 9, 13, 17, 21, 25, 29, 33, 37, 41], [7, 8], [6, 9, 13, 17, 21, 25, 29, 33, 37, 42], [3, 4, 5],
+           [7, 9, 13, 17, 21, 25, 29, 33, 37, 43], [11, 12]]
+    seen = []
+    got = D.greedy_rows(model, ids, EOS, 14, "cpu", batch=2, progress=seen.append)
+    cfg = DecodeConfig(max_new_tokens=14, temperature=0.0, repetition_penalty=1.0, no_repeat_ngram=0, eos_id=EOS)
+    want = [generate(model, i, cfg, state=model.init_state(1, "cpu"))[0] for i in ids]
+    assert got == want and seen[-1] == len(ids)
+
+
 @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA graphs need a CUDA card (Colab)")
 def test_graph_step_equals_eager_on_cuda():
     model = build_model(META, "cuda", seed=0)

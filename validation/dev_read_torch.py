@@ -17,7 +17,10 @@ on CUDA each batch size (rounded up to a power of two; the padding rows are copi
 recorded once and replayed. Each recording is checked against the eager step when it is made; a capture that fails or
 differs is dropped and that size runs eagerly (printed). `CB_DEV_READ_GRAPHS=0` turns it off.
 
-Wiring: STANDALONE (order 0078's read).
+**Order 0082's generations** (`greedy_rows`, `train_emitter_torch.py --gen-batch`): the same decode, greedy, one batch
+per prompt length. One record at a time through `generate` took ~12 s a record on an L4 (2026-11-25).
+
+Wiring: STANDALONE (orders 0078's read and 0082's generations).
 """
 from __future__ import annotations
 
@@ -222,6 +225,35 @@ def rows_ids(model, ids: list[list[int]], eos: int, max_new: int, temperature: f
     return out
 
 
+def stepper_for(model, dev):
+    """`GraphStep` on a CUDA card (unless `CB_DEV_READ_GRAPHS=0`), `Eager` otherwise."""
+    on = getattr(dev, "type", str(dev)) == "cuda" and os.environ.get("CB_DEV_READ_GRAPHS", "1") != "0"
+    return GraphStep(model, dev) if on else Eager(model)
+
+
+def greedy_rows(model, ids: list[list[int]], eos: int, max_new: int, dev, batch: int = 32, stepper=None,
+                progress=None) -> list:
+    """Greedy continuations of many prompts (order 0082's generations, `train_emitter_torch --gen-batch`): the prompts
+    of one token length decoded together, at most ``batch`` a batch (`rows_ids`), returned in the prompts' order.
+    Greedy as `cubbyllm.core.decoding.generate` gives each alone (pinned on CPU; on a card a batch's matmuls may round
+    a near-tie differently). ``progress(n done)`` is called after each batch."""
+    stepper = stepper or Eager(model)
+    groups: dict = {}
+    for j, i in enumerate(ids):
+        groups.setdefault(len(i), []).append(j)
+    out: list = [None] * len(ids)
+    done = 0
+    for _, js in sorted(groups.items()):
+        for s in range(0, len(js), batch):
+            part = js[s:s + batch]
+            for j, r in zip(part, rows_ids(model, [ids[j] for j in part], eos, max_new, 0.0, 0, dev, None, stepper)):
+                out[j] = r
+            done += len(part)
+            if progress:
+                progress(done)
+    return out
+
+
 class TorchStepEmitter:
     """`--ckpt`: the torch base and the emitter adapter. `emit` is greedy (`sample_programs`, as the school's gate);
     `emit_rows` samples one continuation per prompt, all prompts in as few batches as their lengths allow."""
@@ -260,4 +292,5 @@ class TorchStepEmitter:
         return [decode_program(self.tk, r, self.eos) for r in rows]
 
 
-__all__ = ["Eager", "GraphStep", "TorchStepEmitter", "clone_state", "copy_into", "decode", "rows_ids"]
+__all__ = ["Eager", "GraphStep", "TorchStepEmitter", "clone_state", "copy_into", "decode", "greedy_rows", "rows_ids",
+           "stepper_for"]
