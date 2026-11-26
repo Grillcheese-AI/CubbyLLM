@@ -5,6 +5,7 @@ Wired: WIRED (the server's 450M seats, `--cubby450m`; re-exported by standin/emi
 """
 from __future__ import annotations
 
+import collections
 import json
 import os
 import threading
@@ -83,6 +84,7 @@ class Cubby450mTrunk:
         self._role = None
         self.swaps = 0
         self.route = None                                    # grilly2's ShortlistHead when route_index() gives one
+        self.steps = collections.Counter()                   # order 0083: decode steps per role and head (`_count`)
         self._lock = threading.Lock()
 
     def _adapter_files(self, role: str) -> tuple:
@@ -218,7 +220,17 @@ class Cubby450mTrunk:
                 hook["logits_processor"] = ops.allowed_processor(allowed, len(rows[0]), self._grilly)
             out = ops.generate(self._model, rows, max_new_tokens, self._eos, temperature=temperature,
                                top_k=top_k, seed=seed, g=self._grilly, **hook)
+            self._count(role, rows, out, temperature, hook)
             return [r[len(p):] for r, p in zip(out, rows)]
+
+    def _count(self, role: str, rows: list, out: list, temperature: float, hook: dict) -> None:
+        """Order 0083: the decode's steps in ``self.steps``, under ``<role>|route 5`` when grilly2 picks its tokens with
+        route 5 (a route attached, greedy, one row, no processor: grilly2's own rule) and ``<role>|full head: <why>``
+        otherwise (off, sampled, batch, processor). A count only: nothing reads it to decode."""
+        n = sum(len(o) - len(p) for o, p in zip(out, rows))
+        why = ("off" if self.route is None else "sampled" if temperature > 0 else "batch" if len(rows) != 1
+               else "processor" if hook else None)
+        self.steps[f"{role}|full head: {why}" if why else f"{role}|route 5"] += n
 
 
 class Cubby450mEmitter:

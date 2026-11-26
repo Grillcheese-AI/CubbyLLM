@@ -1,0 +1,590 @@
+{
+ "order": "0083",
+ "what": "questions asked, then asked again, through the served stack, one loop an arm",
+ "arms": {
+  "A": {
+   "head": {
+    "arm": "A",
+    "flags": {},
+    "export": "base450m_cont/grilly",
+    "adapter": "emitter/cubby450m_v12e_w_step_cont",
+    "route": false,
+    "card": "AMD Radeon RX 6750 XT",
+    "relations": 2793,
+    "date": "2026-11-25"
+   },
+   "passes": {
+    "gen3-1": {
+     "n": 600,
+     "answered": 216,
+     "verified": 216,
+     "correct": 131,
+     "near": 69,
+     "WRONG": 16,
+     "WRONG_remembered": 0,
+     "remembered": 0,
+     "restated": 252,
+     "seat_calls": 348,
+     "refused": {
+      "plan_does_not_cover_question": 161,
+      "retrieval_exhausted": 148,
+      "ambiguous_hop": 39,
+      "class_mismatch": 18,
+      "time_mismatch": 8,
+      "no_plan": 4,
+      "unknown_relation": 3,
+      "ambiguous_relation": 3
+     },
+     "s_median": 2.4386,
+     "s_p90": 2.869,
+     "memory_miss_s_median": null,
+     "steps": {
+      "programs|full head: off": 26865
+     },
+     "step_ms_median": 33.7068
+    },
+    "gen3-2": {
+     "n": 600,
+     "answered": 218,
+     "verified": 218,
+     "correct": 132,
+     "near": 70,
+     "WRONG": 16,
+     "WRONG_remembered": 0,
+     "remembered": 0,
+     "restated": 252,
+     "seat_calls": 348,
+     "refused": {
+      "plan_does_not_cover_question": 161,
+      "retrieval_exhausted": 135,
+      "ambiguous_hop": 41,
+      "class_mismatch": 18,
+      "time_mismatch": 18,
+      "no_plan": 4,
+      "ambiguous_relation": 3,
+      "unknown_relation": 2
+     },
+     "s_median": 2.4132,
+     "s_p90": 2.7894,
+     "memory_miss_s_median": null,
+     "steps": {
+      "programs|full head: off": 26865
+     },
+     "step_ms_median": 33.1973
+    },
+    "other-1": {
+     "n": 150,
+     "answered": 31,
+     "verified": 31,
+     "correct": 5,
+     "near": 18,
+     "WRONG": 8,
+     "WRONG_remembered": 0,
+     "remembered": 0,
+     "restated": 135,
+     "seat_calls": 15,
+     "refused": {
+      "retrieval_exhausted": 92,
+      "unknown_relation": 8,
+      "ambiguous_hop": 8,
+      "plan_does_not_cover_question": 7,
+      "ambiguous_relation": 4
+     },
+     "s_median": 0.0155,
+     "s_p90": 2.386,
+     "memory_miss_s_median": null,
+     "steps": {
+      "programs|full head: off": 1189
+     },
+     "step_ms_median": 33.0108
+    },
+    "other-2": {
+     "n": 150,
+     "answered": 7,
+     "verified": 7,
+     "correct": 0,
+     "near": 0,
+     "WRONG": 7,
+     "WRONG_remembered": 0,
+     "remembered": 0,
+     "restated": 0,
+     "seat_calls": 150,
+     "refused": {
+      "plan_does_not_cover_question": 94,
+      "no_plan": 15,
+      "retrieval_exhausted": 14,
+      "unknown_relation": 9,
+      "ambiguous_relation": 8,
+      "ambiguous_hop": 2,
+      "emit_error": 1
+     },
+     "s_median": 2.4065,
+     "s_p90": 2.8643,
+     "memory_miss_s_median": null,
+     "steps": {
+      "programs|full head: off": 11079
+     },
+     "step_ms_median": 32.9962
+    }
+   },
+   "repeat": {
+    "certified_first": 216,
+    "same_answer": 216,
+    "remembered": 0,
+    "s_median_on_certified": 0.0081,
+    "lost": [],
+    "seat_path": {
+     "certified_first": 70,
+     "same_answer": 70,
+     "s_median": 2.4553
+    },
+    "host_path": {
+     "certified_first": 146,
+     "same_answer": 146,
+     "s_median": 0.0074
+    }
+   },
+   "other_words": {
+    "template_certified": 31,
+    "rephrased_verified": 3,
+    "rephrased_remembered": 0,
+    "rephrased_correct": 0
+   }
+  },
+  "M": {
+   "head": {
+    "arm": "M",
+    "flags": {
+     "CB_ASK_MEMORY": "1",
+     "CB_ASK_MEMORY_WRITE": "1"
+    },
+    "export": "base450m_cont/grilly",
+    "adapter": "emitter/cubby450m_v12e_w_step_cont",
+    "route": false,
+    "card": "AMD Radeon RX 6750 XT",
+    "relations": 2793,
+    "date": "2026-11-25"
+   },
+   "passes": {
+    "gen3-1": {
+     "n": 600,
+     "answered": 242,
+     "verified": 242,
+     "correct": 148,
+     "near": 76,
+     "WRONG": 18,
+     "WRONG_remembered": 4,
+     "remembered": 84,
+     "restated": 252,
+     "seat_calls": 264,
+     "refused": {
+      "plan_does_not_cover_question": 135,
+      "retrieval_exhausted": 134,
+      "ambiguous_hop": 39,
+      "time_mismatch": 23,
+      "class_mismatch": 18,
+      "no_plan": 4,
+      "unknown_relation": 3,
+      "ambiguous_relation": 2
+     },
+     "s_median": 2.2348,
+     "s_p90": 4.1638,
+     "memory_miss_s_median": 0.047,
+     "steps": {
+      "programs|full head: off": 20558
+     },
+     "step_ms_median": 32.9616
+    },
+    "gen3-2": {
+     "n": 600,
+     "answered": 257,
+     "verified": 257,
+     "correct": 158,
+     "near": 81,
+     "WRONG": 18,
+     "WRONG_remembered": 8,
+     "remembered": 151,
+     "restated": 252,
+     "seat_calls": 197,
+     "refused": {
+      "plan_does_not_cover_question": 119,
+      "retrieval_exhausted": 114,
+      "time_mismatch": 44,
+      "ambiguous_hop": 41,
+      "class_mismatch": 18,
+      "no_plan": 3,
+      "unknown_relation": 2,
+      "ambiguous_relation": 2
+     },
+     "s_median": 0.0153,
+     "s_p90": 2.7101,
+     "memory_miss_s_median": 0.052,
+     "steps": {
+      "programs|full head: off": 15603
+     },
+     "step_ms_median": 32.7278
+    },
+    "other-1": {
+     "n": 150,
+     "answered": 31,
+     "verified": 31,
+     "correct": 5,
+     "near": 18,
+     "WRONG": 8,
+     "WRONG_remembered": 0,
+     "remembered": 0,
+     "restated": 135,
+     "seat_calls": 15,
+     "refused": {
+      "retrieval_exhausted": 92,
+      "unknown_relation": 8,
+      "ambiguous_hop": 8,
+      "plan_does_not_cover_question": 7,
+      "ambiguous_relation": 4
+     },
+     "s_median": 2.2904,
+     "s_p90": 4.4358,
+     "memory_miss_s_median": 0.04,
+     "steps": {
+      "programs|full head: off": 1189
+     },
+     "step_ms_median": 32.8819
+    },
+    "other-2": {
+     "n": 150,
+     "answered": 23,
+     "verified": 23,
+     "correct": 3,
+     "near": 11,
+     "WRONG": 9,
+     "WRONG_remembered": 5,
+     "remembered": 19,
+     "restated": 0,
+     "seat_calls": 131,
+     "refused": {
+      "plan_does_not_cover_question": 83,
+      "no_plan": 15,
+      "retrieval_exhausted": 11,
+      "unknown_relation": 9,
+      "ambiguous_relation": 7,
+      "ambiguous_hop": 2
+     },
+     "s_median": 2.4083,
+     "s_p90": 3.53,
+     "memory_miss_s_median": 0.036,
+     "steps": {
+      "programs|full head: off": 9647
+     },
+     "step_ms_median": 32.6505
+    }
+   },
+   "repeat": {
+    "certified_first": 242,
+    "same_answer": 241,
+    "remembered": 94,
+    "s_median_on_certified": 0.0077,
+    "lost": [
+     73
+    ],
+    "seat_path": {
+     "certified_first": 96,
+     "same_answer": 95,
+     "s_median": 0.0083
+    },
+    "host_path": {
+     "certified_first": 146,
+     "same_answer": 146,
+     "s_median": 0.0073
+    }
+   },
+   "other_words": {
+    "template_certified": 31,
+    "rephrased_verified": 18,
+    "rephrased_remembered": 18,
+    "rephrased_correct": 3
+   }
+  },
+  "H": {
+   "head": {
+    "arm": "H",
+    "flags": {
+     "CB_HEAD_SHORTLIST": "1"
+    },
+    "export": "base450m_cont/grilly",
+    "adapter": "emitter/cubby450m_v12e_w_step_cont",
+    "route": true,
+    "card": "AMD Radeon RX 6750 XT",
+    "relations": 2793,
+    "date": "2026-11-25"
+   },
+   "passes": {
+    "gen3-1": {
+     "n": 600,
+     "answered": 216,
+     "verified": 216,
+     "correct": 131,
+     "near": 69,
+     "WRONG": 16,
+     "WRONG_remembered": 0,
+     "remembered": 0,
+     "restated": 252,
+     "seat_calls": 348,
+     "refused": {
+      "plan_does_not_cover_question": 161,
+      "retrieval_exhausted": 148,
+      "ambiguous_hop": 39,
+      "class_mismatch": 18,
+      "time_mismatch": 8,
+      "no_plan": 4,
+      "unknown_relation": 3,
+      "ambiguous_relation": 3
+     },
+     "s_median": 2.2476,
+     "s_p90": 2.559,
+     "memory_miss_s_median": null,
+     "steps": {
+      "programs|route 5": 26844
+     },
+     "step_ms_median": 30.7176
+    },
+    "gen3-2": {
+     "n": 600,
+     "answered": 218,
+     "verified": 218,
+     "correct": 132,
+     "near": 70,
+     "WRONG": 16,
+     "WRONG_remembered": 0,
+     "remembered": 0,
+     "restated": 252,
+     "seat_calls": 348,
+     "refused": {
+      "plan_does_not_cover_question": 161,
+      "retrieval_exhausted": 135,
+      "ambiguous_hop": 41,
+      "class_mismatch": 18,
+      "time_mismatch": 18,
+      "no_plan": 4,
+      "ambiguous_relation": 3,
+      "unknown_relation": 2
+     },
+     "s_median": 2.2435,
+     "s_p90": 2.5782,
+     "memory_miss_s_median": null,
+     "steps": {
+      "programs|route 5": 26844
+     },
+     "step_ms_median": 30.8224
+    }
+   },
+   "repeat": {
+    "certified_first": 216,
+    "same_answer": 216,
+    "remembered": 0,
+    "s_median_on_certified": 0.0073,
+    "lost": [],
+    "seat_path": {
+     "certified_first": 70,
+     "same_answer": 70,
+     "s_median": 2.2836
+    },
+    "host_path": {
+     "certified_first": 146,
+     "same_answer": 146,
+     "s_median": 0.0067
+    }
+   }
+  },
+  "MH": {
+   "head": {
+    "arm": "MH",
+    "flags": {
+     "CB_ASK_MEMORY": "1",
+     "CB_ASK_MEMORY_WRITE": "1",
+     "CB_HEAD_SHORTLIST": "1"
+    },
+    "export": "base450m_cont/grilly",
+    "adapter": "emitter/cubby450m_v12e_w_step_cont",
+    "route": true,
+    "card": "AMD Radeon RX 6750 XT",
+    "relations": 2793,
+    "date": "2026-11-25"
+   },
+   "passes": {
+    "gen3-1": {
+     "n": 600,
+     "answered": 242,
+     "verified": 242,
+     "correct": 148,
+     "near": 76,
+     "WRONG": 18,
+     "WRONG_remembered": 4,
+     "remembered": 84,
+     "restated": 252,
+     "seat_calls": 264,
+     "refused": {
+      "plan_does_not_cover_question": 135,
+      "retrieval_exhausted": 134,
+      "ambiguous_hop": 39,
+      "time_mismatch": 23,
+      "class_mismatch": 18,
+      "no_plan": 4,
+      "unknown_relation": 3,
+      "ambiguous_relation": 2
+     },
+     "s_median": 0.0427,
+     "s_p90": 2.6452,
+     "memory_miss_s_median": 0.045,
+     "steps": {
+      "programs|route 5": 20537
+     },
+     "step_ms_median": 31.75
+    },
+    "gen3-2": {
+     "n": 600,
+     "answered": 257,
+     "verified": 257,
+     "correct": 158,
+     "near": 81,
+     "WRONG": 18,
+     "WRONG_remembered": 8,
+     "remembered": 151,
+     "restated": 252,
+     "seat_calls": 197,
+     "refused": {
+      "plan_does_not_cover_question": 119,
+      "retrieval_exhausted": 114,
+      "time_mismatch": 44,
+      "ambiguous_hop": 41,
+      "class_mismatch": 18,
+      "no_plan": 3,
+      "unknown_relation": 2,
+      "ambiguous_relation": 2
+     },
+     "s_median": 0.0143,
+     "s_p90": 2.5378,
+     "memory_miss_s_median": 0.05,
+     "steps": {
+      "programs|route 5": 15582
+     },
+     "step_ms_median": 31.4635
+    }
+   },
+   "repeat": {
+    "certified_first": 242,
+    "same_answer": 241,
+    "remembered": 94,
+    "s_median_on_certified": 0.0071,
+    "lost": [
+     73
+    ],
+    "seat_path": {
+     "certified_first": 96,
+     "same_answer": 95,
+     "s_median": 0.0077
+    },
+    "host_path": {
+     "certified_first": 146,
+     "same_answer": 146,
+     "s_median": 0.0067
+    }
+   }
+  }
+ },
+ "gates": {
+  "memory M vs A": {
+   "second asking gives the first's certified answer on all": false,
+   "second asking median <= 0.2 s": true,
+   "first asking median <= base + 0.05 s": true,
+   "0 wrong on every pass": false,
+   "kill: a wrong answer from a remembered plan": true,
+   "WRONG not on the base arm's row": [
+    [
+     "gen3-1",
+     308,
+     "a remembered plan"
+    ],
+    [
+     "gen3-1",
+     543,
+     "a remembered plan"
+    ],
+    [
+     "gen3-2",
+     308,
+     "a remembered plan"
+    ],
+    [
+     "gen3-2",
+     543,
+     "a remembered plan"
+    ],
+    [
+     "other-2",
+     31,
+     "a remembered plan"
+    ],
+    [
+     "other-2",
+     36,
+     "a remembered plan"
+    ],
+    [
+     "other-2",
+     41,
+     "a remembered plan"
+    ],
+    [
+     "other-2",
+     71,
+     "a remembered plan"
+    ],
+    [
+     "other-2",
+     144,
+     "a remembered plan"
+    ]
+   ]
+  },
+  "memory MH vs H": {
+   "second asking gives the first's certified answer on all": false,
+   "second asking median <= 0.2 s": true,
+   "first asking median <= base + 0.05 s": true,
+   "0 wrong on every pass": false,
+   "kill: a wrong answer from a remembered plan": true,
+   "WRONG not on the base arm's row": [
+    [
+     "gen3-1",
+     308,
+     "a remembered plan"
+    ],
+    [
+     "gen3-1",
+     543,
+     "a remembered plan"
+    ],
+    [
+     "gen3-2",
+     308,
+     "a remembered plan"
+    ],
+    [
+     "gen3-2",
+     543,
+     "a remembered plan"
+    ]
+   ]
+  },
+  "route H vs A: answers differ on": [],
+  "route MH vs M: answers differ on": [],
+  "route programs identical": {
+   "prompts": 348,
+   "identical": 347,
+   "share": 0.9971,
+   ">= 99%": true,
+   "differ": [
+    196
+   ]
+  }
+ }
+}
