@@ -50,10 +50,11 @@ K, TEMPERATURE, TOP_K = 16, 0.7, 40
 class Chain:
     """One try: its own slot table, stepped by the emission it is handed (StepLoop.solve's body, one step a call)."""
 
-    def __init__(self, question: str, world, vm):
+    def __init__(self, question: str, world, vm, record: bool = False):
         self.table = extract(question, constants=world.constants(question) if world else None)
         self.vm, self.k, self.steps = vm, 0, []
         self.answer, self.refused, self.done = None, None, False
+        self.record, self.log, self.stop = record, [], None   # order 0085: what each step did, kept only to write it
 
     def prompt(self) -> str:
         return PROMPT_HEAD + self.table.annotate().strip() + PROMPT_TAIL
@@ -63,7 +64,7 @@ class Chain:
         if kind == "stop":
             s = self.table.get(what)
             self.answer, self.refused = (s.filled, None) if s is not None else (None, f"stop on unknown slot {what}")
-            self.done = True
+            self.done, self.stop = True, what
             return
         if kind != "step":
             self.refused, self.done = "malformed step", True
@@ -72,9 +73,17 @@ class Chain:
         verdict = self.table.check(block_text)
         if not verdict.ok:
             self.refused, self.done = verdict.reason, True
+            if self.record:
+                self.log.append({"k": self.k, "program": block_text, "refused": verdict.reason})
             return
-        ok, result = self.vm(wrap_step(self.table.fill(block_text)))
+        ran = wrap_step(self.table.fill(block_text))
+        ok, result = self.vm(ran)
         v = num_value(result) if ok else None
+        if self.record:
+            from cubbyllm.records.arith_trace import sha256_text
+            self.log.append({"k": self.k, "program": block_text, "ran_sha256": sha256_text(ran),
+                             "outcome": "return" if v is not None else "error",
+                             **({"value": canon(v)} if v is not None else {})})
         if v is None:
             self.refused, self.done = "vm: the step did not run", True
             return
@@ -85,8 +94,11 @@ class Chain:
             self.refused, self.done = f"no stop within {max_steps} steps", True
 
 
-def tries(emitter, loop: StepLoop, question: str, qi: int, k: int = K) -> list[dict]:
-    chains = [Chain(question, loop.world, loop.vm) for _ in range(k)]
+def tries(emitter, loop: StepLoop, question: str, qi: int, k: int = K, keep: "list | None" = None) -> list[dict]:
+    """``keep``: a list the chains are appended to, each recording its steps (order 0085's writer)."""
+    chains = [Chain(question, loop.world, loop.vm, record=keep is not None) for _ in range(k)]
+    if keep is not None:
+        keep.extend(chains)
     for step in range(loop.max_steps + 2):
         live = [c for c in chains if not c.done]
         if not live:
@@ -108,6 +120,16 @@ def tries(emitter, loop: StepLoop, question: str, qi: int, k: int = K) -> list[d
     return [{"answer": c.answer, "refused": c.refused, "steps": c.steps} for c in chains]
 
 
+def _ids(spec: str) -> list:
+    if os.path.isfile(spec):
+        text = open(spec, encoding="utf-8").read()
+        if spec.endswith(".json"):
+            d = json.loads(text)
+            return list(d["ids"] if isinstance(d, dict) else d)
+        return text.split()
+    return spec.split(",")
+
+
 def load(path: str) -> list[dict]:
     out = []
     for line in open(path, encoding="utf-8"):
@@ -118,9 +140,12 @@ def load(path: str) -> list[dict]:
 
 
 def run(a) -> None:
-    recs = load(a.data)[a.offset:]
+    recs = list(enumerate(load(a.data)))[a.offset:]
     if a.limit:
         recs = recs[:a.limit]
+    if a.ids:                                              # the dev order's index kept: the same seeds as the read
+        ids = set(_ids(a.ids))
+        recs = [(i, r) for i, r in recs if r["id"] in ids]
     done = set()
     if os.path.exists(a.out):
         done = {json.loads(ln)["id"] for ln in open(a.out, encoding="utf-8")}
@@ -131,28 +156,46 @@ def run(a) -> None:
         from cubbyllm.emit.seats_450m import Cubby450mEmitter
         emitter = Cubby450mEmitter(a.export, a.adapter, a.tokenizer)
     loop = StepLoop(emitter, world=ArithmeticWorld(), max_steps=a.max_steps, max_new_tokens=a.max_new)
+    writer = None
+    if a.records:                                          # order 0085: a record per question, the read frozen
+        from arith_records import Writer
+        from cubbyllm.reasoning.answer_kind import RULES
+        if not (a.speak_k and a.speak_m):
+            raise SystemExit("--records needs the frozen --speak-k and --speak-m")
+        writer = Writer(a.records, a.adapter, {"k": a.speak_k, "m": a.speak_m, "temperature": TEMPERATURE,
+                                               "top-k": TOP_K, "rules": list(RULES) if a.rules else [],
+                                               "tries decoded": a.k, "max steps": a.max_steps, "max new": a.max_new},
+                        RULES if a.rules else (), name=a.run_name or a.arm, calibration=a.calibration,
+                        calibration_at=a.calibration_at)
     t0, n = time.perf_counter(), 0
-    with open(a.out, "a", encoding="utf-8") as f:
-        for i, r in enumerate(recs, start=a.offset):
-            if r["id"] in done:
-                continue
-            q0 = time.perf_counter()
-            g = loop.solve(r["question"])
-            q1 = time.perf_counter()
-            ts = tries(emitter, loop, r["question"], i, a.k)
-            q2 = time.perf_counter()
-            f.write(json.dumps({"id": r["id"], "i": i, "gold": r["gold"], "arm": a.arm, "adapter": emitter.name,
-                                "greedy": {"answer": g["answer"], "refused": g["refused"],
-                                           "steps": [s["value"] for s in g["steps"]]},
-                                "tries": ts,
-                                "decode": getattr(emitter, "decode_kind", "rows" if hasattr(emitter, "emit_rows") else "groups"),
-                                "seconds": {"greedy": round(q1 - q0, 2), "tries": round(q2 - q1, 2)}},
-                               ensure_ascii=False) + "\n")
-            f.flush()
-            n += 1
-            el = time.perf_counter() - t0
-            print(f"  {n}/{len(recs)} {r['id']} greedy {q1 - q0:.1f}s tries {q2 - q1:.1f}s | mean {el / n:.1f}s a question",
-                  flush=True)
+    try:
+        with open(a.out, "a", encoding="utf-8") as f:
+            for i, r in recs:
+                if r["id"] in done:
+                    continue
+                q0 = time.perf_counter()
+                g = loop.solve(r["question"])
+                q1 = time.perf_counter()
+                keep = [] if writer else None
+                ts = tries(emitter, loop, r["question"], i, a.k, keep)
+                q2 = time.perf_counter()
+                sec = {"greedy": round(q1 - q0, 2), "tries": round(q2 - q1, 2)}
+                if writer:
+                    sec["writer"] = writer.write(r["id"], i, r["question"], keep)
+                f.write(json.dumps({"id": r["id"], "i": i, "gold": r["gold"], "arm": a.arm, "adapter": emitter.name,
+                                    "greedy": {"answer": g["answer"], "refused": g["refused"],
+                                               "steps": [s["value"] for s in g["steps"]]},
+                                    "tries": ts,
+                                    "decode": getattr(emitter, "decode_kind", "rows" if hasattr(emitter, "emit_rows") else "groups"),
+                                    "seconds": sec}, ensure_ascii=False) + "\n")
+                f.flush()
+                n += 1
+                el = time.perf_counter() - t0
+                print(f"  {n}/{len(recs)} {r['id']} greedy {q1 - q0:.1f}s tries {q2 - q1:.1f}s | mean {el / n:.1f}s a question",
+                      flush=True)
+    finally:
+        if writer:
+            writer.close()
 
 
 def main(argv=None) -> None:
@@ -175,6 +218,13 @@ def main(argv=None) -> None:
     ap.add_argument("--rules", action="store_true", help="with --score and --data: the answer-kind rules (part 1)")
     ap.add_argument("--gsm8k-train", default="", help="GSM8K train with ids (the rules' gold check; novm's shots)")
     ap.add_argument("--shots-seed", type=int, default=0, help="--arm novm: the seed drawing the 4 shots")
+    ap.add_argument("--records", default="", help="order 0085: write a record per question here (off the repo)")
+    ap.add_argument("--speak-k", type=int, default=0, help="with --records: the frozen k (the first k tries vote)")
+    ap.add_argument("--speak-m", type=int, default=0, help="with --records: the frozen m")
+    ap.add_argument("--ids", default="", help="read only these dev ids (a json list, a file of ids, or a comma list)")
+    ap.add_argument("--calibration", default="", help="with --records: the dev rows m was chosen on (hashed)")
+    ap.add_argument("--calibration-at", default="", help="with --calibration: when m was chosen (xsd:dateTime)")
+    ap.add_argument("--run-name", default="", help="with --records: the run's name (its record ids derive from it)")
     a = ap.parse_args(argv)
     if not a.gsm8k_train:
         from cubbyllm import local_paths

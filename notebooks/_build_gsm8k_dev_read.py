@@ -157,6 +157,50 @@ for arm in ARMS:
 """),
 ]
 
+CELLS += [
+    md(r"""
+## Order 0085: 20 of dev 80:200's spoken answers read again, each with its record
+
+The dev read's rows keep each try's values, not its steps, so the records are written by reading 20 questions again
+with the writer on: the first 20 (by dev order) of S1's 32 spoken answers at k 8, m 7 with the answer-kind rules
+(`validation/logs/gsm8k_dev_cert_ids_0085_2026-11-25.json`). Same seeds as the read. The records (the trace, and its
+CheezML record) and the freeze at both ends go to Drive; the replay and the shape checks run at home. **Run the
+setup and VM cells, then this one** (about 20 x 19 s on an L4). Run it once: a cut-short read is moved aside and
+read again whole, so the freeze covers one read.
+"""),
+    code(r"""
+# --- 0085: the writer on, 20 questions ---
+DRIVE     = '/content/drive/MyDrive/cubbyllm'
+CKPT      = f'{DRIVE}/runs/base450m_cont/base450m_cont_final.pt'
+TOKENIZER = f'{DRIVE}/token_cache_base/tokenizer/grillcheese_bbpe128k.json'
+DATA      = f'{DRIVE}/emitter/emitter_sft_v12e_w_slots.jsonl'
+LOGS      = f'{DRIVE}/emitter/gsm8k_dev_read'
+S1        = f'{DRIVE}/emitter/cubby450m_s1_0078'
+IDS       = f'{REPO}/validation/logs/gsm8k_dev_cert_ids_0085_2026-11-25.json'
+OUT, REC  = f'{LOGS}/gsm8k_dev_reread_0085_s1.jsonl', f'{LOGS}/gsm8k_dev_records_0085_s1.jsonl'
+for p in (CKPT, TOKENIZER, DATA, IDS, f'{S1}/emitter_lora.safetensors', f'{LOGS}/gsm8k_dev_read_s1.jsonl'):
+    assert os.path.exists(p), p
+n = sum(1 for _ in open(REC, encoding='utf-8')) if os.path.exists(REC) else 0
+if 0 < n < 20:                                     # a cut-short read: moved aside, read again whole
+    stamp = time.strftime('%Y%m%d-%H%M%S')
+    for p in (OUT, REC, REC + '.freeze.json'):
+        if os.path.exists(p):
+            os.rename(p, p.replace('.json', f'_aside_{stamp}.json', 1))
+    n = 0
+if n < 20:
+    cmd = [sys.executable, '-u', 'validation/exp_0078_dev_read.py', '--arm', 's1', '--ckpt', CKPT, '--adapter', S1,
+           '--tokenizer', TOKENIZER, '--data', DATA, '--ids', IDS, '--out', OUT, '--records', REC,
+           '--speak-k', '8', '--speak-m', '7', '--rules', '--calibration', f'{LOGS}/gsm8k_dev_read_s1.jsonl',
+           '--calibration-at', '2026-11-24T21:54:42Z', '--run-name', 'gsm8k-dev-0085-s1']
+    p = subprocess.Popen(cmd, cwd=REPO, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+    for line in p.stdout:
+        print(line, end='')
+    p.wait()
+    assert p.returncode == 0, f'exit {p.returncode}'
+print(json.load(open(REC + '.freeze.json'))['kinds'], '-> done; the replay and shape checks run at home')
+"""),
+]
+
 nb = {"cells": CELLS, "metadata": {"accelerator": "GPU", "colab": {"gpuType": "A100"},
                                    "kernelspec": {"display_name": "Python 3", "name": "python3"}},
       "nbformat": 4, "nbformat_minor": 0}
