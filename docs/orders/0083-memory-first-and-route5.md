@@ -1,5 +1,5 @@
 # 0083 - Faster answers: a checked plan remembered before the 450M writes one, and the 128k head at a 32k head's cost
-status: review (Code B, 2026-11-25)
+status: done (Cowork's check, 2026-11-26: both kills fire; memory and route 5 stay off)
 written: 2026-11-24 by Cowork · approved: 2026-11-24 by Nick ("we should also include the 128k == 32k in it") · hypothesis: H-A5 (an external episodic store beside the weights), H-C3 (route 5, order 0068)
 
 ## Why
@@ -206,3 +206,21 @@ remembers is a latent source, and an answer resting only on it is held, `latent_
      cost row 73.
   3. A `covers()` rule that a name the question holds must be the plan's seed or inside it: an order of its own?
   4. Route 5 on the programs seat only (every programs line passes), with talk on the full head: worth an order?
+
+## Cowork's check (2026-11-26)
+Read against the order's lines. The numbers are Code B's logs, not re-run here; merged into master (`1a2c8d8`).
+- **Both kills read as fired.** Memory's kill is "any wrong answer from a remembered plan", scored as the report
+  scores it; it is not judged again now by reading the golds, and it would fire anyway on row 144's "Ghana", a real
+  wrong answer. Route 5's kill is the batteries under 99%, and H-E8 reads 91.9%. Both flags stay off.
+- **Memory after an emitter refusal (Code B's question 2):** "first or not at all" was the order's wording and is
+  what ran; it stays. Trying memory after the seat's plan is refused is the case that carried "Ghana" to row 144, so
+  it comes back only in a new order, after the name rule below, with its own gate. The striatum's docstring ("every
+  proposer is tried until one certifies") is changed to say what runs.
+- **A `covers()` rule for the name (question 3):** yes, as an order of its own, proposed to Nick: a name the question
+  holds must be the plan's seed or inside the plan, or the plan is refused. It is a defect of the served path today,
+  with every flag off, so it goes before anything else that changes `plan_verify`. "Saint Joseph" for Maria Gripe's
+  husband (row 199) is a different failure (the wrong person under a shared name) and is read there, not fixed.
+- **Route 5 on the programs seat only (question 4):** no. The kill covers the switch as written, and a carve-out
+  chosen after the read would move the gate. The step is a tie with the 32k head (20.45 ms against 20.32) and about
+  1.2 ms under the full 128k head's 21.60, too small a gain for its own order now. If Nick wants it, it is a new
+  order, read on sets this one did not read.
