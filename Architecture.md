@@ -1,5 +1,10 @@
 # Architecture — the CubbyLLM backbone
 
+> **Note (2026-11-27):** this document records the July 2026 backbone bake-off (MinGRU, H-D1). The trunk trained
+> and served since is the hybrid (`cubbyllm/model/backbone/hybrid.py`: MinGRU with sliding-window attention every
+> 3rd layer), the 450M `base450m_cont`; the loci link is `cubbyllm/model/spatial.py`. The claims and their status:
+> `docs/hypotheses/06_D_backbone.md`.
+
 Status: **RESOLVED (H-D1, 2026-07-23) — MinGRU.** `__wiring__ = Wiring.WIRED`.
 This document describes the backbone model as it is actually implemented in
 `cubbyllm/model/backbone/mingru.py`, how it sits in the assembled forward path

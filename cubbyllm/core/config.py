@@ -6,7 +6,8 @@ Vocab strategy is the validated HYBRID (H-C6): a fixed core (``vocab_core``,
 next step 128k-256k BPE per H-G1) plus an optional dynamic tail
 (``vocab_dynamic``). Block dims default to cubemind's world-arena shape
 (k=80, l=128 -> D=10240), matching the chosen BlockCodeOps binding algebra.
-Backbone shape is deliberately NOT here — that decision is still open (H-D1).
+Backbone shape is not here: it lives in each checkpoint's meta and `cubbyllm/model/backbone/` (H-D1 is
+resolved; the trunk trained and served is the hybrid, `backbone/hybrid.py`).
 """
 from __future__ import annotations
 

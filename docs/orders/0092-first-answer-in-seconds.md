@@ -14,8 +14,8 @@ Measured by Cowork the same day (a throwaway cache and the source's own transpor
   after each call, one call after another); Ada Lovelace 6 calls in 2.62 s; "you" 7 calls in 2.87 s. The same
   lookup from the cache: about 1 ms.
 - **The VM:** 0.3 ms a run in the resident session (25 ms as a fresh process). Not the cost.
-- **The Python:** the brain runs in grilly2's `.venv`, the only one here with `grilly.infer`; `python3.exe` and
-  CubbyLLM's `.venv-dml` hold grilly 0.4.7, and llama_cpp 0.3.30 is the same build in the brain's Python. Not the cost.
+- **The Python:** the brain's interpreter is the only one on this machine with grilly2's `grilly.infer`; the system
+  Python and CubbyLLM's own environment hold grilly 0.4.7, and llama_cpp 0.3.30 is the same build in all. Not the cost.
 - **Not timed yet:** the seat's program (about 31 to 34 ms a step in 0083), the talk seat's paraphrase on profiles
   (written, then not kept: no prose on any of the three), and the first decode after boot. Step 1 times them.
 
