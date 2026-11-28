@@ -970,3 +970,10 @@ every plan not yet done (unstarted, and reopened):
 - **No goodbye padding:** at most one closing exchange, in the last two planned turns. About halfway the user brings
   a second subject of their own (their work, a hobby, a question), so a long conversation keeps going.
 - `status` prints the kept Cubby turns per conversation (a histogram) beside the cuts.
+
+### The fact plans, re-seeded with the web off (Nick, 2026-11-28)
+Nick: "problem was not really the web access but more that the answer was given by lfm". The drafting server now runs
+with `--web off`, so the local LFM reader is never mounted: an answer comes from the store or Wikidata, proposed by
+the 450M seat and checked by the VM. `reseed` on it: 61 of the 62 fact plans not yet drafted got a verified question
+(150 asks, 4.8 min; 1 left as it was). The three conversations drafted on an earlier reseed (00101, 00111, 00116)
+asked again with the web off: verified, the same answers (Sai Taku, Walter Hohmann, 1907-11-30).
