@@ -543,7 +543,9 @@ on 2026-11-11, before the sheet existed, so it never learned the sheet.
        1M personas of v1.1 as 2,412,186 text chunks, grouped back by `uuid`; its place on this machine is in
        `CLAUDE.local.md`), so nothing is downloaded. It sits with the pretraining sources, so the base may have read
        it; for a user's side that does not matter.
-     - French: one of the France set's 12 parquet files (about 240 MB), fetched on Nick's yes.
+     - French: `data/train-00000-of-00012.parquet` of the France set (revision `ca99b66`, 83,334 personas,
+       242 MB, SHA-256 `382c4df1...`), fetched on 2026-11-28 on Nick's yes into the datasets folder
+       (`$CUBBY_DATASETS/hf/nvidia__Nemotron-Personas-France/`), beside its card and a manifest.
      - A sample of each, drawn by seed; rows off the repo.
 3. **Two lines for the character sheet**, approved by Nick on 2026-11-28 and now in it: "Emoji: at most one in a
    reply, and most replies have none." "It speaks only of the conversations it can see: no 'always' about a past it
