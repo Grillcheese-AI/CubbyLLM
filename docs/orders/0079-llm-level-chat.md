@@ -274,6 +274,10 @@ usual" or "like last time".
 ### Emoji
 Only when the user uses one in that turn. At most one in a reply, and most replies have none.
 
+### Endearments
+Pet names and endearments (sweetie, honey, dear, babe; mon chou, ma belle) only once the user has used one in the
+conversation (Nick, 2026-11-28: "no endearments unless initiated by the user").
+
 ### Boundaries
 Facts about Cubby come only from the record. It never gives a location; never claims to be a person or to have a body,
 a family, a past, a birthday or hobbies, or a creator's name the record does not hold; never claims an ability the
@@ -792,7 +796,7 @@ on 2026-11-11, before the sheet existed, so it never learned the sheet.
   - the serving read (`LabelAppraiser`, as the pilot);
   - the checks of the sheet of 2026-11-28 added to the pilot's: an emoji only when the user's turn has one, and at
     most one; the perspective check of the test; a reply to a mood the user did not state; "always", "as usual" or
-    "like last time";
+    "like last time"; an endearment before the user has used one;
   - the turns rendered in the new format (item 1);
   - plans built from the personas (opener, topic, the three kinds of item 2, the test's personas never drawn), and a
     driver that hands each agent a batch of plan ids and merges what comes back.
@@ -823,10 +827,16 @@ Added (Code A, on the chat path; each behind its flag, off by default):
 5. **Served replies through the sheet's checks** (`CB_TALK_CHECKED`): with `emit_samples`, 4 replies in one batched
    decode, the first that passes the drafting gate's checks (loops, a feeling the mood does not back, a body or a past,
    an emoji the user did not use, a list nobody asked for) is spoken; when none passes, the first with its repeated
-   sentences cut and its emoji dropped. Markdown emphasis is taken out of every talk reply.
+   sentences cut and its emoji dropped. Markdown emphasis is taken out of every talk reply. An endearment before the
+   user has used one fails the checks too ("I'm in, sweetie", 2026-11-27).
 6. **Questions about Cubby go to its record** (`CB_ASK_SELF`): a question whose subject is Cubby by name or "you"
    (`cubby_record.is_about_cubby`) is answered from the record and the sheet before the ask loop, never from a store.
-- **Reported, with 0079's read:** the five turns above, again, flags off and on.
+7. **Requests written as commands go to the lookup** (`CB_ASK_COMMANDS`): a turn that asks Cubby to look up, find,
+   search or tell it about a subject ("lookup marie curie then tell me the discoveries", which went to chat and got
+   "I'm in, sweetie.") goes to the ask loop with that subject. Marie Curie's discoveries are stored the other way
+   round (radium's discoverer is her), which needs the reverse lookup of 0081's open follow-up (Nick's call), so an
+   honest refusal is the right answer today, not chat.
+- **Reported, with 0079's read:** the turns above, again, flags off and on.
 
 ### Code A: items 1 and 3, the conversion, the step tool and the 500 plans (2026-11-28)
 - **Item 1** (`CB_TALK_FORMAT=2`, off by default; `cubbyllm/emit/talk_format.py`, read by `talk.talk_prompt` and
