@@ -781,14 +781,28 @@ on 2026-11-11, before the sheet existed, so it never learned the sheet.
   perspective set before that run.
 
 ### The final run's writer, for now (Nick, 2026-11-28: "let's use haiku or sonnet for now, we will change it before we go live")
-- **The writer:** Claude Haiku and Claude Sonnet, mixed as in the pilot's last round, through the builder's own path
-  (`build_chat_0079.py`, OpenRouter); the users' side seeded from the personas. Every row records its writer and the
-  model's exact id.
+- **The writer:** Claude Haiku and Claude Sonnet, mixed, as **local agents** (Nick: "we can make local agents generate
+  them"): Claude Code sessions on Nick's machine writing both sides turn by turn through the step tool, as the
+  pilot's cloud agents did; not OpenRouter. The users' side seeded from the personas. Every row records its writer,
+  the model's exact id and the session.
+- **The step tool, in the repo** (`validation/sft/chat_step_0079.py`, Code A): the pilot's tool (handed over off the
+  repo, in the data root's `chat_0079_pilot/`) ported onto the real `cubbyllm` instead of the pilot's copied package,
+  with:
+  - the facts from the host's own resolver for the turn, where the pilot used a lookup by name over talk_v2_2's index;
+  - the serving read (`LabelAppraiser`, as the pilot);
+  - the checks of the sheet of 2026-11-28 added to the pilot's: an emoji only when the user's turn has one, and at
+    most one; the perspective check of the test; a reply to a mood the user did not state; "always", "as usual" or
+    "like last time";
+  - the turns rendered in the new format (item 1);
+  - plans built from the personas (opener, topic, the three kinds of item 2, the test's personas never drawn), and a
+    driver that hands each agent a batch of plan ids and merges what comes back.
+  The tool writes every row; a row whose checks the tool did not run is never kept.
 - **Before Cubby goes live,** the rows are drafted again with the final writer set, and the adapter that serves is
   trained only on those. Anthropic's terms do not allow Claude's output to train a model that competes with it, so no
   row drafted here is in anything that ships.
-- **Cost first:** a batch of 500 conversations, priced from its own usage; the rest of the run (the pilot's estimate
-  was 20,000 conversations) on Nick's yes, with that price.
+- **A batch of 500 conversations first:** how long the agents take, how much of Nick's plan's usage they spend, and
+  how many replies pass; the rest of the run (the pilot's estimate was 20,000 conversations) on Nick's yes, with those
+  numbers. Cowork reads 50 of the 500 before the rest starts.
 - **The test's personas, reserved now:** a persona whose `uuid`'s SHA-256 ends in `0` (one in sixteen) is never drawn
   for training; the perspective set draws its users from those only. The drafting can start before the set is
   written.
