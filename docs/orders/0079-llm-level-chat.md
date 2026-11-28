@@ -1,5 +1,5 @@
 # 0079 - LLM-level chat: Cubby holds a real conversation, in its own words, and states only checked facts
-status: open (Nick: yes to the character sheet and the pilot, 2026-11-20; to training the trunk's emotion read with the talk seat, 2026-11-24; the perspective addendum, 2026-11-28, on Nick's note)
+status: in progress (Code A, 2026-11-28: the perspective addendum's items 1 and 3, then the step tool) (Nick: yes to the character sheet and the pilot, 2026-11-20; to training the trunk's emotion read with the talk seat, 2026-11-24; the perspective addendum, 2026-11-28, on Nick's note)
 written: 2026-11-20 by Cowork, on Nick's calls of the day · supersedes `talk_v3b`'s training (0010) · hypothesis: H-E21 (below)
 
 ## Why
