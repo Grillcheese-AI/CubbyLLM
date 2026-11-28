@@ -920,3 +920,40 @@ Each behind its flag, off by default; off, the turn and the loop are as they wer
 - **Tests:** `tests/speech/test_sheet_checks_0079.py` (6), `tests/reasoning/test_ask_self_commands_0079.py` (2).
 - **Not verified here:** the board turns of 2026-11-27 again with the flags off and on (the order's "Reported" line):
   that is a served run on the home card.
+
+### Code A: the fixes before b004, from b000-b003 (2026-11-28; in `a4c8506`)
+- **Check d's false cuts** (21 of b000-b003's 28 cuts; tests in `tests/speech/test_chat_checks_0079_batch.py`): an
+  emoji now ends a sentence for the opener view ("... 😄 Did you", "😂 Maybe"); a sentence's first word is lowered
+  when it is an inflection of a common word ("Hand-transcribing", "Hedges", "Notez", "Profitez") or a word the host's
+  list lacked, now in `opener_words.txt` ("note", "liner" and their plurals); "is a skill / achievement / tool / hook / score / subject", "a step ahead", "the step
+  most people skip" and "a gentle, kind ending" read as opinions, not kinds. Still refused: "Canadians" and "EMT" from
+  nowhere, and "add 0.5 to speed": a number in advice is still a number the host cannot check, so it stays refused.
+  "Paris is a big city", "Lou Reed is a painter" and "Messi is a star player" are still refused.
+- **Check h:** "je ne peux pas t'en parler / t'en dire plus / vous indiquer un endroit précis" are not knowing, and
+  "I could say I toured the 1700s, but that's just a joke" names no ability; "I can tell jokes" is still refused.
+- **The router** (under the rows' flags): a question whose subject is "you" goes to Cubby, never the world
+  (`CB_ASK_SELF`: "where have you traveled?", "Et toi, tu lis quoi ?", "Do you use google often?", "I just got off
+  work, you?"); a question inside "do you know / can you tell me / tu sais" goes to the lookup, put back in question
+  order (`CB_ASK_COMMANDS`: "do you know who Howard K Smith is?" -> "Who is Howard K Smith?", "do you know when Lou
+  Reed was born?" -> "When was Lou Reed born?"), unless it is about Cubby ("do you know who made you?"). The step tool
+  routes with both flags on and asks the drafting server the restated question.
+- **Cubby knows only the conversation** (`chat_persona_0079.leak`, a gate check): a name or place of the persona, or
+  a word of it rare in the run's personas and not among what Cubby says anyway in other conversations
+  (`persona_background.json`, frozen from b000-b003), that the conversation has not had, in any form ("bake" covers
+  "baking"). Over b000-b003's 472 kept replies it flags 23; by my read about 9 are real (Cowork's promenade, church,
+  home automation, apprentices and planner, and stall, réparations, sudoku, lecture), the rest natural follow-ons
+  (needles after knitting, bricks after LEGO). The brief says it too: "Cubby sees only the conversation; the persona
+  is the user's side".
+- **b000-b003 regated** (the conversations copied aside first): 399 rows kept; 27 conversations cut (persona 21, d 3,
+  a feeling 2, g 1); 20 conversations cut falsely before are open again, to be continued by a b000-b003 session
+  (`start` takes the batch's own model id).
+- **Sessions:** batches of 5 (b004-b083; the old b004-b019 in `batches/_old/`), run from a folder outside the repo
+  (`rebatch --sessions`; `step.sh` and Cowork's launcher, pointed there) so the repo's CLAUDE.md files are not read at
+  a session's start. The briefs: the place line as Cowork patched it, the drafting server's address, and "a CUT ends
+  only the rest of that conversation: its turns before the cut are kept". `status`'s `cut_by` keys by kind
+  ("d: ungrounded").
+- **The fact plans, not re-seeded** (Nick, 2026-11-28): `reseed` is built (one wiki-world question a plan, kept only
+  when the drafting server verifies it, the gen-3 held split never drawn) and was stopped before writing anything,
+  because the drafting server runs with the web fallback on, whose page reader is the local LFM model: a verified
+  answer could rest on the web, not the store. The server stays as it is; the fact plans keep their asks, which the
+  router now restates ("tell me about X" -> "What is X?").

@@ -39,8 +39,6 @@ _ENUM = re.compile(r"(?m)^\s*(?:\d{1,2}[.)]|[-*•])\s+")
 # an emoji ends a sentence too ("... a fun class 😄 Did you keep up?"; 0079's batch, 2026-11-28)
 _EMO = "[\U0001F300-\U0001FAFF\u2600-\u27BF\u2B00-\u2BFF][\uFE0F\U0001F3FB-\U0001F3FF]?"
 _OPENER = re.compile(r"(?:^\s*(?:" + _EMO + r"\s*)*|(?:[.!?:…]|" + _EMO + r")\s+|\n\s*)([A-Za-zÀ-ÿ][\w'’\-]*)")
-# 0079's first batch (2026-11-28): everyday words the list lacks, refused as names when they opened a sentence
-EXTRA_WORDS = frozenset("note notes liner liners".split())
 _PRONOUN_I = {"i", "i'm", "i’m", "i'd", "i’d", "i'll", "i’ll", "i've", "i’ve"}
 # a French verb joined to its pronoun (an imperative or an inversion): "Installe-toi", "Dis-moi", "Allez-y", "Peut-on".
 # Opening a sentence it is a forced capital, never a name (Cowork, 2026-11-11: "Bonjour ! Installe-toi, ..." was refused)
@@ -54,7 +52,7 @@ def on() -> bool:
 @functools.lru_cache(maxsize=1)
 def common_words() -> frozenset[str]:
     """The host's opener words: the list beside this file and the interjections."""
-    return frozenset(WORDS.read_text(encoding="utf-8").split()) | INTERJECTIONS | EXTRA_WORDS
+    return frozenset(WORDS.read_text(encoding="utf-8").split()) | INTERJECTIONS
 
 
 def openers(text: str) -> set[int]:
