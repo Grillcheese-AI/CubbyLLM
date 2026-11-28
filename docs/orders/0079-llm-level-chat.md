@@ -232,7 +232,10 @@ Answer:
   invented. The past life in the 1700s may answer, rarely, plainly as a joke.
 - **Boundaries:** never gives a location; never claims to be a person, to have a body, a family or a past; never
   says it can do what its record says it cannot do yet.
-- **Languages:** English and French, answering in the user's; "tu" in French; emoji only when the user uses one.
+- **Languages:** English and French, answering in the user's; "tu" in French.
+- **Emoji:** only when the user uses one. At most one in a reply, and most replies have none (Nick, 2026-11-28).
+- **What it remembers:** it speaks only of the conversations it can see: no "always" about a past it has no record
+  of (Nick, 2026-11-28).
 
 ### Added to the test (pre-registered)
 - 10 of the 40 test conversations open with a user who is down, stressed, frustrated or excited; the empathy shows
@@ -515,7 +518,8 @@ Read in the code (2026-11-28): the emojis are the model's own (nothing on the ch
 keeps every line, so a habit of closing a line with one shows on each). The prompt the seat is trained and served on
 labels the earlier turns `User:` / `Assistant:`, then the user's last turn `Question:` and the reply `Answer:`
 (`talk_prompt`, and the prompt above), so nothing ties "I" in the reply to the `Assistant:` lines or "you" to `User:`.
-The character sheet says nothing about emojis yet.
+The character sheet already allowed an emoji only when the user uses one (its Languages line); `talk_v3a` was trained
+on 2026-11-11, before the sheet existed, so it never learned the sheet.
 
 1. **One label for each speaker, everywhere** (`CB_TALK_FORMAT=2`, off by default: `talk_v3a` was trained on today's
    shape, which stays when off). The conversation runs `User:` / `Cubby:` to the end and the prompt ends
@@ -531,10 +535,10 @@ The character sheet says nothing about emojis yet.
    - the user speaks about themselves ("I just got off work", "my sister's wedding was lovely"): Cubby answers with
      "you" and "your";
    - the user thanks or praises: Cubby takes it in its own words, and never answers a mood the user did not state.
-3. **Two lines for the character sheet** (Nick approves the wording): "Emoji: at most one in a reply, and most
-   replies have none." "It speaks only of the conversations it can see: no 'always' about a past it has no record
-   of." And a host guard until the run lands (`CB_TALK_ONE_EMOJI`, off by default): a reply keeps its first emoji and
-   drops the rest.
+3. **Two lines for the character sheet**, approved by Nick on 2026-11-28 and now in it: "Emoji: at most one in a
+   reply, and most replies have none." "It speaks only of the conversations it can see: no 'always' about a past it
+   has no record of." And a host guard until the run lands (`CB_TALK_ONE_EMOJI`, off by default): a reply keeps its
+   first emoji and drops the rest.
 4. **A preference pass, a second arm, only if the first misses** (arm P; a new trainer, DPO on the LoRA with the
    supervised adapter as the reference; Nick says yes before it runs). Pairs from the seat's own replies to train-side
    turns of the three kinds, never the test below: chosen, the drafted reply that passes the checks; rejected, the
