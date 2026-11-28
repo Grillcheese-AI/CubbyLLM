@@ -186,3 +186,42 @@ outcomes. Fixed now, before P32 is read:
   and that P8's text-exact lines and Cowork's VM read were seen before Nick chose to train again.
 - **In the hypothesis file,** P8 appears only as a side arm with a second change beside the records. P32 against P8
   is reported for what it shows (whether the extra steps carry part of the gain); nothing is chosen from it.
+
+### Code A: arm P (P32) read on the unseen-writer eval and the 236 (2026-11-28); the served reads wait
+- **P32's settings, from its adapter file and log** (`cubby450m_0082_p32`): 4,759 steps of 32 on
+  `emitter_sft_0082_pf.jsonl`, lr 2e-4 (warmup 50), rank 16, alpha 32, max length 1,024, seed 0, from
+  `cubby450m_v12e_w_tg_cont`, on `base450m_cont_final.pt` (`7d4bf9d6...`); 73.9 min on an L4; the last held program
+  loss 0.0404. S0's adapter file: 4,691 steps of 32, the same lr, rank, alpha and max length. Two first starts ran out
+  of memory before step 1 with chunks of 8,192 and 6,144 tokens (the log keeps all three starts); the run that
+  trained used chunks of at most 4,096 tokens, as the adapter file records (the batch of 32 is the same; only how it
+  is cut differs). So P32 differs from P8 in batch and steps only, as ruled.
+- **The gate read, once** (`validation/logs/exp_0082_he18_ab_2026-11-28.json`; the real VM; both arms decoded with
+  `--gen-batch 32`, S0's generations those of 2026-11-25):
+
+  | | S0 | P32 | delta | the gate |
+  |---|---|---|---|---|
+  | unseen-writer plan (285) | 0.270 (77) | **0.477** (136) | **+20.7** | >= 0.55: **missed**; >= +10 over S0: met |
+  | unseen-writer chain (294) | 0.908 (267) | **0.976** (287) | +6.8 | >= 0.99 (292): **missed** |
+  | copied / unknown slots, plan and chain | 0 / 0 | 0 / 0 | | met |
+  | val chain / kernel / plan / role-binding | 0.889 / 0.768 / 0.968 / 0.984 | 0.952 / 0.779 / 0.984 / 1.000 | +6.3 / +1.1 / +1.6 / +1.6 | none down: met |
+
+  The script's VERDICT NEITHER reads H-E18's all-family slot clause: 2 copied literals in kernel val, the same count
+  on S0; not this order's gate.
+- **The 236's greedy step loop** (`validation/logs/exp_0082_step_loop_p32_2026-11-28.json`, grilly2 on the home card,
+  the same command as S0's read of 2026-10-01): **0.284 (67 of 236)** against S0's 0.229 (54; the order's fixed number, not re-run): **+5.5**, within the
+  gate's 2 points and clear of the kill. Answered 0.945 (S0 0.970): 13 refused (10 steps the VM could not run, 3 past
+  the 12-step cap; S0 7). By length: 3 steps 0.42 (S0 0.34), 4: 0.25 (0.19), 5: 0.07 (0.07), 6 and more 0 (0). The
+  adapter records no base hash, so the seat loaded it with a warning; the export it ran on (`81a45418...`) is the one
+  0077 records as made from `7d4bf9d6...`, P32's base. Cowork's drafting server for 0079 (idle; its batch ended
+  before this read began) stayed loaded on the card during the read; the decode is greedy.
+- **Where it stands:** below the gate (plan 0.477 and chain 0.976 under their bars), above the kill (plan +20.7, the
+  236 +5.5). Between the two: reported, and serving P32 is Nick's call. The gen-3 split (seed 7) and the live eight,
+  P32 against S0 with `CB_EMIT_TRIE` off (0081 was killed), wait for a card slot (Nick, 2026-11-28: the 236's loop
+  only, for now); S0 is read again there, since the ask path on master has changed since 0081 read it. They decide
+  the gate's "0 wrong answers spoken" line; the status stays in progress until they are read.
+- **P32 against P8, for what it shows:** P8 (4 times the optimizer steps) read 0.586 plan and 0.990 chain, P32 0.477
+  and 0.976; the val families are the same within a point (kernel 0.789 against 0.779). So the extra steps carry
+  about 11 points of the unseen-writer plan gain, and the records alone about 21. Nothing is chosen from this.
+- **The unseen-writer eval has been read twice for arm P:** once on P8 (Cowork's VM read and the text-exact lines,
+  P8's plan 0.561 against S0's 0.249, both seen before Nick chose to train again), and once on P32, this gate read.
+  P32's text-exact lines (plan 0.460, chain 0.844, from its generation log) were seen before this VM read.

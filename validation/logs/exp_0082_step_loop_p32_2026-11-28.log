@@ -1,0 +1,21 @@
+$CUBBY_REPO\validation\exp_he19_step_loop.py:142: DeprecationWarning: build_emitter_sft moved to validation.sft.build_emitter_sft (order 0031)
+  from build_emitter_sft import gold_matches
+$CUBBY_REPO\cubbyllm\emit\seats_450m.py:110: UserWarning: adapter emitter/cubby450m_0082_p32 records no base hash; loading it on base450m_cont/grilly unchecked
+  check_base(meta, self.base_hash, short_name(self.export_dir), short_name(self.adapter_dirs[role]))
+  20/236 (145s) correct=0.100 answered=0.950 same_steps=0.500
+  40/236 (264s) correct=0.150 answered=0.975 same_steps=0.550
+  60/236 (420s) correct=0.217 answered=0.967 same_steps=0.567
+  80/236 (565s) correct=0.225 answered=0.963 same_steps=0.588
+  100/236 (722s) correct=0.230 answered=0.960 same_steps=0.590
+  120/236 (872s) correct=0.217 answered=0.967 same_steps=0.567
+  140/236 (1011s) correct=0.236 answered=0.957 same_steps=0.571
+  160/236 (1142s) correct=0.275 answered=0.944 same_steps=0.575
+  180/236 (1242s) correct=0.289 answered=0.944 same_steps=0.578
+  200/236 (1368s) correct=0.285 answered=0.940 same_steps=0.575
+  220/236 (1479s) correct=0.295 answered=0.941 same_steps=0.577
+  236/236 (1562s) correct=0.284 answered=0.945 same_steps=0.564
+
+0082_p32_held: n=236 correct=0.284 answered=0.945 wrong_answer=0.661 same_steps=0.564 emissions/problem=4.85
+  by steps: 3:0.42/118  4:0.25/64  5:0.07/29  6:0.00/12  7:0.00/8  8:0.00/4  10:0.00/1
+  refusals: no stop within # steps=3, vm: the step did not run=10
+  -> $CUBBY_REPO\validation\logs\exp_he19_step_loop_0082_p32_held.json
