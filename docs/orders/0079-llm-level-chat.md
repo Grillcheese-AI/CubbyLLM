@@ -538,8 +538,13 @@ on 2026-11-11, before the sheet existed, so it never learned the sheet.
    - **The users come from personas** (Nick, 2026-11-28): the user side of these turns, and of the final run's
      conversations, is seeded from `nvidia/Nemotron-Personas-USA` (English) and `nvidia/Nemotron-Personas-France`
      (French), both CC BY 4.0 and credited in the rows' manifest: an occupation, a hobby or a line of the persona, so
-     users talk about lives that sound real. A sample of each (one parquet file), drawn by seed; rows off the repo.
-     A persona is only ever a user's, never Cubby's.
+     users talk about lives that sound real. A persona is only ever a user's, never Cubby's.
+     - English: the copy already in the training data's `unified/` folder (`nemotron_personas_usa.full.jsonl`, the
+       1M personas of v1.1 as 2,412,186 text chunks, grouped back by `uuid`; its place on this machine is in
+       `CLAUDE.local.md`), so nothing is downloaded. It sits with the pretraining sources, so the base may have read
+       it; for a user's side that does not matter.
+     - French: one of the France set's 12 parquet files (about 240 MB), fetched on Nick's yes.
+     - A sample of each, drawn by seed; rows off the repo.
 3. **Two lines for the character sheet**, approved by Nick on 2026-11-28 and now in it: "Emoji: at most one in a
    reply, and most replies have none." "It speaks only of the conversations it can see: no 'always' about a past it
    has no record of." And a host guard until the run lands (`CB_TALK_ONE_EMOJI`, off by default): a reply keeps its
