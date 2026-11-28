@@ -1,5 +1,5 @@
 # 0079 - LLM-level chat: Cubby holds a real conversation, in its own words, and states only checked facts
-status: open (Nick: yes to the character sheet and the pilot, 2026-11-20; to training the trunk's emotion read with the talk seat, 2026-11-24)
+status: open (Nick: yes to the character sheet and the pilot, 2026-11-20; to training the trunk's emotion read with the talk seat, 2026-11-24; the perspective addendum, 2026-11-28, on Nick's note)
 written: 2026-11-20 by Cowork, on Nick's calls of the day · supersedes `talk_v3b`'s training (0010) · hypothesis: H-E21 (below)
 
 ## Why
@@ -501,3 +501,56 @@ not depend on it (its high level is the phrase read), but its raised level and C
 - **Tests:** `tests/validation/test_emotion_read_0079.py` (3), with `test_exp_0079_appraiser_read.py` and
   `test_dev_read_torch.py`: 34 passed with the guards.
 - **Not verified here:** the training on Colab, the read's speed there.
+
+### Perspective: one label for each speaker, turns that turn "you" into "I", one emoji at most (Cowork, 2026-11-28, on Nick's note)
+Three turns on the control board, the first casual chat with the served 450M (`talk_v3a`, 2026-11-27):
+- "hi there what is your mood today?": "I'm feeling quite relaxed and ready to chat without taking a break! 🌞 I always
+  enjoy our conversations. 🌞 What's on your mind today? 🌞" (an emoji closing every sentence, and "always" about a
+  past with this person it has no record of);
+- "Thanks and congrat on the reply those are some of your first words :)": "Glad you are doing okay! 💥" (an answer to
+  a mood the user never stated);
+- "thanks": "Glad I was enjoying your first words! 💖" (the speakers swapped: they are Cubby's first words).
+
+Read in the code (2026-11-28): the emojis are the model's own (nothing on the chat path adds one; `CB_TALK_LINES=1`
+keeps every line, so a habit of closing a line with one shows on each). The prompt the seat is trained and served on
+labels the earlier turns `User:` / `Assistant:`, then the user's last turn `Question:` and the reply `Answer:`
+(`talk_prompt`, and the prompt above), so nothing ties "I" in the reply to the `Assistant:` lines or "you" to `User:`.
+The character sheet says nothing about emojis yet.
+
+1. **One label for each speaker, everywhere** (`CB_TALK_FORMAT=2`, off by default: `talk_v3a` was trained on today's
+   shape, which stays when off). The conversation runs `User:` / `Cubby:` to the end and the prompt ends
+   `User: <the turn>` then `Cubby:`; a first turn is the same with nothing above it. `Mood:`, `Shade:`, `They seem:`
+   and `Facts:` stay above, as they are. Every talk row of the final mix (the pilot's chat rows, the grounded rows, the
+   emotion read's rows, talk_v3a's rows carried over) is rendered by the same function serving uses; `\nCubby:` joins
+   the stops. The prompt above is amended to this shape for the final run. Serving keeps today's shape until an
+   adapter trained on the new one passes this order's gate.
+2. **Turns that turn the pronouns**, at least 10% of the final mix's chat turns, in about equal thirds, English and
+   French, drafted like the other conversations (wording only; every Cubby turn through the host's checks):
+   - the user speaks about Cubby ("congrats on your first words", "you seem upbeat today"): Cubby answers with "my"
+     and "I";
+   - the user speaks about themselves ("I just got off work", "my sister's wedding was lovely"): Cubby answers with
+     "you" and "your";
+   - the user thanks or praises: Cubby takes it in its own words, and never answers a mood the user did not state.
+3. **Two lines for the character sheet** (Nick approves the wording): "Emoji: at most one in a reply, and most
+   replies have none." "It speaks only of the conversations it can see: no 'always' about a past it has no record
+   of." And a host guard until the run lands (`CB_TALK_ONE_EMOJI`, off by default): a reply keeps its first emoji and
+   drops the rest.
+4. **A preference pass, a second arm, only if the first misses** (arm P; a new trainer, DPO on the LoRA with the
+   supervised adapter as the reference; Nick says yes before it runs). Pairs from the seat's own replies to train-side
+   turns of the three kinds, never the test below: chosen, the drafted reply that passes the checks; rejected, the
+   seat's own reply when it fails the perspective check, carries more than one emoji, or answers an unstated mood.
+
+**Added to the test (pre-registered, before the final run):**
+- **The perspective set:** 300 held turns, 100 of each kind, from openers never trained (the three board turns among
+  them), each with the pronouns a right reply must use. Written by Cowork, a different writer from the training
+  rows'. Read by rule (the possessive the user used, turned: "your X" answered with "my X", "I" and "my" answered with
+  "you" and "your") and 50 of them read by Cowork.
+- **Lines:** perspective right on at least 95% (the rule and Cowork's read agreeing); a reply to an unstated mood on
+  at most 2%; at most one emoji in every reply; and the lines above held (0 wrong facts; E6 at least the control's
+  minus 0.02).
+- **Arm P's kill:** any of the lines above worse than arm F's (the supervised run with items 1 to 3); arm F stays.
+- **Reported:** `talk_v3a` on the perspective set as the floor, with today's prompt and with the new labels untrained
+  (what the labels alone do).
+- **Who and when:** Code A builds items 1 and 3 (the prompt flag, the conversion, the guard) now; the turns of item 2
+  are drafted with the final run's conversations, when the writer runs again (OpenRouter is paused); Cowork writes the
+  perspective set before that run.
