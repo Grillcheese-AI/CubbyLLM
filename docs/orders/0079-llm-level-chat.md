@@ -827,3 +827,54 @@ Added (Code A, on the chat path; each behind its flag, off by default):
 6. **Questions about Cubby go to its record** (`CB_ASK_SELF`): a question whose subject is Cubby by name or "you"
    (`cubby_record.is_about_cubby`) is answered from the record and the sheet before the ask loop, never from a store.
 - **Reported, with 0079's read:** the five turns above, again, flags off and on.
+
+### Code A: items 1 and 3, the conversion, the step tool and the 500 plans (2026-11-28)
+- **Item 1** (`CB_TALK_FORMAT=2`, off by default; `cubbyllm/emit/talk_format.py`, read by `talk.talk_prompt` and
+  `talk.talk_answer`): `User:` / `Cubby:` to the end, the prompt ending `User: <the turn>` then `Cubby:`; `Explicit:`,
+  `Premise:`, `Mood:`, `Shade:`, `They seem:` and `Facts:` above as in the rows; `\nCubby:` joins the stops. Off, the
+  prompt and the answer are today's (pinned on each shape). Three choices to check:
+  - no `Conversation:` header: a first turn and a later one have the same shape;
+  - facts and turns can come together (today's shape drops the turns when there are facts; the pilot's grounded rows
+    have both);
+  - serving does not send `Mood:`, `Shade:` or `They seem:` yet: `mood.py` is the builder's until the host reads it
+    behind a flag, so the renderer takes them and serving's context gets them when the final adapter serves.
+- **The conversion** (`validation/sft/talk_format2_0079.py`; `talk_format.parse_v1` reads a row back, `render` writes
+  it, so rows and serving share one function; counts in `validation/logs/talk_format2_0079_2026-11-28.json`, nothing
+  written yet): talk_v3a 311,996 of 312,732 rows; the 736 left out are 727 chat rows and 9 passage_web rows whose text
+  holds a speaker's label at a line start (a quiz's `Question:`, a turn's `Answer:`), never guessed. The emotion read's
+  39,107 rows (38,194 reads, the pilot's 913 chat rows) all convert.
+- **Item 3** (`CB_TALK_ONE_EMOJI=1`, off by default; `talk_format.guard`), held to the sheet: `Cubby450mTalk.emit`
+  hands `talk_answer` the turn it answers; a turn with no emoji gets none, else the first only. The board's first reply
+  comes out with no emoji. A caller with no turn to give keeps the first (the other uncommitted `emit_samples` calls
+  `talk_answer` without one). An emoji is one unit: a flag, a skin tone, a joined family.
+- **The step tool** (`validation/sft/chat_step_0079.py`, with `chat_gate_0079.py`, `chat_plans_0079.py`,
+  `chat_rows_0079.py`): the pilot's tool on the real `cubbyllm`, the mood as the pilot read it (`LabelAppraiser`,
+  regulation on for the call only).
+  - **Facts, the host's own resolver:** `BrainRoute.needs_facts` (the brain's router) decides whether the turn needs
+    any; when it does, the served ask loop answers it (`POST /ask` on the server started with `--ask`, the audit view's
+    walked facts when verified with no namesake left to ask about; none on a refusal). A turn that needs facts stops
+    when no host is given, rather than being drafted without them.
+  - **The sheet's checks, added to the pilot's:** an emoji only when the user's turn has one, at most one; the
+    perspective rule (the user's possessives turned, earlier user turns' too, so the board's "Glad I was enjoying your
+    first words!" is refused; the user's "I ..." not taken as Cubby's, stance verbs aside; questions skipped, so asking
+    back passes); a reply to a mood the user did not state (read from the user's words, not `They seem:`); an unseen
+    past ("I / we / you (have) always", "as usual", "like last time", the French ones; "you can always ask" passes); the
+    persona's own places (the France set's; the English copy has none, so the brief keeps towns out of the user side).
+  - **Rows:** `merge` renders every kept reply in the second shape with `talk_format.render`; a reply is a row only
+    when every check of `CHECKS` ran on it and passed (`regate` after a check changes). Each row carries its model id,
+    session, batch, persona and the turn's kind; one conversation in twenty is held.
+  - **The driver:** `plans` writes the plans and batches of 25 (Haiku and Sonnet in turn) with a brief each, the text
+    Nick gives a session; `start <batch> --model <id>` stamps the model and session, and refuses a model of the other
+    family.
+- **The 500 plans** (off the repo, the data root's `chat_0079_final/`; built in 37 s, one pass over the English
+  file): 402 English and 98 French; 148 open on a Topical-Chat line, 145 on a feeling, 129 on the persona's own life,
+  78 ask about a thing the store holds; 167 / 167 / 166 of the three kinds (one turn each, never the first); 3,013
+  Cubby turns planned. No test persona drawn (asserted). The English personas carry only their text fields in that
+  copy (no occupation, age or town): their work line seeds the user.
+- **Tests:** `tests/emit/test_talk_format_0079.py` (14), `tests/validation/test_chat_step_0079.py` (8: the board's
+  three turns refused, what the sheet allows passing, French pronouns, the test personas, a sample independent of the
+  file's order, a conversation through the tool to rows with a stand-in for `/ask`, a cut, and no flag left changed).
+- **Not verified here:** an agent batch, the fact turns against the live server, a batch's time and usage.
+- **Not done yet:** items 5 and 6 (added after I started). Item 5 builds on `emit_samples`, which exists only in the
+  tree's other uncommitted changes; those are not this session's (Nick: leave them, 2026-11-28), so item 5 waits on
+  what happens to them.

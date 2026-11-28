@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import os
 
+from . import talk_format
 from .seats_450m import Cubby450mTrunk
 
 __wiring__ = "WIRED"
@@ -27,6 +28,8 @@ def talk_prompt(prompt: str, context=None) -> str:
     was trained on these shapes and nothing else, so the host renders, never the model."""
     ctx = context if isinstance(context, dict) else {}
     head = f"{TALK_UNLOCK}\n" if ctx.get("explicit") else ""
+    if talk_format.on():                                 # CB_TALK_FORMAT=2 (order 0079): User: / Cubby: to the end
+        return talk_format.render(prompt, ctx)
     facts = ctx.get("facts")
     if facts:
         lines = []
@@ -53,16 +56,17 @@ def lines_on() -> bool:
     return os.environ.get("CB_TALK_LINES", "0") == "1"
 
 
-def talk_answer(text: str) -> str:
+def talk_answer(text: str, user: str | None = None) -> str:
     """The adapter's answer out of its generation: cut where it would start the next block. Off (the default): its
     first line only, so a list was cut after its lead-in ("Here is what I have:"). With ``CB_TALK_LINES=1``: every
     line up to the next block marker, each line's spaces collapsed, a run of blank lines kept as one, none at either
     end. The guard reads every line kept (the opener view lowers a line's forced capital and drops its enumerator),
-    so a line more is a name or a value more to check, never one less."""
-    for stop in _TALK_STOPS:
+    so a line more is a name or a value more to check, never one less. `user` is the turn it answers, for
+    ``CB_TALK_ONE_EMOJI=1`` (order 0079): no emoji when the turn has none, else the first only."""
+    for stop in _TALK_STOPS + (talk_format.STOPS if talk_format.on() else ()):   # CB_TALK_FORMAT=2: \nCubby: too
         text = text.split(stop)[0]
     if not lines_on():
-        return " ".join(text.strip().split("\n")[0].split())
+        return talk_format.guard(" ".join(text.strip().split("\n")[0].split()), user)   # CB_TALK_ONE_EMOJI=1
     out: list[str] = []
     for line in text.strip().split("\n"):
         line = " ".join(line.split())
@@ -70,7 +74,7 @@ def talk_answer(text: str) -> str:
             out.append(line)
     while out and not out[-1]:
         out.pop()
-    return "\n".join(out)
+    return talk_format.guard("\n".join(out), user)
 
 
 class Cubby450mTalk:
@@ -107,7 +111,7 @@ class Cubby450mTalk:
         hit = len(out) >= max_new_tokens                  # no end before the limit: it stopped there (0010, g)
         raw = self.trunk.tokenizer.decode(out)
         self.last = {"prompt": text, "raw": raw, "hit_limit": hit, "steered": applied}
-        return (prefix + " " if prefix else "") + talk_answer(raw)
+        return (prefix + " " if prefix else "") + talk_answer(raw, talk_format.user_turn(prompt, context))
 
     def vocab_strings(self) -> list[str]:
         """Every token as text, by id (built once): what rule steering tests a mask against (order 0067)."""

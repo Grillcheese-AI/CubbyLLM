@@ -1,0 +1,22 @@
+{
+ "what": "order 0079 item 1: talk rows in the second shape (User:/Cubby: to the end), by talk_format.render",
+ "files": {
+  "talk_v3a.jsonl": {
+   "rows": 312732,
+   "converted": 311996,
+   "left_out": 736,
+   "left_out_by_family": {
+    "chat": 727,
+    "passage_web": 7,
+    "passage_web_absent": 2
+   }
+  },
+  "talk_emotion_0079.jsonl": {
+   "rows": 39107,
+   "converted": 39107,
+   "left_out": 0,
+   "left_out_by_family": {}
+  }
+ },
+ "wrote": false
+}

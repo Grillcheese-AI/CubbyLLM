@@ -1,0 +1,136 @@
+"""Order 0079's final run, the step tool (`validation/sft/chat_step_0079.py`): the sheet's new checks on the board's
+three turns, the test's personas never drawn, a sample that does not depend on the file's order, and a conversation
+through the tool to a row in the second talk shape, with its writer, model and session."""
+from __future__ import annotations
+
+import io
+import json
+import os
+import random
+import urllib.request
+
+import pytest
+
+from validation.sft import chat_gate_0079 as G
+from validation.sft import chat_plans_0079 as P
+from validation.sft import chat_step_0079 as S
+
+CALM = {k: 0 for k in ("joy", "trust", "fear", "surprise", "sadness", "disgust", "anger", "anticipation")}
+
+
+def g(reply, user, earlier=(), lang="en", places=()):
+    return G.gate(reply, user, list(earlier), CALM, False, lang, places, tuple(earlier))[0]
+
+
+def test_the_board_turns_are_refused():
+    assert "emoji" in g("Glad you are doing okay! \U0001F4A5", "Thanks and congrat on the reply those are some of "
+                        "your first words :)")
+    assert g("Glad you are doing okay!", "Thanks and congrat on the reply").startswith("answers a mood")
+    assert g("Glad I was enjoying your first words!", "thanks",
+             earlier=["congrats on your first words"]).startswith("perspective")
+    assert g("I always enjoy our conversations.", "hi there").startswith("speaks of a past")
+    assert g("Two \U0001F31E and \U0001F31E.", "hey \U0001F642") == "2 emoji in one reply"
+
+
+def test_what_the_sheet_allows_passes():
+    reply, ran = G.gate("Thanks! My first words, and you were here for them.", "congrats on your first words",
+                        [], CALM, False)
+    assert reply is None and ran == list(G.CHECKS)
+    assert g("Mine's blue. What's your favourite?", "what's your favourite colour?") is None   # asking back
+    assert g("Glad you're doing well! What's new?", "i'm good thanks") is None                # the user said so
+    assert g("You can always ask me again.", "ok thanks") is None
+    assert g("One \U0001F642 back.", "hello \U0001F44B") is None
+
+
+def test_pronouns_in_french_and_the_users_i():
+    assert g("Ton humeur est bonne aujourd'hui.", "c'est quoi ton humeur ?", lang="fr").startswith("perspective")
+    assert g("Mon humeur est plutôt calme.", "c'est quoi ton humeur ?", lang="fr") is None
+    assert g("I just got off work too.", "I just got off work").startswith("perspective")
+    assert g("I think so too!", "I think so") is None                                         # a stance, shared
+    assert g("Madison sounds lovely.", "i live in Madison, near the lake", places=("Madison",)).startswith("names a place")
+
+
+def test_test_personas_are_never_drawn_and_order_does_not_matter():
+    uuids = [f"{i:032x}" for i in range(400)]
+    assert 0 < sum(map(P.is_test, uuids)) < 60                    # about one in sixteen
+    items = [(u, (lambda u=u: {"uuid": u})) for u in uuids]
+    a = P._bottom(items, 30, 79)
+    random.Random(1).shuffle(items)
+    b = P._bottom(items, 30, 79)
+    assert [p["uuid"] for p in a] == [p["uuid"] for p in b] and not any(P.is_test(p["uuid"]) for p in a)
+
+
+def test_english_personas_are_joined_from_their_chunks(tmp_path):
+    keep = next(f"{i:032x}" for i in range(99) if not P.is_test(f"{i:032x}"))
+    test = next(f"{i:032x}" for i in range(99) if P.is_test(f"{i:032x}"))
+    chunks = [f"uuid: {keep}\npersona: A baker who loves early mornings\noccupation: bak", "er\ncity: Springfield\n",
+              f"uuid: {test}\npersona: someone held for the test\n"]
+    f = tmp_path / "personas.jsonl"
+    f.write_text("".join(json.dumps({"id": str(i), "text": t}) + "\n" for i, t in enumerate(chunks)), encoding="utf-8")
+    got = P.personas_en(str(f), 5, 79)
+    assert [p["uuid"] for p in got] == [keep]
+    assert got[0]["occupation"] == "baker" and P.seed_of(got[0], random.Random(0))["places"] == ["Springfield"]
+
+
+@pytest.fixture
+def work(tmp_path):
+    plan = {"id": "c0079f:00000", "lang": "en", "length": 2, "kind_turn": 1, "kind": "about_cubby",
+            "source": "persona life", "persona": {"uuid": "u1", "occupation": "nurse", "age": 41, "hobby": "running",
+                                                  "line": "a night-shift nurse", "places": ["Springfield"]}}
+    (tmp_path / "plans.json").write_text(json.dumps([plan]), encoding="utf-8")
+    (tmp_path / "batches").mkdir()
+    (tmp_path / "batches" / "b000.json").write_text(json.dumps({"batch": "b000", "writer": "claude-haiku",
+                                                                "ids": [plan["id"]]}), encoding="utf-8")
+    return tmp_path
+
+
+def run(work, *args, capsys):
+    code = S.main(["--work", str(work), *args])
+    return code, capsys.readouterr().out
+
+
+def test_a_conversation_through_the_tool(work, capsys, monkeypatch):
+    cid = "c0079f:00000"
+    assert run(work, "turn", cid, "--text", "hi", capsys=capsys)[0] == 2                     # the batch is not started
+    assert "not" in run(work, "start", "b000", "--model", "claude-sonnet-x", capsys=capsys)[1]
+    assert run(work, "start", "b000", "--model", "claude-haiku-test", "--session", "s1", capsys=capsys)[0] == 0
+    code, out = run(work, "turn", cid, "--seems", "joy", "--text", "just got off a long shift, finally home",
+                    capsys=capsys)
+    assert code == 0 and out.startswith("Mood:") and "Facts: none" in out
+    assert run(work, "reply", cid, "--text", "Welcome home! That sounds like a long one.", capsys=capsys)[1].startswith("OK")
+    assert "THIS user turn" in run(work, "show", cid, capsys=capsys)[1]
+    # a turn that needs facts: the host's ask loop answers it (here a stand-in for the server's /ask)
+    rec = {"verified": True, "trace": ["Lou Reed — occupation: musician"], "answer": "musician", "id": "r1"}
+    monkeypatch.setattr(urllib.request, "urlopen", lambda req, timeout=0: io.BytesIO(json.dumps(rec).encode()))
+    assert run(work, "turn", cid, "--seems", "curiosity", "--text", "who was Lou Reed?", capsys=capsys)[0] == 2   # no host
+    code, out = run(work, "--host", "http://127.0.0.1:1", "turn", cid, "--seems", "curiosity", "--text",
+                    "who was Lou Reed?", capsys=capsys)
+    assert code == 0 and "- Lou Reed — occupation: musician" in out
+    assert run(work, "reply", cid, "--text", "Lou Reed was a musician.", capsys=capsys)[1].startswith("DONE")
+    code, out = run(work, "merge", capsys=capsys)
+    rows = [json.loads(ln) for ln in (work / "chat_0079_final_rows.jsonl").read_text(encoding="utf-8").splitlines()]
+    assert len(rows) == 2 and {r["model"] for r in rows} == {"claude-haiku-test"} and rows[1]["kind"] == "about_cubby"
+    assert rows[1]["prompt"].endswith("Cubby: Welcome home! That sounds like a long one.\nUser: who was Lou Reed?\nCubby:")
+    assert rows[1]["prompt"].startswith("Mood: ") and "\nFacts:\n- Lou Reed" in rows[1]["prompt"]
+    conv = json.loads((work / "convs" / "c0079f_00000.json").read_text(encoding="utf-8"))
+    conv["turns"][0]["checks"] = conv["turns"][0]["checks"][:-1]                                 # a check that did not run
+    (work / "convs" / "c0079f_00000.json").write_text(json.dumps(conv), encoding="utf-8")
+    run(work, "merge", capsys=capsys)
+    assert len((work / "chat_0079_final_rows.jsonl").read_text(encoding="utf-8").splitlines()) == 1
+
+
+def test_a_refused_reply_cuts_the_conversation(work, capsys):
+    cid = "c0079f:00000"
+    run(work, "start", "b000", "--model", "claude-haiku-test", capsys=capsys)
+    run(work, "turn", cid, "--seems", "gratitude", "--text", "thanks!", capsys=capsys)
+    assert run(work, "reply", cid, "--text", "Glad you're doing okay!", capsys=capsys)[1].startswith("CUT")
+    assert run(work, "turn", cid, "--text", "hello?", capsys=capsys)[0] == 2
+    assert run(work, "sheet", capsys=capsys)[1].startswith("## Cubby's character sheet")
+
+
+def test_the_tool_leaves_the_hosts_flags_as_they_were(monkeypatch):
+    for k in ("CB_MOOD_REGULATION", "CB_CHAT_ABILITIES"):
+        monkeypatch.delenv(k, raising=False)
+    g("Hi! What's new?", "hey")
+    S.mood_after(["hey", "long day"], ["neutral", "sadness"])
+    assert "CB_MOOD_REGULATION" not in os.environ and "CB_CHAT_ABILITIES" not in os.environ
