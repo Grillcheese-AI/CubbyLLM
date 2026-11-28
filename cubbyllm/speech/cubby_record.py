@@ -66,7 +66,8 @@ EVALUATIVE = frozenset("idea question one thing point deal choice start plan way
                        "favorite favourite treat mood vibe call move bummer pity joy win catch story combo trip mystery "
                        "puzzle tough fun pain challenge step sign mix bit lot kind sort type suspect guess bet hit gem "
                        "keeper pick fit match look sound mess blast nightmare dream lifesaver hero champ legend star "
-                       "natural pro reset routine habit".split())
+                       "natural pro reset routine habit skill achievement tool hook score subject compliment "
+                       "ending feat craft art".split())   # 0079's first batch (2026-11-28): "a skill of its own"
 
 
 # an opinion is not a category either (order 0079, Cowork, 2026-11-21): "a great hook", "a strange pair", "a real
@@ -75,7 +76,8 @@ EVALUATIVE = frozenset("idea question one thing point deal choice start plan way
 OPINION = frozenset("great good nice lovely real strange odd weird honest perfect fun funny solid classic sweet cute "
                     "brilliant terrible awful bad tough wild smart clever cool amazing wonderful fantastic excellent "
                     "beautiful fair true proper total genuine rare welcome lucky happy sad pretty mild such very useful "
-                    "serious big kind bold right small strong cozy cosy simple".split())
+                    "serious big kind bold right small strong cozy cosy simple decent gentle usual other main "
+                    "common fine careful".split())
 SUPERLATIVE = frozenset("best worst greatest coolest funniest sweetest nicest hardest easiest weirdest strangest cutest "
                         "loveliest cosiest coziest happiest saddest toughest smartest finest".split())
 
@@ -83,7 +85,8 @@ SUPERLATIVE = frozenset("best worst greatest coolest funniest sweetest nicest ha
 EVERYDAY_CAPS = frozenset("TV OK DIY ASAP FYI LOL BTW DJ BD Monday Tuesday Wednesday Thursday Friday Saturday Sunday "
                           "Mondays Tuesdays Wednesdays Thursdays Fridays Saturdays Sundays".split())   # not names
 # heads that are idioms or times, never a kind ("a rite of passage", "the heart of it", "a small price", "tonight")
-IDIOM_HEADS = frozenset("rite heart price memory commitment clue threat tonight today tomorrow yesterday now".split())
+IDIOM_HEADS = frozenset("rite heart price memory commitment clue threat tonight today tomorrow yesterday now "
+                        "ahead".split())   # "a step ahead of me"
 
 
 def _opinions(text: str) -> set[str]:
@@ -99,8 +102,11 @@ def _opinions(text: str) -> set[str]:
         # "Paris is a big city" and "the Glorious Revolution was a political event" still need a fact)
         start = max(text.rfind(".", 0, m.start()), text.rfind("!", 0, m.start()), text.rfind("?", 0, m.start())) + 1
         named = any(w[:1].isupper() for w in text[start:m.start()].split())   # the opener view kept only names
+        # an evaluative head with a clause after it ("the step most people skip", "a skill you can practice"), and
+        # an opinion cut at a comma ("a gentle, kind ending"), are opinions too (0079's first batch, 2026-11-28)
         if asked or set(words) & SUPERLATIVE or words[0] in ("most", "least") or words[-1] in IDIOM_HEADS \
-                or (set(words[:-1]) & OPINION and not named):
+                or (set(words[:-1]) & OPINION and not named) or (len(words) > 1 and words[0] in EVALUATIVE and not named) \
+                or (words[-1] in OPINION and not named):
             out.add(words[-1].strip("-"))
     return out
 

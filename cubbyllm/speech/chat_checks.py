@@ -59,7 +59,9 @@ _NOT_KNOWING = re.compile(
     r"(?:say|tell\s+(?:you|for\s+sure|what|whether|if|which|how|much)|speak\s+to|confirm|be\s+sure|answer\s+that|"
     r"check\s+that|know\s+for\s+sure)\b|"
     r"(?:grand[- ]chose|beaucoup|tout|si\b|ce\s+qu|quoi|d['’]info|d['’]informations|de\s+détails|de\s+faits|ça\b|"
-    r"de\s+mains|de\s+corps|(?:te\s+)?dire|confirmer|savoir))", re.I)
+    r"de\s+mains|de\s+corps|(?:te\s+)?dire|confirmer|savoir|"
+    # "je ne peux pas t'en parler / t'en dire plus / vous indiquer un endroit précis" (0079's first batch, 2026-11-28)
+    r"(?:t['’]en|vous\s+en|en)\s+(?:parler|dire)|(?:(?:te|vous|t['’])\s*)?(?:indiquer|préciser|recommander)))", re.I)
 # order 0079 (Cowork, 2026-11-21; the pilot's next 50 conversations): h still refused true lines. What a model has not
 # got ("I don't have friends the way you do", "I don't have a car", "je n'ai pas de famille", "I don't have one to root
 # for"), what it cannot do without a body ("I can't watch anything myself", "I can't judge their music from here") and
@@ -99,7 +101,8 @@ _RELATIVE = re.compile(r"(?:\b(?:anything|nothing|much|more|whatever|all|any)\b[
                        r"\b(?:a|an|the|one|some|every)\s+(?:\w+\s+){0,2}?\w+\s+)$", re.I)        # "a plan I can get behind"
 _CAN_HEAR = re.compile(r"^\s*(?:(?:only|still|just)\s+)?(?:hear|picture|imagine|guess|enjoy|sense|relate|feel\s+how|"
                        r"tell\s+you\s+what\s+I\s+have|"                    # "I can only tell you what I have": the record
-                       r"see\s+(?:why|how|that|what|it|clearly)|get\s+behind|tell\s+(?:how|that|it['’]s|you['’]re))\b", re.I)
+                       r"see\s+(?:why|how|that|what|it|clearly)|get\s+behind|tell\s+(?:how|that|it['’]s|you['’]re)|"
+                       r"say\s+(?:I|that|je))\b", re.I)   # "I could say I toured the 1700s, but that's just a joke"
 _KNOW_THAT = re.compile(r"^\s*(?:que|qu['’])", re.I)        # "je sais que X": knowing a fact, not an ability
 
 

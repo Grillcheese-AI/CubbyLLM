@@ -95,7 +95,10 @@ def resolve(text: str, host: str | None) -> dict:
     """The host's own resolver for the turn: does it need facts (the brain's router), and the served ask loop's walked
     facts when it does (verified, no namesake left to ask about). A refusal hands over none, as at serving."""
     from cubbyllm.brain_route import BrainRoute
-    need, why = BrainRoute().needs_facts(text)
+    from cubbyllm.reasoning import ask_commands
+    with G.env(CB_ASK_SELF="1", CB_ASK_COMMANDS="1"):  # routed as serving will route with the rows' flags (Cowork)
+        need, why = BrainRoute().needs_facts(text)
+        asked = ask_commands.restate(text)               # "do you know who X is" -> "Who is X?"
     if not need:
         return {"route": why, "facts": [], "ask": None}
     if not host:
@@ -103,14 +106,14 @@ def resolve(text: str, host: str | None) -> dict:
     import urllib.request
     from cubbyllm.speech.audience import configured_token
     tok = configured_token()
-    req = urllib.request.Request(host.rstrip("/") + "/ask", data=json.dumps({"text": text}).encode("utf-8"),
+    req = urllib.request.Request(host.rstrip("/") + "/ask", data=json.dumps({"text": asked}).encode("utf-8"),
                                  headers={"Content-Type": "application/json", **({"X-Audit-Token": tok} if tok else {})})
     rec = json.loads(urllib.request.urlopen(req, timeout=600).read().decode("utf-8"))
     if rec.get("verified") and "trace" not in rec:
         raise Stop("the host answered with the user's view (no walked facts): set CUBBY_AUDIT_TOKEN for the tool")
     ok = bool(rec.get("verified")) and not rec.get("clarify")
     return {"route": why, "facts": list(rec.get("trace") or []) if ok else [],
-            "ask": {"id": rec.get("id"), "verified": bool(rec.get("verified")), "reason": rec.get("reason"),
+            "ask": {"id": rec.get("id"), "asked": asked, "verified": bool(rec.get("verified")), "reason": rec.get("reason"),
                     "clarify": bool(rec.get("clarify"))}}
 
 
@@ -150,7 +153,9 @@ def cmd_show(cid: str) -> str:
         out.append({"topical-chat": f"the user's first message, word for word: {p.get('opener')}",
                     "feeling": f"the user writes first: they feel {p.get('feeling')} about {p.get('situation')}",
                     "persona life": "the user writes first, about their own day, work or hobby",
-                    "asks about a fact": f"the user writes first and asks Cubby about: {p.get('ask')} (named like that)"}
+                    "asks about a fact": (f"the user writes first and asks Cubby this, in their own words, keeping the "
+                                          f"name as it is and what is asked: {p['ask_question']}" if p.get("ask_question")
+                                          else f"the user writes first and asks Cubby about: {p.get('ask')} (named like that)")}
                    [p["source"]])
     if not (c["cut"] or c["done"]) and len(c["turns"]) == p["kind_turn"]:
         out.append(f"THIS user turn: {P.KIND_BRIEF[p['kind']]}")
@@ -184,7 +189,23 @@ def cmd_turn(cid: str, seems: str, strength: str, text: str, host: str | None) -
 def check(t: dict, prior: list[dict], plan: dict) -> tuple[str | None, list[str]]:
     context = t["facts"] + [x for u in prior for x in (u["user"], u["cubby"])]
     return G.gate(t["cubby"], t["user"], context, t["mood"], about_cubby(t["user"]), plan["lang"],
-                  tuple(plan["persona"].get("places") or ()), tuple(u["user"] for u in prior))
+                  tuple(plan["persona"].get("places") or ()), tuple(u["user"] for u in prior),
+                  (plan["persona"], *persona_words()))
+
+
+_WORDS: tuple | None = None
+
+
+def persona_words() -> tuple:
+    """The run's persona word counts, and what Cubby says anyway (frozen from the drafted replies on first use)."""
+    global _WORDS
+    if _WORDS is None:
+        from validation.sft import chat_persona_0079 as L
+        f = _p("persona_background.json")
+        if not f.exists():
+            _write(f, L.background([t["cubby"] for g in sorted(_p("convs").glob("*.json")) for t in _read(g)["turns"]]))
+        _WORDS = (L.counts([p["persona"] for p in plans().values()]), _read(f))
+    return _WORDS
 
 
 def cmd_reply(cid: str, text: str) -> str:
@@ -232,14 +253,14 @@ def cmd_status() -> str:
 
 
 def main(argv=None) -> int:
-    global WORK
+    global WORK, _WORDS
     from cubbyllm.local_paths import data_dir
     for s in (sys.stdin, sys.stdout):
         if hasattr(s, "reconfigure"):
             s.reconfigure(encoding="utf-8", errors="replace")
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("cmd", choices=["plans", "sheet", "brief", "start", "show", "turn", "reply", "status", "regate",
-                                    "merge"])
+                                    "merge", "reseed", "rebatch"])
     ap.add_argument("id", nargs="?")
     ap.add_argument("--work", default=os.environ.get("CUBBY_CHAT_0079") or str(data_dir("chat_0079_final")))
     ap.add_argument("--host", default=os.environ.get("CUBBY_HOST"))
@@ -250,19 +271,22 @@ def main(argv=None) -> int:
     ap.add_argument("--session")
     ap.add_argument("--out", default="")
     ap.add_argument("--manifest", default="")
+    from validation.sft import chat_batches_0079 as B
     from validation.sft import chat_rows_0079 as R
     R.plan_args(ap)
     a = ap.parse_args(argv)
-    WORK = pathlib.Path(a.work)
+    WORK, _WORDS = pathlib.Path(a.work), None
     try:
         if a.cmd in ("show", "turn", "reply", "start", "brief") and not a.id:
             raise Stop(f"{a.cmd} needs an id")
         text = (a.text if a.text is not None else sys.stdin.read()) if a.cmd in ("turn", "reply") else ""
         out = {"plans": lambda: R.cmd_plans(WORK, a), "sheet": lambda: R.sheet(ORDER),
-               "brief": lambda: R.brief(WORK, a.id), "start": lambda: cmd_start(a.id, a.model or "", a.session),
+               "brief": lambda: R.brief(WORK, a.id, a.host), "start": lambda: cmd_start(a.id, a.model or "", a.session),
                "show": lambda: cmd_show(a.id), "turn": lambda: cmd_turn(a.id, a.seems, a.strength, text, a.host),
                "reply": lambda: cmd_reply(a.id, text), "status": cmd_status, "regate": cmd_regate,
-               "merge": lambda: R.merge(WORK, a.out, a.manifest)}[a.cmd]()
+               "merge": lambda: R.merge(WORK, a.out, a.manifest),
+               "reseed": lambda: B.cmd_reseed(WORK, a.host, a.max_asks, a.seed, a.gen3 or str(data_dir("gen3_free_text.jsonl"))),
+               "rebatch": lambda: B.cmd_rebatch(WORK, a.batch_size, a.sessions, a.host)}[a.cmd]()
     except Stop as e:
         print(f"STOP: {e}")
         return 2

@@ -79,15 +79,17 @@ class BrainRoute:
         or a matter of taste. No facts: identity turns, feelings, opinions,
         creative asks, casual chat, small talk."""
         from cubbyllm.reasoning import parse_question
+        from .reasoning import ask_commands, ask_self    # order 0079, items 6 and 7 (CB_ASK_SELF, CB_ASK_COMMANDS)
+        if ask_commands.on() and ask_commands.is_command(text):   # "look up X", "do you know who X is": a lookup
+            return True, "a request to look something up"
+        if ask_self.on() and ask_self.about_you(text):   # "where have you traveled?": Cubby's own, never the world's
+            return False, "about Cubby himself"
         if is_identity_question(text):
             return False, "about Cubby himself"
         if self._HOWTO.search(text):                     # "how can we implement svd?": procedural, no fact to ground -> talk
             return False, "a how-to, not a fact"       # before the grammar: "what is the best way to learn piano?" parses as a fact shape
         if parse_question(text) is not None:
             return True, "the fact grammar parses it"
-        from .reasoning import ask_commands             # order 0079, item 7 (CB_ASK_COMMANDS=1): "look up X" is a lookup
-        if ask_commands.on() and ask_commands.is_command(text):
-            return True, "a request to look something up"
         if self._CAPABILITY.search(text):                # "do you know how to write code?" (live misroute 2026-09-03): about Cubby, not the world
             return False, "about Cubby himself"
         if self._CASUAL_Q.search(text):

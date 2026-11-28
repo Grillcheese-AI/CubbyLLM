@@ -11,7 +11,10 @@ import urllib.request
 
 import pytest
 
+from validation.sft import chat_batches_0079 as B
 from validation.sft import chat_gate_0079 as G
+from validation.sft import chat_persona_0079 as L
+from validation.sft import chat_rows_0079 as R
 from validation.sft import chat_plans_0079 as P
 from validation.sft import chat_step_0079 as S
 
@@ -134,3 +137,39 @@ def test_the_tool_leaves_the_hosts_flags_as_they_were(monkeypatch):
     g("Hi! What's new?", "hey")
     S.mood_after(["hey", "long day"], ["neutral", "sadness"])
     assert "CB_MOOD_REGULATION" not in os.environ and "CB_CHAT_ABILITIES" not in os.environ
+
+
+def test_cubby_knows_only_the_conversation():
+    seed = {"uuid": "u", "occupation": "", "work": "A food bank volunteer coordinator", "hobby": "baking bread",
+            "line": "Dana Ruiz sings in the choir at her church every Sunday and tinkers with home automation."}
+    df = L.counts([seed] + [{"line": f"someone who likes walks number {i}"} for i in range(40)])
+    said = ["lol he'd talk for an hour. I'm the one who has to get the food bank shifts covered"]
+    assert "church" in L.leak("Could you ask a friend from church to share a shift?", said, seed, df, {})
+    assert L.leak("Could you ask a friend from church?", said + ["we met at church"], seed, df, {}) is None
+    assert L.leak("Your baking must help.", said + ["I bake too"], seed, df, {}) is None      # an inflection of hers
+    assert "Dana" in L.leak("Thanks, Dana!", said, seed, df, {})                               # a name she never gave
+    assert L.leak("Do you organize your home automation projects?", said, seed, df, {"automation": 0.5}) is None
+
+
+def test_the_cut_kinds_and_the_brief(work):
+    assert R._cut_key("d: ungrounded: Note") == "d: ungrounded" and R._cut_key("h: ability") == "h: ability"
+    assert R._cut_key("feeling not backed: I'm glad (joy +0)") == "feeling not backed"
+    text = R.brief(work, "b000", "http://127.0.0.1:8775")
+    assert "the persona is the user's side" in text and "the user's town (a place in the Facts lines" in text
+    assert "its turns before the cut are kept" in text and '--host "http://127.0.0.1:8775"' in text
+
+
+def test_rebatch_into_fives_outside_the_repo(work, tmp_path, capsys):
+    plans = [{**json.loads((work / "plans.json").read_text(encoding="utf-8"))[0], "id": f"c0079f:{i:05d}"} for i in range(12)]
+    (work / "plans.json").write_text(json.dumps(plans), encoding="utf-8")
+    (work / "batches" / "b000.json").write_text(json.dumps({"batch": "b000", "writer": "claude-haiku", "model": "m",
+                                                            "ids": [p["id"] for p in plans[:2]]}), encoding="utf-8")
+    (work / "batches" / "b001.json").write_text(json.dumps({"batch": "b001", "writer": "claude-sonnet",
+                                                            "ids": [p["id"] for p in plans[2:]]}), encoding="utf-8")
+    with pytest.raises(R.Stop):
+        B.cmd_rebatch(work, 5, str(S.ROOT / "tmp_sessions"), None)                             # inside the repo
+    got = json.loads(B.cmd_rebatch(work, 5, str(tmp_path / "sessions"), "http://127.0.0.1:8775"))
+    assert got["kept_batches"] == ["b000"] and got["new_batches"] == 2 and got["first"] == "b001"
+    assert [len(json.loads((work / "batches" / f"b00{k}.json").read_text())["ids"]) for k in (1, 2)] == [5, 5]
+    assert (work / "batches" / "_old" / "b001.json").exists()
+    assert "--host" in (tmp_path / "sessions" / "step.sh").read_text(encoding="utf-8")

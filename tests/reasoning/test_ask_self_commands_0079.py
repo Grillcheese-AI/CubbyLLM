@@ -49,6 +49,16 @@ def test_who_is_cubby_from_the_record(flags):
     assert ask_self.about("are you a robot?") and ask_self.about("what can you do?") and not ask_self.about("who is Lou Reed?")
 
 
+def test_questions_to_cubby_about_its_life_are_not_the_worlds(flags):
+    asks = ["Et toi, tu lis quoi ?", "Vous avez déjà fait du bénévolat, vous ?", "where have you traveled?",
+            "Do you use google often?", "I just got off work, you?"]
+    assert all(BrainRoute().needs_facts(q)[0] for q in asks[:4])            # off: sent to the world, as on 2026-11-28
+    flags.setenv("CB_ASK_SELF", "1")
+    assert not any(BrainRoute().needs_facts(q)[0] for q in asks)
+    assert all(ask_self.about(q) for q in asks)
+    assert BrainRoute().needs_facts("what's the capital of peru?")[0] and BrainRoute().needs_facts("who is Lou Reed?")[0]
+
+
 def test_a_command_is_a_lookup(flags):
     assert BrainRoute().needs_facts(CMD)[0] is False                      # off: chat
     flags.setenv("CB_ASK_COMMANDS", "1")
@@ -57,6 +67,13 @@ def test_a_command_is_a_lookup(flags):
     assert ask_commands.restate(CMD) == "What are the discoveries of marie curie?"
     assert ask_commands.restate("find the capital of peru") == "What is the capital of peru?"
     assert ask_commands.restate("tell me about it") == "tell me about it"
+    # the first batch's router misses (Cowork, 2026-11-28)
+    assert BrainRoute().needs_facts("hey do you know who Howard K Smith is? my teacher mentioned him")[0] is True
+    assert ask_commands.restate("hey do you know who Howard K Smith is? my teacher") == "Who is Howard K Smith?"
+    assert ask_commands.restate("do you know when Lou Reed was born?") == "When was Lou Reed born?"
+    assert ask_commands.restate("Tu sais qui a fondé Ikea ?") == "Qui a fondé Ikea ?"
+    assert BrainRoute().needs_facts("do you know who made you?")[0] is False
+    assert BrainRoute().needs_facts("you know what, I love jazz")[0] is False
     rec = make_loop({}, DictSource({})).ask(CMD)
     assert rec["question"] == "What are the discoveries of marie curie?" and rec["asked_as"] == CMD
     assert not rec["verified"]                                            # stored the other way round: refused today

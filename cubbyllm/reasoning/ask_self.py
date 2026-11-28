@@ -13,9 +13,20 @@ Wired: WIRED (`AskLoop._ask`).
 from __future__ import annotations
 
 import os
+import re
 import time
 
 __wiring__ = "WIRED"
+
+# a question to Cubby about its own life or habits, its subject "you" ("where have you traveled?", "Do you use google
+# often?", "Et toi, tu lis quoi ?", "Vous avez déjà fait du bénévolat, vous ?"; 0079's batch, 2026-11-28): the router
+# sent these to the world as "a question about the world". A "do you know who X is" is a lookup (`ask_commands`).
+_YOU = re.compile(r"\b(?:do|did|does|have|has|are|were|can|could|would|will|should|had)\s+you\b|"
+                  r"^\W*(?:and\s+|so\s+|what\s+about\s+)?(?:you|yourself)\b|\b(?:where|what|when|how|why|which)\s+(?:have|do|did|are|were)\s+you\b|"
+                  r",\s*(?:and\s+|what\s+about\s+)?(?:you|yourself)\s*\?|\b(?:et\s+)?toi\b|\b(?:tu|vous)\s+(?:\w+\s+){0,2}?[\w'’-]+|\best[- ]ce\s+que\s+(?:tu|vous)\b", re.I)
+_TO_WORLD = re.compile(r"\b(?:do you know|can you tell me|could you tell me|tell me|tu sais|sais[- ]tu|savez[- ]vous|"
+                       r"tu connais|connais[- ]tu|vous connaissez)\b", re.I)
+
 
 LINE = {"en": "I'm {n}, {role}: {kind} built by {creator}.", "fr": "Je suis {n}, {role} : {kind} créé par {creator}."}
 
@@ -24,10 +35,16 @@ def on() -> bool:
     return os.environ.get("CB_ASK_SELF") == "1"
 
 
+def about_you(text: str) -> bool:
+    """A question whose subject is "you" (Cubby), not a "do you know who X is" (a lookup)."""
+    t = (text or "").strip()
+    return "?" in t and bool(_YOU.search(t)) and not _TO_WORLD.search(t)
+
+
 def about(question: str) -> bool:
     from ..speech.cubby_record import is_about_cubby
     from ..speech.identity import asks_about_cubby
-    return bool(is_about_cubby(question) or asks_about_cubby(question))
+    return bool(is_about_cubby(question) or asks_about_cubby(question) or about_you(question))
 
 
 def record_line(lang: str) -> str:

@@ -10,6 +10,7 @@ nobody asked for) and the character sheet of 2026-11-28's:
 - **an unseen past** (`unseen_past`): "I always", "you always", "as usual", "like last time" (it sees only this
   conversation); "you can always ask" is not a past;
 - **an endearment** before the user has used one (Nick, 2026-11-28; the host's `sheet_checks.endearment`);
+- **the persona:** a name, place or rare word of the user's persona the conversation has not had (`chat_persona_0079`);
 - **a place:** the persona's own places in Cubby's line (no place names in Cubby's lines, Nick 2026-11-10).
 
 `gate` returns (why, the checks it ran); a row is kept only when every one of `CHECKS` ran and passed.
@@ -31,6 +32,7 @@ for p in (ROOT, ROOT / "validation"):
 
 from cubbyllm.emit.talk_format import emojis  # noqa: E402
 from cubbyllm.speech.sheet_checks import endearment  # noqa: E402
+from validation.sft.chat_persona_0079 import leak  # noqa: E402
 
 _MOOD = os.environ.get("CB_MOOD_REGULATION")             # the pilot's builder sets it on import: put it back, so
 from validation.sft import build_chat_0079 as pilot  # noqa: E402   importing this changes no one's flags
@@ -56,7 +58,7 @@ def env(**flags):
                 os.environ[k] = v
 
 
-CHECKS = ("pilot", "one emoji", "perspective", "unstated mood", "unseen past", "endearment", "places")
+CHECKS = ("pilot", "one emoji", "perspective", "unstated mood", "unseen past", "endearment", "persona", "places")
 _W = r"[\w'’\-]+"
 _STANCE = {"think", "guess", "mean", "know", "agree", "hope", "bet", "suppose", "see", "like", "love", "wonder", "feel",
            "pense", "crois", "sais", "trouve", "aime", "adore", "espère", "suppose"}
@@ -118,7 +120,7 @@ def unseen_past(reply: str) -> str | None:
 
 
 def gate(reply: str, user_text: str, context: list[str], sc: dict, about_cubby: bool, lang: str = "en",
-         places: tuple = (), earlier: tuple = ()) -> tuple[str | None, list[str]]:
+         places: tuple = (), earlier: tuple = (), persona: tuple | None = None) -> tuple[str | None, list[str]]:
     """(why the host would not keep the reply, or None; the checks run, in `CHECKS` order)."""
     ran: list[str] = []
     with env(CB_CHAT_ABILITIES="1"):                      # change h on, as the pilot ran it
@@ -136,6 +138,7 @@ def gate(reply: str, user_text: str, context: list[str], sc: dict, about_cubby: 
                       ("unstated mood", lambda: unstated_mood(reply, user_text)),
                       ("unseen past", lambda: unseen_past(reply)),
                       ("endearment", lambda: endearment(reply, [*earlier, user_text])),
+                      ("persona", lambda: leak(reply, [*context, user_text], *persona) if persona else None),
                       ("places", lambda: next((f"names a place: '{p}'" for p in places
                                                if p and re.search(rf"\b{re.escape(p)}\b", reply, re.I)), None))):
         ran.append(name)

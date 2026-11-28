@@ -36,7 +36,11 @@ INTERJECTIONS = frozenset("hmm ooh aha oups hello hey bonjour coucou j'espère j
 
 _TOKEN = re.compile(r"[A-Za-zÀ-ÿ][\w'’\-]*|\d[\d.,:/\-]*")        # ask._TOKEN
 _ENUM = re.compile(r"(?m)^\s*(?:\d{1,2}[.)]|[-*•])\s+")
-_OPENER = re.compile(r"(?:^|[.!?:]\s+|\n\s*)([A-Za-zÀ-ÿ][\w'’\-]*)")
+# an emoji ends a sentence too ("... a fun class 😄 Did you keep up?"; 0079's batch, 2026-11-28)
+_EMO = "[\U0001F300-\U0001FAFF\u2600-\u27BF\u2B00-\u2BFF][\uFE0F\U0001F3FB-\U0001F3FF]?"
+_OPENER = re.compile(r"(?:^\s*(?:" + _EMO + r"\s*)*|(?:[.!?:…]|" + _EMO + r")\s+|\n\s*)([A-Za-zÀ-ÿ][\w'’\-]*)")
+# 0079's first batch (2026-11-28): everyday words the list lacks, refused as names when they opened a sentence
+EXTRA_WORDS = frozenset("note notes liner liners".split())
 _PRONOUN_I = {"i", "i'm", "i’m", "i'd", "i’d", "i'll", "i’ll", "i've", "i’ve"}
 # a French verb joined to its pronoun (an imperative or an inversion): "Installe-toi", "Dis-moi", "Allez-y", "Peut-on".
 # Opening a sentence it is a forced capital, never a name (Cowork, 2026-11-11: "Bonjour ! Installe-toi, ..." was refused)
@@ -50,12 +54,25 @@ def on() -> bool:
 @functools.lru_cache(maxsize=1)
 def common_words() -> frozenset[str]:
     """The host's opener words: the list beside this file and the interjections."""
-    return frozenset(WORDS.read_text(encoding="utf-8").split()) | INTERJECTIONS
+    return frozenset(WORDS.read_text(encoding="utf-8").split()) | INTERJECTIONS | EXTRA_WORDS
 
 
 def openers(text: str) -> set[int]:
     """Positions where English capitalises any word: sentence and line starts."""
     return {m.start(1) for m in _OPENER.finditer(text)}
+
+
+def _inflected(low: str, common) -> bool:
+    """An inflection of a common word: -ing ("Picturing", "Hand-transcribing"), a plural ("Hedges"), a French
+    imperative or second plural in -ez whose infinitive is common ("Essayez"; "Notez", "Profitez" by their -er stem)."""
+    stem = low[:-3] if low.endswith("ing") and len(low) > 5 else ""
+    if stem and (stem in common or stem + "e" in common or stem[:-1] in common):
+        return True
+    if low.endswith("es") and len(low) > 4 and (low[:-1] in common or low[:-2] in common):
+        return True
+    if low.endswith("s") and len(low) > 3 and low[:-1] in common:
+        return True
+    return low.endswith("ez") and len(low) > 4 and (low[:-2] + "er" in common or low[:-2] in common or low[:-2] + "e" in common)
 
 
 def opener_view(answer: str, common: set[str] | frozenset[str] | None = None) -> str:
@@ -70,9 +87,8 @@ def opener_view(answer: str, common: set[str] | frozenset[str] | None = None) ->
         low = tok.lower().strip("'’-.,:")
         if low.endswith(("'s", "’s")):
             low = low[:-2]
-        joined = "-" in low and all(p in common for p in low.split("-") if p)   # "Front-row seats": common words
-        stem = low[:-3] if low.endswith("ing") and len(low) > 5 else ""          # "Picturing", "Blanking", "Gushing"
-        joined = joined or bool(stem) and (stem in common or stem + "e" in common or stem[:-1] in common)
+        joined = "-" in low and all(p in common or _inflected(p, common) for p in low.split("-") if p)   # "Front-row"
+        joined = joined or _inflected(low, common)       # "Picturing", "Hedges", "Notez": a common word, inflected
         if tok[0].isupper() and (low in _PRONOUN_I or (m.start() in starts and (low in common or joined
                                                                                  or _FR_VERB.match(low)))):
             out[m.start()] = tok[0].lower()

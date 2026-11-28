@@ -51,6 +51,9 @@ def plan_args(ap) -> None:
     ap.add_argument("--personas-fr", help="one parquet file of Nemotron-Personas-France")
     ap.add_argument("--topical", help="Topical-Chat's user lines (talk_lines/user_lines_topical_chat.jsonl)")
     ap.add_argument("--store-rows", help="talk_v2_2.jsonl: the store's names a user may ask about")
+    ap.add_argument("--max-asks", type=int, default=150, help="reseed: at most this many asks of the drafting server")
+    ap.add_argument("--sessions", help="rebatch: the sessions' folder, outside the repo")
+    ap.add_argument("--gen3", help="reseed: gen3_free_text.jsonl, whose held split is never drawn")
 
 
 def cmd_plans(work: pathlib.Path, a) -> str:
@@ -88,11 +91,11 @@ def sheet(order: pathlib.Path) -> str:
     return text[start:text.index("### What changed from the sheet", start)].strip()
 
 
-def brief(work: pathlib.Path, bid: str) -> str:
+def brief(work: pathlib.Path, bid: str, host: str | None = None) -> str:
     b = _read(work / "batches" / f"{bid}.json")
     if b is None:
         raise Stop(f"no batch {bid}")
-    run = f'"{sys.executable}" "{STEP}" --work "{work}"'
+    run = f'"{sys.executable}" "{STEP}" --work "{work}"' + (f' --host "{host}"' if host else "")
     return f"""# Order 0079, batch {bid}: {len(b['ids'])} conversations, drafted by {b['writer']}
 
 You draft conversations between a user and Cubby, through a step tool. You write both sides, one turn at a time: the
@@ -112,11 +115,15 @@ The user: a real-sounding person from the persona `show` prints (their job, a ho
 sentences, typed the way people type; they talk about their life, react to Cubby, ask it things; now and then an
 emoji. Never a model, and never the name of their town, city or state (Cubby never names a place). When `show`
 says THIS user turn, write that kind of turn.
-Cubby: the sheet, always. Facts only from the Facts lines; when there are none and the user asked for one, it says
-so plainly. Never a place name, never a past or a body, at most one emoji and only when the user's turn has one; it
+Cubby: the sheet, always. Cubby sees only the conversation; the persona is the user's side, and Cubby never uses
+what the user has not said. Facts only from the Facts lines; when there are none and the user asked for one, it says
+so plainly. Never its own location or the user's town (a place in the Facts lines is a fact to say), never a past or
+a body, at most one emoji and only when the user's turn has one; it
 turns the user's pronouns ("your X" is Cubby's "my X"; the user's "I"/"my" is "you"/"your"), and it never says how
 the user is unless they said it. One to three sentences unless asked for more; not every reply ends with a question.
 
+A CUT ends only the rest of that conversation: its turns before the cut are kept.
+{f"The drafting server for the fact turns: {host}." + chr(10) if host else ""}
 Your ids: {' '.join(b['ids'])}
 """
 
@@ -146,6 +153,12 @@ def rows(work: pathlib.Path):
                    "persona": c["plan"]["persona"]["uuid"], "facts_route": t["route"]}, None
 
 
+def _cut_key(why: str) -> str:
+    """A cut's kind: "d: ungrounded", "h: ability", "perspective", "feeling not backed", ..."""
+    parts = [p.strip() for p in str(why).split(":")]
+    return (": ".join(parts[:2]) if len(parts[0]) == 1 else parts[0])[:40]
+
+
 def tally(work: pathlib.Path) -> dict:
     convs = [json.loads(f.read_text(encoding="utf-8")) for f in sorted((work / "convs").glob("*.json"))]
     turns = [t for c in convs for t in c["turns"]]
@@ -162,7 +175,7 @@ def tally(work: pathlib.Path) -> dict:
             "conversations_whole": sum(bool(x["done"]) for x in convs), "conversations_cut": sum(bool(x["cut"]) for x in convs),
             "cubby_turns_drafted": len(turns), "rows_kept": len(kept),
             "not_kept": dict(c(w for _, w in rows(work) if w)),
-            "cut_by": dict(c(str(x["cut"]).split(":")[0][:40] for x in convs if x["cut"]).most_common()),
+            "cut_by": dict(c(_cut_key(x["cut"]) for x in convs if x["cut"]).most_common()),
             "rows_by_model": dict(c(r["model"] for r in kept)), "rows_by_lang": dict(c(r["lang"] for r in kept)),
             "rows_by_kind": dict(c(r["kind"] for r in kept if r["kind"])),
             "kind_share_of_rows": round(sum(bool(r["kind"]) for r in kept) / max(1, len(kept)), 3),
