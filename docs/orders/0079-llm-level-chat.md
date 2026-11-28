@@ -535,6 +535,11 @@ on 2026-11-11, before the sheet existed, so it never learned the sheet.
    - the user speaks about themselves ("I just got off work", "my sister's wedding was lovely"): Cubby answers with
      "you" and "your";
    - the user thanks or praises: Cubby takes it in its own words, and never answers a mood the user did not state.
+   - **The users come from personas** (Nick, 2026-11-28): the user side of these turns, and of the final run's
+     conversations, is seeded from `nvidia/Nemotron-Personas-USA` (English) and `nvidia/Nemotron-Personas-France`
+     (French), both CC BY 4.0 and credited in the rows' manifest: an occupation, a hobby or a line of the persona, so
+     users talk about lives that sound real. A sample of each (one parquet file), drawn by seed; rows off the repo.
+     A persona is only ever a user's, never Cubby's.
 3. **Two lines for the character sheet**, approved by Nick on 2026-11-28 and now in it: "Emoji: at most one in a
    reply, and most replies have none." "It speaks only of the conversations it can see: no 'always' about a past it
    has no record of." And a host guard until the run lands (`CB_TALK_ONE_EMOJI`, off by default): a reply keeps its
@@ -546,7 +551,8 @@ on 2026-11-11, before the sheet existed, so it never learned the sheet.
 
 **Added to the test (pre-registered, before the final run):**
 - **The perspective set:** 300 held turns, 100 of each kind, from openers never trained (the three board turns among
-  them), each with the pronouns a right reply must use. Written by Cowork, a different writer from the training
+  them) and from personas the training rows never use (split by `uuid`), each with the pronouns a right reply must
+  use. Written by Cowork, a different writer from the training
   rows'. Read by rule (the possessive the user used, turned: "your X" answered with "my X", "I" and "my" answered with
   "you" and "your") and 50 of them read by Cowork.
 - **Lines:** perspective right on at least 95% (the rule and Cowork's read agreeing); a reply to an unstated mood on
