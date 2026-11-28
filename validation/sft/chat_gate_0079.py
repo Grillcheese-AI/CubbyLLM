@@ -9,6 +9,7 @@ nobody asked for) and the character sheet of 2026-11-28's:
   says nothing of how they are (the board's "Glad you are doing okay!" after a thank-you);
 - **an unseen past** (`unseen_past`): "I always", "you always", "as usual", "like last time" (it sees only this
   conversation); "you can always ask" is not a past;
+- **an endearment** before the user has used one (Nick, 2026-11-28; the host's `sheet_checks.endearment`);
 - **a place:** the persona's own places in Cubby's line (no place names in Cubby's lines, Nick 2026-11-10).
 
 `gate` returns (why, the checks it ran); a row is kept only when every one of `CHECKS` ran and passed.
@@ -29,6 +30,7 @@ for p in (ROOT, ROOT / "validation"):
         sys.path.insert(0, str(p))
 
 from cubbyllm.emit.talk_format import emojis  # noqa: E402
+from cubbyllm.speech.sheet_checks import endearment  # noqa: E402
 
 _MOOD = os.environ.get("CB_MOOD_REGULATION")             # the pilot's builder sets it on import: put it back, so
 from validation.sft import build_chat_0079 as pilot  # noqa: E402   importing this changes no one's flags
@@ -54,7 +56,7 @@ def env(**flags):
                 os.environ[k] = v
 
 
-CHECKS = ("pilot", "one emoji", "perspective", "unstated mood", "unseen past", "places")
+CHECKS = ("pilot", "one emoji", "perspective", "unstated mood", "unseen past", "endearment", "places")
 _W = r"[\w'’\-]+"
 _STANCE = {"think", "guess", "mean", "know", "agree", "hope", "bet", "suppose", "see", "like", "love", "wonder", "feel",
            "pense", "crois", "sais", "trouve", "aime", "adore", "espère", "suppose"}
@@ -133,6 +135,7 @@ def gate(reply: str, user_text: str, context: list[str], sc: dict, about_cubby: 
     for name, why in (("perspective", lambda: perspective(reply, user_text, lang, earlier)),
                       ("unstated mood", lambda: unstated_mood(reply, user_text)),
                       ("unseen past", lambda: unseen_past(reply)),
+                      ("endearment", lambda: endearment(reply, [*earlier, user_text])),
                       ("places", lambda: next((f"names a place: '{p}'" for p in places
                                                if p and re.search(rf"\b{re.escape(p)}\b", reply, re.I)), None))):
         ran.append(name)

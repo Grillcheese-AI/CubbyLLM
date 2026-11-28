@@ -149,9 +149,11 @@ class ChatState:
         both keys and reads the prompt."""
         from .cubby_record import block, on as record_on            # 0010 change d: Cubby's record as the block of a
         from .identity import asks_about_cubby
-        if record_on() and asks_about_cubby(user_text):              # turn that asks about Cubby; a hello, a thanks or a
+        from . import sheet_checks                                   # 0079 item 5 (CB_TALK_CHECKED=1): "how are you?" is a
+        mood_only = sheet_checks.on() and sheet_checks.HOW_ARE_YOU.search(user_text or "")   # chat turn, not the record
+        if record_on() and asks_about_cubby(user_text) and not mood_only:   # turn that asks about Cubby; a hello, a thanks or a
             return {"facts": block(lang), "question": user_text}     # goodbye alone goes as a chat turn (Cowork, 2026-11-11)
-        elif asks_about_cubby(user_text):
+        elif asks_about_cubby(user_text) and not mood_only:
             name = T(self.facts, "name", lang)
             facts = [(name, k.replace("_", " "), T(self.facts, k, lang)) for k in ("name", "builder", "tagline", "how_it_answers", "when_unsure")
                      if k in self.facts and isinstance(T(self.facts, k, lang), str)]

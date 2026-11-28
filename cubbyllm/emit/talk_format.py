@@ -69,10 +69,28 @@ def no_emoji(text: str) -> str:
     return _EXTRA.sub("", text).strip(" \t") if EMOJI.search(text or "") else text
 
 
+_BOLD = re.compile(r"(\*\*|__)(?=\S)(.+?)(?<=\S)\1")
+_ITALIC = re.compile(r"(?<![\w*])\*(?=[^\s*])([^*\n]+?)(?<=[^\s*])\*(?![\w*])|(?<![\w_])_(?=[^\s_])([^_\n]+?)(?<=[^\s_])_(?![\w_])")
+
+
+def checked_on() -> bool:
+    """``CB_TALK_CHECKED=1`` (order 0079, item 5; `cubbyllm/speech/sheet_checks.py`): here, `guard` takes markdown
+    emphasis out of every talk reply (the board shows plain text)."""
+    return os.environ.get("CB_TALK_CHECKED") == "1"
+
+
+def plain(text: str) -> str:
+    """The text without markdown emphasis: **bold**, __bold__, *italic*, _italic_ (a lone star, "5 * 3", stays)."""
+    text = _BOLD.sub(lambda m: m.group(2), text)
+    return _ITALIC.sub(lambda m: m.group(1) or m.group(2), text)
+
+
 def guard(reply: str, user: str | None = None) -> str:
-    """The talk seat's answer as the host lets it out under ``CB_TALK_ONE_EMOJI=1``, held to the sheet: a reply to a
-    turn with no emoji keeps none, otherwise its first only; a caller that has no turn to give keeps the first.
-    Off: as is."""
+    """The talk seat's answer as the host lets it out. ``CB_TALK_CHECKED=1``: no markdown emphasis.
+    ``CB_TALK_ONE_EMOJI=1``, held to the sheet: a reply to a turn with no emoji keeps none, otherwise its first only;
+    a caller that has no turn to give keeps the first. Both off: as is."""
+    if checked_on():
+        reply = plain(reply)
     if not one_emoji_on():
         return reply
     return no_emoji(reply) if user is not None and not emojis(user) else one_emoji(reply)

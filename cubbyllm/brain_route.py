@@ -85,6 +85,9 @@ class BrainRoute:
             return False, "a how-to, not a fact"       # before the grammar: "what is the best way to learn piano?" parses as a fact shape
         if parse_question(text) is not None:
             return True, "the fact grammar parses it"
+        from .reasoning import ask_commands             # order 0079, item 7 (CB_ASK_COMMANDS=1): "look up X" is a lookup
+        if ask_commands.on() and ask_commands.is_command(text):
+            return True, "a request to look something up"
         if self._CAPABILITY.search(text):                # "do you know how to write code?" (live misroute 2026-09-03): about Cubby, not the world
             return False, "about Cubby himself"
         if self._CASUAL_Q.search(text):

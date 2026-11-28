@@ -885,6 +885,38 @@ Added (Code A, on the chat path; each behind its flag, off by default):
   three turns refused, what the sheet allows passing, French pronouns, the test personas, a sample independent of the
   file's order, a conversation through the tool to rows with a stand-in for `/ask`, a cut, and no flag left changed).
 - **Not verified here:** an agent batch, the fact turns against the live server, a batch's time and usage.
-- **Not done yet:** items 5 and 6 (added after I started). Item 5 builds on `emit_samples`, which exists only in the
-  tree's other uncommitted changes; those are not this session's (Nick: leave them, 2026-11-28), so item 5 waits on
-  what happens to them.
+- Items 5 to 7 followed once Nick committed the board's chat (`4f2263a`, with `emit_samples`); below.
+
+### Code A: items 5, 6 and 7, and the endearments (2026-11-28)
+Each behind its flag, off by default; off, the turn and the loop are as they were (pinned).
+- **Item 5** (`CB_TALK_CHECKED`; `cubbyllm/speech/sheet_checks.py`, read by `CubbyChat.candidates`,
+  `ChatState.talk_context` and `talk_format.guard`): 4 replies in one `emit_samples` decode; each that passes the
+  host's guards must also pass `served` (a loop, a feeling the mood's eight scales do not back, a body or a past, an
+  emoji the user did not use, a list nobody asked for, an endearment before the user's). The first that passes is
+  offered. When none passes, the first that passed the host's guards is repaired (each sentence once, a clause said
+  twice in a row once, emoji dropped) and offered only if it then passes the host's guards and `served` again; a
+  reply refused by the host's guards (d, h) is never repaired, nor one under a rule or the care check. Otherwise the
+  safe line, as before. Markdown emphasis (`**`, `__`, `*`, `_`) is taken out of every talk reply ("5 * 3" stays).
+  - The feeling, body and list tables are the drafting gate's, copied into `cubbyllm/` (it never imports
+    `validation/`); the endearments are new there, and the step tool's gate reads them from it.
+  - **The greeting that recited Cubby's abilities:** "how are you?" counts as a question about Cubby
+    (`identity.asks_about_cubby`), so with `CB_CUBBY_RECORD=1` the talk seat got the record's block, abilities and
+    all. With the flag, a how-are-you turn goes as a chat turn; "what can you do?" still gets the record.
+- **Item 6** (`CB_ASK_SELF`; `cubbyllm/reasoning/ask_self.py`, first thing in `AskLoop._ask`): a question about Cubby
+  (`cubby_record.is_about_cubby` or `identity.asks_about_cubby`; "who is cubby?" is the second) is answered by the
+  talk seat from `cubby_record.block`, checked by `chat_check` against the record; a reply that fails gives way to a
+  line made from the record ("I'm Cubby, the voice of CubbyLLM: a model built by GrillCheese Research Lab (GRL).").
+  No source or store is asked; the record says `world: "record"`, not verified. On the board, Nick's routing already
+  sends "who is cubby?" to chat (identity); this closes the loop's own door (`/ask`).
+- **Item 7** (`CB_ASK_COMMANDS`; `cubbyllm/reasoning/ask_commands.py`, read by `BrainRoute.needs_facts` and
+  `AskLoop.ask`): look up / find / search / google / tell me about (French: cherche, recherche, trouve, parle-moi de)
+  a subject needs facts, and the loop is asked about it: "lookup marie curie then tell me the discoveries" -> "What
+  are the discoveries of marie curie?" (refused today: stored the other way round), "find the capital of peru" ->
+  "What is the capital of peru?"; the record keeps `asked_as`. The user, Cubby or a pronoun as the subject is not a
+  command ("tell me about your day", "tell me about yourself", "tell me about it").
+- **Endearments in the step tool:** `chat_gate_0079.CHECKS` gains "endearment" (the host's `sheet_checks.endearment`;
+  the user's own are read loosely, so "thanks dear" lets Cubby answer in kind). No turn was drafted before it, so
+  nothing needs a regate.
+- **Tests:** `tests/speech/test_sheet_checks_0079.py` (6), `tests/reasoning/test_ask_self_commands_0079.py` (2).
+- **Not verified here:** the board turns of 2026-11-27 again with the flags off and on (the order's "Reported" line):
+  that is a served run on the home card.

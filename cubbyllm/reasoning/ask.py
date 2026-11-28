@@ -168,11 +168,15 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory, AskRecall):
         """One question through the loop; the record it returns (and keeps) carries the run's thought
         graph (`cubbyllm.reasoning.graph`), built from the events the ask emitted."""
         from cubbyllm.reasoning.graph import Collector
+        from . import ask_commands                       # order 0079, item 7 (CB_ASK_COMMANDS=1): "look up X" asks of X
+        said, question = question, (ask_commands.restate(question) if ask_commands.on() else question)
         with Collector() as col:
             self._graph = (col, " ".join(question.split()))
             rec = None
             try:
                 rec = self._ask(question, item=item, asker=asker, choose=choose)
+                if question != said:
+                    rec["asked_as"] = said
                 return rec
             finally:
                 self._graph = None
@@ -189,6 +193,11 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory, AskRecall):
                      "learned": [], "entities": [], "aliased": [], "snapped": None, "trace": [], "wall_s": 0.0}
         with self._lock:
             self.calls["asked"] += 1
+            from . import ask_self                       # order 0079, item 6 (CB_ASK_SELF=1): about Cubby, its record
+            if ask_self.on() and ask_self.about(question):
+                rec = ask_self.answer(self, question, t0)
+                self._keep(rec)
+                return rec
             sa = self_ask(question)                      # about the LOOP, not about the world
             if sa:
                 rec = self.introspect(question, sa[0], sa[1], t0, how="the question's shape (about you)")

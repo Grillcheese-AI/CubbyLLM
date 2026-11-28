@@ -165,6 +165,10 @@ class CubbyChat(ChatState):
         # weighing the same set differently. It is also the cheap direction —
         # fewer decode passes exactly when the turn is time-critical.
         draws = choosing.breadth(max(1, int(getattr(self, "n_candidates", 1))), mod)
+        from . import sheet_checks                       # order 0079, item 5 (CB_TALK_CHECKED=1): DRAWS replies in one
+        checked = sheet_checks.on()                      # batched decode, each through the sheet's checks too
+        if checked:
+            draws = sheet_checks.DRAWS
         self._said_lang = lang                           # a rule is said back in the user's language
         tr = self.turn_rules = self._turn_rules()        # order 0067 (CB_RULES=1): None when off
         from . import care                               # order 0080 (CB_CHAT_CARE=1): the distress read, None when off
@@ -173,6 +177,10 @@ class CubbyChat(ChatState):
 
         offered, rejected, seen = [], [], set()
         self.last_rejection = None
+        earlier, repair = [str(r.get("user") or "") for r in self.history], None
+        if checked:
+            from ..affect import mood
+            scales = mood.scales(self.chem)
         ctx = {"role": "talk", "state": dict(self.state), **self.talk_context(user_text, lang),
                **(tr.context() if tr else {})}
         temp = getattr(self, "temperature", 0.7)
@@ -204,11 +212,18 @@ class CubbyChat(ChatState):
             if why is None and care_lvl:                 # after g, h and d: the care check (0080), or the care line
                 vetted, why = care.vet(reply, care_lvl, line)
                 reply = vetted or reply
+            if why is None and checked:                  # item 5: the first that fails only these may be repaired
+                why = sheet_checks.served(reply, user_text, earlier, scales, hit_limit)
+                repair = repair or (reply if why else None)
             if why is None:
                 offered.append(reply)
             else:
                 rejected.append(reply)
                 self.last_rejection = why
+        if checked and not offered and repair and tr is None and not care_lvl:
+            fixed = sheet_checks.repair(repair)          # its repeats cut and emoji dropped, then every check again
+            if fixed and self._guard(fixed, user_text) is None and sheet_checks.served(fixed, user_text, earlier, scales) is None:
+                offered.append(fixed)
 
         from .identity import asks_about_cubby
         spoken = [r["reply"] for r in self.history[-8:]]
