@@ -51,7 +51,7 @@ def test_who_is_cubby_from_the_record(flags):
 
 def test_questions_to_cubby_about_its_life_are_not_the_worlds(flags):
     asks = ["Et toi, tu lis quoi ?", "Vous avez déjà fait du bénévolat, vous ?", "where have you traveled?",
-            "Do you use google often?", "I just got off work, you?"]
+            "Do you use google often?", "I just got off work, you?", "How about you?", "Oh, you're a nanny?"]
     assert all(BrainRoute().needs_facts(q)[0] for q in asks[:4])            # off: sent to the world, as on 2026-11-28
     flags.setenv("CB_ASK_SELF", "1")
     assert not any(BrainRoute().needs_facts(q)[0] for q in asks)

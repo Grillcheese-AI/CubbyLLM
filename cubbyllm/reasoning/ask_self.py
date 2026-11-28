@@ -22,7 +22,8 @@ __wiring__ = "WIRED"
 # often?", "Et toi, tu lis quoi ?", "Vous avez déjà fait du bénévolat, vous ?"; 0079's batch, 2026-11-28): the router
 # sent these to the world as "a question about the world". A "do you know who X is" is a lookup (`ask_commands`).
 _YOU = re.compile(r"\b(?:do|did|does|have|has|are|were|can|could|would|will|should|had)\s+you\b|"
-                  r"^\W*(?:and\s+|so\s+|what\s+about\s+)?(?:you|yourself)\b|\b(?:where|what|when|how|why|which)\s+(?:have|do|did|are|were)\s+you\b|"
+                  r"^\W*(?:and\s+|so\s+|what\s+about\s+|how\s+about\s+)?(?:you|yourself)\b|"
+                  r"^\W*(?:\w+[,!]\s*)?you(?:'re|’re|\s+are)\b|\b(?:where|what|when|how|why|which)\s+(?:have|do|did|are|were)\s+you\b|"
                   r",\s*(?:and\s+|what\s+about\s+)?(?:you|yourself)\s*\?|\b(?:et\s+)?toi\b|\b(?:tu|vous)\s+(?:\w+\s+){0,2}?[\w'’-]+|\best[- ]ce\s+que\s+(?:tu|vous)\b", re.I)
 _TO_WORLD = re.compile(r"\b(?:do you know|can you tell me|could you tell me|tell me|tu sais|sais[- ]tu|savez[- ]vous|"
                        r"tu connais|connais[- ]tu|vous connaissez)\b", re.I)

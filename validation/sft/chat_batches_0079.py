@@ -4,7 +4,7 @@
   one relation ("When was X born?", "Who founded X?"), kept only when the drafting server's ask loop verifies it
   (`POST /ask`); the user asks it in their own words. No name of the gen-3 held split (a test) is drawn.
 - **`rebatch`: smaller sessions, outside the repo.** The plans not yet started go into batches of `--size` (5); the
-  old batches holding only unstarted plans move to `batches/_old/`. The sessions' folder (`--sessions`, outside the
+  old batches holding only unstarted plans move to `batches/_old/<time>/`. The sessions' folder (`--sessions`, outside the
   repo, so its CLAUDE.md files are not read at a session's start) gets `step.sh` and `launch_sessions.ps1`.
 
 Wired: STANDALONE (`chat_step_0079.py reseed | rebatch`).
@@ -110,7 +110,8 @@ def cmd_rebatch(work: pathlib.Path, size: int, sessions: str | None, host: str |
     started = {f.stem.replace("_", ":") for f in (work / "convs").glob("*.json")}
     old = sorted((work / "batches").glob("b*.json"))
     keep, last = [], -1
-    (work / "batches" / "_old").mkdir(parents=True, exist_ok=True)
+    aside = work / "batches" / "_old" / time.strftime("%Y%m%d_%H%M%S")   # each rebatch its own folder: nothing overwritten
+    aside.mkdir(parents=True, exist_ok=True)
     for f in old:
         b = _read(f)
         if set(b["ids"]) & started or b.get("model"):
@@ -120,7 +121,7 @@ def cmd_rebatch(work: pathlib.Path, size: int, sessions: str | None, host: str |
             for ext in (".json", ".md"):
                 g = f.with_suffix(ext)
                 if g.exists():
-                    shutil.move(str(g), str(work / "batches" / "_old" / g.name))
+                    shutil.move(str(g), str(aside / g.name))
     kept_ids = {i for b in keep for i in b["ids"]}
     todo = [p for p in plans if p["id"] not in kept_ids and p["id"] not in started]
     new = P.batches(todo, size)

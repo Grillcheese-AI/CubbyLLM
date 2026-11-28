@@ -977,3 +977,38 @@ with `--web off`, so the local LFM reader is never mounted: an answer comes from
 the 450M seat and checked by the VM. `reseed` on it: 61 of the 62 fact plans not yet drafted got a verified question
 (150 asks, 4.8 min; 1 left as it was). The three conversations drafted on an earlier reseed (00101, 00111, 00116)
 asked again with the web off: verified, the same answers (Sai Taku, Walter Hohmann, 1907-11-30).
+
+### Code A: the checks narrowed, the longer conversations, b000-b010 brought back (2026-11-28)
+After b004-b010 (Cowork's notes: the checks still cut good replies).
+- **d:** a clause is not a kind ("a hard one to beat", "the part you really come for"), and in a French reply a verb in
+  -ez / -ons opening a sentence is a forced capital ("Revenez quand vous voulez"). A sentence-first single word that is
+  not common is still read as a name ("Rodriguez said ...", "Canadians call it ..."): dropping sentence-first words
+  altogether, as Cowork suggested, would let a made-up name open a reply.
+- **h:** a "can't" or "don't have" is refused only when it denies what the record or the sheet says Cubby has or does
+  (its languages, its mood, its facts, a can-do line, jokes and puns) or is a base model's stock refusal ("I can't make
+  that request"). "I can't stream anything, I only talk in text", "I can't join you on the trail" and "I can't look
+  after anyone" pass; a claimed ability off the record is still refused.
+- **The router:** "How about you?", "Oh, you're a nanny?" go to Cubby (`CB_ASK_SELF`).
+- **The persona check, narrowed** as Cowork read it: a rare persona word counts only within 5 words of the user's
+  pronoun (you, your, tu, ton, vous, ...); a name of the persona counts anywhere, but days and months do not. Over all
+  664 replies drafted in b000-b010 it flags 14: the 7 Cowork read as real (planner, apprentices, church, home
+  automation, stall, sudoku, cinnamon), promenade (l'Erdre), and 6 of the topic's own words ("lecture", "documents",
+  "acheter", "movie", "réparations", "strong").
+- **The longer conversations** (Nick; `chat_conv_0079.py`, split out of the step tool at its 300 lines):
+  - a refused reply is written again, up to twice, before a cut; the refused tries stay with the turn and `merge`
+    writes them beside the kept reply as chosen / rejected pairs (`<rows>_pairs.jsonl`);
+  - `regate` brings back a cut that no longer holds: a reply that passes now is kept, a still-refused one made on
+    fewer than three tries comes out and its user turn is pending again; `show` prints the pending turn's lines and
+    the refused tries' reasons;
+  - `relength`: 8 to 14 Cubby turns for every plan not yet done and every open conversation (what is drafted and the
+    fact plans' `ask`, `ask_relation` and `ask_question` kept), the kind's turn drawn inside, a second subject about
+    halfway (`show` says when), and "no goodbye yet" until the last two planned turns, then one closing exchange;
+  - a conversation with fewer than 4 kept Cubby turns gives no rows; `status` prints the kept turns per conversation.
+- **Applied to the run** (the conversations and the plans copied aside first): `regate` brought back all 41 cut
+  conversations of b000-b010 (18 whose reply passes now, 23 back to pending), so none is cut; with 20 open ones, 60
+  conversations of b000-b010 are to be continued (b000 15, b001 12, b002 13, b003 7, b005-b010 13). 485 rows kept;
+  82 kept replies wait until their conversation reaches 4 Cubby turns. `relength` drew 365 plans and the 60 open
+  conversations again. `rebatch`: b011-b083, 5 plans each (the old ones moved aside).
+- **A slip, fixed:** the second `rebatch` moved b011-b083 into the same `batches/_old/` folder as the first, so the
+  first rebatch's b011-b019 (unused 25-plan definitions; nothing was drafted on them) were overwritten. Each rebatch
+  now moves into its own dated folder.

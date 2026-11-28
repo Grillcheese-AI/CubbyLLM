@@ -3,8 +3,10 @@
 The drafting agent sees the user's persona, so Cubby's side can say what the user never said: "ta promenade le long de
 l'Erdre", "a friend from church", "your home automation projects". `leak` refuses a reply that uses a word of the
 persona the conversation has not had yet:
-- a name or place (a capitalised word inside the persona's text, not opening a sentence), or
-- a rare word of it: at least 5 letters, not a function word, in under `RARE` of the run's personas, and in under
+- a name or place (a capitalised word inside the persona's text, not opening a sentence), anywhere, or
+- a rare word of it said about the user (within `NEAR` words of "you", "your", "tu", "ton", "vous", ...: Cowork's read of
+  the first regate, 2026-11-28: the real ones were "your planning work", "a friend from church" after "Could you",
+  "Do you mentor apprentices", "your stall"; the false ones were the topic's own words, "needles", "bricks"): at least 5 letters, not a function word, in under `RARE` of the run's personas, and in under
   `GENERIC` of the replies Cubby wrote in other conversations of the first batch (`background`, frozen in the run's
   folder): "work", "movie" or "morning" never count; "automation", "apprentices", "Erdre" do.
 A word counts as had when it or a form of it (`forms`) is in the user's turns, Cubby's earlier turns or the facts.
@@ -19,12 +21,20 @@ import re
 __wiring__ = "STANDALONE"
 
 RARE = 0.04
+NEAR = 5
+# capitals that name no one: days, months, the host's everyday capitals ("every Sunday" is not a name)
+_EVERYDAY = frozenset("monday tuesday wednesday thursday friday saturday sunday january february march april may june july "
+                      "august september october november december lundi mardi mercredi jeudi vendredi samedi dimanche "
+                      "janvier février mars avril mai juin juillet août septembre octobre novembre décembre "
+                      "english french anglais français tv ok diy".split())
+_YOU = frozenset("you your yours yourself tu ton ta tes toi te vous votre vos".split())
 GENERIC = 0.01
 FIELDS = ("occupation", "work", "hobby", "line")
 _WORD = re.compile(r"[A-Za-zÀ-ÿœæ][\w'’\-]*")
 FUNCTION = frozenset("about above after again against their there these those which while would could should "
                      "being where when what with from into over under other others every through because before "
-                     "still while among between always often never really their theirs yourself people thing things "
+                     "still while among between always often never really their theirs yourself people thing things though "
+                     "although maybe perhaps quite rather "
                      "dans avec pour leurs cette comme aussi entre depuis avant après toujours souvent".split())
 
 
@@ -70,7 +80,7 @@ def _names(text: str) -> set[str]:
     for sent in re.split(r"(?<=[.!?;:])\s+", text):
         for i, m in enumerate(_WORD.finditer(sent)):
             w = m.group(0)
-            if i and w[:1].isupper() and len(w) >= 3:
+            if i and w[:1].isupper() and len(w) >= 3 and _norm(w) not in _EVERYDAY:
                 out.add(_norm(w))
     return out
 
@@ -93,10 +103,12 @@ def leak(reply: str, seen: list[str], seed: dict, df: tuple[collections.Counter,
     rare = {_norm(w) for w in _WORD.findall(text) if len(w) >= 5 and w.lower() not in FUNCTION
             and c[_norm(w)] / n < RARE and _norm(w) not in (generic or {})}
     names -= set(generic or {})
-    for m in _WORD.finditer(reply):
-        w = _norm(m.group(0))
-        if forms(m.group(0)) & had:
+    toks = _WORD.findall(reply)
+    you = [i for i, x in enumerate(toks) if x.lower().replace("’", "'") in _YOU or x.lower().startswith(("t'", "t’"))]
+    for i, tok in enumerate(toks):
+        w = _norm(tok)
+        if forms(tok) & had:
             continue
-        if w in names or w in rare:
-            return f"knows the persona: '{m.group(0)}' (the conversation has not had it)"
+        if w in names or (w in rare and any(abs(i - j) <= NEAR for j in you)):
+            return f"knows the persona: '{tok}' (the conversation has not had it)"
     return None

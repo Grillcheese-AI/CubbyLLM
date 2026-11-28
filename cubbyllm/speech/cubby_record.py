@@ -104,7 +104,9 @@ def _opinions(text: str) -> set[str]:
         named = any(w[:1].isupper() for w in text[start:m.start()].split())   # the opener view kept only names
         # an evaluative head with a clause after it ("the step most people skip", "a skill you can practice"), and
         # an opinion cut at a comma ("a gentle, kind ending"), are opinions too (0079's first batch, 2026-11-28)
-        if asked or set(words) & SUPERLATIVE or words[0] in ("most", "least") or words[-1] in IDIOM_HEADS \
+        # a clause, not a kind: "a hard one to beat", "the part you really come for" (0079's batch, 2026-11-28)
+        clause = any(w in ("to", "you", "we", "i", "they", "people", "everyone", "most") for w in words[1:])
+        if clause or asked or set(words) & SUPERLATIVE or words[0] in ("most", "least") or words[-1] in IDIOM_HEADS \
                 or (set(words[:-1]) & OPINION and not named) or (len(words) > 1 and words[0] in EVALUATIVE and not named) \
                 or (words[-1] in OPINION and not named):
             out.add(words[-1].strip("-"))

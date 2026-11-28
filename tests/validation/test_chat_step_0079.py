@@ -93,6 +93,7 @@ def run(work, *args, capsys):
 
 
 def test_a_conversation_through_the_tool(work, capsys, monkeypatch):
+    monkeypatch.setattr(R, "MIN_TURNS", 2)                                  # a 2-turn fixture; the real floor is 4
     cid = "c0079f:00000"
     assert run(work, "turn", cid, "--text", "hi", capsys=capsys)[0] == 2                     # the batch is not started
     assert "not" in run(work, "start", "b000", "--model", "claude-sonnet-x", capsys=capsys)[1]
@@ -122,12 +123,45 @@ def test_a_conversation_through_the_tool(work, capsys, monkeypatch):
     assert len((work / "chat_0079_final_rows.jsonl").read_text(encoding="utf-8").splitlines()) == 1
 
 
-def test_a_refused_reply_cuts_the_conversation(work, capsys):
+def test_a_refused_reply_is_written_again_then_cut(work, capsys):
     cid = "c0079f:00000"
     run(work, "start", "b000", "--model", "claude-haiku-test", capsys=capsys)
     run(work, "turn", cid, "--seems", "gratitude", "--text", "thanks!", capsys=capsys)
-    assert run(work, "reply", cid, "--text", "Glad you're doing okay!", capsys=capsys)[1].startswith("CUT")
+    assert run(work, "reply", cid, "--text", "Glad you're doing okay!", capsys=capsys)[1].startswith("REFUSED")
+    assert run(work, "reply", cid, "--text", "Glad you're doing well!", capsys=capsys)[1].startswith("REFUSED")
+    assert run(work, "reply", cid, "--text", "Glad you're feeling fine!", capsys=capsys)[1].startswith("CUT")
     assert run(work, "turn", cid, "--text", "hello?", capsys=capsys)[0] == 2
+    conv = json.loads((work / "convs" / "c0079f_00000.json").read_text(encoding="utf-8"))
+    assert len(conv["turns"][-1]["rejected"]) == 2
+
+
+def test_a_passing_rewrite_keeps_the_refused_try_as_a_pair(work, capsys, monkeypatch):
+    monkeypatch.setattr(R, "MIN_TURNS", 1)
+    cid = "c0079f:00000"
+    run(work, "start", "b000", "--model", "claude-haiku-test", capsys=capsys)
+    run(work, "turn", cid, "--seems", "gratitude", "--text", "thanks!", capsys=capsys)
+    run(work, "reply", cid, "--text", "Glad you're doing okay!", capsys=capsys)
+    assert run(work, "reply", cid, "--text", "Anytime! What's next on your list?", capsys=capsys)[1].startswith("OK")
+    run(work, "merge", capsys=capsys)
+    pairs = (work / "chat_0079_final_rows_pairs.jsonl").read_text(encoding="utf-8").splitlines()
+    assert len(pairs) == 1 and json.loads(pairs[0])["rejected"] == "Glad you're doing okay!"
+
+
+def test_regate_puts_a_one_try_cut_back_to_pending_and_relength(work, capsys):
+    cid = "c0079f:00000"
+    run(work, "start", "b000", "--model", "claude-haiku-test", capsys=capsys)
+    run(work, "turn", cid, "--seems", "gratitude", "--text", "thanks!", capsys=capsys)
+    conv = json.loads((work / "convs" / "c0079f_00000.json").read_text(encoding="utf-8"))
+    t = {**conv["pending"], "cubby": "Glad you're doing okay!", "gate": "answers a mood", "checks": ["pilot"]}
+    conv.update(turns=[t], pending=None, cut="answers a mood")                 # cut on one try, as before 2026-11-28
+    (work / "convs" / "c0079f_00000.json").write_text(json.dumps(conv), encoding="utf-8")
+    assert json.loads(run(work, "regate", capsys=capsys)[1]) == {"back to pending": 1}
+    conv = json.loads((work / "convs" / "c0079f_00000.json").read_text(encoding="utf-8"))
+    assert conv["turns"] == [] and conv["pending"]["user"] == "thanks!" and len(conv["pending"]["rejected"]) == 1
+    assert "waits for Cubby's reply" in run(work, "show", cid, capsys=capsys)[1]
+    run(work, "relength", capsys=capsys)
+    conv = json.loads((work / "convs" / "c0079f_00000.json").read_text(encoding="utf-8"))
+    assert 8 <= conv["plan"]["length"] <= 14 and conv["plan"]["second_turn"] >= 1
     assert run(work, "sheet", capsys=capsys)[1].startswith("## Cubby's character sheet")
 
 
@@ -147,7 +181,8 @@ def test_cubby_knows_only_the_conversation():
     assert "church" in L.leak("Could you ask a friend from church to share a shift?", said, seed, df, {})
     assert L.leak("Could you ask a friend from church?", said + ["we met at church"], seed, df, {}) is None
     assert L.leak("Your baking must help.", said + ["I bake too"], seed, df, {}) is None      # an inflection of hers
-    assert "Dana" in L.leak("Thanks, Dana!", said, seed, df, {})                               # a name she never gave
+    assert "Dana" in L.leak("Thanks, Dana!", said, seed, df, {})
+    assert L.leak("Church bells make a nice sound on a Sunday.", said, seed, df, {}) is None   # not about the user                               # a name she never gave
     assert L.leak("Do you organize your home automation projects?", said, seed, df, {"automation": 0.5}) is None
 
 
@@ -171,5 +206,5 @@ def test_rebatch_into_fives_outside_the_repo(work, tmp_path, capsys):
     got = json.loads(B.cmd_rebatch(work, 5, str(tmp_path / "sessions"), "http://127.0.0.1:8775"))
     assert got["kept_batches"] == ["b000"] and got["new_batches"] == 2 and got["first"] == "b001"
     assert [len(json.loads((work / "batches" / f"b00{k}.json").read_text())["ids"]) for k in (1, 2)] == [5, 5]
-    assert (work / "batches" / "_old" / "b001.json").exists()
+    assert list((work / "batches" / "_old").glob("*/b001.json"))
     assert "--host" in (tmp_path / "sessions" / "step.sh").read_text(encoding="utf-8")

@@ -4,8 +4,10 @@ every kept reply as a talk row in the second shape (`talk_format.render`, as ser
 counts only.
 
 A reply is a row only when its gate said ok and every check of `chat_gate_0079.CHECKS` ran on it: a turn gated before
-a check existed is regated first, never kept as it is. One conversation in twenty is held (by the SHA-256 of its id),
-for the trainer's held loss.
+a check existed is regated first, never kept as it is. A conversation with fewer than `MIN_TURNS` kept Cubby turns
+gives no rows (Nick, 2026-11-28: "avoid the small 1 turn ones"). A kept reply written after refused tries also gives
+chosen / rejected pairs (`pairs`, for the preference pass). One conversation in twenty is held (by the SHA-256 of its
+id), for the trainer's held loss.
 
 Wired: STANDALONE (`chat_step_0079.py plans | sheet | brief | merge | status`).
 """
@@ -25,6 +27,7 @@ from validation.sft import chat_plans_0079 as P
 __wiring__ = "STANDALONE"
 
 STEP = pathlib.Path(__file__).resolve().parent / "chat_step_0079.py"
+MIN_TURNS = 4
 
 
 class Stop(Exception):
@@ -115,6 +118,9 @@ The user: a real-sounding person from the persona `show` prints (their job, a ho
 sentences, typed the way people type; they talk about their life, react to Cubby, ask it things; now and then an
 emoji. Never a model, and never the name of their town, city or state (Cubby never names a place). When `show`
 says THIS user turn, write that kind of turn.
+The conversation: as long as `show` plans it (8 to 14 Cubby turns). No goodbye until `show` says it may close, and
+then one closing exchange at most. When `show` says so, the user brings a second subject of their own. A refused
+reply is written again (up to two more tries) before the conversation is cut: avoid what the refusal names.
 Cubby: the sheet, always. Cubby sees only the conversation; the persona is the user's side, and Cubby never uses
 what the user has not said. Facts only from the Facts lines; when there are none and the user asked for one, it says
 so plainly. Never its own location or the user's town (a place in the Facts lines is a fact to say), never a past or
@@ -132,10 +138,16 @@ def _held(cid: str) -> bool:
     return int(hashlib.sha256(cid.encode("utf-8")).hexdigest(), 16) % 20 == 0
 
 
-def rows(work: pathlib.Path):
-    """(row, why not) for every drafted reply: the row when it is kept, else the reason."""
+def kept_turns(c: dict) -> int:
+    return sum(t.get("gate") == "ok" for t in c["turns"])
+
+
+def rows(work: pathlib.Path, pairs: list | None = None):
+    """(row, why not) for every drafted reply: the row when it is kept, else the reason. `pairs` collects the
+    chosen / rejected pairs of the kept replies written after refused tries."""
     for f in sorted((work / "convs").glob("*.json")):
         c = json.loads(f.read_text(encoding="utf-8"))
+        short = kept_turns(c) < MIN_TURNS
         for k, t in enumerate(c["turns"]):
             if t.get("gate") != "ok":
                 yield None, "refused"
@@ -143,11 +155,18 @@ def rows(work: pathlib.Path):
             if list(t.get("checks") or []) != list(G.CHECKS):
                 yield None, "a check did not run on it (regate)"
                 continue
+            if short:
+                yield None, f"its conversation keeps fewer than {MIN_TURNS} Cubby turns"
+                continue
             turns = [x for u in c["turns"][:k] for x in (("user", u["user"]), ("cubby", u["cubby"]))]
             ctx = {"mood": t["mood"], "shade": t["shade"], "seems": t["seems"], "facts": t["facts"],
                    "turns": turns + [("user", t["user"])]}
+            prompt = talk_format.render("", ctx)
+            if pairs is not None:
+                pairs += [{"id": f"pair-{c['id']}:{k}:{j}", "prompt": prompt, "chosen": t["cubby"], "rejected": r["cubby"],
+                           "why": r["why"], "model": t["model"]} for j, r in enumerate(t.get("rejected") or [])]
             yield {"id": f"chat-{c['id']}:{k}", "family": "chat", "split": "held" if _held(c["id"]) else "train",
-                   "prompt": talk_format.render("", ctx), "answer": t["cubby"], "format": 2,
+                   "prompt": prompt, "answer": t["cubby"], "format": 2,
                    "source": "chat_0079_final", "lang": c["plan"]["lang"], "writer": "local Claude Code agent",
                    "model": t["model"], "session": t["session"], "batch": t["batch"], "kind": t.get("kind"),
                    "persona": c["plan"]["persona"]["uuid"], "facts_route": t["route"]}, None
@@ -171,7 +190,12 @@ def tally(work: pathlib.Path) -> dict:
         first[t["batch"]] = min(first.get(t["batch"], t["at"]), t["at"])
         last[t["batch"]] = max(last.get(t["batch"], t["at"]), t["at"])
         times[t["batch"]] += 1
+    hist = c(min(kept_turns(x), 14) for x in convs)
     return {"plans": len(plans), "conversations_started": len(convs),
+            "kept_cubby_turns_per_conversation": {k: hist[k] for k in sorted(hist)},
+            "conversations_pending": sum(bool(x.get("pending")) for x in convs),
+            "refused_tries_kept_as_pairs": sum(len(t.get("rejected") or []) for x in convs for t in x["turns"]
+                                               if t.get("gate") == "ok"),
             "conversations_whole": sum(bool(x["done"]) for x in convs), "conversations_cut": sum(bool(x["cut"]) for x in convs),
             "cubby_turns_drafted": len(turns), "rows_kept": len(kept),
             "not_kept": dict(c(w for _, w in rows(work) if w)),
@@ -187,11 +211,13 @@ def tally(work: pathlib.Path) -> dict:
 
 
 def merge(work: pathlib.Path, out: str, manifest: str) -> str:
-    kept = [r for r, _ in rows(work) if r is not None]
+    pairs: list = []
+    kept_rows = [r for r, _ in rows(work, pairs) if r is not None]
     path = pathlib.Path(out) if out else work / "chat_0079_final_rows.jsonl"
-    with open(path, "w", encoding="utf-8") as f:
-        for r in kept:
-            f.write(json.dumps(r, ensure_ascii=False) + "\n")
+    for p, items in ((path, kept_rows), (path.with_name(path.stem + "_pairs.jsonl"), pairs)):
+        with open(p, "w", encoding="utf-8") as f:
+            for r in items:
+                f.write(json.dumps(r, ensure_ascii=False) + "\n")
     m = {"what": "order 0079's final run: conversations drafted by local Claude Code agents (Haiku and Sonnet) through "
                  "chat_step_0079, users from Nemotron personas (CC BY 4.0), moods from the hormone model, facts from "
                  "the host's resolver, every reply through chat_gate_0079; rows in the second talk shape",

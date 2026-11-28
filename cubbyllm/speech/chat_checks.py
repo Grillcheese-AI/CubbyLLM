@@ -89,6 +89,9 @@ _MODEL_LACKS = re.compile(
 # "anyone to tell", "a book in mind", "a solution on hand", "de coin précis à te proposer"). Saying what Cubby has not
 # got is refused only when it denies what the record says Cubby has: its languages, its mood, access to its facts.
 _HAS = frozenset("lang engl fren angl fran mood hume acce".split())   # stems: language, English, French, mood, access
+_SHEET_CAN = frozenset("joke pun puns blag".split())   # what the sheet has Cubby do: jokes and puns (blagues)
+# a base model's stock refusal is never Cubby's limit: "I can't make that request", "I can't help with that request"
+_STOCK = re.compile(r"^\s*(?:help|assist|make|do|comply|fulfil+|process|provide)\s+(?:you\s+)?(?:with\s+)?(?:that|this|your|such)\s+(?:request|content)", re.I)
 # "I can't give you a real take on it", "I can't explain its meaning", "I can't really pick one": not knowing
 _CANT_SAY = re.compile(r"^\s*(?:(?:really|quite|honestly)\s+)?(?:pick|choose|explain|recommend|be\s+(?:a|an)\s+\w+|"
                        r"give\s+(?:you\s+)?(?:a|an|any|much\s+of\s+an?)\s+(?:\w+\s+)?(?:take|answer|opinion|view|verdict|rule|"
@@ -178,10 +181,13 @@ def abilities(reply: str) -> list[str]:
         said = m.group(0).lower().replace("’", "'")
         past = said.startswith("je n'ai") and _FR_PAST.match(rest)
         bare = {_stem(re.sub(r"^(?:qu|[dljnsmtc])'", "", w)) for w in _fold(rest)}   # "d'humeur" is "humeur"
-        lacks = said.startswith(("i don't have", "i do not have", "je n'ai")) and not bare & _HAS
-        if not c or past or lacks or _IDIOM.match(rest) or _SURE.match(rest) or _NOT_KNOWING.match(rest) \
-                or _MODEL_LACKS.match(rest) or _CANT_SAY.match(rest) or set(head) & _CHECKED \
-                or any(c <= line for line in cant):
+        # order 0079 (Cowork, 2026-11-28, the batch's b005-b010): saying what Cubby cannot do is the sheet's own line
+        # ("I can't stream anything, I only talk in text", "I can't join you on the trail", "I can't look after
+        # anyone"). A "can't" or "don't have" is refused only when it denies what the record says Cubby has or can
+        # do: its languages, its mood, its facts, a can-do line ("I can't tell jokes").
+        denies = bool(bare & (_HAS | _SHEET_CAN)) or any(c and c <= line for line in can) or bool(_STOCK.match(rest))
+        if not c or not denies or past or _IDIOM.match(rest) or _SURE.match(rest) or _NOT_KNOWING.match(rest) \
+                or _CANT_SAY.match(rest) or set(head) & _CHECKED or any(c <= line for line in cant):
             continue                                              # "je ne sais pas" alone; the record says so
         bad.append(f"ability: {m.group(0).strip()[:60]}")
     return bad

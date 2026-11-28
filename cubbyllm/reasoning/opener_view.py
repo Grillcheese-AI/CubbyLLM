@@ -73,12 +73,16 @@ def _inflected(low: str, common) -> bool:
     return low.endswith("ez") and len(low) > 4 and (low[:-2] + "er" in common or low[:-2] in common or low[:-2] + "e" in common)
 
 
+_FRENCH = re.compile(r"\b(?:vous|tu|le|la|les|des|et|est|pour|quand|avec|une|dans)\b", re.I)
+
+
 def opener_view(answer: str, common: set[str] | frozenset[str] | None = None) -> str:
     """The answer with list enumerators removed and the capitals English forces lowered (a common word opening a
     sentence or line, a French verb joined to its pronoun there, the pronoun I). `common` defaults to the host's words."""
     common = common_words() if common is None else common
     text = _ENUM.sub("\n", answer)
     starts = openers(text)
+    fr = bool(_FRENCH.search(text))                      # a French verb in -ez / -ons opening a sentence ("Revenez")
     out = list(text)
     for m in _TOKEN.finditer(text):
         tok = m.group(0)
@@ -86,7 +90,7 @@ def opener_view(answer: str, common: set[str] | frozenset[str] | None = None) ->
         if low.endswith(("'s", "’s")):
             low = low[:-2]
         joined = "-" in low and all(p in common or _inflected(p, common) for p in low.split("-") if p)   # "Front-row"
-        joined = joined or _inflected(low, common)       # "Picturing", "Hedges", "Notez": a common word, inflected
+        joined = joined or _inflected(low, common) or (fr and len(low) > 4 and low.endswith(("ez", "ons")))
         if tok[0].isupper() and (low in _PRONOUN_I or (m.start() in starts and (low in common or joined
                                                                                  or _FR_VERB.match(low)))):
             out[m.start()] = tok[0].lower()

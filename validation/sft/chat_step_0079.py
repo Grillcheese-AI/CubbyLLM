@@ -26,7 +26,6 @@ import argparse
 import json
 import os
 import pathlib
-import re
 import sys
 import time
 
@@ -36,9 +35,10 @@ for p in (ROOT, ROOT / "validation"):
         sys.path.insert(0, str(p))
 
 from cubbyllm.affect import mood  # noqa: E402
-from cubbyllm.speech import cubby_record  # noqa: E402
 from validation.sft import chat_gate_0079 as G  # noqa: E402
 from validation.sft import chat_plans_0079 as P  # noqa: E402
+from validation.sft import chat_conv_0079 as C  # noqa: E402
+from validation.sft.chat_conv_0079 import _p, batch_of, cmd_regate, cmd_reply, conv_path, load  # noqa: E402
 from validation.sft.chat_rows_0079 import Stop, _read, _write  # noqa: E402
 
 __wiring__ = "STANDALONE"
@@ -47,39 +47,6 @@ LABELS = set("admiration amusement anger annoyance approval caring confusion cur
              "disgust embarrassment excitement fear gratitude grief joy love nervousness optimism pride realization "
              "relief remorse sadness surprise neutral".split())
 ORDER = ROOT / "docs" / "orders" / "0079-llm-level-chat.md"
-WORK = pathlib.Path(".")
-
-
-def _p(*parts) -> pathlib.Path:
-    return WORK.joinpath(*parts)
-
-
-def plans() -> dict:
-    return {p["id"]: p for p in _read(_p("plans.json"), [])}
-
-
-def batch_of(cid: str) -> dict:
-    for f in sorted(_p("batches").glob("b*.json")):
-        b = _read(f)
-        if cid in b["ids"]:
-            return b
-    raise Stop(f"{cid} is in no batch")
-
-
-def conv_path(cid: str) -> pathlib.Path:
-    return _p("convs", cid.replace(":", "_") + ".json")
-
-
-def load(cid: str) -> dict:
-    c = _read(conv_path(cid))
-    if c is None:
-        plan = plans().get(cid)
-        if plan is None:
-            raise Stop(f"no plan {cid}")
-        c = {"id": cid, "plan": plan, "turns": [], "pending": None, "cut": None, "done": False}
-    return c
-
-
 def mood_after(users: list[str], labels: list[str]) -> dict:
     """Cubby's eight scales after the user's turns: the hormones, nudged by the serving read with the agent's label."""
     with G.env(CB_MOOD_REGULATION="1"):                 # the regulated mood, as the pilot and the final run read it
@@ -117,10 +84,6 @@ def resolve(text: str, host: str | None) -> dict:
                     "clarify": bool(rec.get("clarify"))}}
 
 
-def about_cubby(text: str) -> bool:
-    return cubby_record.is_about_cubby(text) or bool(re.search(r"\b(are you|es-tu|tu es)\b", text, re.I))
-
-
 def cmd_start(bid: str, model: str, session: str | None) -> str:
     f = _p("batches", f"{bid}.json")
     b = _read(f)
@@ -147,8 +110,15 @@ def cmd_show(cid: str) -> str:
     out.append(f"the user: {who or 'see below'}; their work: {s.get('work') or '-'}; a hobby: {s['hobby'] or '-'}; "
                f"who they are: {s['line']}")
     if c["turns"] and not (c["cut"] or c["done"]):
-        out.append("under way; continue it (the user's next message, sent with: turn):")
+        out.append("under way; continue it:")
         out += [f"  User: {t['user']}\n  Cubby: {t['cubby']}" for t in c["turns"]]
+    if c.get("pending") and not (c["cut"] or c["done"]):
+        pend = c["pending"]
+        out += [f"  User: {pend['user']}", "this user turn waits for Cubby's reply (send it with: reply):",
+                mood.line(pend["mood"]), "Shade: " + (", ".join(pend["shade"]) or "none"), "They seem: " + pend["seems"],
+                "Facts:" + ("" if pend["facts"] else " none for this turn")] + [f"- {f}" for f in pend["facts"]]
+        out += [f"  (a refused try: {r['why']})" for r in pend.get("rejected") or []]
+        return "\n".join(out)
     elif not c["turns"]:
         out.append({"topical-chat": f"the user's first message, word for word: {p.get('opener')}",
                     "feeling": f"the user writes first: they feel {p.get('feeling')} about {p.get('situation')}",
@@ -157,8 +127,14 @@ def cmd_show(cid: str) -> str:
                                           f"name as it is and what is asked: {p['ask_question']}" if p.get("ask_question")
                                           else f"the user writes first and asks Cubby about: {p.get('ask')} (named like that)")}
                    [p["source"]])
-    if not (c["cut"] or c["done"]) and len(c["turns"]) == p["kind_turn"]:
-        out.append(f"THIS user turn: {P.KIND_BRIEF[p['kind']]}")
+    n = len(c["turns"])
+    if not (c["cut"] or c["done"]):
+        if n == p["kind_turn"]:
+            out.append(f"THIS user turn: {P.KIND_BRIEF[p['kind']]}")
+        elif n == p.get("second_turn"):
+            out.append("THIS user turn: the user brings a second subject of their own (their work, a hobby, a question)")
+        out.append("the conversation may close now: one closing exchange at most" if n >= p["length"] - 2
+                   else f"no goodbye yet: {p['length'] - n} Cubby turns to go")
     return "\n".join(out)
 
 
@@ -186,81 +162,19 @@ def cmd_turn(cid: str, seems: str, strength: str, text: str, host: str | None) -
     return "\n".join(lines + ["Now write Cubby's reply and send it with: reply"])
 
 
-def check(t: dict, prior: list[dict], plan: dict) -> tuple[str | None, list[str]]:
-    context = t["facts"] + [x for u in prior for x in (u["user"], u["cubby"])]
-    return G.gate(t["cubby"], t["user"], context, t["mood"], about_cubby(t["user"]), plan["lang"],
-                  tuple(plan["persona"].get("places") or ()), tuple(u["user"] for u in prior),
-                  (plan["persona"], *persona_words()))
-
-
-_WORDS: tuple | None = None
-
-
-def persona_words() -> tuple:
-    """The run's persona word counts, and what Cubby says anyway (frozen from the drafted replies on first use)."""
-    global _WORDS
-    if _WORDS is None:
-        from validation.sft import chat_persona_0079 as L
-        f = _p("persona_background.json")
-        if not f.exists():
-            _write(f, L.background([t["cubby"] for g in sorted(_p("convs").glob("*.json")) for t in _read(g)["turns"]]))
-        _WORDS = (L.counts([p["persona"] for p in plans().values()]), _read(f))
-    return _WORDS
-
-
-def cmd_reply(cid: str, text: str) -> str:
-    c = load(cid)
-    if c["cut"] or c["done"] or not c["pending"]:
-        raise Stop("no user turn is waiting for a reply" if not c["pending"] else f"finished ({c['cut']})")
-    t = {**c["pending"], "cubby": text.strip()}
-    why, ran = check(t, c["turns"], c["plan"])
-    c["turns"].append({**t, "gate": why or "ok", "checks": ran})
-    c["pending"] = None
-    if why:
-        c["cut"] = why
-    elif len(c["turns"]) >= c["plan"]["length"]:
-        c["done"] = True
-    _write(conv_path(cid), c)
-    if why:
-        return f"CUT: {why}. This conversation ends here; go to the next one."
-    if c["done"]:
-        return "DONE: this conversation is complete. Go to the next one."
-    return f"OK ({len(c['turns'])} of {c['plan']['length']} Cubby turns). Write the user's next message (turn)."
-
-
-def cmd_regate() -> str:
-    """Every turn gated again with today's checks (after a fix to them): a cut reply that passes now reopens its
-    conversation; a kept one that fails now cuts it there."""
-    moved = []
-    for f in sorted(_p("convs").glob("*.json")):
-        c = _read(f)
-        for k, t in enumerate(c["turns"]):
-            why, ran = check(t, c["turns"][:k], c["plan"])
-            t.update(gate=why or "ok", checks=ran)
-            if why:
-                c["turns"], c["cut"], c["done"] = c["turns"][:k + 1], why, False
-                break
-        else:
-            c["cut"], c["done"] = None, len(c["turns"]) >= c["plan"]["length"]
-        _write(f, c)
-        moved.append(f"{c['id']}: {c['cut'] or ('done' if c['done'] else 'open')}")
-    return "\n".join(moved) or "nothing to regate"
-
-
 def cmd_status() -> str:
     from validation.sft.chat_rows_0079 import tally
-    return json.dumps(tally(WORK), indent=1, ensure_ascii=False)
+    return json.dumps(tally(C.WORK), indent=1, ensure_ascii=False)
 
 
 def main(argv=None) -> int:
-    global WORK, _WORDS
     from cubbyllm.local_paths import data_dir
     for s in (sys.stdin, sys.stdout):
         if hasattr(s, "reconfigure"):
             s.reconfigure(encoding="utf-8", errors="replace")
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("cmd", choices=["plans", "sheet", "brief", "start", "show", "turn", "reply", "status", "regate",
-                                    "merge", "reseed", "rebatch"])
+                                    "merge", "reseed", "rebatch", "relength"])
     ap.add_argument("id", nargs="?")
     ap.add_argument("--work", default=os.environ.get("CUBBY_CHAT_0079") or str(data_dir("chat_0079_final")))
     ap.add_argument("--host", default=os.environ.get("CUBBY_HOST"))
@@ -275,7 +189,8 @@ def main(argv=None) -> int:
     from validation.sft import chat_rows_0079 as R
     R.plan_args(ap)
     a = ap.parse_args(argv)
-    WORK, _WORDS = pathlib.Path(a.work), None
+    C.WORK, C._WORDS = pathlib.Path(a.work), None
+    WORK = C.WORK
     try:
         if a.cmd in ("show", "turn", "reply", "start", "brief") and not a.id:
             raise Stop(f"{a.cmd} needs an id")
@@ -286,7 +201,8 @@ def main(argv=None) -> int:
                "reply": lambda: cmd_reply(a.id, text), "status": cmd_status, "regate": cmd_regate,
                "merge": lambda: R.merge(WORK, a.out, a.manifest),
                "reseed": lambda: B.cmd_reseed(WORK, a.host, a.max_asks, a.seed, a.gen3 or str(data_dir("gen3_free_text.jsonl"))),
-               "rebatch": lambda: B.cmd_rebatch(WORK, a.batch_size, a.sessions, a.host)}[a.cmd]()
+               "rebatch": lambda: B.cmd_rebatch(WORK, a.batch_size, a.sessions, a.host),
+               "relength": lambda: C.cmd_relength(a.seed)}[a.cmd]()
     except Stop as e:
         print(f"STOP: {e}")
         return 2

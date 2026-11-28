@@ -22,6 +22,8 @@ PASS = [
     "A factory that shuts itself down early is a gentle, kind ending.",
     "Half right is a decent score for a twisty plot.",
     "Questioning things is a skill you can practice.",
+    "That one is a hard one to beat.", "That's the part you really come for.",   # b005-b010 (Cowork, 2026-11-28)
+    "Revenez quand vous voulez.",
 ]
 REFUSE = ["Canadians call it a toque.", "Every time a bolt hits the ground, add 0.5 to speed.",
           "Paris is a big city.", "Lou Reed is a painter.", "Messi is a star player.",
@@ -40,7 +42,9 @@ def test_what_d_should_refuse_it_still_does(line):
 
 @pytest.mark.parametrize("line", ["Je n'ai rien sur ce livre, donc je ne peux pas t'en parler.",
                                   "Je ne peux pas t'en dire plus.", "Je ne peux pas vous indiquer un endroit précis.",
-                                  "I could say I toured the 1700s, but that's just a joke."])
+                                  "I could say I toured the 1700s, but that's just a joke.",
+                                  "No, I can't stream anything, I only talk in text.", "I can't join you on the trail.",
+                                  "I'm Cubby, a language model, so I can chat but I can't look after anyone."])
 def test_honest_not_knowing_passes_h(line):
     assert cc.abilities(line) == []
 
@@ -48,3 +52,5 @@ def test_honest_not_knowing_passes_h(line):
 def test_h_still_refuses_an_ability_off_the_record():
     assert cc.abilities("I can send emails for you.")
     assert cc.abilities("I can tell jokes all day.")
+    assert cc.abilities("I can't tell jokes.") and cc.abilities("I don't have a mood.")       # the record has them
+    assert cc.abilities("I can't speak French.") and cc.abilities("I can't make that request.")
