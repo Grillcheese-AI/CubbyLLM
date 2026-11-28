@@ -1,5 +1,5 @@
 # 0087 - A plan must use the names the question holds: the "Ghana" defect, and "who are you?"
-status: open (Code B, before 0092 and CubeLang P7 and P8; rewritten 2026-11-27 before any build, after the audit)
+status: in progress (Code B, 2026-11-27; before 0092 and CubeLang P7 and P8; rewritten 2026-11-27 before any build, after the audit)
 written: 2026-11-26 by Cowork · approved: 2026-11-26 by Nick ("yes"); the rewrite approved 2026-11-27 ("yes") · hypothesis: H-E15 (the host places the names; the gate checks the plan) · found in: 0083 and the served brain
 
 ## Why
