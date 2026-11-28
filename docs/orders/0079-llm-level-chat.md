@@ -1012,3 +1012,8 @@ After b004-b010 (Cowork's notes: the checks still cut good replies).
 - **A slip, fixed:** the second `rebatch` moved b011-b083 into the same `batches/_old/` folder as the first, so the
   first rebatch's b011-b019 (unused 25-plan definitions; nothing was drafted on them) were overwritten. Each rebatch
   now moves into its own dated folder.
+
+### Figures of speech are not a body (Nick, 2026-11-28)
+"I'm smiling at 'Good Boy Hours'" and "a 'cats who refused' wall ... I'd pause at it" (c0079f:00137) were read by
+Cowork as hints of a body. Nick: "its not really hinting as a body its only like a metaphore". They stay; no sheet
+line and no check are added, and the 50-conversation read does not count them.
