@@ -1,26 +1,55 @@
-// Chat (order 0027): ask through the server's own POST /ask, then see how the selected answer was made -- the question's
-// spans (entity, relation, time) and its steps from /board/journey/<id> -- and, in the audit view only, its whole
-// record from /audit/<id>. In public mode the audit tab is disabled and the server sends no source anyway.
+// Chat (order 0027): unified POST /turn (use_ask: true) — casual chat goes through CubbyChat, while factual world
+// questions go through AskLoop and expose their spans/steps on /board/journey/<id> and /audit/<id>.
 import { get, post, el, isPublic, onAudience } from './api.js';
 
 const turns = [];
-let sel = null, tab = 'journey', root = null;
+let sel = null, tab = 'journey', root = null, loaded = false;
+
+async function loadHistory() {
+  if (loaded) return;
+  loaded = true;
+  const r = await get('/board/chat/history');
+  if (r.ok && Array.isArray(r.body.turns) && r.body.turns.length) {
+    turns.splice(0, turns.length, ...r.body.turns);
+    sel = turns[turns.length - 1].rec;
+  }
+}
 
 function said(rec) {
   if (rec.error) return rec.error;
-  return rec.reply || rec.answer || (rec.verified ? '' : "I don't know that one yet.");
+  if (rec.reply || rec.answer) return rec.reply || rec.answer;
+  if (rec.clarify && rec.clarify.question) {
+    const opts = (rec.clarify.choices || []).map((c) => c.detail ? `${c.label} (${c.detail})` : c.label).filter(Boolean);
+    return opts.length ? `${rec.clarify.question} ${opts.join(' · ')}` : rec.clarify.question;
+  }
+  return rec.verified ? '' : "I don't know that one yet.";
 }
 
 function tags(rec) {
   const t = [];
-  if (rec.verified || rec.reply) t.push(el('span', { class: 'tg ok' }, rec.tier ? rec.tier.replace(/_/g, ' ') : 'answered'));
-  else t.push(el('span', { class: 'tg no' }, 'refused'));
-  if (rec.wall_s !== undefined) t.push(el('span', { class: 'tg' }, `${Math.round(1000 * rec.wall_s)} ms`));
+  if (rec.kind === 'chat' || rec.kind === 'help' || rec.kind === 'learn') {
+    t.push(el('span', { class: 'tg ok' }, rec.kind));
+    if (rec.emotion) t.push(el('span', { class: 'tg' }, rec.emotion));
+  } else if (rec.verified || rec.reply) {
+    t.push(el('span', { class: 'tg ok' }, rec.tier ? rec.tier.replace(/_/g, ' ') : 'answered'));
+  } else {
+    t.push(el('span', { class: 'tg no' }, 'refused'));
+  }
+  if (rec.wall_s !== undefined && rec.wall_s > 0) t.push(el('span', { class: 'tg' }, `${Math.round(1000 * rec.wall_s)} ms`));
   return t;
 }
 
 async function journeyPanel() {
-  if (!sel || !sel.id) return el('section', { class: 'panel glass' }, el('div', { class: 'small' }, 'Ask a question, then pick an answer to see how it was made.'));
+  if (!sel) return el('section', { class: 'panel glass' }, el('div', { class: 'small' }, 'Say hi or ask a question, then pick a reply to see how it was made.'));
+  if (!sel.id) {
+    const bits = [];
+    if (sel.kind) bits.push(`Mode: ${sel.kind}`);
+    if (sel.emotion) bits.push(`Mood: ${sel.emotion}`);
+    if (sel.register) bits.push(`Register: ${sel.register}`);
+    return el('section', { class: 'panel glass', 'aria-label': 'Chat turn summary' },
+      el('div', { class: 'ptitle' }, 'Casual chat turn'),
+      el('div', { class: 'small' }, bits.length ? bits.join(' · ') : 'Handled by CubbyChat (no world lookup needed).'));
+  }
   const r = await get('/board/journey/' + encodeURIComponent(sel.id));
   if (!r.ok) return el('section', { class: 'panel glass' }, el('div', { class: 'small' }, r.body.error || 'no journey'));
   const j = r.body;
@@ -51,14 +80,14 @@ async function auditPanel() {
 }
 
 async function render() {
-  const input = el('input', { id: 'ask-input', type: 'text', placeholder: 'Ask Cubby about its worlds…', autocomplete: 'off' });
+  const input = el('input', { id: 'ask-input', type: 'text', placeholder: 'Talk to Cubby or ask about its worlds…', autocomplete: 'off' });
   const send = async (e) => {
     e.preventDefault();
     const text = input.value.trim();
     if (!text) return;
     input.value = '';
-    const r = await post('/ask', { text });
-    const rec = r.ok ? r.body : { error: r.status === 503 ? 'The ask loop is not mounted here (start the server with --ask).' : (r.body.error || 'error') };
+    const r = await post('/turn', { text, use_ask: true });
+    const rec = r.ok ? r.body : { error: r.body.error || 'error' };
     turns.push({ q: text, rec });
     sel = rec.error ? sel : rec;
     render();
@@ -73,15 +102,23 @@ async function render() {
     el('button', { role: 'tab', 'aria-selected': String(tab === 'audit'), disabled: isPublic(), onclick: () => { tab = 'audit'; render(); } }, 'Audit trail'));
   if (isPublic() && tab === 'audit') tab = 'journey';
   const panel = tab === 'journey' ? await journeyPanel() : await auditPanel();
-  root.replaceChildren(
+  const clearChat = async () => {
+    const r = await post('/board/chat/clear', {});
+    if (r.ok) { turns.length = 0; sel = null; render(); }
+  };
+  const header = el('div', { style: 'display:flex;align-items:baseline;justify-content:space-between;gap:12px' },
     el('div', {}, el('div', { class: 'eyebrow' }, 'Section II · Chat'), el('h1', { class: 'h1' }, 'Talk to Cubby ', el('span', {}, 'and see why'))),
+    turns.length ? el('button', { class: 'pill', type: 'button', onclick: clearChat }, 'New chat') : null);
+  root.replaceChildren(
+    header,
     el('div', { class: 'chat' },
       el('section', { class: 'convo glass', 'aria-label': 'Conversation' }, msgs,
         el('form', { class: 'ask', onsubmit: send }, el('label', { for: 'ask-input', class: 'sr' }, 'Ask Cubby'), input,
           el('button', { class: 'send', type: 'submit', 'aria-label': 'Send' }, '→'))),
       el('aside', { class: 'side' }, tabs, panel)));
+  msgs.scrollTop = msgs.scrollHeight;
 }
 
-onAudience(() => { if (root && !root.hidden) render(); });
+onAudience(() => { if (root && !root.hidden) { loaded = false; loadHistory().then(render); } });
 
-export async function show(node) { root = node; await render(); }
+export async function show(node) { root = node; await loadHistory(); await render(); }

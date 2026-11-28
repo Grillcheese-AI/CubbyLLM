@@ -229,19 +229,22 @@ class AskProfile:
         # database's vocabulary instead of on the sentence. 2026-09-14, Nick, live.
         said = [f"{say(l['relation'])}: {l['value']}" + (f" ({when_text(l['when'])})" if l.get("when") else "")
                 for l in lines]
-        ask = {"who": "who", "what": "what", "where": "where", "when": "what happened in"}.get(kind, "what")
+        ask_line = {"who": f"who {entity} is", "what": f"what {entity} is", "where": f"where {entity} is",
+                    "when": f"what happened in {entity}", "known_for": f"what {entity} is known for"}.get(kind, f"what {entity} is")
         prompt = (f"Facts about {entity}:\n" + "\n".join(f"- {s}" for s in said) +
-                  f"\n\nIn one or two plain sentences, say {ask} {entity} is, using ONLY these facts. "
+                  f"\n\nIn one or two plain sentences, say {ask_line}, using ONLY these facts. "
                   "Every NAME, DATE and NUMBER must appear exactly as given, and you may add none that is "
                   "not in the facts.")
         from ..emit.base import clean_reply
         # the structured form rides beside the prompt (2026-10-17): the 450M talk adapter was trained on the
         # facts block ("Facts: / - entity -- relation: value / Question: / Answer:") and renders it itself;
         # the stand-in reads the instruction above and ignores these keys
+        talk_q = {"who": f"Who is {entity}?", "where": f"Where is {entity}?", "when": f"What happened in {entity}?",
+                  "known_for": f"What is {entity} known for?"}.get(kind, f"What is {entity}?")
         talk_ctx = {"role": "talk",
                     "facts": [(entity, say(l["relation"]), l["value"] + (f" ({when_text(l['when'])})" if l.get("when") else ""))
                               for l in lines],
-                    "question": f"{ {'who': 'Who', 'where': 'Where', 'when': 'What happened in'}.get(kind, 'What')} is {entity}?"}
+                    "question": talk_q}
         try:
             raw = self.emitter.emit(prompt, max_new_tokens=160, context=talk_ctx, temperature=0.0,
                                     system=PARAPHRASE_SYSTEM)     # not the identity persona: under it the talk adapter says nothing here

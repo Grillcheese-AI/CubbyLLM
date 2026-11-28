@@ -132,3 +132,22 @@ def test_off_the_loop_is_unchanged():
     assert loop._everyday is None
     rec = loop.ask("Who wrote Pride and Prejudice?")
     assert not rec["verified"] and rec["reason"] == "no_plan" and "restated" not in rec
+
+
+def test_contractions_and_non_standard_everyday_wordings():
+    assert FORMS.parse("What's the capital of France?")[:2] == ("France", "capital")
+    assert FORMS.parse("Who's the author of Pride and Prejudice?")[:2] == ("Pride and Prejudice", "author")
+    assert FORMS.parse("What's Japan's currency?")[:2] == ("Japan", "currency")
+    assert FORMS.parse("Who was radium discovered by?")[:2] == ("radium", "discoverer or inventor")
+    assert FORMS.parse("Who was the Mona Lisa created by?")[:2] == ("Mona Lisa", "creator")
+    assert FORMS.parse("How did Marie Curie die?")[:2] == ("Marie Curie", "cause of death")
+    assert FORMS.parse("What did Marie Curie die from?")[:2] == ("Marie Curie", "cause of death")
+    assert FORMS.parse("De quoi est morte Marie Curie ?")[:2] == ("Marie Curie", "cause of death")
+    assert FORMS.parse("Où est née Marie Curie ?")[:2] == ("Marie Curie", "place of birth")
+    assert FORMS.parse("De quoi est faite la tour Eiffel ?")[:2] == ("la tour Eiffel", "made from material")
+    assert FORMS.parse("Where was Marie Curie born in?")[:2] == ("Marie Curie", "place of birth")
+    assert FORMS.parse("What year did Marie Curie die?")[:2] == ("Marie Curie", "date of death")
+    assert FORMS.parse("What city did Marie Curie die in?")[:2] == ("Marie Curie", "place of death")
+    assert FORMS.parse("What is the Eiffel Tower made of?")[:2] == ("Eiffel Tower", "made from material")
+    assert FORMS.parse("What is glass made from?")[:2] == ("glass", "made from material")
+    assert FORMS.parse("What was Canada named after?")[:2] == ("Canada", "named after")

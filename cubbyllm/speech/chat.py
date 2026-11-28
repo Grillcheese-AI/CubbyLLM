@@ -49,9 +49,12 @@ __wiring__ = "STANDALONE"
 class CubbyChat(ChatState):
     """One Cubby, one hormonal state, one VM-mediated turn at a time."""
 
+    CASUAL_FALLBACK = {"en": "Tell me more — what's on your mind?",
+                       "fr": "Dis-m'en plus — qu'est-ce qui se passe ?"}
+
     def __init__(self, emitter, facts: dict | None = None, state: dict | None = None,
                  exe: str | None = None, max_new_tokens: int = 200, appraiser=None,
-                 n_candidates: int = 1) -> None:
+                 n_candidates: int = 1, casual_fallback: bool | None = None) -> None:
         self.emitter = emitter
         # How many replies to draw before the filter picks. ONE by default, so
         # no turn gets slower than it was: at n=1 the filter still does the
@@ -59,7 +62,12 @@ class CubbyChat(ChatState):
         # speaking against the sanctioned fallback. Above 1 it also gets to
         # choose between ways of answering, at n decode passes per turn.
         self.n_candidates = max(1, int(n_candidates))
+        # CB_CASUAL_CHAT=1 (or casual_fallback=True, set by cubby_serve for live chat):
+        # keep user-mentioned names grounded for casual ranking and use a claim-free conversational
+        # line instead of the fact refusal when all casual candidates fail guards.
+        self.casual_fallback = (os.environ.get("CB_CASUAL_CHAT") == "1") if casual_fallback is None else bool(casual_fallback)
         self.last_choice: dict = {}
+        self.last_rejection: str | None = None
         self.appraiser = appraiser                       # perception.ModelAppraiser: the trunk reads emotions
         self.facts = facts or load_facts()
         self.grounded = _self_grounding(self.facts)      # what he may assert without reaching past a source
@@ -113,8 +121,9 @@ class CubbyChat(ChatState):
             return "identity reply to a non-identity turn"
         from .cubby_record import chat_check, on as record_on       # 0010 change d (CB_CUBBY_RECORD=1): what Cubby
         if record_on():                                             # says it is, and every name and number, against
-            last = self.history[-1] if self.history else {}         # its record, the turn and the last exchange
-            ok, why = chat_check(reply, user_text, [str(last.get("user") or ""), str(last.get("reply") or "")])
+            span = max(1, int(getattr(self, "history_turns", 1) or 1))
+            ctx_lines = [str(x) for prev in self.history[-span:] for x in (prev.get("user") or "", prev.get("reply") or "") if x]
+            ok, why = chat_check(reply, user_text, ctx_lines)
             if not ok:
                 return why
         from .chat_checks import check as loop_and_abilities         # 0010 changes g (CB_CHAT_NO_LOOP=1) and h
@@ -163,20 +172,33 @@ class CubbyChat(ChatState):
         line = care.care_line(self.facts, lang, getattr(self, "country", None)) if care_lvl else None
 
         offered, rejected, seen = [], [], set()
-        for k in range(draws):
+        self.last_rejection = None
+        ctx = {"role": "talk", "state": dict(self.state), **self.talk_context(user_text, lang),
+               **(tr.context() if tr else {})}
+        temp = getattr(self, "temperature", 0.7)
+        if draws > 1 and hasattr(self.emitter, "emit_samples") and not (tr and ctx.get("steer")):
             self._turns = getattr(self, "_turns", 0) + 1
-            raw = self.emitter.emit(prompt, context={"role": "talk", "state": dict(self.state),   # the talk adapter; the state rides in c
-                                                     **self.talk_context(user_text, lang),         # the turns / the identity facts, for an adapter that renders its own format
-                                                     **(tr.context() if tr else {})},              # the rules' steering
-                                    max_new_tokens=self.max_new_tokens, system=system,
-                                    temperature=getattr(self, "temperature", 0.7), seed=self._turns)   # words, not programs: sample
-            from ..emit.base import clean_reply
+            raws = self.emitter.emit_samples(prompt, draws, max_new_tokens=self.max_new_tokens,
+                                             system=system, temperature=temp, seed=self._turns, context=ctx)
+            last = getattr(self.emitter, "last", None) or {}
+            hits = list(last.get("hits") or [bool(last.get("hit_limit"))] * len(raws))
+            pairs = list(zip(raws, hits))
+        else:
+            pairs = []
+            for _ in range(draws):
+                self._turns = getattr(self, "_turns", 0) + 1
+                raw = self.emitter.emit(prompt, context=ctx, max_new_tokens=self.max_new_tokens,
+                                        system=system, temperature=temp, seed=self._turns)
+                last = getattr(self.emitter, "last", None) or {}
+                pairs.append((raw, bool(last.get("hit_limit"))))
+        from ..emit.base import clean_reply
+        last = getattr(self.emitter, "last", None) or {}
+        for raw, hit_limit in pairs:
             reply = clean_reply(raw)                     # closed think block out, stray tags out, complete tool calls kept
             if not reply or reply in seen:
                 continue
             seen.add(reply)
-            last = getattr(self.emitter, "last", None) or {}
-            why = self._guard(reply, user_text, bool(last.get("hit_limit")))
+            why = self._guard(reply, user_text, hit_limit)
             if why is None and tr is not None:           # every rule in force, run by the VM on this candidate
                 why = tr.why_not(reply, steered=bool(last.get("steered")))
             if why is None and care_lvl:                 # after g, h and d: the care check (0080), or the care line
@@ -188,9 +210,14 @@ class CubbyChat(ChatState):
                 rejected.append(reply)
                 self.last_rejection = why
 
+        from .identity import asks_about_cubby
         spoken = [r["reply"] for r in self.history[-8:]]
         backed = set(self.grounded) | set(grounded or ())
-        safe = line if care_lvl == care.HIGH else tr.safe(dont_know, lang) if tr else dont_know
+        casual = bool(getattr(self, "casual_fallback", False)) and not asks_about_cubby(user_text)
+        if casual:
+            backed |= saying.specifics(user_text)        # names/numbers the user just brought up are not unbacked claims
+        safe = line if care_lvl == care.HIGH else tr.safe(dont_know, lang) if tr else (
+            self.CASUAL_FALLBACK.get(lang, self.CASUAL_FALLBACK["en"]) if (casual and not offered) else dont_know)
         offered, self.last_choice = saying.rank(offered, mod, safe=safe,
                                                 history=spoken, grounded=backed)
         return offered, rejected

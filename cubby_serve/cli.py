@@ -69,6 +69,12 @@ def parser() -> argparse.ArgumentParser:
                     help="mount cubby-man in the cubbyverse pac maze (standin/pacman.py)")
     ap.add_argument("--model-appraisal", action="store_true",
                     help="the trunk reads each turn's emotion (the v5 task); its Plutchik petal drives the hormones")
+    ap.add_argument("--chat-candidates", type=int, default=3,
+                    help="number of candidate replies sampled per casual chat turn (batched on 450M; default 3)")
+    ap.add_argument("--chat-history", type=int, default=4,
+                    help="previous chat exchanges carried in context for casual conversation (default 4)")
+    ap.add_argument("--casual-chat", action=argparse.BooleanOptionalAction, default=True,
+                    help="enable casual chat fallback, user-turn grounding and mood regulation on live chat (default on)")
     ap.add_argument("--wiki", nargs="?", const="auto", default=None,
                     help="mount the wikikg world (standin/data/wikikg.py): bare = the cached Hub export, or a path to triplets.parquet")
     ap.add_argument("--ask", nargs="?", const="wikidata", default=None,
@@ -136,6 +142,8 @@ def parser() -> argparse.ArgumentParser:
     _out = str(data_dir())                               # the one data root (order 0033)
     ap.add_argument("--history", default=os.path.join(_out, "ask_history.jsonl"),
                     help="append every ask record here (one JSON line each) for the nightly sleep cycle; '' = off")
+    ap.add_argument("--chat-store", default=os.path.join(_out, "board_chat.vault.jsonl"),
+                    help="vault-encrypted Control Board chat log (restored on boot and reload); '' = off")
     ap.add_argument("--learned", default=os.path.join(_out, "sleep", "learned_facts.jsonl"),
                     help="the sleep cycle's durable facts, loaded into the store at boot; '' = off")
     ap.add_argument("--skills", default=os.path.join(_out, "sleep", "skills.jsonl"),
@@ -167,6 +175,11 @@ def boot(args, ap: argparse.ArgumentParser):
                         talk_gguf=args.talk_gguf, wiki=args.wiki, cubby450m=args.cubby450m,
                         emitter_adapter=args.emitter_adapter, talk_adapter=args.talk_adapter, tokenizer=args.tokenizer,
                         talk_export=args.talk_export)
+    brain.chat.n_candidates = max(1, int(args.chat_candidates))
+    brain.chat.history_turns = max(0, int(args.chat_history))
+    brain.chat.casual_fallback = bool(args.casual_chat)
+    if args.casual_chat and "CB_MOOD_REGULATION" not in os.environ:
+        os.environ["CB_MOOD_REGULATION"] = "1"           # order 0079: keep friendly chat from spiking anger/caution
     if args.ask:
         from cubbyllm.reasoning.ask import AskLoop
         print(f"mounting the ask loop (source {args.ask}, lexicon on, news {'on' if args.news else 'off'}) ...", flush=True)
@@ -220,6 +233,12 @@ def boot(args, ap: argparse.ArgumentParser):
                            router=args.plugin_router)
         print(f"plugins: {len(lp.index)} indexed from their front matter, {len(lp.loaded)} pinned and loaded, "
               f"tau {lp.router.tau}", flush=True)
+    if args.chat_store:
+        from cubby_serve.board.chat_store import BoardChatStore
+        brain.board_chat = BoardChatStore(args.chat_store)
+        n_seed = brain.board_chat.seed_chat(brain.chat)
+        if n_seed:
+            print(f"board chat history: restored {n_seed} recent chat turn(s) from vault", flush=True)
     if args.board:
         from cubby_serve.board.api import start_refresh
         start_refresh(brain)                            # Home / System built in the background: no request pays for them

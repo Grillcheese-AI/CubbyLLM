@@ -43,7 +43,8 @@ def handle_get(h, brain) -> None:
         h._send(403, {"error": "audit only"})
         return
     if h.path.startswith("/audit/"):              # the whole chain behind one answer (order 0016)
-        rid = h.path.split("?", 1)[0][len("/audit/"):]
+        import urllib.parse
+        rid = urllib.parse.unquote(h.path.split("?", 1)[0][len("/audit/"):])
         loop, harness = getattr(brain, "ask_loop", None), getattr(brain, "harness", None)
         chain = audit_chain(loop, rid) if loop is not None else None
         if chain is None and harness is not None and rid in getattr(harness, "turns", {}):

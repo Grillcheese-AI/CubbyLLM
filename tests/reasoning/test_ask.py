@@ -626,3 +626,62 @@ def test_a_relation_translated_to_its_other_wording_keeps_the_seed_as_the_questi
     plan = QuestionPlan(relations=[None], tail="place of birth of stephen g. breyer", n_hop=1)
     plan2, rewrote = resolve_siblings(plan, Table(), known, {}, question="Where was stephen g. breyer born?")
     assert rewrote == [("place of birth", "birthplace")] and plan2.tail == "birthplace of stephen g. breyer"
+
+
+def test_known_for_and_dangling_prepositions_do_not_corrupt_profile_seed():
+    """2026-11-27, live: "What was marie curie known for?" was read by profile_ask as a profile of
+    'marie curie known for' (refused entity_unresolved), because _verb_tail checked only the final word
+    ('for') and missed predicate+preposition tails. 'known for' / 'famous for' is now a focused profile
+    on the real entity, and dangling-preposition / irregular-participle asks stay plans for the emitter."""
+    from ask import cot_profile, profile_ask, profile_program
+    assert profile_ask("What was marie curie known for?") == ("known_for", "marie curie")
+    assert profile_ask("What is Albert Einstein best known for?") == ("known_for", "Albert Einstein")
+    assert profile_ask("What's Paris famous for?") == ("known_for", "Paris")
+    assert profile_ask("Why was Marie Curie famous?") == ("known_for", "Marie Curie")
+    assert profile_ask("Pour quoi Marie Curie est-elle connue ?") == ("known_for", "Marie Curie")
+    assert profile_ask("Qu'est-ce qui a rendu Marie Curie célèbre ?") == ("known_for", "Marie Curie")
+    assert profile_ask("What is it known for?") is None
+    assert profile_ask("What was Marie Curie's husband known for?") is None
+    assert profile_program(cot_profile("marie curie", "known_for")) == ("known_for", "marie curie")
+
+    # dangling prepositions and irregular participles are relation asks, never bare profile entities
+    for q in ("Who was Marie Curie married to?", "Where was Marie Curie born in?", "What is Python used for?",
+              "What is glass made from?", "What was the Mona Lisa painted by?", "Where is gold found?",
+              "Where is French spoken?", "What is Hamlet about?", "What is Marie Curie known as?"):
+        assert profile_ask(q) is None, q
+
+    # contractions, lowercase indefinite articles, and French profile asks
+    assert profile_ask("Who's Marie Curie?") == ("who", "Marie Curie")
+    assert profile_ask("What's the Eiffel Tower?") == ("what", "Eiffel Tower")
+    assert profile_ask("What is a black hole?") == ("what", "black hole")
+    assert profile_ask("What is an isotope?") == ("what", "isotope")
+    assert profile_ask("What is A Clockwork Orange?") == ("what", "A Clockwork Orange")
+    assert profile_ask("Qui était Marie Curie ?") == ("who", "Marie Curie")
+    assert profile_ask("Qu'est-ce que la radioactivité ?") == ("what", "radioactivité")
+    assert profile_ask("Où se trouve Québec ?") == ("where", "Québec")
+    assert profile_ask("Où est né Napoléon ?") is None
+    assert profile_ask("Qui est le père de Justin Trudeau ?") is None
+    assert profile_ask("Qu'est-ce que c'est ?") is None
+
+    # real names with internal prepositions or capitalized words stay intact
+    assert profile_ask("What is Waiting for Godot?") == ("what", "Waiting for Godot")
+    assert profile_ask("What is Manchester United?") == ("what", "Manchester United")
+
+    # end-to-end AskLoop resolves "marie curie" and orders notable/field/award facts first
+    src = DictSource({"marie curie": [
+        "1867 is the date of birth of marie curie",
+        "physicist is the occupation of marie curie",
+        "radioactivity is the field of work of marie curie",
+        "Nobel Prize in Physics is the award received of marie curie",
+        "polonium is the notable work of marie curie",
+    ]})
+    loop = make_loop({}, src); loop.tau_profile = 0.5
+    rec = loop.ask("What was marie curie known for?")
+    assert rec["reason"] == "profile" and rec["ask"] == "known_for" and rec["seed"] == "marie curie"
+    assert src.calls == ["marie curie"]
+    assert [(l["relation"], l["value"]) for l in rec["profile"][:4]] == [
+        ("notable work", "polonium"),
+        ("field of work", "radioactivity"),
+        ("award received", "Nobel Prize in Physics"),
+        ("occupation", "physicist"),
+    ]

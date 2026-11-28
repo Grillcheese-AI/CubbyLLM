@@ -167,7 +167,8 @@ def handle(brain, path: str, who: str, ring_times=None):
     elif route == "/board/system":
         out = cached(f"system:{who}", 5, lambda: bd.system(brain, who))
     elif route.startswith("/board/journey/"):
-        rid = route[len("/board/journey/"):]
+        import urllib.parse
+        rid = urllib.parse.unquote(route[len("/board/journey/"):])
         loop = getattr(brain, "ask_loop", None)
         rec = next((r for r in reversed(getattr(loop, "history", []) or []) if r.get("id") == rid), None)
         if rec is None:
@@ -181,6 +182,9 @@ def handle(brain, path: str, who: str, ring_times=None):
     elif route.startswith("/board/store"):                   # order 0055's store: the Knowledge section (audit only)
         from cubby_serve.board.store import board_store
         out = board_store(route, path.split("?", 1)[1] if "?" in path else "", who)
+    elif route == "/board/chat/history":
+        store = getattr(brain, "board_chat", None)
+        out = {"turns": store.list(who=who) if store is not None else []}
     elif route == "/board/mood":
         out = bd.mood(brain, who)
     elif route in ("/board/watch", "/board/worlds", "/board/forecast", "/board/agents"):

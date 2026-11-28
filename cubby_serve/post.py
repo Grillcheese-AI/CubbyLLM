@@ -14,6 +14,11 @@ __wiring__ = "WIRED"
 
 
 def handle_post(h, brain) -> None:
+    if h.path.split("?", 1)[0] == "/board/chat/clear" and getattr(brain, "board", False):
+        store = getattr(brain, "board_chat", None)
+        retired = store.clear(getattr(brain, "chat", None)) if store is not None else None
+        h._send(200, {"cleared": True, "archived": retired})
+        return
     if h.path.startswith("/board/plugins/") and getattr(brain, "board", False):   # order 0028: approve / pin
         from cubby_serve.plugins import board_post
         n = int(h.headers.get("Content-Length", 0) or 0)
@@ -49,7 +54,9 @@ def handle_post(h, brain) -> None:
         n = int(h.headers.get("Content-Length", 0))
         req = json.loads(h.rfile.read(n) or b"{}")
         if roles:                                 # roles, sessions and system prompts; the turn itself unchanged
-            code, out = (rule_api.turn(h, brain, req, lambda t: _turn(h, brain, t, req)) if h.path == "/turn"
+            run_turn = ((lambda t: _board_turn(h, brain, t, req)) if (req.get("use_ask") and hasattr(brain, "route"))
+                        else (lambda t: _turn(h, brain, t, req)))
+            code, out = (rule_api.turn(h, brain, req, run_turn) if h.path == "/turn"
                          else rule_api.rules_post(h, brain, h.path.split("?", 1)[0], req))
             h._send(code, _json_safe(out if code != 200 or h._who() == "audit" or "reply" not in out else for_user(out)))
             return
@@ -79,21 +86,60 @@ def handle_post(h, brain) -> None:
                 on_question(brain, text, rec)
             h._send(200, _json_safe(rec if h._who() == "audit" else for_user(rec)))   # sources stay internal
             return
+        if req.get("use_ask") and hasattr(brain, "route"):   # unified board chat: casual -> CubbyChat, facts -> AskLoop
+            rec = _board_turn(h, brain, text, req)
+            h._send(200, _json_safe(rec if h._who() == "audit" else for_user(rec)))
+            return
         rec = _turn(h, brain, text, req)
         h._send(200, _json_safe(rec if h._who() == "audit" else for_user(rec)))
     except Exception as e:
         h._send(500, {"error": str(e)[:300]})
 
 
-def _turn(h, brain, text: str, req: dict) -> dict:
+def _board_turn(h, brain, text: str, req: dict) -> dict:
+    """Unified Control Board chat turn: sense + thalamus route; factual questions go to AskLoop (full journey/audit)
+    when mounted, and casual chat / help / memory / plugins go through CubbyBrain.turn()."""
+    if hasattr(brain, "sense"):
+        brain.sense(text)
+    route = brain.route(text)
+    loop = getattr(brain, "ask_loop", None)
+    if route.get("cortex") == "reasoning" and loop is not None:
+        if getattr(brain, "plugins", None) is not None:
+            from cubby_serve.plugins import on_question
+            on_question(brain, text)
+        rec = loop.ask(text, item=(str(req.get("item")) if req.get("item") else None),
+                       asker=(str(req.get("asker")) if req.get("asker") else None), choose=req.get("choose") or None)
+        if getattr(brain, "plugins", None) is not None:
+            from cubby_serve.plugins import on_question
+            on_question(brain, text, rec)
+        rec = dict(rec)
+        rec.setdefault("kind", "ask")
+        rec["route"] = route
+        rec["emotion"] = getattr(getattr(brain, "chat", None), "emotion", None)
+    else:
+        rec = _turn(h, brain, text, req, route=route, sensed=hasattr(brain, "sense"))
+    store = getattr(brain, "board_chat", None)
+    if store is not None:
+        try:
+            store.append(text, rec)
+        except Exception as e:
+            print(f"  board_chat: not saved: {type(e).__name__}: {e}", flush=True)
+    return rec
+
+
+def _turn(h, brain, text: str, req: dict, route: dict | None = None, sensed: bool = False) -> dict:
     """One chat turn, as the server runs it: the plugins woken, the harness if mounted, the raw output dropped."""
     harness = getattr(brain, "harness", None)       # --harness: the turn is a frame, a budget and a ledger row
     woke = []
     if getattr(brain, "plugins", None) is not None:  # order 0028: a turn's plugins (the talk role) first
         from cubby_serve.plugins import on_question
         woke = on_question(brain, text)
-    rec = (harness.turn(text, feedback=req.get("feedback")) if harness is not None
-           else brain.turn(text, feedback=req.get("feedback")))
+    if harness is not None:
+        rec = harness.turn(text, feedback=req.get("feedback"))
+    elif route is not None or sensed:
+        rec = brain.turn(text, feedback=req.get("feedback"), route=route, sensed=sensed)
+    else:
+        rec = brain.turn(text, feedback=req.get("feedback"))
     rec.pop("raw", None)
     if woke:
         rec["plugins"] = [f"plugin:{n}" for n in woke]

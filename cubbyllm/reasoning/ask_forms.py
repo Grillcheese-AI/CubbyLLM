@@ -26,7 +26,28 @@ TAU_VM = {1: 1.0, 2: 0.4736328125, 3: 0.22021484375}       # exp_r11's threshold
 # when every name and number in it is in the facts. Until gen 3 emits the program, the host reads the
 # shape off the question itself (the same regex builds gen 3's records). Not a walk, not VM-verified --
 # a readout of the store, and the record says so (`reason: profile`).
-_PROFILE_ASK = _re.compile(r"^\s*(?P<kind>who|what|where)\s+(?:is|was|are|were)\s+(?:the\s+)?(?P<ent>[^?]*?)\s*\??\s*$", _re.I)
+_PROFILE_ASK = _re.compile(
+    r"^\s*(?P<kind>who|what|where)(?:['’]s|\s+(?:is|was|are|were))\s+(?:the\s+)?(?P<ent>[^?]*?)\s*\??\s*$", _re.I)
+
+
+# "what was X known/famous/notable for?" / "why is X famous?" (and French): a focused profile over
+# notable work, claim to fame, field of work, awards and occupation -- never a bare entity named "X known for"
+_KNOWN_FOR_EN = _re.compile(
+    r"^\s*what(?:['’]s|\s+(?:is|was|are|were))\s+(?:the\s+)?(?P<ent>[^?]+?)\s+"
+    r"(?:(?:best|most|mainly|chiefly|widely|principally|primarily)\s+)?"
+    r"(?:known|famous|notable|noted|remembered|celebrated)\s+for\s*\??\s*$", _re.I)
+_WHY_FAMOUS_EN = _re.compile(
+    r"^\s*why(?:['’]s|\s+(?:is|was|are|were))\s+(?:the\s+)?(?P<ent>[^?]+?)\s+"
+    r"(?:(?:so|well|best|most|widely)\s+)?(?:famous|known|notable)\s*\??\s*$", _re.I)
+_KNOWN_FOR_FR = _re.compile(
+    r"^\s*(?:(?:pour\s*quoi|pourquoi)\s+(?P<ent1>[^?]+?)\s+"
+    r"(?:est|était|sont|étaient)(?:-(?:il|elle|ils|elles))?\s+"
+    r"(?:(?:si|très|bien|le\s+plus|la\s+plus)\s+)?(?:connue?s?|célèbres?)"
+    r"|qu['’]est-ce\s+qui\s+(?:a\s+rendu|rend)\s+(?P<ent2>[^?]+?)\s+(?:célèbre|connue?))\s*\??\s*$", _re.I)
+_FR_PROFILE_ASK = _re.compile(
+    r"^\s*(?:(?P<who>qui)\s+(?:est|était|sont|étaient)\s+|"
+    r"(?P<what>qu['’]est-ce\s+qu['’]\s*|qu['’]est-ce\s+que\s+|c['’]est\s+quoi\s+)|"
+    r"(?P<where>où)\s+(?:est|était|sont|étaient|se\s+trouve(?:nt)?|se\s+situe(?:nt)?)\s+)(?P<ent>[^?]*?)\s*\??\s*$", _re.I)
 
 
 # the temporal ask: the entity is a DATE and the relation is 'what happened' -- the same retrieval
@@ -37,14 +58,25 @@ _WHEN_ASK = _re.compile(r"^\s*(?:what|which)\s+(?:\w+\s+)?(?:happened|occurred|o
                         r"(?:\s+(?:in|on|during|around))?\s+(?:the\s+)?(?P<ent>[^?]*?)\s*\??\s*$", _re.I)
 
 
-# a trailing past participle is the QUESTION's verb, not the end of a name (2026-10-16, live: "Where was
-# Marie Curie born?" read as a profile of 'marie curie born', refused entity_unresolved -- the shape
-# that verified Marie Curie's birthplace before the profile ask existed). 'born', 'located', 'founded',
-# 'married' end a relation ask; a name's own capitalised word (Manchester United) is left alone.
-_PARTICIPLES = {"born", "built", "made", "held", "written", "known", "sold", "shot", "led", "won", "begun"}
+# a trailing past participle or dangling preposition is the QUESTION's predicate, not the end of a name
+# (2026-10-16: "Where was Marie Curie born?"; 2026-11-27: "What was marie curie known for?" read as a
+# profile of 'marie curie known for', refused entity_unresolved). A name's own capitalised word
+# (Manchester United) is left alone.
+_PARTICIPLES = {"born", "built", "made", "held", "written", "known", "sold", "shot", "led", "won", "begun",
+                "found", "spoken", "grown", "drawn", "sung", "shown", "taught", "fought", "taken", "given",
+                "chosen", "broken", "driven", "frozen", "thrown", "stolen", "hidden", "worn", "caught",
+                "bought", "brought", "heard", "kept", "spent", "sent", "done", "seen"}
+_TRAIL_PREPS = {"for", "by", "to", "in", "on", "at", "from", "with", "about", "after", "into", "onto",
+                "through", "under", "over", "against", "between", "as"}
+_FR_PREDICATE = {"né", "née", "nés", "nées", "mort", "morte", "morts", "mortes", "situé", "située", "situés",
+                 "situées", "construit", "construite", "fondé", "fondée", "écrit", "écrite", "créé", "créée",
+                 "connu", "connue", "fait", "faite", "enterré", "enterrée", "découvert", "découverte"}
+_FR_CLAUSE = {"a", "ont", "est", "sont", "était", "étaient", "fait", "pour", "par", "dans", "sur", "avec"}
+_PRONOUN_ENTS = {"it", "this", "that", "these", "those", "he", "she", "they", "you", "i", "we", "me", "him",
+                 "her", "them", "cela", "ça", "c'est", "c’est", "il", "elle", "ils", "elles", "tu", "vous", "je", "nous"}
 
 
-_ASK_ROLE = _re.compile(r'bind\s+frame\s*,\s*ASK\s*,\s*"(?P<kind>who|what|where|when)"\s*;', _re.I)
+_ASK_ROLE = _re.compile(r'bind\s+frame\s*,\s*ASK\s*,\s*"(?P<kind>who|what|where|when|known_for)"\s*;', _re.I)
 
 
 # WORLD names the store the question is about: absent (or "world") is the world, "self" is the
@@ -74,13 +106,15 @@ PROFILE_KINDS = {
     # ('instance of: year', 'part of: 2020s') would look like an answer to a question about events
     # and is not one, so the kind never falls back to the other relations -- it refuses instead.
     "when": ("timeline event", "significant event", "notable event", "event"),
+    "known_for": ("notable work", "claim to fame", "field of work", "award received", "occupation", "position held",
+                  "has use", "use", "significant event", "genre", "instance of"),
 }
 
 
 PROFILE = tuple(dict.fromkeys(r for k in ("who", "what", "where") for r in PROFILE_KINDS[k]))
 
 
-FALLBACK_KINDS = ("who", "what", "where")          # kinds that may also show any other profile relation
+FALLBACK_KINDS = ("who", "what", "where", "known_for")   # kinds that may also show any other profile relation
 
 
 # the resolution hint: the kind's relations, specific first, with the classifiers dropped -- `instance of`
@@ -139,45 +173,69 @@ def self_ask(question: str) -> tuple[str, str] | None:
 
 
 def _verb_tail(ent: str) -> bool:
-    """Does the entity as typed end in a past participle that is not a capitalised word of the name?"""
+    """Does the entity end in a past participle or dangling preposition (not a capitalised word of a name)?"""
     words = ent.split()
     if len(words) < 2 or words[-1][:1].isupper():
         return False
     tail = words[-1].lower().strip(".,")
-    return tail in _PARTICIPLES or (len(tail) >= 5 and tail.endswith("ed"))
+    return tail in _PARTICIPLES or tail in _TRAIL_PREPS or (len(tail) >= 5 and tail.endswith("ed"))
+
+
+def _of_relation(ent: str, is_relation) -> bool:
+    if " of " not in f" {ent} ":
+        return False
+    heads = [ent[:m.start()].strip() for m in _re.finditer(" of ", ent)]
+    heads = [h[4:].strip() if h.lower().startswith("the ") else h for h in heads]
+    return is_relation is None or not heads or not heads[0] or any(is_relation(h) for h in heads if h)
+
+
+def _strip_article(ent: str, fr: bool = False) -> str:
+    if fr:
+        for art in ("le ", "la ", "les ", "un ", "une ", "des "):
+            if ent.startswith(art):
+                return ent[len(art):].strip()
+        if ent.startswith(("l'", "l’")):
+            return ent[2:].strip()
+        return ent
+    return ent.split(" ", 1)[1].strip() if ent.startswith(("a ", "an ")) else ent
 
 
 def profile_ask(question: str, is_relation=None) -> tuple[str, str] | None:
-    """(kind, entity) of a 'who / what / where is X' or 'what happened in <date>' question, or None: a
-    question with a relation in it ('the capital of France', "Canada's capital") is a plan for the
-    emitter, not a profile.
-
-    'of' alone does not make a plan. 2026-09-14, live: "what is the great pyramid of giza?" refused,
-    and so would the Bank of England, the University of Toronto and the Isle of Man -- the guard threw
-    out every entity whose own NAME contains 'of'. What separates the two is the head: 'capital of
-    France' leads with a relation the store knows, 'great pyramid of giza' does not. `is_relation` is
-    the store's own answer to that (AskLoop passes it); without one the old, safe guard stands, because
-    guessing which head is a relation is exactly the guess that speaks a wrong answer."""
+    """(kind, entity) of a 'who / what / where is X', 'what is X known for', or 'what happened in <date>'
+    question (EN/FR), or None when the question asks a relation plan for the emitter."""
     m = _WHEN_ASK.match(question)
     if m:
         ent = m.group("ent").strip().strip(",")
         return ("when", ent) if ent and len(ent.split()) <= 5 else None
+    for rx, fr in ((_KNOWN_FOR_EN, False), (_WHY_FAMOUS_EN, False), (_KNOWN_FOR_FR, True)):
+        m = rx.match(question)
+        if m:
+            raw = (m.group("ent1") or m.group("ent2")) if fr else m.group("ent")
+            ent = _strip_article(raw.strip().strip(".,"), fr=fr)
+            if (not ent or "'s " in ent or ent.endswith("'s") or len(ent.split()) > 6
+                    or ent.lower() in _PRONOUN_ENTS or _of_relation(ent, is_relation)):
+                return None
+            return ("known_for", ent)
     m = _PROFILE_ASK.match(question)
-    if not m:
-        return None
-    ent = m.group("ent").strip()
-    if not ent or "'s " in ent or ent.endswith("'s") or len(ent.split()) > 6:
-        return None
-    if _verb_tail(ent):
-        return None                                      # 'where was X born': a relation ask, the emitter's
-    if " of " in f" {ent} ":
-        # every ' of ' prefix is a head: 'the head of state of X' leads with 'head of state', not 'head' (2026-10-22)
-        heads = [ent[:m.start()].strip() for m in _re.finditer(" of ", ent)]
-        heads = [h[4:].strip() if h.lower().startswith("the ") else h for h in heads]
-        # no head at all: the 'of' is at an end of the entity ('... of', padded above) -- not a profile either
-        if is_relation is None or not heads or not heads[0] or any(is_relation(h) for h in heads if h):
-            return None                                  # a relation leads it: the emitter's plan, not a profile
-    return m.group("kind").lower(), ent
+    if m:
+        ent = _strip_article(m.group("ent").strip())
+        if not ent or "'s " in ent or ent.endswith("'s") or len(ent.split()) > 6:
+            return None
+        if _verb_tail(ent) or _of_relation(ent, is_relation):
+            return None
+        return m.group("kind").lower(), ent
+    m = _FR_PROFILE_ASK.match(question)
+    if m:
+        ent = _strip_article(m.group("ent").strip(), fr=True)
+        low = [w.lower().strip(".,") for w in ent.split()]
+        if (not ent or len(low) > 6 or ent.lower() in _PRONOUN_ENTS or low[0] in _FR_PREDICATE
+                or low[-1] in _FR_PREDICATE or any(w in _FR_CLAUSE for w in low)
+                or any(p in f" {ent.lower()} " for p in (" de ", " du ", " des "))
+                or _re.search(r"\bd['’]", ent.lower())):
+            return None
+        kind = "who" if m.group("who") else "where" if m.group("where") else "what"
+        return kind, ent
+    return None
 
 
 # "how is B related to A?" -- CLUTRR's own question: the relation the chain of facts between the two

@@ -119,7 +119,10 @@ def noun_tense(question: str, relation: str, tense: str | None) -> str | None:
 def _pattern(form: str) -> re.Pattern:
     head, _, tail = form.partition("{S}")
     lit = lambda s: r"\s+".join(re.escape(w) for w in s.split())                  # noqa: E731
-    return re.compile(rf"^\s*{lit(head)}\s*(?P<S>.+?)\s*{lit(tail.rstrip('?'))}\s*\??\s*$", re.I)
+    tail_lit = tail.rstrip("?")
+    h_sep = r"\s+" if head and head[-1].isspace() else r"\s*"
+    t_sep = r"\s+" if tail_lit.strip() and tail_lit[0].isspace() else r"\s*"
+    return re.compile(rf"^\s*{lit(head)}{h_sep}(?P<S>.+?){t_sep}{lit(tail_lit)}\s*\??\s*$", re.I)
 
 
 class Forms:

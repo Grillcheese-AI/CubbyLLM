@@ -63,15 +63,24 @@ def _fr(form: str) -> list[str]:
 # each store's own label. Only shapes whose relation is unambiguous are here: "Where is {S} from?" (born there, or a
 # citizen?) and "What state is {S} in?" (the parent entity is often a county) are left to the model.
 EVERYDAY: dict[str, tuple[str, dict[str, list[str]]]] = {
-    "author": ("event", {"past": ["Who wrote {S}?", "Who was {S} written by?", "Who authored {S}?",
+    "author": ("event", {"past": ["Who wrote {S}?", "Who was {S} written by?", "By whom was {S} written?",
+                                  "Who authored {S}?", "Who was the author of {S}?",
                                   "Qui a écrit {S} ?"] + _fr("Qui est l'auteur {de} {S} ?"),
                          "present": ["Who is the author of {S}?"]}),
-    "creator": ("event", {"past": ["Who painted {S}?", "Who created {S}?", "Who was {S} painted by?", "Qui a peint {S} ?"]}),
-    "composer": ("event", {"past": ["Who composed {S}?", "Who wrote the music for {S}?", "Qui a composé {S} ?"],
+    "creator": ("event", {"past": ["Who painted {S}?", "Who created {S}?", "Who was {S} painted by?",
+                                   "Who was {S} created by?", "Who was the creator of {S}?",
+                                   "Qui a peint {S} ?", "Qui a créé {S} ?"],
+                          "present": ["Who is the creator of {S}?"]}),
+    "composer": ("event", {"past": ["Who composed {S}?", "Who was {S} composed by?", "Who wrote the music for {S}?",
+                                    "Who was the composer of {S}?", "Qui a composé {S} ?"],
                            "present": ["Who is the composer of {S}?"]}),
-    "director": ("event", {"past": ["Who directed {S}?", "Who was {S} directed by?", "Qui a réalisé {S} ?"]}),
-    "discoverer or inventor": ("event", {"past": ["Who discovered {S}?", "Who invented {S}?", "Who was the inventor of {S}?",
-                                                  "Qui a découvert {S} ?", "Qui a inventé {S} ?"]}),
+    "director": ("event", {"past": ["Who directed {S}?", "Who was {S} directed by?", "Who was the director of {S}?",
+                                    "Qui a réalisé {S} ?"],
+                           "present": ["Who is the director of {S}?"]}),
+    "discoverer or inventor": ("event", {"past": ["Who discovered {S}?", "Who invented {S}?", "Who was {S} discovered by?",
+                                                  "Who was {S} invented by?", "Who was the inventor of {S}?",
+                                                  "Who was the discoverer of {S}?", "Qui a découvert {S} ?",
+                                                  "Qui a inventé {S} ?"]}),
     "architect": ("event", {"past": ["Who was the architect of {S}?"], "present": ["Who is the architect of {S}?"]}),
     "official language": ("state", {"present": [
         "What language is spoken in {S}?", "What languages are spoken in {S}?", "What language do they speak in {S}?",
@@ -90,13 +99,16 @@ EVERYDAY: dict[str, tuple[str, dict[str, list[str]]]] = {
                                         "Which continent is {S} in?"]}),
     "currency": ("state", {"present": [
         "What currency does {S} use?", "What currency is used in {S}?", "What is the currency in {S}?",
+        "What is the currency of {S}?", "What is {S}'s currency?",
         "What money does {S} use?", "What currency do they use in {S}?", "What kind of money does {S} use?",
         "What currency is used in the {S}?"] + _fr("Quelle est la monnaie {de} {S} ?")}),
     "country of citizenship": ("state", {"present": ["What is {S}'s nationality?", "What is {S} nationality?",
                                                      "What nationality is {S}?", "What is the nationality of {S}?"]}),
     "religion": ("state", {"present": ["What religion is {S}?", "What is {S}'s religion?"], "past": ["What religion was {S}?"]}),
-    "cause of death": ("event", {"past": ["What did {S} die of?", "What was {S}'s cause of death?", "What killed {S}?",
-                                          "What was the cause of death of {S}?"]}),
+    "cause of death": ("event", {"past": ["What did {S} die of?", "What did {S} die from?", "How did {S} die?",
+                                          "What was {S}'s cause of death?", "What killed {S}?",
+                                          "What was the cause of death of {S}?",
+                                          "De quoi est mort {S} ?", "De quoi est morte {S} ?"]}),
     "occupation": ("state", {"present": ["What does {S} do for a living?", "What is {S}'s job?", "What is {S}'s profession?",
                                          "What is the occupation of {S}?"],
                              "past": ["What did {S} do for a living?", "What was {S}'s job?", "What was {S}'s profession?"]}),
@@ -115,14 +127,22 @@ EVERYDAY: dict[str, tuple[str, dict[str, list[str]]]] = {
     "basic form of government": ("state", {"present": ["What form of government does {S} have?",
                                                        "What type of government does {S} have?",
                                                        "What kind of government does {S} have?"]}),
-    "named after": ("event", {"past": ["Who is {S} named after?", "What is {S} named after?", "Who was {S} named after?"]}),
-    "capital": ("state", {"present": ["What is {S}'s capital?", "What is the capital city of {S}?"]
+    "named after": ("event", {"past": ["Who is {S} named after?", "What is {S} named after?", "Who was {S} named after?",
+                                       "What was {S} named after?"]}),
+    "capital": ("state", {"present": ["What is {S}'s capital?", "What is the capital city of {S}?",
+                                      "What city is the capital of {S}?"]
                                      + _fr("Quelle est la capitale {de} {S} ?")}),
-    "place of birth": ("event", {"past": ["What city was {S} born in?", "Where was {S} born at?"] + ["Où est né {S} ?",
-                                                                                                    "Où est née {S} ?"]}),
+    "place of birth": ("event", {"past": ["What city was {S} born in?", "Where was {S} born in?", "Where was {S} born at?",
+                                          "Où est né {S} ?", "Où est née {S} ?"]}),
+    "place of death": ("event", {"past": ["What city did {S} die in?", "Où est mort {S} ?", "Où est morte {S} ?"]}),
     "date of birth": ("event", {"past": ["Quand est né {S} ?", "Quand est née {S} ?"],
                                 "present": ["What is {S}'s birthday?", "When is {S}'s birthday?"]}),
-    "date of death": ("event", {"past": ["Quand est mort {S} ?", "Quand est morte {S} ?"]}),
+    "date of death": ("event", {"past": ["What year did {S} die?", "What year did {S} die in?",
+                                         "Quand est mort {S} ?", "Quand est morte {S} ?"]}),
+    "made from material": ("state", {"present": ["What is {S} made of?", "What is {S} made from?",
+                                                 "What are {S} made of?", "What are {S} made from?",
+                                                 "De quoi est fait {S} ?", "De quoi est faite {S} ?"],
+                                     "past": ["What was {S} made of?", "What was {S} made from?"]}),
     "child": ("state", {"present": ["Who are {S}'s children?", "Who are the children of {S}?"]}),
 }
 DATES = set(DATED) | {"end time", "start time"}
@@ -186,6 +206,7 @@ def everyday_forms(templates: str | None = None) -> dict:
             for rel, (k, by) in forms.items() if rel not in NOT_READ}
 
 
+_CONTRACT = re.compile(r"^\s*(what|who|where|when)['’]s\b", re.I)
 # words a question carries that are not its entity's or its relation's ("what timezone is colorado in right now?",
 # "what is the currency of spain called?": WebQuestions' wording), taken off the question's end before the forms read it
 _TAIL = re.compile(r"\s+(?:on a map|on the map|wikipedia|right now|now|today|currently|called)(?=\s*\??\s*$)", re.I)
@@ -221,6 +242,7 @@ class EverydayForms(Forms):
         return None if relation not in self.forms else "date" if relation in DATES else "name"
 
     def _match(self, question: str):
+        question = _CONTRACT.sub(r"\1 is", question, count=1)
         while _TAIL.search(question):
             question = _TAIL.sub("", question)
         m = super()._match(question)

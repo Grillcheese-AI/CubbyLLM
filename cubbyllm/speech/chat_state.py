@@ -148,32 +148,40 @@ class ChatState:
         conversation's turns, the last spoken exchange included when history is on. The stand-in ignores
         both keys and reads the prompt."""
         from .cubby_record import block, on as record_on            # 0010 change d: Cubby's record as the block of a
-        if record_on() and is_identity_question(user_text):          # turn that asks about Cubby; a hello, a thanks or a
-            from .identity import asks_about_cubby                    # goodbye alone goes as a chat turn (Cowork, 2026-11-11)
-            if asks_about_cubby(user_text):
-                return {"facts": block(lang), "question": user_text}
-        elif is_identity_question(user_text):
+        from .identity import asks_about_cubby
+        if record_on() and asks_about_cubby(user_text):              # turn that asks about Cubby; a hello, a thanks or a
+            return {"facts": block(lang), "question": user_text}     # goodbye alone goes as a chat turn (Cowork, 2026-11-11)
+        elif asks_about_cubby(user_text):
             name = T(self.facts, "name", lang)
             facts = [(name, k.replace("_", " "), T(self.facts, k, lang)) for k in ("name", "builder", "tagline", "how_it_answers", "when_unsure")
                      if k in self.facts and isinstance(T(self.facts, k, lang), str)]
             return {"facts": facts, "question": user_text}
         turns = []
         if self.history_turns and self.history:
-            last = self.history[-1]
-            u1, a1 = str(last.get("user") or "").strip(), str(last.get("reply") or "").strip()
-            if u1 and a1:
-                turns += [("user", u1), ("assistant", a1)]
+            for prev in self.history[-self.history_turns:]:
+                u1, a1 = str(prev.get("user") or "").strip(), str(prev.get("reply") or "").strip()
+                if u1 and a1:
+                    turns += [("user", u1), ("assistant", a1)]
         return {"turns": turns + [("user", user_text)]}
 
     def with_history(self, user_text: str) -> str:
-        """The prompt for this turn: the previous spoken exchange inline (v9 multi-turn shape), or the bare
-        turn when there is none / history is off. An identity question stands alone: it is answered from
+        """The prompt for this turn: the previous spoken exchange(s) inline (v9 multi-turn shape), or the bare
+        turn when there is none / history is off. A question about Cubby stands alone: it is answered from
         who Cubby is, not from the last exchange."""
-        if not self.history_turns or not self.history or is_identity_question(user_text):
+        from .identity import asks_about_cubby
+        if not self.history_turns or not self.history or asks_about_cubby(user_text):
             return user_text
-        last = self.history[-1]
-        u1, a1 = str(last.get("user") or "").strip(), str(last.get("reply") or "").strip()
-        if not u1 or not a1:
+        pairs = []
+        for prev in self.history[-self.history_turns:]:
+            u1, a1 = str(prev.get("user") or "").strip(), str(prev.get("reply") or "").strip()
+            if u1 and a1:
+                pairs.append((u1, a1))
+        if not pairs:
             return user_text
         lang = "fr" if guess_lang(user_text) == "fr" else "en"
-        return self.MULTI_PROMPT[lang].format(u1=u1, a1=a1, u2=user_text)
+        if len(pairs) == 1:
+            return self.MULTI_PROMPT[lang].format(u1=pairs[0][0], a1=pairs[0][1], u2=user_text)
+        head = "Conversation jusqu'ici :" if lang == "fr" else "Conversation so far:"
+        u_lbl, a_lbl = ("Utilisateur", "Cubby") if lang == "fr" else ("User", "Cubby")
+        lines = [head] + [f"{u_lbl}: {u}\n{a_lbl}: {a}" for u, a in pairs] + [f"{u_lbl}: {user_text}"]
+        return "\n".join(lines)

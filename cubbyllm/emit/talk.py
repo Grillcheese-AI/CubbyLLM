@@ -113,6 +113,27 @@ class Cubby450mTalk:
         self.last = {"prompt": text, "raw": raw, "hit_limit": hit, "steered": applied}
         return (prefix + " " if prefix else "") + talk_answer(raw, talk_format.user_turn(prompt, context))
 
+    def emit_samples(self, prompt: str, n: int, max_new_tokens: int = 160, system: str | None = None,
+                     prefix: str = "", temperature: float = 0.7, seed: int | None = None,
+                     context: "str | dict | None" = None) -> list[str]:
+        """Draw `n` talk replies in ONE batched decode pass on the 450M trunk."""
+        steer = (context or {}).get("steer") if isinstance(context, dict) else None
+        prefix = prefix or ((steer or {}).get("prefix") or "")
+        text = talk_prompt(prompt, context) + ((" " + prefix) if prefix else "")
+        ids = self.trunk.tokenizer.encode(text).ids[-self.max_ctx:]
+        rows = self.trunk.generate(self.role, [ids] * max(1, int(n)), max_new_tokens,
+                                   temperature=temperature, seed=seed)
+        out_list, hits = [], []
+        user_turn = talk_format.user_turn(prompt, context)
+        for out in rows:
+            if self.trunk.eos in out:
+                out = out[:out.index(self.trunk.eos)]
+            hits.append(len(out) >= max_new_tokens)
+            out_list.append((prefix + " " if prefix else "") + talk_answer(self.trunk.tokenizer.decode(out), user_turn))
+        self.last = {"prompt": text, "raw": out_list[0] if out_list else "", "hit_limit": any(hits),
+                     "hits": hits, "steered": False}
+        return out_list
+
     def vocab_strings(self) -> list[str]:
         """Every token as text, by id (built once): what rule steering tests a mask against (order 0067)."""
         if getattr(self, "_vocab", None) is None:
@@ -253,3 +274,18 @@ class ContextualEmitter:
                                        temperature=temperature, seed=seed, context=context)
         self.last = getattr(self.adapters[role], "last", None) or {}    # the seat's last generation (raw, hit_limit)
         return out
+
+    def emit_samples(self, prompt: str, n: int, max_new_tokens: int = 160, system: str | None = None,
+                     prefix: str = "", temperature: float = 0.7, seed: int | None = None,
+                     context: "str | dict | None" = None) -> list[str]:
+        role = self.resolve(context)
+        self.calls[role] += 1
+        adapter = self.adapters[role]
+        if hasattr(adapter, "emit_samples"):
+            out = adapter.emit_samples(prompt, n, max_new_tokens=max_new_tokens, system=system, prefix=prefix,
+                                       temperature=temperature, seed=seed, context=context)
+            self.last = getattr(adapter, "last", None) or {}
+            return out
+        return [adapter.emit(prompt, max_new_tokens=max_new_tokens, system=system, prefix=prefix,
+                             temperature=temperature, seed=(None if seed is None else seed + i), context=context)
+                for i in range(max(1, int(n)))]

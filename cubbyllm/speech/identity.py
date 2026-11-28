@@ -100,11 +100,14 @@ def affect_block(state: dict) -> str:
 
 # ── what is an identity turn, and what is an identity answer ────────────────
 _IDENTITY_Q = re.compile(
-    r"\b(who are you|what are you|your name|who (built|made|created|trained) you|what can you do|"
+    r"\b(who are you|what are you|who(?:'s| is) cubby(?:llm)?|what(?:'s| is) cubby(?:llm)?|"
+    r"tell me about cubby(?:llm)?|your name|who (built|made|created|trained) (?:you|cubby(?:llm)?)|what can you do|"
     r"how do you work|how are you|how do you feel|what('s| is) (the )?cubbyverse|tell me about (the )?cubbyverse|what('s| is) cubby[- ]?man|your world|where (do you live|are you|is your home)|which world|"
-    r"c'est quoi (le )?cubbyverse|c'est quoi cubby[- ]?man|parle[- ]moi du cubbyverse|ton monde|o[ùu] (vis|habites|es)[- ]tu|tu (habites|vis) o[ùu]|quel monde|ta maison|are you (an? )?(ai|agi|robot|model|conscious|alive|"
+    r"c'est quoi (le )?cubbyverse|c'est quoi cubby[- ]?man|c'est (?:qui|quoi) cubby(?:llm)?|qui est cubby(?:llm)?|parle[- ]moi de cubby(?:llm)?|"
+    r"parle[- ]moi du cubbyverse|ton monde|o[ùu] (vis|habites|es)[- ]tu|tu (habites|vis) o[ùu]|quel monde|ta maison|are you (an? )?(ai|agi|robot|model|conscious|alive|"
     r"chatgpt|gpt|claude|llama)|introduce yourself|"
     r"qui es[- ]tu|tu es qui|comment (tu t'appelles|t'appelles[- ]tu)|qui t'a (fait|construit|cr[ée]{2}|entra[iî]n[ée])|"
+    r"qui a (?:fait|construit|cr[ée]{2}|entra[iî]n[ée]) cubby(?:llm)?|"
     r"que sais[- ]tu faire|que peux[- ]tu faire|qu'?est[- ]ce que tu (peux|sais) faire|quesse que tu (peux|sais) faire|tu peux faire quoi|"
     r"comment (vas[- ]tu|[çc]a va)|es[- ]tu (une? )?(ia|agi|robot))\b", re.I)
 # a greeting is the turn's OPENING (or the whole turn), never a word inside a query: "who sang na na na hey hey

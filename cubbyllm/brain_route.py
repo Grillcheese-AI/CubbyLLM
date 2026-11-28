@@ -57,11 +57,27 @@ class BrainRoute:
     _HOWTO = re.compile(r"^\W*(how|what)('s| is| are)? (the best way to\b|(do|does|can|could|should|would|might) (i|we|you|one|someone|it)\b)|"
                         r"^\W*how to\b|^\W*comment (est[- ]ce qu'on|est[- ]ce que je|on|je|peut[- ]on|faire pour|puis[- ]je|fait[- ]on)\b", re.I)
 
+    # everyday casual questions and first-person small talk that should never be ambushed into the fact VM:
+    # checked after parse_question() so real fact-grammar questions still go to reasoning
+    _CASUAL_Q = re.compile(
+        r"\b(what(?:'s| is) (?:up|new|happening|going on)|how(?:'s| is) (?:your day|life|everything|your week|things)|"
+        r"how (?:have you been|did your day go|was your day)|(?:are )?you (?:there|busy|okay|ok|alright|ready|awake)\b|"
+        r"(?:wanna|want to|can we|let'?s) (?:chat|talk|hang out)|you know what i mean|"
+        r"quoi de neuf|tu fais quoi|tu vas bien|[çc]a va(?: bien)?|on jase|on parle|bonne journ[ée]e|"
+        r"t'en penses quoi)\b|"
+        r"^\s*(?:right|isn't it|don't you think|you think|really|seriously|non|hein|vrai)\s*\?\s*$", re.I)
+
+    _PERSONAL_STMT = re.compile(
+        r"^\s*(?:i(?:'m|’m| am| was| have|'ve|’ve| had| just| feel| felt| love| hate| miss| went| got| tried| watched|"
+        r" played| made| ate| drank| slept| worked| had a)\b|my\s+\w+|"
+        r"je\s+(?:suis|vais|me sens|pense|trouve|viens|travaille|regarde|joue)\b|"
+        r"j['’](?:ai|aime|adore|en ai|suis)\b|m(?:on|a|es)\s+\w+)", re.I)
+
     def needs_facts(self, text: str) -> tuple[bool, str]:
         """Does answering need facts about the world? Facts: a question the
         fact grammar parses, or a wh-question that is not about Cubby himself
         or a matter of taste. No facts: identity turns, feelings, opinions,
-        creative asks, small talk."""
+        creative asks, casual chat, small talk."""
         from cubbyllm.reasoning import parse_question
         if is_identity_question(text):
             return False, "about Cubby himself"
@@ -71,10 +87,14 @@ class BrainRoute:
             return True, "the fact grammar parses it"
         if self._CAPABILITY.search(text):                # "do you know how to write code?" (live misroute 2026-09-03): about Cubby, not the world
             return False, "about Cubby himself"
+        if self._CASUAL_Q.search(text):
+            return False, "casual chat"
         if self._NO_FACTS.search(text) and not (self._WH_FACT.search(text) and not self._ASK_TO_PRODUCE.search(text)):
             return False, "a feeling, opinion or creative ask"
         if self._QUESTION.search(text):
             return True, "a question about the world"
+        if self._PERSONAL_STMT.search(text):
+            return False, "casual chat"
         return False, "small talk"
 
     def route(self, text: str) -> dict:
