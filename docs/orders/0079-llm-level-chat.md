@@ -957,3 +957,16 @@ Each behind its flag, off by default; off, the turn and the loop are as they wer
   because the drafting server runs with the web fallback on, whose page reader is the local LFM model: a verified
   answer could rest on the web, not the store. The server stays as it is; the fact plans keep their asks, which the
   router now restates ("tell me about X" -> "What is X?").
+
+### Longer conversations, no one-turn ones (Nick, 2026-11-28: "we should probably also have more turns and avoid the small 1 turn ones")
+Of the first 135 conversations, 39 kept two Cubby turns or fewer (10 kept none), mostly because one refused reply
+ended them; the plans asked for 4 to 8 Cubby turns; and 11 conversations filled their last turns with goodbyes. For
+every plan not yet done (unstarted, and reopened):
+- **Length:** 8 to 14 Cubby turns, drawn again, with the kind's turn drawn again inside it.
+- **A refused reply is written again,** up to twice, before the conversation is cut. The refused reply is not a row;
+  it is kept beside the one that passed, as a rejected/chosen pair for item 2.
+- **No short conversations:** one that ends with fewer than 4 kept Cubby turns gives no rows (it is reopened if a
+  regate lifts its cut).
+- **No goodbye padding:** at most one closing exchange, in the last two planned turns. About halfway the user brings
+  a second subject of their own (their work, a hobby, a question), so a long conversation keeps going.
+- `status` prints the kept Cubby turns per conversation (a histogram) beside the cuts.
