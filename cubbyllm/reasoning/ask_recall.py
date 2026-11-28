@@ -112,6 +112,8 @@ class AskRecall:
             if route(plan, self.scene):
                 source = self.scene
                 rec["world"] = "scene"
+        from . import cover_names
+        names = cover_names.slots(self, question) if cover_names.on() else None   # order 0087's slot table
         def learn(src=None, store=None):             # `src`: another source for this walk (the reader's: none);
             return learn_and_answer(walked, lambda q, k: [], self._run_fn,   # `store`: a scratch
                                     store=self.world if store is None else store, known=self.known,   # first world (a namesake apart, 0043;
@@ -119,7 +121,8 @@ class AskRecall:
                                     source=src or source, tau_vm=TAU_VM.get(plan.n_hop, 0.2202), top_k=3, max_repairs=1,
                                     plan=plan, resolvers=self.resolvers, choose=parse_choose(choose) or None,
                                     fallbacks=self.fallbacks if src is None else [],
-                                    before=[self.books] if self.books is not None and src is None else None)
+                                    before=[self.books] if self.books is not None and src is None else None,
+                                    names=names)
         return plan, source, learn, one_item
 
     def _recall(self, question: str, asked: str, item, choose, rec: dict) -> dict | None:

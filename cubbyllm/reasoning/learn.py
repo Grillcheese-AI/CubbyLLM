@@ -486,7 +486,7 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
                      plan: QuestionPlan | None = None, max_entities: int = 2,
                      resolvers: list | None = None, chunk: int = 0, branch: int = 12,
                      choose: dict | None = None, fallbacks: list | None = None,
-                     max_fallback: int = 1, before: list | None = None) -> LearnResult:
+                     max_fallback: int = 1, before: list | None = None, names=None) -> LearnResult:
     """One question through the loop. `store` needs `add(fact)`, `__contains__`,
     `texts`, `index` (a TripleIndex) and `lookup` (its `index.hop`); `known` is a
     `StoreRelations` (gets `add`). `branch`/`choose` go to `answer` (graph-of-thought at
@@ -525,7 +525,7 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
                      max_repairs=max_repairs, lookup=store.lookup, known=known, plan=plan, aliases=aliases,
                      times=getattr(store, "times", None),     # the source's own dates: the ONLY hop tie-break
                      chunk=chunk,                             # hops per frame; 0 = the shipped whole-chain shape
-                     branch=branch, choose=choose)            # explore an ambiguous hop; the asker's pick
+                     branch=branch, choose=choose, names=names)   # an ambiguous hop; the asker's pick; 0087's slots
         # the latent tier: a verified chain that rests on a fact only a latent source stated is not spoken;
         # the would-be answer and the facts are on record, and a second source's agreement lifts the hold
         if res.verified and prov is not None:

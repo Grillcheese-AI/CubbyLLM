@@ -264,6 +264,8 @@ def extract(question: str, index: SpanIndex | None = None, referents: dict | Non
     constant whose value the question already states is not repeated."""
     t = SlotTable(question)
     ents = index.spans(question) if index is not None else []
+    from . import cover_names                        # order 0087 (CB_COVER_NAMES=1): a pronoun is never a name
+    ents = cover_names.drop_pronouns(ents) if cover_names.on() else ents
     # one id per distinct name (2026-09-29): a name mentioned twice -- in the question and in a fact
     # line -- is one entity and one slot, so the emitter has one right answer, not an arbitrary pick
     # among equal ids; every mention is annotated with it

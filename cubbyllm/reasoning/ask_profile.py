@@ -96,6 +96,11 @@ class AskProfile:
         rec: dict = {"question": question, "answer": None, "verified": False, "reason": "profile", "plan": [], "seed": normalize(entity),
                      "ask": kind, "program": cot_profile(normalize(entity), kind), "learned": [], "entities": [], "aliased": [],
                      "snapped": None, "trace": [], "profile": [], "prose": None, "candidates": None, "clarify": None, "wall_s": 0.0}
+        from . import cover_names
+        if cover_names.on() and cover_names.is_pronoun(entity):   # order 0087: a pronoun never seeds ("who are you?")
+            rec.update(reason="seed_is_pronoun", program=None, wall_s=round(time.perf_counter() - t0, 3))
+            ev.emit("answer", qid, verified=False, answer=None, reason=rec["reason"])
+            return rec
         prov = getattr(self.world, "provenance", None)
         rels = PROFILE_KINDS[kind]
         if kind == "when":

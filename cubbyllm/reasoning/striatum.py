@@ -23,9 +23,16 @@ Exploration: the TONIC level is the running mean of recent rewards; when it is l
 explores -- with probability eps it tries the second-best proposer first -- so a shape whose
 best proposer stopped certifying gets the others a hearing. Seeded, so runs reproduce.
 
-What arbitration buys is not more certified answers -- every proposer is still tried until one
-certifies -- but fewer wasted proposals: an emitter call is ~1 s on the GPU, a hippocampus
+What arbitration was meant to buy is not more certified answers -- every proposer still tried until
+one certifies -- but fewer wasted proposals: an emitter call is ~1 s on the GPU, a hippocampus
 recall ~50 ms, the grammar ~0; the striatum learns which to ask first, per shape.
+
+What runs in the ask loop (order 0083, ``CB_ASK_MEMORY=1``; off, the striatum orders nothing there):
+two proposers, the hippocampus and the emitter, after the host's own shapes. Memory goes first or
+not at all. When the striatum ranks the hippocampus first, its candidates are walked and the
+emitter runs only if none certifies. When it ranks the emitter first (exploration included), the
+hippocampus is not tried for that question, even if the emitter's plan is refused. So "every proposer
+until one certifies" does not hold there: a refused emitter plan is not followed by a recall.
 """
 from __future__ import annotations
 

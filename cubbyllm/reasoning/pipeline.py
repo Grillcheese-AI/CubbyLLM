@@ -10,7 +10,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field, replace
 
 from ..core.protocols import Wiring
-from . import simlog
+from . import cover_names, simlog
 from .answer_values import narrow as _narrow, said as _said, several as _several, wanted as _wanted
 from .plan_verify import answer_type_mismatch, verify_plan
 from .planner import (QuestionPlan, Triple, accepts, normalize, parse_fact,
@@ -425,7 +425,7 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
            top_k: int = 3, max_repairs: int = 1, lookup=None, known=None,
            plan: QuestionPlan | None = None, aliases: dict[str, list[str]] | None = None,
            times: dict | None = None, chunk: int = 0, branch: int = 12,
-           choose: dict | None = None, closed_world: bool = False) -> CoTResult:
+           choose: dict | None = None, closed_world: bool = False, names=None) -> CoTResult:
     """`lookup`: a `TripleIndex.hop`-shaped callable; when given, every hop is
     looked up before it is searched (see `_walk`).
 
@@ -458,7 +458,8 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
     the choices it found. 0 restores the refuse-on-sight walk.
     `choose`: {hop: object} an asker picked from those choices; see `_walk`.
     `closed_world`: the store is complete, so a branch that cannot finish is refuted
-    rather than unknown; see `_converged`. Never the default."""
+    rather than unknown; see `_converged`. Never the default.
+    `names`: the question's slot table for `cover_names.refusal` (order 0087, ``CB_COVER_NAMES=1``; off: unread)."""
     # max_repairs 3 -> 1 (2026-09-03): on the 800-question harvest every failure burned all three
     # repairs with zero hops verified and no verified chain ever needed more than one; budget 1
     # reproduces 517 verified / 513 correct / control 528/528 exactly at 45.9 ms vs 120.9 ms per
@@ -479,6 +480,9 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
         # The year is not discarded: `as_of` above carries it to the hop that needs it.
         covered = " ".join(_AS_OF.sub(" ", question).split()) if as_of is not None else question
         verdict = verify_plan(covered, plan, known, aliases)
+        why = cover_names.refusal(covered, plan, known, aliases, names) if verdict.covers and cover_names.on() else None
+        if why:                                          # order 0087: a plan uses the names the question holds
+            return CoTResult(answer=None, verified=False, reason=why[0], refused={"names": why[1]})
         if not verdict.ok:
             return CoTResult(answer=None, verified=False, reason=verdict.reason,
                              refused={"covers": verdict.covers,
