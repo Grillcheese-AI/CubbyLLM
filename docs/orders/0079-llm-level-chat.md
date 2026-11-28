@@ -777,5 +777,18 @@ on 2026-11-11, before the sheet existed, so it never learned the sheet.
 - **Reported:** `talk_v3a` on the perspective set as the floor, with today's prompt and with the new labels untrained
   (what the labels alone do).
 - **Who and when:** Code A builds items 1 and 3 (the prompt flag, the conversion, the guard) now; the turns of item 2
-  are drafted with the final run's conversations, when the writer runs again (OpenRouter is paused); Cowork writes the
+  are drafted with the final run's conversations, with the writer below; Cowork writes the
   perspective set before that run.
+
+### The final run's writer, for now (Nick, 2026-11-28: "let's use haiku or sonnet for now, we will change it before we go live")
+- **The writer:** Claude Haiku and Claude Sonnet, mixed as in the pilot's last round, through the builder's own path
+  (`build_chat_0079.py`, OpenRouter); the users' side seeded from the personas. Every row records its writer and the
+  model's exact id.
+- **Before Cubby goes live,** the rows are drafted again with the final writer set, and the adapter that serves is
+  trained only on those. Anthropic's terms do not allow Claude's output to train a model that competes with it, so no
+  row drafted here is in anything that ships.
+- **Cost first:** a batch of 500 conversations, priced from its own usage; the rest of the run (the pilot's estimate
+  was 20,000 conversations) on Nick's yes, with that price.
+- **The test's personas, reserved now:** a persona whose `uuid`'s SHA-256 ends in `0` (one in sixteen) is never drawn
+  for training; the perspective set draws its users from those only. The drafting can start before the set is
+  written.
