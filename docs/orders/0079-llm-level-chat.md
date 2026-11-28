@@ -813,7 +813,8 @@ Five turns on `talk_v3a` and the ask loop. Perspective held ("help you write a p
   The drafting gate's loop check (`chat_checks.loops`) does not run on served replies.
 - **Emoji** on four replies to turns with none (one of them two).
 - **Markdown** (`**...**`) shown as it was written; the board shows plain text.
-- **A poem addressed to the user as a dream** ("I'm dreaming of you, but I want you to be my dream").
+- The poem ("I'm dreaming of you, but I want you to be my dream") is not a defect: Nick asked for something random,
+  and that is the poem Cubby started (Nick, 2026-11-28). No sheet line is added for it; its repeats are item 5's.
 - **The greeting recited what Cubby can do** (facts on record, checked, the steps) when asked how it was.
 - **"who is cubby?"** went to the ask loop and offered three Wikidata items named Cubby (Peter Pan's lost boy among
   them); a question about Cubby belongs to its record.
