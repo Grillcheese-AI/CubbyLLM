@@ -162,3 +162,13 @@ def test_off_the_checks_never_run(monkeypatch):
     monkeypatch.setattr(C, "slots", lambda *a, **k: pytest.fail("cover_names ran with the flag off"))
     rec = ghana_loop().ask(GHANA[1])
     assert rec["verified"] and normalize(rec["answer"]) == "ghana"
+
+
+def test_the_sleep_cycle_routes_the_plan_refusals_and_leaves_the_pronoun_unqueued():
+    """Cowork, 2026-11-28: the two plan refusals feed the emitter's curriculum; "who are you?" is Cubby's own question,
+    never turned into a clarifying one."""
+    from cubbyllm.reasoning import sleep as S
+    assert S.ROUTES["seed_is_relation"][0] == S.ROUTES["name_left_over"][0] == "emitter_curriculum"
+    assert S.route(S.DayRecord(id="1", question="who are you?", verified=False, reason="seed_is_pronoun")) == []
+    assert S.route(S.DayRecord(id="2", question=GHANA[1], verified=False, reason="seed_is_relation", plan=["country"],
+                               seed="citizenship"))[0][0] == "emitter_curriculum"

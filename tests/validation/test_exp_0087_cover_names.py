@@ -14,8 +14,8 @@ import exp_0087_cover_names as X  # noqa: E402
 
 
 def row(pass_, i, answer, match=None, reason=None, seed="s", names=None):
-    return {"pass": pass_, "i": i, "q": "q", "gold": "g", "wording": None, "verified": bool(answer), "answer": answer,
-            "reason": None if answer else reason, "names": names, "match": match, "restated": False, "plan": ["r"],
+    return {"pass": pass_, "i": i, "q": f"q {pass_} {i}", "gold": "g", "wording": None, "verified": bool(answer),
+            "answer": answer, "reason": reason, "names": names, "match": match, "restated": False, "plan": ["r"],
             "seed": seed, "s": 2.0, "names_s": 0.001 if names is not None else 0.0, "program": None, "seat_ms": 1.0}
 
 
@@ -45,16 +45,17 @@ def test_the_gates_pass_when_the_rule_refuses_only_the_wrong_rows(tmp_path, monk
               [("you -- actor", None), ("this loop", None)])
     on = arm([("paris", "correct"), (None, None, "seed_is_relation"), ("rome", "correct")],
              [(None, None, "seed_is_relation", "citizenship"), ("x", "correct")], LIVE,
-             [(None, None, "seed_is_pronoun"), (None, None, "seed_is_pronoun")])
+             [(None, None, "seed_is_pronoun"), ("this loop", None, "self")])
     write(tmp_path, monkeypatch, off, on)
     rep = report(tmp_path)
     assert rep["gates"] == {"other: Ghana on 0 rows": True, "other: a relation-word seed spoken": [],
-                            "self: both refused with seed_is_pronoun": True, "gen3: no WRONG added": True,
+                            "self: never answered from a store": True, "gen3: no WRONG added": True,
                             "gen3: correct at most 6 down": True, "live8 unchanged": True,
                             "kill: a WRONG added or more than 12 down": False}
     assert rep["gen3_wrong_off_and_on"] == [{"i": 1, "on": "seed_is_relation"}]
     assert rep["passes"]["gen3"]["on"]["by_the_rule"] == {"seed_is_relation": 1, "name_left_over": 0, "seed_is_pronoun": 0}
     assert rep["other_ghana"] == {"off": 1, "on": 0}
+    assert list(rep["self_on"].values()) == ["seed_is_pronoun", "self"]
 
 
 def test_a_wrong_answer_the_flag_adds_fires_the_kill(tmp_path, monkeypatch):

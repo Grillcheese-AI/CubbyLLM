@@ -71,7 +71,7 @@ def test_every_reason_the_loop_writes_is_routed_or_an_answered_kind():
     # keys of the record and of its `refused` dict that share a line with a reason; not reasons
     not_reasons = {"tail_relation", "latent_facts", "attributed_facts", "unknown_relations", "tau_vm", "wall_s",
                    "as_of"}    # a tier (ask.py: an undated world value said "as of" its date), compared the line after a reason
-    missing = sorted(found - set(S.ROUTES) - S.ANSWERED - not_reasons)
+    missing = sorted(found - set(S.ROUTES) - S.ANSWERED - S.UNQUEUED - not_reasons)   # UNQUEUED: a decision too
     assert not missing, f"reasons with no route: {missing}. Route them in sleep.ROUTES (a decision), don't widen the scan."
     assert {"plan_does_not_cover_question", "unknown_relation", "retrieval_exhausted", "loci_mismatch", "loci_miss"} <= found
 

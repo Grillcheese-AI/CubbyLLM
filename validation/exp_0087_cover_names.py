@@ -11,7 +11,9 @@ questions; self -- "who are you?" and "what are you?".
 
 Per row (``validation/logs/_exp_0087_<arm>.rows.jsonl``, with the question): verified, the answer against gold (r11's
 match), the reason and the names check's detail, the plan and seed, the time and the time spent in ``cover_names``.
-``--report`` reads both arms into the gates the order pre-registered (no questions in it).
+``--report`` reads both arms into the gates the order pre-registered (no questions in it). The self line as Cowork
+read it (2026-11-28): "who are you?" and "what are you?" are never answered from a store -- refused with
+``seed_is_pronoun`` or answered by the host's self shape -- and the report says which took each.
 
   <grilly2's python> validation/exp_0087_cover_names.py --arm on --cubby450m <export> --emitter-adapter <dir>
   <grilly2's python> validation/exp_0087_cover_names.py --report       -> validation/logs/exp_0087_cover_names_<date>.json
@@ -155,7 +157,7 @@ def report(out: str | None) -> None:
             for a, b in zip(by["off"]["live8"], by["on"]["live8"])]
     selfs = {r["q"]: r["reason"] for r in by["on"]["self"]}
     gates = {"other: Ghana on 0 rows": ghana["on"] == 0, "other: a relation-word seed spoken": rel_seed_spoken,
-             "self: both refused with seed_is_pronoun": all(v == "seed_is_pronoun" for v in selfs.values()),
+             "self: never answered from a store": all(v in ("seed_is_pronoun", "self") for v in selfs.values()),
              "gen3: no WRONG added": not added, "gen3: correct at most 6 down": down <= 6,
              "live8 unchanged": all(v1 == v2 and (s1 or "") == (s2 or "") for _q, v1, s1, v2, s2 in live),
              "kill: a WRONG added or more than 12 down": bool(added) or down > 12}

@@ -54,7 +54,6 @@ ROUTES: dict[str, tuple[str, str]] = {
     "unparseable": ("emitter_curriculum", "the emitter's program did not parse"),
     "seed_is_relation": ("emitter_curriculum", "the plan's seed is a word of the relation it walks, not a name (order 0087)"),
     "name_left_over": ("emitter_curriculum", "a name the question holds is neither the plan's seed nor bound (order 0087)"),
-    "seed_is_pronoun": ("clarify", "a pronoun was the only subject; it never seeds, and the asker may say whom (order 0087)"),
     "unknown_relation": ("relation_wordings", "no held relation answers to the plan's wording"),
     "ambiguous_relation": ("clarify", "several held relations fit the wording"),
     "ambiguous_hop": ("clarify", "a multi-valued hop: the question needs a qualifier or a choice"),
@@ -88,6 +87,9 @@ ROUTES: dict[str, tuple[str, str]] = {
 # reasons that come WITH a spoken answer: a profile or an introspection answered line by line, each line
 # recovered by the VM. Not refusals.
 ANSWERED = {"profile", "self"}
+# refusals the cycle leaves in no queue, by decision: "who are you?" is Cubby's own question (0079's item 6 answers it
+# from the record), not one to turn into a clarifying question (order 0087; Cowork, 2026-11-28)
+UNQUEUED = {"seed_is_pronoun"}
 QUEUES = sorted({q for q, _ in ROUTES.values()} | {"unrouted", "defects"})
 SPOKEN_OK = ("correct", "near")                 # audit matches that are not defects ("near" = a coarser answer)
 
@@ -301,7 +303,7 @@ def route(r: DayRecord) -> list[tuple[str, str]]:
     """(queue, key) for one refused or defective record; a record may feed several keys (one per unknown
     wording)."""
     rk = _reason_key(r.reason)
-    if answered(r) or not rk:
+    if answered(r) or not rk or rk in UNQUEUED:
         return []
     queue = ROUTES.get(rk, ("unrouted", ""))[0]
     shape = question_shape(r.question)
