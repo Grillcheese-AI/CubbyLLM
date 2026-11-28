@@ -757,8 +757,8 @@ on 2026-11-11, before the sheet existed, so it never learned the sheet.
      - A sample of each, drawn by seed; rows off the repo.
 3. **Two lines for the character sheet** (in the sheet of 2026-11-28 above), approved by Nick on 2026-11-28: "Emoji: at most one in a
    reply, and most replies have none." "It speaks only of the conversations it can see: no 'always' about a past it
-   has no record of." And a host guard until the run lands (`CB_TALK_ONE_EMOJI`, off by default): a reply keeps its
-   first emoji and drops the rest.
+   has no record of." And a host guard until the run lands (`CB_TALK_ONE_EMOJI`, off by default), held to the sheet:
+   a reply to a turn with no emoji keeps none; otherwise it keeps its first and drops the rest.
 4. **A preference pass, a second arm, only if the first misses** (arm P; a new trainer, DPO on the LoRA with the
    supervised adapter as the reference; Nick says yes before it runs). Pairs from the seat's own replies to train-side
    turns of the three kinds, never the test below: chosen, the drafted reply that passes the checks; rejected, the
@@ -806,3 +806,23 @@ on 2026-11-11, before the sheet existed, so it never learned the sheet.
 - **The test's personas, reserved now:** a persona whose `uuid`'s SHA-256 ends in `0` (one in sixteen) is never drawn
   for training; the perspective set draws its users from those only. The drafting can start before the set is
   written.
+
+### The board's second chat (Cowork, 2026-11-28, from Nick's screenshot of 2026-11-27)
+Five turns on `talk_v3a` and the ask loop. Perspective held ("help you write a poem"), and no fact was wrong; but:
+- **Repeats:** "a little moon, a little moon"; "I'll write about it, if you'd like. I'll write about it, if you'd like."
+  The drafting gate's loop check (`chat_checks.loops`) does not run on served replies.
+- **Emoji** on four replies to turns with none (one of them two).
+- **Markdown** (`**...**`) shown as it was written; the board shows plain text.
+- **A poem addressed to the user as a dream** ("I'm dreaming of you, but I want you to be my dream").
+- **The greeting recited what Cubby can do** (facts on record, checked, the steps) when asked how it was.
+- **"who is cubby?"** went to the ask loop and offered three Wikidata items named Cubby (Peter Pan's lost boy among
+  them); a question about Cubby belongs to its record.
+
+Added (Code A, on the chat path; each behind its flag, off by default):
+5. **Served replies through the sheet's checks** (`CB_TALK_CHECKED`): with `emit_samples`, 4 replies in one batched
+   decode, the first that passes the drafting gate's checks (loops, a feeling the mood does not back, a body or a past,
+   an emoji the user did not use, a list nobody asked for) is spoken; when none passes, the first with its repeated
+   sentences cut and its emoji dropped. Markdown emphasis is taken out of every talk reply.
+6. **Questions about Cubby go to its record** (`CB_ASK_SELF`): a question whose subject is Cubby by name or "you"
+   (`cubby_record.is_about_cubby`) is answered from the record and the sheet before the ask loop, never from a store.
+- **Reported, with 0079's read:** the five turns above, again, flags off and on.
